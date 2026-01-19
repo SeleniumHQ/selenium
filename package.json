@@ -8,5 +8,19 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "brace-expansion": {
+        "dependencies": {
+          "balanced-match": "*"
+        }
+      },
+      "minimatch": {
+        "dependencies": {
+          "brace-expansion": "*"
+        }
+      }
+    }
   }
 }

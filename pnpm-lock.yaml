@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: 6af346c1d93f26f49049a0df55bc3940
+
 importers:
 
   .: {}
@@ -119,18 +121,9 @@ importers:
 
   javascript/private:
     dependencies:
-      balanced-match:
-        specifier: ^1.0.2
-        version: 1.0.2
-      brace-expansion:
-        specifier: ^2.0.1
-        version: 2.0.2
       google-closure-deps:
         specifier: ^20230802.0.0
         version: 20230802.0.0
-      minimatch:
-        specifier: ^3.1.2
-        version: 3.1.2
 
   javascript/selenium-webdriver:
     dependencies:
