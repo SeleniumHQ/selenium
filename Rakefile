@@ -396,24 +396,14 @@ RELEASE_CREDENTIALS = {
   dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
 }.freeze
 
-def package_published?(url, max_attempts: 12, delay: 10)
+def verify_package_published(url)
   puts "Verifying #{url}..."
   uri = URI(url)
-  max_attempts.times do |attempt|
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
-                                                  open_timeout: 10, read_timeout: 10) { |http| http.request(Net::HTTP::Get.new(uri)) }
-    if res.is_a?(Net::HTTPSuccess)
-      puts 'Verified!'
-      return true
-    end
-    puts "Not yet indexed, waiting... (#{attempt + 1}/#{max_attempts})"
-    sleep(delay)
-  rescue StandardError => e
-    warn "Error: #{e.message}"
-    sleep(delay) unless attempt == max_attempts - 1
-  end
-  warn "Not found after #{max_attempts * delay}s"
-  false
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
+                                                open_timeout: 10, read_timeout: 10) { |http| http.request(Net::HTTP::Get.new(uri)) }
+  raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
+
+  puts 'Verified!'
 end
 
 def sonatype_api_post(url, token)
@@ -632,15 +622,11 @@ namespace :node do
 
     puts 'Running Node package release...'
     Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
-
-    Rake::Task['node:verify'].invoke unless nightly
   end
 
   desc 'Verify Node package is published on npm'
   task :verify do
-    package_published?(
-      "https://registry.npmjs.org/selenium-webdriver/#{node_version}"
-    ) || warn('npm verification failed - package may still be indexing')
+    verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
   end
 
   task deploy: :release
@@ -706,15 +692,11 @@ namespace :py do
     command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
     puts "Running Python release command: #{command}"
     Bazel.execute('run', ['--config=release'], command)
-
-    Rake::Task['py:verify'].invoke unless nightly
   end
 
   desc 'Verify Python package is published on PyPI'
   task :verify do
-    package_published?(
-      "https://pypi.org/pypi/selenium/#{python_version}/json"
-    ) || warn('PyPI verification failed - package may still be indexing')
+    verify_package_published("https://pypi.org/pypi/selenium/#{python_version}/json")
   end
 
   desc 'generate and copy files required for local development'
@@ -916,8 +898,6 @@ namespace :rb do
       puts 'Releasing Ruby gems...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
       Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release') unless patch_release
-
-      Rake::Task['rb:verify'].invoke
     end
   end
 
@@ -925,13 +905,9 @@ namespace :rb do
   task :verify do
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
-    package_published?(
-      "https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json"
-    ) || warn('RubyGems verification failed - selenium-webdriver may still be indexing')
+    verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
     unless patch_release
-      package_published?(
-        "https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json"
-      ) || warn('RubyGems verification failed - selenium-devtools may still be indexing')
+      verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json")
     end
   end
 
@@ -1090,18 +1066,12 @@ namespace :dotnet do
 
     puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
     Bazel.execute('run', ['--config=release'], '//dotnet:publish')
-
-    Rake::Task['dotnet:verify'].invoke unless nightly
   end
 
   desc 'Verify .NET packages are published on NuGet'
   task :verify do
-    package_published?(
-      "https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json"
-    ) || warn('NuGet verification failed - Selenium.WebDriver may still be indexing')
-    package_published?(
-      "https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json"
-    ) || warn('NuGet verification failed - Selenium.Support may still be indexing')
+    verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json")
+    verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
   end
 
   desc 'Generate .NET documentation'
@@ -1282,16 +1252,11 @@ namespace :java do
     puts 'Publishing deployed packages...'
     sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{encoded_id}", token)
     puts "Published! Deployment ID: #{deployment_id}"
-
-    Rake::Task['java:verify'].invoke
   end
 
   desc 'Verify Java packages are published on Maven Central'
   task :verify do
-    package_published?(
-      "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom",
-      max_attempts: 30, delay: 60
-    ) || warn('Maven Central verification failed - may still be syncing')
+    verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
   end
 
   desc 'Install jars to local m2 directory'

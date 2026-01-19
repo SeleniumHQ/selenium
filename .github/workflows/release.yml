@@ -116,6 +116,14 @@ jobs:
       run: ./go ${{ matrix.language }}:release
     secrets: inherit
 
+  verify:
+    name: Verify Published Packages
+    needs: docs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Verify packages
+      run: ./go all:verify
+
   docs:
     name: Update ${{ matrix.language }} Documentation
     needs: [stage, publish, github-release]
@@ -150,7 +158,7 @@ jobs:
 
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
-    needs: [github-release]
+    needs: verify
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
@@ -198,7 +206,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [stage, publish, docs, github-release, update-version, nightly, mirror]
+    needs: [stage, publish, docs, github-release, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -217,5 +225,6 @@ jobs:
             • Nightly Version Updated: ${{ needs.update-version.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
+            • Packages Verified: ${{ needs.verify.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
