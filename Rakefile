@@ -396,35 +396,24 @@ RELEASE_CREDENTIALS = {
   dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
 }.freeze
 
-def verify_package_published(url, max_attempts: 12, delay: 10)
+def package_published?(url, max_attempts: 12, delay: 10)
   puts "Verifying #{url}..."
-  attempts = 0
-
-  loop do
-    attempts += 1
-    uri = URI(url)
+  uri = URI(url)
+  max_attempts.times do |attempt|
     res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
-                                                  open_timeout: 10, read_timeout: 10) do |http|
-      http.request(Net::HTTP::Get.new(uri))
-    end
-
+                                                  open_timeout: 10, read_timeout: 10) { |http| http.request(Net::HTTP::Get.new(uri)) }
     if res.is_a?(Net::HTTPSuccess)
       puts 'Verified!'
       return true
-    elsif attempts >= max_attempts
-      warn "Not found after #{max_attempts * delay}s"
-      return false
-    else
-      puts "Not yet indexed, waiting... (#{attempts}/#{max_attempts})"
-      sleep(delay)
     end
+    puts "Not yet indexed, waiting... (#{attempt + 1}/#{max_attempts})"
+    sleep(delay)
   rescue StandardError => e
     warn "Error: #{e.message}"
-    return false if attempts >= max_attempts
-
-    sleep(delay)
-    retry
+    sleep(delay) unless attempt == max_attempts - 1
   end
+  warn "Not found after #{max_attempts * delay}s"
+  false
 end
 
 def sonatype_api_post(url, token)
@@ -643,6 +632,15 @@ namespace :node do
 
     puts 'Running Node package release...'
     Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
+
+    Rake::Task['node:verify'].invoke unless nightly
+  end
+
+  desc 'Verify Node package is published on npm'
+  task :verify do
+    package_published?(
+      "https://registry.npmjs.org/selenium-webdriver/#{node_version}"
+    ) || warn('npm verification failed - package may still be indexing')
   end
 
   task deploy: :release
@@ -708,6 +706,15 @@ namespace :py do
     command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
     puts "Running Python release command: #{command}"
     Bazel.execute('run', ['--config=release'], command)
+
+    Rake::Task['py:verify'].invoke unless nightly
+  end
+
+  desc 'Verify Python package is published on PyPI'
+  task :verify do
+    package_published?(
+      "https://pypi.org/pypi/selenium/#{python_version}/json"
+    ) || warn('PyPI verification failed - package may still be indexing')
   end
 
   desc 'generate and copy files required for local development'
@@ -909,6 +916,22 @@ namespace :rb do
       puts 'Releasing Ruby gems...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
       Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release') unless patch_release
+
+      Rake::Task['rb:verify'].invoke
+    end
+  end
+
+  desc 'Verify Ruby packages are published on RubyGems'
+  task :verify do
+    patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
+
+    package_published?(
+      "https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json"
+    ) || warn('RubyGems verification failed - selenium-webdriver may still be indexing')
+    unless patch_release
+      package_published?(
+        "https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json"
+      ) || warn('RubyGems verification failed - selenium-devtools may still be indexing')
     end
   end
 
@@ -1067,6 +1090,18 @@ namespace :dotnet do
 
     puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
     Bazel.execute('run', ['--config=release'], '//dotnet:publish')
+
+    Rake::Task['dotnet:verify'].invoke unless nightly
+  end
+
+  desc 'Verify .NET packages are published on NuGet'
+  task :verify do
+    package_published?(
+      "https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json"
+    ) || warn('NuGet verification failed - Selenium.WebDriver may still be indexing')
+    package_published?(
+      "https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json"
+    ) || warn('NuGet verification failed - Selenium.Support may still be indexing')
   end
 
   desc 'Generate .NET documentation'
@@ -1165,7 +1200,7 @@ namespace :java do
   end
 
   desc 'Publish to sonatype'
-  task :publish do |_task|
+  task :publish do
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     user = ENV.fetch('MAVEN_USER')
     pass = ENV.fetch('MAVEN_PASSWORD')
@@ -1206,7 +1241,7 @@ namespace :java do
 
   desc 'Publish a Sonatype deployment by ID'
   task :publish_deployment, [:deployment_id] do |_task, arguments|
-    deployment_id = arguments[:deployment_id] || ENV['DEPLOYMENT_ID']
+    deployment_id = arguments[:deployment_id] || ENV.fetch('DEPLOYMENT_ID', nil)
     raise 'Deployment ID required' if deployment_id.nil? || deployment_id.empty?
 
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
@@ -1239,7 +1274,7 @@ namespace :java do
 
   desc 'Verify Java packages are published on Maven Central'
   task :verify do
-    verify_package_published(
+    package_published?(
       "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom",
       max_attempts: 30, delay: 60
     ) || warn('Maven Central verification failed - may still be syncing')
@@ -1432,8 +1467,24 @@ namespace :all do
   desc 'Validate release credentials for all languages without releasing'
   task :check_credentials do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
-    langs = nightly ? %i[java dotnet_nightly] : %i[java java_gpg python ruby node dotnet]
-    check_credentials(langs)
+
+    if nightly
+      check_credentials(%i[java dotnet_nightly])
+    else
+      check_credentials(%i[java java_gpg dotnet])
+      setup_pypirc
+      setup_gem_credentials
+      setup_npm_auth
+    end
+  end
+
+  desc 'Verify all packages are published to their registries'
+  task :verify do
+    Rake::Task['java:verify'].invoke
+    Rake::Task['py:verify'].invoke
+    Rake::Task['rb:verify'].invoke
+    Rake::Task['dotnet:verify'].invoke
+    Rake::Task['node:verify'].invoke
   end
 
   desc 'Release all artifacts for all language bindings'
