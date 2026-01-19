@@ -119,6 +119,9 @@ importers:
 
   javascript/private:
     dependencies:
+      brace-expansion:
+        specifier: ^2.0.1
+        version: 2.0.2
       google-closure-deps:
         specifier: ^20230802.0.0
         version: 20230802.0.0
