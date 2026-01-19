@@ -31,53 +31,47 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   # Rust jobs run in parallel with approval since work is not on trunk
-  update-rust:
-    name: Update Rust Version
-    runs-on: ubuntu-latest
+  generate-rust-version:
+    name: Generate Rust Version
     if: github.event.repository.fork == false
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Rust Version
+      run: ./go rust:version ${{ inputs.version }}
+      artifact-name: rust-version
+
+  push-rust-version:
+    name: Push Rust Version
+    needs: generate-rust-version
+    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout repo"
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
           fetch-depth: 0
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
+      - name: Download rust version patch
+        uses: actions/download-artifact@v4
         with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: "Prep git"
+          name: rust-version
+      - name: Apply patch
+        run: git apply --index changes.patch
+      - name: Prep git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-          if git rev-parse --verify rust-release-${{ github.event.inputs.version }} >/dev/null 2>&1; then
-            git branch -D rust-release-${{ github.event.inputs.version }}
-          fi
-          git checkout -b rust-release-${{ github.event.inputs.version }}
-      - name: Update Rust Version
-        run: ./go rust:version ${{ github.event.inputs.version }}
-      - name: Commit Rust updates
-        run: git commit -m "update selenium manager version and rust changelog"
       - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          branch: rust-release-${{ github.event.inputs.version }}
-          force: true
+        run: |
+          git commit -m "update selenium manager version and rust changelog"
+          git push origin HEAD:rust-release-${{ inputs.version }} --force
 
   selenium-manager:
     name: Release Selenium Manager
-    needs: update-rust
+    needs: push-rust-version
     uses: ./.github/workflows/ci-rust.yml
     with:
       release: true
-      branch: rust-release-${{ github.event.inputs.version }}
+      branch: rust-release-${{ inputs.version }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
@@ -86,13 +80,13 @@ jobs:
     needs: selenium-manager
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout repo"
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
-      - name: "Delete rust release branch"
+      - name: Delete rust release branch
         run: |
-          git push origin --delete rust-release-${{ github.event.inputs.version }}
+          git push origin --delete rust-release-${{ inputs.version }}
 
   restrict-trunk:
     name: Restrict Trunk Branch
@@ -102,37 +96,12 @@ jobs:
       restrict: true
     secrets: inherit
 
-  update-files:
-    name: Update Files
+  normalize-version:
+    name: Normalize Version
     runs-on: ubuntu-latest
-    needs: restrict-trunk
+    outputs:
+      version: ${{ steps.version.outputs.value }}
     steps:
-      - name: "Checkout project"
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-          fetch-tags: true
-          ref: trunk
-      - name: Get latest trunk
-        run: git pull --ff-only origin trunk
-      - name: Setup curl for Ubuntu
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: "Prep git"
-        run: |
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
       - name: Normalize version
         id: version
         shell: bash
@@ -146,86 +115,114 @@ jobs:
             exit 1
           fi
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
-      - name: Update browser versions
-        id: browsers
+
+  generate-updates:
+    name: Generate ${{ matrix.name }}
+    needs: [restrict-trunk, normalize-version]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: browsers
+            run: ./go update_browsers ${{ inputs.chrome_channel }}
+          - name: devtools
+            run: ./go all:update_cdp ${{ inputs.chrome_channel }}
+          - name: manager
+            run: ./go update_manager
+          - name: maven
+            run: ./go java:update
+          - name: authors
+            run: ./go authors
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update ${{ matrix.name }}
+      run: ${{ matrix.run }}
+      ruby-version: '3.2'
+      artifact-name: patch-${{ matrix.name }}
+
+  generate-versions:
+    name: Generate Versions
+    needs: [restrict-trunk, normalize-version]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Bump Versions
+      run: ./go all:version ${{ needs.normalize-version.outputs.version }}
+      artifact-name: patch-versions
+
+  generate-changelogs:
+    name: Generate Changelogs
+    needs: [restrict-trunk, normalize-version]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Changelogs
+      run: ./go all:changelogs
+      artifact-name: patch-changelogs
+
+  create-pr:
+    name: Create Pull Request
+    needs: [normalize-version, generate-updates, generate-versions, generate-changelogs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trunk
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          ref: trunk
+          fetch-depth: 0
+      - name: Get latest trunk
+        run: git pull --ff-only origin trunk
+      - name: Download all patches
+        uses: actions/download-artifact@v4
+        with:
+          pattern: patch-*
+          path: patches
+      - name: Prep git
         run: |
-          ./go update_browsers ${{ github.event.inputs.chrome_channel }}
-          if git diff --staged --quiet; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "update pinned browser versions"
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Update devtools versions
-        id: devtools
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+      - name: Apply patches and commit
+        id: apply
         run: |
-          ./go all:update_cdp ${{ github.event.inputs.chrome_channel }}
-          if git diff --staged --quiet; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "update devtools versions"
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Update Selenium Manager versions
-        id: manager
-        run: |
-          ./go update_manager
-          if git diff --staged --quiet; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "update selenium manager versions"
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Update Dependency versions
-        id: dependencies
-        run: |
-          ./go java:update
-          ./go node:update
-          if git diff --staged --quiet; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "update dependency versions"
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Update Authors file
-        id: authors
-        run: |
-          ./go authors
-          if git diff --staged --quiet; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "update authors file"
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Bump versions
-        run: |
-          ./go all:version ${{ steps.version.outputs.value }}
-          git commit -m "bump versions in preparation for release"
-      - name: Update changelogs
-        run: |
-          ./go all:changelogs
-          git commit -m "changelogs updated"
+          apply_patch() {
+            local name="$1"
+            local msg="$2"
+            local patch="patches/patch-$name/changes.patch"
+            if [ -f "$patch" ] && [ -s "$patch" ]; then
+              git apply --index "$patch"
+              git commit -m "$msg"
+              echo "${name}=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "${name}=false" >> "$GITHUB_OUTPUT"
+            fi
+          }
+          apply_patch browsers "update pinned browser versions"
+          apply_patch devtools "update devtools versions"
+          apply_patch manager "update selenium manager versions"
+          apply_patch maven "update maven dependency versions"
+          apply_patch authors "update authors file"
+          apply_patch versions "bump versions in preparation for release"
+          apply_patch changelogs "changelogs updated"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           delete-branch: true
-          branch: release-preparation-${{ steps.version.outputs.value }}
+          branch: release-preparation-${{ needs.normalize-version.outputs.version }}
           base: trunk
-          title: "[build] Prepare for release of Selenium ${{ steps.version.outputs.value }}"
+          title: "[build] Prepare for release of Selenium ${{ needs.normalize-version.outputs.version }}"
           body: |
 
             ### Updates Applied
             | Component | Status |
             |-----------|--------|
-            | Browser  and driver versions | ${{ steps.browsers.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | CDP version | ${{ steps.devtools.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Selenium Manager version | ${{ steps.manager.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Dependencies | ${{ steps.dependencies.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Update Authors | ${{ steps.authors.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Bump Versions | ✅ Updated |
-            | Draft Changelogs | ✅ Updated |
+            | Browser and driver versions | ${{ steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Maven dependencies | ${{ steps.apply.outputs.maven == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Update Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Bump Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---
             Auto-generated by [release-preparation workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
