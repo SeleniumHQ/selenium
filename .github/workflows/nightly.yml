@@ -174,18 +174,38 @@ jobs:
     needs: check-release
     if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Grid
-    permissions:
-      contents: write  # for creating nightly GitHub release
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Grid Release
       run: ./go java:package[--config=release]
-      nightly-release-files: build/dist/*.*
+      artifact-name: nightly-grid
+      artifact-path: build/dist/*.*
+
+  release-grid:
+    name: Release Grid
+    needs: grid
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download grid packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nightly-grid
+          path: build/dist
+      - name: Create nightly release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: nightly
+          title: Nightly
+          prerelease: true
+          files: build/dist/*.*
   on-grid-failure:
     name: On Grid Failure
     runs-on: ubuntu-latest
-    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out') }}
-    needs: grid
+    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out' || needs.release-grid.result == 'failure') }}
+    needs: [grid, release-grid]
     steps:
       - uses: actions/checkout@v4
       - name: Slack Notification
