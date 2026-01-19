@@ -1242,7 +1242,9 @@ namespace :java do
   desc 'Publish a Sonatype deployment by ID'
   task :publish_deployment, [:deployment_id] do |_task, arguments|
     deployment_id = arguments[:deployment_id] || ENV.fetch('DEPLOYMENT_ID', nil)
-    raise 'Deployment ID required' if deployment_id.nil? || deployment_id.empty?
+    if deployment_id.nil? || deployment_id.empty?
+      raise 'Deployment ID required: ./go java:publish_deployment[ID] or set DEPLOYMENT_ID'
+    end
 
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     token = Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
@@ -1261,7 +1263,7 @@ namespace :java do
       end
       sleep(5)
     end
-    raise 'Timed out waiting for validation' unless status['deploymentState'] == 'VALIDATED'
+    raise 'Timed out after 5 minutes waiting for validation' unless status['deploymentState'] == 'VALIDATED'
 
     expected = java_release_targets.size
     actual = status['purls']&.size || 0
