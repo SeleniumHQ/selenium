@@ -4,6 +4,7 @@ on:
   schedule:
     - cron:  '0 */12 * * *'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

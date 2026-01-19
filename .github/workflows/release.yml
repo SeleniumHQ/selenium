@@ -179,10 +179,22 @@ jobs:
           git commit -m "[build] Reset versions to nightly after ${{ needs.stage.outputs.tag }} release"
           git push
 
+  nightly:
+    name: Publish Nightly Packages
+    needs: [update-version]
+    uses: ./.github/workflows/nightly.yml
+    secrets: inherit
+
+  mirror:
+    name: Update Release Mirror
+    needs: [nightly]
+    uses: ./.github/workflows/mirror-selenium-releases.yml
+    secrets: inherit
+
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [stage, publish, docs, github-release, update-version]
+    needs: [stage, publish, docs, github-release, update-version, nightly, mirror]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -199,5 +211,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
+            • Nightly Packages: ${{ needs.nightly.result }}
+            • Mirror Updated: ${{ needs.mirror.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
