@@ -86,7 +86,6 @@ jobs:
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

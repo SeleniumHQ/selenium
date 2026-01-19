@@ -599,6 +599,8 @@ namespace :py do
     nightly = arguments.to_a.include?('nightly')
     check_credentials(%i[python]) unless nightly
 
+    ENV['TWINE_USERNAME'] = '__token__'
+
     if nightly
       puts 'Updating Python version to nightly...'
       Rake::Task['py:version'].invoke('nightly')
