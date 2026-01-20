@@ -73,7 +73,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release-packages
-          path: build/dist
       - name: Delete nightly release and tag
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

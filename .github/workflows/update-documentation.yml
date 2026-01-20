@@ -95,7 +95,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: documentation
-          path: docs/api
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

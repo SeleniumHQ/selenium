@@ -56,10 +56,9 @@ jobs:
       - name: Apply patch and commit
         run: |
           if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply changes.patch
+            git apply --index changes.patch
             git config --local user.email "selenium-ci@users.noreply.github.com"
             git config --local user.name "Selenium CI Bot"
-            git add .
             git commit -m 'Repin dependencies'
             git push
           else
