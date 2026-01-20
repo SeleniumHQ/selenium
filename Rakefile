@@ -21,14 +21,6 @@ verbose(false)
 require 'rake_tasks/selenium_rake/browsers'
 require 'rake_tasks/selenium_rake/checks'
 
-# Our modifications to the Rake / Bazel libraries
-require 'rake/task'
-require 'rake_tasks/rake/task'
-require 'rake_tasks/rake/dsl'
-require 'rake_tasks/bazel/task'
-
-# These are the final items mixed into the global NS
-# These need moving into correct namespaces, and not be globally included
 require 'rake_tasks/bazel'
 require 'rake_tasks/python'
 
@@ -46,7 +38,7 @@ end
 
 # If it looks like a bazel target, build it with bazel
 rule(%r{//.*}) do |task|
-  task.out = Bazel.execute('build', %w[], task.name)
+  Bazel.execute('build', %w[], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
