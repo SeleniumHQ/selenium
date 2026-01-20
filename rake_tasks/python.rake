@@ -128,7 +128,7 @@ namespace :py do
   end
 
   desc 'Update Python changelog'
-  task :changelog do
+  task :changelogs do
     header = "Selenium #{python_version}"
     SeleniumRake.update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
   end

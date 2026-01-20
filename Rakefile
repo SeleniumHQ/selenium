@@ -256,11 +256,11 @@ namespace :all do
   desc 'Update all changelogs'
   task :changelogs do |_task, _arguments|
     puts 'Updating all changelogs'
-    Rake::Task['java:changelog'].invoke
-    Rake::Task['rb:changelog'].invoke
-    Rake::Task['node:changelog'].invoke
-    Rake::Task['py:changelog'].invoke
-    Rake::Task['dotnet:changelog'].invoke
-    Rake::Task['rust:changelog'].invoke
+    Rake::Task['java:changelogs'].invoke
+    Rake::Task['rb:changelogs'].invoke
+    Rake::Task['node:changelogs'].invoke
+    Rake::Task['py:changelogs'].invoke
+    Rake::Task['dotnet:changelogs'].invoke
+    Rake::Task['rust:changelogs'].invoke
   end
 end

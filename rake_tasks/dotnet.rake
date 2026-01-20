@@ -74,7 +74,7 @@ namespace :dotnet do
   end
 
   desc 'Update .NET changelog'
-  task :changelog do
+  task :changelogs do
     header = "v#{dotnet_version}\n======"
     SeleniumRake.update_changelog(dotnet_version, 'dotnet', 'dotnet/src/', 'dotnet/CHANGELOG', header)
   end

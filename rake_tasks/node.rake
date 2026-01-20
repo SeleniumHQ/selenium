@@ -121,7 +121,7 @@ namespace :node do
   end
 
   desc 'Update JavaScript changelog'
-  task :changelog do
+  task :changelogs do
     header = "## #{node_version}\n"
     SeleniumRake.update_changelog(node_version, 'javascript', 'javascript/selenium-webdriver/',
                                   'javascript/selenium-webdriver/CHANGES.md', header)

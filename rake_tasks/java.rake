@@ -359,7 +359,7 @@ namespace :java do
   end
 
   desc 'Update Java changelog'
-  task :changelog do
+  task :changelogs do
     header = "v#{java_version}\n======"
     SeleniumRake.update_changelog(java_version, 'java', 'java/src/org/', 'java/CHANGELOG', header)
   end

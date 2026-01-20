@@ -31,7 +31,7 @@ namespace :rust do
   end
 
   desc 'Update Rust changelog'
-  task :changelog do
+  task :changelogs do
     header = "#{rust_version}\n======"
     version = rust_version.split('.').tap(&:shift).join('.')
     SeleniumRake.update_changelog(version, 'rust', 'rust/src', 'rust/CHANGELOG.md', header)
