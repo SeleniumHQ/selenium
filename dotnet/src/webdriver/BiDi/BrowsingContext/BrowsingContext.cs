@@ -128,222 +128,302 @@ public sealed record BrowsingContext
 
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(
+            e => HandleNavigationStartedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(
+            e => HandleNavigationStarted(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(
+            e => HandleFragmentNavigatedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(
+            e => HandleFragmentNavigated(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(
+            e => HandleHistoryUpdatedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(
+            e => HandleHistoryUpdated(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(
+            e => HandleDomContentLoadedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(
+            e => HandleDomContentLoaded(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnLoadAsync(
+            e => HandleLoad(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnLoadAsync(
+            e => HandleLoadAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(
+            e => HandleDownloadWillBegin(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(
+            e => HandleDownloadWillBeginAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDownloadEndAsync(
+            e => HandleDownloadEnd(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnDownloadEndAsync(
+            e => HandleDownloadEndAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(
+            e => HandleNavigationAborted(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(
+            e => HandleNavigationAbortedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(
+            e => HandleNavigationFailed(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(async e =>
-        {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(
+            e => HandleNavigationFailedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(e =>
-        {
-            if (Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(
+            e => HandleNavigationCommitted(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(async e =>
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(
+            e => HandleNavigationCommittedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    private async Task HandleNavigationStartedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
         {
-            if (Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, ContextSubscriptionOptions.WithContext(options, this));
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleNavigationStarted(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleFragmentNavigatedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleFragmentNavigated(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleHistoryUpdatedAsync(HistoryUpdatedEventArgs e, Func<HistoryUpdatedEventArgs, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleHistoryUpdated(HistoryUpdatedEventArgs e, Action<HistoryUpdatedEventArgs> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleDomContentLoadedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleDomContentLoaded(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private void HandleLoad(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleLoadAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleDownloadWillBegin(DownloadWillBeginEventArgs e, Action<DownloadWillBeginEventArgs> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleDownloadWillBeginAsync(DownloadWillBeginEventArgs e, Func<DownloadWillBeginEventArgs, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleDownloadEnd(DownloadEndEventArgs e, Action<DownloadEndEventArgs> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleDownloadEndAsync(DownloadEndEventArgs e, Func<DownloadEndEventArgs, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleNavigationAborted(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleNavigationAbortedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleNavigationFailed(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleNavigationFailedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleNavigationCommitted(NavigationInfo e, Action<NavigationInfo> handler)
+    {
+        if (Equals(e.Context))
+        {
+            handler(e);
+        }
+    }
+
+    private async Task HandleNavigationCommittedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    {
+        if (Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
     public bool Equals(BrowsingContext? other)
