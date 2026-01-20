@@ -29,6 +29,8 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
+        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
+
         async Task OnContextMatch(Log.LogEntry args)
         {
             if (context.Equals(args.Source.Context))
@@ -36,13 +38,13 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
                 await handler(args).ConfigureAwait(false);
             }
         }
-
-        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
 
         void OnContextMatch(Log.LogEntry args)
         {
@@ -51,7 +53,5 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
                 handler(args);
             }
         }
-
-        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 }

@@ -45,6 +45,8 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
+        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
+
         async Task OnContextMatch(FileDialogInfo e)
         {
             if (context.Equals(e.Context))
@@ -52,13 +54,13 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
                 await handler(e).ConfigureAwait(false);
             }
         }
-
-        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
 
         void OnContextMatch(FileDialogInfo e)
         {
@@ -67,7 +69,5 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
                 handler(e);
             }
         }
-
-        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
