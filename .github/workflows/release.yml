@@ -80,8 +80,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          persist-credentials: true
+          persist-credentials: false
       - name: Download release packages
         uses: actions/download-artifact@v4
         with:
@@ -95,18 +94,18 @@ jobs:
             gh release delete nightly --yes
           fi
           if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
-            git push origin --delete refs/tags/nightly
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
           fi
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: ${{ github.run_attempt > 1 }}
+          allowUpdates: true
           artifacts: "build/dist/*.*"
           bodyFile: "scripts/github-actions/release_header.md"
           generateReleaseNotes: true
           name: "Selenium ${{ needs.prepare.outputs.version }}"
           tag: "${{ needs.prepare.outputs.tag }}"
-          commit: "${{ github.sha }}"
+          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
 
   verify:
     name: Verify Published Packages
