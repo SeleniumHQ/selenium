@@ -159,7 +159,7 @@ jobs:
       - name: Update devtools versions
         id: devtools
         run: |
-          ./go all:update_cdp ${{ github.event.inputs.chrome_channel }}
+          ./go update_cdp ${{ github.event.inputs.chrome_channel }}
           if git diff --staged --quiet; then
             echo "updated=false" >> "$GITHUB_OUTPUT"
           else

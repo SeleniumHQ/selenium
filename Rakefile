@@ -60,6 +60,29 @@ task :update_manager do |_task, _arguments|
   SeleniumRake.git.add('common/selenium_manager.bzl')
 end
 
+desc 'Update Chrome DevTools support'
+task :update_cdp, [:channel] do |_task, arguments|
+  chrome_channel = arguments[:channel] || 'stable'
+  chrome_channel = 'beta' if chrome_channel == 'early-stable'
+  args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
+
+  puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
+  Bazel.execute('run', args, '//scripts:update_cdp')
+
+  ['common/devtools/',
+   'dotnet/src/webdriver/DevTools/',
+   'dotnet/src/webdriver/Selenium.WebDriver.csproj',
+   'dotnet/test/common/DevTools/',
+   'dotnet/test/common/CustomDriverConfigs/',
+   'dotnet/selenium-dotnet-version.bzl',
+   'java/src/org/openqa/selenium/devtools/',
+   'javascript/selenium-webdriver/BUILD.bazel',
+   'py/BUILD.bazel',
+   'rb/lib/selenium/devtools/',
+   'rb/Gemfile.lock',
+   'Rakefile'].each { |file| SeleniumRake.git.add(file) }
+end
+
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
@@ -86,29 +109,6 @@ namespace :all do
     Rake::Task['rb:pin'].invoke
     Rake::Task['rust:pin'].invoke
     Rake::Task['node:pin'].invoke
-  end
-
-  desc 'Update Chrome DevTools support'
-  task :update_cdp, [:channel] do |_task, arguments|
-    chrome_channel = arguments[:channel] || 'stable'
-    chrome_channel = 'beta' if chrome_channel == 'early-stable'
-    args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
-
-    puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
-    Bazel.execute('run', args, '//scripts:update_cdp')
-
-    ['common/devtools/',
-     'dotnet/src/webdriver/DevTools/',
-     'dotnet/src/webdriver/Selenium.WebDriver.csproj',
-     'dotnet/test/common/DevTools/',
-     'dotnet/test/common/CustomDriverConfigs/',
-     'dotnet/selenium-dotnet-version.bzl',
-     'java/src/org/openqa/selenium/devtools/',
-     'javascript/selenium-webdriver/BUILD.bazel',
-     'py/BUILD.bazel',
-     'rb/lib/selenium/devtools/',
-     'rb/Gemfile.lock',
-     'Rakefile'].each { |file| SeleniumRake.git.add(file) }
   end
 
   desc 'Build all API Documentation'
@@ -197,7 +197,7 @@ namespace :all do
     version = arguments[:version]
 
     Rake::Task['update_browsers'].invoke(arguments[:channel])
-    Rake::Task['all:update_cdp'].invoke(arguments[:channel])
+    Rake::Task['update_cdp'].invoke(arguments[:channel])
     Rake::Task['update_manager'].invoke
     Rake::Task['java:update'].invoke
     Rake::Task['authors'].invoke
