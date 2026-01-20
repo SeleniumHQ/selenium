@@ -79,15 +79,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Download Java packages
+      - name: Download release packages
         uses: actions/download-artifact@v4
         with:
-          name: release-packages-java
-      - name: Download .NET packages
-        uses: actions/download-artifact@v4
-        with:
-          name: release-packages-dotnet
+          pattern: release-packages-*
           path: build/dist
+          merge-multiple: true
       - name: Delete nightly release and tag
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -101,6 +98,7 @@ jobs:
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
+          allowUpdates: true
           artifacts: "build/dist/*.*"
           bodyFile: "scripts/github-actions/release_header.md"
           generateReleaseNotes: true
