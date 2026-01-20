@@ -133,13 +133,14 @@ jobs:
             run: ./go update_manager
           - name: maven
             run: ./go java:update
+          - name: node
+            run: ./go node:update
           - name: authors
             run: ./go authors
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update ${{ matrix.name }}
       run: ${{ matrix.run }}
-      ruby-version: '3.2'
       artifact-name: patch-${{ matrix.name }}
 
   generate-versions:
@@ -201,6 +202,7 @@ jobs:
           apply_patch devtools "update devtools versions"
           apply_patch manager "update selenium manager versions"
           apply_patch maven "update maven dependency versions"
+          apply_patch node "update node dependency versions"
           apply_patch authors "update authors file"
           apply_patch versions "bump versions in preparation for release"
           apply_patch changelogs "changelogs updated"
@@ -222,6 +224,7 @@ jobs:
             | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Maven dependencies | ${{ steps.apply.outputs.maven == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Node dependencies | ${{ steps.apply.outputs.node == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Update Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Bump Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |

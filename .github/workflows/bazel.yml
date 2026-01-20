@@ -252,11 +252,11 @@ jobs:
         with:
           limit-access-to-actor: false
       - name: Save git diff
-        if: inputs.artifact-name != '' && inputs.artifact-path == ''
+        if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
         run: git diff > changes.patch
       - name: Upload artifact
-        if: inputs.artifact-name != ''
-        uses: actions/upload-artifact@v4
+        if: always() && inputs.artifact-name != ''
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.artifact-path || 'changes.patch' }}

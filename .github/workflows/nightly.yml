@@ -204,7 +204,7 @@ jobs:
   on-grid-failure:
     name: On Grid Failure
     runs-on: ubuntu-latest
-    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out' || needs.release-grid.result == 'failure') }}
+    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out' || needs.release-grid.result == 'failure' || needs.release-grid.result == 'timed_out') }}
     needs: [grid, release-grid]
     steps:
       - uses: actions/checkout@v4
