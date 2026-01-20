@@ -38,8 +38,8 @@ module.exports = [
         ecmaVersion: 2022,
       },
     },
-    files: ['**/*.js', 'lib/http.js'],
-    ignores: ['node_modules/*', 'generator/*', 'devtools/generator/'],
+    files: ['**/*.js'],
+    ignores: ['**/node_modules/**', 'generator/*', 'devtools/generator/'],
     plugins: {
       'no-only-tests': noOnlyTests,
     },
@@ -54,6 +54,7 @@ module.exports = [
           varsIgnorePattern: '^_',
           args: 'all',
           argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
       'constructor-super': 'error',
@@ -102,6 +103,14 @@ module.exports = [
           trailingComma: 'all',
         },
       ],
+    },
+  },
+  // Test files can't resolve modules in bazel sandbox and use dev dependencies
+  {
+    files: ['test/**/*.js', 'lib/test/**/*.js'],
+    rules: {
+      'n/no-missing-require': 'off',
+      'n/no-unpublished-require': 'off',
     },
   },
 ]

@@ -49,7 +49,7 @@ suite(
             try {
               dialog = await driver.getFederalCredentialManagementDialog()
               return (await dialog.type()) === 'AccountChooser'
-            } catch (error) {
+            } catch (_error) {
               return false
             }
           },
@@ -75,7 +75,7 @@ suite(
           async () => {
             try {
               return (await dialog.type()) === 'AccountChooser'
-            } catch (error) {
+            } catch (_error) {
               return false
             }
           },
@@ -110,7 +110,7 @@ suite(
           async () => {
             try {
               return (await dialog.type()) === 'AccountChooser'
-            } catch (error) {
+            } catch (_error) {
               return false
             }
           },
@@ -138,7 +138,7 @@ suite(
           async () => {
             try {
               return (await dialog.type()) === 'AccountChooser'
-            } catch (error) {
+            } catch (_error) {
               return false
             }
           },

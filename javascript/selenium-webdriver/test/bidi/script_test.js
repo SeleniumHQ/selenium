@@ -28,7 +28,7 @@ const {
   ReferenceValue,
   RemoteReferenceType,
 } = require('selenium-webdriver/bidi/protocolValue')
-const { ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
+const { ArgumentValue: _ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
 const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
 const { ResultOwnership } = require('selenium-webdriver/bidi/resultOwnership')
 const { RealmType } = require('selenium-webdriver/bidi/realmInfo')

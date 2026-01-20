@@ -118,7 +118,7 @@ suite(
         )
 
         const originalTabState = originalTabPermission.result.value
-        const newTabState = newTabPermission.result.value
+        const _newTabState = newTabPermission.result.value
 
         // Set permission only for the user context
         await permission.setPermission({ name: 'geolocation' }, PermissionState.GRANTED, originValue, userContext)

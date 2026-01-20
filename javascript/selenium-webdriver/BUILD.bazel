@@ -226,34 +226,6 @@ copy_to_bin(
     srcs = ["package.json"],
 )
 
-eslint_bin.eslint_test(
-    name = "eslint-test",
-    chdir = package_name(),
-    data = [
-        ":eslint-config",
-        ":node_modules/@eslint/js",
-        ":node_modules/eslint-plugin-mocha",
-        ":node_modules/eslint-plugin-n",
-        ":node_modules/eslint-plugin-no-only-tests",
-        ":node_modules/eslint-plugin-prettier",
-        ":node_modules/globals",
-        ":node_modules/jszip",
-        ":node_modules/mocha",
-        ":node_modules/tmp",
-        ":node_modules/ws",
-        ":package-json",
-        ":prod-src-files",
-    ],
-    tags = [
-        "lint",
-        "skip-rbe",
-    ],
-)
-
-copy_to_bin(
-    name = "eslint-config",
-    srcs = ["eslint.config.js"],
-)
 
 prettier_bin.prettier_test(
     name = "prettier-test",
@@ -285,6 +257,30 @@ copy_to_bin(
 copy_to_bin(
     name = "prettier-ignore",
     srcs = [".prettierignore"],
+)
+
+copy_to_bin(
+    name = "eslint-config",
+    srcs = ["eslint.config.js"],
+)
+
+_ESLINT_DATA = [
+    ":eslint-config",
+    ":large-test-srcs",
+    ":node_modules/@eslint/js",
+    ":node_modules/eslint-plugin-mocha",
+    ":node_modules/eslint-plugin-n",
+    ":node_modules/eslint-plugin-no-only-tests",
+    ":node_modules/eslint-plugin-prettier",
+    ":node_modules/globals",
+    ":prod-src-files",
+    ":small-test-srcs",
+]
+
+eslint_bin.eslint_binary(
+    name = "eslint",
+    chdir = package_name(),
+    data = _ESLINT_DATA,
 )
 
 # Internal jsdoc binary from npm - used by the docs rule

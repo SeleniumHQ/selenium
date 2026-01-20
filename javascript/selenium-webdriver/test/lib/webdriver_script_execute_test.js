@@ -283,7 +283,7 @@ suite(
 
       it('can execute script with regex argument', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        const _manager = await ScriptManager(id, driver)
         let argumentValues = []
         let value = LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g'))
         argumentValues.push(value)

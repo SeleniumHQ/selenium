@@ -142,7 +142,7 @@ suite(
         const id = await driver.script().pin("() => { console.log('Hello!'); }")
 
         let count = 0
-        await driver.script().addConsoleMessageHandler((logEntry) => {
+        await driver.script().addConsoleMessageHandler((_logEntry) => {
           count++
         })
 
