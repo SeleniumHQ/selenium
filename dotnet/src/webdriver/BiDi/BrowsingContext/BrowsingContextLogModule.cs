@@ -29,29 +29,33 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
-        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
-
-        async Task OnContextMatch(Log.LogEntry args)
-        {
-            if (context.Equals(args.Source.Context))
-            {
-                await handler(args).ConfigureAwait(false);
-            }
-        }
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAddedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
-        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAdded(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
+    }
 
-        void OnContextMatch(Log.LogEntry args)
+    private async Task HandleEntryAddedAsync(Log.LogEntry e, Func<Log.LogEntry, Task> handler)
+    {
+        if (context.Equals(e.Source.Context))
         {
-            if (context.Equals(args.Source.Context))
-            {
-                handler(args);
-            }
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleEntryAdded(Log.LogEntry e, Action<Log.LogEntry> handler)
+    {
+        if (context.Equals(e.Source.Context))
+        {
+            handler(e);
         }
     }
 }
