@@ -42,28 +42,10 @@ jobs:
     name: Commit Repins
     needs: pin
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Download repin patch
-        uses: actions/download-artifact@v4
-        with:
-          name: repin-changes
-        continue-on-error: true
-      - name: Apply patch and commit
-        run: |
-          if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply --index changes.patch
-            git config --local user.email "selenium-ci@users.noreply.github.com"
-            git config --local user.name "Selenium CI Bot"
-            git commit -m 'Repin dependencies'
-            git push
-          else
-            echo "No changes to commit"
-          fi
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: repin-changes
+      commit-message: "Repin dependencies"
 
   check-format:
     needs: commit-repins

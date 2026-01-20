@@ -30,7 +30,7 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  # Rust jobs run in parallel with approval since work is not on trunk
+  # Run rust jobs run in parallel with approval since work is not on trunk
   generate-rust-version:
     name: Generate Rust Version
     if: github.event.repository.fork == false
@@ -43,29 +43,13 @@ jobs:
   push-rust-version:
     name: Push Rust Version
     needs: generate-rust-version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          fetch-depth: 0
-      - name: Download rust version patch
-        uses: actions/download-artifact@v4
-        with:
-          name: rust-version
-      - name: Apply and push
-        run: |
-          if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply --index changes.patch
-            git config --local user.email "selenium-ci@users.noreply.github.com"
-            git config --local user.name "Selenium CI Bot"
-            git commit -m "update selenium manager version and rust changelog"
-            git push origin HEAD:rust-release-${{ inputs.version }} --force
-          else
-            echo "::error::No changes to apply for rust version update"
-            exit 1
-          fi
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: rust-version
+      commit-message: "update selenium manager version and rust changelog"
+      push-branch: rust-release-${{ inputs.version }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   selenium-manager:
     name: Release Selenium Manager

@@ -151,29 +151,12 @@ jobs:
   update-version:
     name: Push Nightly Versions
     needs: [prepare, reset-version, unrestrict-trunk]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-      - name: Download version reset patch
-        uses: actions/download-artifact@v4
-        with:
-          name: version-reset
-      - name: Apply and push
-        run: |
-          if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply --index changes.patch
-            git config --local user.email "selenium-ci@users.noreply.github.com"
-            git config --local user.name "Selenium CI Bot"
-            git commit -m "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
-            git push
-          else
-            echo "::notice::No version changes to apply"
-          fi
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: version-reset
+      commit-message: "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   nightly:
     name: Publish Nightly Packages
