@@ -89,6 +89,34 @@ task :authors do
   SeleniumRake.git.add('AUTHORS')
 end
 
+desc 'Run all linters (skip languages with: ./go lint -rb -rust)'
+task :lint do |_task, arguments|
+  failures = []
+
+  begin
+    Rake::Task['all:lint'].invoke(*arguments.to_a)
+  rescue StandardError => e
+    failures << e.message
+  end
+
+  puts 'Linting Bazel files...'
+  begin
+    Bazel.execute('run', [], '//:buildifier')
+  rescue StandardError => e
+    failures << "buildifier: #{e.message}"
+  end
+
+  puts 'Linting shell scripts and GitHub Actions...'
+  begin
+    shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+    Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+  rescue StandardError => e
+    failures << "shellcheck/actionlint: #{e.message}"
+  end
+
+  raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
+end
+
 # Legacy aliases - call namespaced tasks
 task 'selenium-server-standalone' => 'java:grid'
 task 'selenium-java' => 'java:client'
@@ -122,19 +150,17 @@ namespace :all do
 
   desc 'Build all artifacts for all language bindings'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
-    Rake::Task['java:build'].invoke(*args)
-    Rake::Task['py:build'].invoke(*args)
-    Rake::Task['rb:build'].invoke(*args)
-    Rake::Task['dotnet:build'].invoke(*args)
-    Rake::Task['node:build'].invoke(*args)
+    Rake::Task['java:build'].invoke(*arguments.to_a)
+    Rake::Task['py:build'].invoke(*arguments.to_a)
+    Rake::Task['rb:build'].invoke(*arguments.to_a)
+    Rake::Task['dotnet:build'].invoke(*arguments.to_a)
+    Rake::Task['node:build'].invoke(*arguments.to_a)
   end
 
   desc 'Package or build stamped artifacts for distribution in GitHub Release assets'
   task :package do |_task, arguments|
-    args = arguments.to_a.compact
-    Rake::Task['java:package'].invoke(*args)
-    Rake::Task['dotnet:package'].invoke(*args)
+    Rake::Task['java:package'].invoke(*arguments.to_a)
+    Rake::Task['dotnet:package'].invoke(*arguments.to_a)
   end
 
   desc 'Validate release credentials for all languages'
@@ -170,21 +196,22 @@ namespace :all do
     Rake::Task['node:release'].invoke(*args)
   end
 
-  task :lint do
-    before_diff = `git diff`
+  desc 'Run linters for all languages (skip with: ./go all:lint -rb -rust)'
+  task :lint do |_task, arguments|
+    all_langs = %w[java py rb node rust]
+    skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
+    invalid = skip - all_langs
+    raise "Unknown languages: #{invalid.join(', ')}. Valid: #{all_langs.join(', ')}" if invalid.any?
 
-    ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
-    sh "./scripts/format.#{ext}", verbose: true
-
-    after_diff = `git diff`
-    if before_diff != after_diff
-      changed_files = `git diff --name-only`.strip
-      raise "Formatting updated files:\n#{changed_files}\nPlease review, stage, and commit the changes."
+    langs = all_langs - skip
+    failures = []
+    langs.each do |lang|
+      puts "Linting #{lang}..."
+      Rake::Task["#{lang}:lint"].invoke
+    rescue StandardError => e
+      failures << "#{lang}: #{e.message}"
     end
-
-    Bazel.execute('run', [], '//rb:steep')
-    shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
-    Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+    raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
   end
 
   # Example: `./go all:prepare[4.31.0,early-stable]`

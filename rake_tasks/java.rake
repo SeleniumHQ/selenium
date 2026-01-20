@@ -94,25 +94,22 @@ end
 namespace :java do
   desc 'Build Java Client Jars'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
-    java_release_targets.each { |target| Bazel.execute('build', args, target) }
+    java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
   end
 
   desc 'Build the selenium client jars'
   task :client do |_task, arguments|
-    args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
+    Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium:client-combined')
   end
 
   desc 'Build Grid Server'
   task :grid do |_task, arguments|
-    args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
+    Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
   task :package do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--config=release'] : arguments.to_a.compact
+    args = arguments.to_a.empty? ? ['--config=release'] : arguments.to_a
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
@@ -377,5 +374,13 @@ namespace :java do
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
     SeleniumRake.git.add(file)
+  end
+
+  desc 'Run Java formatter (google-java-format)'
+  task :lint do
+    # linting is defined in .bazelrc as part of build
+    puts '  Running google-java-format...'
+    formatter = `bazel run --run_under=echo //scripts:google-java-format 2>/dev/null`.strip
+    sh formatter, '--replace', *Dir.glob('java/**/*.java')
   end
 end

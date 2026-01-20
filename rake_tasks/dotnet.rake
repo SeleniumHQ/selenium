@@ -9,13 +9,12 @@ end
 namespace :dotnet do
   desc 'Build nupkg files'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
-    Bazel.execute('build', args, '//dotnet:all')
+    Bazel.execute('build', arguments.to_a, '//dotnet:all')
   end
 
   desc 'Package .NET bindings into zipped assets and stage for release'
   task :package do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.empty? ? ['--stamp'] : arguments.to_a
     Rake::Task['dotnet:build'].invoke(*args)
     mkdir_p 'build/dist'
     FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))

@@ -32,7 +32,7 @@ end
 namespace :py do
   desc 'Build Python wheel and sdist with optional arguments'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
+    args = arguments.to_a
     Bazel.execute('build', args, '//py:selenium-wheel')
     Bazel.execute('build', args, '//py:selenium-sdist')
   end
@@ -157,6 +157,15 @@ namespace :py do
     text = File.read(conf).gsub(old_short_version, new_short_version)
     File.open(conf, 'w') { |f| f.puts text }
     SeleniumRake.git.add(conf)
+  end
+
+  desc 'Run Python linter (ruff check + format)'
+  task :lint do |_task, arguments|
+    args = arguments.to_a
+    puts '  Running ruff check...'
+    Bazel.execute('run', args + ['--', 'check', '--fix', 'py/'], '@multitool//tools/ruff:cwd')
+    puts '  Running ruff format...'
+    Bazel.execute('run', args + ['--', 'format', 'py/'], '@multitool//tools/ruff:cwd')
   end
 
   namespace :test do

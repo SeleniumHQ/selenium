@@ -31,7 +31,7 @@ end
 namespace :rb do
   desc 'Generate Ruby gems'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
+    args = arguments.to_a
     webdriver = args.delete('webdriver')
     devtools = args.delete('devtools')
 
@@ -146,10 +146,13 @@ namespace :rb do
     Rake::Task['rb:update'].invoke
   end
 
-  desc 'Update Ruby Syntax'
+  desc 'Run Ruby linting'
   task :lint do |_task, arguments|
-    args = arguments.to_a.compact
+    args = arguments.to_a
+    puts '  Running rubocop...'
     Bazel.execute('run', args, '//rb:lint')
+    puts '  Running steep type checker...'
+    Bazel.execute('run', args, '//rb:steep')
   end
 
   desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'

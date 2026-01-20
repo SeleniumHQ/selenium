@@ -50,7 +50,7 @@ namespace :node do
 
   desc 'Build Node npm package'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
+    args = arguments.to_a
     Bazel.execute('build', args, '//javascript/selenium-webdriver')
   end
 
@@ -139,5 +139,17 @@ namespace :node do
       File.open(file, 'w') { |f| f.puts text }
       SeleniumRake.git.add(file)
     end
+  end
+
+  desc 'Run Node linter (prettier + eslint)'
+  task :lint do |_task, arguments|
+    args = arguments.to_a
+    node_dir = File.expand_path('javascript/selenium-webdriver')
+    prettier_config = File.join(node_dir, '.prettierrc')
+    puts '  Running prettier...'
+    Bazel.execute('run', args + ['--', node_dir, '--write', "--config=#{prettier_config}", '--log-level=warn'],
+                  '//javascript:prettier')
+    puts '  Running eslint...'
+    Bazel.execute('run', args + ['--', '--fix', '.'], '//javascript/selenium-webdriver:eslint')
   end
 end

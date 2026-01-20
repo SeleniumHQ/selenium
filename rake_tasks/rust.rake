@@ -9,7 +9,7 @@ end
 namespace :rust do
   desc 'Build Selenium Manager'
   task :build do |_task, arguments|
-    args = arguments.to_a.compact
+    args = arguments.to_a
     Bazel.execute('build', args, '//rust:selenium-manager')
   end
 
@@ -22,6 +22,13 @@ namespace :rust do
 
   desc 'Pin Rust dependencies'
   task pin: :update
+
+  desc 'Run Rust linting'
+  task :lint do |_task, arguments|
+    args = arguments.to_a
+    puts '  Running rustfmt...'
+    Bazel.execute('run', args, '@rules_rust//:rustfmt')
+  end
 
   desc 'Update Rust changelog'
   task :changelog do
