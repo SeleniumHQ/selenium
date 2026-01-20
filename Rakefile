@@ -136,6 +136,7 @@ namespace :all do
     Rake::Task['rb:pin'].invoke
     Rake::Task['rust:pin'].invoke
     Rake::Task['node:pin'].invoke
+    Rake::Task['dotnet:pin'].invoke
   end
 
   desc 'Build all API Documentation'

@@ -91,4 +91,19 @@ namespace :dotnet do
     File.open(file, 'w') { |f| f.puts text }
     SeleniumRake.git.add(file)
   end
+
+  desc 'Update .NET dependencies to latest versions'
+  task :update do
+    Bazel.execute('run', [], '//dotnet:paket-update')
+    Rake::Task['dotnet:pin'].invoke
+  end
+
+  desc 'Pin .NET dependencies (sync lockfile)'
+  task :pin do
+    Bazel.execute('run', [], '//dotnet:paket-install')
+    Bazel.execute('run', ['--', '--dependencies-file', "#{Dir.pwd}/dotnet/paket.dependencies",
+                          '--output-folder', "#{Dir.pwd}/dotnet"],
+                  '@rules_dotnet//tools/paket2bazel:paket2bazel')
+    %w[dotnet/paket.lock dotnet/paket.nuget.bzl].each { |f| SeleniumRake.git.add(f) }
+  end
 end
