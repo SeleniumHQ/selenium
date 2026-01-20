@@ -20,10 +20,6 @@ verbose(false)
 
 require 'rake_tasks/selenium_rake/browsers'
 require 'rake_tasks/selenium_rake/checks'
-require 'rake_tasks/selenium_rake/cpp_formatter'
-require 'rake_tasks/selenium_rake/ie_generator'
-require 'rake_tasks/selenium_rake/java_formatter'
-require 'rake_tasks/selenium_rake/type_definitions_generator'
 
 # Our modifications to the Rake / Bazel libraries
 require 'rake/task'
@@ -267,18 +263,6 @@ task :clean do
   rm_rf 'java/build/'
   rm_rf 'dist/'
 end
-
-# Create a new IEGenerator instance
-ie_generator = SeleniumRake::IEGenerator.new
-
-# Generate a C++ Header file for mapping between magic numbers and #defines
-# in the C++ code.
-ie_generator.generate_type_mapping(
-  name: 'ie_result_type_cpp',
-  src: 'cpp/iedriver/result_types.txt',
-  type: 'cpp',
-  out: 'cpp/iedriver/IEReturnTypes.h'
-)
 
 desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
