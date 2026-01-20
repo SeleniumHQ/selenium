@@ -108,7 +108,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -119,7 +119,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -130,7 +130,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -141,7 +141,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -152,7 +152,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -163,7 +163,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -174,7 +174,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -185,7 +185,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -196,7 +196,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -207,7 +207,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
 

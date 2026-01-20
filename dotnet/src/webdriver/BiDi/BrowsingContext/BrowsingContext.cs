@@ -139,7 +139,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -150,7 +150,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -161,7 +161,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -172,7 +172,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -183,7 +183,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -194,7 +194,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -205,7 +205,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -216,7 +216,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -227,7 +227,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -238,7 +238,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -249,7 +249,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -260,7 +260,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -271,7 +271,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -282,7 +282,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -293,7 +293,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -304,7 +304,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -315,7 +315,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -326,7 +326,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
@@ -337,7 +337,7 @@ public sealed record BrowsingContext
             {
                 handler(e);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
@@ -348,7 +348,7 @@ public sealed record BrowsingContext
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(this));
+        }, ContextSubscriptionOptions.WithContext(options, this));
     }
 
     public bool Equals(BrowsingContext? other)

@@ -49,7 +49,7 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
@@ -60,6 +60,6 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
