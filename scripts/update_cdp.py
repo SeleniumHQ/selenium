@@ -32,7 +32,10 @@ def get_chrome_milestone():
     )
     all_versions = json.loads(r.data)
     # use the same milestone for all Chrome releases, so pick the lowest
-    milestone = min([version["milestone"] for version in all_versions if version["milestone"]])
+    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
+    if not milestones:
+        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
+    milestone = min(milestones)
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -107,9 +110,10 @@ def add_pdls(chrome_milestone):
             "GET",
             f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/DEPS",
         ).data.decode("utf-8")
-        v8_revision = (
-            next(line for line in deps_content.split("\n") if "v8_revision" in line).split(": ")[1].strip("',")
-        )
+        v8_revision_line = next((line for line in deps_content.split("\n") if "v8_revision" in line), None)
+        if v8_revision_line is None:
+            raise ValueError(f"No v8_revision found in DEPS for Chrome {chrome_milestone['version']}")
+        v8_revision = v8_revision_line.split(": ")[1].strip("',")
         fetch_and_save(
             f"https://raw.githubusercontent.com/v8/v8/{v8_revision}/include/js_protocol.pdl",
             f"{target_dir}/js_protocol.pdl",

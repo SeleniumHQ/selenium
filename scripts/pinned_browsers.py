@@ -32,7 +32,10 @@ def get_chrome_info_for_channel(channel):
     )
     all_versions = json.loads(r.data)
     # use the same milestone for all chrome releases, so pick the lowest
-    milestone = min([version["milestone"] for version in all_versions if version["milestone"]])
+    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
+    if not milestones:
+        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
+    milestone = min(milestones)
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -50,7 +53,9 @@ def chromedriver(selected_version, workspace_prefix=""):
 
     drivers = selected_version["downloads"]["chromedriver"]
 
-    url = next(d["url"] for d in drivers if d["platform"] == "linux64")
+    url = next((d["url"] for d in drivers if d["platform"] == "linux64"), None)
+    if url is None:
+        raise ValueError("No chromedriver download found for platform 'linux64'")
     sha = calculate_hash(url)
 
     content += f"""    http_archive(
@@ -72,7 +77,9 @@ js_library(
     )
 """
 
-    url = next(d["url"] for d in drivers if d["platform"] == "mac-arm64")
+    url = next((d["url"] for d in drivers if d["platform"] == "mac-arm64"), None)
+    if url is None:
+        raise ValueError("No chromedriver download found for platform 'mac-arm64'")
     sha = calculate_hash(url)
 
     content += f"""
@@ -102,7 +109,9 @@ def chrome(selected_version, workspace_prefix=""):
     content = ""
     chrome_downloads = selected_version["downloads"]["chrome"]
 
-    url = next(d["url"] for d in chrome_downloads if d["platform"] == "linux64")
+    url = next((d["url"] for d in chrome_downloads if d["platform"] == "linux64"), None)
+    if url is None:
+        raise ValueError("No Chrome download found for platform 'linux64'")
     sha = calculate_hash(url)
 
     content += f"""
@@ -129,7 +138,9 @@ js_library(
     )
 """
 
-    url = next(d["url"] for d in chrome_downloads if d["platform"] == "mac-arm64")
+    url = next((d["url"] for d in chrome_downloads if d["platform"] == "mac-arm64"), None)
+    if url is None:
+        raise ValueError("No Chrome download found for platform 'mac-arm64'")
     sha = calculate_hash(url)  # Calculate SHA for Mac chrome
 
     content += f"""    http_archive(
