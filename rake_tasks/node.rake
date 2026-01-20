@@ -23,31 +23,6 @@ def setup_npm_auth
 end
 
 namespace :node do
-  atom_list = %w[
-    //javascript/atoms/fragments:find-elements
-    //javascript/atoms/fragments:is-displayed
-    //javascript/webdriver/atoms:get-attribute
-  ]
-
-  desc 'Copy JS atoms to source tree'
-  task atoms: atom_list do
-    base_dir = 'javascript/selenium-webdriver/lib/atoms'
-    mkdir_p base_dir
-
-    ['bazel-bin/javascript/atoms/fragments/is-displayed.js',
-     'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
-     'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
-      name = File.basename(atom)
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(base_dir, name), 'w') do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << 'module.exports = '
-        f << File.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-
   desc 'Build Node npm package'
   task :build do |_task, arguments|
     args = arguments.to_a
