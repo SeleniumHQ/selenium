@@ -18,11 +18,7 @@ Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
 
-require 'rake_tasks/selenium_rake/browsers'
-require 'rake_tasks/selenium_rake/checks'
-
 require 'rake_tasks/bazel'
-require 'rake_tasks/python'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT
 $DEBUG = true if ENV['debug'] == 'true'
@@ -172,7 +168,7 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
-  cmd = cmd.tr('/', '\\').tr(':', ';') if SeleniumRake::Checks.windows?
+  cmd = cmd.tr('/', '\\').tr(':', ';') if /mswin|msys|mingw32/.match?(RbConfig::CONFIG['host_os'])
   raise 'could not unpack javadocs' unless system(cmd)
 
   File.open('build/docs/api/java/stylesheet.css', 'a') do |file|
@@ -1395,12 +1391,6 @@ namespace :all do
     Rake::Task['dotnet:changelog'].invoke
     Rake::Task['rust:changelog'].invoke
   end
-end
-
-at_exit do
-  system 'sh', '.git-fixfiles' if File.exist?('.git') && SeleniumRake::Checks.linux?
-rescue StandardError => e
-  puts "Do not exit execution when this errors... #{e.inspect}"
 end
 
 def updated_version(current, desired = nil, nightly = nil)
