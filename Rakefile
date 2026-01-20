@@ -37,11 +37,6 @@ rule(%r{//.*}) do |task|
   Bazel.execute('build', %w[], task.name)
 end
 
-# Spoof tasks to get CI working with bazel
-task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
-  '//java/test/org/openqa/selenium/environment:webserver'
-]
-
 # use #java_release_targets to access this list
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
@@ -121,22 +116,10 @@ task :update_manager do |_task, _arguments|
   @git.add('common/selenium_manager.bzl')
 end
 
-task all: [
-  :'selenium-java',
-  '//java/test/org/openqa/selenium/environment:webserver'
-]
-
 task grid: [:'selenium-server-standalone']
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/src/org/openqa/selenium/grid:executable-grid'
-
-desc 'Clean build artifacts.'
-task :clean do
-  rm_rf 'build/'
-  rm_rf 'java/build/'
-  rm_rf 'dist/'
-end
 
 desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
@@ -164,10 +147,6 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
     STYLE
               )
   end
-end
-
-file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
-  cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
 end
 
 # This task does not allow running RBE, to run stamped with RBE use
@@ -324,26 +303,6 @@ task :authors do
   puts 'Updating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
   @git.add('AUTHORS')
-end
-
-namespace :side do
-  task atoms: [
-    '//javascript/atoms/fragments:find-element'
-  ] do
-    # TODO: move directly to IDE's directory once the repositories are merged
-    mkdir_p 'build/javascript/atoms'
-
-    atom = 'bazel-bin/javascript/atoms/fragments/find-element.js'
-    name = File.basename(atom)
-
-    puts "Generating #{atom} as #{name}"
-    File.open(File.join(baseDir, name), 'w') do |f|
-      f << "// GENERATED CODE - DO NOT EDIT\n"
-      f << 'module.exports = '
-      f << File.read(atom).strip
-      f << ";\n"
-    end
-  end
 end
 
 def node_version
@@ -609,23 +568,6 @@ namespace :py do
     task :remote do
       Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')
-    end
-  end
-
-  namespace :test do
-    desc 'Python unit tests'
-    task :unit do
-      Rake::Task['py:clean'].invoke
-      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
-    end
-
-    %i[chrome edge firefox safari].each do |browser|
-      desc "Python #{browser} tests"
-      task browser do
-        Rake::Task['py:clean'].invoke
-        Bazel.execute('test', %w[--test_output all], "//py:common-#{browser}")
-        Bazel.execute('test', %w[--test_output all], "//py:test-#{browser}")
-      end
     end
   end
 end
@@ -1265,8 +1207,6 @@ namespace :all do
 
   desc 'Release all artifacts for all language bindings'
   task :release do |_task, arguments|
-    Rake::Task['clean'].invoke
-
     args = arguments.to_a.include?('nightly') ? ['nightly'] : []
     Rake::Task['java:release'].invoke(*args)
     Rake::Task['py:release'].invoke(*args)
