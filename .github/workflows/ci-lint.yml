@@ -76,6 +76,7 @@ jobs:
         with:
           name: format-changes
       - name: Apply and commit fixes
+        id: apply
         run: |
           if [ -s changes.patch ]; then
             git apply changes.patch
@@ -84,8 +85,23 @@ jobs:
             git config --local user.email "selenium-ci@users.noreply.github.com"
             git add -A
             git commit -m "Auto-format code"
-            git push
-            echo "::notice::Auto-formatted and pushed. New CI run will start."
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
             echo "::notice::No formatting changes needed."
           fi
+      - name: Push fixes
+        if: steps.apply.outputs.has_changes == 'true'
+        run: |
+          git push
+          echo "::notice::Auto-formatted and pushed. New CI run will start."
+
+  ci-lint:
+    if: always()
+    needs: [actionlint, format, commit-fixes]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'actionlint: ${{ needs.actionlint.result }}'
+          echo 'format: ${{ needs.format.result }}'
+      - if: ${{ needs.actionlint.result == 'failure' || needs.format.result == 'failure' }}
+        run: exit 1
