@@ -37,18 +37,50 @@ runs:
       id: calc
       shell: bash
       run: |
+        set -euo pipefail
+
+        # Helper function to validate non-negative integer
+        validate_depth() {
+          local val="$1"
+          val="${val//[[:space:]]/}"  # trim whitespace
+          if [[ ! "$val" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid fetch-depth value: '$val'. Must be a non-negative integer."
+            exit 1
+          fi
+          echo "$val"
+        }
+
+        # If explicit fetch-depth is provided, validate and use it
         if [ -n "${{ inputs.fetch-depth }}" ]; then
-          echo "val=${{ inputs.fetch-depth }}" >> $GITHUB_OUTPUT
-        elif [ -n "${{ inputs.ref }}" ] || [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
-          # Custom ref or different repository - event-based calculation doesn't apply
-          echo "val=1" >> $GITHUB_OUTPUT
+          DEPTH=$(validate_depth "${{ inputs.fetch-depth }}")
+          echo "val=$DEPTH" >> "$GITHUB_OUTPUT"
+        # Different repository - cannot use event-based calculation
+        elif [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
+          echo "val=1" >> "$GITHUB_OUTPUT"
+        # Pull request events - use commit count from PR
         elif [[ "${{ github.event_name }}" == "pull_request"* ]]; then
-          echo "val=$((${{ github.event.pull_request.commits }} + 1))" >> $GITHUB_OUTPUT
+          PR_COMMITS="${{ github.event.pull_request.commits }}"
+          if [[ -z "$PR_COMMITS" || ! "$PR_COMMITS" =~ ^[0-9]+$ ]]; then
+            echo "::warning::Could not determine PR commit count, using default depth of 1"
+            echo "val=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "val=$((PR_COMMITS + 1))" >> "$GITHUB_OUTPUT"
+          fi
+        # Push events - count commits from event payload
         elif [ "${{ github.event_name }}" == "push" ]; then
-          COMMIT_COUNT=$(jq '.commits | length // 0' "$GITHUB_EVENT_PATH")
-          echo "val=$((COMMIT_COUNT + 1))" >> $GITHUB_OUTPUT
+          if [ ! -f "$GITHUB_EVENT_PATH" ]; then
+            echo "::warning::Event payload not found, using default depth of 1"
+            echo "val=1" >> "$GITHUB_OUTPUT"
+          else
+            COMMIT_COUNT=$(jq -e '.commits | length // 0' "$GITHUB_EVENT_PATH" 2>/dev/null) || COMMIT_COUNT=0
+            if [[ ! "$COMMIT_COUNT" =~ ^[0-9]+$ ]]; then
+              COMMIT_COUNT=0
+            fi
+            echo "val=$((COMMIT_COUNT + 1))" >> "$GITHUB_OUTPUT"
+          fi
+        # All other events (workflow_dispatch, schedule, etc.) - default to 1
         else
-          echo "val=1" >> $GITHUB_OUTPUT
+          echo "val=1" >> "$GITHUB_OUTPUT"
         fi
 
     - name: Checkout

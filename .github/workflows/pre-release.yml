@@ -40,6 +40,7 @@ jobs:
         uses: ./.github/actions/fast-checkout
         with:
           persist-credentials: false
+          ref: trunk
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
@@ -110,7 +111,9 @@ jobs:
         uses: ./.github/actions/fast-checkout
         with:
           persist-credentials: false
+          fetch-depth: 0
           fetch-tags: true
+          ref: trunk
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Bazel
