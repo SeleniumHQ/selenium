@@ -19,86 +19,93 @@ permissions:
 
 jobs:
   check:
-    name: Check
+    name: Check Targets
     if: >
       github.event.repository.fork == false &&
         (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Targets
+      run: COMMIT_RANGE="${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}" ./scripts/github-actions/check-bazel-targets.sh
+      fetch-depth: 50
+      artifact-name: check-targets
+      artifact-path: bazel-targets.txt
+
+  read-targets:
+    name: Read Targets
+    needs: check
     runs-on: ubuntu-latest
     outputs:
-      targets: ${{ steps.check-targets.outputs.bazel-targets }}
+      targets: ${{ steps.read.outputs.targets }}
     steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v4
+      - name: Download targets
+        uses: actions/download-artifact@v4
         with:
-          fetch-depth: 50
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: Check Bazel targets
-        id: check-targets
-        run: ./scripts/github-actions/check-bazel-targets.sh
-        env:
-          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}
+          name: check-targets
+      - name: Read targets
+        id: read
+        run: |
+          if [ -s bazel-targets.txt ]; then
+            {
+              echo "targets<<EOF"
+              cat bazel-targets.txt
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "targets=" >> "$GITHUB_OUTPUT"
+          fi
 
   dotnet:
     name: .NET
-    needs: check
+    needs: read-targets
     uses: ./.github/workflows/ci-dotnet.yml
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//dotnet') ||
+      contains(needs.read-targets.outputs.targets, '//dotnet') ||
       contains(join(github.event.commits.*.message), '[dotnet]') ||
       contains(github.event.pull_request.title, '[dotnet]')
 
   java:
     name: Java
-    needs: check
+    needs: read-targets
     uses: ./.github/workflows/ci-java.yml
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//java') ||
+      contains(needs.read-targets.outputs.targets, '//java') ||
       contains(join(github.event.commits.*.message), '[java]') ||
       contains(github.event.pull_request.title, '[java]')
 
   python:
     name: Python
-    needs: check
+    needs: read-targets
     uses: ./.github/workflows/ci-python.yml
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//py') ||
+      contains(needs.read-targets.outputs.targets, '//py') ||
       contains(join(github.event.commits.*.message), '[py]') ||
       contains(github.event.pull_request.title, '[py]')
 
   ruby:
     name: Ruby
-    needs: check
+    needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//rb') ||
+      contains(needs.read-targets.outputs.targets, '//rb') ||
       contains(join(github.event.commits.*.message), '[rb]') ||
       contains(github.event.pull_request.title, '[rb]')
 
   rust:
     name: Rust
-    needs: check
+    needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -106,6 +113,6 @@ jobs:
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//rust') ||
+      contains(needs.read-targets.outputs.targets, '//rust') ||
       contains(join(github.event.commits.*.message), '[rust]') ||
       contains(github.event.pull_request.title, '[rust]')

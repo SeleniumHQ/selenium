@@ -33,8 +33,31 @@ permissions:
   packages: write
 
 jobs:
+  check-release:
+    name: Check Release Window
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    outputs:
+      release-in-progress: ${{ steps.check.outputs.release-in-progress }}
+    steps:
+      - name: Check if release ruleset is active
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Ruleset 11911909 is "Release In Progress Access" - see restrict-trunk.yml
+          if ! ENFORCEMENT=$(gh api /repos/${{ github.repository }}/rulesets/11911909 --jq '.enforcement' 2>/dev/null); then
+            echo "::warning::Failed to check release ruleset, assuming release in progress"
+            echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "release-in-progress=$([[ "$ENFORCEMENT" == "active" ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+
   ruby:
-    if: (github.event.repository.fork == false) && (inputs.language == 'ruby' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'ruby' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Ruby
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -66,7 +89,8 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   python:
-    if: (github.event.repository.fork == false) && (inputs.language == 'python' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'python' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Python
     uses: ./.github/workflows/bazel.yml
     with:
@@ -92,7 +116,8 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   java:
-    if: (github.event.repository.fork == false) && (inputs.language == 'java' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'java' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
@@ -118,7 +143,8 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   dotnet:
-    if: (github.event.repository.fork == false) && (inputs.language == 'dotnet' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'dotnet' || inputs.language == 'all' || github.event_name == 'schedule')
     name: DotNet
     uses: ./.github/workflows/bazel.yml
     with:
@@ -145,20 +171,40 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   grid:
-    if: (github.event.repository.fork == false) && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Grid
-    permissions:
-      contents: write  # for creating nightly GitHub release
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Grid Release
       run: ./go java:package[--config=release]
-      nightly-release-files: build/dist/*.*
+      artifact-name: nightly-grid
+      artifact-path: build/dist/*.*
+
+  release-grid:
+    name: Release Grid
+    needs: grid
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download grid packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nightly-grid
+      - name: Create nightly release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: nightly
+          title: Nightly
+          prerelease: true
+          files: build/dist/*.*
   on-grid-failure:
     name: On Grid Failure
     runs-on: ubuntu-latest
-    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out') }}
-    needs: grid
+    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out' || needs.release-grid.result == 'failure' || needs.release-grid.result == 'timed_out') }}
+    needs: [grid, release-grid]
     steps:
       - uses: actions/checkout@v4
       - name: Slack Notification
@@ -173,7 +219,8 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   javascript:
-    if: (github.event.repository.fork == false) && (inputs.language == 'javascript' || inputs.language == 'all' || github.event_name == 'schedule')
+    needs: check-release
+    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'javascript' || inputs.language == 'all' || github.event_name == 'schedule')
     name: JavaScript
     uses: ./.github/workflows/bazel.yml
     with:

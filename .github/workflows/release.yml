@@ -16,8 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  stage:
-    name: Build and Stage Packages
+  prepare:
+    name: Prepare Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Extract tag and version
         id: tag
         env:
@@ -47,29 +49,39 @@ jobs:
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
-      - name: Prep git
-        run: |
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
-      - name: Setup curl for Ubuntu
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
+
+  build:
+    name: Build Packages
+    needs: prepare
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Packages
+      run: ./go all:package --config=release
+      artifact-name: release-packages
+      artifact-path: build/dist/*.*
+
+  create-release:
+    name: Create Draft Release
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Download release packages
+        uses: actions/download-artifact@v4
         with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: Build Java & .NET packages
-        run: ./go all:package --config=release
-      - name: Delete nightly tag
+          name: release-packages
+      - name: Delete nightly release and tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
-          if git ls-remote --tags origin | grep -q "refs/tags/nightly"; then
-            git push origin --delete refs/tags/nightly || true
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
+            git push origin --delete refs/tags/nightly
           fi
       - name: Draft GitHub release
         uses: ncipollo/release-action@v1
@@ -78,24 +90,26 @@ jobs:
           bodyFile: "scripts/github-actions/release_header.md"
           draft: true
           generateReleaseNotes: true
-          name: "Selenium ${{ steps.tag.outputs.version }}"
+          name: "Selenium ${{ needs.prepare.outputs.version }}"
           prerelease: false
           skipIfReleaseExists: true
-          tag: "${{ steps.tag.outputs.tag }}"
+          tag: "${{ needs.prepare.outputs.tag }}"
           commit: "${{ github.sha }}"
 
-  authorize:
-    name: Authorize Release
-    needs: stage
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Approved
-        run: echo "Release ${{ needs.stage.outputs.tag }} approved for publishing"
+  get-approval:
+    name: Get Approval
+    needs: [prepare, create-release]
+    if: needs.create-release.result == 'success'
+    uses: ./.github/workflows/get-approval.yml
+    with:
+      title: Release approval required
+      message: Approval is needed to publish ${{ needs.prepare.outputs.tag }}.
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish:
     name: Publish ${{ matrix.language }}
-    needs: authorize
+    needs: get-approval
     strategy:
       fail-fast: false
       matrix:
@@ -107,9 +121,17 @@ jobs:
       run: ./go ${{ matrix.language }}:release
     secrets: inherit
 
+  verify:
+    name: Verify Published Packages
+    needs: docs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Verify packages
+      run: ./go all:verify
+
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [stage, publish]
+    needs: [prepare, publish, github-release]
     permissions:
       contents: write
     strategy:
@@ -118,14 +140,14 @@ jobs:
         language: [java, py, rb, dotnet, node]
     uses: ./.github/workflows/update-documentation.yml
     with:
-      tag: ${{ needs.stage.outputs.tag }}
+      tag: ${{ needs.prepare.outputs.tag }}
       language: ${{ matrix.language }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   github-release:
     name: GitHub Release
-    needs: [stage, publish]
+    needs: [prepare, publish]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -133,7 +155,7 @@ jobs:
       - name: Publish GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: "${{ needs.stage.outputs.tag }}"
+          tag: "${{ needs.prepare.outputs.tag }}"
           draft: false
           allowUpdates: true
           omitBodyDuringUpdate: true
@@ -141,16 +163,24 @@ jobs:
 
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
-    needs: [github-release]
-    if: always()
+    needs: verify
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
     secrets: inherit
 
+  reset-version:
+    name: Generate Version Reset
+    needs: docs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Reset Versions
+      run: ./go all:version nightly
+      artifact-name: version-reset
+
   update-version:
-    name: Reset Versions to Nightly
-    needs: [stage, docs, unrestrict-trunk]
+    name: Push Version Reset
+    needs: [prepare, reset-version, unrestrict-trunk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -159,26 +189,38 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
+      - name: Download version reset patch
+        uses: actions/download-artifact@v4
         with:
-          bazelisk-cache: true
-          bazelrc: common --color=yes
-      - name: Prep git
+          name: version-reset
+      - name: Apply and push
         run: |
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
-      - name: Reset versions to nightly
-        run: ./go all:version nightly
-      - name: Push version changes
-        run: |
-          git commit -m "[build] Reset versions to nightly after ${{ needs.stage.outputs.tag }} release"
-          git push
+          if [ -f changes.patch ] && [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git commit -m "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
+            git push
+          else
+            echo "::notice::No version changes to apply"
+          fi
+
+  nightly:
+    name: Publish Nightly Packages
+    needs: [update-version]
+    uses: ./.github/workflows/nightly.yml
+    secrets: inherit
+
+  mirror:
+    name: Update Release Mirror
+    needs: [nightly]
+    uses: ./.github/workflows/mirror-selenium-releases.yml
+    secrets: inherit
 
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [stage, authorize, publish, docs, github-release, unrestrict-trunk, update-version]
+    needs: [build, publish, docs, github-release, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -190,11 +232,13 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Release failed
-          SLACK_MESSAGE: >
-            Selenium Published: ${{ needs.publish.result }},
-            Docs Updated: ${{ needs.docs.result }},
-            GitHub Release Published: ${{ needs.github-release.result }},
-            Trunk Unlocked: ${{ needs.unrestrict-trunk.result }},
-            Nightly Version Updated: ${{ needs.update-version.result }}
+          SLACK_MESSAGE: |
+            • Selenium Published: ${{ needs.publish.result }}
+            • Docs Updated: ${{ needs.docs.result }}
+            • GitHub Release Published: ${{ needs.github-release.result }}
+            • Nightly Version Updated: ${{ needs.update-version.result }}
+            • Nightly Packages: ${{ needs.nightly.result }}
+            • Mirror Updated: ${{ needs.mirror.result }}
+            • Packages Verified: ${{ needs.verify.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

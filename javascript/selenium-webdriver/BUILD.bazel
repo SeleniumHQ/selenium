@@ -3,6 +3,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin = "bin")
+load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "bin")
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
@@ -286,6 +287,15 @@ copy_to_bin(
     srcs = [".prettierignore"],
 )
 
+# Internal jsdoc binary from npm - used by the docs rule
+jsdoc_bin.jsdoc_binary(
+    name = "jsdoc_bin",
+    visibility = ["//visibility:private"],
+)
+
+# Documentation generator that wraps jsdoc and handles:
+# - Output to workspace build directory
+# - Ignoring jsdoc type warning exit codes
 jsdoc(
     name = "docs",
     config = "jsdoc_conf.json",
@@ -293,4 +303,5 @@ jsdoc(
         ":node_modules/clean-jsdoc-theme",
         ":prod-src-files",
     ],
+    jsdoc_binary = ":jsdoc_bin",
 )

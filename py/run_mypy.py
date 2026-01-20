@@ -15,17 +15,41 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Wrapper to run sphinx-autogen for generating autodoc stub pages."""
+
+"""Run mypy type checker for Selenium Python bindings.
+
+This script is used by Bazel to run mypy type checking.
+"""
 
 import os
 import sys
 
-from sphinx.ext.autosummary.generate import main as autogen_main
+from mypy import api
+
+
+def main():
+    # Find the workspace root - Bazel sets BUILD_WORKSPACE_DIRECTORY when using 'bazel run'
+    workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY")
+    if workspace:
+        py_dir = os.path.join(workspace, "py")
+    else:
+        # Fallback for direct execution
+        py_dir = os.path.dirname(os.path.abspath(__file__))
+
+    os.chdir(py_dir)
+
+    # Run mypy on the selenium package
+    # Configuration is read from pyproject.toml [tool.mypy] section
+    args = ["selenium", *sys.argv[1:]]
+    stdout, stderr, exit_code = api.run(args)
+
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+
+    sys.exit(exit_code)
+
 
 if __name__ == "__main__":
-    # Support running via bazel run (uses BUILD_WORKSPACE_DIRECTORY)
-    workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY", "")
-    base_dir = os.path.join(workspace, "py") if workspace else "."
-    os.chdir(base_dir)
-
-    sys.exit(autogen_main(["docs/source/api.rst"]))
+    main()

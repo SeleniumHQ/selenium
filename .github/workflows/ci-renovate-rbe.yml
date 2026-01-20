@@ -11,56 +11,62 @@ permissions:
 
 jobs:
   pin:
-    permissions:
-      contents: write  # for pushing repinned dependencies
-    runs-on: ubuntu-latest
+    name: Repin Dependencies
     if: github.event.repository.fork == false
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Repin Dependencies
+      run: |
+        COMMITS="${{ join(github.event.commits.*.message, ' ') }}"
+        if [[ "$COMMITS" == *"[java]"* ]]; then
+          RULES_JVM_EXTERNAL_REPIN=1 bazel run @maven//:pin
+        fi
+        if [[ "$COMMITS" == *"[rust]"* ]]; then
+          CARGO_BAZEL_REPIN=true bazel run @crates//:all
+        fi
+        if [[ "$COMMITS" == *"[js]"* ]]; then
+          bazel run -- @pnpm//:pnpm install --dir "$PWD" --lockfile-only
+        fi
+        if [[ "$COMMITS" == *"[dotnet]"* ]]; then
+          ./dotnet/update-deps.sh
+        fi
+        if [[ "$COMMITS" == *"[py]"* ]]; then
+          bazel run //py:requirements.update
+        fi
+        if [[ "$COMMITS" == *"[rb]"* ]]; then
+          ./go rb:pin
+        fi
+      artifact-name: repin-changes
+
+  commit-repins:
+    name: Commit Repins
+    needs: pin
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
+      - name: Download repin patch
+        uses: actions/download-artifact@v4
         with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: java - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[java]')
-        run: RULES_JVM_EXTERNAL_REPIN=1 bazel run @maven//:pin
-      - name: rust - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[rust]')
-        run: CARGO_BAZEL_REPIN=true bazel run @crates//:all
-      - name: js - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[js]')
-        run: bazel run -- @pnpm//:pnpm install --dir "$PWD" --lockfile-only
-      - name: dotnet - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[dotnet]')
-        run: ./dotnet/update-deps.sh
-      - name: py - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[py]')
-        run: bazel run //py:requirements.update
-      - name: rb - repin dependencies
-        if: contains(join(github.event.commits.*.message), '[rb]')
-        run: ./go rb:pin
-      - name: Commit files
+          name: repin-changes
+        continue-on-error: true
+      - name: Apply patch and commit
         run: |
-          CHANGES=$(git status -s)
-          export CHANGES
-          if [ -n "$CHANGES" ]; then
+          if [ -f changes.patch ] && [ -s changes.patch ]; then
+            git apply --index changes.patch
             git config --local user.email "selenium-ci@users.noreply.github.com"
             git config --local user.name "Selenium CI Bot"
-            git add .
             git commit -m 'Repin dependencies'
             git push
+          else
+            echo "No changes to commit"
           fi
 
   check-format:
-    needs: pin
+    needs: commit-repins
     name: Check format
     if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
@@ -72,7 +78,7 @@ jobs:
 
   test:
     name: Test
-    needs: pin
+    needs: commit-repins
     if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
@@ -83,6 +89,6 @@ jobs:
 
   ci-gh:
     name: CI - GitHub
-    needs: pin
+    needs: commit-repins
     if: github.event.repository.fork == false
     uses: ./.github/workflows/ci.yml

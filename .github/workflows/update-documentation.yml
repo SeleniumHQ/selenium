@@ -40,8 +40,12 @@ env:
   GITHUB_TOKEN: ${{ github.token }}
 
 jobs:
-  build-docs:
+  parse:
+    name: Parse Tag
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      language: ${{ steps.parse.outputs.language }}
     steps:
       - name: Parse tag
         id: parse
@@ -65,42 +69,43 @@ jobs:
             LANG="$INPUT_LANG"
           fi
           echo "language=$LANG" >> "$GITHUB_OUTPUT"
-      - name: Checkout repository
+
+  generate-docs:
+    name: Generate Documentation
+    needs: parse
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Generate Docs
+      ref: ${{ inputs.tag }}
+      run: ./go ${{ needs.parse.outputs.language }}:docs skip_update
+      artifact-name: documentation
+      artifact-path: docs/api/**/*
+
+  commit-docs:
+    name: Commit Documentation
+    needs: [parse, generate-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
-      - name: Fetch gh-pages branch
-        run: git fetch origin gh-pages
-      - name: Setup gh-pages worktree
-        run: git worktree add ../gh-pages gh-pages
+          ref: gh-pages
+          token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
+      - name: Download documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: documentation
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Setup curl for Ubuntu
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: Generate Documentation for selected languages
-        run: ./go ${{ steps.parse.outputs.language }}:docs
-      - name: Commit documentation to gh-pages
+      - name: Commit documentation
         run: |
-          cp -r docs/api/* ../gh-pages/docs/api/
-          cd ../gh-pages
           git add docs/api/
           if git diff --staged --quiet; then
             echo "No documentation changes to commit"
           else
-            git commit -m "Update ${{ steps.parse.outputs.language }} documentation for Selenium ${{ steps.parse.outputs.version }}"
+            git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
             for _ in 1 2; do
               git pull --rebase origin gh-pages && git push origin gh-pages && exit 0
               sleep 2

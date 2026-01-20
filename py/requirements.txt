@@ -28,6 +28,7 @@ keyring==25.7.0
 markdown-it-py==4.0.0
 mdurl==0.1.2
 more-itertools==10.8.0
+mypy==1.19.1
 mypy_extensions==1.1.0
 nh3==0.3.2
 outcome==1.3.0.post0
@@ -60,7 +61,7 @@ trio-typing==0.10.0
 trio-websocket==0.12.2
 twine==6.2.0
 types-certifi==2021.10.8.3
-types-urllib3==1.26.25.14
+types-PySocks==1.7.1.20251001
 typing_extensions==4.15.0
 urllib3[socks]==2.6.3
 virtualenv==20.36.1
