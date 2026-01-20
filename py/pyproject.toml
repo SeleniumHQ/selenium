@@ -46,9 +46,6 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 lint = [
     "ruff==0.14.10",
 ]
-typecheck = [
-    "mypy==1.19.1",
-]
 validate = [
     "validate-pyproject==0.24.1",
     "packaging==25.0",
