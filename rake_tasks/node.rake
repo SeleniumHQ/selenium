@@ -95,6 +95,14 @@ namespace :node do
     Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
   end
 
+  desc 'Install Node package locally via npm link'
+  task :install do
+    Bazel.execute('build', [], '//javascript/selenium-webdriver')
+    Dir.chdir('bazel-bin/javascript/selenium-webdriver/selenium-webdriver') do
+      sh 'npm', 'link'
+    end
+  end
+
   desc 'Update JavaScript changelog'
   task :changelogs do
     header = "## #{node_version}\n"

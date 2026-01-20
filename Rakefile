@@ -139,6 +139,15 @@ namespace :all do
     Rake::Task['dotnet:pin'].invoke
   end
 
+  desc 'Update dependencies for all languages'
+  task :update do
+    Rake::Task['java:update'].invoke
+    Rake::Task['rb:update'].invoke
+    Rake::Task['rust:update'].invoke
+    Rake::Task['node:update'].invoke
+    Rake::Task['dotnet:update'].invoke
+  end
+
   desc 'Build all API Documentation'
   task :docs do |_task, arguments|
     args = arguments.to_a

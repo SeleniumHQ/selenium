@@ -106,6 +106,14 @@ namespace :rb do
     FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
   end
 
+  desc 'Install Ruby gem locally'
+  task :install do
+    Bazel.execute('build', [], '//rb:selenium-webdriver')
+    Dir.glob('bazel-bin/rb/selenium-webdriver-*.gem').each do |gem|
+      sh 'gem', 'install', gem
+    end
+  end
+
   desc 'Update Ruby changelog'
   task :changelogs do
     header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="

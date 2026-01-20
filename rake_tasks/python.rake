@@ -119,12 +119,7 @@ namespace :py do
   desc 'Install Python wheel locally'
   task :install do
     Bazel.execute('build', [], '//py:selenium-wheel')
-    begin
-      sh 'pip install bazel-bin/py/selenium-*.whl'
-    rescue StandardError
-      puts 'Ensure that Python and pip are installed on your system'
-      raise
-    end
+    sh 'pip install bazel-bin/py/selenium-*.whl'
   end
 
   desc 'Update Python changelog'

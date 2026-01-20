@@ -73,6 +73,15 @@ namespace :dotnet do
     Bazel.execute('run', [], '//dotnet:docs')
   end
 
+  desc 'Install .NET packages to local NuGet cache'
+  task :install do
+    Bazel.execute('build', [], '//dotnet/src/webdriver:webdriver-pack')
+    Bazel.execute('build', [], '//dotnet/src/support:support-pack')
+    Dir.glob('bazel-bin/dotnet/src/**/*.nupkg').each do |nupkg|
+      sh 'dotnet', 'nuget', 'push', nupkg, '--source', "#{Dir.home}/.nuget/packages"
+    end
+  end
+
   desc 'Update .NET changelog'
   task :changelogs do
     header = "v#{dotnet_version}\n======"
