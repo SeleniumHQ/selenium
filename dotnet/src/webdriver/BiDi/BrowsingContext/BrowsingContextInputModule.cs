@@ -43,23 +43,31 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
 
     public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return inputModule.OnFileDialogOpenedAsync(async e =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        async Task OnContextMatch(FileDialogInfo e)
         {
             if (context.Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, ContextSubscriptionOptions.WithContext(options, context));
+        }
+
+        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return inputModule.OnFileDialogOpenedAsync(e =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        void OnContextMatch(FileDialogInfo e)
         {
             if (context.Equals(e.Context))
             {
                 handler(e);
             }
-        }, ContextSubscriptionOptions.WithContext(options, context));
+        }
+
+        return inputModule.OnFileDialogOpenedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
