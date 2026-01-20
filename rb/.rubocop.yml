@@ -29,6 +29,7 @@ Metrics/AbcSize:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
+    - '../rake_tasks/bazel.rb'
 
 Metrics/BlockLength:
   Max: 18
@@ -36,6 +37,7 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
     - '../Rakefile*'
+    - '../rake_tasks/*.rake'
 
 Metrics/ClassLength:
   CountComments: false
@@ -52,6 +54,7 @@ Metrics/CyclomaticComplexity:
   Exclude:
     - 'lib/selenium/webdriver/support/color.rb'
     - 'lib/selenium/webdriver/common/logger.rb'
+    - '../rake_tasks/bazel.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -59,6 +62,7 @@ Metrics/MethodLength:
   Exclude:
     - 'lib/selenium/server.rb'
     - 'lib/selenium/webdriver/common/options.rb'
+    - '../rake_tasks/bazel.rb'
     - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/remote/http/default.rb'
@@ -76,6 +80,7 @@ Metrics/PerceivedComplexity:
     - 'lib/selenium/webdriver/common/options.rb'
     - 'lib/selenium/webdriver/common/local_driver.rb'
     - 'lib/selenium/webdriver/common/logger.rb'
+    - '../rake_tasks/bazel.rb'
 
 Naming/BlockForwarding:
   EnforcedStyle: explicit

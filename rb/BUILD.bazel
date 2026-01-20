@@ -194,6 +194,7 @@ _LINT_ARGS = [
     "--config=rb/.rubocop.yml",
     "rb/",
     "Rakefile",
+    "rake_tasks/",
 ]
 
 _LINT_DATA = [
