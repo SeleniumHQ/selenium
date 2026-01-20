@@ -70,7 +70,7 @@ end
 # Legacy aliases - call namespaced tasks
 task 'selenium-server-standalone' => 'java:grid'
 task 'selenium-java' => 'java:client'
-task javadocs: 'java:javadocs'
+task javadocs: 'java:docs'
 task 'java-release-zip': 'java:release-zip'
 task 'maven-install': 'java:install'
 task 'publish-maven' => 'java:release'
@@ -111,16 +111,14 @@ namespace :all do
      'Rakefile'].each { |file| SeleniumRake.git.add(file) }
   end
 
-  desc 'Update all API Documentation'
+  desc 'Build all API Documentation'
   task :docs do |_task, arguments|
     args = arguments.to_a
-    Rake::Task['java:docs'].invoke(*(args + ['skip_update']))
-    Rake::Task['py:docs'].invoke(*(args + ['skip_update']))
-    Rake::Task['rb:docs'].invoke(*(args + ['skip_update']))
-    Rake::Task['dotnet:docs'].invoke(*(args + ['skip_update']))
-    Rake::Task['node:docs'].invoke(*(args + ['skip_update']))
-
-    SeleniumRake.update_gh_pages
+    Rake::Task['java:docs'].invoke(*args)
+    Rake::Task['py:docs'].invoke(*args)
+    Rake::Task['rb:docs'].invoke(*args)
+    Rake::Task['dotnet:docs'].invoke(*args)
+    Rake::Task['node:docs'].invoke(*args)
   end
 
   desc 'Build all artifacts for all language bindings'

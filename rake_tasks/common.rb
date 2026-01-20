@@ -75,36 +75,6 @@ module SeleniumRake
     git.add(changelog)
   end
 
-  def self.update_gh_pages(force: true)
-    puts 'Switching to gh-pages branch...'
-    git.fetch('https://github.com/seleniumhq/selenium.git', {ref: 'gh-pages'})
-
-    unless force
-      puts 'Stash changes that are not docs...'
-      git.lib.send(:command, 'stash', ['push', '-m', 'stash wip', '--', ':(exclude)build/docs/api/'])
-    end
-
-    git.checkout('gh-pages', force: force)
-
-    updated = false
-
-    %w[java rb py dotnet javascript].each do |language|
-      source = "build/docs/api/#{language}"
-      destination = "docs/api/#{language}"
-
-      next unless Dir.exist?(source) && !Dir.empty?(source)
-
-      puts "Updating documentation for #{language}..."
-      FileUtils.rm_rf(destination)
-      FileUtils.mv(source, destination)
-
-      git.add(destination)
-      updated = true
-    end
-
-    puts(updated ? 'Documentation staged. Ready for commit.' : 'No documentation changes found.')
-  end
-
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
     uri = URI(url)

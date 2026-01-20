@@ -108,8 +108,6 @@ namespace :py do
 
     FileUtils.mkdir_p('build/docs/api')
     FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
-
-    SeleniumRake.update_gh_pages unless arguments.to_a.include?('skip_update')
   end
 
   desc 'Install Python wheel locally'

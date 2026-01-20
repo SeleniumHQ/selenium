@@ -103,8 +103,6 @@ namespace :node do
     puts 'Generating Node documentation'
     FileUtils.rm_rf('build/docs/api/javascript/')
     Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
-
-    SeleniumRake.update_gh_pages unless arguments.to_a.include?('skip_update')
   end
 
   desc 'Update JavaScript changelog'

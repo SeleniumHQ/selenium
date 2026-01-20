@@ -272,8 +272,13 @@ namespace :java do
     end
   end
 
-  desc 'Generate Javadocs'
-  task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
+  desc 'Generate Java documentation'
+  task docs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do |_task, arguments|
+    if java_version.include?('SNAPSHOT') && !arguments.to_a.include?('force')
+      abort('Aborting documentation update: snapshot versions should not update docs.')
+    end
+
+    puts 'Generating Java documentation'
     FileUtils.rm_rf('build/docs/api/java')
     FileUtils.mkdir_p('build/docs/api/java')
     out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
@@ -298,18 +303,6 @@ namespace :java do
       STYLE
                 )
     end
-  end
-
-  desc 'Generate Java documentation'
-  task :docs do |_task, arguments|
-    if java_version.include?('SNAPSHOT') && !arguments.to_a.include?('force')
-      abort('Aborting documentation update: snapshot versions should not update docs.')
-    end
-
-    puts 'Generating Java documentation'
-    Rake::Task['java:javadocs'].invoke
-
-    SeleniumRake.update_gh_pages unless arguments.to_a.include?('skip_update')
   end
 
   desc 'Update Maven dependencies'

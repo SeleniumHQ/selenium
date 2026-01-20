@@ -91,10 +91,10 @@ jobs:
           repository-cache: true
           bazelrc: common --color=yes
       - name: Generate Documentation for selected languages
-        run: ./go ${{ steps.parse.outputs.language }}:docs skip_update
+        run: ./go ${{ steps.parse.outputs.language }}:docs
       - name: Commit documentation to gh-pages
         run: |
-          cp -r docs/api/* ../gh-pages/docs/api/
+          cp -r build/docs/api/* ../gh-pages/docs/api/
           cd ../gh-pages
           git add docs/api/
           if git diff --staged --quiet; then

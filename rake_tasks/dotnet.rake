@@ -62,8 +62,6 @@ namespace :dotnet do
     puts 'Generating .NET documentation'
     FileUtils.rm_rf('build/docs/api/dotnet/')
     Bazel.execute('run', [], '//dotnet:docs')
-
-    SeleniumRake.update_gh_pages unless arguments.to_a.include?('skip_update')
   end
 
   desc 'Update .NET changelog'

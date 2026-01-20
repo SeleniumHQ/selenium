@@ -107,8 +107,6 @@ namespace :rb do
     Bazel.execute('run', [], '//rb:docs')
     FileUtils.mkdir_p('build/docs/api')
     FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
-
-    SeleniumRake.update_gh_pages unless arguments.to_a.include?('skip_update')
   end
 
   desc 'Update Ruby changelog'
