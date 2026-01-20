@@ -57,35 +57,29 @@ namespace :py do
     SeleniumRake.verify_package_published("https://pypi.org/pypi/selenium/#{python_version}/json")
   end
 
-  desc 'generate and copy files required for local development'
-  task :local_dev do
+  desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
+  task :local_dev, [:all] do |_task, arguments|
     Bazel.execute('build', [], '//py:selenium')
-    Rake::Task['grid'].invoke
 
-    FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
-    FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
-  end
-
-  desc 'Update generated Python files for local development'
-  task :clean do
-    Bazel.execute('build', [], '//py:selenium')
-    bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
+    bazel_bin = 'bazel-bin/py/selenium/webdriver'
     lib_path = 'py/selenium/webdriver'
 
-    dirs = %w[devtools linux mac windows]
-    dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
+    copy_all = arguments[:all] == 'all'
+    if copy_all
+      FileUtils.rm_rf("#{lib_path}/common/devtools")
+      FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
+    else
+      %w[common/devtools common/linux common/mac common/windows].each do |dir|
+        src = "#{bazel_bin}/#{dir}"
+        dest = "#{lib_path}/#{dir}"
+        next unless Dir.exist?(src)
 
-    Find.find(bazel_bin_path) do |path|
-      if File.directory?(path) && dirs.any? { |dir| path.include?("common/#{dir}") }
-        Find.prune
-        next
+        FileUtils.rm_rf(dest)
+        FileUtils.cp_r(src, dest)
       end
-      next if File.directory?(path)
 
-      target_file = File.join(lib_path, path.sub(%r{^#{bazel_bin_path}/}, ''))
-      if File.exist?(target_file)
-        puts "Removing target file: #{target_file}"
-        FileUtils.rm(target_file)
+      %w[getAttribute.js isDisplayed.js findElements.js].each do |atom|
+        FileUtils.cp("#{bazel_bin}/remote/#{atom}", "#{lib_path}/remote/#{atom}")
       end
     end
   end
@@ -156,14 +150,12 @@ namespace :py do
   namespace :test do
     desc 'Python unit tests'
     task :unit do
-      Rake::Task['py:clean'].invoke
       Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
     end
 
     %i[chrome edge firefox safari].each do |browser|
       desc "Python #{browser} tests"
       task browser do
-        Rake::Task['py:clean'].invoke
         Bazel.execute('test', %w[--test_output all], "//py:common-#{browser}")
         Bazel.execute('test', %w[--test_output all], "//py:test-#{browser}")
       end
@@ -171,7 +163,6 @@ namespace :py do
 
     desc 'Python Remote tests with Chrome'
     task :remote do
-      Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')
     end
   end
