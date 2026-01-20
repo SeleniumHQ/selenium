@@ -27,7 +27,11 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
-from python.runfiles import Runfiles
+
+try:
+    from python.runfiles import Runfiles  # only exists when using bazel
+except ModuleNotFoundError:
+    Runfiles = None
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -500,20 +504,6 @@ def server(request):
         yield None
         return
 
-    r = Runfiles.Create()
-
-    java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
-    try:
-        with open(java_location_txt, encoding="utf-8") as handle:
-            read = handle.read().strip()
-            rel_path = read[len("external/") :] if read.startswith("external/") else read
-            java_path = r.Rlocation(rel_path)
-    except Exception:
-        java_path = None
-
-    built_jar = "selenium/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
-    jar_path = r.Rlocation(built_jar)
-
     remote_env = os.environ.copy()
     if sys.platform == "linux":
         # There are issues with window size/position when running Firefox
@@ -521,10 +511,26 @@ def server(request):
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
     server = Server(env=remote_env, startup_timeout=60)
-    if Path(java_path).exists():
-        server.java_path = java_path
+
+    repo_root = Path(__file__).parent.parent  # py/conftest.py -> py/ -> selenium/
+    jar_path = "java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+
     if Path(jar_path).exists():
+        # Found in runfiles (bazel test) - relative to cwd
         server.path = jar_path
+    elif (repo_root / "bazel-bin" / jar_path).exists():
+        # Found in bazel-bin relative to repo root (pytest from anywhere)
+        server.path = str(repo_root / "bazel-bin" / jar_path)
+
+    if Runfiles is not None:
+        # Find bazel's Java
+        r = Runfiles.Create()
+        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
+        try:
+            rel_path = Path(java_location_txt).read_text().strip().removeprefix("external/")
+            server.java_path = r.Rlocation(rel_path)
+        except Exception:
+            pass
 
     server.port = free_port()
     server.start()

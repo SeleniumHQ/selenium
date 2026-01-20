@@ -45,6 +45,8 @@ use crate::shell::{
 use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
 use anyhow::anyhow;
+use fs_extra::file;
+use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -222,7 +224,7 @@ pub trait SeleniumManager {
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
-            fs::rename(driver_zip_file, driver_path_in_cache)?;
+            file::move_file(driver_zip_file, driver_path_in_cache, &CopyOptions::new())?;
         } else {
             uncompress(
                 &driver_zip_file,

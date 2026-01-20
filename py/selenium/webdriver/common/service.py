@@ -123,12 +123,14 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establish a socket connection to determine if the service is accessible.
+        """Check if the service is ready via the W3C WebDriver /status endpoint.
+
+        This makes an HTTP request to the /status endpoint and verifies if it is ready to accept new sessions.
 
         Returns:
-            True if the service is connectable on the configured port, False otherwise.
+            True if the service is ready to accept new sessions, False otherwise.
         """
-        return utils.is_connectable(self.port)
+        return utils.is_url_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rspec/core/rake_task'
-require 'steep/rake_task'
 
 desc 'Setup everything to run tests in RubyMine'
 task :update do
@@ -23,8 +22,4 @@ end
 desc 'Run all integration tests in chrome'
 task :spec do
   system 'bazel test --test_size_filters large //rb/...'
-end
-
-Steep::RakeTask.new do |t|
-  t.check.severity_level = :error # Only output errors, hide warnings
 end

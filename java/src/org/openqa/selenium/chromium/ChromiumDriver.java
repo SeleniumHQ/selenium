@@ -89,9 +89,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
-  private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
 
   /**
@@ -106,7 +104,15 @@ public class ChromiumDriver extends RemoteWebDriver
 
   protected ChromiumDriver(
       CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
-    super(commandExecutor, capabilities);
+    this(commandExecutor, capabilities, capabilityKey, ClientConfig.defaultConfig());
+  }
+
+  protected ChromiumDriver(
+      CommandExecutor commandExecutor,
+      Capabilities capabilities,
+      String capabilityKey,
+      ClientConfig clientConfig) {
+    super(commandExecutor, capabilities, clientConfig);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
         new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
@@ -118,7 +124,7 @@ public class ChromiumDriver extends RemoteWebDriver
     Optional<String> webSocketUrl =
         Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
 
-    this.biDiUri =
+    Optional<URI> biDiUri =
         webSocketUrl.map(
             uri -> {
               try {
@@ -129,14 +135,15 @@ public class ChromiumDriver extends RemoteWebDriver
               return null;
             });
 
-    this.biDi = createBiDi(biDiUri);
+    this.biDi = createBiDi(biDiUri, clientConfig);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
     Optional<HttpClient> client =
-        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri, clientConfig));
     Optional<URI> cdpUri;
 
+    Optional<Connection> connection;
     try {
       try {
         cdpUri = client.flatMap(CdpEndpointFinder::getCdpEndPoint);
@@ -148,7 +155,7 @@ public class ChromiumDriver extends RemoteWebDriver
         }
         throw e;
       }
-      connection = cdpUri.map(uri -> new Connection(client.get(), uri.toString()));
+      connection = cdpUri.map(uri -> new Connection(client.get(), uri.toString(), clientConfig));
     } catch (ConnectionFailedException e) {
       cdpUri = Optional.empty();
       LOG.log(Level.WARNING, "Unable to establish websocket connection to " + reportedUri.get(), e);
@@ -239,7 +246,7 @@ public class ChromiumDriver extends RemoteWebDriver
 
     DevTools devTools = getDevTools();
     devTools.send(
-        new org.openqa.selenium.devtools.Command(
+        new org.openqa.selenium.devtools.Command<>(
             "Page.removeScriptToEvaluateOnNewDocument", Map.of("identifier", key.getIdentifier())));
   }
 
@@ -305,7 +312,7 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -318,7 +325,7 @@ public class ChromiumDriver extends RemoteWebDriver
                         + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =

@@ -26,6 +26,7 @@ module Bazel
       puts cmd_out if verbose
       cmd_exit_code = $CHILD_STATUS
     else
+      puts "Executing: #{cmd.join(' ')}"
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
         is_running = true
         stdin.close

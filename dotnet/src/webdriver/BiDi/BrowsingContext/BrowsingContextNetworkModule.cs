@@ -80,24 +80,14 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return interception;
     }
 
-    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, BrowsingContextAddDataCollectorOptions? options = null)
+    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null)
     {
-        AddDataCollectorOptions addDataCollectorOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, addDataCollectorOptions);
+        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context));
     }
 
-    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null)
     {
-        SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return networkModule.SetCacheBehaviorAsync(behavior, setCacheBehaviorOptions);
+        return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -108,7 +98,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -119,7 +109,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -130,7 +120,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -141,7 +131,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -152,7 +142,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -163,7 +153,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -174,7 +164,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -185,7 +175,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
@@ -196,7 +186,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 await handler(e).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null)
@@ -207,12 +197,12 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             {
                 handler(e);
             }
-        }, options.WithContext(context));
+        }, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
 
-public sealed record InterceptRequestOptions : BrowsingContextAddInterceptOptions;
+public sealed class InterceptRequestOptions : ContextAddInterceptOptions;
 
-public sealed record InterceptResponseOptions : BrowsingContextAddInterceptOptions;
+public sealed class InterceptResponseOptions : ContextAddInterceptOptions;
 
-public sealed record InterceptAuthOptions : BrowsingContextAddInterceptOptions;
+public sealed class InterceptAuthOptions : ContextAddInterceptOptions;

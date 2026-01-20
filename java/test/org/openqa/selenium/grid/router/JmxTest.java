@@ -111,10 +111,10 @@ class JmxTest {
     assertThat(info).isNotNull();
 
     MBeanAttributeInfo[] attributeInfo = info.getAttributes();
-    assertThat(attributeInfo).hasSize(9);
+    assertThat(attributeInfo).hasSize(10);
 
     AttributeList attributeList = getAttributeList(name, attributeInfo);
-    assertThat(attributeList).isNotNull().hasSize(9);
+    assertThat(attributeList).isNotNull().hasSize(10);
 
     Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
     assertNumberAttribute(currentSessions, 0);
@@ -133,6 +133,9 @@ class JmxTest {
 
     Object load = beanServer.getAttribute(name, "Load");
     assertNumberAttribute(load, 0.0f);
+
+    Object consecutiveSessionFailures = beanServer.getAttribute(name, "ConsecutiveSessionFailures");
+    assertNumberAttribute(consecutiveSessionFailures, 0);
 
     String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
     assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());

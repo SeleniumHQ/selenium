@@ -7,6 +7,11 @@ on:
         description: Name of workflow
         required: false
         type: string
+      ref:
+        description: Git ref to checkout (branch, tag, or SHA)
+        required: false
+        type: string
+        default: ''
       run:
         description: Bazel command to run
         required: true
@@ -21,26 +26,11 @@ on:
         required: false
         type: string
         default: ''
-      browser-version:
-        description: One of stable, latest, latest-beta or latest-devedition
-        required: false
-        type: string
-        default: ''
       caching:
         description: Toggle caching of Bazel
         required: false
         type: boolean
         default: true
-      dotnet-version:
-        description: Custom DotNet version to install
-        required: false
-        type: string
-        default: ''
-      java-version:
-        description: Custom Java version to install
-        required: false
-        type: string
-        default: ''
       node-version:
         description: Custom Node version to install
         required: false
@@ -56,21 +46,31 @@ on:
         required: false
         type: string
         default: ''
-      nightly-release-files:
-        description: Files to upload to the Nightly release tag
-        required: false
-        type: string
-        default: ''
       artifact-name:
         description: Name of artifact to upload
         required: false
         type: string
-        default: 'ignore-artifacts'
+        default: ''
+      artifact-path:
+        description: Path/glob of files to upload (if empty, uploads git diff as changes.patch)
+        required: false
+        type: string
+        default: ''
       rerun-with-debug:
         description: Rerun failing tests with debugging enabled
         required: false
         type: boolean
         default: false
+      gpg-sign:
+        description: Import GPG key for signing (Java releases)
+        required: false
+        type: boolean
+        default: false
+      fetch-depth:
+        description: Number of commits to fetch (0 for full history)
+        required: false
+        type: number
+        default: 1
 
 jobs:
   bazel:
@@ -81,18 +81,25 @@ jobs:
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SE_AVOID_STATS: true
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: ${{ inputs.fetch-depth }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
-        run: git pull origin ${{ github.head_ref }}
+        run: git pull origin "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
-        run: git pull origin ${{ github.ref }}
+        run: git pull origin "$GIT_REF"
+        env:
+          GIT_REF: ${{ github.ref }}
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
@@ -112,17 +119,6 @@ jobs:
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup DotNet
-        if: inputs.dotnet-version != ''
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
-      - name: Setup Java
-        if: inputs.java-version != ''
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ inputs.java-version }}
-          distribution: 'temurin'
       - name: Setup Node
         if: inputs.node-version != ''
         uses: actions/setup-node@v4
@@ -164,8 +160,15 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
@@ -186,6 +189,12 @@ jobs:
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Import GPG key
+        if: inputs.gpg-sign
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Run Bazel
         shell: bash
         env:
@@ -216,23 +225,14 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: false
-      - name: Release Nightly
-        if: inputs.nightly-release-files != ''
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "nightly"
-          title: "Nightly"
-          prerelease: true
-          files: ${{ inputs.nightly-release-files }}
-      - name: Save changes
-        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
-        run: |
-          git diff > changes.patch
-      - name: "Upload changes"
-        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
-        uses: actions/upload-artifact@v4
+      - name: Save git diff
+        if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
+        run: git diff --binary > changes.patch
+      - name: Upload artifact
+        if: always() && inputs.artifact-name != ''
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.artifact-name }}
-          path: changes.patch
+          path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
+          if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'warn' }}

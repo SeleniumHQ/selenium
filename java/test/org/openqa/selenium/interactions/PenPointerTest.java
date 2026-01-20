@@ -17,54 +17,50 @@
 
 package org.openqa.selenium.interactions;
 
+import static java.time.Duration.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.WaitingConditions.color;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.fuzzyMatchingOfCoordinates;
+import static org.openqa.selenium.interactions.PointerInput.Kind.PEN;
 import static org.openqa.selenium.support.Colors.GREEN;
 import static org.openqa.selenium.support.Colors.RED;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.Color;
-import org.openqa.selenium.support.Colors;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 /** Tests operations that involve pen input device. */
 class PenPointerTest extends JupiterTestBase {
-  private final PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+  private void resetMousePointer() {
+    WebElement body = driver.findElement(By.tagName("body"));
+    Dimension size = body.getSize();
+    setDefaultPen(driver).moveToElement(body, -size.width / 2, -size.height / 2).click().perform();
+  }
 
   private Actions setDefaultPen(WebDriver driver) {
-    return new Actions(driver).setActivePointer(PointerInput.Kind.PEN, "default pen");
+    return new Actions(driver).setActivePointer(PEN, "default pen");
   }
 
   private void performDragAndDropWithPen() {
@@ -116,19 +112,10 @@ class PenPointerTest extends JupiterTestBase {
     assertThat(text).matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3");
   }
 
-  private boolean isElementAvailable(WebDriver driver, By locator) {
-    try {
-      driver.findElement(locator);
-      return true;
-    } catch (NoSuchElementException e) {
-      return false;
-    }
-  }
-
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(FIREFOX)
-  public void testDragAndDrop() throws InterruptedException {
+  public void testDragAndDrop() {
     driver.get(pages.droppableItems);
 
     WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
@@ -161,17 +148,24 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @SuppressWarnings("DataFlowIssue")
   void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> setDefaultPen(driver).moveToElement(null).build());
+    assertThatThrownBy(() -> setDefaultPen(driver).moveToElement(null).build())
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Element must be set");
   }
 
   @Test
   @NotYetImplemented(SAFARI)
   public void testMovingPastViewPortThrowsException() {
-    assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
-        .isThrownBy(() -> setDefaultPen(driver).moveByOffset(-1000, -1000).perform());
+    assertThatThrownBy(() -> setDefaultPen(driver).moveByOffset(-1000, -1000).perform())
+        .isInstanceOf(MoveTargetOutOfBoundsException.class)
+        .satisfiesAnyOf(
+            ex ->
+                assertThat(ex)
+                    .hasMessageStartingWith("Move target (-1000, -1000) is out of bounds"),
+            ex -> assertThat(ex).hasMessageStartingWith("move target out of bounds"));
   }
 
   @SwitchToTopAfterTest
@@ -287,31 +281,25 @@ class PenPointerTest extends JupiterTestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, size.getWidth() / 2, size.getHeight() / 2));
   }
 
-  @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(FIREFOX)
   public void testMoveRelativeToBody() {
+    resetMousePointer();
     try {
       driver.get(pages.mouseTrackerPage);
 
-      setDefaultPen(driver).moveByOffset(50, 100).perform();
+      setDefaultPen(driver).moveByOffset(70, 180).perform();
 
       WebElement reporter = driver.findElement(By.id("status"));
 
-      wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
+      wait.until(fuzzyMatchingOfCoordinates(reporter, 70, 180));
     } finally {
-      Sequence actionList =
-          new Sequence(defaultPen, 0)
-              .addAction(
-                  defaultPen.createPointerMove(
-                      Duration.ZERO, PointerInput.Origin.pointer(), new Point(-50, -100)));
-      ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+      resetMousePointer();
     }
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(FIREFOX)
   public void testMovePenByOffsetOverAndOutOfAnElement() {
@@ -330,14 +318,13 @@ class PenPointerTest extends JupiterTestBase {
 
     setDefaultPen(driver).moveToElement(greenbox, xOffset, yOffset).perform();
 
-    shortWait.until(
-        attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", GREEN));
 
     setDefaultPen(driver)
         .moveToElement(greenbox, xOffset, yOffset)
         .moveByOffset(shiftX, shiftY)
         .perform();
-    shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", RED));
 
     setDefaultPen(driver)
         .moveToElement(greenbox, xOffset, yOffset)
@@ -345,12 +332,10 @@ class PenPointerTest extends JupiterTestBase {
         .moveByOffset(-shiftX, -shiftY)
         .perform();
 
-    shortWait.until(
-        attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", GREEN));
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(FIREFOX)
   public void testCanMoveOverAndOutOfAnElement() {
@@ -365,36 +350,33 @@ class PenPointerTest extends JupiterTestBase {
         .moveToElement(greenbox, 1 - greenSize.getWidth() / 2, 1 - greenSize.getHeight() / 2)
         .perform();
 
-    assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(GREEN.getColorValue());
+    shortWait.until(color(redbox, "background-color", GREEN));
 
     setDefaultPen(driver).moveToElement(redbox).perform();
-    assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(RED.getColorValue());
+    shortWait.until(color(redbox, "background-color", RED));
 
     setDefaultPen(driver)
         .moveToElement(redbox, redSize.getWidth() + 1, redSize.getHeight() + 1)
         .perform();
 
-    wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", GREEN));
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(FIREFOX)
   public void setPointerEventProperties() {
     driver.get(pages.pointerActionsPage);
     long start = System.currentTimeMillis();
 
     WebElement pointerArea = driver.findElement(By.id("pointerArea"));
-    PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+    PointerInput pen = new PointerInput(PEN, "default pen");
     PointerInput.PointerEventProperties eventProperties =
         PointerInput.eventProperties().setTiltX(-72).setTiltY(9).setTwist(86);
     PointerInput.Origin origin = PointerInput.Origin.fromElement(pointerArea);
 
     Sequence actionListPen =
         new Sequence(pen, 0)
-            .addAction(pen.createPointerMove(Duration.ZERO, origin, 0, 0))
+            .addAction(pen.createPointerMove(ZERO, origin, 0, 0))
             .addAction(pen.createPointerDown(0))
             .addAction(
                 pen.createPointerMove(
@@ -404,7 +386,7 @@ class PenPointerTest extends JupiterTestBase {
     ((RemoteWebDriver) driver).perform(List.of(actionListPen));
 
     long duration = System.currentTimeMillis() - start;
-    Assertions.assertThat(duration).isGreaterThan(2);
+    assertThat(duration).isGreaterThan(2);
 
     List<WebElement> moves = driver.findElements(By.className("pointermove"));
     Map<String, String> moveTo = properties(moves.get(0));
@@ -416,21 +398,21 @@ class PenPointerTest extends JupiterTestBase {
 
     int centerX = rect.width / 2 + rect.getX();
     int centerY = rect.height / 2 + rect.getY();
-    Assertions.assertThat(moveTo.get("button")).isEqualTo("-1");
-    Assertions.assertThat(moveTo.get("pageX")).isEqualTo("" + centerX);
-    Assertions.assertThat(moveTo.get("pageY")).isEqualTo("" + centerY);
-    Assertions.assertThat(down.get("button")).isEqualTo("0");
-    Assertions.assertThat(down.get("pageX")).isEqualTo("" + centerX);
-    Assertions.assertThat(down.get("pageY")).isEqualTo("" + centerY);
-    Assertions.assertThat(moveBy.get("button")).isEqualTo("-1");
-    Assertions.assertThat(moveBy.get("pageX")).isEqualTo("" + (centerX + 2));
-    Assertions.assertThat(moveBy.get("pageY")).isEqualTo("" + (centerY + 2));
-    Assertions.assertThat(moveBy.get("tiltX")).isEqualTo("-72");
-    Assertions.assertThat(moveBy.get("tiltY")).isEqualTo("9");
-    Assertions.assertThat(moveBy.get("twist")).isEqualTo("86");
-    Assertions.assertThat(up.get("button")).isEqualTo("0");
-    Assertions.assertThat(up.get("pageX")).isEqualTo("" + (centerX + 2));
-    Assertions.assertThat(up.get("pageY")).isEqualTo("" + (centerY + 2));
+    assertThat(moveTo.get("button")).isEqualTo("-1");
+    assertThat(moveTo.get("pageX")).isEqualTo("" + centerX);
+    assertThat(moveTo.get("pageY")).isEqualTo("" + centerY);
+    assertThat(down.get("button")).isEqualTo("0");
+    assertThat(down.get("pageX")).isEqualTo("" + centerX);
+    assertThat(down.get("pageY")).isEqualTo("" + centerY);
+    assertThat(moveBy.get("button")).isEqualTo("-1");
+    assertThat(moveBy.get("pageX")).isEqualTo("" + (centerX + 2));
+    assertThat(moveBy.get("pageY")).isEqualTo("" + (centerY + 2));
+    assertThat(moveBy.get("tiltX")).isEqualTo("-72");
+    assertThat(moveBy.get("tiltY")).isEqualTo("9");
+    assertThat(moveBy.get("twist")).isEqualTo("86");
+    assertThat(up.get("button")).isEqualTo("0");
+    assertThat(up.get("pageX")).isEqualTo("" + (centerX + 2));
+    assertThat(up.get("pageY")).isEqualTo("" + (centerY + 2));
   }
 
   private Map<String, String> properties(WebElement element) {
@@ -444,31 +426,5 @@ class PenPointerTest extends JupiterTestBase {
                 a -> a[0], // key
                 a -> a[1] // value
                 ));
-  }
-
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
-    String[] splitString = locationTuple.split(",");
-    int gotX = Integer.parseInt(splitString[0].trim());
-    int gotY = Integer.parseInt(splitString[1].trim());
-
-    // Everything within 5 pixels range is OK
-    final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION
-        && Math.abs(expectedY - gotY) < ALLOWED_DEVIATION;
-  }
-
-  private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
-      final WebElement element, final int x, final int y) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver ignored) {
-        return fuzzyPositionMatching(x, y, element.getText());
-      }
-
-      @Override
-      public String toString() {
-        return "Coordinates: " + element.getText() + " but expected: " + x + ", " + y;
-      }
-    };
   }
 }

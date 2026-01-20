@@ -17,9 +17,14 @@
 
 package org.openqa.selenium;
 
+import static java.lang.Integer.parseInt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
+
 import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class WaitingConditions {
 
@@ -288,5 +293,38 @@ public class WaitingConditions {
             viewportState.get("viewportHeight"));
       }
     };
+  }
+
+  public static ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
+      final WebElement element, final int x, final int y) {
+    return new ExpectedCondition<>() {
+      private static final int ALLOWED_DEVIATION_PIXELS = 10;
+
+      @Override
+      public Boolean apply(WebDriver ignored) {
+        return fuzzyPositionMatching(x, y, element.getText());
+      }
+
+      private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
+        String[] splitString = locationTuple.split("[,\\s]+", 2);
+        int gotX = parseInt(splitString[0]);
+        int gotY = parseInt(splitString[1]);
+
+        return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION_PIXELS
+            && Math.abs(expectedY - gotY) < ALLOWED_DEVIATION_PIXELS;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("Coordinates: (%s, %s), but was: (%s)", x, y, element.getText());
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> color(
+      final WebElement element, final String cssPropertyName, final Colors expectedColor) {
+    return ExpectedConditions.or(
+        attributeToBe(element, cssPropertyName, expectedColor.getColorValue().asRgb()),
+        attributeToBe(element, cssPropertyName, expectedColor.getColorValue().asRgba()));
   }
 }

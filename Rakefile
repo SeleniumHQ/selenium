@@ -3,7 +3,10 @@
 require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
+require 'base64'
+require 'json'
 require 'rake'
+require 'net/http'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -97,7 +100,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v143:v143.publish
-  //java/src/org/openqa/selenium/devtools/v141:v141.publish
+  //java/src/org/openqa/selenium/devtools/v144:v144.publish
   //java/src/org/openqa/selenium/devtools/v142:v142.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -383,13 +386,111 @@ end
 
 task 'release-java': %i[java-release-zip publish-maven]
 
+RELEASE_CREDENTIALS = {
+  java: {
+    env: [%w[MAVEN_USER SEL_M2_USER], %w[MAVEN_PASSWORD SEL_M2_PASS]],
+    file: -> { File.exist?("#{Dir.home}/.m2/settings.xml") && File.read("#{Dir.home}/.m2/settings.xml").include?('<id>central</id>') }
+  },
+  java_gpg: {cmd: 'gpg'},
+  dotnet: {env: [%w[NUGET_API_KEY]]},
+  dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
+}.freeze
+
+def verify_package_published(url)
+  puts "Verifying #{url}..."
+  uri = URI(url)
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') { |http| http.request(Net::HTTP::Get.new(uri)) }
+  raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
+
+  puts 'Verified!'
+end
+
+def sonatype_api_post(url, token)
+  uri = URI(url)
+  req = Net::HTTP::Post.new(uri)
+  req['Authorization'] = "Basic #{token}"
+
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+  raise "Sonatype API error (#{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+
+  res.body.to_s.empty? ? {} : JSON.parse(res.body)
+end
+
+def credential_valid?(cred)
+  has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
+  has_file = cred[:file]&.call
+  has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL, err: File::NULL) || system('where', cred[:cmd], out: File::NULL, err: File::NULL))
+  has_env || has_file || has_cmd
+end
+
+def setup_npm_auth
+  npmrc = File.join(Dir.home, '.npmrc')
+  return if File.exist?(npmrc) && File.read(npmrc).include?('//registry.npmjs.org/:_authToken=')
+
+  token = ENV.fetch('NODE_AUTH_TOKEN', nil)
+  raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' if token.nil? || token.empty?
+
+  auth_line = "//registry.npmjs.org/:_authToken=#{token}"
+  if File.exist?(npmrc)
+    File.open(npmrc, 'a') { |f| f.puts(auth_line) }
+  else
+    File.write(npmrc, "#{auth_line}\n")
+  end
+  File.chmod(0o600, npmrc)
+end
+
+def setup_gem_credentials
+  gem_dir = File.join(Dir.home, '.gem')
+  credentials = File.join(gem_dir, 'credentials')
+  return if File.exist?(credentials) && File.read(credentials).include?(':rubygems_api_key:')
+
+  token = ENV.fetch('GEM_HOST_API_KEY', nil)
+  if token.nil? || token.empty?
+    raise 'Missing RubyGems credentials: set GEM_HOST_API_KEY or configure ~/.gem/credentials'
+  end
+
+  FileUtils.mkdir_p(gem_dir)
+  if File.exist?(credentials)
+    File.open(credentials, 'a') { |f| f.puts(":rubygems_api_key: #{token}") }
+  else
+    File.write(credentials, ":rubygems_api_key: #{token}\n")
+  end
+  File.chmod(0o600, credentials)
+end
+
+def setup_pypirc
+  pypirc = File.join(Dir.home, '.pypirc')
+  return if File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
+
+  token = ENV.fetch('TWINE_PASSWORD', nil)
+  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' if token.nil? || token.empty?
+
+  pypi_section = <<~PYPIRC
+    [pypi]
+    username = __token__
+    password = #{token}
+  PYPIRC
+
+  if File.exist?(pypirc)
+    File.open(pypirc, 'a') { |f| f.puts("\n#{pypi_section}") }
+  else
+    File.write(pypirc, pypi_section)
+  end
+  File.chmod(0o600, pypirc)
+end
+
+def check_credentials(langs)
+  missing = langs.select { |lang| RELEASE_CREDENTIALS[lang] && !credential_valid?(RELEASE_CREDENTIALS[lang]) }
+  raise "Missing credentials: #{missing.join(', ')}" if missing.any?
+end
+
 def read_m2_user_pass
-  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
+  puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
-      found_section = line.include? '<id>sonatype-nexus-staging</id>'
+      found_section = line.include? '<id>central</id>'
     elsif line.include?('<username>')
       ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
     elsif line.include?('<password>')
@@ -488,6 +589,21 @@ namespace :node do
     Bazel.execute('build', args, '//javascript/selenium-webdriver')
   end
 
+  desc 'Pin JavaScript dependencies via pnpm lockfile'
+  task :pin do
+    Bazel.execute('run', ['--', 'install', '--dir', Dir.pwd, '--lockfile-only'], '@pnpm//:pnpm')
+    @git.add('pnpm-lock.yaml')
+  end
+
+  desc 'Update JavaScript dependencies and refresh lockfile (use "latest" to bump ranges)'
+  task :update, [:latest] do |_task, arguments|
+    args = ['--', 'update', '-r']
+    args << '--latest' if arguments[:latest] == 'latest'
+    args += ['--dir', Dir.pwd]
+    Bazel.execute('run', args, '@pnpm//:pnpm')
+    Rake::Task['node:pin'].invoke
+  end
+
   task :'dry-run' do
     Bazel.execute('run', ['--stamp'],
                   '//javascript/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
@@ -496,6 +612,8 @@ namespace :node do
   desc 'Release Node npm package'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    setup_npm_auth unless nightly
+
     if nightly
       puts 'Updating Node version to nightly...'
       Rake::Task['node:version'].invoke('nightly') if nightly
@@ -505,7 +623,11 @@ namespace :node do
     Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
   end
 
-  desc 'Release Node npm package'
+  desc 'Verify Node package is published on npm'
+  task :verify do
+    verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
+  end
+
   task deploy: :release
 
   desc 'Generate Node documentation'
@@ -516,14 +638,7 @@ namespace :node do
 
     puts 'Generating Node documentation'
     FileUtils.rm_rf('build/docs/api/javascript/')
-    begin
-      Dir.chdir('javascript/selenium-webdriver') do
-        sh 'pnpm install', verbose: true
-        sh 'pnpm run generate-docs', verbose: true
-      end
-    rescue StandardError => e
-      puts "Node documentation generation contains errors; continuing... #{e.message}"
-    end
+    Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -540,6 +655,7 @@ namespace :node do
     old_version = node_version
     nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
+    puts "Updating Node from #{old_version} to #{new_version}"
 
     %w[javascript/selenium-webdriver/package.json javascript/selenium-webdriver/BUILD.bazel].each do |file|
       text = File.read(file).gsub(old_version, new_version)
@@ -565,6 +681,8 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    setup_pypirc unless nightly
+
     if nightly
       puts 'Updating Python version to nightly...'
       Rake::Task['py:version'].invoke('nightly')
@@ -573,6 +691,11 @@ namespace :py do
     command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
     puts "Running Python release command: #{command}"
     Bazel.execute('run', ['--config=release'], command)
+  end
+
+  desc 'Verify Python package is published on PyPI'
+  task :verify do
+    verify_package_published("https://pypi.org/pypi/selenium/#{python_version}/json")
   end
 
   desc 'generate and copy files required for local development'
@@ -616,13 +739,16 @@ namespace :py do
     puts 'Generating Python documentation'
 
     FileUtils.rm_rf('build/docs/api/py/')
-    FileUtils.rm_rf('build/docs/doctrees/')
-    begin
-      sh 'tox -c py/tox.ini -e docs', verbose: true
-    rescue StandardError
-      puts 'Ensure that tox is installed on your system'
-      raise
-    end
+
+    # Generate API listing and stub files in source tree
+    Bazel.execute('run', [], '//py:generate-api-listing')
+    Bazel.execute('run', [], '//py:sphinx-autogen')
+
+    # Build docs (outputs to bazel-bin)
+    Bazel.execute('build', [], '//py:docs')
+
+    FileUtils.mkdir_p('build/docs/api')
+    FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -649,6 +775,7 @@ namespace :py do
     old_version = python_version
     nightly = ".#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
+    puts "Updating Python from #{old_version} to #{new_version}"
 
     ['py/pyproject.toml',
      'py/BUILD.bazel',
@@ -757,20 +884,29 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
-    nightly = arguments.to_a.include?('nightly')
-
-    if nightly
+    if arguments.to_a.include?('nightly')
       puts 'Bumping Ruby nightly version...'
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
       puts 'Releasing nightly WebDriver gem...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
     else
+      setup_gem_credentials
       patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
       puts 'Releasing Ruby gems...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
       Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release') unless patch_release
+    end
+  end
+
+  desc 'Verify Ruby packages are published on RubyGems'
+  task :verify do
+    patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
+
+    verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
+    unless patch_release
+      verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json")
     end
   end
 
@@ -799,20 +935,89 @@ namespace :rb do
   task :version, [:version] do |_task, arguments|
     old_version = ruby_version
     new_version = updated_version(old_version, arguments[:version], '.nightly')
+    puts "Updating Ruby from #{old_version} to #{new_version}"
 
     file = 'rb/lib/selenium/webdriver/version.rb'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
     @git.add(file)
 
-    sh 'cd rb && bundle --version && bundle update'
-    @git.add('rb/Gemfile.lock')
+    Rake::Task['rb:update'].invoke
   end
 
   desc 'Update Ruby Syntax'
   task :lint do |_task, arguments|
     args = arguments.to_a.compact
     Bazel.execute('run', args, '//rb:lint')
+  end
+
+  desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+  task :pin, [:force] do |_task, arguments|
+    require 'digest'
+
+    gemfile_lock = 'rb/Gemfile.lock'
+    module_bazel = 'MODULE.bazel'
+    force = arguments[:force] == 'force'
+
+    lock_content = File.read(gemfile_lock)
+    gem_section = lock_content[/GEM\n\s+remote:.*?\n\s+specs:\n(.*?)(?=\n[A-Z]|\Z)/m, 1]
+    gems = gem_section.scan(/^    ([a-zA-Z0-9_-]+) \(([^)]+)\)$/)
+    needed_gems = gems.map { |name, version| "#{name}-#{version}" }
+
+    # Parse existing checksums from MODULE.bazel
+    module_content = File.read(module_bazel)
+    existing = module_content.scan(/"([^"]+)":\s*"([a-f0-9]{64})"/).to_h
+
+    # Keep existing checksums for gems still in Gemfile.lock (unless force)
+    checksums = force ? {} : existing.slice(*needed_gems)
+    to_download = needed_gems - checksums.keys
+
+    puts "Found #{gems.size} gems: #{checksums.size} cached, #{to_download.size} to download..."
+
+    failed = []
+    to_download.each do |key|
+      uri = URI("https://rubygems.org/gems/#{key}.gem")
+
+      5.times do
+        response = Net::HTTP.get_response(uri)
+        break unless response.is_a?(Net::HTTPRedirection)
+
+        uri = URI(response['location'])
+      end
+
+      unless response.is_a?(Net::HTTPSuccess)
+        puts "  #{key}: failed (HTTP #{response.code})"
+        failed << key
+        next
+      end
+
+      sha = Digest::SHA256.hexdigest(response.body)
+      checksums[key] = sha
+      puts "  #{key}: #{sha[0, 16]}..."
+    rescue StandardError => e
+      puts "  #{key}: failed (#{e.message})"
+      failed << key
+    end
+
+    raise "Failed to download checksums for: #{failed.join(', ')}" if failed.any?
+
+    checksums_lines = checksums.keys.sort.map { |k| "        \"#{k}\": \"#{checksums[k]}\"," }
+    formatted = "    gem_checksums = {\n#{checksums_lines.join("\n")}\n    },"
+
+    new_content = module_content.sub(/    gem_checksums = \{[^}]+\},/m, formatted)
+    File.write(module_bazel, new_content)
+
+    @git.add(module_bazel)
+  end
+
+  desc 'Update Ruby dependencies and sync checksums to MODULE.bazel'
+  task :update do
+    puts 'updating and pinning gem versions'
+    Bazel.execute('run', [], '//rb:bundle-update')
+    @git.add('rb/Gemfile.lock')
+    Bazel.execute('run', [], '//rb:rbs-update')
+    @git.add('rb/rbs_collection.lock.yaml')
+    Rake::Task['rb:pin'].invoke
   end
 end
 
@@ -841,35 +1046,31 @@ namespace :dotnet do
     FileUtils.chmod(0o666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
   end
 
-  desc 'Upload nupkg files to Nuget'
+  desc 'Build, package, and push nupkg files to NuGet'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(nightly ? %i[dotnet_nightly] : %i[dotnet])
+
     if nightly
       puts 'Updating .NET version to nightly...'
       Rake::Task['dotnet:version'].invoke('nightly')
+      ENV['NUGET_API_KEY'] = ENV.fetch('GITHUB_TOKEN', nil)
+      ENV['NUGET_SOURCE'] = 'https://nuget.pkg.github.com/seleniumhq/index.json'
+    else
+      ENV['NUGET_SOURCE'] = 'https://api.nuget.org/v3/index.json'
     end
 
-    puts 'Packaging .NET release artifacts...'
+    puts 'Building and packaging .NET artifacts...'
     Rake::Task['dotnet:package'].invoke('--config=release')
 
-    api_key = ENV.fetch('NUGET_API_KEY', nil)
-    push_destination = 'https://api.nuget.org/v3/index.json'
+    puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
+    Bazel.execute('run', ['--config=release'], '//dotnet:publish')
+  end
 
-    if nightly
-      puts 'Setting up NuGet GitHub source for nightly release...'
-      api_key = ENV.fetch('GITHUB_TOKEN', nil)
-      github_push_url = 'https://nuget.pkg.github.com/seleniumhq/index.json'
-      push_destination = 'github'
-      flags = ['--username', 'seleniumhq', '--password', api_key, '--store-password-in-clear-text', '--name',
-               push_destination, github_push_url]
-      sh "dotnet nuget add source #{flags.join(' ')}"
-    end
-
-    puts 'Pushing packages to NuGet'
-    ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
-     "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
-      sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
-    end
+  desc 'Verify .NET packages are published on NuGet'
+  task :verify do
+    verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json")
+    verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
   end
 
   desc 'Generate .NET documentation'
@@ -880,28 +1081,7 @@ namespace :dotnet do
 
     puts 'Generating .NET documentation'
     FileUtils.rm_rf('build/docs/api/dotnet/')
-    begin
-      # Pinning to 2.78.2 to avoid breaking changes in newer versions
-      sh 'dotnet tool uninstall --global docfx || true'
-      sh 'dotnet tool install --global --version 2.78.2 docfx'
-      # sh 'dotnet tool update -g docfx'
-    rescue StandardError
-      puts 'Please ensure that .NET SDK is installed.'
-      raise
-    end
-
-    begin
-      sh 'docfx dotnet/docs/docfx.json'
-    rescue StandardError
-      case $CHILD_STATUS.exitstatus
-      when 133
-        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
-      when 255
-        puts '.NET documentation build failed, likely because of DevTools namespacing. This is ok; continuing'
-      else
-        raise
-      end
-    end
+    Bazel.execute('run', [], '//dotnet:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -917,6 +1097,7 @@ namespace :dotnet do
     old_version = dotnet_version
     nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
+    puts "Updating .NET from #{old_version} to #{new_version}"
 
     file = 'dotnet/selenium-dotnet-version.bzl'
     text = File.read(file).gsub(old_version, new_version)
@@ -962,6 +1143,7 @@ namespace :java do
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(nightly ? %i[java] : %i[java java_gpg])
 
     ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
@@ -982,6 +1164,101 @@ namespace :java do
 
     puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
     java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+
+    Rake::Task['java:publish'].invoke unless nightly
+  end
+
+  desc 'Publish to sonatype'
+  task :publish do
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    user = ENV.fetch('MAVEN_USER')
+    pass = ENV.fetch('MAVEN_PASSWORD')
+    token = Base64.strict_encode64("#{user}:#{pass}")
+
+    puts 'Triggering Sonatype validation...'
+    uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
+
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{token}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
+
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                    open_timeout: 10, read_timeout: 180) do |http|
+        http.request(req)
+      end
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      warn <<~MSG
+        Request timed out waiting for deployment ID.
+        The deployment may still have been created on the server.
+        Check https://central.sonatype.com/publishing/deployments for pending deployments,
+        then run: ./go java:publish_deployment <deployment_id>
+      MSG
+      raise e
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      deployment_id = res.body.strip
+      puts "Got deployment ID: #{deployment_id}"
+      Rake::Task['java:publish_deployment'].invoke(deployment_id)
+    else
+      warn "Failed to get deployment ID (HTTP #{res.code}): #{res.body}"
+      exit(1)
+    end
+  end
+
+  desc 'Publish a Sonatype deployment by ID'
+  task :publish_deployment, [:deployment_id] do |_task, arguments|
+    deployment_id = arguments[:deployment_id] || ENV.fetch('DEPLOYMENT_ID', nil)
+    if deployment_id.nil? || deployment_id.empty?
+      raise 'Deployment ID required: ./go java:publish_deployment[ID] or set DEPLOYMENT_ID'
+    end
+
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    token = Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
+
+    encoded_id = URI.encode_www_form_component(deployment_id.strip)
+    status = {}
+    max_attempts = 60
+    delay = 5
+    max_attempts.times do |attempt|
+      status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{encoded_id}", token)
+      state = status['deploymentState']
+      puts "Deployment state: #{state}"
+
+      case state
+      when 'VALIDATED', 'PUBLISHED' then break
+      when 'FAILED' then raise "Deployment failed: #{status['errors']}"
+      end
+      sleep(delay) unless attempt == max_attempts - 1
+    rescue StandardError => e
+      raise if e.message.start_with?('Deployment failed')
+
+      warn "API error (attempt #{attempt + 1}/#{max_attempts}): #{e.message}"
+      sleep(delay) unless attempt == max_attempts - 1
+    end
+
+    state = status['deploymentState']
+    return if state == 'PUBLISHED'
+
+    raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation" unless state == 'VALIDATED'
+
+    expected = java_release_targets.size
+    actual = status['purls']&.size || 0
+    if actual != expected
+      raise "Expected #{expected} packages but found #{actual}. " \
+            'Drop the deployment at https://central.sonatype.com/publishing/deployments and redeploy.'
+    end
+
+    puts 'Publishing deployed packages...'
+    sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{encoded_id}", token)
+    puts "Published! Deployment ID: #{deployment_id}"
+  end
+
+  desc 'Verify Java packages are published on Maven Central'
+  task :verify do
+    verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
   end
 
   desc 'Install jars to local m2 directory'
@@ -1001,9 +1278,9 @@ namespace :java do
 
   desc 'Update Maven dependencies'
   task :update do
+    puts 'Updating Maven dependencies'
     # Make sure things are in a good state to start with
-    args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
-    Bazel.execute('run', args, '@maven//:pin')
+    Rake::Task['java:pin'].invoke
 
     file_path = 'MODULE.bazel'
     content = File.read(file_path)
@@ -1023,9 +1300,13 @@ namespace :java do
     end
     File.write(file_path, content)
 
+    Rake::Task['java:pin'].invoke
+  end
+
+  desc 'Pin Maven dependencies'
+  task :pin do
     args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
     Bazel.execute('run', args, '@maven//:pin')
-
     %w[MODULE.bazel java/maven_install.json].each { |file| @git.add(file) }
   end
 
@@ -1039,6 +1320,7 @@ namespace :java do
   task :version, [:version] do |_task, arguments|
     old_version = java_version
     new_version = updated_version(old_version, arguments[:version], '-SNAPSHOT')
+    puts "Updating Java from #{old_version} to #{new_version}"
 
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
@@ -1061,8 +1343,13 @@ namespace :rust do
 
   desc 'Update the rust lock files'
   task :update do
-    sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
+    puts 'pinning cargo versions'
+    ENV['CARGO_BAZEL_REPIN'] = 'true'
+    Bazel.execute('fetch', [], '@crates//:all')
   end
+
+  desc 'Pin Rust dependencies'
+  task pin: :update
 
   desc 'Update Rust changelog'
   task :changelog do
@@ -1083,6 +1370,7 @@ namespace :rust do
                          end
     updated = updated_version(equivalent_version, arguments[:version], '-nightly')
     new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
+    puts "Updating Rust from #{old_version} to #{new_version}"
 
     ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
@@ -1097,6 +1385,14 @@ namespace :rust do
 end
 
 namespace :all do
+  desc 'Pin dependencies for all languages'
+  task :pin do
+    Rake::Task['java:pin'].invoke
+    Rake::Task['rb:pin'].invoke
+    Rake::Task['rust:pin'].invoke
+    Rake::Task['node:pin'].invoke
+  end
+
   desc 'Update Chrome DevTools support'
   task :update_cdp, [:channel] do |_task, arguments|
     chrome_channel = arguments[:channel] || 'stable'
@@ -1149,6 +1445,31 @@ namespace :all do
     Rake::Task['dotnet:package'].invoke(*args)
   end
 
+  desc 'Validate release credentials for all languages without releasing'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+
+    if nightly
+      check_credentials(%i[java dotnet_nightly])
+    else
+      check_credentials(%i[java java_gpg dotnet])
+      setup_pypirc
+      setup_gem_credentials
+      setup_npm_auth
+    end
+  end
+
+  desc 'Verify all packages are published to their registries'
+  task :verify do
+    failures = []
+    %w[java py rb dotnet node].each do |lang|
+      Rake::Task["#{lang}:verify"].invoke
+    rescue StandardError => e
+      failures << "#{lang}: #{e.message}"
+    end
+    raise "Verification failed:\n#{failures.join("\n")}" unless failures.empty?
+  end
+
   desc 'Release all artifacts for all language bindings'
   task :release do |_task, arguments|
     Rake::Task['clean'].invoke
@@ -1162,11 +1483,25 @@ namespace :all do
   end
 
   task :lint do
+    before_diff = `git diff`
+
     ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
     sh "./scripts/format.#{ext}", verbose: true
+
+    after_diff = `git diff`
+    if before_diff != after_diff
+      changed_files = `git diff --name-only`.strip
+      raise "Formatting updated files:\n#{changed_files}\nPlease review, stage, and commit the changes."
+    end
+
+    Bazel.execute('run', [], '//py:mypy')
+    Bazel.execute('run', [], '//rb:steep')
+    shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+    Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
   end
 
-  # Example: `./go all:prepare 4.31.0 early-stable`
+  # Example: `./go all:prepare[4.31.0,early-stable]`
+  # Equivalent to .github/workflows/pre-release.yml in a single command
   desc 'Update everything in preparation for a release'
   task :prepare, [:version, :channel] do |_task, arguments|
     version = arguments[:version]
@@ -1177,12 +1512,13 @@ namespace :all do
     Rake::Task['java:update'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['all:version'].invoke(version)
-    Rake::Task['all:changelogs']
+    Rake::Task['all:changelogs'].invoke
   end
 
   desc 'Update all versions'
   task :version, [:version] do |_task, arguments|
     version = arguments[:version] || 'nightly'
+    puts "Updating all versions to #{version}"
 
     Rake::Task['java:version'].invoke(version)
     Rake::Task['rb:version'].invoke(version)
@@ -1204,6 +1540,7 @@ namespace :all do
 
   desc 'Update all changelogs'
   task :changelogs do |_task, _arguments|
+    puts 'Updating all changelogs'
     Rake::Task['java:changelog'].invoke
     Rake::Task['rb:changelog'].invoke
     Rake::Task['node:changelog'].invoke
@@ -1284,27 +1621,22 @@ end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
-  bullet = language == 'javascript' ? '- ' : '* '
-  commit_delimiter = '===DELIM==='
+  bullet = language == 'javascript' ? '-' : '*'
+  skip_patterns = /^(bump|update.*version|Bumping to nightly)/i
   tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
 
-  command = "git --no-pager log #{tag}...HEAD --pretty=format:\"%s%n%b#{commit_delimiter}\" --reverse #{path}"
-  puts "Executing git command: #{command}"
-
+  command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
   log = `#{command}`
 
-  commits = log.split(commit_delimiter).map { |commit|
-    lines = commit.gsub(tags_to_remove, '').strip.lines.map(&:chomp)
-    subject = "#{bullet}#{lines[0]}"
-
-    body = lines[1..]
-           .reject { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
-           .map { |line| "    > #{line}" }
-           .join("\n")
-    body.empty? ? subject : "#{subject}\n#{body}"
-  }.join("\n")
+  entries = log.lines
+               .map(&:strip)
+               .grep(/\(#\d+\)/)
+               .grep_v(skip_patterns)
+               .map { |line| line.gsub(tags_to_remove, '') }
+               .map { |line| "#{bullet} #{line}" }
+               .join("\n")
 
   content = File.read(changelog)
-  File.write(changelog, "#{header}\n#{commits}\n\n#{content}")
+  File.write(changelog, "#{header}\n#{entries}\n\n#{content}")
   @git.add(changelog)
 end
