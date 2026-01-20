@@ -46,9 +46,9 @@ internal class InputOriginConverter : JsonConverter<Origin>
             writer.WriteStartObject();
             writer.WriteString("type", "element");
             writer.WritePropertyName("element");
-            
+
             JsonSerializer.Serialize(writer, element.Element, options.GetTypeInfo<Script.ISharedReference>());
-            
+
             writer.WriteEndObject();
         }
     }
