@@ -502,11 +502,15 @@ public class JdkHttpClient implements HttpClient {
   }
 
   private void checkNotDowngrade(URI from, URI to) {
-    if ("https".equalsIgnoreCase(from.getScheme()) && !"https".equalsIgnoreCase(to.getScheme())
-        || "wss".equalsIgnoreCase(from.getScheme()) && !"wss".equalsIgnoreCase(to.getScheme())) {
+    if (isDowngradeFrom("https", from, to) || isDowngradeFrom("wss", from, to)) {
       throw new SecurityException(
           String.format("Downgrade from secure to insecure connection (%s -> %s)", from, to));
     }
+  }
+
+  private boolean isDowngradeFrom(String protocol, URI from, URI to) {
+    return protocol.equalsIgnoreCase(from.getScheme())
+        && !protocol.equalsIgnoreCase(to.getScheme());
   }
 
   private String describe(HttpRequest req) {
