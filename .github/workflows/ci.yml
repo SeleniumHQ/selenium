@@ -27,6 +27,7 @@ jobs:
     with:
       name: Check Targets
       run: COMMIT_RANGE="${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}" ./scripts/github-actions/check-bazel-targets.sh
+      fetch-depth: 50
       artifact-name: check-targets
       artifact-path: bazel-targets.txt
 

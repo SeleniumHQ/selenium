@@ -81,6 +81,11 @@ on:
         required: false
         type: boolean
         default: false
+      fetch-depth:
+        description: Number of commits to fetch (0 for full history)
+        required: false
+        type: number
+        default: 1
 
 jobs:
   bazel:
@@ -99,6 +104,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: ${{ inputs.fetch-depth }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         run: git pull origin "$HEAD_REF"
