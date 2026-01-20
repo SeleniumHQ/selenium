@@ -38,7 +38,6 @@ end
 task default: [:grid]
 task grid: [:'java:grid']
 
-
 # ./go update_browser stable
 # ./go update_browser beta
 desc 'Update pinned browser versions'
@@ -138,18 +137,16 @@ namespace :all do
     Rake::Task['dotnet:package'].invoke(*args)
   end
 
-  desc 'Validate release credentials for all languages without releasing'
+  desc 'Validate release credentials for all languages'
   task :check_credentials do |_task, arguments|
-    nightly = arguments.to_a.include?('nightly')
-
-    if nightly
-      SeleniumRake.check_credentials(%i[java dotnet_nightly])
-    else
-      SeleniumRake.check_credentials(%i[java java_gpg dotnet])
-      setup_pypirc
-      setup_gem_credentials
-      setup_npm_auth
+    args = arguments.to_a
+    failures = []
+    %w[java py rb dotnet node].each do |lang|
+      Rake::Task["#{lang}:check_credentials"].invoke(*args)
+    rescue StandardError => e
+      failures << "#{lang}: #{e.message}"
     end
+    raise "Credential check failed:\n#{failures.join("\n")}" unless failures.empty?
   end
 
   desc 'Verify all packages are published to their registries'

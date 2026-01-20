@@ -138,16 +138,38 @@ namespace :java do
     Rake::Task['java:package'].invoke('--config=rbe_release')
   end
 
+  desc 'Validate Java release credentials'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+
+    has_env = (ENV['MAVEN_USER'] || ENV.fetch('SEL_M2_USER',
+                                              nil)) && (ENV['MAVEN_PASSWORD'] || ENV.fetch('SEL_M2_PASS', nil))
+    settings = File.join(Dir.home, '.m2', 'settings.xml')
+    has_file = File.exist?(settings) && File.read(settings).include?('<id>central</id>')
+    unless has_env || has_file
+      raise 'Missing Maven credentials: set MAVEN_USER/MAVEN_PASSWORD or configure ~/.m2/settings.xml'
+    end
+
+    next if nightly
+
+    has_gpg = system('which gpg >/dev/null 2>&1') || system('where gpg >NUL 2>&1')
+    raise 'Missing GPG: gpg command not found (required for signing releases)' unless has_gpg
+  end
+
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
-    SeleniumRake.check_credentials(nightly ? %i[java] : %i[java java_gpg])
+    Rake::Task['java:check_credentials'].invoke(*arguments.to_a)
 
     ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     repo_domain = 'central.sonatype.com'
-    repo = nightly ? "#{repo_domain}/repository/maven-snapshots" : "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+    repo = if nightly
+             "#{repo_domain}/repository/maven-snapshots"
+           else
+             "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+           end
     ENV['MAVEN_REPO'] = "https://#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
 

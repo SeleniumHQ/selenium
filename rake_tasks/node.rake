@@ -29,6 +29,7 @@ namespace :node do
     //javascript/webdriver/atoms:get-attribute
   ]
 
+  desc 'Copy JS atoms to source tree'
   task atoms: atom_list do
     base_dir = 'javascript/selenium-webdriver/lib/atoms'
     mkdir_p base_dir
@@ -68,14 +69,27 @@ namespace :node do
     Rake::Task['node:pin'].invoke
   end
 
+  desc 'Dry-run Node package publish'
   task :'dry-run' do
     Bazel.execute('run', ['--stamp'],
                   '//javascript/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
+  desc 'Validate Node release credentials'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+    next if nightly
+
+    npmrc = File.join(Dir.home, '.npmrc')
+    has_file = File.exist?(npmrc) && File.read(npmrc).include?('//registry.npmjs.org/:_authToken=')
+    has_env = ENV.fetch('NODE_AUTH_TOKEN', nil) && !ENV['NODE_AUTH_TOKEN'].empty?
+    raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' unless has_file || has_env
+  end
+
   desc 'Release Node npm package'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    Rake::Task['node:check_credentials'].invoke(*arguments.to_a)
     setup_npm_auth unless nightly
 
     if nightly
@@ -92,6 +106,7 @@ namespace :node do
     SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
   end
 
+  desc 'Alias for node:release'
   task deploy: :release
 
   desc 'Generate Node documentation'

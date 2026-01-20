@@ -10,16 +10,6 @@ module SeleniumRake
     attr_accessor :git
   end
 
-  RELEASE_CREDENTIALS = {
-    java: {
-      env: [%w[MAVEN_USER SEL_M2_USER], %w[MAVEN_PASSWORD SEL_M2_PASS]],
-      file: -> { File.exist?("#{Dir.home}/.m2/settings.xml") && File.read("#{Dir.home}/.m2/settings.xml").include?('<id>central</id>') }
-    },
-    java_gpg: {cmd: 'gpg'},
-    dotnet: {env: [%w[NUGET_API_KEY]]},
-    dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
-  }.freeze
-
   def self.updated_version(current, desired = nil, nightly = nil)
     if !desired.nil? && desired != 'nightly'
       # If desired is present, return full 3 digit version
@@ -82,17 +72,5 @@ module SeleniumRake
     raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
 
     puts 'Verified!'
-  end
-
-  def self.credential_valid?(cred)
-    has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
-    has_file = cred[:file]&.call
-    has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL, err: File::NULL) || system('where', cred[:cmd], out: File::NULL, err: File::NULL))
-    has_env || has_file || has_cmd
-  end
-
-  def self.check_credentials(langs)
-    missing = langs.select { |lang| RELEASE_CREDENTIALS[lang] && !credential_valid?(RELEASE_CREDENTIALS[lang]) }
-    raise "Missing credentials: #{missing.join(', ')}" if missing.any?
   end
 end

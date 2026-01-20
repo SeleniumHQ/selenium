@@ -37,9 +37,21 @@ namespace :py do
     Bazel.execute('build', args, '//py:selenium-sdist')
   end
 
+  desc 'Validate Python release credentials'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+    next if nightly
+
+    pypirc = File.join(Dir.home, '.pypirc')
+    has_pypirc = File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
+    has_env = ENV.fetch('TWINE_PASSWORD', nil) && !ENV['TWINE_PASSWORD'].empty?
+    raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' unless has_pypirc || has_env
+  end
+
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
     setup_pypirc unless nightly
 
     if nightly

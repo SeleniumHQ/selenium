@@ -26,10 +26,20 @@ namespace :dotnet do
     FileUtils.chmod(0o666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
   end
 
+  desc 'Validate .NET release credentials'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+    if nightly && (ENV['GITHUB_TOKEN'].nil? || ENV['GITHUB_TOKEN'].empty?)
+      raise 'Missing GitHub token: set GITHUB_TOKEN for nightly releases'
+    elsif !nightly && (ENV['NUGET_API_KEY'].nil? || ENV['NUGET_API_KEY'].empty?)
+      raise 'Missing NuGet API key: set NUGET_API_KEY'
+    end
+  end
+
   desc 'Build, package, and push nupkg files to NuGet'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
-    SeleniumRake.check_credentials(nightly ? %i[dotnet_nightly] : %i[dotnet])
+    Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
     if nightly
       puts 'Updating .NET version to nightly...'

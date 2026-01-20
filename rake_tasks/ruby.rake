@@ -39,6 +39,7 @@ namespace :rb do
     Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
   end
 
+  desc 'Copy JS atoms to source tree'
   task :atoms do
     base_dir = 'rb/lib/selenium/webdriver/atoms'
     mkdir_p base_dir
@@ -68,9 +69,25 @@ namespace :rb do
     Bazel.execute('build', %w[--test_arg --dry-run], '@bundle//bin:rubocop')
   end
 
+  desc 'Validate Ruby release credentials'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+    next if nightly
+
+    credentials = File.join(Dir.home, '.gem', 'credentials')
+    has_file = File.exist?(credentials) && File.read(credentials).include?(':rubygems_api_key:')
+    has_env = ENV.fetch('GEM_HOST_API_KEY', nil) && !ENV['GEM_HOST_API_KEY'].empty?
+    unless has_file || has_env
+      raise 'Missing RubyGems credentials: set GEM_HOST_API_KEY or configure ~/.gem/credentials'
+    end
+  end
+
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
-    if arguments.to_a.include?('nightly')
+    nightly = arguments.to_a.include?('nightly')
+    Rake::Task['rb:check_credentials'].invoke(*arguments.to_a)
+
+    if nightly
       puts 'Bumping Ruby nightly version...'
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
