@@ -126,33 +126,10 @@ task all: [
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
 
-task tests: [
-  '//java/test/org/openqa/selenium/htmlunit:htmlunit',
-  '//java/test/org/openqa/selenium/firefox:test-synthesized',
-  '//java/test/org/openqa/selenium/ie:ie',
-  '//java/test/org/openqa/selenium/chrome:chrome',
-  '//java/test/org/openqa/selenium/edge:edge',
-  '//java/test/org/openqa/selenium/support:small-tests',
-  '//java/test/org/openqa/selenium/support:large-tests',
-  '//java/test/org/openqa/selenium/remote:small-tests',
-  '//java/test/org/openqa/selenium/remote/server/log:test',
-  '//java/test/org/openqa/selenium/remote/server:small-tests'
-]
-task chrome: ['//java/src/org/openqa/selenium/chrome']
 task grid: [:'selenium-server-standalone']
-task ie: ['//java/src/org/openqa/selenium/ie']
-task firefox: ['//java/src/org/openqa/selenium/firefox']
-task remote: %i[remote_server remote_client]
-task remote_client: ['//java/src/org/openqa/selenium/remote']
-task remote_server: ['//java/src/org/openqa/selenium/remote/server']
-task safari: ['//java/src/org/openqa/selenium/safari']
-task selenium: ['//java/src/org/openqa/selenium:core']
-task support: ['//java/src/org/openqa/selenium/support']
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/src/org/openqa/selenium/grid:executable-grid'
-
-task build: %i[all firefox remote selenium tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -192,34 +169,6 @@ end
 file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
   cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
 end
-
-task sizzle_header: ['cpp/iedriver/sizzle.h']
-
-task ios_driver: [
-  '//javascript/atoms/fragments:get_visible_text:ios',
-  '//javascript/atoms/fragments:click:ios',
-  '//javascript/atoms/fragments:back:ios',
-  '//javascript/atoms/fragments:forward:ios',
-  '//javascript/atoms/fragments:submit:ios',
-  '//javascript/atoms/fragments:xpath:ios',
-  '//javascript/atoms/fragments:xpaths:ios',
-  '//javascript/atoms/fragments:type:ios',
-  '//javascript/atoms/fragments:get_attribute:ios',
-  '//javascript/atoms/fragments:clear:ios',
-  '//javascript/atoms/fragments:is_selected:ios',
-  '//javascript/atoms/fragments:is_enabled:ios',
-  '//javascript/atoms/fragments:is_shown:ios',
-  '//javascript/atoms/fragments:stringify:ios',
-  '//javascript/atoms/fragments:link_text:ios',
-  '//javascript/atoms/fragments:link_texts:ios',
-  '//javascript/atoms/fragments:partial_link_text:ios',
-  '//javascript/atoms/fragments:partial_link_texts:ios',
-  '//javascript/atoms/fragments:get_interactable_size:ios',
-  '//javascript/atoms/fragments:scroll_into_view:ios',
-  '//javascript/atoms/fragments:get_effective_style:ios',
-  '//javascript/atoms/fragments:get_element_size:ios',
-  '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
-]
 
 # This task does not allow running RBE, to run stamped with RBE use
 # ./go java:package['--config=release']
