@@ -27,23 +27,31 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
 {
     public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return logModule.OnEntryAddedAsync(async args =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        async Task OnContextMatch(Log.LogEntry args)
         {
             if (context.Equals(args.Source.Context))
             {
                 await handler(args).ConfigureAwait(false);
             }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+        }
+
+        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
     {
-        return logModule.OnEntryAddedAsync(args =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        void OnContextMatch(Log.LogEntry args)
         {
             if (context.Equals(args.Source.Context))
             {
                 handler(args);
             }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+        }
+
+        return logModule.OnEntryAddedAsync(OnContextMatch, ContextSubscriptionOptions.WithContext(options, context));
     }
 }
