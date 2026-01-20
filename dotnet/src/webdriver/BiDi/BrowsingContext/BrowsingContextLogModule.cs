@@ -29,7 +29,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
     {
         return logModule.OnEntryAddedAsync(async args =>
         {
-            if (args.Source.Context?.Equals(context) is true)
+            if (context.Equals(args.Source.Context))
             {
                 await handler(args).ConfigureAwait(false);
             }
@@ -40,7 +40,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
     {
         return logModule.OnEntryAddedAsync(args =>
         {
-            if (args.Source.Context?.Equals(context) is true)
+            if (context.Equals(args.Source.Context))
             {
                 handler(args);
             }

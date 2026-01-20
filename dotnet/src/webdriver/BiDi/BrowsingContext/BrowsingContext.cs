@@ -123,12 +123,7 @@ public sealed record BrowsingContext
 
     public Task<GetTreeResult> GetTreeAsync(ContextGetTreeOptions? options = null)
     {
-        GetTreeOptions getTreeOptions = new(options)
-        {
-            Root = this
-        };
-
-        return BiDi.BrowsingContext.GetTreeAsync(getTreeOptions);
+        return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this));
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)

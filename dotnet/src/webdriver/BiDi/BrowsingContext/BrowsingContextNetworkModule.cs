@@ -82,22 +82,12 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
 
     public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null)
     {
-        AddDataCollectorOptions addDataCollectorOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, addDataCollectorOptions);
+        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context));
     }
 
     public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null)
     {
-        SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return networkModule.SetCacheBehaviorAsync(behavior, setCacheBehaviorOptions);
+        return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)

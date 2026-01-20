@@ -26,15 +26,8 @@ internal sealed class GetTreeCommand(GetTreeParameters @params)
 
 internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 
-public sealed class GetTreeOptions() : CommandOptions
+public sealed class GetTreeOptions : CommandOptions
 {
-    internal GetTreeOptions(ContextGetTreeOptions? options)
-        : this()
-    {
-        MaxDepth = options?.MaxDepth;
-        Timeout = options?.Timeout;
-    }
-
     public long? MaxDepth { get; set; }
 
     public BrowsingContext? Root { get; set; }
@@ -43,6 +36,13 @@ public sealed class GetTreeOptions() : CommandOptions
 public sealed class ContextGetTreeOptions : CommandOptions
 {
     public long? MaxDepth { get; set; }
+
+    internal static GetTreeOptions WithContext(ContextGetTreeOptions? options, BrowsingContext context) => new()
+    {
+        Root = context,
+        MaxDepth = options?.MaxDepth,
+        Timeout = options?.Timeout
+    };
 }
 
 public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;
