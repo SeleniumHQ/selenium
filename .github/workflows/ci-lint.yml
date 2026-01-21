@@ -93,14 +93,3 @@ jobs:
         run: |
           git push
           echo "::notice::Auto-formatted and pushed. New CI run will start."
-
-  ci-lint:
-    if: always()
-    needs: [actionlint, format, commit-fixes]
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo 'actionlint: ${{ needs.actionlint.result }}'
-          echo 'format: ${{ needs.format.result }}'
-      - if: ${{ needs.actionlint.result == 'failure' || needs.format.result == 'failure' }}
-        run: exit 1

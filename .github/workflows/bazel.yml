@@ -26,26 +26,11 @@ on:
         required: false
         type: string
         default: ''
-      browser-version:
-        description: One of stable, latest, latest-beta or latest-devedition
-        required: false
-        type: string
-        default: ''
       caching:
         description: Toggle caching of Bazel
         required: false
         type: boolean
         default: true
-      dotnet-version:
-        description: Custom DotNet version to install
-        required: false
-        type: string
-        default: ''
-      java-version:
-        description: Custom Java version to install
-        required: false
-        type: string
-        default: ''
       node-version:
         description: Custom Node version to install
         required: false
@@ -134,17 +119,6 @@ jobs:
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup DotNet
-        if: inputs.dotnet-version != ''
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
-      - name: Setup Java
-        if: inputs.java-version != ''
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ inputs.java-version }}
-          distribution: 'temurin'
       - name: Setup Node
         if: inputs.node-version != ''
         uses: actions/setup-node@v4

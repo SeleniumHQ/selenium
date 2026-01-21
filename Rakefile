@@ -1240,7 +1240,7 @@ namespace :java do
     end
 
     state = status['deploymentState']
-    return if state == 'PUBLISHED'
+    next if state == 'PUBLISHED'
 
     raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation" unless state == 'VALIDATED'
 

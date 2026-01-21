@@ -33,7 +33,7 @@ public sealed class OptionalConverter<T> : JsonConverter<Optional<T>>
             return new Optional<T>(default!);
         }
 
-        T value = JsonSerializer.Deserialize<T>(ref reader, options)!;
+        T value = JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<T>())!;
         return new Optional<T>(value);
     }
 
@@ -41,7 +41,7 @@ public sealed class OptionalConverter<T> : JsonConverter<Optional<T>>
     {
         if (value.TryGetValue(out var optionalValue))
         {
-            JsonSerializer.Serialize(writer, optionalValue, options);
+            JsonSerializer.Serialize(writer, optionalValue, options.GetTypeInfo<T>());
         }
         else
         {

@@ -33,4 +33,16 @@ public sealed class GetRealmsOptions : CommandOptions
     public RealmType? Type { get; set; }
 }
 
+public sealed class ContextGetRealmsOptions : CommandOptions
+{
+    public RealmType? Type { get; set; }
+
+    internal static GetRealmsOptions WithContext(ContextGetRealmsOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Context = context,
+        Type = options?.Type,
+        Timeout = options?.Timeout
+    };
+}
+
 public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;

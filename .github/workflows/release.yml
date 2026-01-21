@@ -19,8 +19,6 @@ jobs:
   prepare:
     name: Prepare Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     if: >
       github.event.repository.fork == false &&
       ((startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
@@ -30,10 +28,6 @@ jobs:
       tag: ${{ steps.tag.outputs.tag }}
       version: ${{ steps.tag.outputs.version }}
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Extract tag and version
         id: tag
         env:
@@ -50,56 +44,9 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-  build:
-    name: Build Packages
-    needs: prepare
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build Packages
-      run: ./go all:package --config=release
-      artifact-name: release-packages
-      artifact-path: build/dist/*.*
-
-  create-release:
-    name: Create Draft Release
-    needs: [prepare, build]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Download release packages
-        uses: actions/download-artifact@v4
-        with:
-          name: release-packages
-      - name: Delete nightly release and tag
-        env:
-          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-        run: |
-          if gh release view nightly >/dev/null 2>&1; then
-            gh release delete nightly --yes
-          fi
-          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
-            git push origin --delete refs/tags/nightly
-          fi
-      - name: Draft GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/dist/*.*"
-          bodyFile: "scripts/github-actions/release_header.md"
-          draft: true
-          generateReleaseNotes: true
-          name: "Selenium ${{ needs.prepare.outputs.version }}"
-          prerelease: false
-          skipIfReleaseExists: true
-          tag: "${{ needs.prepare.outputs.tag }}"
-          commit: "${{ github.sha }}"
-
   get-approval:
     name: Get Approval
-    needs: [prepare, create-release]
-    if: needs.create-release.result == 'success'
+    needs: prepare
     uses: ./.github/workflows/get-approval.yml
     with:
       title: Release approval required
@@ -108,7 +55,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish:
-    name: Publish ${{ matrix.language }}
+    name: Build and Publish ${{ matrix.language }}
     needs: get-approval
     strategy:
       fail-fast: false
@@ -119,7 +66,46 @@ jobs:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
       run: ./go ${{ matrix.language }}:release
+      artifact-name: release-packages-${{ matrix.language }}
+      artifact-path: build/dist/*.*
     secrets: inherit
+
+  github-release:
+    name: GitHub Release
+    needs: [prepare, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download release packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-packages-*
+          merge-multiple: true
+      - name: Delete nightly release and tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+        run: |
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
+          fi
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "build/dist/*.*"
+          bodyFile: "scripts/github-actions/release_header.md"
+          generateReleaseNotes: true
+          name: "Selenium ${{ needs.prepare.outputs.version }}"
+          tag: "${{ needs.prepare.outputs.tag }}"
+          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
 
   verify:
     name: Verify Published Packages
@@ -145,22 +131,6 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  github-release:
-    name: GitHub Release
-    needs: [prepare, publish]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Publish GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: "${{ needs.prepare.outputs.tag }}"
-          draft: false
-          allowUpdates: true
-          omitBodyDuringUpdate: true
-          omitNameDuringUpdate: true
-
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
     needs: verify
@@ -170,7 +140,7 @@ jobs:
     secrets: inherit
 
   reset-version:
-    name: Generate Version Reset
+    name: Generate Nightly Versions
     needs: docs
     uses: ./.github/workflows/bazel.yml
     with:
@@ -179,7 +149,7 @@ jobs:
       artifact-name: version-reset
 
   update-version:
-    name: Push Version Reset
+    name: Push Nightly Versions
     needs: [prepare, reset-version, unrestrict-trunk]
     runs-on: ubuntu-latest
     permissions:
@@ -220,7 +190,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [build, publish, docs, github-release, update-version, nightly, mirror, verify]
+    needs: [publish, docs, github-release, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4

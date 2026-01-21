@@ -149,7 +149,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly DotNet Release
-      dotnet-version: '6.x'
       run: ./go dotnet:release[--stamp,nightly]
     secrets: inherit
   on-dotnet-failure:

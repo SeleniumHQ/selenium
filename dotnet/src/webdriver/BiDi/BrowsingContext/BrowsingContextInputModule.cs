@@ -43,23 +43,35 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
 
     public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return inputModule.OnFileDialogOpenedAsync(async e =>
-        {
-            if (context.Equals(e.Context))
-            {
-                await handler(e).ConfigureAwait(false);
-            }
-        }, options.WithContext(context));
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return inputModule.OnFileDialogOpenedAsync(
+            e => HandleFileDialogOpenedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return inputModule.OnFileDialogOpenedAsync(e =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return inputModule.OnFileDialogOpenedAsync(
+            e => HandleFileDialogOpened(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
+    }
+
+    private async Task HandleFileDialogOpenedAsync(FileDialogInfo e, Func<FileDialogInfo, Task> handler)
+    {
+        if (context.Equals(e.Context))
         {
-            if (context.Equals(e.Context))
-            {
-                handler(e);
-            }
-        }, options.WithContext(context));
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleFileDialogOpened(FileDialogInfo e, Action<FileDialogInfo> handler)
+    {
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 }
