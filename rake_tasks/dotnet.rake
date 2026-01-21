@@ -73,6 +73,13 @@ namespace :dotnet do
     Bazel.execute('run', [], '//dotnet:docs')
   end
 
+  desc 'Run .NET formatter'
+  task :lint do |_task, arguments|
+    args = arguments.to_a
+    puts '  Running dotnet format...'
+    Bazel.execute('run', args, '//dotnet:format')
+  end
+
   desc 'Install .NET packages to local NuGet cache'
   task :install do
     Bazel.execute('build', [], '//dotnet/src/webdriver:webdriver-pack')

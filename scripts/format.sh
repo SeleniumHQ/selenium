@@ -31,6 +31,10 @@ section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt
 
+section ".NET"
+echo "    dotnet format" >&2
+bazel run //dotnet:format
+
 section "Python"
 echo "    python - ruff" >&2
 bazel run @multitool//tools/ruff:cwd -- check --fix --show-fixes
