@@ -27,8 +27,17 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 SeleniumRake.git = Git.open(__dir__)
 
-# Load all language-specific rake files
-Dir.glob('rake_tasks/*.rake').each { |r| load r }
+# Load language-specific rake files within namespaces
+namespace(:java) { load 'rake_tasks/java.rake' }
+namespace(:rb) { load 'rake_tasks/ruby.rake' }
+namespace(:ruby) { load 'rake_tasks/ruby.rake' }
+namespace(:py) { load 'rake_tasks/python.rake' }
+namespace(:python) { load 'rake_tasks/python.rake' }
+namespace(:node) { load 'rake_tasks/node.rake' }
+namespace(:js) { load 'rake_tasks/node.rake' }
+namespace(:javascript) { load 'rake_tasks/node.rake' }
+namespace(:dotnet) { load 'rake_tasks/dotnet.rake' }
+namespace(:rust) { load 'rake_tasks/rust.rake' }
 
 # If it looks like a bazel target, build it with bazel
 rule(%r{//.*}) do |task|
