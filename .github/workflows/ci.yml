@@ -26,7 +26,6 @@ jobs:
   check:
     name: Check Targets
     if: >
-      github.event_name != 'schedule' &&
       github.event.repository.fork == false &&
         (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
     uses: ./.github/workflows/bazel.yml
@@ -50,11 +49,9 @@ jobs:
 
   read-targets:
     name: Read Targets
-    if: ${{ !cancelled() && needs.check.result == 'success' }}
     needs: check
     runs-on: ubuntu-latest
     outputs:
-      targets: ${{ steps.read.outputs.targets }}
       java: ${{ steps.read.outputs.java }}
       py: ${{ steps.read.outputs.py }}
       rb: ${{ steps.read.outputs.rb }}
@@ -67,6 +64,9 @@ jobs:
           name: check-targets
       - name: Read targets
         id: read
+        env:
+          COMMIT_MESSAGES: ${{ join(github.event.commits.*.message, ' ') }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
           check_binding() {
@@ -84,57 +84,25 @@ jobs:
     name: .NET
     needs: read-targets
     uses: ./.github/workflows/ci-dotnet.yml
-    if: >
-      !cancelled() && (
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'workflow_call' ||
-        contains(needs.read-targets.outputs.targets, '//dotnet') ||
-        contains(join(github.event.commits.*.message), '[dotnet]') ||
-        contains(github.event.pull_request.title, '[dotnet]')
-      )
+    if: needs.read-targets.outputs.dotnet != ''
 
   java:
     name: Java
     needs: read-targets
     uses: ./.github/workflows/ci-java.yml
-    if: >
-      !cancelled() && (
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'workflow_call' ||
-        contains(needs.read-targets.outputs.targets, '//java') ||
-        contains(join(github.event.commits.*.message), '[java]') ||
-        contains(github.event.pull_request.title, '[java]')
-      )
+    if: needs.read-targets.outputs.java != ''
 
   python:
     name: Python
     needs: read-targets
     uses: ./.github/workflows/ci-python.yml
-    if: >
-      !cancelled() && (
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'workflow_call' ||
-        contains(needs.read-targets.outputs.targets, '//py') ||
-        contains(join(github.event.commits.*.message), '[py]') ||
-        contains(github.event.pull_request.title, '[py]')
-      )
+    if: needs.read-targets.outputs.py != ''
 
   ruby:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: >
-      !cancelled() && (
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'workflow_call' ||
-        contains(needs.read-targets.outputs.targets, '//rb') ||
-        contains(join(github.event.commits.*.message), '[rb]') ||
-        contains(github.event.pull_request.title, '[rb]')
-      )
+    if: needs.read-targets.outputs.rb != ''
 
   rust:
     name: Rust
@@ -142,12 +110,4 @@ jobs:
     uses: ./.github/workflows/ci-rust.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-    if: >
-      !cancelled() && (
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'workflow_call' ||
-        contains(needs.read-targets.outputs.targets, '//rust') ||
-        contains(join(github.event.commits.*.message), '[rust]') ||
-        contains(github.event.pull_request.title, '[rust]')
-      )
+    if: needs.read-targets.outputs.rust != ''
