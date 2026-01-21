@@ -89,6 +89,21 @@ task :authors do
   SeleniumRake.git.add('AUTHORS')
 end
 
+# Example: `./go prep_release[4.31.0,early-stable]`
+# Equivalent to .github/workflows/pre-release.yml in a single command
+desc 'Update everything in preparation for a release'
+task :prep_release, [:version, :channel] do |_task, arguments|
+  version = arguments[:version]
+
+  Rake::Task['update_browsers'].invoke(arguments[:channel])
+  Rake::Task['update_cdp'].invoke(arguments[:channel])
+  Rake::Task['update_manager'].invoke
+  Rake::Task['java:update'].invoke
+  Rake::Task['authors'].invoke
+  Rake::Task['all:version'].invoke(version)
+  Rake::Task['all:changelogs'].invoke
+end
+
 desc 'Run all linters (skip languages with: ./go lint -rb -rust)'
 task :lint do |_task, arguments|
   failures = []
@@ -222,21 +237,6 @@ namespace :all do
       failures << "#{lang}: #{e.message}"
     end
     raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
-  end
-
-  # Example: `./go all:prepare[4.31.0,early-stable]`
-  # Equivalent to .github/workflows/pre-release.yml in a single command
-  desc 'Update everything in preparation for a release'
-  task :prepare, [:version, :channel] do |_task, arguments|
-    version = arguments[:version]
-
-    Rake::Task['update_browsers'].invoke(arguments[:channel])
-    Rake::Task['update_cdp'].invoke(arguments[:channel])
-    Rake::Task['update_manager'].invoke
-    Rake::Task['java:update'].invoke
-    Rake::Task['authors'].invoke
-    Rake::Task['all:version'].invoke(version)
-    Rake::Task['all:changelogs'].invoke
   end
 
   desc 'Update all versions'
