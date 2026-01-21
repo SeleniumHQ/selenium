@@ -692,7 +692,7 @@ def new_window_is_opened(current_handles: set[str]) -> Callable[[WebDriver], boo
     return _predicate
 
 
-def alert_is_present() -> Callable[[WebDriver], Alert | bool]:
+def alert_is_present() -> Callable[[WebDriver], Alert | Literal[False]]:
     """Check that an alert is present and switch to it.
 
     Returns:
