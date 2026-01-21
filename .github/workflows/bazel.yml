@@ -71,6 +71,11 @@ on:
         required: false
         type: number
         default: 1
+      cache-name:
+        description: Name for cache restore (restores {name}.gz with key {name}-)
+        required: false
+        type: string
+        default: ''
 
 jobs:
   bazel:
@@ -100,6 +105,13 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Restore cache
+        if: inputs.cache-name != ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ inputs.cache-name }}.gz
+          key: ${{ inputs.cache-name }}-
+          restore-keys: ${{ inputs.cache-name }}-
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
