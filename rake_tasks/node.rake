@@ -44,12 +44,6 @@ namespace :node do
     Rake::Task['node:pin'].invoke
   end
 
-  desc 'Dry-run Node package publish'
-  task :'dry-run' do
-    Bazel.execute('run', ['--stamp'],
-                  '//javascript/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
-  end
-
   desc 'Validate Node release credentials'
   task :check_credentials do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
@@ -61,19 +55,24 @@ namespace :node do
     raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' unless has_file || has_env
   end
 
-  desc 'Release Node npm package'
+  desc 'Release Node npm package (use dry-run to test without publishing)'
   task :release do |_task, arguments|
-    nightly = arguments.to_a.include?('nightly')
-    Rake::Task['node:check_credentials'].invoke(*arguments.to_a)
-    setup_npm_auth unless nightly
+    args = arguments.to_a
+    nightly = args.delete('nightly')
+    dry_run = args.delete('dry-run')
+
+    Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
+    setup_npm_auth unless nightly || dry_run
 
     if nightly
       puts 'Updating Node version to nightly...'
-      Rake::Task['node:version'].invoke('nightly') if nightly
+      Rake::Task['node:version'].invoke('nightly')
     end
 
-    puts 'Running Node package release...'
-    Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
+    puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
+    target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
+    target += ' -- --dry-run=true' if dry_run
+    Bazel.execute('run', ['--config=release'], target)
   end
 
   desc 'Verify Node package is published on npm'
