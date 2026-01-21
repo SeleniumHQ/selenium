@@ -15,10 +15,10 @@ on:
         options:
           - all
           - java
-          - rb
-          - py
+          - ruby
+          - python
           - dotnet
-          - node
+          - javascript
 
   workflow_call:
     inputs:
@@ -51,16 +51,14 @@ jobs:
         run: |
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-          # Check for language suffix and map to internal names
-          case "$TAG" in
-            *-javascript) LANG="node" ;;
-            *-python) LANG="py" ;;
-            *-ruby) LANG="rb" ;;
-            *-java) LANG="java" ;;
-            *-dotnet) LANG="dotnet" ;;
-            *) LANG="all" ;;
-          esac
+          # Extract language suffix from tag (e.g., selenium-4.28.1-ruby -> ruby)
+          if [[ "$TAG" =~ -([a-z]+)$ ]]; then
+            LANG="${BASH_REMATCH[1]}"
+          else
+            LANG="all"
+          fi
 
+          # User-provided language input overrides tag suffix
           if [ -n "$INPUT_LANG" ] && [ "$INPUT_LANG" != "all" ]; then
             LANG="$INPUT_LANG"
           fi
