@@ -38,6 +38,7 @@ namespace(:js) { load 'rake_tasks/node.rake' }
 namespace(:javascript) { load 'rake_tasks/node.rake' }
 namespace(:dotnet) { load 'rake_tasks/dotnet.rake' }
 namespace(:rust) { load 'rake_tasks/rust.rake' }
+namespace(:grid) { load 'rake_tasks/grid.rake' }
 
 # If it looks like a bazel target, build it with bazel
 rule(%r{//.*}) do |task|
