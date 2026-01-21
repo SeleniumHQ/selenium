@@ -162,24 +162,4 @@ namespace :py do
     puts '  Running ruff format...'
     Bazel.execute('run', args + ['--', 'format', 'py/'], '@multitool//tools/ruff:cwd')
   end
-
-  namespace :test do
-    desc 'Python unit tests'
-    task :unit do
-      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
-    end
-
-    %i[chrome edge firefox safari].each do |browser|
-      desc "Python #{browser} tests"
-      task browser do
-        Bazel.execute('test', %w[--test_output all], "//py:common-#{browser}")
-        Bazel.execute('test', %w[--test_output all], "//py:test-#{browser}")
-      end
-    end
-
-    desc 'Python Remote tests with Chrome'
-    task :remote do
-      Bazel.execute('test', [], '//py:test-remote')
-    end
-  end
 end
