@@ -121,7 +121,7 @@ end
 task 'selenium-server-standalone' => 'java:grid'
 task 'selenium-java' => 'java:client'
 task javadocs: 'java:docs'
-task 'java-release-zip': 'java:release-zip'
+task 'java-release-zip': 'java:package'
 task 'maven-install': 'java:install'
 task 'publish-maven' => 'java:release'
 task 'publish-maven-snapshot' do
