@@ -230,7 +230,7 @@ namespace :all do
 
   desc 'Run linters for all languages (skip with: ./go all:lint -rb -rust)'
   task :lint do |_task, arguments|
-    all_langs = %w[java py rb node rust]
+    all_langs = %w[java py rb node dotnet rust]
     skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
     invalid = skip - all_langs
     raise "Unknown languages: #{invalid.join(', ')}. Valid: #{all_langs.join(', ')}" if invalid.any?
