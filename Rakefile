@@ -129,6 +129,13 @@ task :lint do |_task, arguments|
     failures << "shellcheck/actionlint: #{e.message}"
   end
 
+  puts 'Updating copyright headers...'
+  begin
+    Bazel.execute('run', [], '//scripts:update_copyright')
+  rescue StandardError => e
+    failures << "copyright: #{e.message}"
+  end
+
   raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
 end
 
