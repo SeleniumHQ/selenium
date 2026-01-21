@@ -330,7 +330,7 @@ class MockResponse:
         pass
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("HTTPS_PROXY", raising=False)
     monkeypatch.delenv("HTTP_PROXY", raising=False)
@@ -338,7 +338,7 @@ def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("http_proxy", raising=False)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_socks_proxy_settings(monkeypatch):
     http_proxy = "SOCKS5://http_proxy.com:8080"
     https_proxy = "SOCKS5://https_proxy.com:8080"
@@ -348,7 +348,7 @@ def mock_socks_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_settings(monkeypatch):
     http_proxy = "http://http_proxy.com:8080"
     https_proxy = "http://https_proxy.com:8080"
@@ -358,7 +358,7 @@ def mock_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_auth_settings(monkeypatch):
     http_proxy = "http://user:password@http_proxy.com:8080"
     https_proxy = "https://user:password@https_proxy.com:8080"
@@ -368,7 +368,7 @@ def mock_proxy_auth_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_no_proxy_settings(monkeypatch):
     http_proxy = "http://http_proxy.com:8080"
     https_proxy = "http://https_proxy.com:8080"

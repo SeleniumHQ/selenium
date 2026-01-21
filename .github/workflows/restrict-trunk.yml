@@ -1,0 +1,65 @@
+name: Manage Trunk Restrictions
+
+permissions: {}
+
+concurrency:
+  group: manage-trunk-restrictions
+  cancel-in-progress: false
+
+on:
+  pull_request:
+    types: [ready_for_review, closed]
+    branches:
+      - trunk
+  workflow_dispatch:
+    inputs:
+      restrict:
+        description: 'Restrict trunk branch'
+        required: true
+        type: boolean
+  workflow_call:
+    inputs:
+      restrict:
+        description: 'Restrict trunk branch'
+        required: true
+        type: boolean
+
+jobs:
+  approve:
+    name: Approve Manual Trigger
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.repository.fork == false
+    environment: production
+    steps:
+      - run: echo "Manual trigger approved"
+
+  manage-trunk:
+    name: Manage Trunk Branch
+    needs: [approve]
+    runs-on: ubuntu-latest
+    if: |
+      always() &&
+      (needs.approve.result == 'success' || needs.approve.result == 'skipped') &&
+      github.event.repository.fork == false &&
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' ||
+       (startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+        (github.event.action == 'ready_for_review' ||
+         (github.event.action == 'closed' && github.event.pull_request.merged == false))))
+    strategy:
+      matrix:
+        ruleset_id:
+          - 11911909  # Release In Progress Access (restrict updates to trunk to release managers)
+          - 11912022  # Release In Progress Flow (requires branches to be up to date before merging)
+    env:
+      TRUNK_RESTRICTED: ${{ inputs.restrict || github.event.action == 'ready_for_review' }}
+    steps:
+      - name: Update ruleset enforcement
+        uses: octokit/request-action@v2.4.0
+        with:
+          route: PUT /repos/{owner}/{repo}/rulesets/{ruleset_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          ruleset_id: ${{ matrix.ruleset_id }}
+          enforcement: ${{ env.TRUNK_RESTRICTED == 'true' && 'active' || 'disabled' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

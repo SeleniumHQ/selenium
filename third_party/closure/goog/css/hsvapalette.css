@@ -6,14 +6,10 @@
  */
 
 /*
- * All Rights Reserved.
- *
  * Styles for the HSV color palette.
- *
- * @author smcbride@google.com (Sean McBride)
- * @author arv@google.com (Erik Arvidsson)
- * @author manucornet@google.com (Manu Cornet)
  */
+
+@provide 'goog.css.hsvapalette';
 
 .goog-hsva-palette,
 .goog-hsva-palette-sm {

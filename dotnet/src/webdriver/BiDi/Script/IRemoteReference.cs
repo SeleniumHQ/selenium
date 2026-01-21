@@ -28,6 +28,11 @@ public interface ISharedReference : IRemoteReference
     public Handle? Handle { get; set; }
 }
 
+public sealed record SharedReference(string SharedId) : ISharedReference
+{
+    public Handle? Handle { get; set; }
+}
+
 public interface IRemoteObjectReference : IRemoteReference
 {
     public Handle Handle { get; }

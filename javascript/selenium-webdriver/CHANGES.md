@@ -1,3 +1,11 @@
+## 4.40.0
+
+- fix JS tests on RBE (#16777)
+- use SE_DEBUG to enable debugging (#16816)
+- [node] Add asMap function to Header class and corresponding tests (#16832)
+- build js docs with bazel (#16922)
+- preserve original file's modification time when uploading to Grid (#16935)
+
 ## 4.39.0
 
 - Add CDP for Chrome 143 and remove 140

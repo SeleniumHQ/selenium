@@ -18,66 +18,47 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NeedsSecureServer;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@Disabled("https://issues.chromium.org/u/0/issues/425801332")
-class FederatedCredentialManagementTest {
-
+@NeedsSecureServer
+@Ignore(value = FIREFOX, reason = "FedCM not yet supported")
+@Ignore(value = IE, reason = "FedCM not supported")
+@Ignore(value = SAFARI, reason = "FedCM not supported")
+final class FederatedCredentialManagementTest extends JupiterTestBase {
   private HasFederatedCredentialManagement fedcmDriver;
-  private WebDriver localDriver;
-  InProcessTestEnvironment environment = new InProcessTestEnvironment(true);
-  AppServer appServer = environment.getAppServer();
 
-  @BeforeEach
-  public void setup() {
-    ChromeOptions options = (ChromeOptions) CHROME.getCapabilities();
-    options.setAcceptInsecureCerts(true);
-    options.addArguments(
-        String.format("host-resolver-rules=MAP localhost:443 localhost:%d", getSecurePort()));
-    options.addArguments("ignore-certificate-errors");
-    options.addArguments("--enable-fedcm-without-well-known-enforcement");
-    localDriver = new ChromeDriver(options);
-
-    assumeThat(localDriver).isInstanceOf(HasFederatedCredentialManagement.class);
-    fedcmDriver = (HasFederatedCredentialManagement) localDriver;
+  private void setup() throws MalformedURLException {
+    int securePort = new URL(appServer.whereIsSecure("/")).getPort();
+    Capabilities caps =
+        ((ChromiumOptions<?>) Browser.detect().getCapabilities())
+            .addArguments("--enable-fedcm-without-well-known-enforcement")
+            .addArguments(
+                String.format("host-resolver-rules=MAP localhost:443 localhost:%d", securePort));
+    localDriver = new WebDriverBuilder().get(caps);
     localDriver.get(appServer.whereIsSecure("/fedcm/fedcm_async.html"));
-  }
-
-  private int getSecurePort() {
-    String urlString = appServer.whereIsSecure("/");
-    try {
-      return new URL(urlString).getPort();
-    } catch (MalformedURLException ex) {
-      // This should not happen.
-      return 0;
-    }
-  }
-
-  @AfterEach
-  public void teardown() {
-    localDriver.quit();
-    appServer.stop();
+    fedcmDriver = (HasFederatedCredentialManagement) localDriver;
+    assertThat(fedcmDriver.getFederatedCredentialManagementDialog()).isNull();
   }
 
   private void waitForDialog() {
@@ -89,9 +70,10 @@ class FederatedCredentialManagementTest {
   }
 
   @Test
-  void testDismissDialog() {
+  @NoDriverBeforeTest
+  void testDismissDialog() throws MalformedURLException {
+    setup();
     fedcmDriver.setDelayEnabled(false);
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
 
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();
@@ -106,14 +88,17 @@ class FederatedCredentialManagementTest {
     assertThat(dialog.getDialogType()).isEqualTo("AccountChooser");
     dialog.cancelDialog();
 
-    // Check that the dialog was indeed closed. Unable to get the dialog type since the dialog was
-    // closed.
-    assertThrows(NoAlertPresentException.class, dialog::getDialogType);
+    // Check that the dialog was indeed closed
+    assertThatThrownBy(dialog::getDialogType)
+        .as("Unable to get the dialog type since the dialog was closed")
+        .isInstanceOf(NoAlertPresentException.class)
+        .hasMessageStartingWith("no such alert");
   }
 
   @Test
-  void testSelectAccount() {
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
+  @NoDriverBeforeTest
+  void testSelectAccount() throws MalformedURLException {
+    setup();
 
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();
@@ -132,9 +117,9 @@ class FederatedCredentialManagementTest {
   }
 
   @Test
-  void testGetAccounts() {
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
-
+  @NoDriverBeforeTest
+  void testGetAccounts() throws MalformedURLException {
+    setup();
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();
 

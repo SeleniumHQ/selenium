@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasFullPageScreenshot<X>
+public class AddHasFullPageScreenshot
     implements AugmenterProvider<HasFullPageScreenshot>, AdditionalHttpCommands {
 
   public static final String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";

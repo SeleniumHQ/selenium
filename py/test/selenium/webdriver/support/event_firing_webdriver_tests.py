@@ -37,10 +37,10 @@ def log():
 def test_should_fire_navigation_events(driver, log, pages):
     class EventListener(AbstractEventListener):
         def before_navigate_to(self, url, driver):
-            log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
+            log.write((f"before_navigate_to {url.split('/')[-1]}").encode())
 
         def after_navigate_to(self, url, driver):
-            log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
+            log.write((f"after_navigate_to {url.split('/')[-1]}").encode())
 
         def before_navigate_back(self, driver):
             log.write(b"before_navigate_back")

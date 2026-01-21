@@ -1,0 +1,214 @@
+name: Release Selenium
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., selenium-4.28.0)'
+        required: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    if: >
+      github.event.repository.fork == false &&
+      ((startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+       github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''))
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - name: Extract tag and version
+        id: tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            TAG="$INPUT_TAG"
+          else
+            VERSION=$(echo "$PR_HEAD_REF" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+            TAG="selenium-${VERSION}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
+
+  get-approval:
+    name: Get Approval
+    needs: prepare
+    uses: ./.github/workflows/get-approval.yml
+    with:
+      title: Release approval required
+      message: Approval is needed to publish ${{ needs.prepare.outputs.tag }}.
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  publish:
+    name: Build and Publish ${{ matrix.language }}
+    needs: get-approval
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, py, rb, dotnet, node]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Publish ${{ matrix.language }}
+      gpg-sign: ${{ matrix.language == 'java' }}
+      run: ./go ${{ matrix.language }}:release
+      artifact-name: release-packages-${{ matrix.language }}
+      artifact-path: build/dist/*.*
+    secrets: inherit
+
+  github-release:
+    name: GitHub Release
+    needs: [prepare, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download release packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-packages-*
+          merge-multiple: true
+      - name: Delete nightly release and tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+        run: |
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
+          fi
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "build/dist/*.*"
+          bodyFile: "scripts/github-actions/release_header.md"
+          generateReleaseNotes: true
+          name: "Selenium ${{ needs.prepare.outputs.version }}"
+          tag: "${{ needs.prepare.outputs.tag }}"
+          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+
+  verify:
+    name: Verify Published Packages
+    needs: docs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Verify packages
+      run: ./go all:verify
+
+  docs:
+    name: Update ${{ matrix.language }} Documentation
+    needs: [prepare, publish, github-release]
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, py, rb, dotnet, node]
+    uses: ./.github/workflows/update-documentation.yml
+    with:
+      tag: ${{ needs.prepare.outputs.tag }}
+      language: ${{ matrix.language }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  unrestrict-trunk:
+    name: Unrestrict Trunk Branch
+    needs: verify
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+    secrets: inherit
+
+  reset-version:
+    name: Generate Nightly Versions
+    needs: docs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Reset Versions
+      run: ./go all:version nightly
+      artifact-name: version-reset
+
+  update-version:
+    name: Push Nightly Versions
+    needs: [prepare, reset-version, unrestrict-trunk]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+      - name: Download version reset patch
+        uses: actions/download-artifact@v4
+        with:
+          name: version-reset
+      - name: Apply and push
+        run: |
+          if [ -f changes.patch ] && [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git commit -m "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
+            git push
+          else
+            echo "::notice::No version changes to apply"
+          fi
+
+  nightly:
+    name: Publish Nightly Packages
+    needs: [update-version]
+    uses: ./.github/workflows/nightly.yml
+    secrets: inherit
+
+  mirror:
+    name: Update Release Mirror
+    needs: [nightly]
+    uses: ./.github/workflows/mirror-selenium-releases.yml
+    secrets: inherit
+
+  on-release-failure:
+    name: On Release Failure
+    runs-on: ubuntu-latest
+    needs: [publish, docs, github-release, update-version, nightly, mirror, verify]
+    if: failure()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: Release failed
+          SLACK_MESSAGE: |
+            • Selenium Published: ${{ needs.publish.result }}
+            • Docs Updated: ${{ needs.docs.result }}
+            • GitHub Release Published: ${{ needs.github-release.result }}
+            • Nightly Version Updated: ${{ needs.update-version.result }}
+            • Nightly Packages: ${{ needs.nightly.result }}
+            • Mirror Updated: ${{ needs.mirror.result }}
+            • Packages Verified: ${{ needs.verify.result }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

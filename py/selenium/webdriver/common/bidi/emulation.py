@@ -14,11 +14,15 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from selenium.webdriver.common.bidi.common import command_builder
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class ScreenOrientationNatural(Enum):
@@ -37,9 +41,13 @@ class ScreenOrientationType(Enum):
     LANDSCAPE_SECONDARY = "landscape-secondary"
 
 
-def _convert_to_enum(value, enum_class):
+E = TypeVar("E", ScreenOrientationNatural, ScreenOrientationType)
+
+
+def _convert_to_enum(value: E | str, enum_class: type[E]) -> E:
     if isinstance(value, enum_class):
         return value
+    assert isinstance(value, str)
     try:
         return enum_class(value.lower())
     except ValueError:
@@ -111,49 +119,49 @@ class GeolocationCoordinates:
         self.speed = speed
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         return self._latitude
 
     @latitude.setter
-    def latitude(self, value):
+    def latitude(self, value: float) -> None:
         if not (-90.0 <= value <= 90.0):
             raise ValueError("latitude must be between -90.0 and 90.0")
         self._latitude = value
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         return self._longitude
 
     @longitude.setter
-    def longitude(self, value):
+    def longitude(self, value: float) -> None:
         if not (-180.0 <= value <= 180.0):
             raise ValueError("longitude must be between -180.0 and 180.0")
         self._longitude = value
 
     @property
-    def accuracy(self):
+    def accuracy(self) -> float:
         return self._accuracy
 
     @accuracy.setter
-    def accuracy(self, value):
+    def accuracy(self, value: float) -> None:
         if value < 0.0:
             raise ValueError("accuracy must be >= 0.0")
         self._accuracy = value
 
     @property
-    def altitude(self):
+    def altitude(self) -> float | None:
         return self._altitude
 
     @altitude.setter
-    def altitude(self, value):
+    def altitude(self, value: float | None) -> None:
         self._altitude = value
 
     @property
-    def altitude_accuracy(self):
+    def altitude_accuracy(self) -> float | None:
         return self._altitude_accuracy
 
     @altitude_accuracy.setter
-    def altitude_accuracy(self, value):
+    def altitude_accuracy(self, value: float | None) -> None:
         if value is not None and self.altitude is None:
             raise ValueError("altitude_accuracy cannot be set without altitude")
         if value is not None and value < 0.0:
@@ -161,21 +169,21 @@ class GeolocationCoordinates:
         self._altitude_accuracy = value
 
     @property
-    def heading(self):
+    def heading(self) -> float | None:
         return self._heading
 
     @heading.setter
-    def heading(self, value):
+    def heading(self, value: float | None) -> None:
         if value is not None and not (0.0 <= value < 360.0):
             raise ValueError("heading must be between 0.0 and 360.0")
         self._heading = value
 
     @property
-    def speed(self):
+    def speed(self) -> float | None:
         return self._speed
 
     @speed.setter
-    def speed(self, value):
+    def speed(self, value: float | None) -> None:
         if value is not None and value < 0.0:
             raise ValueError("speed must be >= 0.0")
         self._speed = value
@@ -219,7 +227,7 @@ class GeolocationPositionError:
 class Emulation:
     """BiDi implementation of the emulation module."""
 
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
 
     def set_geolocation_override(
@@ -431,3 +439,41 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setUserAgentOverride", params))
+
+    def set_network_conditions(
+        self,
+        offline: bool = False,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set network conditions for the given contexts or user contexts.
+
+        Args:
+            offline: True to emulate offline network conditions, False to clear the override.
+            contexts: List of browsing context IDs to apply the conditions to.
+            user_contexts: List of user context IDs to apply the conditions to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {}
+
+        if offline:
+            params["networkConditions"] = {"type": "offline"}
+        else:
+            # if offline is False or None, then clear the override
+            params["networkConditions"] = None
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setNetworkConditions", params))

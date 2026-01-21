@@ -5,12 +5,6 @@ java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
     srcs = glob(["*.java"]),
-    browsers = [
-        "chrome",
-        "edge",
-        "ie",
-        "safari",
-    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -64,9 +64,9 @@ public class RelaySessionFactoryTest {
     capabilitiesWithBundleId = factory.filterRelayCapabilities(capabilitiesWithBundleId);
     capabilitiesWithoutApp = factory.filterRelayCapabilities(capabilitiesWithoutApp);
 
-    assertEquals(null, capabilitiesWithApp.getCapability("browserName"));
-    assertEquals(null, capabilitiesWithAppPackage.getCapability("browserName"));
-    assertEquals(null, capabilitiesWithBundleId.getCapability("browserName"));
-    assertEquals("chrome", capabilitiesWithoutApp.getCapability("browserName"));
+    assertThat(capabilitiesWithApp.getCapability("browserName")).isEqualTo(null);
+    assertThat(capabilitiesWithAppPackage.getCapability("browserName")).isEqualTo(null);
+    assertThat(capabilitiesWithBundleId.getCapability("browserName")).isEqualTo(null);
+    assertThat(capabilitiesWithoutApp.getCapability("browserName")).isEqualTo("chrome");
   }
 }

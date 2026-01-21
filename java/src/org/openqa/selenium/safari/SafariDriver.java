@@ -54,11 +54,16 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
+    this(safariOptions, ClientConfig.defaultConfig());
+  }
+
+  public SafariDriver(SafariOptions safariOptions, ClientConfig clientConfig) {
     this(
         safariOptions.getUseTechnologyPreview()
             ? SafariTechPreviewDriverService.createDefaultService()
             : SafariDriverService.createDefaultService(),
-        safariOptions);
+        safariOptions,
+        clientConfig);
   }
 
   /**
@@ -81,7 +86,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   public SafariDriver(DriverService service, SafariOptions options, ClientConfig clientConfig) {
-    super(generateExecutor(service, options, clientConfig), options);
+    super(generateExecutor(service, options, clientConfig), options, clientConfig);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }

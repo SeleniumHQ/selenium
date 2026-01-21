@@ -26,6 +26,7 @@ const remote = require('selenium-webdriver/remote')
 
 const assert = require('node:assert')
 const fs = require('node:fs')
+const path = require('node:path')
 const io = require('selenium-webdriver/io')
 
 const Pages = test.Pages
@@ -198,7 +199,7 @@ test.suite(function (env) {
 
       const frame = await driver.findElement(By.id('upload_target'))
       await driver.switchTo().frame(frame)
-      assert.strictEqual(await driver.findElement(By.css('body')).getText(), fp.split('/').pop())
+      assert.strictEqual(await driver.findElement(By.css('body')).getText(), path.basename(fp))
 
       if (driver) {
         return driver.quit()

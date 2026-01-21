@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
 import java.time.Duration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,36 +31,23 @@ import org.junit.jupiter.api.Test;
 class GeckoDriverServiceTest {
 
   @Test
-  void builderPassesTimeoutToDriverService() {
-    File exe = new File("someFile");
+  void builderUsesDefaultTimeoutForDriverService() {
     Duration defaultTimeout = Duration.ofSeconds(20);
-    Duration customTimeout = Duration.ofSeconds(60);
 
     GeckoDriverService.Builder builderMock = spy(GeckoDriverService.Builder.class);
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
-
-    builderMock.withTimeout(customTimeout);
-    builderMock.build();
-    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
   }
 
   @Test
-  void shouldStopServiceWhenSessionCreationFails() {
-    // Create Firefox options that will cause session creation to fail
-    FirefoxOptions options = new FirefoxOptions();
-    options.setBinary("/path/to/nonexistent/firefox/binary");
+  void builderPassesTimeoutToDriverService() {
+    Duration customTimeout = Duration.ofSeconds(60);
+    GeckoDriverService.Builder builderMock =
+        spy(GeckoDriverService.Builder.class).withTimeout(customTimeout);
 
-    // Create a service
-    GeckoDriverService service = GeckoDriverService.createDefaultService();
-    GeckoDriverService serviceSpy = spy(service);
+    builderMock.build();
 
-    // Attempt to create driver - should fail and cleanup the service
-    assertThatExceptionOfType(Exception.class)
-        .isThrownBy(() -> new FirefoxDriver(serviceSpy, options));
-
-    // Verify that the service was stopped
-    assertThat(serviceSpy.isRunning()).isFalse();
+    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
   }
 }

@@ -61,13 +61,8 @@ public class SubscriptionOptions
 public class ContextSubscriptionOptions
 {
     public TimeSpan? Timeout { get; set; }
-}
 
-internal static class ContextSubscriptionOptionsExtensions
-{
-    // Converts ContextSubscriptionOptions to SubscriptionOptions with the specified context.
-    // Deeply copying other properties as needed.
-    public static SubscriptionOptions WithContext(this ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context],
         Timeout = options?.Timeout

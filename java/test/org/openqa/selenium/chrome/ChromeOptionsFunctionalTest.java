@@ -20,10 +20,10 @@ package org.openqa.selenium.chrome;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -109,7 +109,6 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   private ChromeOptions createChromeOptionsForExtensions() {
     ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
-    return options.setExperimentalOption(
-        "prefs", ImmutableMap.of("extensions.ui.developer_mode", true));
+    return options.setExperimentalOption("prefs", Map.of("extensions.ui.developer_mode", true));
   }
 }

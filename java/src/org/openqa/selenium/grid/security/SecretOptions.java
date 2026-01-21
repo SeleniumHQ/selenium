@@ -41,7 +41,7 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    if ((isSecure()) && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
+    if ((isSecure()) && config.get(SERVER_SECTION, "registration-secret").isEmpty()) {
       try {
         secret =
             getEncoder()
@@ -62,7 +62,7 @@ public class SecretOptions {
     Optional<String> username = config.get(ROUTER_SECTION, "username");
     Optional<String> password = config.get(ROUTER_SECTION, "password");
 
-    if (!username.isPresent() || !password.isPresent()) {
+    if (username.isEmpty() || password.isEmpty()) {
       return null;
     }
 

@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.stream.StreamSupport.stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.By.id;
+import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.remote.http.Contents.string;
 
 import java.io.File;
@@ -26,7 +28,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -72,29 +73,29 @@ public abstract class AppServerTestBase {
   @Test
   void hostsStaticPages() {
     driver.get(server.whereIs("simpleTest.html"));
-    assertEquals("Hello WebDriver", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @Test
   void servesNumberedPages() {
     driver.get(server.whereIs("page/1"));
-    assertEquals("Page1", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Page1");
 
     driver.get(server.whereIs("page/2"));
-    assertEquals("Page2", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Page2");
   }
 
   @Test
   void numberedPagesExcludeQuerystring() {
     driver.get(server.whereIs("page/1?foo=bar"));
-    assertEquals("1", driver.findElement(By.id("pageNumber")).getText());
+    assertThat(driver.findElement(id("pageNumber")).getText()).isEqualTo("1");
   }
 
   @Test
   void redirects() {
     driver.get(server.whereIs("redirect"));
-    assertEquals("We Arrive Here", driver.getTitle());
-    assertTrue(driver.getCurrentUrl().contains("resultPage"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
+    assertThat(driver.getCurrentUrl()).contains("resultPage");
   }
 
   @Test
@@ -103,16 +104,16 @@ public abstract class AppServerTestBase {
     driver.get(server.whereIs("sleep?time=1"));
 
     long duration = System.currentTimeMillis() - before;
-    assertTrue(duration >= 1000);
-    assertTrue(duration < 1500);
-    assertEquals("Slept for 1s", driver.findElement(By.tagName("body")).getText());
+    assertThat(duration >= 1000).isTrue();
+    assertThat(duration < 1500).isTrue();
+    assertThat(driver.findElement(tagName("body")).getText()).isEqualTo("Slept for 1s");
   }
 
   @Test
   void dealsWithUtf16() {
     driver.get(server.whereIs("encoding"));
     String pageText = driver.findElement(By.tagName("body")).getText();
-    assertTrue(pageText.contains("\u05E9\u05DC\u05D5\u05DD"));
+    assertThat(pageText).contains("\u05E9\u05DC\u05D5\u05DD");
   }
 
   @Test
@@ -124,9 +125,10 @@ public abstract class AppServerTestBase {
 
     System.out.printf("Content for %s was %s%n", url, string(response));
 
-    assertTrue(
-        StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
-            .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)));
+    assertThat(
+            stream(response.getHeaders("Content-Type").spliterator(), false)
+                .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)))
+        .isTrue();
   }
 
   @Test

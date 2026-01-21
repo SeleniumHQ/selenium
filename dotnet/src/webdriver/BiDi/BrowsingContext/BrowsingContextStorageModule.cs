@@ -24,34 +24,18 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)
 {
-    public Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
+    public Task<GetCookiesResult> GetCookiesAsync(ContextGetCookiesOptions? options = null)
     {
-        options ??= new();
-
-        options.Partition = new ContextPartitionDescriptor(context);
-
-        return storageModule.GetCookiesAsync(options);
+        return storageModule.GetCookiesAsync(ContextGetCookiesOptions.WithContext(options, context));
     }
 
-    public async Task<PartitionKey> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
+    public Task<DeleteCookiesResult> DeleteCookiesAsync(ContextDeleteCookiesOptions? options = null)
     {
-        options ??= new();
-
-        options.Partition = new ContextPartitionDescriptor(context);
-
-        var res = await storageModule.DeleteCookiesAsync(options).ConfigureAwait(false);
-
-        return res.PartitionKey;
+        return storageModule.DeleteCookiesAsync(ContextDeleteCookiesOptions.WithContext(options, context));
     }
 
-    public async Task<PartitionKey> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
+    public Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, ContextSetCookieOptions? options = null)
     {
-        options ??= new();
-
-        options.Partition = new ContextPartitionDescriptor(context);
-
-        var res = await storageModule.SetCookieAsync(cookie, options).ConfigureAwait(false);
-
-        return res.PartitionKey;
+        return storageModule.SetCookieAsync(cookie, ContextSetCookieOptions.WithContext(options, context));
     }
 }

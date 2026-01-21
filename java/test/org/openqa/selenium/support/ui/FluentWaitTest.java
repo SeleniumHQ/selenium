@@ -20,17 +20,16 @@ package org.openqa.selenium.support.ui;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.support.ui.FluentWait.formatTimeout;
 
 import java.time.Duration;
 import java.util.function.Function;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -42,15 +41,10 @@ class FluentWaitTest {
 
   private static final Object ARBITRARY_VALUE = new Object();
 
-  @Mock private WebDriver mockDriver;
-  @Mock private ExpectedCondition<Object> mockCondition;
-  @Mock private java.time.Clock mockClock;
-  @Mock private Sleeper mockSleeper;
-
-  @BeforeEach
-  public void createMocks() {
-    MockitoAnnotations.initMocks(this);
-  }
+  private final WebDriver mockDriver = mock();
+  private final ExpectedCondition<Object> mockCondition = mock();
+  private final java.time.Clock mockClock = mock();
+  private final Sleeper mockSleeper = mock();
 
   @Test
   void shouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
@@ -155,8 +149,10 @@ class FluentWaitTest {
   void timeoutMessageIncludesCustomMessage() {
     TimeoutException exception =
         new TimeoutException(
-            "Expected condition failed: Expected custom timeout message "
-                + "(tried for 0 second(s) with 500 milliseconds interval)");
+            String.format(
+                "%s%n%s",
+                "Expected condition failed: Expected custom timeout message",
+                "(tried for 0 seconds with 500 milliseconds interval)"));
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -177,8 +173,10 @@ class FluentWaitTest {
   void timeoutMessageIncludesCustomMessageEvaluatedOnFailure() {
     TimeoutException exception =
         new TimeoutException(
-            "Expected condition failed: external state "
-                + "(tried for 0 second(s) with 500 milliseconds interval)");
+            String.format(
+                "%s%n%s",
+                "Expected condition failed: external state",
+                "(tried for 0 seconds with 500 milliseconds interval)"));
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -199,11 +197,13 @@ class FluentWaitTest {
   void timeoutMessageIncludesToStringOfCondition() {
     TimeoutException exception =
         new TimeoutException(
-            "Expected condition failed: waiting for toString called "
-                + "(tried for 0 second(s) with 500 milliseconds interval)");
+            String.format(
+                "%s%n%s",
+                "Expected condition failed: waiting for toString called",
+                "(tried for 0 seconds with 500 milliseconds interval)"));
 
     Function<Object, Boolean> condition =
-        new Function<Object, Boolean>() {
+        new Function<>() {
           @Override
           public Boolean apply(Object ignored) {
             return false;
@@ -249,7 +249,7 @@ class FluentWaitTest {
 
     final TestException sentinelException = new TestException();
     FluentWait<WebDriver> wait =
-        new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper) {
+        new FluentWait<>(mockDriver, mockClock, mockSleeper) {
           @Override
           protected RuntimeException timeoutException(String message, Throwable lastException) {
             throw sentinelException;
@@ -262,6 +262,17 @@ class FluentWaitTest {
     assertThatExceptionOfType(TestException.class)
         .isThrownBy(() -> wait.until(mockCondition))
         .satisfies(expected -> assertThat(sentinelException).isSameAs(expected));
+  }
+
+  @Test
+  void showsTimeoutInHumanReadableFormat() {
+    assertThat(formatTimeout(Duration.ofSeconds(0))).isEqualTo("0 seconds");
+    assertThat(formatTimeout(Duration.ofSeconds(1))).isEqualTo("1 second");
+    assertThat(formatTimeout(Duration.ofSeconds(2))).isEqualTo("2 seconds");
+    assertThat(formatTimeout(Duration.ofMillis(500))).isEqualTo("0.5 seconds");
+    assertThat(formatTimeout(Duration.ofMillis(1500))).isEqualTo("1.5 seconds");
+    assertThat(formatTimeout(Duration.ofMillis(1245678901234L)))
+        .isEqualTo("1245678901.234 seconds");
   }
 
   private static class TestException extends RuntimeException {}

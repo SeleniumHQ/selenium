@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.collect.ImmutableMap.of;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -56,7 +55,7 @@ class RemotableByTest {
             });
     driver.findElement(By.cssSelector("#foo"));
 
-    assertThat(parameters).hasValue(of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -78,7 +77,7 @@ class RemotableByTest {
           }
         });
 
-    assertThat(parameters).hasValue(of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -106,7 +105,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters).hasValue(of("using", "magic", "value", "abracadabra"));
+    assertThat(parameters).hasValue(Map.of("using", "magic", "value", "abracadabra"));
   }
 
   @Test
@@ -135,7 +134,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters).hasValue(of("using", "css selector", "value", "not-magic"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "not-magic"));
   }
 
   @Test
@@ -188,7 +187,7 @@ class RemotableByTest {
     driver.findElement(new CustomBy("two"));
     driver.findElement(new CustomBy("three"));
 
-    assertThat(parameters).hasValue(of("using", "css selector", "value", "three"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "three"));
   }
 
   private Response createResponse(Object value) {

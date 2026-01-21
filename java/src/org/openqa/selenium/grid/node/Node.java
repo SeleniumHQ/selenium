@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
 import static org.openqa.selenium.remote.http.Route.post;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
@@ -125,7 +124,7 @@ public abstract class Node implements HasReadyState, Routable {
 
   private static final Logger LOG = Logger.getLogger(Node.class.getName());
   private static final BuildInfo INFO = new BuildInfo();
-  private static final ImmutableMap<String, String> OS_INFO = loadOsInfo();
+  private static final Map<String, String> OS_INFO = loadOsInfo();
   protected final Tracer tracer;
   private final NodeId id;
   private final URI uri;
@@ -207,8 +206,8 @@ public abstract class Node implements HasReadyState, Routable {
             get("/status").to(() -> new StatusHandler(this)).with(spanDecorator("node.status")));
   }
 
-  private static ImmutableMap<String, String> loadOsInfo() {
-    return ImmutableMap.of(
+  private static Map<String, String> loadOsInfo() {
+    return Map.of(
         "arch", System.getProperty("os.arch"),
         "name", System.getProperty("os.name"),
         "version", System.getProperty("os.version"));
@@ -234,7 +233,7 @@ public abstract class Node implements HasReadyState, Routable {
     return String.format("%s (revision %s)", INFO.getReleaseLabel(), INFO.getBuildRevision());
   }
 
-  public ImmutableMap<String, String> getOsInfo() {
+  public Map<String, String> getOsInfo() {
     return OS_INFO;
   }
 

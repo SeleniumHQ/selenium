@@ -44,7 +44,7 @@ class Storage {
    *
    * @param {CookieFilter} [filter] - The filter to apply to the cookies.
    * @param {(BrowsingContextPartitionDescriptor|StorageKeyPartitionDescriptor)} [partition] - The partition to retrieve cookies from.
-   * @returns {Promise<{ cookies: Cookie[], partitionKey?: PartitionKey }>} - A promise that resolves to an object containing the retrieved cookies and an optional partition key.
+   * @returns {Promise<{ cookies: Cookie[], partitionKey: (PartitionKey|undefined) }>} - A promise that resolves to an object containing the retrieved cookies and an optional partition key.
    * @throws {Error} If the filter parameter is provided but is not an instance of CookieFilter.
    * @throws {Error} If the partition parameter is provided but is not an instance of BrowsingContextPartitionDescriptor or StorageKeyPartitionDescriptor.
    */

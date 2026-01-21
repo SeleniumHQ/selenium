@@ -1,21 +1,12 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A menu button control.
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../demos/menubutton.html
  */
 
@@ -30,6 +21,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.math.Box');
+goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.positioning');
 goog.require('goog.positioning.Corner');
@@ -43,9 +35,17 @@ goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuRenderer');
+goog.require('goog.ui.SubMenu');
 goog.require('goog.ui.registry');
-goog.require('goog.userAgent');
-goog.require('goog.userAgent.product');
+goog.requireType('goog.events.BrowserEvent');
+goog.requireType('goog.events.Event');
+goog.requireType('goog.events.EventTarget');
+goog.requireType('goog.math.Size');
+goog.requireType('goog.positioning.AnchoredPosition');
+goog.requireType('goog.ui.ButtonRenderer');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.ControlContent');
+goog.requireType('goog.ui.MenuSeparator');
 
 
 
@@ -67,6 +67,7 @@ goog.require('goog.userAgent.product');
  */
 goog.ui.MenuButton = function(
     opt_content, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
+  'use strict';
   goog.ui.Button.call(
       this, opt_content,
       opt_renderer || goog.ui.MenuButtonRenderer.getInstance(), opt_domHelper);
@@ -88,21 +89,18 @@ goog.ui.MenuButton = function(
   this.menuMargin_ = null;
   this.timer_ = new goog.Timer(500);  // 0.5 sec
 
-  // Phones running iOS prior to version 4.2.
-  if ((goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) &&
-      // Check the webkit version against the version for iOS 4.2.1.
-      !goog.userAgent.isVersionOrHigher('533.17.9')) {
-    // @bug 4322060 This is required so that the menu works correctly on
-    // iOS prior to version 4.2. Otherwise, the blur action closes the menu
-    // before the menu button click can be processed.
-    this.setFocusablePopupMenu(true);
-  }
+  /**
+   * Whether the enter or space key should close the menu, if it is already
+   * open. This should be true for accessibility reasons, but is provided as an
+   * option for backward compatibility.
+   * @private {boolean}
+   */
+  this.closeOnEnterOrSpace_ = true;
 
   /** @private {!goog.ui.MenuRenderer} */
   this.menuRenderer_ = opt_menuRenderer || goog.ui.MenuRenderer.getInstance();
 };
 goog.inherits(goog.ui.MenuButton, goog.ui.Button);
-goog.tagUnsealableClass(goog.ui.MenuButton);
 
 
 /**
@@ -199,6 +197,7 @@ goog.ui.MenuButton.prototype.selectFirstOnEnterOrSpace_ = false;
  * @override
  */
 goog.ui.MenuButton.prototype.enterDocument = function() {
+  'use strict';
   goog.ui.MenuButton.superClass_.enterDocument.call(this);
   this.attachKeyDownEventListener_(true);
   if (this.menu_) {
@@ -215,6 +214,7 @@ goog.ui.MenuButton.prototype.enterDocument = function() {
  * @override
  */
 goog.ui.MenuButton.prototype.exitDocument = function() {
+  'use strict';
   goog.ui.MenuButton.superClass_.exitDocument.call(this);
   this.attachKeyDownEventListener_(false);
   if (this.menu_) {
@@ -232,6 +232,7 @@ goog.ui.MenuButton.prototype.exitDocument = function() {
 
 /** @override */
 goog.ui.MenuButton.prototype.disposeInternal = function() {
+  'use strict';
   goog.ui.MenuButton.superClass_.disposeInternal.call(this);
   if (this.menu_) {
     this.menu_.dispose();
@@ -251,6 +252,7 @@ goog.ui.MenuButton.prototype.disposeInternal = function() {
  * @protected
  */
 goog.ui.MenuButton.prototype.handleMouseDown = function(e) {
+  'use strict';
   goog.ui.MenuButton.superClass_.handleMouseDown.call(this, e);
   if (this.isActive()) {
     // The component was allowed to activate; toggle menu visibility.
@@ -270,6 +272,7 @@ goog.ui.MenuButton.prototype.handleMouseDown = function(e) {
  * @protected
  */
 goog.ui.MenuButton.prototype.handleMouseUp = function(e) {
+  'use strict';
   goog.ui.MenuButton.superClass_.handleMouseUp.call(this, e);
   if (this.menu_ && !this.isActive()) {
     this.menu_.setMouseButtonPressed(false);
@@ -279,8 +282,8 @@ goog.ui.MenuButton.prototype.handleMouseUp = function(e) {
 
 /**
  * Performs the appropriate action when the menu button is activated by the
- * user.  Overrides the superclass implementation by not dispatching an {@code
- * ACTION} event, because menu buttons exist only to reveal menus, not to
+ * user.  Overrides the superclass implementation by not dispatching an
+ * `ACTION` event, because menu buttons exist only to reveal menus, not to
  * perform actions themselves.  Calls {@link #setActive} to deactivate the
  * button.
  * @param {goog.events.Event} e Mouse or key event that triggered the action.
@@ -289,6 +292,7 @@ goog.ui.MenuButton.prototype.handleMouseUp = function(e) {
  * @protected
  */
 goog.ui.MenuButton.prototype.performActionInternal = function(e) {
+  'use strict';
   this.setActive(false);
   return true;
 };
@@ -302,6 +306,7 @@ goog.ui.MenuButton.prototype.performActionInternal = function(e) {
  * @protected
  */
 goog.ui.MenuButton.prototype.handleDocumentMouseDown = function(e) {
+  'use strict';
   if (this.menu_ && this.menu_.isVisible() &&
       !this.containsElement(/** @type {Element} */ (e.target))) {
     // User clicked somewhere else in the document while the menu was visible;
@@ -319,6 +324,7 @@ goog.ui.MenuButton.prototype.handleDocumentMouseDown = function(e) {
  * @protected
  */
 goog.ui.MenuButton.prototype.containsElement = function(element) {
+  'use strict';
   return element && goog.dom.contains(this.getElement(), element) ||
       this.menu_ && this.menu_.containsElement(element) || false;
 };
@@ -326,6 +332,7 @@ goog.ui.MenuButton.prototype.containsElement = function(element) {
 
 /** @override */
 goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
+  'use strict';
   // Handle SPACE on keyup and all other keys on keypress.
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
     // Prevent page scrolling in Chrome.
@@ -340,10 +347,20 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
   if (this.menu_ && this.menu_.isVisible()) {
     // Menu is open.
-    var isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
+    const isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
         e.keyCode == goog.events.KeyCodes.SPACE;
-    var handledByMenu = this.menu_.handleKeyEvent(e);
-    if (e.keyCode == goog.events.KeyCodes.ESC || isEnterOrSpace) {
+    const handledByMenu = this.menu_.handleKeyEvent(e);
+    // If the submenu has handled the key event, then defer to it to close the
+    // menu if necessary and do not close it here. This is needed because the
+    // enter key should keep the submenu open, but should close other types of
+    // menu items.
+    // Check for this.menu_ again here because some widgets set this.dispose
+    // after handleKeyEvent. Example: go/widget-dispose-ex
+    const handledBySubMenu = handledByMenu && this.menu_ &&
+        this.menu_.getOpenItem() instanceof goog.ui.SubMenu;
+    if (!handledBySubMenu &&
+        (e.keyCode == goog.events.KeyCodes.ESC ||
+         (isEnterOrSpace && this.closeOnEnterOrSpace_))) {
       // Dismiss the menu.
       this.setOpen(false);
       return true;
@@ -366,22 +383,24 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
 
 /**
- * Handles {@code ACTION} events dispatched by an activated menu item.
+ * Handles `ACTION` events dispatched by an activated menu item.
  * @param {goog.events.Event} e Action event to handle.
  * @protected
  */
 goog.ui.MenuButton.prototype.handleMenuAction = function(e) {
+  'use strict';
   // Close the menu on click.
   this.setOpen(false);
 };
 
 
 /**
- * Handles {@code BLUR} events dispatched by the popup menu by closing it.
+ * Handles `BLUR` events dispatched by the popup menu by closing it.
  * Only registered if the menu is focusable.
  * @param {goog.events.Event} e Blur event dispatched by a focusable menu.
  */
 goog.ui.MenuButton.prototype.handleMenuBlur = function(e) {
+  'use strict';
   // Close the menu when it reports that it lost focus, unless the button is
   // pressed (active).
   if (!this.isActive()) {
@@ -399,6 +418,7 @@ goog.ui.MenuButton.prototype.handleMenuBlur = function(e) {
  * @protected
  */
 goog.ui.MenuButton.prototype.handleBlur = function(e) {
+  'use strict';
   if (!this.isFocusablePopupMenu()) {
     this.setOpen(false);
   }
@@ -412,6 +432,7 @@ goog.ui.MenuButton.prototype.handleBlur = function(e) {
  * @return {goog.ui.Menu} Popup menu attached to the menu button.
  */
 goog.ui.MenuButton.prototype.getMenu = function() {
+  'use strict';
   if (!this.menu_) {
     this.setMenu(new goog.ui.Menu(this.getDomHelper(), this.menuRenderer_));
   }
@@ -427,6 +448,7 @@ goog.ui.MenuButton.prototype.getMenu = function() {
  * @return {goog.ui.Menu|undefined} Previous menu (undefined if none).
  */
 goog.ui.MenuButton.prototype.setMenu = function(menu) {
+  'use strict';
   var oldMenu = this.menu_;
 
   // Do nothing unless the new menu is different from the current one.
@@ -469,6 +491,7 @@ goog.ui.MenuButton.prototype.setMenu = function(menu) {
  *     menubutton element as the anchor.
  */
 goog.ui.MenuButton.prototype.setMenuPosition = function(position) {
+  'use strict';
   if (position) {
     this.menuPosition_ = position;
     this.positionElement_ = position.element;
@@ -483,6 +506,7 @@ goog.ui.MenuButton.prototype.setMenuPosition = function(position) {
  *     of positioning to this menu button.
  */
 goog.ui.MenuButton.prototype.setPositionElement = function(positionElement) {
+  'use strict';
   this.positionElement_ = positionElement;
   this.positionMenu();
 };
@@ -494,9 +518,19 @@ goog.ui.MenuButton.prototype.setPositionElement = function(positionElement) {
  * @param {goog.math.Box} margin Margin to apply.
  */
 goog.ui.MenuButton.prototype.setMenuMargin = function(margin) {
+  'use strict';
   this.menuMargin_ = margin;
 };
 
+/**
+ * Sets whether the enter or space key should close the menu, if it is already
+ * open. By default, only the ESC key will close an open menu.
+ * @param {boolean} close Whether pressing Enter or Space when the button has
+ *     focus will close the menu if it is already open.
+ */
+goog.ui.MenuButton.prototype.setCloseOnEnterOrSpace = function(close) {
+  this.closeOnEnterOrSpace_ = close;
+};
 
 /**
  * Sets whether to select the first item in the menu when it is opened using
@@ -506,6 +540,7 @@ goog.ui.MenuButton.prototype.setMenuMargin = function(margin) {
  * @param {boolean} select
  */
 goog.ui.MenuButton.prototype.setSelectFirstOnEnterOrSpace = function(select) {
+  'use strict';
   this.selectFirstOnEnterOrSpace_ = select;
 };
 
@@ -516,6 +551,7 @@ goog.ui.MenuButton.prototype.setSelectFirstOnEnterOrSpace = function(select) {
  *     item to add to the menu.
  */
 goog.ui.MenuButton.prototype.addItem = function(item) {
+  'use strict';
   this.getMenu().addChild(item, true);
 };
 
@@ -527,6 +563,7 @@ goog.ui.MenuButton.prototype.addItem = function(item) {
  * @param {number} index Index at which to insert the menu item.
  */
 goog.ui.MenuButton.prototype.addItemAt = function(item, index) {
+  'use strict';
   this.getMenu().addChildAt(item, index, true);
 };
 
@@ -536,6 +573,7 @@ goog.ui.MenuButton.prototype.addItemAt = function(item, index) {
  * @param {goog.ui.MenuItem|goog.ui.MenuSeparator} item The menu item to remove.
  */
 goog.ui.MenuButton.prototype.removeItem = function(item) {
+  'use strict';
   var child = this.getMenu().removeChild(item, true);
   if (child) {
     child.dispose();
@@ -548,6 +586,7 @@ goog.ui.MenuButton.prototype.removeItem = function(item) {
  * @param {number} index Index of item.
  */
 goog.ui.MenuButton.prototype.removeItemAt = function(index) {
+  'use strict';
   var child = this.getMenu().removeChildAt(index, true);
   if (child) {
     child.dispose();
@@ -561,9 +600,10 @@ goog.ui.MenuButton.prototype.removeItemAt = function(index) {
  * @return {goog.ui.MenuItem?} Menu item (null if not found).
  */
 goog.ui.MenuButton.prototype.getItemAt = function(index) {
+  'use strict';
   return this.menu_ ?
       /** @type {goog.ui.MenuItem} */ (this.menu_.getChildAt(index)) :
-                                      null;
+      null;
 };
 
 
@@ -572,6 +612,7 @@ goog.ui.MenuButton.prototype.getItemAt = function(index) {
  * @return {number} The number of items in the menu.
  */
 goog.ui.MenuButton.prototype.getItemCount = function() {
+  'use strict';
   return this.menu_ ? this.menu_.getChildCount() : 0;
 };
 
@@ -586,6 +627,7 @@ goog.ui.MenuButton.prototype.getItemCount = function() {
  * @override
  */
 goog.ui.MenuButton.prototype.setVisible = function(visible, opt_force) {
+  'use strict';
   var visibilityChanged =
       goog.ui.MenuButton.superClass_.setVisible.call(this, visible, opt_force);
   if (visibilityChanged && !this.isVisible()) {
@@ -603,6 +645,7 @@ goog.ui.MenuButton.prototype.setVisible = function(visible, opt_force) {
  * @override
  */
 goog.ui.MenuButton.prototype.setEnabled = function(enable) {
+  'use strict';
   goog.ui.MenuButton.superClass_.setEnabled.call(this, enable);
   if (!this.isEnabled()) {
     this.setOpen(false);
@@ -623,6 +666,7 @@ goog.ui.MenuButton.prototype.setEnabled = function(enable) {
  *     direction is right-to-left).
  */
 goog.ui.MenuButton.prototype.isAlignMenuToStart = function() {
+  'use strict';
   var corner = this.menuPosition_.corner;
   return corner == goog.positioning.Corner.BOTTOM_START ||
       corner == goog.positioning.Corner.TOP_START;
@@ -636,6 +680,7 @@ goog.ui.MenuButton.prototype.isAlignMenuToStart = function() {
  *     the render direction is right-to-left).
  */
 goog.ui.MenuButton.prototype.setAlignMenuToStart = function(alignToStart) {
+  'use strict';
   this.menuPosition_.corner = alignToStart ?
       goog.positioning.Corner.BOTTOM_START :
       goog.positioning.Corner.BOTTOM_END;
@@ -650,8 +695,10 @@ goog.ui.MenuButton.prototype.setAlignMenuToStart = function(alignToStart) {
  * @param {boolean} scrollOnOverflow Whether the menu should scroll when too big
  *     to fit on the screen.  If false, adjust logic will be used to try and
  *     reposition the menu to fit.
+ * @suppress {strictMissingProperties} Added to tighten compiler checks
  */
 goog.ui.MenuButton.prototype.setScrollOnOverflow = function(scrollOnOverflow) {
+  'use strict';
   if (this.menuPosition_.setLastResortOverflow) {
     var overflowX = goog.positioning.Overflow.ADJUST_X;
     var overflowY = scrollOnOverflow ? goog.positioning.Overflow.RESIZE_HEIGHT :
@@ -662,10 +709,12 @@ goog.ui.MenuButton.prototype.setScrollOnOverflow = function(scrollOnOverflow) {
 
 
 /**
- * @return {boolean} Wether the menu will scroll when it's to big to fit
+ * @return {boolean} Whether the menu will scroll when it's to big to fit
  *     vertically on the screen.
+ * @suppress {strictMissingProperties} Added to tighten compiler checks
  */
 goog.ui.MenuButton.prototype.isScrollOnOverflow = function() {
+  'use strict';
   return this.menuPosition_.getLastResortOverflow &&
       !!(this.menuPosition_.getLastResortOverflow() &
          goog.positioning.Overflow.RESIZE_HEIGHT);
@@ -676,6 +725,7 @@ goog.ui.MenuButton.prototype.isScrollOnOverflow = function() {
  * @return {boolean} Whether the attached menu is focusable.
  */
 goog.ui.MenuButton.prototype.isFocusablePopupMenu = function() {
+  'use strict';
   return this.isFocusablePopupMenu_;
 };
 
@@ -687,6 +737,7 @@ goog.ui.MenuButton.prototype.isFocusablePopupMenu = function() {
  * @param {boolean} focusable Whether the attached menu is focusable.
  */
 goog.ui.MenuButton.prototype.setFocusablePopupMenu = function(focusable) {
+  'use strict';
   // TODO(attila):  The menu itself should advertise whether it is focusable.
   this.isFocusablePopupMenu_ = focusable;
 };
@@ -705,6 +756,7 @@ goog.ui.MenuButton.prototype.setFocusablePopupMenu = function(focusable) {
  */
 goog.ui.MenuButton.prototype.setRenderMenuAsSibling = function(
     renderMenuAsSibling) {
+  'use strict';
   this.renderMenuAsSibling_ = renderMenuAsSibling;
 };
 
@@ -714,6 +766,7 @@ goog.ui.MenuButton.prototype.setRenderMenuAsSibling = function(
  * @deprecated Use {@link #setOpen} instead.
  */
 goog.ui.MenuButton.prototype.showMenu = function() {
+  'use strict';
   this.setOpen(true);
 };
 
@@ -723,6 +776,7 @@ goog.ui.MenuButton.prototype.showMenu = function() {
  * @deprecated Use {@link #setOpen} instead.
  */
 goog.ui.MenuButton.prototype.hideMenu = function() {
+  'use strict';
   this.setOpen(false);
 };
 
@@ -734,6 +788,7 @@ goog.ui.MenuButton.prototype.hideMenu = function() {
  * @override
  */
 goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
+  'use strict';
   goog.ui.MenuButton.superClass_.setOpen.call(this, open);
   if (this.menu_ && this.hasState(goog.ui.Component.State.OPENED) == open) {
     if (open) {
@@ -764,11 +819,18 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       // keyboarding up or down. Thus, the first menu item will be announced
       // for screen reader users. If selectFirstOnEnterOrSpace is set, do this
       // for enter or space as well.
-      var isEnterOrSpace =
-          !!opt_e && (opt_e.keyCode == goog.events.KeyCodes.ENTER ||
-                      opt_e.keyCode == goog.events.KeyCodes.SPACE);
-      var isUpOrDown = !!opt_e && (opt_e.keyCode == goog.events.KeyCodes.DOWN ||
-                                   opt_e.keyCode == goog.events.KeyCodes.UP);
+      /**
+       * @suppress {strictMissingProperties} Added to tighten compiler checks
+       */
+      var isEnterOrSpace = !!opt_e &&
+          (opt_e.keyCode == goog.events.KeyCodes.ENTER ||
+           opt_e.keyCode == goog.events.KeyCodes.SPACE);
+      /**
+       * @suppress {strictMissingProperties} Added to tighten compiler checks
+       */
+      var isUpOrDown = !!opt_e &&
+          (opt_e.keyCode == goog.events.KeyCodes.DOWN ||
+           opt_e.keyCode == goog.events.KeyCodes.UP);
       var focus =
           isUpOrDown || (isEnterOrSpace && this.selectFirstOnEnterOrSpace_);
       if (focus) {
@@ -789,7 +851,7 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       }
 
       // Clear any sizes that might have been stored.
-      if (goog.isDefAndNotNull(this.originalSize_)) {
+      if (this.originalSize_ != null) {
         this.originalSize_ = undefined;
         var elem = this.menu_.getElement();
         if (elem) {
@@ -821,6 +883,7 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
  * (usually followed by positionMenu()).
  */
 goog.ui.MenuButton.prototype.invalidateMenuSize = function() {
+  'use strict';
   this.originalSize_ = undefined;
 };
 
@@ -830,6 +893,7 @@ goog.ui.MenuButton.prototype.invalidateMenuSize = function() {
  * the menu size is known to change.
  */
 goog.ui.MenuButton.prototype.positionMenu = function() {
+  'use strict';
   if (!this.menu_.isInDocument()) {
     return;
   }
@@ -864,16 +928,35 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
  * @private
  */
 goog.ui.MenuButton.prototype.onTick_ = function(e) {
+  'use strict';
   // Call positionMenu() only if the button position or size was
   // changed, or if the window's viewport was changed.
   var currentButtonRect = goog.style.getBounds(this.getElement());
   var currentViewport = goog.style.getVisibleRectForElement(this.getElement());
-  if (!goog.math.Rect.equals(this.buttonRect_, currentButtonRect) ||
-      !goog.math.Box.equals(this.viewportBox_, currentViewport)) {
-    this.buttonRect_ = currentButtonRect;
-    this.viewportBox_ = currentViewport;
-    this.positionMenu();
+  if (goog.math.Rect.equals(this.buttonRect_, currentButtonRect) &&
+      goog.math.Box.equals(this.viewportBox_, currentViewport)) {
+    return;
   }
+
+  // Reduction in the viewport width (e.g. due to increasing the zoom) can
+  // cause the menu to get squashed against the right edge, distorting its
+  // shape. When we move the menu back where it belongs, we risk using the
+  // distorted size, causing mispositioning. To be safe, start by moving the
+  // menu to the top left to let it reassume its true shape.
+  if (this.menu_.isInDocument() && currentViewport && this.viewportBox_ &&
+      (currentViewport.getWidth() < this.viewportBox_.getWidth())) {
+    var elem = this.menu_.getElement();
+    if (!this.menu_.isVisible()) {
+      elem.style.visibility = 'hidden';
+      goog.style.setElementShown(elem, true);
+    }
+
+    goog.style.setPosition(elem, new goog.math.Coordinate(0, 0));
+  }
+
+  this.buttonRect_ = currentButtonRect;
+  this.viewportBox_ = currentViewport;
+  this.positionMenu();
 };
 
 
@@ -886,6 +969,7 @@ goog.ui.MenuButton.prototype.onTick_ = function(e) {
  */
 goog.ui.MenuButton.prototype.attachMenuEventListeners_ = function(
     menu, attach) {
+  'use strict';
   var handler = this.getHandler();
   var method = attach ? handler.listen : handler.unlisten;
 
@@ -910,6 +994,7 @@ goog.ui.MenuButton.prototype.attachMenuEventListeners_ = function(
  * @private
  */
 goog.ui.MenuButton.prototype.attachKeyDownEventListener_ = function(attach) {
+  'use strict';
   var handler = this.getHandler();
   var method = attach ? handler.listen : handler.unlisten;
 
@@ -921,10 +1006,12 @@ goog.ui.MenuButton.prototype.attachKeyDownEventListener_ = function(attach) {
 
 
 /**
- * Handles {@code HIGHLIGHT} events dispatched by the attached menu.
+ * Handles `HIGHLIGHT` events dispatched by the attached menu.
  * @param {goog.events.Event} e Highlight event to handle.
  */
 goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
+  'use strict';
+  /** @suppress {strictMissingProperties} Added to tighten compiler checks */
   var targetEl = e.target.getElement();
   if (targetEl) {
     this.setAriaActiveDescendant_(targetEl);
@@ -933,13 +1020,14 @@ goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
 
 
 /**
- * Handles {@code KEYDOWN} events dispatched by the button element. When the
+ * Handles `KEYDOWN` events dispatched by the button element. When the
  * button is focusable and the menu is present and visible, prevents the event
  * from propagating since the desired behavior is only to close the menu.
  * @param {goog.events.Event} e KeyDown event to handle.
  * @private
  */
 goog.ui.MenuButton.prototype.handleKeyDownEvent_ = function(e) {
+  'use strict';
   if (this.isSupportedState(goog.ui.Component.State.FOCUSED) &&
       this.getKeyEventTarget() && this.menu_ && this.menu_.isVisible()) {
     e.stopPropagation();
@@ -952,6 +1040,7 @@ goog.ui.MenuButton.prototype.handleKeyDownEvent_ = function(e) {
  * @param {goog.events.Event} e Unhighlight event to handle.
  */
 goog.ui.MenuButton.prototype.handleUnHighlightItem = function(e) {
+  'use strict';
   if (!this.menu_.getHighlighted()) {
     var element = this.getElement();
     goog.asserts.assert(element, 'The menu button DOM element cannot be null.');
@@ -962,10 +1051,11 @@ goog.ui.MenuButton.prototype.handleUnHighlightItem = function(e) {
 
 
 /**
- * Handles {@code CLOSE} events dispatched by the associated menu.
+ * Handles `CLOSE` events dispatched by the associated menu.
  * @param {goog.events.Event} e Close event to handle.
  */
 goog.ui.MenuButton.prototype.handleCloseItem = function(e) {
+  'use strict';
   // When a submenu is closed by pressing left arrow, no highlight event is
   // dispatched because the newly focused item was already highlighted, so this
   // scenario is handled by listening for the submenu close event instead.
@@ -986,6 +1076,7 @@ goog.ui.MenuButton.prototype.handleCloseItem = function(e) {
  * @private
  */
 goog.ui.MenuButton.prototype.setAriaActiveDescendant_ = function(targetEl) {
+  'use strict';
   var element = this.getElement();
   goog.asserts.assert(element, 'The menu button DOM element cannot be null.');
 
@@ -1017,6 +1108,7 @@ goog.ui.MenuButton.prototype.setAriaActiveDescendant_ = function(targetEl) {
  * @private
  */
 goog.ui.MenuButton.prototype.attachPopupListeners_ = function(attach) {
+  'use strict';
   var handler = this.getHandler();
   var method = attach ? handler.listen : handler.unlisten;
 
@@ -1045,6 +1137,7 @@ goog.ui.MenuButton.prototype.attachPopupListeners_ = function(attach) {
 // Register a decorator factory function for goog.ui.MenuButtons.
 goog.ui.registry.setDecoratorByClassName(
     goog.ui.MenuButtonRenderer.CSS_CLASS, function() {
+      'use strict';
       // MenuButton defaults to using MenuButtonRenderer.
       return new goog.ui.MenuButton(null);
     });

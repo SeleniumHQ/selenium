@@ -21,6 +21,13 @@ module Selenium
   module WebDriver
     module SpecSupport
       class TestEnvironment
+        REMOTE_DRIVER_ERRORS = [
+          Net::ReadTimeout,
+          Net::OpenTimeout,
+          Errno::ECONNRESET,
+          Errno::ECONNREFUSED
+        ].freeze
+
         attr_reader :driver
 
         def initialize
@@ -125,13 +132,24 @@ module Selenium
         end
 
         def reset_remote_server
-          @remote_server&.stop
-          @remote_server = nil
+          begin
+            @remote_server&.stop
+          rescue StandardError => e
+            WebDriver.logger.warn("Remote server stop failed: #{e.class}: #{e.message}")
+          ensure
+            @remote_server = nil
+          end
           remote_server
         end
 
         def remote_server?
-          !@remote_server.nil?
+          @remote_server&.status_ok?
+        end
+
+        def ensure_grid
+          return if remote_server?
+
+          reset_remote_server.start
         end
 
         def remote_server_jar
@@ -168,15 +186,13 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, **, &block)
+        def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
+          http_client ||= Remote::Http::Default.new(read_timeout: 30)
 
           method = :"#{driver}_driver"
-          instance = if private_methods.include?(method)
-                       send(method, listener: listener, options: build_options(**))
-                     else
-                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**))
-                     end
+          opts = {options: build_options(**), listener: listener, http_client: http_client}
+          instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
@@ -230,9 +246,20 @@ module Selenium
         end
 
         def remote_driver(**)
+          ensure_grid unless ENV['WD_REMOTE_URL']
           url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
 
-          WebDriver::Driver.for(:remote, url: url, **)
+          attempts = 0
+          begin
+            attempts += 1
+            WebDriver::Driver.for(:remote, url: url, **)
+          rescue *REMOTE_DRIVER_ERRORS => e
+            raise if attempts > 1
+
+            WebDriver.logger.warn("Remote driver failed (#{e.class}: #{e.message}); restarting grid and retrying")
+            reset_remote_server.start unless ENV['WD_REMOTE_URL']
+            retry
+          end
         end
 
         def chrome_driver(service: nil, **)

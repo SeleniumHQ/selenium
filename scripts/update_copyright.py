@@ -77,13 +77,21 @@ under the License."""
         ]
 
     def write_update_notice(self, file, lines):
+        # Build new content
+        new_content = self.copyright_notice(file) + "\n"
+        if lines and lines[0] != "\n":
+            new_content += "\n"
+        new_content += "".join(line.rstrip() + "\n" for line in lines)
+
+        # Only write if different
+        with open(file, "r", encoding="utf-8-sig") as f:
+            old_content = f.read()
+        if new_content == old_content:
+            return
+
         print(f"Adding notice to {file}")
         with open(file, "w") as f:
-            f.write(self.copyright_notice(file) + "\n")
-            if lines and lines[0] != "\n":
-                f.write("\n")
-            trimmed_lines = [line.rstrip() + "\n" for line in lines]
-            f.writelines(trimmed_lines)
+            f.write(new_content)
 
 
 ROOT = Path(os.path.realpath(__file__)).parent.parent

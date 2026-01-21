@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -356,7 +355,7 @@ class ElementDomAttributeTest extends JupiterTestBase {
   }
 
   private void checkEnumeratedAttribute(String name, String... values) {
-    asList(values)
+    List.of(values)
         .forEach(
             value -> {
               driver.get(

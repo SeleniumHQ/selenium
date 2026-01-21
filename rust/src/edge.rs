@@ -24,9 +24,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
-    REG_PV_ARG, REG_VERSION_ARG, STABLE, SeleniumManager, create_http_client, get_binary_extension,
-    path_to_string,
+    BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY,
+    OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG, REG_VERSION_ARG, STABLE, SeleniumManager,
+    create_http_client, get_binary_extension, path_to_string,
 };
 use anyhow::Error;
 use reqwest::Client;
@@ -491,21 +491,25 @@ impl SeleniumManager for EdgeManager {
             };
             Ok(browser_in_cache.join(macos_app_name))
         } else if WINDOWS.is(self.get_os()) {
-            let browser_path = if self.is_unstable(browser_version) {
-                self.get_browser_path_from_version(browser_version)
-                    .to_string()
+            // Stable Edge MSI installs to Program Files (x86) for compatibility
+            // Beta/Dev/Canary MSIs install to Program Files
+            let (browser_path, program_files_env) = if self.is_unstable(browser_version) {
+                (
+                    self.get_browser_path_from_version(browser_version)
+                        .to_string(),
+                    ENV_PROGRAM_FILES,
+                )
             } else {
-                format!(
-                    r"Microsoft\Edge\Application\{}\msedge.exe",
-                    self.get_browser_version()
+                (
+                    format!(
+                        r"Microsoft\Edge\Application\{}\msedge.exe",
+                        self.get_browser_version()
+                    ),
+                    ENV_PROGRAM_FILES_X86,
                 )
             };
-            let mut full_browser_path = Path::new(&browser_path).to_path_buf();
-            if WINDOWS.is(self.get_os()) {
-                let env_value = env::var(ENV_PROGRAM_FILES_X86).unwrap_or_default();
-                let parent_path = Path::new(&env_value);
-                full_browser_path = parent_path.join(&browser_path);
-            }
+            let env_value = env::var(program_files_env).unwrap_or_default();
+            let full_browser_path = Path::new(&env_value).join(&browser_path);
             Ok((&path_to_string(&full_browser_path)).into())
         } else {
             Ok(browser_in_cache.join(format!(

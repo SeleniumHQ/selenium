@@ -1,0 +1,95 @@
+name: CI - Lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - trunk
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  actionlint:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate workflows
+        uses: raven-actions/actionlint@v2.1.0
+
+  check-protected:
+    name: Check Protected Files
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check for protected files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            protected:
+              - 'scripts/format.sh'
+              - 'scripts/github-actions/check-format.sh'
+      - name: Fail if Protected
+        if: steps.filter.outputs.protected == 'true'
+        run: |
+          echo "::notice::PR from fork modifies format script"
+          exit 1
+
+  format:
+    name: Format
+    if: startsWith(github.head_ref, 'renovate/') != true
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Format
+      run: ./scripts/github-actions/check-format.sh
+      artifact-name: format-changes
+
+  commit-fixes:
+    name: Commit fixes
+    needs: format
+    if: failure() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Check Permissions
+        if: github.event.pull_request.head.repo.fork == true
+        run: |
+          echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
+          exit 1
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Download format changes
+        uses: actions/download-artifact@v4
+        with:
+          name: format-changes
+      - name: Apply and commit fixes
+        id: apply
+        run: |
+          if [ -s changes.patch ]; then
+            git apply --index changes.patch
+            rm changes.patch
+            git config --local user.name "Selenium CI Bot"
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git commit -m "Auto-format code"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No formatting changes needed."
+          fi
+      - name: Push fixes
+        if: steps.apply.outputs.has_changes == 'true'
+        run: |
+          git push
+          echo "::notice::Auto-formatted and pushed. New CI run will start."

@@ -25,7 +25,7 @@ from selenium.webdriver.remote.errorhandler import ErrorCode, ErrorHandler
 
 @pytest.fixture
 def handler():
-    yield ErrorHandler()
+    return ErrorHandler()
 
 
 def test_does_not_raise_exception_on_success(handler):

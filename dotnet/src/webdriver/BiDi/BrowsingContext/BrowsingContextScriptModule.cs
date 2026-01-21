@@ -25,23 +25,14 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
-    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
+    public Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, ContextAddPreloadScriptOptions? options = null)
     {
-        AddPreloadScriptOptions addPreloadScriptOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return await scriptModule.AddPreloadScriptAsync(functionDeclaration, addPreloadScriptOptions).ConfigureAwait(false);
+        return scriptModule.AddPreloadScriptAsync(functionDeclaration, ContextAddPreloadScriptOptions.WithContext(options, context));
     }
 
-    public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
+    public Task<GetRealmsResult> GetRealmsAsync(ContextGetRealmsOptions? options = null)
     {
-        options ??= new();
-
-        options.Context = context;
-
-        return await scriptModule.GetRealmsAsync(options).ConfigureAwait(false);
+        return scriptModule.GetRealmsAsync(ContextGetRealmsOptions.WithContext(options, context));
     }
 
     public Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
