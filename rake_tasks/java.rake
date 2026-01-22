@@ -377,8 +377,10 @@ end
 
 desc 'Run Java formatter (google-java-format)'
 task :lint do
-  # linting is defined in .bazelrc as part of build
   puts '  Running google-java-format...'
-  formatter = `bazel run --run_under=echo //scripts:google-java-format 2>/dev/null`.strip
+  formatter = nil
+  Bazel.execute('run', ['--run_under=echo'], '//scripts:google-java-format') do |output|
+    formatter = output.strip
+  end
   sh formatter, '--replace', *Dir.glob('java/**/*.java')
 end
