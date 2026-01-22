@@ -70,6 +70,18 @@ task :update_manager do |_task, _arguments|
   SeleniumRake.git.add('common/selenium_manager.bzl')
 end
 
+desc 'Update multitool binaries to latest releases'
+task :update_multitool do |_task, _arguments|
+  puts 'Updating multitool binary versions'
+  Bazel.execute('run', [], '//scripts:update_multitool_binaries')
+  SeleniumRake.git.add('multitool.lock.json')
+end
+
+desc 'Update dependencies for release'
+task :release_update do |_task, _arguments|
+  Rake::Task[:update_multitool].invoke
+end
+
 desc 'Update Chrome DevTools support'
 task :update_cdp, [:channel] do |_task, arguments|
   chrome_channel = arguments[:channel] || 'stable'
