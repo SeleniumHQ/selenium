@@ -287,6 +287,25 @@ copy_to_bin(
     srcs = [".prettierignore"],
 )
 
+_ESLINT_DATA = [
+    ":eslint-config",
+    ":large-test-srcs",
+    ":node_modules/@eslint/js",
+    ":node_modules/eslint-plugin-mocha",
+    ":node_modules/eslint-plugin-n",
+    ":node_modules/eslint-plugin-no-only-tests",
+    ":node_modules/eslint-plugin-prettier",
+    ":node_modules/globals",
+    ":prod-src-files",
+    ":small-test-srcs",
+]
+
+eslint_bin.eslint_binary(
+    name = "eslint",
+    chdir = package_name(),
+    data = _ESLINT_DATA,
+)
+
 # Internal jsdoc binary from npm - used by the docs rule
 jsdoc_bin.jsdoc_binary(
     name = "jsdoc_bin",
