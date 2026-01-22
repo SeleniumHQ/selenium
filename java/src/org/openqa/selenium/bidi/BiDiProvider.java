@@ -93,7 +93,7 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
           try {
             return new URI(uri);
           } catch (URISyntaxException e) {
-            return null;
+            throw new BiDiException("Invalid BiDi URL: " + uri, e);
           }
         });
   }
