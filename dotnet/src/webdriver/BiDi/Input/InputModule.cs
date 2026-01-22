@@ -34,31 +34,31 @@ public sealed class InputModule : Module
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo).ConfigureAwait(false);
     }
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)

@@ -17,7 +17,10 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -25,7 +28,28 @@ public abstract class Module
 {
     protected BiDi BiDi { get; private set; } = null!;
 
-    protected Broker Broker { get; private set; } = null!;
+    private Broker Broker { get; set; } = null!;
+
+    protected Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo)
+        where TCommand : Command
+        where TResult : EmptyResult
+    {
+        return Broker.ExecuteCommandAsync(command, options, jsonCommandTypeInfo, jsonResultTypeInfo);
+    }
+
+    protected Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+        where TEventArgs : EventArgs
+    {
+        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
+        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo);
+    }
+
+    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+        where TEventArgs : EventArgs
+    {
+        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
+        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo);
+    }
 
     protected abstract void Initialize(JsonSerializerOptions jsonSerializerOptions);
 

@@ -31,33 +31,33 @@ internal sealed class SessionModule : Module
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, _jsonContext.StatusCommand, _jsonContext.StatusResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new StatusCommand(), options, _jsonContext.StatusCommand, _jsonContext.StatusResult).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync(new(@params), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new(@params), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null)
     {
         var @params = new NewParameters(capabilities);
 
-        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, _jsonContext.NewCommand, _jsonContext.NewResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new NewCommand(@params), options, _jsonContext.NewCommand, _jsonContext.NewResult).ConfigureAwait(false);
     }
 
     public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
     }
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)

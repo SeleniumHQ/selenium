@@ -32,14 +32,14 @@ public sealed class WebExtensionModule : Module
     {
         var @params = new InstallParameters(extensionData);
 
-        return await Broker.ExecuteCommandAsync(new InstallCommand(@params), options, _jsonContext.InstallCommand, _jsonContext.InstallResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new InstallCommand(@params), options, _jsonContext.InstallCommand, _jsonContext.InstallResult).ConfigureAwait(false);
     }
 
     public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
     {
         var @params = new UninstallParameters(extension);
 
-        return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult).ConfigureAwait(false);
     }
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)

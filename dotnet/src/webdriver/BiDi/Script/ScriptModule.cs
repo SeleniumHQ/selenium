@@ -35,7 +35,7 @@ public sealed class ScriptModule : Module
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync(new EvaluateCommand(@params), options, _jsonContext.EvaluateCommand, _jsonContext.EvaluateResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new EvaluateCommand(@params), options, _jsonContext.EvaluateCommand, _jsonContext.EvaluateResult).ConfigureAwait(false);
     }
 
     public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
@@ -49,7 +49,7 @@ public sealed class ScriptModule : Module
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync(new CallFunctionCommand(@params), options, _jsonContext.CallFunctionCommand, _jsonContext.EvaluateResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CallFunctionCommand(@params), options, _jsonContext.CallFunctionCommand, _jsonContext.EvaluateResult).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
@@ -63,58 +63,58 @@ public sealed class ScriptModule : Module
     {
         var @params = new DisownParameters(handles, target);
 
-        return await Broker.ExecuteCommandAsync(new DisownCommand(@params), options, _jsonContext.DisownCommand, _jsonContext.DisownResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new DisownCommand(@params), options, _jsonContext.DisownCommand, _jsonContext.DisownResult).ConfigureAwait(false);
     }
 
     public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
 
-        return await Broker.ExecuteCommandAsync(new GetRealmsCommand(@params), options, _jsonContext.GetRealmsCommand, _jsonContext.GetRealmsResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new GetRealmsCommand(@params), options, _jsonContext.GetRealmsCommand, _jsonContext.GetRealmsResult).ConfigureAwait(false);
     }
 
     public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
 
-        return await Broker.ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, _jsonContext.AddPreloadScriptCommand, _jsonContext.AddPreloadScriptResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, _jsonContext.AddPreloadScriptCommand, _jsonContext.AddPreloadScriptResult).ConfigureAwait(false);
     }
 
     public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, _jsonContext.RemovePreloadScriptCommand, _jsonContext.RemovePreloadScriptResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, _jsonContext.RemovePreloadScriptCommand, _jsonContext.RemovePreloadScriptResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _jsonContext.MessageEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("script.message", handler, options, _jsonContext.MessageEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _jsonContext.MessageEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("script.message", handler, options, _jsonContext.MessageEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
