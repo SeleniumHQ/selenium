@@ -25,8 +25,8 @@ docfx_repo = repository_rule(
 def _docfx_extension_impl(module_ctx):
     docfx_repo(
         name = "docfx",
-        version = "2.78.2",
-        sha256 = "68b70b5e3e3f0df0dd858b228131fec40ca45493bb5b93f77b9ab3a38b21f7fb",
+        version = "2.78.4",
+        sha256 = "56faca4233a743b446a7584ff8195d8bb09a33aaa97e9e089c1e6b112212a848",
     )
     return module_ctx.extension_metadata(reproducible = True)
 
