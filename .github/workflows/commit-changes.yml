@@ -51,16 +51,31 @@ jobs:
       - name: Apply and commit
         id: commit
         run: |
-          set -e
           if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply --index changes.patch
+            if ! git apply --index changes.patch; then
+              echo "::error::Failed to apply patch"
+              echo "committed=false" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
             git config --local user.email "selenium-ci@users.noreply.github.com"
             git config --local user.name "Selenium CI Bot"
-            git commit -m "$COMMIT_MESSAGE"
+            if ! git commit -m "$COMMIT_MESSAGE"; then
+              echo "::error::Failed to commit changes"
+              echo "committed=false" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
             if [ -n "$PUSH_BRANCH" ]; then
-              git push origin HEAD:"$PUSH_BRANCH" --force
+              if ! git push origin HEAD:"$PUSH_BRANCH" --force; then
+                echo "::error::Failed to push to $PUSH_BRANCH"
+                echo "committed=false" >> "$GITHUB_OUTPUT"
+                exit 1
+              fi
             else
-              git push
+              if ! git push; then
+                echo "::error::Failed to push"
+                echo "committed=false" >> "$GITHUB_OUTPUT"
+                exit 1
+              fi
             fi
             echo "::notice::Changes committed and pushed"
             echo "committed=true" >> "$GITHUB_OUTPUT"
