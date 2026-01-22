@@ -30,7 +30,7 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  # Run rust jobs run in parallel with approval since work is not on trunk
+  # Run rust jobs in parallel with approval since work is not on trunk
   generate-rust-version:
     name: Generate Rust Version
     if: github.event.repository.fork == false
