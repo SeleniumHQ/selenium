@@ -11,6 +11,8 @@ if [[ -n "$OUTPUT_BASE" && -d "$OUTPUT_BASE/external" ]]; then
         DOTNET="$DOTNET_DIR/dotnet"
         echo "Using bazel-managed dotnet: $DOTNET"
     fi
+else
+    echo "Warning: bazel info output_base failed; falling back to system dotnet" >&2
 fi
 DOTNET="${DOTNET:-dotnet}"
 

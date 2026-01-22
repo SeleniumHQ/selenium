@@ -35,8 +35,7 @@ def _docfx_impl(ctx):
 _UNIX_TEMPLATE = """#!/usr/bin/env bash
 set -euo pipefail
 cd "$BUILD_WORKSPACE_DIRECTORY"
-# Resolve execution root from bazel-bin symlink (bin -> config -> bazel-out -> exec_root)
-EXEC_ROOT=$(cd "$BUILD_WORKSPACE_DIRECTORY/bazel-bin" && cd ../../.. && pwd -P)
+EXEC_ROOT=$(bazel info execution_root)
 exec "$EXEC_ROOT/{dotnet}" exec \
      "$EXEC_ROOT/{docfx}" {config} "$@"
 """
@@ -44,13 +43,10 @@ exec "$EXEC_ROOT/{dotnet}" exec \
 _WINDOWS_TEMPLATE = """@echo off
 setlocal
 cd /d "%BUILD_WORKSPACE_DIRECTORY%"
-rem Resolve execution root from bazel-bin junction (bin -> config -> bazel-out -> exec_root)
-cd /d "%BUILD_WORKSPACE_DIRECTORY%\\bazel-bin"
-cd ..\\..\\..
-set EXEC_ROOT=%CD%
-cd /d "%BUILD_WORKSPACE_DIRECTORY%"
+for /f "tokens=*" %%i in ('bazel info execution_root') do set "EXEC_ROOT=%%i"
 "%EXEC_ROOT%\\{dotnet}" exec ^
     "%EXEC_ROOT%\\{docfx}" {config} %*
+endlocal
 """
 
 docfx = rule(
