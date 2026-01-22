@@ -38,6 +38,14 @@ py_binary(
     srcs = ["update_multitool_binaries.py"],
 )
 
+py_binary(
+    name = "update_docfx",
+    srcs = ["update_docfx.py"],
+    deps = [
+        requirement("packaging"),
+    ],
+)
+
 java_binary(
     name = "google-java-format",
     jvm_flags = [
