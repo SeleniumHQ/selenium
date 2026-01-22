@@ -132,7 +132,7 @@ jobs:
           - name: manager
             run: ./go update_manager
           - name: dependencies
-            run: ./go update_dependencies
+            run: ./go release_update
           - name: authors
             run: ./go authors
     uses: ./.github/workflows/bazel.yml
