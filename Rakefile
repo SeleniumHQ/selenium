@@ -6,6 +6,7 @@ $LOAD_PATH.unshift File.expand_path('.')
 require 'base64'
 require 'json'
 require 'rake'
+require 'rbconfig'
 require 'net/http'
 require 'net/telnet'
 require 'stringio'
@@ -20,9 +21,6 @@ orig_verbose = verbose
 verbose(false)
 
 # Location of all new (non-CrazyFun) methods
-require 'rake_tasks/selenium_rake/browsers'
-require 'rake_tasks/selenium_rake/checks'
-
 require 'rake/task'
 require 'rake_tasks/bazel'
 
@@ -42,11 +40,6 @@ end
 rule(%r{//.*}) do |task|
   Bazel.execute('build', %w[], task.name)
 end
-
-# Spoof tasks to get CI working with bazel
-task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
-  '//java/test/org/openqa/selenium/environment:webserver'
-]
 
 # use #java_release_targets to access this list
 JAVA_RELEASE_TARGETS = %w[
@@ -127,151 +120,7 @@ task :update_manager do |_task, _arguments|
   @git.add('common/selenium_manager.bzl')
 end
 
-# Ruby and Rust are automatically updated as part of version bumps in a separate step
-desc 'Update dependencies for the release'
-task :release_update do |_task, _arguments|
-  Rake::Task[:update_multitool].invoke
-  Rake::Task['java:update'].invoke
-  Rake::Task['node:update'].invoke
-end
-
-desc 'Update multitool binaries to latest releases'
-task :update_multitool do |_task, _arguments|
-  puts 'Updating multitool binary versions'
-  Bazel.execute('run', [], '//scripts:update_multitool_binaries')
-  @git.add('multitool.lock.json')
-end
-
-task all: [
-  :'selenium-java',
-  '//java/test/org/openqa/selenium/environment:webserver'
-]
-
-task tests: [
-  '//java/test/org/openqa/selenium/htmlunit:htmlunit',
-  '//java/test/org/openqa/selenium/firefox:test-synthesized',
-  '//java/test/org/openqa/selenium/ie:ie',
-  '//java/test/org/openqa/selenium/chrome:chrome',
-  '//java/test/org/openqa/selenium/edge:edge',
-  '//java/test/org/openqa/selenium/support:small-tests',
-  '//java/test/org/openqa/selenium/support:large-tests',
-  '//java/test/org/openqa/selenium/remote:small-tests',
-  '//java/test/org/openqa/selenium/remote/server/log:test',
-  '//java/test/org/openqa/selenium/remote/server:small-tests'
-]
-task chrome: ['//java/src/org/openqa/selenium/chrome']
-task grid: [:'selenium-server-standalone']
-task ie: ['//java/src/org/openqa/selenium/ie']
-task firefox: ['//java/src/org/openqa/selenium/firefox']
-task remote: %i[remote_server remote_client]
-task remote_client: ['//java/src/org/openqa/selenium/remote']
-task remote_server: ['//java/src/org/openqa/selenium/remote/server']
-task safari: ['//java/src/org/openqa/selenium/safari']
-task selenium: ['//java/src/org/openqa/selenium:core']
-task support: ['//java/src/org/openqa/selenium/support']
-
-desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/src/org/openqa/selenium/grid:executable-grid'
-
-task test_javascript: [
-  '//javascript/atoms:test-chrome:run',
-  '//javascript/webdriver:test-chrome:run',
-  '//javascript/selenium-atoms:test-chrome:run',
-  '//javascript/selenium-core:test-chrome:run'
-]
-task test_chrome: ['//java/test/org/openqa/selenium/chrome:chrome:run']
-task test_edge: ['//java/test/org/openqa/selenium/edge:edge:run']
-task test_chrome_atoms: [
-  '//javascript/atoms:test-chrome:run',
-  '//javascript/chrome-driver:test-chrome:run',
-  '//javascript/webdriver:test-chrome:run'
-]
-task test_htmlunit: [
-  '//java/test/org/openqa/selenium/htmlunit:htmlunit:run'
-]
-task test_grid: [
-  '//java/test/org/openqa/grid/common:common:run',
-  '//java/test/org/openqa/grid:grid:run',
-  '//java/test/org/openqa/grid/e2e:e2e:run',
-  '//java/test/org/openqa/selenium/remote:remote-driver-grid-tests:run'
-]
-task test_ie: [
-  '//cpp/iedriverserver:win32',
-  '//cpp/iedriverserver:x64',
-  '//java/test/org/openqa/selenium/ie:ie:run'
-]
-task test_jobbie: [:test_ie]
-task test_firefox: ['//java/test/org/openqa/selenium/firefox:marionette:run']
-task test_remote_server: [
-  '//java/test/org/openqa/selenium/remote/server:small-tests:run',
-  '//java/test/org/openqa/selenium/remote/server/log:test:run'
-]
-task test_remote: [
-  '//java/test/org/openqa/selenium/json:small-tests:run',
-  '//java/test/org/openqa/selenium/remote:common-tests:run',
-  '//java/test/org/openqa/selenium/remote:client-tests:run',
-  '//java/test/org/openqa/selenium/remote:remote-driver-tests:run',
-  :test_remote_server
-]
-task test_safari: ['//java/test/org/openqa/selenium/safari:safari:run']
-task test_support: [
-  '//java/test/org/openqa/selenium/support:small-tests:run',
-  '//java/test/org/openqa/selenium/support:large-tests:run'
-]
-
-task :test_java_webdriver do
-  if SeleniumRake::Checks.windows?
-    Rake::Task['test_ie'].invoke
-  elsif SeleniumRake::Checks.chrome?
-    Rake::Task['test_chrome'].invoke
-  elsif SeleniumRake::Checks.edge?
-    Rake::Task['test_edge'].invoke
-  else
-    Rake::Task['test_htmlunit'].invoke
-    Rake::Task['test_firefox'].invoke
-    Rake::Task['test_remote_server'].invoke
-  end
-end
-
-task test_java: [
-  '//java/test/org/openqa/selenium/atoms:test:run',
-  :test_java_small_tests,
-  :test_support,
-  :test_java_webdriver,
-  :test_selenium,
-  'test_grid'
-]
-
-task test_java_small_tests: [
-  '//java/test/org/openqa/selenium:small-tests:run',
-  '//java/test/org/openqa/selenium/json:small-tests:run',
-  '//java/test/org/openqa/selenium/support:small-tests:run',
-  '//java/test/org/openqa/selenium/remote:common-tests:run',
-  '//java/test/org/openqa/selenium/remote:client-tests:run',
-  '//java/test/org/openqa/grid/selenium/node:node:run',
-  '//java/test/org/openqa/grid/selenium/proxy:proxy:run',
-  '//java/test/org/openqa/selenium/remote/server:small-tests:run',
-  '//java/test/org/openqa/selenium/remote/server/log:test:run'
-]
-
-task :test do
-  if SeleniumRake::Checks.python?
-    Rake::Task['test_py'].invoke
-  else
-    Rake::Task['test_javascript'].invoke
-    Rake::Task['test_java'].invoke
-  end
-end
-
-task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task build: %i[all firefox remote selenium tests]
-
-desc 'Clean build artifacts.'
-task :clean do
-  rm_rf 'build/'
-  rm_rf 'java/build/'
-  rm_rf 'dist/'
-end
+task grid: ['java:grid']
 
 desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
@@ -280,7 +129,8 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
-  cmd = cmd.tr('/', '\\').tr(':', ';') if SeleniumRake::Checks.windows?
+  windows = RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+  cmd = cmd.tr('/', '\\').tr(':', ';') if windows
   raise 'could not unpack javadocs' unless system(cmd)
 
   File.open('build/docs/api/java/stylesheet.css', 'a') do |file|
@@ -300,12 +150,6 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
               )
   end
 end
-
-file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
-  cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
-end
-
-task sizzle_header: ['cpp/iedriver/sizzle.h']
 
 task ios_driver: [
   '//javascript/atoms/fragments:get_visible_text:ios',
@@ -1496,12 +1340,6 @@ namespace :all do
     Rake::Task['dotnet:changelog'].invoke
     Rake::Task['rust:changelog'].invoke
   end
-end
-
-at_exit do
-  system 'sh', '.git-fixfiles' if File.exist?('.git') && SeleniumRake::Checks.linux?
-rescue StandardError => e
-  puts "Do not exit execution when this errors... #{e.inspect}"
 end
 
 def updated_version(current, desired = nil, nightly = nil)
