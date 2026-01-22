@@ -88,6 +88,7 @@ Naming/BlockForwarding:
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
+    - '../Rakefile'
 
 Naming/MethodParameterName:
   AllowedNames:
