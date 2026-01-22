@@ -13,8 +13,6 @@ def _strip_test_prefixes(path):
     filename = path.rsplit("/", 1)[-1]
     if filename.startswith("test_"):
         path = path[:-len(filename)] + filename[len("test_"):]
-    if path.endswith("_tests"):
-        path = path[:-1]  # Convert _tests to _test
     return path
 
 def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, **kwargs):
