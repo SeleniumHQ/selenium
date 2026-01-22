@@ -53,6 +53,17 @@ jobs:
       run: ./scripts/github-actions/check-format.sh
       artifact-name: format-changes
 
+  fork-format-error:
+    name: Fork format instructions
+    needs: format
+    if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    steps:
+      - name: Format instructions
+        run: |
+          echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
+          exit 1
+
   commit-fixes:
     name: Commit fixes
     needs: format

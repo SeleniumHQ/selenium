@@ -51,6 +51,7 @@ jobs:
       - name: Apply and commit
         id: commit
         run: |
+          set -e
           if [ -f changes.patch ] && [ -s changes.patch ]; then
             git apply --index changes.patch
             git config --local user.email "selenium-ci@users.noreply.github.com"

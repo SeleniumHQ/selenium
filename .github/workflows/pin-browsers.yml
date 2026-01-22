@@ -40,7 +40,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
-          existing=$(gh pr list --head pinned-browser-updates --json number --jq '.[0].number')
+          existing=$(gh pr list --head pinned-browser-updates --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             echo "::notice::PR #$existing already exists"
           else
