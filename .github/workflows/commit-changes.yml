@@ -37,6 +37,7 @@ jobs:
       committed: ${{ steps.commit.outputs.committed }}
     permissions:
       contents: write
+      actions: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,6 +45,7 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
           token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download patch
+        id: download
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
@@ -51,6 +53,11 @@ jobs:
       - name: Apply and commit
         id: commit
         run: |
+          if [ "$DOWNLOAD_OUTCOME" != "success" ]; then
+            echo "::notice::Artifact not found (may not have been uploaded)"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -f changes.patch ] && [ -s changes.patch ]; then
             if ! git apply --index changes.patch; then
               echo "::error::Failed to apply patch"
@@ -84,5 +91,6 @@ jobs:
             echo "committed=false" >> "$GITHUB_OUTPUT"
           fi
         env:
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
           PUSH_BRANCH: ${{ inputs.push-branch }}
