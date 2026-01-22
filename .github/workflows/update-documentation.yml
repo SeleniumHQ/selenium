@@ -79,7 +79,7 @@ jobs:
       ref: ${{ inputs.tag }}
       run: ./go ${{ needs.parse.outputs.language }}:docs
       artifact-name: documentation
-      artifact-path: docs/api/**/*
+      artifact-path: build/docs/api/**/*
 
   commit-docs:
     name: Commit Documentation
