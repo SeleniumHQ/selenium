@@ -70,8 +70,9 @@ task :release do |_task, arguments|
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
   target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
-  target += ' -- --dry-run=true' if dry_run
-  Bazel.execute('run', ['--config=release'], target)
+  bazel_args = ['--config=release']
+  bazel_args += ['--', '--dry-run=true'] if dry_run
+  Bazel.execute('run', bazel_args, target)
 end
 
 desc 'Verify Node package is published on npm'
