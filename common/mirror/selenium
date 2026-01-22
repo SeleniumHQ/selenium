@@ -1,7 +1,17 @@
 [
   {
     "tag_name": "nightly",
-    "assets": []
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.41.0-SNAPSHOT.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.41.0-SNAPSHOT.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.41.0-SNAPSHOT.zip"
+      }
+    ]
   },
   {
     "tag_name": "selenium-4.40.0",

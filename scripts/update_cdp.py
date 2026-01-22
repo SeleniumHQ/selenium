@@ -16,12 +16,13 @@ root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 
 def get_chrome_milestone():
-    """This is the same method from pinned_browser. Use --chrome_channel=Beta if
-    using early stable release."""
+    """Get the Chrome milestone from the channel.
+
+    This is the same method from pinned_browser. Use --chrome_channel=Beta if
+    using early stable release.
+    """
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--chrome_channel", default="Stable", help="Set the Chrome channel"
-    )
+    parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel")
     args = parser.parse_args()
     channel = args.chrome_channel
 
@@ -31,9 +32,10 @@ def get_chrome_milestone():
     )
     all_versions = json.loads(r.data)
     # use the same milestone for all Chrome releases, so pick the lowest
-    milestone = min(
-        [version["milestone"] for version in all_versions if version["milestone"]]
-    )
+    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
+    if not milestones:
+        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
+    milestone = min(milestones)
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -66,7 +68,7 @@ def old_chrome(chrome_milestone):
 
 def flatten_browser_pdl(file_path, chrome_version):
     """Preserves the version block and concatenates all included domain .pdl files."""
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         content = file.read()
     # Extract version block
     version_match = re.search(r"(version\s+major\s+\d+\s+minor\s+\d+)", content)
@@ -85,9 +87,7 @@ def flatten_browser_pdl(file_path, chrome_version):
 
 
 def add_pdls(chrome_milestone):
-    source_dir = (
-        root_dir / f"common/devtools/chromium/v{previous_chrome(chrome_milestone)}"
-    )
+    source_dir = root_dir / f"common/devtools/chromium/v{previous_chrome(chrome_milestone)}"
     target_dir = root_dir / f"common/devtools/chromium/v{new_chrome(chrome_milestone)}"
     old_dir = root_dir / f"common/devtools/chromium/v{old_chrome(chrome_milestone)}"
 
@@ -104,19 +104,16 @@ def add_pdls(chrome_milestone):
             f"{target_dir}/browser_protocol.pdl",
         )
 
-        flatten_browser_pdl(
-            f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"]
-        )
+        flatten_browser_pdl(f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"])
 
         deps_content = http.request(
             "GET",
             f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/DEPS",
         ).data.decode("utf-8")
-        v8_revision = (
-            [line for line in deps_content.split("\n") if "v8_revision" in line][0]
-            .split(": ")[1]
-            .strip("',")
-        )
+        v8_revision_line = next((line for line in deps_content.split("\n") if "v8_revision" in line), None)
+        if v8_revision_line is None:
+            raise ValueError(f"No v8_revision found in DEPS for Chrome {chrome_milestone['version']}")
+        v8_revision = v8_revision_line.split(": ")[1].strip("',")
         fetch_and_save(
             f"https://raw.githubusercontent.com/v8/v8/{v8_revision}/include/js_protocol.pdl",
             f"{target_dir}/js_protocol.pdl",
@@ -133,8 +130,11 @@ def add_pdls(chrome_milestone):
 
 
 def create_new_chrome_files(src_base, chrome_milestone):
-    """Java and .NET need to copy previous version directory into new version
-    directory."""
+    """Create new Chrome devtools files for a language binding.
+
+    Java and .NET need to copy previous version directory into new version
+    directory.
+    """
     source_dir = root_dir / f"{src_base}/v{previous_chrome(chrome_milestone)}"
     target_dir = root_dir / f"{src_base}/v{new_chrome(chrome_milestone)}"
     old_dir = root_dir / f"{src_base}/v{old_chrome(chrome_milestone)}"
@@ -148,12 +148,8 @@ def create_new_chrome_files(src_base, chrome_milestone):
             shutil.copy(item, target_dir)
 
         for file in target_dir.iterdir():
-            replace_in_file(
-                file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone)
-            )
-            new_filename = file.name.replace(
-                previous_chrome(chrome_milestone), new_chrome(chrome_milestone)
-            )
+            replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
+            new_filename = file.name.replace(previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
             file.rename(target_dir / new_filename)
 
     subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
@@ -177,9 +173,7 @@ def update_java(chrome_milestone):
         root_dir / "Rakefile",
     ]
     for file in files:
-        replace_in_file(
-            file, old_chrome(chrome_milestone), new_chrome(chrome_milestone)
-        )
+        replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
 
 def update_dotnet(chrome_milestone):
@@ -191,19 +185,13 @@ def update_dotnet(chrome_milestone):
         root_dir / "dotnet/src/webdriver/DevTools/DevToolsDomains.cs",
     ]
     for file in files:
-        replace_in_file(
-            file, old_chrome(chrome_milestone), new_chrome(chrome_milestone)
-        )
+        replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
-    files = [
-        root_dir / "dotnet/test/common/CustomDriverConfigs/StableChannelChromeDriver.cs"
-    ]
+    files = [root_dir / "dotnet/test/common/CustomDriverConfigs/StableChannelChromeDriver.cs"]
     dir_path = root_dir / "dotnet/test/common/DevTools"
     files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
     for file in files:
-        replace_in_file(
-            file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone)
-        )
+        replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
 
 def update_ruby(chrome_milestone):
@@ -240,6 +228,4 @@ if __name__ == "__main__":
     update_python(chrome_milestone)
     update_js(chrome_milestone)
 
-    print(
-        f"adding CDP {new_chrome(chrome_milestone)} and removing {old_chrome(chrome_milestone)}"
-    )
+    print(f"adding CDP {new_chrome(chrome_milestone)} and removing {old_chrome(chrome_milestone)}")

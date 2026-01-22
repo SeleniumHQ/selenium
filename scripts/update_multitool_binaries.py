@@ -1,6 +1,6 @@
 #!/usr/bin/env python
+"""Update tool binaries in a Bazel rules_multitool lockfile.
 
-"""
 This script updates the version of tool binaries defined in a Bazel rules_multitool lockfile.
 If the tool has binaries hosted in a public GitHub repo's Release assets, it will update the
 lockfile's URL and hash to the latest versions, otherwise it will skip it.

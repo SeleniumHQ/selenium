@@ -29,14 +29,12 @@ under the License."""
 
     def update(self, files):
         for file in files:
-            with open(file, "r", encoding="utf-8-sig") as f:
+            with open(file, encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
             index = -1
             for i, line in enumerate(lines):
-                if line.startswith(
-                    self._comment_characters
-                ) or self.valid_copyright_notice_line(line, index, file):
+                if line.startswith(self._comment_characters) or self.valid_copyright_notice_line(line, index, file):
                     index += 1
                 else:
                     break
@@ -57,11 +55,7 @@ under the License."""
         return "".join(self.copyright_notice_lines(file))
 
     def copyright_notice_lines(self, file):
-        return (
-            self.dotnet(file)
-            if file.endswith("cs")
-            else self._prefix + self.commented_notice_lines
-        )
+        return self.dotnet(file) if file.endswith("cs") else self._prefix + self.commented_notice_lines
 
     def dotnet(self, file):
         file_name = os.path.basename(file)
@@ -71,10 +65,7 @@ under the License."""
 
     @property
     def commented_notice_lines(self):
-        return [
-            f"{self._comment_characters} {line}".rstrip() + "\n"
-            for line in self.NOTICE.split("\n")
-        ]
+        return [f"{self._comment_characters} {line}".rstrip() + "\n" for line in self.NOTICE.split("\n")]
 
     def write_update_notice(self, file, lines):
         # Build new content
@@ -84,7 +75,7 @@ under the License."""
         new_content += "".join(line.rstrip() + "\n" for line in lines)
 
         # Only write if different
-        with open(file, "r", encoding="utf-8-sig") as f:
+        with open(file, encoding="utf-8-sig") as f:
             old_content = f.read()
         if new_content == old_content:
             return

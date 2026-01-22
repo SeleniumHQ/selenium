@@ -12,6 +12,11 @@ load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
+exports_files(
+    ["pyproject.toml"],
+    visibility = ["//py:__subpackages__"],
+)
+
 py_binary(
     name = "selenium-release",
     srcs = [
@@ -660,4 +665,9 @@ py_binary(
         ":selenium",
         requirement("mypy"),
     ],
+)
+
+alias(
+    name = "ruff",
+    actual = "//py/private:ruff",
 )

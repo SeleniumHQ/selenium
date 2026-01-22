@@ -191,6 +191,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nightly-grid
+          path: build/dist
       - name: Create nightly release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
