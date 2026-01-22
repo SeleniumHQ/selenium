@@ -45,7 +45,7 @@ _WINDOWS_TEMPLATE = """@echo off
 setlocal
 cd /d "%BUILD_WORKSPACE_DIRECTORY%"
 rem Resolve execution root from bazel-bin junction (bin -> config -> bazel-out -> exec_root)
-cd /d "%BUILD_WORKSPACE_DIRECTORY%\\bazel-bin\\..\\..\.."
+cd /d "%BUILD_WORKSPACE_DIRECTORY%\\bazel-bin\\..\\..\\.."
 set EXEC_ROOT=%CD%
 cd /d "%BUILD_WORKSPACE_DIRECTORY%"
 "%EXEC_ROOT%\\{dotnet}" exec ^
