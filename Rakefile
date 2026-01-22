@@ -174,6 +174,21 @@ task :update_manager do |_task, _arguments|
   @git.add('common/selenium_manager.bzl')
 end
 
+# Ruby and Rust are automatically updated as part of version bumps in a separate step
+desc 'Update dependencies for the release'
+task :release_update do |_task, _arguments|
+  Rake::Task[:update_multitool].invoke
+  Rake::Task['java:update'].invoke
+  Rake::Task['node:update'].invoke
+end
+
+desc 'Update multitool binaries to latest releases'
+task :update_multitool do |_task, _arguments|
+  puts 'Updating multitool binary versions'
+  Bazel.execute('run', [], '//scripts:update_multitool_binaries')
+  @git.add('multitool.lock.json')
+end
+
 task all: [
   :'selenium-java',
   '//java/test/org/openqa/selenium/environment:webserver'
@@ -601,6 +616,7 @@ namespace :node do
     args << '--latest' if arguments[:latest] == 'latest'
     args += ['--dir', Dir.pwd]
     Bazel.execute('run', args, '@pnpm//:pnpm')
+    @git.add('javascript/selenium-webdriver/package.json')
     Rake::Task['node:pin'].invoke
   end
 
@@ -1346,6 +1362,8 @@ namespace :rust do
     puts 'pinning cargo versions'
     ENV['CARGO_BAZEL_REPIN'] = 'true'
     Bazel.execute('fetch', [], '@crates//:all')
+    @git.add('rust/Cargo.Bazel.lock')
+    @git.add('rust/Cargo.lock')
   end
 
   desc 'Pin Rust dependencies'
