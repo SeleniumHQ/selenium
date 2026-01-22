@@ -151,6 +151,19 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   end
 end
 
+task :release_update do |_task, _arguments|
+  Rake::Task[:update_multitool].invoke
+  Rake::Task['java:update'].invoke
+  Rake::Task['node:update'].invoke
+end
+
+desc 'Update multitool binaries to latest releases'
+task :update_multitool do |_task, _arguments|
+  puts 'Updating multitool binary versions'
+  Bazel.execute('run', [], '//scripts:update_multitool_binaries')
+  @git.add('multitool.lock.json')
+end
+
 task ios_driver: [
   '//javascript/atoms/fragments:get_visible_text:ios',
   '//javascript/atoms/fragments:click:ios',
