@@ -43,6 +43,13 @@ jobs:
       name: Type Checker
       run: bazel run //py:mypy
 
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      run: bazel run //py:ruff -- --check
+
   unit-tests:
     name: Unit Tests
     needs: build

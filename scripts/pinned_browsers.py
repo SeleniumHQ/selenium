@@ -17,7 +17,7 @@ http = urllib3.PoolManager()
 
 
 def calculate_hash(url):
-    print("Calculate hash for %s" % url, file=sys.stderr)
+    print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
     for b in iter(lambda: r.read(4096), b""):
@@ -32,9 +32,10 @@ def get_chrome_info_for_channel(channel):
     )
     all_versions = json.loads(r.data)
     # use the same milestone for all chrome releases, so pick the lowest
-    milestone = min(
-        [version["milestone"] for version in all_versions if version["milestone"]]
-    )
+    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
+    if not milestones:
+        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
+    milestone = min(milestones)
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -52,7 +53,9 @@ def chromedriver(selected_version, workspace_prefix=""):
 
     drivers = selected_version["downloads"]["chromedriver"]
 
-    url = [d["url"] for d in drivers if d["platform"] == "linux64"][0]
+    url = next((d["url"] for d in drivers if d["platform"] == "linux64"), None)
+    if url is None:
+        raise ValueError("No chromedriver download found for platform 'linux64'")
     sha = calculate_hash(url)
 
     content += f"""    http_archive(
@@ -74,7 +77,9 @@ js_library(
     )
 """
 
-    url = [d["url"] for d in drivers if d["platform"] == "mac-arm64"][0]
+    url = next((d["url"] for d in drivers if d["platform"] == "mac-arm64"), None)
+    if url is None:
+        raise ValueError("No chromedriver download found for platform 'mac-arm64'")
     sha = calculate_hash(url)
 
     content += f"""
@@ -104,7 +109,9 @@ def chrome(selected_version, workspace_prefix=""):
     content = ""
     chrome_downloads = selected_version["downloads"]["chrome"]
 
-    url = [d["url"] for d in chrome_downloads if d["platform"] == "linux64"][0]
+    url = next((d["url"] for d in chrome_downloads if d["platform"] == "linux64"), None)
+    if url is None:
+        raise ValueError("No Chrome download found for platform 'linux64'")
     sha = calculate_hash(url)
 
     content += f"""
@@ -131,7 +138,9 @@ js_library(
     )
 """
 
-    url = [d["url"] for d in chrome_downloads if d["platform"] == "mac-arm64"][0]
+    url = next((d["url"] for d in chrome_downloads if d["platform"] == "mac-arm64"), None)
+    if url is None:
+        raise ValueError("No Chrome download found for platform 'mac-arm64'")
     sha = calculate_hash(url)  # Calculate SHA for Mac chrome
 
     content += f"""    http_archive(
@@ -176,9 +185,7 @@ def case_insensitive_json_loads(json_str):
 
 def get_edge_versions(platform):
     """Fetch all available Edge browser versions for a platform from enterprise API."""
-    r = http.request(
-        "GET", "https://edgeupdates.microsoft.com/api/products?view=enterprise"
-    )
+    r = http.request("GET", "https://edgeupdates.microsoft.com/api/products?view=enterprise")
     all_data = case_insensitive_json_loads(r.data)
 
     platform_name = "MacOS" if platform == "mac" else "Linux"
@@ -262,14 +269,14 @@ def find_matching_edge_version(platform):
 
 def mac_edge_browser_content(browser_url, browser_hash, browser_version):
     """Generate Bazel content for Mac Edge browser."""
-    return """
+    return f"""
     pkg_archive(
         name = "mac_edge",
-        url = "%s",
-        sha256 = "%s",
-        move = {
-            "MicrosoftEdge-%s.pkg/Payload/Microsoft Edge.app": "Edge.app",
-        },
+        url = "{browser_url}",
+        sha256 = "{browser_hash.lower()}",
+        move = {{
+            "MicrosoftEdge-{browser_version}.pkg/Payload/Microsoft Edge.app": "Edge.app",
+        }},
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -282,16 +289,16 @@ js_library(
 )
 \"\"\",
     )
-""" % (browser_url, browser_hash.lower(), browser_version)
+"""
 
 
 def linux_edge_browser_content(browser_url, browser_hash):
     """Generate Bazel content for Linux Edge browser."""
-    return """
+    return f"""
     deb_archive(
         name = "linux_edge",
-        url = "%s",
-        sha256 = "%s",
+        url = "{browser_url}",
+        sha256 = "{browser_hash.lower()}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -309,7 +316,7 @@ js_library(
 )
 \"\"\",
     )
-""" % (browser_url, browser_hash.lower())
+"""
 
 
 def edge_and_edgedriver():
@@ -332,9 +339,7 @@ def edge_and_edgedriver():
     # Output browsers first: mac, then linux
     if "mac" in matches:
         browser = matches["mac"]["browser"]
-        content += mac_edge_browser_content(
-            browser["url"], browser["hash"], browser["version"]
-        )
+        content += mac_edge_browser_content(browser["url"], browser["hash"], browser["version"])
 
     if "linux" in matches:
         browser = matches["linux"]["browser"]
@@ -342,9 +347,7 @@ def edge_and_edgedriver():
 
     # Output drivers: linux, then mac
     if "linux" in matches:
-        content += edgedriver_content(
-            "linux_edgedriver", matches["linux"]["driver_url"]
-        )
+        content += edgedriver_content("linux_edgedriver", matches["linux"]["driver_url"])
 
     if "mac" in matches:
         content += edgedriver_content("mac_edgedriver", matches["mac"]["driver_url"])
@@ -355,11 +358,11 @@ def edge_and_edgedriver():
 def edgedriver_content(name, driver_url):
     """Generate Bazel content for EdgeDriver."""
     driver_sha = calculate_hash(driver_url)
-    return """
+    return f"""
     http_archive(
-        name = "%s",
-        url = "%s",
-        sha256 = "%s",
+        name = "{name}",
+        url = "{driver_url}",
+        sha256 = "{driver_sha}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -372,25 +375,23 @@ js_library(
 )
 \"\"\",
     )
-""" % (name, driver_url, driver_sha)
+"""
 
 
 def geckodriver():
     content = ""
 
-    r = http.request(
-        "GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest"
-    )
+    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest")
     for a in json.loads(r.data)["assets"]:
         if a["name"].endswith("-linux64.tar.gz"):
             url = a["browser_download_url"]
             sha = calculate_hash(url)
             content = (
                 content
-                + """    http_archive(
+                + f"""    http_archive(
         name = "linux_geckodriver",
-        url = "%s",
-        sha256 = "%s",
+        url = "{url}",
+        sha256 = "{sha}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -404,7 +405,6 @@ js_library(
 \"\"\",
     )
 """
-                % (url, sha)
             )
 
         if a["name"].endswith("-macos-aarch64.tar.gz"):
@@ -412,11 +412,11 @@ js_library(
             sha = calculate_hash(url)
             content = (
                 content
-                + """
+                + f"""
     http_archive(
         name = "mac_geckodriver",
-        url = "%s",
-        sha256 = "%s",
+        url = "{url}",
+        sha256 = "{sha}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -430,7 +430,6 @@ js_library(
 \"\"\",
     )
 """
-                % (url, sha)
             )
     return content
 
@@ -451,30 +450,19 @@ def firefox():
 
 
 def firefox_version_data():
-    versions = http.request(
-        "GET", "https://product-details.mozilla.org/1.0/firefox_versions.json"
-    )
+    versions = http.request("GET", "https://product-details.mozilla.org/1.0/firefox_versions.json")
     return versions.data
 
 
 def firefox_linux(version):
     if int(version.split(".")[0]) < 135:
-        return (
-            "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.bz2"
-            % (version, version)
-        )
+        return f"https://ftp.mozilla.org/pub/firefox/releases/{version}/linux-x86_64/en-US/firefox-{version}.tar.bz2"
     else:
-        return (
-            "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.xz"
-            % (version, version)
-        )
+        return f"https://ftp.mozilla.org/pub/firefox/releases/{version}/linux-x86_64/en-US/firefox-{version}.tar.xz"
 
 
 def firefox_mac(version):
-    return (
-        "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg"
-        % (version, version)
-    )
+    return f"https://ftp.mozilla.org/pub/firefox/releases/{version}/mac/en-US/Firefox%20{version}.dmg"
 
 
 def print_firefox(version, workspace_name, sha_linux, sha_mac):

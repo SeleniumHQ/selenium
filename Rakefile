@@ -1513,6 +1513,7 @@ namespace :all do
     end
 
     Bazel.execute('run', [], '//py:mypy')
+    Bazel.execute('run', [], '//py:ruff')
     Bazel.execute('run', [], '//rb:steep')
     shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
     Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
