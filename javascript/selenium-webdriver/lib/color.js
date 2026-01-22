@@ -118,23 +118,26 @@ class Color {
 
   static #fromRgbPct(v) {
     const m =
-      /^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$/i.exec(v)
+      /^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$/i.exec(
+        v,
+      )
     if (!m) return null
-    const pct = (i) => Math.floor(Math.min(100, Math.max(0, parseFloat(m[i]))) / 100 * 255)
+    const pct = (i) => Math.floor((Math.min(100, Math.max(0, parseFloat(m[i]))) / 100) * 255)
     return new Color(pct(1), pct(2), pct(3), 1)
   }
 
   static #fromRgba(v) {
-    const m =
-      /^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(v)
+    const m = /^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(v)
     return m ? new Color(+m[1], +m[2], +m[3], parseFloat(m[4])) : null
   }
 
   static #fromRgbaPct(v) {
     const m =
-      /^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(v)
+      /^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(
+        v,
+      )
     if (!m) return null
-    const pct = (i) => Math.floor(Math.min(100, Math.max(0, parseFloat(m[i]))) / 100 * 255)
+    const pct = (i) => Math.floor((Math.min(100, Math.max(0, parseFloat(m[i]))) / 100) * 255)
     return new Color(pct(1), pct(2), pct(3), parseFloat(m[4]))
   }
 
@@ -145,14 +148,7 @@ class Color {
 
   static #fromHex3(v) {
     const m = /^#([\da-f])([\da-f])([\da-f])$/i.exec(v)
-    return m
-      ? new Color(
-          parseInt(m[1] + m[1], 16),
-          parseInt(m[2] + m[2], 16),
-          parseInt(m[3] + m[3], 16),
-          1
-        )
-      : null
+    return m ? new Color(parseInt(m[1] + m[1], 16), parseInt(m[2] + m[2], 16), parseInt(m[3] + m[3], 16), 1) : null
   }
 
   static #fromHsl(v) {
@@ -161,13 +157,12 @@ class Color {
   }
 
   static #fromHsla(v) {
-    const m =
-      /^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(v)
+    const m = /^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/i.exec(v)
     return m ? Color.#hslToColor(+m[1], +m[2] / 100, +m[3] / 100, parseFloat(m[4])) : null
   }
 
   static #hslToColor(hDeg, s, l, a) {
-    const h = ((hDeg % 360) + 360) % 360 / 360
+    const h = (((hDeg % 360) + 360) % 360) / 360
     if (s === 0) {
       const v = Math.round(l * 255)
       return new Color(v, v, v, a)
@@ -179,7 +174,7 @@ class Color {
       if (hue > 1) hue -= 1
       if (hue < 1 / 6) return l1 + (l2 - l1) * 6 * hue
       if (hue < 1 / 2) return l2
-      if (hue < 2 / 3) return l1 + (l2 - l1) * ((2 / 3) - hue) * 6
+      if (hue < 2 / 3) return l1 + (l2 - l1) * (2 / 3 - hue) * 6
       return l1
     }
     const r = Math.round(hueToRgb(luminocity1, luminocity2, h + 1 / 3) * 255)
