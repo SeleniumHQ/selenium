@@ -18,17 +18,6 @@ Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
 
-# The CrazyFun build grammar. There's no magic here, just ruby
-require 'rake_tasks/crazy_fun/main'
-require 'rake_tasks/selenium_rake/detonating_handler'
-require 'rake_tasks/selenium_rake/crazy_fun'
-
-# The CrazyFun builders - Most of these are either partially or fully obsolete
-# Note the order here is important - The top 2 are used in inheritance chains
-require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
-require 'rake_tasks/crazy_fun/mappings/tasks'
-require 'rake_tasks/crazy_fun/mappings/rake_mappings'
-
 # Location of all new (non-CrazyFun) methods
 require 'rake_tasks/selenium_rake/browsers'
 require 'rake_tasks/selenium_rake/checks'
@@ -59,31 +48,6 @@ def java_version
     return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
   end
 end
-
-# The build system used by webdriver is layered on top of rake, and we call it
-# "crazy fun" for no readily apparent reason.
-
-# First off, create a new CrazyFun object.
-crazy_fun = SeleniumRake::CrazyFun.new
-
-# Secondly, we add the handlers, which are responsible for turning a build
-# rule into a (series of) rake tasks. For example if we're looking at a file
-# in subdirectory "subdir" contains the line:
-#
-# java_library(:name => "example", :srcs => ["foo.java"])
-#
-# we would generate a rake target of "//subdir:example" which would generate
-# a Java JAR at "build/subdir/example.jar".
-#
-# If crazy fun doesn't know how to handle a particular output type ("java_library"
-# in the example above) then it will throw an exception, stopping the build
-CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
-
-# Finally, find every file named "build.desc" in the project, and generate
-# rake tasks from them. These tasks are normal rake tasks, and can be invoked
-# from rake.
-# FIXME: the rules for the targets were removed and build files won't load
-# crazy_fun.create_tasks(Dir['**/build.desc'])
 
 # If it looks like a bazel target, build it with bazel
 rule(%r{//.*}) do |task|
