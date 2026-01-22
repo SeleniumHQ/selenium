@@ -18,14 +18,13 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Permissions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Extensions.Permissions;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
-public class PermissionsModule : Module
+public sealed class PermissionsModule : Module
 {
     private PermissionsJsonSerializerContext _jsonContext = null!;
 
