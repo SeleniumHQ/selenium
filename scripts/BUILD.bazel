@@ -33,6 +33,11 @@ py_binary(
     srcs = ["update_copyright.py"],
 )
 
+py_binary(
+    name = "update_multitool_binaries",
+    srcs = ["update_multitool_binaries.py"],
+)
+
 java_binary(
     name = "google-java-format",
     jvm_flags = [
