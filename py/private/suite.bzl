@@ -8,8 +8,6 @@ def _suite_suffix(name):
     return name[len("test-"):] if name.startswith("test-") else name
 
 def _strip_test_prefixes(path):
-    if path.startswith("test/"):
-        path = path[len("test/"):]
     if path.endswith(".py"):
         path = path[:-len(".py")]
     filename = path.rsplit("/", 1)[-1]
