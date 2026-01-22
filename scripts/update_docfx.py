@@ -9,8 +9,8 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
 import urllib.request
+from pathlib import Path
 
 from packaging.version import InvalidVersion, Version
 
