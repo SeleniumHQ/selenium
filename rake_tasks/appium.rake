@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 desc 'Build iOS driver atoms for Appium'
-task :build do
-  # Dependencies are built automatically via the task prerequisites
-end
-
 task build: [
   '//javascript/atoms/fragments:get_visible_text:ios',
   '//javascript/atoms/fragments:click:ios',

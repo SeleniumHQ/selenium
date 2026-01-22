@@ -89,7 +89,8 @@ task :update_cdp, [:channel] do |_task, arguments|
    'javascript/selenium-webdriver/BUILD.bazel',
    'py/BUILD.bazel',
    'rb/lib/selenium/devtools/',
-   'rb/Gemfile.lock'].each { |file| SeleniumRake.git.add(file) }
+   'rb/Gemfile.lock',
+   'rake_tasks/java.rake'].each { |file| SeleniumRake.git.add(file) }
 end
 
 load 'rake_tasks/appium.rake'

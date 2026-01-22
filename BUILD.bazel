@@ -25,7 +25,7 @@ filegroup(
     name = "rakefile",
     srcs = [
         "Rakefile",
-    ],
+    ] + glob(["rake_tasks/*.rake"]),
     visibility = ["//rb:__subpackages__"],
 )
 

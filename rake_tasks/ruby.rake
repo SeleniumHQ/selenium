@@ -56,9 +56,7 @@ task :check_credentials do |_task, arguments|
   credentials = File.join(Dir.home, '.gem', 'credentials')
   has_file = File.exist?(credentials) && File.read(credentials).include?(':rubygems_api_key:')
   has_env = ENV.fetch('GEM_HOST_API_KEY', nil) && !ENV['GEM_HOST_API_KEY'].empty?
-  unless has_file || has_env
-    raise 'Missing RubyGems credentials: set GEM_HOST_API_KEY or configure ~/.gem/credentials'
-  end
+  raise 'Missing RubyGems credentials: set GEM_HOST_API_KEY or configure ~/.gem/credentials' unless has_file || has_env
 end
 
 desc 'Push Ruby gems to rubygems'
