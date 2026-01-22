@@ -3,6 +3,7 @@
 require 'English'
 require 'open3'
 require 'rake'
+require 'rbconfig'
 require 'io/wait'
 
 module Bazel
