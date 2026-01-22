@@ -390,7 +390,7 @@ task :lint do
   puts '  Running google-java-format...'
   formatter = nil
   Bazel.execute('run', ['--run_under=echo'], '//scripts:google-java-format') do |output|
-    formatter = output.strip
+    formatter = output.lines.last.strip
   end
   sh formatter, '--replace', *Dir.glob('java/**/*.java')
 end
