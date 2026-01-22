@@ -128,11 +128,7 @@ rust/target
 rust/.idea
 
 # Bazel stuff
-bazel-bin
-bazel-genfiles
-bazel-out
-bazel-selenium
-bazel-testlogs
+/bazel-*
 MODULE.bazel.lock
 
 /.vscode/

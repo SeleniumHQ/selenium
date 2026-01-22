@@ -271,7 +271,7 @@ If you want to debug code, you can do it via [`debug`](https://github.com/ruby/d
 3. When debugger starts, run the following in a separate terminal to connect to debugger:
 
 ```shell
-bazel-selenium/external/bundle/bin/rdbg -A
+bazel-bin/external/bundle/bin/rdbg -A
 ```
 
 If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development,
@@ -279,7 +279,7 @@ you can configure it use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
 2. From the `selenium` (parent) directory, run `./go rb:local_dev` to create up-to-date artifacts.
-3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby++ruby+ruby/dist/bin/ruby`.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-bin/external/rules_ruby++ruby+ruby/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust

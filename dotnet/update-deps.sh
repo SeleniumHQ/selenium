@@ -3,8 +3,9 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_ROOT="$SCRIPT_DIR/.."
 
-if [[ -d "$REPO_ROOT/bazel-selenium/external" ]]; then
-    DOTNET_DIR=$(find "$REPO_ROOT/bazel-selenium/external" -maxdepth 1 -name "rules_dotnet++dotnet+dotnet_*" -type d | head -1)
+EXTERNAL_DIR=$(cd "$REPO_ROOT" && bazel info output_base 2>/dev/null)/external
+if [[ -d "$EXTERNAL_DIR" ]]; then
+    DOTNET_DIR=$(find "$EXTERNAL_DIR" -maxdepth 1 -name "rules_dotnet++dotnet+dotnet_*" -type d 2>/dev/null | head -1)
     if [[ -n "$DOTNET_DIR" && -x "$DOTNET_DIR/dotnet" ]]; then
         DOTNET="$DOTNET_DIR/dotnet"
         echo "Using bazel-managed dotnet: $DOTNET"
