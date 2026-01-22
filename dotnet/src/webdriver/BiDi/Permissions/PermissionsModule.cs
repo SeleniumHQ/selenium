@@ -28,9 +28,9 @@ public sealed class PermissionsModule : Module
 {
     private PermissionsJsonSerializerContext _jsonContext = null!;
 
-    public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor desriptor, PermissionState state, string origin, SetPermissionOptions? options = null)
+    public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null)
     {
-        var @params = new SetPermissionCommandParameters(desriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
+        var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
         return await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult).ConfigureAwait(false);
     }
