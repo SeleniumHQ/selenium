@@ -79,8 +79,14 @@ def sonatype_api_post(url, token)
 end
 
 def read_m2_user_pass
+  settings_path = File.join(Dir.home, '.m2', 'settings.xml')
+  unless File.exist?(settings_path)
+    warn "Maven settings file not found at #{settings_path}"
+    return
+  end
+
   puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
-  settings = File.read("#{Dir.home}/.m2/settings.xml")
+  settings = File.read(settings_path)
   found_section = false
   settings.each_line do |line|
     if !found_section

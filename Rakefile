@@ -107,6 +107,7 @@ end
 desc 'Update everything in preparation for a release'
 task :prep_release, [:version, :channel] do |_task, arguments|
   version = arguments[:version]
+  raise 'Missing required version: ./go prep_release[4.31.0,early-stable]' if version.nil? || version.empty?
 
   Rake::Task['update_browsers'].invoke(arguments[:channel])
   Rake::Task['update_cdp'].invoke(arguments[:channel])
