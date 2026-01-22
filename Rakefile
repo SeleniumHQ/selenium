@@ -162,7 +162,7 @@ desc 'Update multitool binaries to latest releases'
 task :update_multitool do |_task, _arguments|
   puts 'Updating multitool binary versions'
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
-  @git.add('multitool.lock.json') if File.exist?('multitool.lock.json')
+  @git.add('multitool.lock.json')
 end
 
 task ios_driver: [
