@@ -33,10 +33,10 @@ namespace(:java) { load 'rake_tasks/java.rake' }
 namespace(:rb) { load 'rake_tasks/ruby.rake' }
 namespace(:ruby) { load 'rake_tasks/ruby.rake' }
 namespace(:py) { load 'rake_tasks/python.rake' }
-namespace(:python) { load 'rake_tasks/python.rake' }
+namespace(:python) { load 'rake_tasks/python.rake' } # alias
 namespace(:node) { load 'rake_tasks/node.rake' }
-namespace(:js) { load 'rake_tasks/node.rake' }
-namespace(:javascript) { load 'rake_tasks/node.rake' }
+namespace(:js) { load 'rake_tasks/node.rake' } # alias
+namespace(:javascript) { load 'rake_tasks/node.rake' } # alias
 namespace(:dotnet) { load 'rake_tasks/dotnet.rake' }
 namespace(:rust) { load 'rake_tasks/rust.rake' }
 namespace(:grid) { load 'rake_tasks/grid.rake' }
@@ -55,7 +55,7 @@ desc 'Update pinned browser versions'
 task :update_browsers, [:channel] do |_task, arguments|
   chrome_channel = arguments[:channel] || 'Stable'
   chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
+  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
 
   puts 'pinning updated browsers and drivers'
   Bazel.execute('run', args, '//scripts:pinned_browsers')
@@ -74,7 +74,7 @@ desc 'Update Chrome DevTools support'
 task :update_cdp, [:channel] do |_task, arguments|
   chrome_channel = arguments[:channel] || 'stable'
   chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
+  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
 
   puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
   Bazel.execute('run', args, '//scripts:update_cdp')
@@ -93,7 +93,7 @@ task :update_cdp, [:channel] do |_task, arguments|
    'Rakefile'].each { |file| SeleniumRake.git.add(file) }
 end
 
-namespace(:appium) { load 'rake_tasks/appium.rake' }
+load 'rake_tasks/appium.rake'
 task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
@@ -117,7 +117,7 @@ task :prep_release, [:version, :channel] do |_task, arguments|
   Rake::Task['all:changelogs'].invoke
 end
 
-desc 'Run all linters (skip languages with: ./go lint -rb -rust)'
+desc 'Run linters for all languages (skip languages with: ./go lint -rb -rust)'
 task :lint do |_task, arguments|
   failures = []
 

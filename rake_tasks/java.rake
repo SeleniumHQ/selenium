@@ -37,7 +37,10 @@ def java_version
 end
 
 def java_release_targets
-  @targets_verified ||= verify_java_release_targets
+  unless @targets_verified
+    verify_java_release_targets
+    @targets_verified = true
+  end
 
   JAVA_RELEASE_TARGETS
 end
@@ -50,8 +53,8 @@ def verify_java_release_targets
     current_targets = output.lines.map(&:strip).reject(&:empty?).select { |line| line.start_with?('//') }
   end
 
-  missing_targets = current_targets - JAVA_RELEASE_TARGETS
-  extra_targets = JAVA_RELEASE_TARGETS - current_targets
+  missing_targets = JAVA_RELEASE_TARGETS - current_targets
+  extra_targets = current_targets - JAVA_RELEASE_TARGETS
 
   return if missing_targets.empty? && extra_targets.empty?
 
@@ -195,13 +198,13 @@ task :package do |_task, arguments|
 
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
                  "build/dist/selenium-server-#{java_version}.zip")
-  FileUtils.chmod(0o666, "build/dist/selenium-server-#{java_version}.zip")
+  FileUtils.chmod(0o644, "build/dist/selenium-server-#{java_version}.zip")
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
                  "build/dist/selenium-java-#{java_version}.zip")
-  FileUtils.chmod(0o666, "build/dist/selenium-java-#{java_version}.zip")
+  FileUtils.chmod(0o644, "build/dist/selenium-java-#{java_version}.zip")
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
                  "build/dist/selenium-server-#{java_version}.jar")
-  FileUtils.chmod(0o777, "build/dist/selenium-server-#{java_version}.jar")
+  FileUtils.chmod(0o755, "build/dist/selenium-server-#{java_version}.jar")
 end
 
 desc 'Validate Java release credentials'
