@@ -21,3 +21,5 @@ DOTNET="${DOTNET:-dotnet}"
     ("$DOTNET" tool restore && "$DOTNET" tool run paket install)
     bazel run @rules_dotnet//tools/paket2bazel:paket2bazel -- --dependencies-file "$(pwd)/paket.dependencies" --output-folder "$(pwd)"
 )
+
+bazel run //scripts:update_docfx
