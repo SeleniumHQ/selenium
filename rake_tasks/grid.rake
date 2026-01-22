@@ -16,10 +16,10 @@ task :package do |_task, arguments|
 
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
                  "build/dist/selenium-server-#{java_version}.zip")
-  FileUtils.chmod(0o666, "build/dist/selenium-server-#{java_version}.zip")
+  FileUtils.chmod(0o644, "build/dist/selenium-server-#{java_version}.zip")
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
                  "build/dist/selenium-server-#{java_version}.jar")
-  FileUtils.chmod(0o777, "build/dist/selenium-server-#{java_version}.jar")
+  FileUtils.chmod(0o755, "build/dist/selenium-server-#{java_version}.jar")
 end
 
 desc 'Package Grid for nightly release'

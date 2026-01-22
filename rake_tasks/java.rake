@@ -60,9 +60,9 @@ def verify_java_release_targets
 
   error_message = 'Java release targets are out of sync with Bazel query results.'
 
-  error_message += "\nMissing targets: #{missing_targets.join(', ')}" unless missing_targets.empty?
+  error_message += "\nObsolete targets (in list but not in Bazel): #{missing_targets.join(', ')}" unless missing_targets.empty?
 
-  error_message += "\nObsolete targets: #{extra_targets.join(', ')}" unless extra_targets.empty?
+  error_message += "\nMissing targets (in Bazel but not in list): #{extra_targets.join(', ')}" unless extra_targets.empty?
 
   raise error_message
 end

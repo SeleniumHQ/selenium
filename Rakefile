@@ -89,8 +89,7 @@ task :update_cdp, [:channel] do |_task, arguments|
    'javascript/selenium-webdriver/BUILD.bazel',
    'py/BUILD.bazel',
    'rb/lib/selenium/devtools/',
-   'rb/Gemfile.lock',
-   'Rakefile'].each { |file| SeleniumRake.git.add(file) }
+   'rb/Gemfile.lock'].each { |file| SeleniumRake.git.add(file) }
 end
 
 load 'rake_tasks/appium.rake'
@@ -185,12 +184,13 @@ namespace :all do
   end
 
   desc 'Build all API Documentation'
-  task :docs do
-    Rake::Task['java:docs'].invoke
-    Rake::Task['py:docs'].invoke
-    Rake::Task['rb:docs'].invoke
-    Rake::Task['dotnet:docs'].invoke
-    Rake::Task['node:docs'].invoke
+  task :docs do |_task, arguments|
+    args = arguments.to_a
+    Rake::Task['java:docs'].invoke(*args)
+    Rake::Task['py:docs'].invoke(*args)
+    Rake::Task['rb:docs'].invoke(*args)
+    Rake::Task['dotnet:docs'].invoke(*args)
+    Rake::Task['node:docs'].invoke(*args)
   end
 
   desc 'Build all artifacts for all language bindings'
