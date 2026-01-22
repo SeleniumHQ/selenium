@@ -333,56 +333,12 @@ task :authors do
   @git.add('AUTHORS')
 end
 
-namespace :side do
-  task atoms: [
-    '//javascript/atoms/fragments:find-element'
-  ] do
-    # TODO: move directly to IDE's directory once the repositories are merged
-    mkdir_p 'build/javascript/atoms'
-
-    atom = 'bazel-bin/javascript/atoms/fragments/find-element.js'
-    name = File.basename(atom)
-
-    puts "Generating #{atom} as #{name}"
-    File.open(File.join(baseDir, name), 'w') do |f|
-      f << "// GENERATED CODE - DO NOT EDIT\n"
-      f << 'module.exports = '
-      f << File.read(atom).strip
-      f << ";\n"
-    end
-  end
-end
-
 def node_version
   File.foreach('javascript/selenium-webdriver/package.json') do |line|
     return line.split(':').last.strip.tr('",', '') if line.include?('version')
   end
 end
 namespace :node do
-  atom_list = %w[
-    //javascript/atoms/fragments:find-elements
-    //javascript/atoms/fragments:is-displayed
-    //javascript/webdriver/atoms:get-attribute
-  ]
-
-  task atoms: atom_list do
-    base_dir = 'javascript/selenium-webdriver/lib/atoms'
-    mkdir_p base_dir
-
-    ['bazel-bin/javascript/atoms/fragments/is-displayed.js',
-     'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
-     'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
-      name = File.basename(atom)
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(base_dir, name), 'w') do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << 'module.exports = '
-        f << File.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-
   desc 'Build Node npm package'
   task :build do |_task, arguments|
     args = arguments.to_a.compact
@@ -648,25 +604,6 @@ namespace :rb do
 
     Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver || !devtools
     Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
-  end
-
-  task :atoms do
-    base_dir = 'rb/lib/selenium/webdriver/atoms'
-    mkdir_p base_dir
-
-    {
-      '//javascript/atoms/fragments:find-elements': 'findElements.js',
-      '//javascript/atoms/fragments:is-displayed': 'isDisplayed.js',
-      '//javascript/webdriver/atoms:get-attribute': 'getAttribute.js'
-    }.each do |target, name|
-      puts "Generating #{target} as #{name}"
-
-      atom = Bazel.execute('build', [], target.to_s)
-
-      File.open(File.join(base_dir, name), 'w') do |f|
-        f << File.read(atom).strip
-      end
-    end
   end
 
   desc 'Update generated Ruby files for local development'
