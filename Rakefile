@@ -129,7 +129,7 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
-  windows = RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+  windows = RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw32/
   cmd = cmd.tr('/', '\\').tr(':', ';') if windows
   raise 'could not unpack javadocs' unless system(cmd)
 
@@ -151,6 +151,7 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   end
 end
 
+desc 'Update dependencies for the release'
 task :release_update do |_task, _arguments|
   Rake::Task[:update_multitool].invoke
   Rake::Task['java:update'].invoke
@@ -161,7 +162,7 @@ desc 'Update multitool binaries to latest releases'
 task :update_multitool do |_task, _arguments|
   puts 'Updating multitool binary versions'
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
-  @git.add('multitool.lock.json')
+  @git.add('multitool.lock.json') if File.exist?('multitool.lock.json')
 end
 
 task ios_driver: [
