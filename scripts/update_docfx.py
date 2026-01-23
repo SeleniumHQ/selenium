@@ -25,6 +25,10 @@ def fetch_json(url):
 
 def choose_version(versions, allow_prerelease, explicit_version=None):
     if explicit_version:
+        if explicit_version not in versions:
+            raise ValueError(
+                f"Requested DocFX version {explicit_version!r} not found in NuGet index"
+            )
         return explicit_version
 
     parsed = []
@@ -38,15 +42,12 @@ def choose_version(versions, allow_prerelease, explicit_version=None):
         parsed.append((pv, v))
 
     if not parsed:
-        # Fall back to any parseable version.
-        for v in versions:
-            try:
-                parsed.append((Version(v), v))
-            except InvalidVersion:
-                continue
-
-    if not parsed:
-        raise ValueError("No parseable DocFX versions found in NuGet index")
+        if allow_prerelease:
+            raise ValueError("No parseable DocFX versions found in NuGet index")
+        else:
+            raise ValueError(
+                "No stable DocFX versions found. Use --allow-prerelease to include prereleases."
+            )
 
     return max(parsed, key=lambda item: item[0])[1]
 
