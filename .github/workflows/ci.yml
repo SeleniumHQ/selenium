@@ -20,7 +20,7 @@ permissions:
 jobs:
   build-index:
     name: Build Index
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/ci-build-index.yml
 
   check:
