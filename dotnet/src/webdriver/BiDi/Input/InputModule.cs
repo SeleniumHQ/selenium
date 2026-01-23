@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
@@ -30,25 +31,25 @@ public sealed class InputModule : Module
 {
     private InputJsonSerializerContext _jsonContext = null!;
 
-    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
+    public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, SubscriptionOptions? options = null)
