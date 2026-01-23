@@ -39,12 +39,12 @@ public sealed class LogModule : Module
         return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
 
         _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }

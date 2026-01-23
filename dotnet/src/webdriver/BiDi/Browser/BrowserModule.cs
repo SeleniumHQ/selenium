@@ -79,9 +79,9 @@ public sealed class BrowserModule : Module
         return await Broker.ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, _jsonContext.SetDownloadBehaviorCommand, _jsonContext.SetDownloadBehaviorResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
 
         _jsonContext = new BrowserJsonSerializerContext(jsonSerializerOptions);
     }

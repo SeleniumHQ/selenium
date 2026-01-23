@@ -117,13 +117,13 @@ public sealed class ScriptModule : Module
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new PreloadScriptConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new PreloadScriptConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
 
         _jsonContext = new ScriptJsonSerializerContext(jsonSerializerOptions);
     }

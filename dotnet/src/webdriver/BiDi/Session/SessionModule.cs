@@ -60,10 +60,10 @@ internal sealed class SessionModule : Module
         return await Broker.ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
 
         _jsonContext = new SessionJsonSerializerContext(jsonSerializerOptions);
     }

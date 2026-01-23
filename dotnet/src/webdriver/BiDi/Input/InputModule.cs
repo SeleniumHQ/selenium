@@ -61,10 +61,10 @@ public sealed class InputModule : Module
         return await Broker.SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
 
         _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);
     }

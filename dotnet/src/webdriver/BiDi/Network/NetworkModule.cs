@@ -174,12 +174,12 @@ public sealed partial class NetworkModule : Module
         return await Broker.SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new CollectorConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new InterceptConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new CollectorConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new InterceptConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
 
         _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
     }

@@ -30,7 +30,7 @@ public partial class NetworkModule
     {
         var interceptResult = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], options).ConfigureAwait(false);
 
-        Interception interception = new(BiDi, interceptResult.Intercept);
+        Interception interception = new(this, interceptResult.Intercept);
 
         await interception.OnBeforeRequestSentAsync(async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts))).ConfigureAwait(false);
 
@@ -41,7 +41,7 @@ public partial class NetworkModule
     {
         var interceptResult = await AddInterceptAsync([InterceptPhase.ResponseStarted], options).ConfigureAwait(false);
 
-        Interception interception = new(BiDi, interceptResult.Intercept);
+        Interception interception = new(this, interceptResult.Intercept);
 
         await interception.OnResponseStartedAsync(async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts))).ConfigureAwait(false);
 
@@ -52,7 +52,7 @@ public partial class NetworkModule
     {
         var interceptResult = await AddInterceptAsync([InterceptPhase.AuthRequired], options).ConfigureAwait(false);
 
-        Interception interception = new(BiDi, interceptResult.Intercept);
+        Interception interception = new(this, interceptResult.Intercept);
 
         await interception.OnAuthRequiredAsync(async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts))).ConfigureAwait(false);
 
@@ -128,7 +128,7 @@ public sealed record InterceptedAuth : AuthRequiredEventArgs
     }
 }
 
-public sealed record Interception(BiDi BiDi, Intercept Intercept) : IAsyncDisposable
+public sealed record Interception(NetworkModule Network, Intercept Intercept) : IAsyncDisposable
 {
     IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
     IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
@@ -136,7 +136,7 @@ public sealed record Interception(BiDi BiDi, Intercept Intercept) : IAsyncDispos
 
     public async Task RemoveAsync()
     {
-        await BiDi.Network.RemoveInterceptAsync(Intercept).ConfigureAwait(false);
+        await Network.RemoveInterceptAsync(Intercept).ConfigureAwait(false);
 
         foreach (var subscription in OnBeforeRequestSentSubscriptions)
         {
@@ -156,21 +156,21 @@ public sealed record Interception(BiDi BiDi, Intercept Intercept) : IAsyncDispos
 
     public async Task OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await BiDi.Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnBeforeRequestSentSubscriptions.Add(subscription);
     }
 
     public async Task OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await BiDi.Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnResponseStartedSubscriptions.Add(subscription);
     }
 
     public async Task OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await BiDi.Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnAuthRequiredSubscriptions.Add(subscription);
     }

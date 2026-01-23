@@ -253,12 +253,12 @@ public sealed class BrowsingContextModule : Module
         return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, _jsonContext.UserPromptClosedEventArgs).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
 
         _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }

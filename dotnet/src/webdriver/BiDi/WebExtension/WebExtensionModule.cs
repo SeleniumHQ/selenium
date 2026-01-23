@@ -42,9 +42,9 @@ public sealed class WebExtensionModule : Module
         return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
 
         _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
     }
