@@ -109,7 +109,7 @@ jobs:
         if: inputs.cache-name != ''
         uses: actions/cache/restore@v4
         with:
-          path: ${{ inputs.cache-name }}.gz
+          path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
       - name: Free space

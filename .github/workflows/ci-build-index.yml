@@ -26,6 +26,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bazel-test-target-index
+      - name: Debug - list files
+        run: ls -la && file bazel-test-target-index*
       - name: Cache index
         uses: actions/cache/save@v4
         with:
