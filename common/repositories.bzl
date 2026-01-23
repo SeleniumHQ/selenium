@@ -43,7 +43,7 @@ exports_files(["Firefox.app"])
 
 js_library(
     name = "firefox-js",
-    data = glob(["Firefox.app/**/*"]),
+    data = glob(["Firefox.app/**/*"], allow_empty = True),
 )
 """,
     )
@@ -82,7 +82,7 @@ exports_files(["Firefox.app"])
 
 js_library(
     name = "firefox-js",
-    data = glob(["Firefox.app/**/*"]),
+    data = glob(["Firefox.app/**/*"], allow_empty = True),
 )
 """,
     )
@@ -136,7 +136,7 @@ exports_files(["Edge.app"])
 
 js_library(
     name = "edge-js",
-    data = glob(["Edge.app/**/*"]),
+    data = glob(["Edge.app/**/*"], allow_empty = True),
 )
 """,
     )
