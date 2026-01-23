@@ -105,7 +105,7 @@ task :update_cdp, [:channel] do |_task, arguments|
    'rake_tasks/java.rake'].each { |file| SeleniumRake.git.add(file) }
 end
 
-load 'rake_tasks/appium.rake'
+namespace(:appium) { load 'rake_tasks/appium.rake' }
 task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
