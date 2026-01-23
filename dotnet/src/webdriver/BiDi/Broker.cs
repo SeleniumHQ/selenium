@@ -132,12 +132,12 @@ internal sealed class Broker : IAsyncDisposable
         where TResult : EmptyResult
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
-        
+
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
 
-        using var cts = cancellationToken is not null ?
+        using var cts = cancellationToken.HasValue ?
             CancellationTokenSource.CreateLinkedTokenSource(cancellationToken.Value) :
             new CancellationTokenSource(timeout);
 
