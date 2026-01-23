@@ -14,6 +14,10 @@ section "Buildifier"
 echo "    buildifier" >&2
 bazel run //:buildifier
 
+section "Dotnet"
+echo "    dotnet format" >&2
+bazel run //dotnet:format
+
 section "Java"
 echo "    google-java-format" >&2
 find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
