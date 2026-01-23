@@ -138,9 +138,9 @@ internal sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
 
         using var timeoutCts = new CancellationTokenSource(timeout);
-        using var linkedCts = cancellationToken != default ?
-            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token) :
-            null;
+        using var linkedCts = cancellationToken.CanBeCanceled
+            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token)
+            : null;
 
         var cts = linkedCts ?? timeoutCts;
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
