@@ -114,7 +114,6 @@ public class RemoteWebDriver
         Interactive,
         PrintsPage,
         TakesScreenshot {
-  // Test change to trigger remote tests from index
 
   static {
     org.openqa.selenium.internal.Debug.configureLogger();
