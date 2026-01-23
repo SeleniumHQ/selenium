@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class Broker : IAsyncDisposable
+internal sealed class Broker : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
@@ -80,7 +80,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Error))
                     {
-                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
                     }
                 }
             }
@@ -89,7 +89,7 @@ public sealed class Broker : IAsyncDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
             throw;
@@ -145,21 +145,7 @@ public sealed class Broker : IAsyncDisposable
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
-        where TEventArgs : EventArgs
-    {
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
-        return SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo);
-    }
-
-    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
-        where TEventArgs : EventArgs
-    {
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-        return SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo);
-    }
-
-    private async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
