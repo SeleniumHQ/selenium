@@ -40,6 +40,7 @@ namespace(:javascript) { load 'rake_tasks/node.rake' } # alias
 namespace(:dotnet) { load 'rake_tasks/dotnet.rake' }
 namespace(:rust) { load 'rake_tasks/rust.rake' }
 namespace(:grid) { load 'rake_tasks/grid.rake' }
+namespace(:appium) { load 'rake_tasks/appium.rake' }
 
 # If it looks like a bazel target, build it with bazel
 rule(%r{//.*}) do |task|
@@ -105,8 +106,8 @@ task :update_cdp, [:channel] do |_task, arguments|
    'rake_tasks/java.rake'].each { |file| SeleniumRake.git.add(file) }
 end
 
-namespace(:appium) { load 'rake_tasks/appium.rake' }
 task ios_driver: 'appium:build'
+
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
@@ -256,7 +257,7 @@ namespace :all do
 
   desc 'Run linters for all languages (skip with: ./go all:lint -rb -rust)'
   task :lint do |_task, arguments|
-    all_langs = %w[java py rb node dotnet rust]
+    all_langs = %w[java py rb node rust]
     skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
     invalid = skip - all_langs
     raise "Unknown languages: #{invalid.join(', ')}. Valid: #{all_langs.join(', ')}" if invalid.any?

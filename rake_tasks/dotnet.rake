@@ -72,11 +72,6 @@ task :docs do |_task, arguments|
   Bazel.execute('run', [], '//dotnet:docs')
 end
 
-desc 'Run .NET formatter (handled by scripts/format.sh)'
-task :lint do |_task, _arguments|
-  puts '  .NET formatting is handled by scripts/format.sh'
-end
-
 desc 'Install .NET packages to local NuGet cache'
 task :install do
   Bazel.execute('build', [], '//dotnet/src/webdriver:webdriver-pack')
