@@ -244,7 +244,7 @@ public class JsonInput implements Closeable {
       if (fractionalPart || number.stripTrailingZeros().scale() > 0) {
         return number.doubleValue();
       } else {
-        return number.longValue();
+        return number.longValueExact();
       }
     } catch (NumberFormatException e) {
       throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
