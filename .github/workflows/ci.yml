@@ -35,6 +35,7 @@ jobs:
       fetch-depth: 50
       run: |
         if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ github.event_name }}" == "workflow_dispatch" ] || [ "${{ github.event_name }}" == "workflow_call" ]; then
+          echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
         else
           if [ -f bazel-test-target-index.gz ]; then
