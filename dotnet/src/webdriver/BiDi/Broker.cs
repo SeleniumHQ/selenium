@@ -127,7 +127,7 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken? cancellationToken)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
         where TCommand : Command
         where TResult : EmptyResult
     {
@@ -137,10 +137,12 @@ internal sealed class Broker : IAsyncDisposable
 
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
 
-        using var cts = cancellationToken.HasValue ?
-            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken.Value) :
-            new CancellationTokenSource(timeout);
+        using var timeoutCts = new CancellationTokenSource(timeout);
+        using var linkedCts = cancellationToken != default ?
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token) :
+            null;
 
+        var cts = linkedCts ?? timeoutCts;
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
         var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
