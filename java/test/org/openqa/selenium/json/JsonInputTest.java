@@ -72,10 +72,27 @@ class JsonInputTest {
   }
 
   @Test
+  void shouldParseNonDecimalNumbersWithExponentAsLongs() {
+    try (JsonInput input = newInput("42e+1")) {
+      assertThat(input.peek()).isEqualTo(NUMBER);
+      assertThat(input.nextNumber()).isEqualTo(420L);
+    }
+  }
+
+  @Test
   void shouldParseDecimalNumbersAsDoubles() {
     try (JsonInput input = newInput("42.0")) {
       assertThat(input.peek()).isEqualTo(NUMBER);
       assertThat((Double) input.nextNumber()).isEqualTo(42.0d);
+    }
+  }
+
+  @Test
+  void shouldParseDecimalNumbersWithExponentAsDoubles() {
+    try (JsonInput input = newInput("42e-1")) {
+      assertThat(input.peek()).isEqualTo(NUMBER);
+      Number x = input.nextNumber();
+      assertThat((Double) x).isEqualTo(4.2d);
     }
   }
 

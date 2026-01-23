@@ -240,11 +240,12 @@ public class JsonInput implements Closeable {
     } while (true);
 
     try {
-      Number number = new BigDecimal(builder.toString());
-      if (fractionalPart) {
+      BigDecimal number = new BigDecimal(builder.toString());
+      if (fractionalPart || number.stripTrailingZeros().scale() > 0) {
         return number.doubleValue();
+      } else {
+        return number.longValue();
       }
-      return number.longValue();
     } catch (NumberFormatException e) {
       throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
     }

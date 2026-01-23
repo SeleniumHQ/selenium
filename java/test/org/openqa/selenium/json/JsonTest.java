@@ -63,6 +63,17 @@ class JsonTest {
     assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(42L);
     assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(42);
     assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(42.0);
+
+    assertThat((Double) new Json().toType("4.2e+1", Double.class)).isEqualTo(42.0);
+    assertThat((Integer) new Json().toType("4.2e+1", Integer.class)).isEqualTo(42);
+    assertThat((Long) new Json().toType("4.2e+1", Long.class)).isEqualTo(42L);
+
+    assertThat((Double) new Json().toType("42e+1", Double.class)).isEqualTo(420.0);
+    assertThat((Integer) new Json().toType("42e+1", Integer.class)).isEqualTo(420);
+    assertThat((Long) new Json().toType("42e+1", Long.class)).isEqualTo(420L);
+
+    assertThat((Double) new Json().toType("42e-1", Double.class)).isEqualTo(4.2);
+    assertThat((Double) new Json().toType("4.2e-1", Double.class)).isEqualTo(0.42);
   }
 
   @Test
