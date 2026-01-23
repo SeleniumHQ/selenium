@@ -9,26 +9,26 @@ import argparse
 import hashlib
 import json
 import os
-import urllib.request
 from pathlib import Path
 
+import urllib3
 from packaging.version import InvalidVersion, Version
 
 NUGET_INDEX_URL = "https://api.nuget.org/v3-flatcontainer/docfx/index.json"
 NUGET_NUPKG_URL = "https://api.nuget.org/v3-flatcontainer/docfx/{version}/docfx.{version}.nupkg"
 
+http = urllib3.PoolManager()
+
 
 def fetch_json(url):
-    with urllib.request.urlopen(url) as response:
-        return json.loads(response.read())
+    r = http.request("GET", url)
+    return json.loads(r.data)
 
 
 def choose_version(versions, allow_prerelease, explicit_version=None):
     if explicit_version:
         if explicit_version not in versions:
-            raise ValueError(
-                f"Requested DocFX version {explicit_version!r} not found in NuGet index"
-            )
+            raise ValueError(f"Requested DocFX version {explicit_version!r} not found in NuGet index")
         return explicit_version
 
     parsed = []
@@ -45,21 +45,17 @@ def choose_version(versions, allow_prerelease, explicit_version=None):
         if allow_prerelease:
             raise ValueError("No parseable DocFX versions found in NuGet index")
         else:
-            raise ValueError(
-                "No stable DocFX versions found. Use --allow-prerelease to include prereleases."
-            )
+            raise ValueError("No stable DocFX versions found. Use --allow-prerelease to include prereleases.")
 
     return max(parsed, key=lambda item: item[0])[1]
 
 
 def sha256_of_url(url):
     digest = hashlib.sha256()
-    with urllib.request.urlopen(url) as response:
-        while True:
-            chunk = response.read(1024 * 1024)
-            if not chunk:
-                break
-            digest.update(chunk)
+    r = http.request("GET", url, preload_content=False)
+    for chunk in r.stream(1024 * 1024):
+        digest.update(chunk)
+    r.release_conn()
     return digest.hexdigest()
 
 

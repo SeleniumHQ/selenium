@@ -43,6 +43,7 @@ py_binary(
     srcs = ["update_docfx.py"],
     deps = [
         requirement("packaging"),
+        requirement("urllib3"),
     ],
 )
 
