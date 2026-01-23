@@ -20,6 +20,7 @@
 using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
@@ -28,11 +29,11 @@ public sealed class PermissionsModule : Module
 {
     private PermissionsJsonSerializerContext _jsonContext = null!;
 
-    public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null)
+    public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
