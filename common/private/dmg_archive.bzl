@@ -1,4 +1,10 @@
 def _dmg_archive_impl(repository_ctx):
+    hdiutil = repository_ctx.which("hdiutil")
+    if not hdiutil:
+        # Create BUILD with expected targets so queries succeed; builds will fail with missing files
+        repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
+        return
+
     url = repository_ctx.attr.url
     (ignored, ignored, dmg_name) = url.rpartition("/")
     dmg_name = dmg_name.replace("%20", "_")

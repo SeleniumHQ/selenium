@@ -1,4 +1,10 @@
 def _pkg_archive_impl(repository_ctx):
+    pkgutil = repository_ctx.which("pkgutil")
+    if not pkgutil:
+        # Create BUILD with expected targets so queries succeed; builds will fail with missing files
+        repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
+        return
+
     url = repository_ctx.attr.url
     (ignored, ignored, pkg_name) = url.rpartition("/")
     idx = pkg_name.find("?")
