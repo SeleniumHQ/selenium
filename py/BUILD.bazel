@@ -216,35 +216,206 @@ copy_file(
     out = "selenium-%s.dist-info/NOTICE" % SE_VERSION,
 )
 
+# ==============================================================================
+# Module Targets (following Ruby's modular pattern)
+# ==============================================================================
+
+# Exceptions (no deps - foundational)
 py_library(
-    name = "selenium",
+    name = "exceptions",
+    srcs = glob(["selenium/common/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+)
+
+# Remote/wire protocol (foundational)
+py_library(
+    name = "remote",
+    srcs = glob(["selenium/webdriver/remote/**/*.py"]),
+    data = [
+        ":find-elements",
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exceptions",
+        requirement("certifi"),
+        requirement("urllib3"),
+        requirement("websocket-client"),
+    ],
+)
+
+# BiDi protocol support
+py_library(
+    name = "bidi",
+    srcs = glob(["selenium/webdriver/common/bidi/**/*.py"]),
+    data = [":mutation-listener"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exceptions",
+        requirement("trio"),
+        requirement("trio-websocket"),
+        requirement("websocket-client"),
+    ],
+)
+
+# Common utilities (shared by all browsers, includes devtools generated code)
+py_library(
+    name = "common",
     srcs = glob(
-        ["selenium/**/*.py"],
+        ["selenium/webdriver/common/**/*.py"],
         exclude = [
-            "generate.py",
-            "selenium/webdriver/common/devtools/v*/**",
+            "selenium/webdriver/common/bidi/**",
         ],
     ),
     data = [
-        "selenium/py.typed",
-        ":find-elements",
-        ":firefox-driver-prefs",
-        ":get-attribute",
-        ":is-displayed",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
-        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("urllib3"),
-        requirement("trio"),
-        requirement("trio-websocket"),
-        requirement("certifi"),
+        ":bidi",
+        ":exceptions",
+        ":remote",
         requirement("typing_extensions"),
-        requirement("websocket-client"),
+    ],
+)
+
+# Support utilities (wait conditions, event listeners, etc.)
+py_library(
+    name = "support",
+    srcs = glob(["selenium/webdriver/support/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exceptions",
+        ":remote",
+    ],
+)
+
+# Chromium base (shared by Chrome and Edge)
+py_library(
+    name = "chromium",
+    srcs = glob(["selenium/webdriver/chromium/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# Chrome driver
+py_library(
+    name = "chrome",
+    srcs = glob(["selenium/webdriver/chrome/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":chromium"],
+)
+
+# Edge driver
+py_library(
+    name = "edge",
+    srcs = glob(["selenium/webdriver/edge/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":chromium"],
+)
+
+# Firefox driver
+py_library(
+    name = "firefox",
+    srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
+    data = [":firefox-driver-prefs"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# Safari driver
+py_library(
+    name = "safari",
+    srcs = glob(["selenium/webdriver/safari/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# IE driver
+py_library(
+    name = "ie",
+    srcs = glob(["selenium/webdriver/ie/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# WebKitGTK driver
+py_library(
+    name = "webkitgtk",
+    srcs = glob(["selenium/webdriver/webkitgtk/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# WPEWebKit driver
+py_library(
+    name = "wpewebkit",
+    srcs = glob(["selenium/webdriver/wpewebkit/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# ==============================================================================
+# Aggregate Target (backwards compatible - includes all modules)
+# ==============================================================================
+
+py_library(
+    name = "selenium",
+    srcs = [
+        "selenium/__init__.py",
+        "selenium/webdriver/__init__.py",
+    ],
+    data = ["selenium/py.typed"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":bidi",
+        ":chrome",
+        ":chromium",
+        ":common",
+        ":edge",
+        ":exceptions",
+        ":firefox",
+        ":ie",
+        ":remote",
+        ":safari",
+        ":support",
+        ":webkitgtk",
+        ":wpewebkit",
     ],
 )
 
