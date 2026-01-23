@@ -164,6 +164,7 @@ task :pin, [:force] do |_task, arguments|
   failed = []
   to_download.each do |key|
     uri = URI("https://rubygems.org/gems/#{key}.gem")
+    response = nil
 
     5.times do
       response = Net::HTTP.get_response(uri)
