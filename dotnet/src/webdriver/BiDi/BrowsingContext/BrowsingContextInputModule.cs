@@ -42,22 +42,24 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpenedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpened(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
     private async Task HandleFileDialogOpenedAsync(FileDialogInfo e, Func<FileDialogInfo, Task> handler)

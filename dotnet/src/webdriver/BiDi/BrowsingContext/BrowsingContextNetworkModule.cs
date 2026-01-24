@@ -91,94 +91,104 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnBeforeRequestSentAsync(
             e => HandleBeforeRequestSentAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnBeforeRequestSentAsync(
             e => HandleBeforeRequestSent(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnResponseStartedAsync(e
          => HandleResponseStartedAsync(e, handler),
-         ContextSubscriptionOptions.WithContext(options, context));
+         ContextSubscriptionOptions.WithContext(options, context),
+         cancellationToken);
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnResponseStartedAsync(
             e => HandleResponseStarted(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnResponseCompletedAsync(
             e => HandleResponseCompletedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnResponseCompletedAsync(
             e => HandleResponseCompleted(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnFetchErrorAsync(
             e => HandleFetchErrorAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnFetchErrorAsync(
             e => HandleFetchError(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnAuthRequiredAsync(
             e => HandleAuthRequiredAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return networkModule.OnAuthRequiredAsync(
             e => HandleAuthRequired(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
     private async Task HandleBeforeRequestSentAsync(BeforeRequestSentEventArgs e, Func<BeforeRequestSentEventArgs, Task> handler)
