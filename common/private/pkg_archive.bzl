@@ -1,8 +1,8 @@
 def _pkg_archive_impl(repository_ctx):
-    pkgutil = repository_ctx.which("pkgutil")
-    if not pkgutil:
-        # Create BUILD with expected targets so queries succeed; builds will fail with missing files
-        repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
+    repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
+
+    if not repository_ctx.which("pkgutil"):
+        # pkgutil is macOS-only; skip download on other platforms
         return
 
     url = repository_ctx.attr.url
@@ -32,8 +32,6 @@ def _pkg_archive_impl(repository_ctx):
 
     for (key, value) in repository_ctx.attr.move.items():
         repository_ctx.execute(["mv", pkg_name + "/" + key, value])
-
-    repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
 
 pkg_archive = repository_rule(
     _pkg_archive_impl,
