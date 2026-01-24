@@ -20,7 +20,7 @@ permissions:
 jobs:
   build-index:
     name: Build Index
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/ci-build-index.yml
 
   check:
@@ -34,7 +34,9 @@ jobs:
       cache-name: bazel-test-target-index
       fetch-depth: 50
       run: |
-        if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ github.event_name }}" == "workflow_call" ]; then
+        if [ "${{ github.event_name }}" == "schedule" ] || \
+        [ "${{ github.event_name }}" == "workflow_call" ] || \
+        [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
         else
