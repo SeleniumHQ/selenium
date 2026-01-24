@@ -112,7 +112,7 @@ jobs:
           - name: browsers
             run: ./go update_browsers ${{ inputs.chrome_channel }}
           - name: devtools
-            run: ./go all:update_cdp ${{ inputs.chrome_channel }}
+            run: ./go update_cdp ${{ inputs.chrome_channel }}
           - name: manager
             run: ./go update_manager
           - name: dependencies
