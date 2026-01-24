@@ -296,6 +296,10 @@ _ESLINT_DATA = [
     ":node_modules/eslint-plugin-no-only-tests",
     ":node_modules/eslint-plugin-prettier",
     ":node_modules/globals",
+    ":node_modules/jszip",
+    ":node_modules/tmp",
+    ":node_modules/ws",
+    ":package-json",
     ":prod-src-files",
     ":small-test-srcs",
 ]
