@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
@@ -38,9 +39,9 @@ public class Subscription : IAsyncDisposable
 
     internal EventHandler EventHandler { get; }
 
-    public async Task UnsubscribeAsync()
+    public async Task UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _broker.UnsubscribeAsync(this).ConfigureAwait(false);
+        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
