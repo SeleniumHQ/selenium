@@ -112,6 +112,9 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
+      - name: Fetch base ref for PR comparison
+        if: github.event.pull_request.base.sha
+        run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         run: git pull origin "$HEAD_REF"
