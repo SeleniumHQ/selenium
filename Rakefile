@@ -119,9 +119,10 @@ desc 'Run linters for all languages (skip with: ./go lint -rb -rust)'
 task :lint do |_task, arguments|
   failures = []
   skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
+  binding_args = arguments.to_a.reject { |a| a == '-rust' }
 
   begin
-    Rake::Task['all:lint'].invoke(*arguments.to_a)
+    Rake::Task['all:lint'].invoke(*binding_args)
   rescue StandardError => e
     failures << e.message
   end
