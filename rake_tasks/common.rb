@@ -4,6 +4,14 @@ require 'git'
 require 'net/http'
 require 'fileutils'
 
+BINDING_TARGETS = {
+  'java' => '//java/...',
+  'py' => '//py/...',
+  'rb' => '//rb/...',
+  'dotnet' => '//dotnet/...',
+  'javascript' => '//javascript/selenium-webdriver/...'
+}.freeze
+
 # Shared utilities used by language-specific rake tasks
 module SeleniumRake
   class << self

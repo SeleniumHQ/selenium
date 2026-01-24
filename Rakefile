@@ -40,6 +40,7 @@ namespace(:javascript) { load 'rake_tasks/node.rake' } # alias
 namespace(:dotnet) { load 'rake_tasks/dotnet.rake' }
 namespace(:rust) { load 'rake_tasks/rust.rake' }
 namespace(:grid) { load 'rake_tasks/grid.rake' }
+namespace(:bazel) { load 'rake_tasks/bazel.rake' }
 namespace(:appium) { load 'rake_tasks/appium.rake' }
 
 # If it looks like a bazel target, build it with bazel
