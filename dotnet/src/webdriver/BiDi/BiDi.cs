@@ -60,28 +60,28 @@ public sealed class BiDi : IAsyncDisposable
 
     public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         var bidi = new BiDi(url);
 
-        await bidi.Broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await bidi.Broker.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         return bidi;
     }
 
-    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null)
+    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.StatusAsync(options);
+        return SessionModule.StatusAsync(options, cancellationToken);
     }
 
-    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null)
+    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.NewAsync(capabilities, options);
+        return SessionModule.NewAsync(capabilities, options, cancellationToken);
     }
 
-    public Task EndAsync(Session.EndOptions? options = null)
+    public Task EndAsync(Session.EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.EndAsync(options);
+        return SessionModule.EndAsync(options, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()
