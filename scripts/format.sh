@@ -15,8 +15,8 @@ echo "    buildifier" >&2
 bazel run //:buildifier
 
 section "Dotnet"
-echo "    dotnet format" >&2
-bazel run //dotnet:format
+echo "    dotnet format whitespace" >&2
+bazel run //dotnet:format -- whitespace
 
 section "Java"
 echo "    google-java-format" >&2
