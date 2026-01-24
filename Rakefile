@@ -98,19 +98,21 @@ task :authors do
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
-# Example: `./go prep_release[4.31.0,early-stable]`
-# Equivalent to .github/workflows/pre-release.yml in a single command
+# Example: `./go release_updates 4.31.0,early-stable`
+# Equivalent to `.github/workflows/pre-release.yml` in a single command
 desc 'Update everything in preparation for a release'
-task :prep_release, [:version, :channel] do |_task, arguments|
+task :release_updates, [:version, :channel] do |_task, arguments|
   version = arguments[:version]
-  raise 'Missing required version: ./go prep_release[4.31.0,early-stable]' if version.nil? || version.empty?
+  raise 'Missing required version: ./go release_updates 4.31.0,early-stable' if version.nil? || version.empty?
 
   Rake::Task['update_browsers'].invoke(arguments[:channel])
   Rake::Task['update_cdp'].invoke(arguments[:channel])
   Rake::Task['update_manager'].invoke
-  Rake::Task['java:update'].invoke
+  Rake::Task['update_multitool'].invoke
   Rake::Task['authors'].invoke
   Rake::Task['all:version'].invoke(version)
+  Rake::Task['all:update'].invoke
+  Rake::Task['rust:update'].invoke
   Rake::Task['all:changelogs'].invoke
   Rake::Task['rust:changelogs'].invoke
 end
