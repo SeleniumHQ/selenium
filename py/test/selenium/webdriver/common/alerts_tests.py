@@ -18,7 +18,6 @@
 import sys
 
 import pytest
-
 from selenium.common.exceptions import (
     InvalidElementStateException,
     NoAlertPresentException,

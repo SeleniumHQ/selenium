@@ -20,7 +20,6 @@ import tempfile
 import time
 
 import pytest
-
 from selenium.webdriver.common.bidi.input import (
     ElementOrigin,
     FileDialogInfo,

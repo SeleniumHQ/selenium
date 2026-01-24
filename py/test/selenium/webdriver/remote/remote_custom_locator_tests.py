@@ -16,7 +16,6 @@
 # under the License.
 
 import pytest
-
 from selenium import webdriver
 from selenium.webdriver.remote.locator_converter import LocatorConverter
 

@@ -19,7 +19,6 @@
 from io import BytesIO
 
 import pytest
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.by import By

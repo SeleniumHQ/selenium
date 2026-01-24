@@ -18,7 +18,6 @@
 import json
 
 import pytest
-
 from selenium.common import exceptions
 from selenium.webdriver.remote.errorhandler import ErrorCode, ErrorHandler
 

@@ -20,7 +20,6 @@ import subprocess
 from unittest.mock import patch
 
 import pytest
-
 from selenium.common.exceptions import SessionNotCreatedException
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options

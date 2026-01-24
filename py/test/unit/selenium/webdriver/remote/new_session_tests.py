@@ -18,7 +18,6 @@
 from importlib import import_module
 
 import pytest
-
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.options import ArgOptions, PageLoadStrategy
 from selenium.webdriver.common.proxy import Proxy, ProxyType

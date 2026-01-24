@@ -20,7 +20,6 @@ import sys
 from unittest.mock import patch
 
 import pytest
-
 from selenium import webdriver
 
 

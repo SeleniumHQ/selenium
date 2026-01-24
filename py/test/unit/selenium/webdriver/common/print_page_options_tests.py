@@ -16,7 +16,6 @@
 # under the License.
 
 import pytest
-
 from selenium.webdriver.common.print_page_options import PrintOptions
 
 

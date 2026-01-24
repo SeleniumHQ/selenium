@@ -18,7 +18,6 @@
 import time
 
 import pytest
-
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.network import Request

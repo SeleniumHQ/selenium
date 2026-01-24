@@ -17,7 +17,6 @@
 
 import pytest
 import urllib3
-
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 

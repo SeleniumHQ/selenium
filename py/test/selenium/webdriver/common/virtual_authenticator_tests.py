@@ -18,7 +18,6 @@
 from base64 import b64decode, urlsafe_b64decode
 
 import pytest
-
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
 from selenium.webdriver.remote.webdriver import WebDriver

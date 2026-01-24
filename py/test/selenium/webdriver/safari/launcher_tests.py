@@ -18,7 +18,6 @@
 import os
 
 import pytest
-
 from selenium.common.exceptions import NoSuchDriverException
 from selenium.webdriver.safari.service import Service
 

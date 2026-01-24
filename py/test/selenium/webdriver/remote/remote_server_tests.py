@@ -18,7 +18,6 @@
 import os
 
 import pytest
-
 from selenium.webdriver.remote.server import Server
 
 

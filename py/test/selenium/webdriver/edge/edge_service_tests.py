@@ -21,7 +21,6 @@ import sys
 from unittest.mock import patch
 
 import pytest
-
 from selenium.common.exceptions import SessionNotCreatedException
 from selenium.webdriver.edge.service import Service
 

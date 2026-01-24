@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import pytest
-
 from selenium.webdriver.common.print_page_options import PrintOptions
 
 START_INDEX = 0

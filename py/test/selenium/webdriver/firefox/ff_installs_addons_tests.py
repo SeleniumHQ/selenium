@@ -20,7 +20,6 @@ import zipfile
 
 import pytest
 from python.runfiles import Runfiles
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 

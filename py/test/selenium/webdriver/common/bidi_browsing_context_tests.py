@@ -21,7 +21,6 @@ import threading
 import time
 
 import pytest
-
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.window import WindowTypes

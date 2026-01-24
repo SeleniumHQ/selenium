@@ -18,7 +18,6 @@
 from unittest.mock import Mock, patch
 
 import pytest
-
 from selenium.webdriver.common.fedcm.dialog import Dialog
 
 
