@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 # ./go bazel:build_test_index            --> 'build/bazel-test-target-index.json'
 # ./go bazel:build_test_index index.json --> 'index.json'
 desc 'Build test target index for faster affected target lookup'
