@@ -37,7 +37,7 @@ bazel run @rules_rust//:rustfmt
 
 section "Python"
 echo "    python - ruff" >&2
-bazel run //py:ruff
+bazel run //py:ruff-format
 
 section "Copyright"
 bazel run //scripts:update_copyright

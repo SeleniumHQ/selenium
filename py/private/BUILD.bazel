@@ -19,3 +19,25 @@ py_binary(
     visibility = ["//visibility:public"],
     deps = ["@rules_python//python/runfiles"],
 )
+
+py_binary(
+    name = "ruff_check",
+    srcs = ["ruff_check.py"],
+    data = [
+        "//py:pyproject.toml",
+        "@multitool//tools/ruff",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/runfiles"],
+)
+
+py_binary(
+    name = "ruff_format",
+    srcs = ["ruff_format.py"],
+    data = [
+        "//py:pyproject.toml",
+        "@multitool//tools/ruff",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/runfiles"],
+)

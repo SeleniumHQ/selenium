@@ -15,14 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Run ruff linter/formatter on Python files across the project.
+"""Run ruff format on Python files across the project.
 
 Usage:
-    bazel run //py:ruff                 # both check+fix and format (default)
-    bazel run //py:ruff -- format       # format only
-    bazel run //py:ruff -- check        # check+fix only
-    bazel run //py:ruff-format -- ...   # ruff format with custom args
-    bazel run //py:ruff-check -- ...    # ruff check with custom args
+    bazel run //py:ruff-format -- [ruff format args]
 """
 
 import os
@@ -35,17 +31,10 @@ ALL_DIRS = ["py", "scripts", "common", "dotnet", "java", "javascript", "rb"]
 EXCLUDES = ["**/node_modules/**", "**/.bundle/**"]
 
 
-def run_check(ruff, exclude_args, dirs, extra_args):
-    """Run ruff check (linting)."""
-    cmd = [ruff, "check", "--config=py/pyproject.toml"]
-    cmd.extend(["--fix", "--show-fixes"])
-    return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
-
-
-def run_format(ruff, exclude_args, dirs):
+def run_format(ruff, exclude_args, dirs, extra_args):
     """Run ruff format."""
     cmd = [ruff, "format", "--config=py/pyproject.toml"]
-    return subprocess.run(cmd + exclude_args + dirs).returncode
+    return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
 
 
 if __name__ == "__main__":
@@ -54,22 +43,8 @@ if __name__ == "__main__":
 
     os.chdir(os.environ["BUILD_WORKSPACE_DIRECTORY"])
 
-    args = sys.argv[1:]
-    # Determine mode: format, check, or both (default)
-    mode = "both"
-    if args and args[0] in ("format", "check"):
-        mode = args.pop(0)
-
     exclude_args = []
     for pattern in EXCLUDES:
         exclude_args.extend(["--exclude", pattern])
 
-    exit_code = 0
-
-    if mode in ("check", "both"):
-        exit_code |= run_check(ruff, exclude_args, ALL_DIRS, args)
-
-    if mode in ("format", "both"):
-        exit_code |= run_format(ruff, exclude_args, ALL_DIRS)
-
-    sys.exit(exit_code)
+    sys.exit(run_format(ruff, exclude_args, ALL_DIRS, sys.argv[1:]))
