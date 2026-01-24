@@ -609,23 +609,28 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 BROWSER_TESTS = {
     "chrome": {
         "browser_srcs": ["test/selenium/webdriver/chrome/**/*.py"],
+        "deps": [":chrome", ":common", ":support"],
         "bidi": True,
     },
     "edge": {
         "browser_srcs": ["test/selenium/webdriver/edge/**/*.py"],
+        "deps": [":edge", ":common", ":support"],
     },
     "firefox": {
         "browser_srcs": [
             "test/selenium/webdriver/firefox/**/*.py",
         ],
+        "deps": [":firefox", ":common", ":support"],
         "extra_excludes": ["test/selenium/webdriver/common/devtools_tests.py"],
         "bidi": True,
     },
     "ie": {
         "browser_srcs": ["test/selenium/webdriver/ie/**/*.py"],
+        "deps": [":ie", ":common", ":support"],
     },
     "safari": {
         "browser_srcs": ["test/selenium/webdriver/safari/**/*.py"],
+        "deps": [":safari", ":common", ":support"],
     },
 }
 
@@ -650,9 +655,8 @@ BROWSER_TESTS = {
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in BROWSER_TESTS.keys()
 ]
@@ -679,9 +683,8 @@ BROWSER_TESTS = {
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in BROWSER_TESTS.keys()
     if BROWSER_TESTS[browser].get("bidi", False)
@@ -721,9 +724,8 @@ BROWSER_TESTS = {
         ],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in [
         "chrome",
@@ -759,8 +761,10 @@ py_test_suite(
         "skip-rbe",
     ],
     deps = [
+        ":common",
         ":init-tree",
-        ":selenium",
+        ":support",
+        ":webkitgtk",
         ":webserver",
     ] + TEST_DEPS,
 )
@@ -784,9 +788,11 @@ py_test_suite(
         "skip-rbe",
     ],
     deps = [
+        ":common",
         ":init-tree",
-        ":selenium",
+        ":support",
         ":webserver",
+        ":wpewebkit",
     ] + TEST_DEPS,
 )
 
