@@ -126,17 +126,66 @@ jobs:
             run: ./go rust:version ${{ needs.normalize-version.outputs.version }} && ./go rust:update
           - name: authors
             run: ./go authors
-          - name: changelogs
-            run: ./go all:changelogs && ./go rust:changelogs
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update ${{ matrix.name }}
       run: ${{ matrix.run }}
       artifact-name: patch-${{ matrix.name }}
 
+  calculate-changelog-depth:
+    name: Calculate Changelog Depth
+    needs: normalize-version
+    runs-on: ubuntu-latest
+    outputs:
+      depth: ${{ steps.calc.outputs.depth }}
+    steps:
+      - name: Calculate fetch depth from tag
+        id: calc
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.normalize-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            MAJOR=${BASH_REMATCH[1]}
+            MINOR=${BASH_REMATCH[2]}
+            PATCH=${BASH_REMATCH[3]}
+
+            if [ "$PATCH" -gt 1 ]; then
+              PREV="selenium-${MAJOR}.${MINOR}.$((PATCH-1))"
+            elif [ "$PATCH" -eq 1 ]; then
+              PREV="selenium-${MAJOR}.${MINOR}.0"
+            elif [ "$MINOR" -gt 0 ]; then
+              PREV="selenium-${MAJOR}.$((MINOR-1)).0"
+            else
+              # First release of major version (X.0.0), use full history
+              echo "depth=0" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...${{ github.sha }}" --jq '.total_commits' 2>/dev/null) || {
+              echo "::warning::Failed to get commit count, using full history"
+              echo "depth=0" >> "$GITHUB_OUTPUT"
+              exit 0
+            }
+            echo "depth=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
+          else
+            echo "depth=0" >> "$GITHUB_OUTPUT"
+          fi
+
+  generate-changelogs:
+    name: Generate Changelogs
+    needs: [restrict-trunk, normalize-version, calculate-changelog-depth]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Changelogs
+      run: ./go all:changelogs && ./go rust:changelogs
+      artifact-name: patch-changelogs
+      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
+
   create-pr:
     name: Create Pull Request
-    needs: [normalize-version, release-updates]
+    needs: [normalize-version, release-updates, generate-changelogs]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
