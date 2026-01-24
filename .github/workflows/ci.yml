@@ -38,7 +38,7 @@ jobs:
         [ "${{ github.event_name }}" == "workflow_call" ] || \
         [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/..." > bazel-targets.txt
+          echo "//java/... //py:* //rb/... //dotnet/... //rust/..." > bazel-targets.txt
         else
           BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
           if [ -n "$BASE_SHA" ]; then
