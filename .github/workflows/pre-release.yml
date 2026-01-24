@@ -36,8 +36,7 @@ jobs:
     with:
       tag: ${{ inputs.tag }}
 
-  # Run rust jobs in parallel with approval since work is not on trunk
-  # Skip for patch releases (language != 'all')
+  # Rust jobs can execute in parallel with approval job since work is in a separate branch
   generate-rust-version:
     name: Generate Rust Version
     needs: parse-tag
@@ -51,7 +50,6 @@ jobs:
   push-rust-version:
     name: Push Rust Version
     needs: [parse-tag, generate-rust-version]
-    if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
       actions: read
@@ -66,7 +64,6 @@ jobs:
   selenium-manager:
     name: Release Selenium Manager
     needs: [parse-tag, push-rust-version]
-    if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/ci-rust.yml
     with:
       release: true
@@ -77,7 +74,6 @@ jobs:
   cleanup-rust-branch:
     name: Cleanup Rust Branch
     needs: [parse-tag, selenium-manager]
-    if: needs.parse-tag.outputs.language == 'all'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -97,8 +93,7 @@ jobs:
       restrict: true
     secrets: inherit
 
-  # Full release updates - only for full releases (language == 'all')
-  full-release-updates:
+  release-updates:
     name: Generate ${{ matrix.name }} update
     needs: [parse-tag, restrict-trunk]
     if: needs.parse-tag.outputs.language == 'all'
@@ -126,7 +121,6 @@ jobs:
       run: ${{ matrix.run }}
       artifact-name: patch-${{ matrix.name }}
 
-  # Patch release updates - only for patch releases (language != 'all')
   patch-release-updates:
     name: Generate ${{ needs.parse-tag.outputs.language }} version update
     needs: [parse-tag, restrict-trunk]
@@ -179,34 +173,22 @@ jobs:
             echo "depth=0" >> "$GITHUB_OUTPUT"
           fi
 
-  # Full release changelogs
-  full-release-changelogs:
+  generate-changelogs:
     name: Generate Changelogs
     needs: [parse-tag, restrict-trunk, calculate-changelog-depth]
-    if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Changelogs
-      run: ./go all:changelogs && ./go rust:changelogs
-      artifact-name: patch-changelogs
-      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
-
-  # Patch release changelog - single language
-  patch-release-changelogs:
-    name: Generate ${{ needs.parse-tag.outputs.language }} Changelog
-    needs: [parse-tag, restrict-trunk, calculate-changelog-depth]
-    if: needs.parse-tag.outputs.language != 'all'
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Update ${{ needs.parse-tag.outputs.language }} Changelog
-      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs
+      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:changelogs' || '' }}
       artifact-name: patch-changelogs
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   create-pr:
     name: Create Pull Request
-    needs: [parse-tag, full-release-updates, patch-release-updates, full-release-changelogs, patch-release-changelogs]
-    if: always() && !cancelled() && (needs.full-release-updates.result == 'success' || needs.full-release-updates.result == 'skipped') && (needs.patch-release-updates.result == 'success' || needs.patch-release-updates.result == 'skipped') && (needs.full-release-changelogs.result == 'success' || needs.full-release-changelogs.result == 'skipped') && (needs.patch-release-changelogs.result == 'success' || needs.patch-release-changelogs.result == 'skipped')
+    needs: [parse-tag, release-updates, patch-release-updates, generate-changelogs]
+    if: >-
+      always() && !cancelled() && needs.release-updates.result != 'failure' && needs.patch-release-updates.result != 'failure' &&
+      needs.generate-changelogs.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
