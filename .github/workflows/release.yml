@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g., selenium-4.28.0)'
+        description: 'Release tag (e.g., selenium-4.28.0 or selenium-4.28.1-ruby)'
         required: true
 
 env:
@@ -16,8 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  prepare:
-    name: Prepare Release
+  extract-tag:
+    name: Extract Tag
     runs-on: ubuntu-latest
     if: >
       github.event.repository.fork == false &&
@@ -25,11 +25,10 @@ jobs:
        github.event.pull_request.merged == true) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''))
     outputs:
-      tag: ${{ steps.tag.outputs.tag }}
-      version: ${{ steps.tag.outputs.version }}
+      tag: ${{ steps.extract.outputs.tag }}
     steps:
-      - name: Extract tag and version
-        id: tag
+      - name: Extract tag from input or PR branch
+        id: extract
         env:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_TAG: ${{ inputs.tag }}
@@ -38,11 +37,17 @@ jobs:
           if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
             TAG="$INPUT_TAG"
           else
-            VERSION=$(echo "$PR_HEAD_REF" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-            TAG="selenium-${VERSION}"
+            # Extract tag from branch name: release-preparation-selenium-4.28.1-ruby -> selenium-4.28.1-ruby
+            TAG=$(echo "$PR_HEAD_REF" | sed 's/^release-preparation-//')
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
+
+  prepare:
+    name: Parse Tag
+    needs: extract-tag
+    uses: ./.github/workflows/parse-release-tag.yml
+    with:
+      tag: ${{ needs.extract-tag.outputs.tag }}
 
   get-approval:
     name: Get Approval
@@ -56,11 +61,12 @@ jobs:
 
   publish:
     name: Build and Publish ${{ matrix.language }}
-    needs: get-approval
+    needs: [prepare, get-approval]
+    if: needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language
     strategy:
       fail-fast: false
       matrix:
-        language: [java, py, rb, dotnet, node]
+        language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
@@ -73,6 +79,7 @@ jobs:
   github-release:
     name: GitHub Release
     needs: [prepare, publish]
+    if: needs.prepare.outputs.language == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -109,21 +116,22 @@ jobs:
 
   verify:
     name: Verify Published Packages
-    needs: docs
+    needs: [prepare, docs]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
-      run: ./go all:verify
+      run: ./go ${{ needs.prepare.outputs.language }}:verify
 
   docs:
     name: Update ${{ matrix.language }} Documentation
     needs: [prepare, publish, github-release]
+    if: always() && !cancelled() && needs.publish.result == 'success' && (needs.github-release.result == 'success' || needs.github-release.result == 'skipped') && (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language)
     permissions:
       contents: write
     strategy:
       fail-fast: false
       matrix:
-        language: [java, py, rb, dotnet, node]
+        language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/update-documentation.yml
     with:
       tag: ${{ needs.prepare.outputs.tag }}
@@ -141,7 +149,8 @@ jobs:
 
   reset-version:
     name: Generate Nightly Versions
-    needs: docs
+    needs: [prepare, docs]
+    if: needs.prepare.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
@@ -151,6 +160,7 @@ jobs:
   update-version:
     name: Push Nightly Versions
     needs: [prepare, reset-version, unrestrict-trunk]
+    if: needs.prepare.outputs.language == 'all'
     permissions:
       contents: write
       actions: read
@@ -163,13 +173,15 @@ jobs:
 
   nightly:
     name: Publish Nightly Packages
-    needs: [update-version]
+    needs: [prepare, update-version]
+    if: needs.prepare.outputs.language == 'all'
     uses: ./.github/workflows/nightly.yml
     secrets: inherit
 
   mirror:
     name: Update Release Mirror
-    needs: [nightly]
+    needs: [prepare, nightly]
+    if: needs.prepare.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 
