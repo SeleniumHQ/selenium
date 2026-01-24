@@ -152,27 +152,27 @@ internal sealed class Broker : IAsyncDisposable
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
         handlers.Add(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
-    public async Task UnsubscribeAsync(Subscription subscription)
+    public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
 
         eventHandlers.Remove(subscription.EventHandler);
 
-        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId]).ConfigureAwait(false);
+        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
