@@ -15,7 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Run ruff linter on Python files outside py/ directory."""
+"""Run ruff linter/formatter on Python files across the project.
+
+Usage:
+    bazel run //py:ruff              # both check+fix and format (default)
+    bazel run //py:ruff -- format    # format only
+    bazel run //py:ruff -- check     # check+fix only
+    bazel run //py:ruff -- --check   # CI mode: verify only, no fixes
+"""
 
 import os
 import subprocess
@@ -23,8 +30,24 @@ import sys
 
 from python.runfiles import Runfiles
 
-LINT_DIRS = ["scripts", "common", "dotnet", "java", "javascript", "rb"]
+ALL_DIRS = ["py", "scripts", "common", "dotnet", "java", "javascript", "rb"]
 EXCLUDES = ["**/node_modules/**", "**/.bundle/**"]
+
+
+def run_check(ruff, exclude_args, dirs, check_only, extra_args):
+    """Run ruff check (linting)."""
+    cmd = [ruff, "check", "--config=py/pyproject.toml"]
+    if not check_only:
+        cmd.extend(["--fix", "--show-fixes"])
+    return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
+
+
+def run_format(ruff, exclude_args, dirs, check_only):
+    """Run ruff format."""
+    cmd = [ruff, "format", "--config=py/pyproject.toml"]
+    if check_only:
+        cmd.append("--check")
+    return subprocess.run(cmd + exclude_args + dirs).returncode
 
 
 if __name__ == "__main__":
@@ -33,22 +56,25 @@ if __name__ == "__main__":
 
     os.chdir(os.environ["BUILD_WORKSPACE_DIRECTORY"])
 
-    # Check if --check flag is passed (for CI - verify without fixing)
-    check_only = "--check" in sys.argv
-    extra_args = [arg for arg in sys.argv[1:] if arg != "--check"]
+    args = sys.argv[1:]
+    check_only = "--check" in args
+    args = [arg for arg in args if arg != "--check"]
+
+    # Determine mode: format, check, or both (default)
+    mode = "both"
+    if args and args[0] in ("format", "check"):
+        mode = args.pop(0)
 
     exclude_args = []
     for pattern in EXCLUDES:
         exclude_args.extend(["--exclude", pattern])
 
-    check_cmd = [ruff, "check", "--config=py/pyproject.toml"]
-    if not check_only:
-        check_cmd.extend(["--fix", "--show-fixes"])
-    check_result = subprocess.run(check_cmd + exclude_args + LINT_DIRS + extra_args)
+    exit_code = 0
 
-    format_cmd = [ruff, "format", "--config=py/pyproject.toml"]
-    if check_only:
-        format_cmd.append("--check")
-    format_result = subprocess.run(format_cmd + exclude_args + LINT_DIRS)
+    if mode in ("check", "both"):
+        exit_code |= run_check(ruff, exclude_args, ALL_DIRS, check_only, args)
 
-    sys.exit(check_result.returncode or format_result.returncode)
+    if mode in ("format", "both"):
+        exit_code |= run_format(ruff, exclude_args, ALL_DIRS, check_only)
+
+    sys.exit(exit_code)

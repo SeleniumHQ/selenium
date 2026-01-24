@@ -151,11 +151,19 @@ task :version, [:version] do |_task, arguments|
   File.open(conf, 'w') { |f| f.puts text }
 end
 
-desc 'Run Python linter (ruff check + format)'
+desc 'Run Python formatter (ruff format)'
+task :format do |_task, arguments|
+  args = arguments.to_a
+  puts '  Running ruff format...'
+  Bazel.execute('run', args + ['--', 'format'], '//py:ruff')
+end
+
+desc 'Run Python linter (ruff check + format + mypy)'
 task :lint do |_task, arguments|
   args = arguments.to_a
+  Rake::Task['py:format'].invoke
   puts '  Running ruff check...'
-  Bazel.execute('run', args + ['--', 'check', '--fix', 'py/'], '@multitool//tools/ruff:cwd')
-  puts '  Running ruff format...'
-  Bazel.execute('run', args + ['--', 'format', 'py/'], '@multitool//tools/ruff:cwd')
+  Bazel.execute('run', args + ['--', 'check'], '//py:ruff')
+  puts '  Running mypy...'
+  Bazel.execute('run', args, '//py:mypy')
 end
