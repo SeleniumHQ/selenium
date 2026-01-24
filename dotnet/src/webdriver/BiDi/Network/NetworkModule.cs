@@ -125,54 +125,54 @@ public sealed partial class NetworkModule : Module
         return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
