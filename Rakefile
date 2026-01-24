@@ -99,7 +99,7 @@ task :authors do
 end
 
 # Example: `./go release_updates 4.31.0,early-stable`
-# Equivalent to `.github/workflows/pre-release.yml` in a single command
+# Equivalent to `generate-updates` job in `.github/workflows/pre-release.yml`
 desc 'Update everything in preparation for a release'
 task :release_updates, [:version, :channel] do |_task, arguments|
   version = arguments[:version]
@@ -112,6 +112,7 @@ task :release_updates, [:version, :channel] do |_task, arguments|
   Rake::Task['authors'].invoke
   Rake::Task['all:version'].invoke(version)
   Rake::Task['all:update'].invoke
+  Rake::Task['rust:version'].invoke(version)
   Rake::Task['rust:update'].invoke
   Rake::Task['all:changelogs'].invoke
   Rake::Task['rust:changelogs'].invoke
