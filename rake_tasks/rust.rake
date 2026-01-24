@@ -54,6 +54,4 @@ task :version, [:version] do |_task, arguments|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
   end
-
-  Rake::Task['rust:update'].invoke
 end

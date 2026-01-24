@@ -126,8 +126,6 @@ task :version, [:version] do |_task, arguments|
   file = 'rb/lib/selenium/webdriver/version.rb'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
-
-  Rake::Task['rb:update'].invoke
 end
 
 desc 'Run Ruby linting'
