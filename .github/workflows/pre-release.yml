@@ -118,79 +118,23 @@ jobs:
             run: ./go update_cdp ${{ inputs.chrome_channel }}
           - name: manager
             run: ./go update_manager
-          - name: dependencies
-            run: ./go release_update
+          - name: versions
+            run: ./go all:version ${{ needs.normalize-version.outputs.version }} && ./go all:update
+          - name: rust
+            run: ./go rust:version ${{ needs.normalize-version.outputs.version }} && ./go rust:update
           - name: authors
             run: ./go authors
+          - name: changelogs
+            run: ./go all:changelogs && ./go rust:changelogs
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update ${{ matrix.name }}
       run: ${{ matrix.run }}
       artifact-name: patch-${{ matrix.name }}
 
-  generate-versions:
-    name: Generate Versions
-    needs: [restrict-trunk, normalize-version]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Bump Versions
-      run: ./go all:version ${{ needs.normalize-version.outputs.version }}
-      artifact-name: patch-versions
-
-  calculate-changelog-depth:
-    name: Calculate Changelog Depth
-    needs: normalize-version
-    runs-on: ubuntu-latest
-    outputs:
-      depth: ${{ steps.calc.outputs.depth }}
-    steps:
-      - name: Calculate fetch depth from tag
-        id: calc
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.normalize-version.outputs.version }}
-        run: |
-          set -euo pipefail
-          if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
-            MAJOR=${BASH_REMATCH[1]}
-            MINOR=${BASH_REMATCH[2]}
-            PATCH=${BASH_REMATCH[3]}
-
-            if [ "$PATCH" -gt 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.$((PATCH-1))"
-            elif [ "$PATCH" -eq 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.0"
-            elif [ "$MINOR" -gt 0 ]; then
-              PREV="selenium-${MAJOR}.$((MINOR-1)).0"
-            else
-              # First release of major version (X.0.0), use full history
-              echo "depth=0" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...${{ github.sha }}" --jq '.total_commits' 2>/dev/null) || {
-              echo "::warning::Failed to get commit count, using full history"
-              echo "depth=0" >> "$GITHUB_OUTPUT"
-              exit 0
-            }
-            echo "depth=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
-          else
-            echo "depth=0" >> "$GITHUB_OUTPUT"
-          fi
-
-  generate-changelogs:
-    name: Generate Changelogs
-    needs: [restrict-trunk, normalize-version, calculate-changelog-depth]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Update Changelogs
-      run: ./go all:changelogs && ./go rust:changelogs
-      artifact-name: patch-changelogs
-      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
-
   create-pr:
     name: Create Pull Request
-    needs: [normalize-version, generate-updates, generate-versions, generate-changelogs]
+    needs: [normalize-version, generate-updates]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
@@ -227,9 +171,9 @@ jobs:
           apply_patch browsers "update pinned browser versions"
           apply_patch devtools "update devtools versions"
           apply_patch manager "update selenium manager versions"
-          apply_patch dependencies "update dependency versions"
+          apply_patch versions "bump bindings version and dependencies"
+          apply_patch rust "bump rust version and dependencies"
           apply_patch authors "update authors file"
-          apply_patch versions "bump versions in preparation for release"
           apply_patch changelogs "changelogs updated"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
@@ -248,9 +192,9 @@ jobs:
             | Browser and driver versions | ${{ steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Update dependencies | ${{ steps.apply.outputs.dependencies == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Bindings Version & Dependencies | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Version & Dependencies | ${{ steps.apply.outputs.rust == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Update Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Bump Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---
