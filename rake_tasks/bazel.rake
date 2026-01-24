@@ -40,6 +40,7 @@ task :build_test_index, [:index_file] do |_task, args|
   end
 
   sorted_index = index.keys.sort.each_with_object({}) { |k, h| h[k] = index[k].sort }
+  FileUtils.mkdir_p(File.dirname(output))
   File.write(output, JSON.pretty_generate(sorted_index))
   puts "Wrote #{sorted_index.size} packages to #{output}"
 end
