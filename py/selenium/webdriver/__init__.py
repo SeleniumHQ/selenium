@@ -69,6 +69,21 @@ _LAZY_IMPORTS = {
     "Proxy": ("selenium.webdriver.common.proxy", "Proxy"),
 }
 
+# Submodules that can be lazily imported as modules
+_LAZY_SUBMODULES = {
+    "chrome": "selenium.webdriver.chrome",
+    "chromium": "selenium.webdriver.chromium",
+    "common": "selenium.webdriver.common",
+    "edge": "selenium.webdriver.edge",
+    "firefox": "selenium.webdriver.firefox",
+    "ie": "selenium.webdriver.ie",
+    "remote": "selenium.webdriver.remote",
+    "safari": "selenium.webdriver.safari",
+    "support": "selenium.webdriver.support",
+    "webkitgtk": "selenium.webdriver.webkitgtk",
+    "wpewebkit": "selenium.webdriver.wpewebkit",
+}
+
 
 def __getattr__(name):
     if name in _LAZY_IMPORTS:
@@ -77,6 +92,10 @@ def __getattr__(name):
         value = getattr(module, attr_name)
         globals()[name] = value
         return value
+    if name in _LAZY_SUBMODULES:
+        module = importlib.import_module(_LAZY_SUBMODULES[name])
+        globals()[name] = module
+        return module
     raise AttributeError(f"module 'selenium.webdriver' has no attribute {name!r}")
 
 
