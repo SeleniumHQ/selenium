@@ -304,6 +304,7 @@ _ESLINT_DATA = [
     ":small-test-srcs",
 ]
 
+# Eslint binary with auto-fix support: bazel run //javascript/selenium-webdriver:eslint -- --fix .
 eslint_bin.eslint_binary(
     name = "eslint",
     chdir = package_name(),
