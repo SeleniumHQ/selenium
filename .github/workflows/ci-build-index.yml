@@ -12,7 +12,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Test Index
-      os: macos
+      os: linux
       run: ./go bazel:build_test_index bazel-test-target-index
       artifact-name: bazel-test-target-index
       artifact-path: bazel-test-target-index
