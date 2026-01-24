@@ -29,4 +29,4 @@ def __getattr__(name):
 
 
 def __dir__():
-    return sorted(set(_LAZY_SUBMODULES))
+    return sorted(_LAZY_SUBMODULES)
