@@ -79,21 +79,32 @@ jobs:
   github-release:
     name: GitHub Release
     needs: [parse-tag, publish]
-    if: needs.parse-tag.outputs.language == 'all'
+    if: >-
+      needs.parse-tag.outputs.language == 'all' ||
+      needs.parse-tag.outputs.language == 'java' ||
+      needs.parse-tag.outputs.language == 'dotnet'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout repo
+        if: needs.parse-tag.outputs.language == 'all'
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Download release packages
+      - name: Download all release packages
+        if: needs.parse-tag.outputs.language == 'all'
         uses: actions/download-artifact@v4
         with:
           pattern: release-packages-*
           merge-multiple: true
+      - name: Download release packages
+        if: needs.parse-tag.outputs.language != 'all'
+        uses: actions/download-artifact@v4
+        with:
+          name: release-packages-${{ needs.parse-tag.outputs.language }}
       - name: Delete nightly release and tag
+        if: needs.parse-tag.outputs.language == 'all'
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
@@ -104,6 +115,7 @@ jobs:
             gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
           fi
       - name: Create GitHub release
+        if: needs.parse-tag.outputs.language == 'all'
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
@@ -113,6 +125,14 @@ jobs:
           name: "Selenium ${{ needs.parse-tag.outputs.version }}"
           tag: "${{ needs.parse-tag.outputs.tag }}"
           commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+      - name: Update GitHub release
+        if: needs.parse-tag.outputs.language != 'all'
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          VERSION: ${{ needs.parse-tag.outputs.version }}
+        run: |
+          BASE_VERSION=$(echo "$VERSION" | sed -E 's/\.[0-9]+$/.0/')
+          gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
 
   docs:
     name: Update ${{ matrix.language }} Documentation
