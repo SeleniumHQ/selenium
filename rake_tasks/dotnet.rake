@@ -97,7 +97,6 @@ task :version, [:version] do |_task, arguments|
   file = 'dotnet/selenium-dotnet-version.bzl'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
-  SeleniumRake.git.add(file)
 end
 
 desc 'Update .NET dependencies to latest versions'
@@ -112,5 +111,4 @@ task :pin do
   Bazel.execute('run', ['--', '--dependencies-file', "#{Dir.pwd}/dotnet/paket.dependencies",
                         '--output-folder', "#{Dir.pwd}/dotnet"],
                 '@rules_dotnet//tools/paket2bazel:paket2bazel')
-  %w[dotnet/paket.lock dotnet/paket.nuget.bzl].each { |f| SeleniumRake.git.add(f) }
 end

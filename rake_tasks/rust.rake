@@ -53,10 +53,7 @@ task :version, [:version] do |_task, arguments|
   ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
-    SeleniumRake.git.add(file)
   end
 
   Rake::Task['rust:update'].invoke
-  SeleniumRake.git.add('rust/Cargo.Bazel.lock')
-  SeleniumRake.git.add('rust/Cargo.lock')
 end

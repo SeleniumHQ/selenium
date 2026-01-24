@@ -61,22 +61,18 @@ task :update_browsers, [:channel] do |_task, arguments|
 
   puts 'pinning updated browsers and drivers'
   Bazel.execute('run', args, '//scripts:pinned_browsers')
-  SeleniumRake.git.add('common/repositories.bzl')
 end
 
 desc 'Update Selenium Manager to latest release'
 task :update_manager do |_task, _arguments|
   puts 'Updating Selenium Manager references'
   Bazel.execute('run', [], '//scripts:selenium_manager')
-
-  SeleniumRake.git.add('common/selenium_manager.bzl')
 end
 
 desc 'Update multitool binaries to latest releases'
 task :update_multitool do |_task, _arguments|
   puts 'Updating multitool binary versions'
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
-  SeleniumRake.git.add('multitool.lock.json')
 end
 
 desc 'Update dependencies for release'
@@ -92,19 +88,6 @@ task :update_cdp, [:channel] do |_task, arguments|
 
   puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
   Bazel.execute('run', args, '//scripts:update_cdp')
-
-  ['common/devtools/',
-   'dotnet/src/webdriver/DevTools/',
-   'dotnet/src/webdriver/Selenium.WebDriver.csproj',
-   'dotnet/test/common/DevTools/',
-   'dotnet/test/common/CustomDriverConfigs/',
-   'dotnet/selenium-dotnet-version.bzl',
-   'java/src/org/openqa/selenium/devtools/',
-   'javascript/selenium-webdriver/BUILD.bazel',
-   'py/BUILD.bazel',
-   'rb/lib/selenium/devtools/',
-   'rb/Gemfile.lock',
-   'rake_tasks/java.rake'].each { |file| SeleniumRake.git.add(file) }
 end
 
 task ios_driver: 'appium:build'
@@ -113,7 +96,6 @@ desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
-  SeleniumRake.git.add('AUTHORS')
 end
 
 # Example: `./go prep_release[4.31.0,early-stable]`
@@ -293,7 +275,6 @@ namespace :all do
 
       text = File.read(file).gsub(old_version_pattern, "The latest released version of Selenium is #{major_minor}")
       File.write(file, text)
-      SeleniumRake.git.add(file)
     end
   end
 

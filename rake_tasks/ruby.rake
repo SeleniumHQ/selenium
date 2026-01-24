@@ -126,7 +126,6 @@ task :version, [:version] do |_task, arguments|
   file = 'rb/lib/selenium/webdriver/version.rb'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
-  SeleniumRake.git.add(file)
 
   Rake::Task['rb:update'].invoke
 end
@@ -194,16 +193,12 @@ task :pin, [:force] do |_task, arguments|
 
   new_content = module_content.sub(/    gem_checksums = \{[^}]+\},/m, formatted)
   File.write(module_bazel, new_content)
-
-  SeleniumRake.git.add(module_bazel)
 end
 
 desc 'Update Ruby dependencies and sync checksums to MODULE.bazel'
 task :update do
   puts 'updating and pinning gem versions'
   Bazel.execute('run', [], '//rb:bundle-update')
-  SeleniumRake.git.add('rb/Gemfile.lock')
   Bazel.execute('run', [], '//rb:rbs-update')
-  SeleniumRake.git.add('rb/rbs_collection.lock.yaml')
   Rake::Task['rb:pin'].invoke
 end

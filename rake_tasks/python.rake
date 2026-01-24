@@ -141,7 +141,6 @@ task :version, [:version] do |_task, arguments|
    'py/docs/source/conf.py'].each do |file|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
-    SeleniumRake.git.add(file)
   end
 
   old_short_version = old_version.split('.')[0..1].join('.')
@@ -150,7 +149,6 @@ task :version, [:version] do |_task, arguments|
   conf = 'py/docs/source/conf.py'
   text = File.read(conf).gsub(old_short_version, new_short_version)
   File.open(conf, 'w') { |f| f.puts text }
-  SeleniumRake.git.add(conf)
 end
 
 desc 'Run Python linter (ruff check + format)'

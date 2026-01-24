@@ -364,7 +364,6 @@ desc 'Pin Maven dependencies'
 task :pin do
   args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
   Bazel.execute('run', args, '@maven//:pin')
-  %w[MODULE.bazel java/maven_install.json].each { |file| SeleniumRake.git.add(file) }
 end
 
 desc 'Update Java changelog'
@@ -382,7 +381,6 @@ task :version, [:version] do |_task, arguments|
   file = 'java/version.bzl'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
-  SeleniumRake.git.add(file)
 end
 
 desc 'Run Java formatter (google-java-format)'

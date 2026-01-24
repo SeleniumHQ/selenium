@@ -70,7 +70,6 @@ module SeleniumRake
 
     content = File.read(changelog)
     File.write(changelog, "#{header}\n#{entries}\n\n#{content}")
-    git.add(changelog)
   end
 
   def self.verify_package_published(url)

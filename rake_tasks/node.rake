@@ -31,7 +31,6 @@ end
 desc 'Pin JavaScript dependencies via pnpm lockfile'
 task :pin do
   Bazel.execute('run', ['--', 'install', '--dir', Dir.pwd, '--lockfile-only'], '@pnpm//:pnpm')
-  SeleniumRake.git.add('pnpm-lock.yaml')
 end
 
 desc 'Update JavaScript dependencies and refresh lockfile (use "latest" to bump ranges)'
@@ -119,7 +118,6 @@ task :version, [:version] do |_task, arguments|
   %w[javascript/selenium-webdriver/package.json javascript/selenium-webdriver/BUILD.bazel].each do |file|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
-    SeleniumRake.git.add(file)
   end
 end
 
