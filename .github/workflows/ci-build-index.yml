@@ -21,6 +21,7 @@ jobs:
     name: Cache Index
     needs: build
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Download index
         uses: actions/download-artifact@v4
