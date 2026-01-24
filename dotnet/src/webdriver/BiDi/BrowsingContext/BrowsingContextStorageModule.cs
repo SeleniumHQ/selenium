@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Storage;
 
@@ -24,18 +25,18 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)
 {
-    public Task<GetCookiesResult> GetCookiesAsync(ContextGetCookiesOptions? options = null)
+    public Task<GetCookiesResult> GetCookiesAsync(ContextGetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return storageModule.GetCookiesAsync(ContextGetCookiesOptions.WithContext(options, context));
+        return storageModule.GetCookiesAsync(ContextGetCookiesOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<DeleteCookiesResult> DeleteCookiesAsync(ContextDeleteCookiesOptions? options = null)
+    public Task<DeleteCookiesResult> DeleteCookiesAsync(ContextDeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return storageModule.DeleteCookiesAsync(ContextDeleteCookiesOptions.WithContext(options, context));
+        return storageModule.DeleteCookiesAsync(ContextDeleteCookiesOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, ContextSetCookieOptions? options = null)
+    public Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, ContextSetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return storageModule.SetCookieAsync(cookie, ContextSetCookieOptions.WithContext(options, context));
+        return storageModule.SetCookieAsync(cookie, ContextSetCookieOptions.WithContext(options, context), cancellationToken);
     }
 }

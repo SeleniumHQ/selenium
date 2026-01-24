@@ -20,20 +20,21 @@
 using OpenQA.Selenium.BiDi.Network;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)
 {
-    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null)
+    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
         Interception interception = new(networkModule, interceptResult.Intercept);
 
@@ -44,14 +45,14 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return interception;
     }
 
-    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null)
+    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
         Interception interception = new(networkModule, interceptResult.Intercept);
 
@@ -62,14 +63,14 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return interception;
     }
 
-    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null)
+    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
         Interception interception = new(networkModule, interceptResult.Intercept);
 
@@ -80,14 +81,14 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return interception;
     }
 
-    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null)
+    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context));
+        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null)
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context));
+        return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)

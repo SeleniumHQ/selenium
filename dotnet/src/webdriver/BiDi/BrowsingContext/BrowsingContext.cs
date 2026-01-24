@@ -71,59 +71,59 @@ public sealed record BrowsingContext
     [JsonIgnore]
     public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.Input), null) ?? _inputModule;
 
-    public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
+    public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.NavigateAsync(this, url, options);
+        return BiDi.BrowsingContext.NavigateAsync(this, url, options, cancellationToken);
     }
 
-    public Task<ReloadResult> ReloadAsync(ReloadOptions? options = null)
+    public Task<ReloadResult> ReloadAsync(ReloadOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.ReloadAsync(this, options);
+        return BiDi.BrowsingContext.ReloadAsync(this, options, cancellationToken);
     }
 
-    public Task<ActivateResult> ActivateAsync(ActivateOptions? options = null)
+    public Task<ActivateResult> ActivateAsync(ActivateOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.ActivateAsync(this, options);
+        return BiDi.BrowsingContext.ActivateAsync(this, options, cancellationToken);
     }
 
-    public Task<LocateNodesResult> LocateNodesAsync(Locator locator, LocateNodesOptions? options = null)
+    public Task<LocateNodesResult> LocateNodesAsync(Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.LocateNodesAsync(this, locator, options);
+        return BiDi.BrowsingContext.LocateNodesAsync(this, locator, options, cancellationToken);
     }
 
-    public Task<CaptureScreenshotResult> CaptureScreenshotAsync(CaptureScreenshotOptions? options = null)
+    public Task<CaptureScreenshotResult> CaptureScreenshotAsync(CaptureScreenshotOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.CaptureScreenshotAsync(this, options);
+        return BiDi.BrowsingContext.CaptureScreenshotAsync(this, options, cancellationToken);
     }
 
-    public Task<CloseResult> CloseAsync(CloseOptions? options = null)
+    public Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.CloseAsync(this, options);
+        return BiDi.BrowsingContext.CloseAsync(this, options, cancellationToken);
     }
 
-    public Task<TraverseHistoryResult> TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = null)
+    public Task<TraverseHistoryResult> TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options);
+        return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options, cancellationToken);
     }
 
-    public Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null)
+    public Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.SetViewportAsync(this, options);
+        return BiDi.BrowsingContext.SetViewportAsync(this, options, cancellationToken);
     }
 
-    public Task<PrintResult> PrintAsync(PrintOptions? options = null)
+    public Task<PrintResult> PrintAsync(PrintOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.PrintAsync(this, options);
+        return BiDi.BrowsingContext.PrintAsync(this, options, cancellationToken);
     }
 
-    public Task<HandleUserPromptResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
+    public Task<HandleUserPromptResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.HandleUserPromptAsync(this, options);
+        return BiDi.BrowsingContext.HandleUserPromptAsync(this, options, cancellationToken);
     }
 
-    public Task<GetTreeResult> GetTreeAsync(ContextGetTreeOptions? options = null)
+    public Task<GetTreeResult> GetTreeAsync(ContextGetTreeOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this));
+        return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this), cancellationToken);
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
