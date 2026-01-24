@@ -98,12 +98,12 @@ task :authors do
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
-# Example: `./go release_updates 4.31.0,early-stable`
-# Equivalent to `generate-updates` job in `.github/workflows/pre-release.yml`
+# Example: `./go release_updates 4.31.0 early-stable`
+# Equivalent to `release-updates` job in `.github/workflows/pre-release.yml`
 desc 'Update everything in preparation for a release'
 task :release_updates, [:version, :channel] do |_task, arguments|
   version = arguments[:version]
-  raise 'Missing required version: ./go release_updates 4.31.0,early-stable' if version.nil? || version.empty?
+  raise 'Missing required version: ./go release_updates 4.31.0 early-stable' if version.nil? || version.empty?
 
   Rake::Task['update_browsers'].invoke(arguments[:channel])
   Rake::Task['update_cdp'].invoke(arguments[:channel])
