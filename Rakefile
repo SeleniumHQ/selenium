@@ -14,7 +14,6 @@ require 'fileutils'
 require 'open-uri'
 require 'git'
 require 'find'
-require 'set'
 
 Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
@@ -203,7 +202,10 @@ task 'release-java': %i[java-release-zip publish-maven]
 RELEASE_CREDENTIALS = {
   java: {
     env: [%w[MAVEN_USER SEL_M2_USER], %w[MAVEN_PASSWORD SEL_M2_PASS]],
-    file: -> { File.exist?("#{Dir.home}/.m2/settings.xml") && File.read("#{Dir.home}/.m2/settings.xml").include?('<id>central</id>') }
+    file: lambda {
+      settings = "#{Dir.home}/.m2/settings.xml"
+      File.exist?(settings) && File.read(settings).include?('<id>central</id>')
+    }
   },
   java_gpg: {cmd: 'gpg'},
   dotnet: {env: [%w[NUGET_API_KEY]]},
@@ -233,7 +235,9 @@ end
 def credential_valid?(cred)
   has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
   has_file = cred[:file]&.call
-  has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL, err: File::NULL) || system('where', cred[:cmd], out: File::NULL, err: File::NULL))
+  has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL,
+                                                       err: File::NULL) || system('where', cred[:cmd], out: File::NULL,
+                                                                                                       err: File::NULL))
   has_env || has_file || has_cmd
 end
 
@@ -898,7 +902,11 @@ namespace :java do
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     repo_domain = 'central.sonatype.com'
-    repo = nightly ? "#{repo_domain}/repository/maven-snapshots" : "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+    repo = if nightly
+             "#{repo_domain}/repository/maven-snapshots"
+           else
+             "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+           end
     ENV['MAVEN_REPO'] = "https://#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
 
