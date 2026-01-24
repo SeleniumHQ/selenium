@@ -48,7 +48,7 @@ fi
 DOTNET="$RUNFILES_DIR/{dotnet}"
 
 # Find the workspace root (where dotnet/.config/dotnet-tools.json lives)
-WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$(cd "$(dirname "$0")/../.." && pwd)}}"
+WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$RUNFILES_DIR/_main}}"
 DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 
 if [[ ! -f "$DOTNET_DIR/.config/dotnet-tools.json" ]]; then

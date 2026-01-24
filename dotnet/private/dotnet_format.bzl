@@ -47,7 +47,7 @@ fi
 DOTNET="$RUNFILES_DIR/{dotnet}"
 
 # Find the workspace root
-WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$(cd "$(dirname "$0")/../.." && pwd)}}"
+WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$RUNFILES_DIR/_main}}"
 DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 
 cd "$DOTNET_DIR"
