@@ -145,7 +145,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
-      run: ./go all:version nightly
+      run: ./go all:version nightly && ./go rust:version nightly
       artifact-name: version-reset
 
   update-version:

@@ -112,16 +112,27 @@ task :prep_release, [:version, :channel] do |_task, arguments|
   Rake::Task['authors'].invoke
   Rake::Task['all:version'].invoke(version)
   Rake::Task['all:changelogs'].invoke
+  Rake::Task['rust:changelogs'].invoke
 end
 
-desc 'Run linters for all languages (skip languages with: ./go lint -rb -rust)'
+desc 'Run linters for all languages (skip with: ./go lint -rb -rust)'
 task :lint do |_task, arguments|
   failures = []
+  skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
 
   begin
     Rake::Task['all:lint'].invoke(*arguments.to_a)
   rescue StandardError => e
     failures << e.message
+  end
+
+  unless skip.include?('rust')
+    puts 'Linting rust...'
+    begin
+      Rake::Task['rust:lint'].invoke
+    rescue StandardError => e
+      failures << "rust: #{e.message}"
+    end
   end
 
   puts 'Linting Bazel files...'
@@ -162,20 +173,18 @@ end
 task 'release-java' => 'java:release'
 
 namespace :all do
-  desc 'Pin dependencies for all languages'
+  desc 'Pin dependencies for all language bindings'
   task :pin do
     Rake::Task['java:pin'].invoke
     Rake::Task['rb:pin'].invoke
-    Rake::Task['rust:pin'].invoke
     Rake::Task['node:pin'].invoke
     Rake::Task['dotnet:pin'].invoke
   end
 
-  desc 'Update dependencies for all languages'
+  desc 'Update dependencies for all language bindings'
   task :update do
     Rake::Task['java:update'].invoke
     Rake::Task['rb:update'].invoke
-    Rake::Task['rust:update'].invoke
     Rake::Task['node:update'].invoke
     Rake::Task['dotnet:update'].invoke
   end
@@ -238,9 +247,9 @@ namespace :all do
     Rake::Task['node:release'].invoke(*args)
   end
 
-  desc 'Run linters for all languages (skip with: ./go all:lint -rb -rust)'
+  desc 'Run linters for all language bindings (skip with: ./go all:lint -rb)'
   task :lint do |_task, arguments|
-    all_langs = %w[java py rb node rust]
+    all_langs = %w[java py rb node]
     skip = arguments.to_a.select { |a| a.start_with?('-') }.map { |a| a.delete_prefix('-') }
     invalid = skip - all_langs
     raise "Unknown languages: #{invalid.join(', ')}. Valid: #{all_langs.join(', ')}" if invalid.any?
@@ -256,7 +265,7 @@ namespace :all do
     raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
   end
 
-  desc 'Update all versions'
+  desc 'Update versions for all language bindings'
   task :version, [:version] do |_task, arguments|
     version = arguments[:version] || 'nightly'
     puts "Updating all versions to #{version}"
@@ -266,7 +275,6 @@ namespace :all do
     Rake::Task['node:version'].invoke(version)
     Rake::Task['py:version'].invoke(version)
     Rake::Task['dotnet:version'].invoke(version)
-    Rake::Task['rust:version'].invoke(version)
 
     unless version == 'nightly'
       major_minor = arguments[:version][/^\d+\.\d+/]
@@ -278,7 +286,7 @@ namespace :all do
     end
   end
 
-  desc 'Update all changelogs'
+  desc 'Update changelogs for all language bindings'
   task :changelogs do |_task, _arguments|
     puts 'Updating all changelogs'
     Rake::Task['java:changelogs'].invoke
@@ -286,6 +294,5 @@ namespace :all do
     Rake::Task['node:changelogs'].invoke
     Rake::Task['py:changelogs'].invoke
     Rake::Task['dotnet:changelogs'].invoke
-    Rake::Task['rust:changelogs'].invoke
   end
 end

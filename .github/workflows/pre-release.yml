@@ -140,7 +140,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Changelogs
-      run: ./go all:changelogs
+      run: ./go all:changelogs && ./go rust:changelogs
       artifact-name: patch-changelogs
 
   create-pr:
