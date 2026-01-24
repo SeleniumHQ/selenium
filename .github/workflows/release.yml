@@ -196,8 +196,9 @@ jobs:
   nightly:
     name: Publish Nightly Packages
     needs: [parse-tag, update-version]
-    if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/nightly.yml
+    with:
+      language: ${{ needs.parse-tag.outputs.language }}
     secrets: inherit
 
   mirror:
