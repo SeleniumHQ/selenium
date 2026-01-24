@@ -38,8 +38,8 @@ internal class SessionTest : BiDiTestFixture
     [Test]
     public async Task ShouldRespectTimeout()
     {
-        Assert.That(async () =>
-            await bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
+        Assert.That(
+            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
             Throws.InstanceOf<TaskCanceledException>());
     }
 
@@ -48,8 +48,8 @@ internal class SessionTest : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
 
-        Assert.That(async () =>
-            await bidi.StatusAsync(cancellationToken: cts.Token),
+        Assert.That(
+            () => bidi.StatusAsync(cancellationToken: cts.Token),
             Throws.InstanceOf<TaskCanceledException>());
     }
 }
