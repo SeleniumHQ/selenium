@@ -26,3 +26,7 @@ def __getattr__(name):
         globals()[name] = module
         return module
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__():
+    return sorted(set(_LAZY_SUBMODULES))
