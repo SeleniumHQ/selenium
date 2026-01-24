@@ -198,7 +198,6 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           ref: trunk
-          fetch-depth: 0
       - name: Get latest trunk
         run: git pull --ff-only origin trunk
       - name: Download all patches

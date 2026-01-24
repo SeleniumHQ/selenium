@@ -32,7 +32,6 @@ jobs:
     with:
       name: Check Targets
       cache-name: bazel-test-target-index
-      fetch-depth: 50
       run: |
         if [ "${{ github.event_name }}" == "schedule" ] || \
         [ "${{ github.event_name }}" == "workflow_call" ] || \
