@@ -103,33 +103,4 @@ def __dir__():
     return sorted(set(__all__) | set(_LAZY_SUBMODULES.keys()))
 
 
-__all__ = [
-    "ActionChains",
-    "Chrome",
-    "ChromeOptions",
-    "ChromeService",
-    "ChromiumEdge",
-    "DesiredCapabilities",
-    "Edge",
-    "EdgeOptions",
-    "EdgeService",
-    "Firefox",
-    "FirefoxOptions",
-    "FirefoxProfile",
-    "FirefoxService",
-    "Ie",
-    "IeOptions",
-    "IeService",
-    "Keys",
-    "Proxy",
-    "Remote",
-    "Safari",
-    "SafariOptions",
-    "SafariService",
-    "WPEWebKit",
-    "WPEWebKitOptions",
-    "WPEWebKitService",
-    "WebKitGTK",
-    "WebKitGTKOptions",
-    "WebKitGTKService",
-]
+__all__ = sorted(_LAZY_IMPORTS.keys())
