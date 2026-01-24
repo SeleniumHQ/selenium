@@ -153,16 +153,17 @@ end
 
 desc 'Run Python formatter (ruff format)'
 task :format do |_task, arguments|
-  args = arguments.to_a
   puts '  Running ruff format...'
-  Bazel.execute('run', ['--'] + args, '//py:ruff-format')
+  Bazel.execute('run', arguments.to_a, '//py:ruff-format')
 end
 
 desc 'Run Python linter (ruff check + format + mypy)'
 task :lint do |_task, arguments|
-  args = arguments.to_a
-  puts '  Running ruff format and check...'
-  Bazel.execute('run', args, '//py:ruff')
+  raise ArgumentError, 'arguments not supported in this task' unless arguments.to_a.empty?
+
+  Rake::Task['py:format'].invoke
+  puts '  Running ruff check...'
+  Bazel.execute('run', %w[-- --fix --show-fixes], '//py:ruff-check')
   puts '  Running mypy...'
-  Bazel.execute('run', args, '//py:mypy')
+  Bazel.execute('run', [], '//py:mypy')
 end
