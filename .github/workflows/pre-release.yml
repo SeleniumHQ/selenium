@@ -105,8 +105,8 @@ jobs:
           fi
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
-  generate-updates:
-    name: Generate ${{ matrix.name }}
+  release-updates:
+    name: Generate ${{ matrix.name }} update
     needs: [restrict-trunk, normalize-version]
     strategy:
       fail-fast: false
@@ -118,9 +118,11 @@ jobs:
             run: ./go update_cdp ${{ inputs.chrome_channel }}
           - name: manager
             run: ./go update_manager
-          - name: versions
+          - name: multitool
+            run: ./go update_multitool
+          - name: binding-versions
             run: ./go all:version ${{ needs.normalize-version.outputs.version }} && ./go all:update
-          - name: rust
+          - name: rust-versions
             run: ./go rust:version ${{ needs.normalize-version.outputs.version }} && ./go rust:update
           - name: authors
             run: ./go authors
@@ -134,7 +136,7 @@ jobs:
 
   create-pr:
     name: Create Pull Request
-    needs: [normalize-version, generate-updates]
+    needs: [normalize-version, release-updates]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
@@ -171,8 +173,9 @@ jobs:
           apply_patch browsers "update pinned browser versions"
           apply_patch devtools "update devtools versions"
           apply_patch manager "update selenium manager versions"
-          apply_patch versions "bump bindings version and dependencies"
-          apply_patch rust "bump rust version and dependencies"
+          apply_patch multitool "update multitool binaries"
+          apply_patch binding-versions "bump bindings version and dependencies"
+          apply_patch rust-versions "bump rust version and dependencies"
           apply_patch authors "update authors file"
           apply_patch changelogs "changelogs updated"
       - name: Create Pull Request
@@ -192,9 +195,10 @@ jobs:
             | Browser and driver versions | ${{ steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Bindings Version & Dependencies | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Rust Version & Dependencies | ${{ steps.apply.outputs.rust == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Update Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Multitool binaries | ${{ steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Bindings Version & Dependencies | ${{ steps.apply.outputs.binding-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Version & Dependencies | ${{ steps.apply.outputs.rust-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---
