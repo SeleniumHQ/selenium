@@ -13,7 +13,7 @@ task :build_test_index, [:index_file] do |_task, args|
 
   exclude_tags = %w[manual spotbugs ie]
   all_bindings = BINDING_TARGETS.values.join(' + ')
-  tag_exclusions = exclude_tags.map { |tag| "except attr(tags, #{tag}, #{all_bindings})" }.join(' ')
+  tag_exclusions = exclude_tags.map { |tag| "except attr('tags', '#{tag}', #{all_bindings})" }.join(' ')
   kind = '_test' # do not match test_suite or pytest_runner
 
   puts "Finding all test targets for #{all_bindings}, excluding: #{exclude_tags}"
