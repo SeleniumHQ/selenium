@@ -173,7 +173,7 @@ jobs:
               echo "depth=0" >> "$GITHUB_OUTPUT"
               exit 0
             }
-            echo "depth=$((COUNT + 10))" >> "$GITHUB_OUTPUT"
+            echo "depth=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
           else
             echo "depth=0" >> "$GITHUB_OUTPUT"
           fi
