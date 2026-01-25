@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class Broker : IAsyncDisposable
+internal sealed class Broker : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
@@ -80,7 +80,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Error))
                     {
-                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
                     }
                 }
             }
@@ -89,7 +89,7 @@ public sealed class Broker : IAsyncDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
             throw;
@@ -127,14 +127,21 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
         where TCommand : Command
         where TResult : EmptyResult
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
+
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        using var cts = cancellationToken.CanBeCanceled
+            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
+            : new CancellationTokenSource();
+
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
-        using var cts = new CancellationTokenSource(timeout);
+        cts.CancelAfter(timeout);
+
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
         var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
@@ -145,45 +152,27 @@ public sealed class Broker : IAsyncDisposable
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
-
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
         handlers.Add(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
-        where TEventArgs : EventArgs
-    {
-        _eventTypesMap[eventName] = jsonTypeInfo;
-
-        var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
-
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
-
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-
-        handlers.Add(eventHandler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
-    }
-
-    public async Task UnsubscribeAsync(Subscription subscription)
+    public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
 
         eventHandlers.Remove(subscription.EventHandler);
 
-        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId]).ConfigureAwait(false);
+        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

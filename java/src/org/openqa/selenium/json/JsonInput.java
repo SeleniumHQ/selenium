@@ -220,31 +220,43 @@ public class JsonInput implements Closeable {
    */
   public Number nextNumber() {
     expect(JsonType.NUMBER);
+    boolean decimal = false;
     StringBuilder builder = new StringBuilder();
     // We know it's safe to use a do/while loop since the first character was a number
-    boolean fractionalPart = false;
+    boolean read = true;
     do {
-      char read = input.peek();
-      if (Character.isDigit(read)
-          || read == '+'
-          || read == '-'
-          || read == 'e'
-          || read == 'E'
-          || read == '.') {
-        builder.append(input.read());
-      } else {
-        break;
+      switch (input.peek()) {
+        case '-':
+        case '+':
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          builder.append(input.read());
+          break;
+        case '.':
+        case 'e':
+        case 'E':
+          decimal = true;
+          builder.append(input.read());
+          break;
+        default:
+          read = false;
       }
-
-      fractionalPart |= (read == '.');
-    } while (true);
+    } while (read);
 
     try {
-      Number number = new BigDecimal(builder.toString());
-      if (fractionalPart) {
-        return number.doubleValue();
+      if (!decimal) {
+        return Long.valueOf(builder.toString());
       }
-      return number.longValue();
+
+      return new BigDecimal(builder.toString()).doubleValue();
     } catch (NumberFormatException e) {
       throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
     }

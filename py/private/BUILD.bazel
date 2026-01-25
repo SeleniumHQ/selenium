@@ -8,3 +8,14 @@ py_binary(
     legacy_create_init = False,
     visibility = ["//visibility:public"],
 )
+
+py_binary(
+    name = "ruff",
+    srcs = ["ruff.py"],
+    data = [
+        "//py:pyproject.toml",
+        "@multitool//tools/ruff",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/runfiles"],
+)

@@ -1,6 +1,31 @@
-<html><head><title>blank</title></head><body>
-<script>
-  localStorage.clear();
-  sessionStorage.clear();
-</script>
-</body></html>
+<html lang="en">
+  <head>
+    <title>blank</title>
+    <style>
+      body {
+        background: #f5f5f5;
+        background: linear-gradient(
+          109deg,
+          rgba(245, 245, 245, 1) 0%,
+          rgba(225, 225, 225, 1) 35%,
+          rgba(205, 205, 205, 1) 100%
+        );
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="header">A blank slate</h1>
+    <script>
+      localStorage.clear();
+      sessionStorage.clear();
+      const params = new URLSearchParams(window.location.search);
+      const test = params.get('test');
+      document.getElementById('header').innerText = test;
+    </script>
+  </body>
+</html>

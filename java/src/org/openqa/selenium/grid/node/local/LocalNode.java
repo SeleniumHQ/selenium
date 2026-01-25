@@ -155,6 +155,11 @@ public class LocalNode extends Node implements Closeable {
   private final Cache<SessionId, TemporaryFilesystem> downloadsTempFileSystem;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
+  // Tracks sessions that are reserved (pending creation) or active, used for maxSessionCount check
+  private final AtomicInteger reservedOrActiveSessionCount = new AtomicInteger();
+  // Tracks consecutive session creation failures to mark node DOWN if threshold exceeded
+  private final AtomicInteger consecutiveSessionFailures = new AtomicInteger();
+  private final int nodeDownFailureThreshold;
   private final Runnable shutdown;
   private final ReadWriteLock drainLock = new ReentrantReadWriteLock();
 
@@ -174,7 +179,8 @@ public class LocalNode extends Node implements Closeable {
       List<SessionSlot> factories,
       Secret registrationSecret,
       boolean managedDownloadsEnabled,
-      int connectionLimitPerSession) {
+      int connectionLimitPerSession,
+      int nodeDownFailureThreshold) {
     super(
         tracer,
         new NodeId(UUID.randomUUID()),
@@ -198,6 +204,8 @@ public class LocalNode extends Node implements Closeable {
     this.bidiEnabled = bidiEnabled;
     this.managedDownloadsEnabled = managedDownloadsEnabled;
     this.connectionLimitPerSession = connectionLimitPerSession;
+    // Use 0 to disable the failure threshold feature (unlimited retries)
+    this.nodeDownFailureThreshold = nodeDownFailureThreshold;
 
     this.healthCheck =
         healthCheck == null
@@ -362,6 +370,8 @@ public class LocalNode extends Node implements Closeable {
         }
         // Attempt to stop the session with the appropriate reason
         slot.stop(closeReason);
+        // Decrement the reserved/active session counter
+        reservedOrActiveSessionCount.decrementAndGet();
         // Decrement pending sessions if Node is draining
         if (this.isDraining()) {
           int done = pendingSessions.decrementAndGet();
@@ -407,6 +417,10 @@ public class LocalNode extends Node implements Closeable {
 
   @ManagedAttribute(name = "Status")
   public Availability getAvailability() {
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+      return DOWN;
+    }
     return isDraining() ? DRAINING : UP;
   }
 
@@ -424,6 +438,26 @@ public class LocalNode extends Node implements Closeable {
   public float getLoad() {
     long inUse = factories.stream().filter(sessionSlot -> !sessionSlot.isAvailable()).count();
     return inUse / (float) maxSessionCount * 100f;
+  }
+
+  @ManagedAttribute(name = "ConsecutiveSessionFailures")
+  public int getConsecutiveSessionFailures() {
+    return consecutiveSessionFailures.get();
+  }
+
+  /**
+   * Resets the consecutive session creation failure counter. This can be used to recover a node
+   * that was marked as DOWN due to exceeding the failure threshold, for example after external
+   * intervention has resolved the underlying issue.
+   */
+  public void resetConsecutiveSessionFailures() {
+    int previousValue = consecutiveSessionFailures.getAndSet(0);
+    if (previousValue > 0) {
+      LOG.info(
+          String.format(
+              "Consecutive session failure counter reset from %d to 0. Node availability restored.",
+              previousValue));
+    }
   }
 
   @ManagedAttribute(name = "RemoteNodeUri")
@@ -451,6 +485,21 @@ public class LocalNode extends Node implements Closeable {
       CreateSessionRequest sessionRequest) {
     Require.nonNull("Session request", sessionRequest);
 
+    // Early check before acquiring lock (fast path for draining nodes)
+    if (isDraining()) {
+      return Either.left(
+          new RetrySessionRequestException("The node is draining. Cannot accept new sessions."));
+    }
+
+    // Early check for failure threshold (fast path for unhealthy nodes)
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+      return Either.left(
+          new RetrySessionRequestException(
+              "The node is marked as DOWN due to exceeding the failure threshold. Cannot accept new"
+                  + " sessions."));
+    }
+
     Lock lock = drainLock.readLock();
     lock.lock();
 
@@ -462,18 +511,7 @@ public class LocalNode extends Node implements Closeable {
       attributeMap.put(
           "session.request.downstreamdialect", sessionRequest.getDownstreamDialects().toString());
 
-      int currentSessionCount = getCurrentSessionCount();
-      span.setAttribute("current.session.count", currentSessionCount);
-      attributeMap.put("current.session.count", currentSessionCount);
-
-      if (currentSessionCount >= maxSessionCount) {
-        span.setAttribute(AttributeKey.ERROR.getKey(), true);
-        span.setStatus(Status.RESOURCE_EXHAUSTED);
-        attributeMap.put("max.session.count", maxSessionCount);
-        span.addEvent("Max session count reached", attributeMap);
-        return Either.left(new RetrySessionRequestException("Max session count reached."));
-      }
-
+      // Re-check after acquiring lock (double-checked locking pattern)
       if (isDraining()) {
         span.setStatus(
             Status.UNAVAILABLE.withDescription(
@@ -482,21 +520,46 @@ public class LocalNode extends Node implements Closeable {
             new RetrySessionRequestException("The node is draining. Cannot accept new sessions."));
       }
 
-      // Identify possible slots to use as quickly as possible to enable concurrent session starting
-      SessionSlot slotToUse = null;
-      synchronized (factories) {
-        for (SessionSlot factory : factories) {
-          if (!factory.isAvailable() || !factory.test(sessionRequest.getDesiredCapabilities())) {
-            continue;
-          }
+      // Re-check failure threshold after acquiring lock
+      if (nodeDownFailureThreshold > 0
+          && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+        span.setStatus(
+            Status.UNAVAILABLE.withDescription(
+                "The node is marked as DOWN due to exceeding the failure threshold."));
+        return Either.left(
+            new RetrySessionRequestException(
+                "The node is marked as DOWN due to exceeding the failure threshold. "
+                    + "Cannot accept new sessions."));
+      }
 
-          factory.reserve();
+      // Atomically check and reserve a session slot to prevent exceeding maxSessionCount
+      // This fixes the race condition where multiple threads could pass the count check
+      int currentCount = reservedOrActiveSessionCount.incrementAndGet();
+      span.setAttribute("current.session.count", currentCount);
+      attributeMap.put("current.session.count", currentCount);
+
+      if (currentCount > maxSessionCount) {
+        reservedOrActiveSessionCount.decrementAndGet();
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
+        span.setStatus(Status.RESOURCE_EXHAUSTED);
+        attributeMap.put("max.session.count", maxSessionCount);
+        span.addEvent("Max session count reached", attributeMap);
+        return Either.left(new RetrySessionRequestException("Max session count reached."));
+      }
+
+      // Identify possible slots to use as quickly as possible to enable concurrent session starting
+      // Uses lock-free tryReserve() for better concurrency - no global lock needed
+      SessionSlot slotToUse = null;
+      Capabilities desiredCaps = sessionRequest.getDesiredCapabilities();
+      for (SessionSlot factory : factories) {
+        if (factory.tryReserve(desiredCaps)) {
           slotToUse = factory;
           break;
         }
       }
 
       if (slotToUse == null) {
+        reservedOrActiveSessionCount.decrementAndGet();
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.NOT_FOUND);
         span.addEvent("No slot matched the requested capabilities. ", attributeMap);
@@ -506,6 +569,7 @@ public class LocalNode extends Node implements Closeable {
 
       if (!decrementSessionCount()) {
         slotToUse.release();
+        reservedOrActiveSessionCount.decrementAndGet();
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         attributeMap.put("drain.after.session.count", configuredSessionCount);
@@ -541,6 +605,9 @@ public class LocalNode extends Node implements Closeable {
         }
         currentSessions.put(session.getId(), slotToUse);
 
+        // Reset consecutive failure counter on successful session creation
+        consecutiveSessionFailures.set(0);
+
         SessionId sessionId = session.getId();
         Capabilities caps = session.getCapabilities();
         SESSION_ID.accept(span, sessionId);
@@ -574,6 +641,20 @@ public class LocalNode extends Node implements Closeable {
                 getEncoder(session.getDownstreamDialect()).apply(externalSession)));
       } else {
         slotToUse.release();
+        reservedOrActiveSessionCount.decrementAndGet();
+        // Restore session count that was decremented earlier, so node doesn't drain prematurely
+        restoreSessionCount();
+
+        // Track consecutive session creation failures
+        int failures = consecutiveSessionFailures.incrementAndGet();
+        if (nodeDownFailureThreshold > 0 && failures >= nodeDownFailureThreshold) {
+          LOG.warning(
+              String.format(
+                  "Node has reached the failure threshold (%d consecutive failures). "
+                      + "Node will be marked as DOWN.",
+                  nodeDownFailureThreshold));
+        }
+
         if (downloadsTfs != null) {
           downloadsTfs.deleteTemporaryFiles();
           downloadsTfs.deleteBaseDir();
@@ -1097,6 +1178,12 @@ public class LocalNode extends Node implements Closeable {
 
     Availability availability = isDraining() ? DRAINING : UP;
 
+    // Check if consecutive session creation failures have exceeded the threshold
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+      availability = DOWN;
+    }
+
     // Check status in case this Node is a RelayNode
     Optional<SessionSlot> relaySlot =
         factories.stream().filter(SessionSlot::hasRelayFactory).findFirst();
@@ -1184,6 +1271,20 @@ public class LocalNode extends Node implements Closeable {
     return true;
   }
 
+  /**
+   * Restores the session count when session creation fails after decrementSessionCount() was
+   * called. This prevents the node from draining prematurely due to failed session attempts.
+   */
+  private void restoreSessionCount() {
+    if (this.drainAfterSessions) {
+      int remainingSessions = this.sessionCount.incrementAndGet();
+      LOG.log(
+          Debug.getDebugLogLevel(),
+          "Session creation failed, restored count. {0} remaining sessions before draining Node",
+          remainingSessions);
+    }
+  }
+
   private Map<String, Object> toJson() {
     return Map.of(
         "id",
@@ -1216,6 +1317,8 @@ public class LocalNode extends Node implements Closeable {
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
     private boolean managedDownloadsEnabled = false;
     private int connectionLimitPerSession = -1;
+    // Default 0 means disabled (unlimited retries allowed)
+    private int nodeDownFailureThreshold = 0;
 
     private Builder(Tracer tracer, EventBus bus, URI uri, URI gridUri, Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
@@ -1275,6 +1378,20 @@ public class LocalNode extends Node implements Closeable {
       return this;
     }
 
+    /**
+     * Sets the maximum number of consecutive session creation failures allowed before the node is
+     * marked as DOWN. This helps detect and isolate unhealthy nodes that consistently fail to
+     * create sessions.
+     *
+     * @param threshold the maximum number of consecutive failures allowed (0 to disable, which is
+     *     the default)
+     * @return this builder
+     */
+    public Builder nodeDownFailureThreshold(int threshold) {
+      this.nodeDownFailureThreshold = threshold;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
@@ -1292,7 +1409,8 @@ public class LocalNode extends Node implements Closeable {
           List.copyOf(factories),
           registrationSecret,
           managedDownloadsEnabled,
-          connectionLimitPerSession);
+          connectionLimitPerSession,
+          nodeDownFailureThreshold);
     }
 
     public Advanced advanced() {

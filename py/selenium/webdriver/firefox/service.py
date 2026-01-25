@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+import sys
 from collections.abc import Mapping, Sequence
 from typing import IO, Any
 
@@ -45,6 +47,16 @@ class Service(service.Service):
     ) -> None:
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_GECKODRIVER"
+
+        if os.environ.get("SE_DEBUG"):
+            if "--log" in self._service_args:
+                idx = self._service_args.index("--log")
+                del self._service_args[idx : idx + 2]
+            else:
+                self._service_args = [arg for arg in self._service_args if not arg.startswith("--log=")]
+            self._service_args.append("--log")
+            self._service_args.append("debug")
+            log_output = sys.stderr
 
         super().__init__(
             executable_path=executable_path,

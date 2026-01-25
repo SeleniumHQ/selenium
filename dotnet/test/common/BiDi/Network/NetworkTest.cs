@@ -260,9 +260,6 @@ internal class NetworkTest : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanSetExtraHeaders()
     {
         var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);

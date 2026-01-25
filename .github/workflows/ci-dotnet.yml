@@ -21,7 +21,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Browser Tests
-      java-version: 17
       os: windows
       run: |
         bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome

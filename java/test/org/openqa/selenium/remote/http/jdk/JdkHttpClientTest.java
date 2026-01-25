@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote.http.jdk;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.jdk.JdkHttpClient.maskUrlCredentials;
+
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.HttpClientTestBase;
 
@@ -25,5 +29,24 @@ class JdkHttpClientTest extends HttpClientTestBase {
   @Override
   protected HttpClient.Factory createFactory() {
     return new JdkHttpClient.Factory();
+  }
+
+  @Test
+  void maskUrlCredentials_hidesUserInfoInUrl() {
+    assertThat(maskUrlCredentials("http://user:pass@my.grid.com:4444/wd/hub"))
+        .isEqualTo("http://***@my.grid.com:4444/wd/hub");
+    assertThat(maskUrlCredentials("https://vi:se@myshop.com/wd/hub?email=foo@bar.ee"))
+        .isEqualTo("https://***@myshop.com/wd/hub?email=foo@bar.ee");
+    assertThat(maskUrlCredentials("https://0:@myshop.com/wd/hub"))
+        .isEqualTo("https://***@myshop.com/wd/hub");
+  }
+
+  @Test
+  void maskUrlCredentials_withoutUserInfo() {
+    assertThat(maskUrlCredentials("http://localhost:49112/wd/hub"))
+        .isEqualTo("http://localhost:49112/wd/hub");
+    assertThat(maskUrlCredentials("https://localhost/wd/hub"))
+        .isEqualTo("https://localhost/wd/hub");
+    assertThat(maskUrlCredentials("")).isEqualTo("");
   }
 }
