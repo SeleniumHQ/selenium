@@ -24,6 +24,10 @@ if os.environ.get("SE_DEBUG"):
     logger.setLevel(logging.DEBUG)
     if not logger.handlers:
         logger.addHandler(logging.StreamHandler())
+    logger.warning(
+        "Environment Variable `SE_DEBUG` is set; "
+        "Selenium is forcing verbose logging which may override user-specified settings."
+    )
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService

@@ -86,6 +86,9 @@ public class LoggingOptions {
   public void setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
     if (Debug.isDebugAll()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; forcing Grid log level to FINE and"
+              + " overriding configured log level.");
       configLevel = Level.FINE.getName();
     }
 
@@ -183,6 +186,11 @@ public class LoggingOptions {
   }
 
   private OutputStream getOutputStream() {
+    if (Debug.isDebugAll() && config.get(LOGGING_SECTION, "log-file").isEmpty()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; defaulting Grid log output to stderr"
+              + " instead of stdout.");
+    }
     return config
         .get(LOGGING_SECTION, "log-file")
         .map(

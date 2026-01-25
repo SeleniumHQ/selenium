@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
 import os
 import sys
 from collections.abc import Sequence
@@ -58,9 +59,17 @@ class Service(service.Service):
             self._service_args.append(f"--log-level={log_level}")
 
         if os.environ.get("SE_DEBUG"):
-            self._service_args = [
-                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-file"))
-            ]
+            has_arg_conflicts = any(x in arg for arg in self._service_args for x in ("log-level", "log-file"))
+            has_output_conflict = log_output is not None
+            if has_arg_conflicts or has_output_conflict:
+                logging.getLogger(__name__).warning(
+                    "Environment Variable `SE_DEBUG` is set; "
+                    "forcing IEDriver log level to DEBUG and overriding configured log level/output."
+                )
+            if has_arg_conflicts:
+                self._service_args = [
+                    arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-file"))
+                ]
             self._service_args.append("--log-level=DEBUG")
             log_output = sys.stderr
 
