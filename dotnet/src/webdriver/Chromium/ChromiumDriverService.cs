@@ -124,9 +124,9 @@ public abstract class ChromiumDriverService : DriverService
                 {
                     Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromiumDriver --verbose and overriding --silent/--log-level settings.");
                 }
+                argsBuilder.Append(" --verbose");
             }
-
-            if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null || this.EnableVerboseLogging)
+            else if (this.EnableVerboseLogging)
             {
                 argsBuilder.Append(" --verbose");
             }
