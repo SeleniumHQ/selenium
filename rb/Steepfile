@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength -- Disable due to the steep configuration not matching rubocop expectations
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
@@ -88,4 +87,3 @@ target :lib do
     'zlib'
   )
 end
-# rubocop:enable Metrics/BlockLength
