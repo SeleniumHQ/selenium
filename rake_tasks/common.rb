@@ -31,7 +31,9 @@ module SeleniumRake
     language = match[2] || 'all'
     patch = version.split('.')[2].to_i
 
-    raise "Patch releases must specify a language (e.g., selenium-#{version}-ruby)" if patch.positive? && language == 'all'
+    if patch.positive? && language == 'all'
+      raise "Patch releases must specify a language (e.g., selenium-#{version}-ruby)"
+    end
     raise 'Full releases (X.Y.0) cannot have a language suffix' if patch.zero? && language != 'all'
 
     {version: version, language: language, patch: patch}
