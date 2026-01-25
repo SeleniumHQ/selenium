@@ -211,6 +211,15 @@ _LINT_DEPS = [
     "@bundle",
 ]
 
+rb_binary(
+    name = "rubocop",
+    testonly = True,
+    args = _LINT_ARGS,
+    data = _LINT_DATA,
+    main = "@bundle//bin:rubocop",
+    deps = _LINT_DEPS,
+)
+
 rb_test(
     name = "lint",
     args = ["--autocorrect"] + _LINT_ARGS,
@@ -220,15 +229,6 @@ rb_test(
         "no-sandbox",
         "skip-rbe",
     ],
-    deps = _LINT_DEPS,
-)
-
-rb_binary(
-    name = "lint-unsafe",
-    testonly = True,
-    args = ["--autocorrect-all"] + _LINT_ARGS,
-    data = _LINT_DATA,
-    main = "@bundle//bin:rubocop",
     deps = _LINT_DEPS,
 )
 
