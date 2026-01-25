@@ -15,10 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import functools
 from base64 import urlsafe_b64decode, urlsafe_b64encode
+from collections.abc import Callable
 from enum import Enum
-from typing import Any
+from typing import Any, TypeVar
+
+F = TypeVar("F", bound=Callable[..., Any])
 
 
 class Protocol(str, Enum):
@@ -130,7 +135,7 @@ class Credential:
         return self._sign_count
 
     @classmethod
-    def create_non_resident_credential(cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int) -> "Credential":
+    def create_non_resident_credential(cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int) -> Credential:
         """Creates a non-resident (i.e. stateless) credential.
 
         Args:
@@ -147,7 +152,7 @@ class Credential:
     @classmethod
     def create_resident_credential(
         cls, id: bytes, rp_id: str, user_handle: bytes | None, private_key: bytes, sign_count: int
-    ) -> "Credential":
+    ) -> Credential:
         """Creates a resident (i.e. stateful) credential.
 
         Args:
@@ -177,7 +182,7 @@ class Credential:
         return credential_data
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Credential":
+    def from_dict(cls, data: dict[str, Any]) -> Credential:
         _id = urlsafe_b64decode(f"{data['credentialId']}==")
         is_resident_credential = bool(data["isResidentCredential"])
         rp_id = data.get("rpId", None)
@@ -192,28 +197,28 @@ class Credential:
             user_handle={self.user_handle}, private_key={self.private_key}, sign_count={self.sign_count})"
 
 
-def required_chromium_based_browser(func):
+def required_chromium_based_browser(func: F) -> F:
     """Decorator to ensure that the client used is a chromium-based browser."""
 
     @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         assert self.caps["browserName"].lower() not in [
             "firefox",
             "safari",
         ], "This only currently works in Chromium based browsers"
         return func(self, *args, **kwargs)
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
-def required_virtual_authenticator(func):
+def required_virtual_authenticator(func: F) -> F:
     """Decorator to ensure that the function is called with a virtual authenticator."""
 
     @functools.wraps(func)
     @required_chromium_based_browser
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         if not self.virtual_authenticator_id:
             raise ValueError("This function requires a virtual authenticator to be set.")
         return func(self, *args, **kwargs)
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]

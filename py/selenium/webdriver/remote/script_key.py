@@ -15,19 +15,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import uuid
 
 
 class ScriptKey:
-    def __init__(self, id=None):
-        self._id = id or uuid.uuid4()
+    _id: str
+
+    def __init__(self, id: str | None = None) -> None:
+        self._id = id if id is not None else str(uuid.uuid4())
 
     @property
-    def id(self):
+    def id(self) -> str:
         return self._id
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return self._id == other
+
+    def __hash__(self) -> int:
+        return hash(self._id)
 
     def __repr__(self) -> str:
         return f"ScriptKey(id={self.id})"
