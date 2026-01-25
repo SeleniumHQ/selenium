@@ -15,10 +15,10 @@ on:
         options:
           - all
           - java
-          - rb
-          - py
+          - ruby
+          - python
           - dotnet
-          - node
+          - javascript
 
   workflow_call:
     inputs:
@@ -55,18 +55,13 @@ jobs:
         run: |
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-          # Check for language suffix and map to internal names
-          case "$TAG" in
-            *-javascript) LANG="node" ;;
-            *-python) LANG="py" ;;
-            *-ruby) LANG="rb" ;;
-            *-java) LANG="java" ;;
-            *-dotnet) LANG="dotnet" ;;
-            *) LANG="all" ;;
-          esac
-
+          # Extract language from tag suffix or use input
           if [ -n "$INPUT_LANG" ] && [ "$INPUT_LANG" != "all" ]; then
             LANG="$INPUT_LANG"
+          elif [[ "$TAG" =~ -(javascript|python|ruby|java|dotnet)$ ]]; then
+            LANG="${BASH_REMATCH[1]}"
+          else
+            LANG="all"
           fi
           echo "language=$LANG" >> "$GITHUB_OUTPUT"
 
