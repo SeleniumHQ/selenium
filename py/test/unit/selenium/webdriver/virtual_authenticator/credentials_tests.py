@@ -18,6 +18,7 @@
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 import pytest
+
 from selenium.webdriver.common.virtual_authenticator import Credential
 
 BASE64_ENCODED_PK = """

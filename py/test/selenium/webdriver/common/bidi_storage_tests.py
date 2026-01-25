@@ -19,6 +19,7 @@ import random
 import time
 
 import pytest
+
 from selenium.webdriver.common.bidi.storage import (
     BrowsingContextPartitionDescriptor,
     BytesValue,

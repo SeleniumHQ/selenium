@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.webdriver.common.bidi.log import LogLevel
 from selenium.webdriver.common.bidi.script import RealmType, ResultOwnership
 from selenium.webdriver.common.by import By

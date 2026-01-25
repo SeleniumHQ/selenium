@@ -20,10 +20,11 @@ import time
 
 import filetype
 import pytest
+from urllib3.exceptions import ReadTimeoutError
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.client_config import ClientConfig
-from urllib3.exceptions import ReadTimeoutError
 
 pytestmark = pytest.mark.xfail(reason="Tests not working as intended")
 

@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState
 from selenium.webdriver.common.window import WindowTypes
 

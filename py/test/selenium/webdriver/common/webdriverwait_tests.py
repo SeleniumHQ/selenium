@@ -18,6 +18,8 @@
 import time
 
 import pytest
+from urllib3.exceptions import ReadTimeoutError
+
 from selenium.common.exceptions import (
     InvalidElementStateException,
     InvalidSelectorException,
@@ -28,7 +30,6 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from urllib3.exceptions import ReadTimeoutError
 
 
 def throw_sere(driver):

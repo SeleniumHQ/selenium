@@ -17,6 +17,7 @@
 
 
 import pytest
+
 from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.ie.options import ElementScrollBehavior, Options
 

@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select

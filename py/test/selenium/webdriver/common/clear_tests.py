@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.webdriver.common.by import By
 

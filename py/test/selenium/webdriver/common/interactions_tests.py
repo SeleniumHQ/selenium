@@ -18,6 +18,7 @@
 """Tests for advanced user interactions."""
 
 import pytest
+
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction

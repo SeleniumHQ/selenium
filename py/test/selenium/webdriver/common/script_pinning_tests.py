@@ -17,6 +17,7 @@
 import re
 
 import pytest
+
 from selenium.common.exceptions import JavascriptException
 from selenium.webdriver.remote.script_key import ScriptKey
 

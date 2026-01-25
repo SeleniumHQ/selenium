@@ -167,5 +167,8 @@ extend-ignore = [
 docstring-code-format = true
 docstring-code-line-length = 120
 
+[tool.ruff.lint.isort]
+known-first-party = ["selenium", "test"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"

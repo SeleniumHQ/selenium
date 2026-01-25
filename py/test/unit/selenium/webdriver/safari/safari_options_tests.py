@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.safari.options import Options
 

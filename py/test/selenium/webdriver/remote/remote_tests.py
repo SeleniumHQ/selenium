@@ -18,6 +18,7 @@
 import re
 
 import pytest
+
 from selenium import webdriver
 
 

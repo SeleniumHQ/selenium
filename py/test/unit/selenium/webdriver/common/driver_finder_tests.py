@@ -18,6 +18,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder

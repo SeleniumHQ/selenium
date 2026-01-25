@@ -21,14 +21,15 @@ from unittest.mock import patch
 from urllib import parse
 
 import pytest
+from urllib3 import PoolManager, ProxyManager, make_headers
+from urllib3.contrib.socks import SOCKSProxyManager
+from urllib3.util import Retry, Timeout
+
 from selenium import __version__
 from selenium.webdriver import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.remote.client_config import AuthType
 from selenium.webdriver.remote.remote_connection import ClientConfig, RemoteConnection
-from urllib3 import PoolManager, ProxyManager, make_headers
-from urllib3.contrib.socks import SOCKSProxyManager
-from urllib3.util import Retry, Timeout
 
 
 @pytest.fixture

@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 

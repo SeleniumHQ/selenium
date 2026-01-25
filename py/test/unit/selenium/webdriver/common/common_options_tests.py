@@ -16,6 +16,7 @@
 # under the License.
 
 import pytest
+
 from selenium.webdriver import Proxy
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.proxy import ProxyType

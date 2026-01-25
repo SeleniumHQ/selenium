@@ -18,6 +18,7 @@
 import os
 
 import pytest
+
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowState
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState

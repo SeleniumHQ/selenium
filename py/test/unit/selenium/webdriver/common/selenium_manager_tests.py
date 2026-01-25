@@ -21,6 +21,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+
 import selenium
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.selenium_manager import SeleniumManager
