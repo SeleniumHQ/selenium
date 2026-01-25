@@ -4,21 +4,16 @@ on:
     - cron: 0 0 * * *
   workflow_dispatch:
     inputs:
-      version:
-        description: Nightly version number (e.g. 20221125)
-        required: false
-        type: string
-        default: ''
       language:
         description: Language artefacts
         required: true
         type: choice
-        default: "ruby"
+        default: "all"
         options:
+          - all
           - java
           - ruby
           - python
-          - grid
           - dotnet
           - javascript
   workflow_call:
@@ -33,21 +28,33 @@ permissions:
   packages: write
 
 jobs:
-  check-release:
-    name: Check Release Window
+  prepare:
+    name: Prepare
     runs-on: ubuntu-latest
     if: github.event.repository.fork == false
     outputs:
+      language: ${{ steps.parse.outputs.language }}
+      artifact-name: ${{ steps.parse.outputs.artifact-name }}
+      artifact-path: ${{ steps.parse.outputs.artifact-path }}
       release-in-progress: ${{ steps.check.outputs.release-in-progress }}
     steps:
+      - name: Parse inputs
+        id: parse
+        env:
+          LANGUAGE: ${{ inputs.language }}
+        run: |
+          LANG="${LANGUAGE:-all}"
+          echo "language=$LANG" >> "$GITHUB_OUTPUT"
+          if [[ "$LANG" == "all" || "$LANG" == "java" ]]; then
+            echo "artifact-name=nightly-grid" >> "$GITHUB_OUTPUT"
+            echo "artifact-path=build/dist/*.*" >> "$GITHUB_OUTPUT"
+          fi
       - name: Check if release ruleset is active
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
         run: |
           set -euo pipefail
-          # Ruleset 11911909 is "Release In Progress Access" - see restrict-trunk.yml
           if ! ENFORCEMENT=$(gh api /repos/${{ github.repository }}/rulesets/11911909 --jq '.enforcement' 2>/dev/null); then
             echo "::warning::Failed to check release ruleset, assuming release in progress"
             echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
@@ -55,134 +62,22 @@ jobs:
           fi
           echo "release-in-progress=$([[ "$ENFORCEMENT" == "active" ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
 
-  ruby:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'ruby' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: Ruby
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        gem:
-          - selenium-webdriver
-    with:
-      name: Nightly Ruby Release
-      run: |
-        export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
-        ./go rb:release[nightly]
-  on-ruby-failure:
-    name: On Ruby Failure
-    runs-on: ubuntu-latest
-    if: ${{ always() && (needs.ruby.result == 'failure' || needs.ruby.result == 'timed_out') }}
-    needs: ruby
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.ruby.result }}
-          SLACK_CHANNEL: selenium-tlc
-          SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly Ruby ${{ needs.ruby.result }}
-          MSG_MINIMAL: actions url
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  python:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'python' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: Python
+  nightly-release:
+    name: Nightly ${{ needs.prepare.outputs.language }}
+    needs: prepare
+    if: needs.prepare.outputs.release-in-progress != 'true'
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Nightly Python Release
-      run: ./go py:release[nightly]
+      name: Nightly ${{ needs.prepare.outputs.language }} Release
+      run: ./go ${{ needs.prepare.outputs.language }}:release nightly
+      artifact-name: ${{ needs.prepare.outputs.artifact-name }}
+      artifact-path: ${{ needs.prepare.outputs.artifact-path }}
     secrets: inherit
-  on-python-failure:
-    name: On Python Failure
-    runs-on: ubuntu-latest
-    if: ${{ always() && (needs.python.result == 'failure' || needs.python.result == 'timed_out') }}
-    needs: python
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.python.result }}
-          SLACK_CHANNEL: selenium-tlc
-          SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly Python ${{ needs.python.result }}
-          MSG_MINIMAL: actions url
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  java:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'java' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: Java
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Nightly Java Release
-      run: ./go java:release[nightly]
-    secrets: inherit
-  on-java-failure:
-    name: On Java Failure
-    runs-on: ubuntu-latest
-    if: ${{ always() && (needs.java.result == 'failure' || needs.java.result == 'timed_out') }}
-    needs: java
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.java.result }}
-          SLACK_CHANNEL: selenium-tlc
-          SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly Java ${{ needs.java.result }}
-          MSG_MINIMAL: actions url
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  dotnet:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'dotnet' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: DotNet
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Nightly DotNet Release
-      run: ./go dotnet:release[--stamp,nightly]
-    secrets: inherit
-  on-dotnet-failure:
-    name: On .NET Failure
-    runs-on: ubuntu-latest
-    if: ${{ always() && (needs.dotnet.result == 'failure' || needs.dotnet.result == 'timed_out') }}
-    needs: dotnet
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.dotnet.result }}
-          SLACK_CHANNEL: selenium-tlc
-          SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly .NET ${{ needs.dotnet.result }}
-          MSG_MINIMAL: actions url
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  grid:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: Grid
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Nightly Grid Release
-      run: ./go java:package[--config=release]
-      artifact-name: nightly-grid
-      artifact-path: build/dist/*.*
 
   release-grid:
     name: Release Grid
-    needs: grid
+    needs: [prepare, nightly-release]
+    if: needs.prepare.outputs.artifact-name
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -200,54 +95,21 @@ jobs:
           title: Nightly
           prerelease: true
           files: build/dist/*.*
-  on-grid-failure:
-    name: On Grid Failure
-    runs-on: ubuntu-latest
-    if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out' || needs.release-grid.result == 'failure' || needs.release-grid.result == 'timed_out') }}
-    needs: [grid, release-grid]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.grid.result }}
-          SLACK_CHANNEL: selenium-tlc
-          SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly Grid ${{ needs.grid.result }}
-          MSG_MINIMAL: actions url
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  javascript:
-    needs: check-release
-    if: (github.event.repository.fork == false) && (needs.check-release.outputs.release-in-progress != 'true') && (inputs.language == 'javascript' || inputs.language == 'all' || github.event_name == 'schedule')
-    name: JavaScript
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Nightly JavaScript Release
-      node-version: '22.x'
-      run: |
-        sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/selenium-webdriver/package.json
-        sed -i 's|"name": "selenium-webdriver"|"name": "@seleniumhq/selenium-webdriver"|g' javascript/selenium-webdriver/package.json
-        echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
-        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> ~/.npmrc
-        echo "always-auth=true" >> ~/.npmrc
-        ./go node:release[--stamp,nightly]
-    secrets: inherit
-  on-javascript-failure:
-    name: On JavaScript Failure
+  on-failure:
+    name: Notify on Failure
     runs-on: ubuntu-latest
-    if: ${{ always() && (needs.javascript.result == 'failure' || needs.javascript.result == 'timed_out') }}
-    needs: javascript
+    needs: [prepare, nightly-release, release-grid]
+    if: failure()
     steps:
       - uses: actions/checkout@v4
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: ${{ needs.javascript.result }}
+          SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly JavaScript ${{ needs.javascript.result }}
+          SLACK_TITLE: Nightly ${{ needs.prepare.outputs.language }} Release failed
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
