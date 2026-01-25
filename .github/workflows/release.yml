@@ -38,7 +38,7 @@ jobs:
             TAG="$INPUT_TAG"
           else
             # Extract tag from branch name: release-preparation-selenium-4.28.1-ruby -> selenium-4.28.1-ruby
-            TAG=$(echo "$PR_HEAD_REF" | sed 's/^release-preparation-//')
+            TAG="${PR_HEAD_REF#release-preparation-}"
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
@@ -62,7 +62,6 @@ jobs:
   publish:
     name: Build and Publish ${{ matrix.language }}
     needs: [parse-tag, get-approval]
-    if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language
     strategy:
       fail-fast: false
       matrix:
@@ -71,7 +70,7 @@ jobs:
     with:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
-      run: ./go ${{ matrix.language }}:release
+      run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
       artifact-name: release-packages-${{ matrix.language }}
       artifact-path: build/dist/*.*
     secrets: inherit
@@ -131,7 +130,7 @@ jobs:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
-          BASE_VERSION=$(echo "$VERSION" | sed -E 's/\.[0-9]+$/.0/')
+          BASE_VERSION="${VERSION%.*}.0"
           gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
 
   docs:
@@ -140,8 +139,7 @@ jobs:
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
-      needs.github-release.result != 'failure' &&
-      (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language)
+      needs.github-release.result != 'failure'
     permissions:
       contents: write
     strategy:

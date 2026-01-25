@@ -72,6 +72,8 @@ jobs:
             LANGUAGE="all"
           fi
 
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "language=$LANGUAGE" >> "$GITHUB_OUTPUT"
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "language=$LANGUAGE"
+          } >> "$GITHUB_OUTPUT"
