@@ -121,6 +121,17 @@ task :install do
   sh 'pip install bazel-bin/py/selenium-*.whl'
 end
 
+desc 'Pin Python dependencies'
+task :pin do
+  Bazel.execute('run', [], '//scripts:update_py_deps')
+  Bazel.execute('run', [], '//py:requirements.update')
+  SeleniumRake.git.add('py/requirements.txt')
+  SeleniumRake.git.add('py/requirements_lock.txt')
+end
+
+desc 'Update Python dependencies (alias for pin)'
+task update: :pin
+
 desc 'Update Python changelog'
 task :changelogs do
   header = "Selenium #{python_version}"
