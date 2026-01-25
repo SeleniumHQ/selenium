@@ -15,8 +15,7 @@ def main():
     requirements_file = script_dir.parent / "py" / "requirements.txt"
 
     if not requirements_file.exists():
-        print(f"Error: {requirements_file} not found")
-        return
+        raise FileNotFoundError(f"{requirements_file} not found")
 
     print(f"Checking {requirements_file}")
 
@@ -60,8 +59,7 @@ def main():
             text=True,
         )
         if result.returncode != 0:
-            print(f"Error installing packages:\n{result.stderr}")
-            return
+            raise RuntimeError(f"Error installing packages:\n{result.stderr}")
 
         # Get installed versions
         result = subprocess.run(
