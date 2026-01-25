@@ -79,8 +79,8 @@ jobs:
       - name: Check last commit author
         id: check
         run: |
-          LAST_AUTHOR=$(git log -1 --format='%an')
-          if [ "$LAST_AUTHOR" = "Selenium CI Bot" ]; then
+          LAST_AUTHOR_EMAIL=$(git log -1 --format='%ae')
+          if [ "$LAST_AUTHOR_EMAIL" = "selenium-ci@users.noreply.github.com" ]; then
             echo "::notice::Last commit was from Selenium CI Bot - skipping commit-fixes"
             echo "should-commit=false" >> "$GITHUB_OUTPUT"
           else
