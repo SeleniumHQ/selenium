@@ -1090,7 +1090,10 @@ class WebDriver(BaseWebDriver):
         import_cdp()
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
-            version = self.caps.get("se:cdpVersion").split(".")[0]  # type: ignore[union-attr]
+            cdp_version = self.caps.get("se:cdpVersion")
+            if not cdp_version:
+                raise WebDriverException("se:cdp capability present but se:cdpVersion is missing")
+            version = cdp_version.split(".")[0]
         else:
             version, ws_url = self._get_cdp_details()
 

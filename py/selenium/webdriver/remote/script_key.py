@@ -31,7 +31,11 @@ class ScriptKey:
         return self._id
 
     def __eq__(self, other: object) -> bool:
-        return self._id == other
+        if isinstance(other, ScriptKey):
+            return self._id == other._id
+        if isinstance(other, str):
+            return self._id == other
+        return NotImplemented
 
     def __hash__(self) -> int:
         return hash(self._id)
