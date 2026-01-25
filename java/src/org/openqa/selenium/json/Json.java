@@ -133,7 +133,7 @@ public class Json {
       jsonOutput.write(toConvert, maxDepth);
       return writer.toString();
     } catch (IOException e) {
-      throw new JsonException(e);
+      throw new JsonException("Cannot convert " + toConvert + " to json", e);
     }
   }
 

@@ -62,10 +62,12 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
           break;
 
         case STRING:
+          String numberAsString = jsonInput.nextString();
           try {
-            number = new BigDecimal(jsonInput.nextString());
+            number = new BigDecimal(numberAsString);
           } catch (NumberFormatException e) {
-            throw new JsonException(e);
+            throw new JsonException(
+                String.format("Not a numeric value: \"%s\"", numberAsString), e);
           }
           break;
 

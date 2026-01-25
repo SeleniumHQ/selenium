@@ -258,7 +258,7 @@ public class JsonInput implements Closeable {
 
       return new BigDecimal(builder.toString()).doubleValue();
     } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
+      throw new JsonException("Unable to parse to a number: " + builder + ". " + input, e);
     }
   }
 
