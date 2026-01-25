@@ -133,9 +133,6 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
-      - name: Free space
-        if: inputs.os != 'windows'
-        run: ./scripts/github-actions/free-disk-space.sh
       - name: Remove driver directories Windows
         if: inputs.os == 'windows'
         run: |
