@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
@@ -38,9 +39,9 @@ public class Subscription : IAsyncDisposable
 
     internal EventHandler EventHandler { get; }
 
-    public async Task UnsubscribeAsync()
+    public async Task UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _broker.UnsubscribeAsync(this).ConfigureAwait(false);
+        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
@@ -61,13 +62,8 @@ public class SubscriptionOptions
 public class ContextSubscriptionOptions
 {
     public TimeSpan? Timeout { get; set; }
-}
 
-internal static class ContextSubscriptionOptionsExtensions
-{
-    // Converts ContextSubscriptionOptions to SubscriptionOptions with the specified context.
-    // Deeply copying other properties as needed.
-    public static SubscriptionOptions WithContext(this ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context],
         Timeout = options?.Timeout

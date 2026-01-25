@@ -1,4 +1,10 @@
 def _dmg_archive_impl(repository_ctx):
+    repository_ctx.file("BUILD.bazel", repository_ctx.attr.build_file_content)
+
+    if not repository_ctx.which("hdiutil"):
+        # hdiutil is macOS-only; skip download on other platforms
+        return
+
     url = repository_ctx.attr.url
     (ignored, ignored, dmg_name) = url.rpartition("/")
     dmg_name = dmg_name.replace("%20", "_")
@@ -25,11 +31,6 @@ def _dmg_archive_impl(repository_ctx):
         archive = zip_name,
         stripPrefix = repository_ctx.attr.strip_prefix,
         output = repository_ctx.attr.output,
-    )
-
-    repository_ctx.file(
-        "BUILD.bazel",
-        repository_ctx.attr.build_file_content,
     )
 
 dmg_archive = repository_rule(

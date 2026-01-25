@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.io;
 
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -24,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -59,6 +62,7 @@ class ZipTest {
     File unwanted = new File(inputDir, "nay.txt");
     writeTestFile(input);
     writeTestFile(unwanted);
+    input.setLastModified(100_000L);
 
     String zipped = Zip.zip(input);
 
@@ -67,6 +71,7 @@ class ZipTest {
     File notThere = new File(outputDir, "nay.txt");
 
     assertThat(unzipped).exists();
+    assertThat(unzipped.lastModified()).isEqualTo(100_000L);
     assertThat(notThere).doesNotExist();
   }
 
@@ -90,25 +95,29 @@ class ZipTest {
   @Test
   void testCanUnzip() throws IOException {
     File testZip = File.createTempFile("testUnzip", "zip");
-    writeTestZip(testZip, 25);
+    writeTestZip(testZip, 5, 10_000L);
     File out = Zip.unzipToTempDir(new FileInputStream(testZip), "unzip", "stream");
-    assertThat(out.list()).hasSize(25);
+    assertThat(out.list()).hasSize(5);
+
+    assertThat(Arrays.stream(out.listFiles()).map(File::lastModified).collect(toSet()))
+        .as("Preserves original file's modification time when unzipping")
+        .containsExactlyInAnyOrder(0L, 10_000L, 20_000L, 30_000L, 40_000L);
   }
 
-  private File writeTestZip(File file, int files) throws IOException {
-    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
-    for (int i = 0; i < files; i++) {
-      writeTestZipEntry(out);
+  private void writeTestZip(File file, int files, long lastModifiedStep) throws IOException {
+    try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file))) {
+      for (int i = 0; i < files; i++) {
+        writeTestZipEntry(out, i * lastModifiedStep);
+      }
     }
-    out.close();
     file.deleteOnExit();
-    return file;
   }
 
-  private void writeTestZipEntry(ZipOutputStream out) throws IOException {
+  private void writeTestZipEntry(ZipOutputStream out, long lastModified) throws IOException {
     File testFile = File.createTempFile("testZip", "file");
     writeTestFile(testFile);
     ZipEntry entry = new ZipEntry(testFile.getName());
+    entry.setLastModifiedTime(FileTime.fromMillis(lastModified));
     out.putNextEntry(entry);
     try (FileInputStream in = new FileInputStream(testFile)) {
       byte[] buffer = new byte[16384];

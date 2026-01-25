@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -33,6 +34,10 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
   public HttpRequest(HttpMethod method, String uri) {
     this.method = method;
     this.uri = uri;
+  }
+
+  public HttpRequest(HttpMethod method, URI uri) {
+    this(method, uri.toString());
   }
 
   public String getUri() {

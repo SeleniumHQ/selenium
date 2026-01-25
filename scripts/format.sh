@@ -14,6 +14,10 @@ section "Buildifier"
 echo "    buildifier" >&2
 bazel run //:buildifier
 
+section "Dotnet"
+echo "    dotnet format" >&2
+bazel run //dotnet:format
+
 section "Java"
 echo "    google-java-format" >&2
 find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
@@ -21,7 +25,7 @@ find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
 section "Javascript"
 echo "    javascript/selenium-webdriver - prettier" >&2
 NODE_WEBDRIVER="${WORKSPACE_ROOT}/javascript/selenium-webdriver"
-bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc"
+bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc" --log-level=warn
 
 section "Ruby"
 echo "    rubocop" >&2
@@ -33,8 +37,7 @@ bazel run @rules_rust//:rustfmt
 
 section "Python"
 echo "    python - ruff" >&2
-bazel run @multitool//tools/ruff:cwd -- check --fix --show-fixes
-bazel run @multitool//tools/ruff:cwd -- format
+bazel run //py:ruff
 
 section "Copyright"
 bazel run //scripts:update_copyright

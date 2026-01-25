@@ -130,11 +130,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.json.JsonInputIterator"/>
-    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.net.NetworkUtils"/>
     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
   </Match>
