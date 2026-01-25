@@ -106,7 +106,8 @@ public sealed class InternetExplorerDriverService : DriverService
 
             if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
-                if (this.SuppressInitialDiagnosticInformation || this.LoggingLevel != InternetExplorerDriverLogLevel.Fatal)
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LoggingLevel != InternetExplorerDriverLogLevel.Fatal && this.LoggingLevel != InternetExplorerDriverLogLevel.Debug))
                 {
                     Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing IEDriver log level to DEBUG and overriding configured log level.");
                 }

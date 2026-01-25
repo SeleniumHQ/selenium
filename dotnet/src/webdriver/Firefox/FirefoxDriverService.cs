@@ -195,7 +195,8 @@ public sealed class FirefoxDriverService : DriverService
 
             if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
-                if (this.SuppressInitialDiagnosticInformation || this.LogLevel != FirefoxDriverLogLevel.Default)
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LogLevel != FirefoxDriverLogLevel.Default && this.LogLevel != FirefoxDriverLogLevel.Debug))
                 {
                     Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing GeckoDriver log level to DEBUG and overriding configured log level.");
                 }

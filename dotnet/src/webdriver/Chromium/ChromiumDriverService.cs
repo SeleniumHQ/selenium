@@ -120,23 +120,29 @@ public abstract class ChromiumDriverService : DriverService
 
             if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
-                if (this.SuppressInitialDiagnosticInformation || this.LogLevel != ChromiumDriverLogLevel.Default)
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LogLevel != ChromiumDriverLogLevel.Default && this.LogLevel != ChromiumDriverLogLevel.All))
                 {
                     Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromiumDriver --verbose and overriding --silent/--log-level settings.");
                 }
                 argsBuilder.Append(" --verbose");
             }
-            else if (this.EnableVerboseLogging)
+            else
             {
-                argsBuilder.Append(" --verbose");
-            }
-            else if (this.SuppressInitialDiagnosticInformation)
-            {
-                argsBuilder.Append(" --silent");
-            }
-            else if (this.LogLevel != ChromiumDriverLogLevel.Default)
-            {
-                argsBuilder.Append($" --log-level={this.LogLevel.ToString().ToUpperInvariant()}");
+                if (this.EnableVerboseLogging)
+                {
+                    argsBuilder.Append(" --verbose");
+                }
+
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" --silent");
+                }
+
+                if (this.LogLevel != ChromiumDriverLogLevel.Default)
+                {
+                    argsBuilder.Append($" --log-level={this.LogLevel.ToString().ToUpperInvariant()}");
+                }
             }
 
             if (this.EnableAppendLog)
