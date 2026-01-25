@@ -67,10 +67,15 @@ on:
         type: boolean
         default: false
       fetch-depth:
-        description: Number of commits to fetch (0 for full history)
+        description: Number of commits to fetch (0 for full history, empty for auto-detect)
         required: false
-        type: number
-        default: 1
+        type: string
+        default: ''
+      cache-name:
+        description: Name for cache restore (restores {name}.gz with key {name}-)
+        required: false
+        type: string
+        default: ''
 
 jobs:
   bazel:
@@ -85,11 +90,32 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
+      - name: Calculate fetch depth
+        id: depth
+        shell: bash
+        env:
+          FETCH_DEPTH: ${{ inputs.fetch-depth }}
+          PR_COMMITS: ${{ github.event.pull_request.commits }}
+        run: |
+          # Use explicit value if provided
+          if [ -n "$FETCH_DEPTH" ]; then
+            echo "val=$FETCH_DEPTH" >> "$GITHUB_OUTPUT"
+          # For PRs, use commit count plus buffer for merge base
+          elif [ -n "$PR_COMMITS" ]; then
+            echo "val=$((PR_COMMITS + 2))" >> "$GITHUB_OUTPUT"
+          # For push events, read commit count from event payload
+          else
+            COMMIT_COUNT=$(jq -e '.commits | length // 0' "$GITHUB_EVENT_PATH" 2>/dev/null) || COMMIT_COUNT=0
+            echo "val=$((COMMIT_COUNT + 1))" >> "$GITHUB_OUTPUT"
+          fi
       - name: Checkout source tree
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || github.ref }}
-          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-depth: ${{ steps.depth.outputs.val }}
+      - name: Fetch base ref for PR comparison
+        if: github.event.pull_request.base.sha
+        run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         run: git pull origin "$HEAD_REF"
@@ -100,6 +126,13 @@ jobs:
         run: git pull origin "$GIT_REF"
         env:
           GIT_REF: ${{ github.ref }}
+      - name: Restore cache
+        if: inputs.cache-name != ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ inputs.cache-name }}
+          key: ${{ inputs.cache-name }}-
+          restore-keys: ${{ inputs.cache-name }}-
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh

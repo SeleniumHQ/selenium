@@ -30,7 +30,7 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  # Rust jobs run in parallel with approval since work is not on trunk
+  # Run rust jobs in parallel with approval since work is not on trunk
   generate-rust-version:
     name: Generate Rust Version
     if: github.event.repository.fork == false
@@ -43,29 +43,16 @@ jobs:
   push-rust-version:
     name: Push Rust Version
     needs: generate-rust-version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          fetch-depth: 0
-      - name: Download rust version patch
-        uses: actions/download-artifact@v4
-        with:
-          name: rust-version
-      - name: Apply and push
-        run: |
-          if [ -f changes.patch ] && [ -s changes.patch ]; then
-            git apply --index changes.patch
-            git config --local user.email "selenium-ci@users.noreply.github.com"
-            git config --local user.name "Selenium CI Bot"
-            git commit -m "update selenium manager version and rust changelog"
-            git push origin HEAD:rust-release-${{ inputs.version }} --force
-          else
-            echo "::error::No changes to apply for rust version update"
-            exit 1
-          fi
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: rust-version
+      commit-message: "update selenium manager version and rust changelog"
+      push-branch: rust-release-${{ inputs.version }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   selenium-manager:
     name: Release Selenium Manager
@@ -118,8 +105,8 @@ jobs:
           fi
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
-  generate-updates:
-    name: Generate ${{ matrix.name }}
+  release-updates:
+    name: Generate ${{ matrix.name }} update
     needs: [restrict-trunk, normalize-version]
     strategy:
       fail-fast: false
@@ -128,11 +115,15 @@ jobs:
           - name: browsers
             run: ./go update_browsers ${{ inputs.chrome_channel }}
           - name: devtools
-            run: ./go all:update_cdp ${{ inputs.chrome_channel }}
+            run: ./go update_cdp ${{ inputs.chrome_channel }}
           - name: manager
             run: ./go update_manager
-          - name: dependencies
-            run: ./go release_update
+          - name: multitool
+            run: ./go update_multitool
+          - name: binding-versions
+            run: ./go all:version ${{ needs.normalize-version.outputs.version }} && ./go all:update
+          - name: rust-versions
+            run: ./go rust:version ${{ needs.normalize-version.outputs.version }} && ./go rust:update
           - name: authors
             run: ./go authors
     uses: ./.github/workflows/bazel.yml
@@ -141,27 +132,60 @@ jobs:
       run: ${{ matrix.run }}
       artifact-name: patch-${{ matrix.name }}
 
-  generate-versions:
-    name: Generate Versions
-    needs: [restrict-trunk, normalize-version]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Bump Versions
-      run: ./go all:version ${{ needs.normalize-version.outputs.version }}
-      artifact-name: patch-versions
+  calculate-changelog-depth:
+    name: Calculate Changelog Depth
+    needs: normalize-version
+    runs-on: ubuntu-latest
+    outputs:
+      depth: ${{ steps.calc.outputs.depth }}
+    steps:
+      - name: Calculate fetch depth from tag
+        id: calc
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.normalize-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            MAJOR=${BASH_REMATCH[1]}
+            MINOR=${BASH_REMATCH[2]}
+            PATCH=${BASH_REMATCH[3]}
+
+            if [ "$PATCH" -gt 1 ]; then
+              PREV="selenium-${MAJOR}.${MINOR}.$((PATCH-1))"
+            elif [ "$PATCH" -eq 1 ]; then
+              PREV="selenium-${MAJOR}.${MINOR}.0"
+            elif [ "$MINOR" -gt 0 ]; then
+              PREV="selenium-${MAJOR}.$((MINOR-1)).0"
+            else
+              # First release of major version (X.0.0), use full history
+              echo "depth=0" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...${{ github.sha }}" --jq '.total_commits' 2>/dev/null) || {
+              echo "::warning::Failed to get commit count, using full history"
+              echo "depth=0" >> "$GITHUB_OUTPUT"
+              exit 0
+            }
+            echo "depth=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
+          else
+            echo "depth=0" >> "$GITHUB_OUTPUT"
+          fi
 
   generate-changelogs:
     name: Generate Changelogs
-    needs: [restrict-trunk, normalize-version]
+    needs: [restrict-trunk, normalize-version, calculate-changelog-depth]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Changelogs
-      run: ./go all:changelogs
+      run: ./go all:changelogs && ./go rust:changelogs
       artifact-name: patch-changelogs
+      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   create-pr:
     name: Create Pull Request
-    needs: [normalize-version, generate-updates, generate-versions, generate-changelogs]
+    needs: [normalize-version, release-updates, generate-changelogs]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
@@ -169,7 +193,6 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           ref: trunk
-          fetch-depth: 0
       - name: Get latest trunk
         run: git pull --ff-only origin trunk
       - name: Download all patches
@@ -199,9 +222,10 @@ jobs:
           apply_patch browsers "update pinned browser versions"
           apply_patch devtools "update devtools versions"
           apply_patch manager "update selenium manager versions"
-          apply_patch dependencies "update dependency versions"
+          apply_patch multitool "update multitool binaries"
+          apply_patch binding-versions "bump bindings version and dependencies"
+          apply_patch rust-versions "bump rust version and dependencies"
           apply_patch authors "update authors file"
-          apply_patch versions "bump versions in preparation for release"
           apply_patch changelogs "changelogs updated"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
@@ -220,9 +244,10 @@ jobs:
             | Browser and driver versions | ${{ steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Update dependencies | ${{ steps.apply.outputs.dependencies == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Update Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Bump Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Multitool binaries | ${{ steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Bindings Version & Dependencies | ${{ steps.apply.outputs.binding-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Version & Dependencies | ${{ steps.apply.outputs.rust-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---

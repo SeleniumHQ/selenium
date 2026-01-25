@@ -170,7 +170,7 @@ def update_java(chrome_milestone):
 
     files = [
         root_dir / "java/src/org/openqa/selenium/devtools/versions.bzl",
-        root_dir / "Rakefile",
+        root_dir / "rake_tasks/java.rake",
     ]
     for file in files:
         replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))

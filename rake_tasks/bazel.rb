@@ -3,10 +3,14 @@
 require 'English'
 require 'open3'
 require 'rake'
+require 'rbconfig'
 require 'io/wait'
-require_relative 'selenium_rake/checks'
 
 module Bazel
+  def self.windows?
+    (RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw32/) != nil
+  end
+
   def self.execute(kind, args, target, &block)
     verbose = Rake::FileUtilsExt.verbose_flag
 
@@ -19,7 +23,7 @@ module Bazel
     cmd_out = ''
     cmd_exit_code = 0
 
-    if SeleniumRake::Checks.windows?
+    if windows?
       cmd += ['2>&1']
       cmd_line = cmd.join(' ')
       cmd_out = `#{cmd_line}`.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')

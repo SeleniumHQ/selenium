@@ -18,6 +18,8 @@
 // </copyright>
 
 using NUnit.Framework;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
@@ -31,5 +33,23 @@ internal class SessionTest : BiDiTestFixture
 
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
+    }
+
+    [Test]
+    public async Task ShouldRespectTimeout()
+    {
+        Assert.That(
+            () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
+            Throws.InstanceOf<TaskCanceledException>());
+    }
+
+    [Test]
+    public async Task ShouldRespectCancellationToken()
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
+
+        Assert.That(
+            () => bidi.StatusAsync(cancellationToken: cts.Token),
+            Throws.InstanceOf<TaskCanceledException>());
     }
 }

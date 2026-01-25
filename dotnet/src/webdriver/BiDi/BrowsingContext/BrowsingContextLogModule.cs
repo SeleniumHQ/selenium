@@ -19,28 +19,31 @@
 
 using OpenQA.Selenium.BiDi.Log;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAddedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAdded(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context));
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
     private async Task HandleEntryAddedAsync(Log.LogEntry e, Func<Log.LogEntry, Task> handler)
