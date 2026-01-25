@@ -71,7 +71,7 @@ jobs:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
       run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
-      artifact-name: release-packages-${{ matrix.language }}
+      artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
       artifact-path: build/dist/*.*
     secrets: inherit
 
@@ -150,6 +150,7 @@ jobs:
     with:
       tag: ${{ needs.parse-tag.outputs.tag }}
       language: ${{ matrix.language }}
+      skip: ${{ needs.parse-tag.outputs.language != 'all' && needs.parse-tag.outputs.language != matrix.language }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
