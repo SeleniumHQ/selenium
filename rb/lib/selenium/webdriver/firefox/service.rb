@@ -37,8 +37,10 @@ module Selenium
             if (index = args.index('--log'))
               args.delete_at(index) # delete '--log'
               args.delete_at(index) # delete the value (now at same index)
+              warn_driver_log_override
             elsif (index = args.index { |arg| arg.start_with?('--log=') })
               args.delete_at(index)
+              warn_driver_log_override
             end
             args << '-v'
           end

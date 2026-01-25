@@ -29,7 +29,7 @@ module Selenium
         def initialize(args: nil, **)
           if WebDriver.logger.debug?
             args = Array(args.dup)
-            args.reject! { |arg| arg.include?('log-level') || arg.include?('silent') }
+            warn_driver_log_override if args.reject! { |arg| arg.include?('log-level') || arg.include?('silent') }
             args << '--log-level=DEBUG'
           end
 

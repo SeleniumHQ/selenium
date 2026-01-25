@@ -4,15 +4,21 @@ module Selenium
 
       @allowed: Array[Symbol]
       @first_warning: bool
+      @level_forced: bool
+      @output_forced: bool
 
       @ignored: Array[Symbol]
       @logger: ::Logger
 
       def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: Array[Symbol]? ignored, ?allowed: Array[Symbol]? allowed) -> void
 
-      def level=: (Symbol level) -> Symbol
+      def debug!: () -> void
 
-      def output=: (String io) -> ::Logger
+      def stderr!: () -> void
+
+      def level=: (Symbol level) -> Symbol?
+
+      def output=: (String io) -> ::Logger?
 
       def io: () -> IO
 
