@@ -67,6 +67,7 @@ csharp_library(
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
         nuget_package("System.Text.Encodings.Web"),
         nuget_package("System.Text.Json"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.ValueTuple"),
     ],
 )
@@ -96,6 +97,7 @@ csharp_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -129,6 +131,7 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
+        nuget_package("System.Threading.Channels"),
     ],
 )
 
@@ -153,6 +156,7 @@ csharp_library(
     deps = [
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -185,6 +189,7 @@ csharp_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -216,6 +221,7 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
+        nuget_package("System.Threading.Channels"),
     ],
 )
 
