@@ -130,9 +130,7 @@ csharp_library(
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
-        nuget_package("System.Threading.Channels"),
-    ],
+    deps = [],
 )
 
 csharp_library(
@@ -220,9 +218,7 @@ csharp_library(
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
-        nuget_package("System.Threading.Channels"),
-    ],
+    deps = [],
 )
 
 copy_file(
