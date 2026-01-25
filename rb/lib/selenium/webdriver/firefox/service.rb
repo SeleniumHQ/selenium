@@ -33,19 +33,25 @@ module Selenium
             args << '0'
           end
 
-          if WebDriver.logger.debug?
-            if (index = args.index('--log'))
-              args.delete_at(index) # delete '--log'
-              args.delete_at(index) # delete the value (now at same index)
-              warn_driver_log_override
-            elsif (index = args.index { |arg| arg.start_with?('--log=') })
-              args.delete_at(index)
-              warn_driver_log_override
-            end
+          if ENV.key?('SE_DEBUG')
+            remove_log_args(args)
             args << '-v'
           end
 
           super
+        end
+
+        private
+
+        def remove_log_args(args)
+          if (index = args.index('--log'))
+            args.delete_at(index) # delete '--log'
+            args.delete_at(index) if args[index] && !args[index].start_with?('-') # delete value if present
+            warn_driver_log_override
+          elsif (index = args.index { |arg| arg.start_with?('--log=') })
+            args.delete_at(index)
+            warn_driver_log_override
+          end
         end
       end # Service
     end # Firefox

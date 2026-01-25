@@ -108,8 +108,6 @@ module Selenium
       private
 
       def warn_driver_log_override
-        return unless ENV.key?('SE_DEBUG')
-
         WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver logging settings', id: :se_debug)
       end
     end # Service

@@ -100,6 +100,43 @@ module Selenium
               expect(service.extra_args).to eq(['--websocket-port=1234'])
             end
           end
+
+          context 'when SE_DEBUG is set' do
+            around do |example|
+              ENV['SE_DEBUG'] = '1'
+              example.run
+            ensure
+              ENV.delete('SE_DEBUG')
+            end
+
+            it 'adds -v flag' do
+              service = described_class.new
+
+              expect(service.extra_args).to include('-v')
+            end
+
+            it 'removes conflicting --log args with value' do
+              service = described_class.new(args: ['--log', 'info'])
+
+              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).not_to include('--log')
+              expect(service.extra_args).not_to include('info')
+            end
+
+            it 'removes conflicting --log= args' do
+              service = described_class.new(args: ['--log=info'])
+
+              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).not_to include('--log=info')
+            end
+
+            it 'does not remove next arg if --log has no value' do
+              service = described_class.new(args: ['--log', '--other-flag'])
+
+              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).to include('--other-flag')
+            end
+          end
         end
 
         context 'when initializing driver' do
