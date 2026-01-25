@@ -14,8 +14,29 @@ BINDING_TARGETS = {
 
 # Shared utilities used by language-specific rake tasks
 module SeleniumRake
+  BINDINGS = %w[ruby python javascript java dotnet].freeze
+
   class << self
     attr_accessor :git
+  end
+
+  # Parse a release tag like "selenium-4.28.0" or "selenium-4.28.1-ruby"
+  # Returns { version:, language:, patch: } where language defaults to 'all'
+  def self.parse_tag(tag)
+    pattern = /^selenium-(\d+\.\d+\.\d+)(?:-(#{BINDINGS.join('|')}))?$/
+    match = tag&.match(pattern)
+    raise "Invalid tag format: #{tag}" unless match
+
+    version = match[1]
+    language = match[2] || 'all'
+    patch = version.split('.')[2].to_i
+
+    if patch.positive? && language == 'all'
+      raise "Patch releases must specify a language (e.g., selenium-#{version}-ruby)"
+    end
+    raise 'Full releases (X.Y.0) cannot have a language suffix' if patch.zero? && language != 'all'
+
+    {version: version, language: language, patch: patch}
   end
 
   def self.updated_version(current, desired = nil, nightly = nil)

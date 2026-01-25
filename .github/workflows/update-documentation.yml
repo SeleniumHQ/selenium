@@ -15,10 +15,10 @@ on:
         options:
           - all
           - java
-          - rb
-          - py
+          - ruby
+          - python
           - dotnet
-          - node
+          - javascript
 
   workflow_call:
     inputs:
@@ -26,9 +26,12 @@ on:
         required: true
         type: string
       language:
-        required: false
         type: string
         default: ""
+      skip:
+        description: We're not releasing this one right now
+        type: boolean
+        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -42,6 +45,7 @@ env:
 jobs:
   parse:
     name: Parse Tag
+    if: ${{ !inputs.skip }}
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.parse.outputs.version }}
@@ -55,24 +59,20 @@ jobs:
         run: |
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-          # Check for language suffix and map to internal names
-          case "$TAG" in
-            *-javascript) LANG="node" ;;
-            *-python) LANG="py" ;;
-            *-ruby) LANG="rb" ;;
-            *-java) LANG="java" ;;
-            *-dotnet) LANG="dotnet" ;;
-            *) LANG="all" ;;
-          esac
-
+          # Extract language from tag suffix or use input
           if [ -n "$INPUT_LANG" ] && [ "$INPUT_LANG" != "all" ]; then
             LANG="$INPUT_LANG"
+          elif [[ "$TAG" =~ -(javascript|python|ruby|java|dotnet)$ ]]; then
+            LANG="${BASH_REMATCH[1]}"
+          else
+            LANG="all"
           fi
           echo "language=$LANG" >> "$GITHUB_OUTPUT"
 
   generate-docs:
     name: Generate Documentation
     needs: parse
+    if: ${{ !inputs.skip }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: Generate Docs
@@ -84,6 +84,7 @@ jobs:
   commit-docs:
     name: Commit Documentation
     needs: [parse, generate-docs]
+    if: ${{ !inputs.skip }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout gh-pages

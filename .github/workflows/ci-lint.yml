@@ -64,10 +64,33 @@ jobs:
           echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
           exit 1
 
+  check-bot-commit:
+    name: Check bot commit
+    needs: format
+    if: always() && needs.format.result == 'failure' && github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    outputs:
+      should-commit: ${{ steps.check.outputs.should-commit }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check last commit author
+        id: check
+        run: |
+          LAST_AUTHOR_EMAIL=$(git log -1 --format='%ae')
+          if [ "$LAST_AUTHOR_EMAIL" = "selenium-ci@users.noreply.github.com" ]; then
+            echo "::notice::Last commit was from Selenium CI Bot - skipping commit-fixes"
+            echo "should-commit=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should-commit=true" >> "$GITHUB_OUTPUT"
+          fi
+
   commit-fixes:
     name: Commit fixes
-    needs: format
-    if: failure() && github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork
+    needs: check-bot-commit
+    if: needs.check-bot-commit.outputs.should-commit == 'true'
     permissions:
       contents: write
       actions: read
@@ -76,3 +99,5 @@ jobs:
       artifact-name: format-changes
       commit-message: "Auto-format code"
       ref: ${{ github.event.pull_request.head.ref }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

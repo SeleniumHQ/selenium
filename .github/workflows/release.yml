@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g., selenium-4.28.0)'
+        description: 'Release tag (e.g., selenium-4.28.0 or selenium-4.28.1-ruby)'
         required: true
 
 env:
@@ -16,8 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  prepare:
-    name: Prepare Release
+  extract-tag:
+    name: Extract Tag
     runs-on: ubuntu-latest
     if: >
       github.event.repository.fork == false &&
@@ -25,11 +25,10 @@ jobs:
        github.event.pull_request.merged == true) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''))
     outputs:
-      tag: ${{ steps.tag.outputs.tag }}
-      version: ${{ steps.tag.outputs.version }}
+      tag: ${{ steps.extract.outputs.tag }}
     steps:
-      - name: Extract tag and version
-        id: tag
+      - name: Extract tag from input or PR branch
+        id: extract
         env:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_TAG: ${{ inputs.tag }}
@@ -38,55 +37,73 @@ jobs:
           if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
             TAG="$INPUT_TAG"
           else
-            VERSION=$(echo "$PR_HEAD_REF" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-            TAG="selenium-${VERSION}"
+            # Extract tag from branch name: release-preparation-selenium-4.28.1-ruby -> selenium-4.28.1-ruby
+            TAG="${PR_HEAD_REF#release-preparation-}"
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
+
+  parse-tag:
+    name: Parse Tag
+    needs: extract-tag
+    uses: ./.github/workflows/parse-release-tag.yml
+    with:
+      tag: ${{ needs.extract-tag.outputs.tag }}
 
   get-approval:
     name: Get Approval
-    needs: prepare
+    needs: parse-tag
     uses: ./.github/workflows/get-approval.yml
     with:
       title: Release approval required
-      message: Approval is needed to publish ${{ needs.prepare.outputs.tag }}.
+      message: Approval is needed to publish ${{ needs.parse-tag.outputs.tag }}.
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish:
     name: Build and Publish ${{ matrix.language }}
-    needs: get-approval
+    needs: [parse-tag, get-approval]
     strategy:
       fail-fast: false
       matrix:
-        language: [java, py, rb, dotnet, node]
+        language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
-      run: ./go ${{ matrix.language }}:release
-      artifact-name: release-packages-${{ matrix.language }}
+      run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
+      artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
       artifact-path: build/dist/*.*
     secrets: inherit
 
   github-release:
     name: GitHub Release
-    needs: [prepare, publish]
+    needs: [parse-tag, publish]
+    if: >-
+      needs.parse-tag.outputs.language == 'all' ||
+      needs.parse-tag.outputs.language == 'java' ||
+      needs.parse-tag.outputs.language == 'dotnet'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout repo
+        if: needs.parse-tag.outputs.language == 'all'
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Download release packages
+      - name: Download all release packages
+        if: needs.parse-tag.outputs.language == 'all'
         uses: actions/download-artifact@v4
         with:
           pattern: release-packages-*
           merge-multiple: true
+      - name: Download release packages
+        if: needs.parse-tag.outputs.language != 'all'
+        uses: actions/download-artifact@v4
+        with:
+          name: release-packages-${{ needs.parse-tag.outputs.language }}
       - name: Delete nightly release and tag
+        if: needs.parse-tag.outputs.language == 'all'
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
@@ -97,39 +114,53 @@ jobs:
             gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
           fi
       - name: Create GitHub release
+        if: needs.parse-tag.outputs.language == 'all'
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           artifacts: "build/dist/*.*"
           bodyFile: "scripts/github-actions/release_header.md"
           generateReleaseNotes: true
-          name: "Selenium ${{ needs.prepare.outputs.version }}"
-          tag: "${{ needs.prepare.outputs.tag }}"
+          name: "Selenium ${{ needs.parse-tag.outputs.version }}"
+          tag: "${{ needs.parse-tag.outputs.tag }}"
           commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
-
-  verify:
-    name: Verify Published Packages
-    needs: docs
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Verify packages
-      run: ./go all:verify
+      - name: Update GitHub release
+        if: needs.parse-tag.outputs.language != 'all'
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          VERSION: ${{ needs.parse-tag.outputs.version }}
+        run: |
+          BASE_VERSION="${VERSION%.*}.0"
+          gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [prepare, publish, github-release]
+    needs: [parse-tag, publish, github-release]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      needs.github-release.result != 'failure'
     permissions:
       contents: write
     strategy:
       fail-fast: false
       matrix:
-        language: [java, py, rb, dotnet, node]
+        language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/update-documentation.yml
     with:
-      tag: ${{ needs.prepare.outputs.tag }}
+      tag: ${{ needs.parse-tag.outputs.tag }}
       language: ${{ matrix.language }}
+      skip: ${{ needs.parse-tag.outputs.language != 'all' && needs.parse-tag.outputs.language != matrix.language }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  verify:
+    name: Verify Published Packages
+    needs: [parse-tag, docs]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Verify packages
+      run: ./go ${{ needs.parse-tag.outputs.language }}:verify
 
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
@@ -141,35 +172,38 @@ jobs:
 
   reset-version:
     name: Generate Nightly Versions
-    needs: docs
+    needs: [parse-tag, docs]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
-      run: ./go all:version nightly && ./go rust:version nightly
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 
   update-version:
     name: Push Nightly Versions
-    needs: [prepare, reset-version, unrestrict-trunk]
+    needs: [parse-tag, reset-version, unrestrict-trunk]
     permissions:
       contents: write
       actions: read
     uses: ./.github/workflows/commit-changes.yml
     with:
       artifact-name: version-reset
-      commit-message: "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
+      commit-message: "[build] Reset versions to nightly after ${{ needs.parse-tag.outputs.tag }} release"
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   nightly:
     name: Publish Nightly Packages
-    needs: [update-version]
+    needs: [parse-tag, update-version]
     uses: ./.github/workflows/nightly.yml
+    with:
+      language: ${{ needs.parse-tag.outputs.language }}
     secrets: inherit
 
   mirror:
     name: Update Release Mirror
-    needs: [nightly]
+    needs: [parse-tag, nightly]
+    if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 

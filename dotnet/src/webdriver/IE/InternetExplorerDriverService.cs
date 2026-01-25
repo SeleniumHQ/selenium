@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Internal;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -103,19 +104,31 @@ public sealed class InternetExplorerDriverService : DriverService
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path=\"{0}\"", this.LibraryExtractionPath));
             }
 
-            if (this.LoggingLevel != InternetExplorerDriverLogLevel.Fatal)
+            if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-level={0}", this.LoggingLevel.ToString().ToUpperInvariant()));
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LoggingLevel != InternetExplorerDriverLogLevel.Fatal && this.LoggingLevel != InternetExplorerDriverLogLevel.Debug))
+                {
+                    Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing IEDriver log level to DEBUG and overriding configured log level.");
+                }
+                argsBuilder.Append(" -log-level=DEBUG");
+            }
+            else if (this.LoggingLevel == InternetExplorerDriverLogLevel.Debug)
+            {
+                argsBuilder.Append(" -log-level=DEBUG");
+            }
+            else if (this.SuppressInitialDiagnosticInformation)
+            {
+                argsBuilder.Append(" -silent");
+            }
+            else if (this.LoggingLevel != InternetExplorerDriverLogLevel.Fatal)
+            {
+                argsBuilder.Append($" -log-level={this.LoggingLevel.ToString().ToUpperInvariant()}");
             }
 
             if (!string.IsNullOrEmpty(this.WhitelistedIPAddresses))
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -whitelisted-ips={0}", this.WhitelistedIPAddresses));
-            }
-
-            if (this.SuppressInitialDiagnosticInformation)
-            {
-                argsBuilder.Append(" -silent");
+                argsBuilder.Append($" -whitelisted-ips={this.WhitelistedIPAddresses}");
             }
 
             return argsBuilder.ToString();

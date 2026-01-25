@@ -3,8 +3,8 @@ name: Release Preparation
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Selenium version to release'
+      tag:
+        description: 'Release tag (e.g., selenium-4.28.0 or selenium-4.28.1-ruby)'
         required: true
       chrome_channel:
         description: 'Chrome Channel for CDP'
@@ -25,24 +25,31 @@ jobs:
     with:
       title: Release approval needed
       message: |
-        Selenium ${{ github.event.inputs.version }} release preparation started.
+        Selenium ${{ github.event.inputs.tag }} release preparation started.
         Please approve to lock trunk when ready.
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  # Run rust jobs in parallel with approval since work is not on trunk
+  parse-tag:
+    name: Parse Tag
+    uses: ./.github/workflows/parse-release-tag.yml
+    with:
+      tag: ${{ inputs.tag }}
+
+  # Rust jobs can execute in parallel with approval job since work is in a separate branch
   generate-rust-version:
     name: Generate Rust Version
-    if: github.event.repository.fork == false
+    needs: parse-tag
+    if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Rust Version
-      run: ./go rust:version ${{ inputs.version }}
+      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
       artifact-name: rust-version
 
   push-rust-version:
     name: Push Rust Version
-    needs: generate-rust-version
+    needs: [parse-tag, generate-rust-version]
     permissions:
       contents: write
       actions: read
@@ -50,23 +57,23 @@ jobs:
     with:
       artifact-name: rust-version
       commit-message: "update selenium manager version and rust changelog"
-      push-branch: rust-release-${{ inputs.version }}
+      push-branch: rust-release-${{ needs.parse-tag.outputs.version }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   selenium-manager:
     name: Release Selenium Manager
-    needs: push-rust-version
+    needs: [parse-tag, push-rust-version]
     uses: ./.github/workflows/ci-rust.yml
     with:
       release: true
-      branch: rust-release-${{ inputs.version }}
+      branch: rust-release-${{ needs.parse-tag.outputs.version }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   cleanup-rust-branch:
     name: Cleanup Rust Branch
-    needs: selenium-manager
+    needs: [parse-tag, selenium-manager]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -75,39 +82,21 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Delete rust release branch
         run: |
-          git push origin --delete rust-release-${{ inputs.version }}
+          git push origin --delete rust-release-${{ needs.parse-tag.outputs.version }}
 
   restrict-trunk:
     name: Restrict Trunk Branch
-    needs: [get-approval, selenium-manager]
+    needs: [parse-tag, get-approval, selenium-manager]
+    if: always() && !cancelled() && needs.get-approval.result == 'success' && (needs.selenium-manager.result == 'success' || needs.selenium-manager.result == 'skipped')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: true
     secrets: inherit
 
-  normalize-version:
-    name: Normalize Version
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.value }}
-    steps:
-      - name: Normalize version
-        id: version
-        shell: bash
-        run: |
-          VERSION="${{ github.event.inputs.version }}"
-          VERSION="${VERSION//[[:space:]]/}"
-          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
-            VERSION="${VERSION}.0"
-          elif [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid version format: '$VERSION'. Expected major.minor or major.minor.patch"
-            exit 1
-          fi
-          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
-
   release-updates:
     name: Generate ${{ matrix.name }} update
-    needs: [restrict-trunk, normalize-version]
+    needs: [parse-tag, restrict-trunk]
+    if: needs.parse-tag.outputs.language == 'all'
     strategy:
       fail-fast: false
       matrix:
@@ -121,9 +110,9 @@ jobs:
           - name: multitool
             run: ./go update_multitool
           - name: binding-versions
-            run: ./go all:version ${{ needs.normalize-version.outputs.version }} && ./go all:update
+            run: ./go all:version ${{ needs.parse-tag.outputs.version }} && ./go all:update
           - name: rust-versions
-            run: ./go rust:version ${{ needs.normalize-version.outputs.version }} && ./go rust:update
+            run: ./go rust:version ${{ needs.parse-tag.outputs.version }} && ./go rust:update
           - name: authors
             run: ./go authors
     uses: ./.github/workflows/bazel.yml
@@ -132,9 +121,19 @@ jobs:
       run: ${{ matrix.run }}
       artifact-name: patch-${{ matrix.name }}
 
+  patch-release-updates:
+    name: Generate ${{ needs.parse-tag.outputs.language }} version update
+    needs: [parse-tag, restrict-trunk]
+    if: needs.parse-tag.outputs.language != 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update ${{ needs.parse-tag.outputs.language }} version
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }} && ./go ${{ needs.parse-tag.outputs.language }}:update
+      artifact-name: patch-binding-versions
+
   calculate-changelog-depth:
     name: Calculate Changelog Depth
-    needs: normalize-version
+    needs: parse-tag
     runs-on: ubuntu-latest
     outputs:
       depth: ${{ steps.calc.outputs.depth }}
@@ -143,7 +142,8 @@ jobs:
         id: calc
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.normalize-version.outputs.version }}
+          VERSION: ${{ needs.parse-tag.outputs.version }}
+        shell: bash
         run: |
           set -euo pipefail
           if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
@@ -175,17 +175,20 @@ jobs:
 
   generate-changelogs:
     name: Generate Changelogs
-    needs: [restrict-trunk, normalize-version, calculate-changelog-depth]
+    needs: [parse-tag, restrict-trunk, calculate-changelog-depth]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Changelogs
-      run: ./go all:changelogs && ./go rust:changelogs
+      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:changelogs' || '' }}
       artifact-name: patch-changelogs
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   create-pr:
     name: Create Pull Request
-    needs: [normalize-version, release-updates, generate-changelogs]
+    needs: [parse-tag, release-updates, patch-release-updates, generate-changelogs]
+    if: >-
+      always() && !cancelled() && needs.release-updates.result != 'failure' && needs.patch-release-updates.result != 'failure' &&
+      needs.generate-changelogs.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
@@ -233,21 +236,28 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           delete-branch: true
-          branch: release-preparation-${{ needs.normalize-version.outputs.version }}
+          branch: release-preparation-${{ needs.parse-tag.outputs.tag }}
           base: trunk
-          title: "[build] Prepare for release of Selenium ${{ needs.normalize-version.outputs.version }}"
+          title: "[build] Prepare for release of ${{ needs.parse-tag.outputs.tag }}"
           body: |
+
+            ### Release Info
+            | | |
+            |-----------|--------|
+            | **Tag** | ${{ needs.parse-tag.outputs.tag }} |
+            | **Version** | ${{ needs.parse-tag.outputs.version }} |
+            | **Language** | ${{ needs.parse-tag.outputs.language }} |
 
             ### Updates Applied
             | Component | Status |
             |-----------|--------|
-            | Browser and driver versions | ${{ steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | CDP version | ${{ steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Selenium Manager version | ${{ steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Multitool binaries | ${{ steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Browser and driver versions | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | CDP version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Selenium Manager version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Multitool binaries | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Bindings Version & Dependencies | ${{ steps.apply.outputs.binding-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Rust Version & Dependencies | ${{ steps.apply.outputs.rust-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Authors | ${{ steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Version & Dependencies | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Authors | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---
