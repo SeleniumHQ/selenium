@@ -100,24 +100,28 @@ task :authors do
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
-# Example: `./go release_updates 4.31.0 early-stable`
-# Equivalent to `release-updates` job in `.github/workflows/pre-release.yml`
+# Example: `./go release_updates selenium-4.31.0 early-stable`
+# Example: `./go release_updates selenium-4.31.1-ruby`
 desc 'Update everything in preparation for a release'
-task :release_updates, [:version, :channel] do |_task, arguments|
-  version = arguments[:version]
-  raise 'Missing required version: ./go release_updates 4.31.0 early-stable' if version.nil? || version.empty?
+task :release_updates, [:tag, :channel] do |_task, arguments|
+  parsed = SeleniumRake.parse_tag(arguments[:tag])
+  version = parsed[:version]
+  language = parsed[:language]
 
-  Rake::Task['update_browsers'].invoke(arguments[:channel])
-  Rake::Task['update_cdp'].invoke(arguments[:channel])
-  Rake::Task['update_manager'].invoke
-  Rake::Task['update_multitool'].invoke
-  Rake::Task['authors'].invoke
-  Rake::Task['all:version'].invoke(version)
-  Rake::Task['all:update'].invoke
-  Rake::Task['rust:version'].invoke(version)
-  Rake::Task['rust:update'].invoke
-  Rake::Task['all:changelogs'].invoke
-  Rake::Task['rust:changelogs'].invoke
+  if parsed[:patch].zero?
+    Rake::Task['update_browsers'].invoke(arguments[:channel])
+    Rake::Task['update_cdp'].invoke(arguments[:channel])
+    Rake::Task['update_manager'].invoke
+    Rake::Task['update_multitool'].invoke
+    Rake::Task['authors'].invoke
+    Rake::Task['rust:version'].invoke(version)
+    Rake::Task['rust:update'].invoke
+    Rake::Task['rust:changelogs'].invoke
+  end
+
+  Rake::Task["#{language}:version"].invoke(version)
+  Rake::Task["#{language}:update"].invoke
+  Rake::Task["#{language}:changelogs"].invoke
 end
 
 desc 'Run linters for all languages (skip with: ./go lint -rb -rust)'
