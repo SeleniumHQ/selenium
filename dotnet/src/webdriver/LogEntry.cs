@@ -70,7 +70,7 @@ public class LogEntry
     /// <returns>A <see cref="LogEntry"/> with the values in the dictionary.</returns>
     internal static LogEntry FromDictionary(Dictionary<string, object?> entryDictionary)
     {
-        LogEntry entry = new LogEntry();
+        LogEntry entry = new();
         if (entryDictionary.TryGetValue("message", out object? message))
         {
             entry.Message = message?.ToString() ?? string.Empty;

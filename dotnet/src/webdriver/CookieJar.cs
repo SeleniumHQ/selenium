@@ -32,9 +32,9 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
     {
         get
         {
-            Response response = driver.Execute(DriverCommand.GetAllCookies, new Dictionary<string, object>());
+            Response response = driver.Execute(DriverCommand.GetAllCookies, []);
 
-            List<Cookie> toReturn = new List<Cookie>();
+            List<Cookie> toReturn = [];
             if (response.Value is object?[] cookies)
             {
                 foreach (object? rawCookie in cookies)
@@ -63,8 +63,10 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
             throw new ArgumentNullException(nameof(cookie));
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("cookie", cookie);
+        Dictionary<string, object> parameters = new()
+        {
+            { "cookie", cookie }
+        };
         driver.Execute(DriverCommand.AddCookie, parameters);
     }
 

@@ -31,8 +31,8 @@ namespace OpenQA.Selenium.DevTools.V142;
 /// </summary>
 public class V142Network : DevTools.Network
 {
-    private FetchAdapter fetch;
-    private NetworkAdapter network;
+    private readonly FetchAdapter fetch;
+    private readonly NetworkAdapter network;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V142Network"/> class.
@@ -92,11 +92,11 @@ public class V142Network : DevTools.Network
     {
         await fetch.Enable(new Fetch.EnableCommandSettings()
         {
-            Patterns = new Fetch.RequestPattern[]
-            {
+            Patterns =
+            [
                 new Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
                 new Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
-            },
+            ],
             HandleAuthRequests = true
         }).ConfigureAwait(false);
     }
@@ -153,13 +153,13 @@ public class V142Network : DevTools.Network
 
         if (requestData.Headers?.Count > 0)
         {
-            List<HeaderEntry> headers = new List<HeaderEntry>();
+            List<HeaderEntry> headers = [];
             foreach (KeyValuePair<string, string> headerPair in requestData.Headers)
             {
                 headers.Add(new HeaderEntry() { Name = headerPair.Key, Value = headerPair.Value });
             }
 
-            commandSettings.Headers = headers.ToArray();
+            commandSettings.Headers = [.. headers];
         }
 
         if (!string.IsNullOrEmpty(requestData.PostData))
@@ -197,7 +197,7 @@ public class V142Network : DevTools.Network
 
         if (responseData.Headers.Count > 0 || responseData.CookieHeaders.Count > 0)
         {
-            List<HeaderEntry> headers = new List<HeaderEntry>();
+            List<HeaderEntry> headers = [];
             foreach (KeyValuePair<string, string> headerPair in responseData.Headers)
             {
                 headers.Add(new HeaderEntry() { Name = headerPair.Key, Value = headerPair.Value });
@@ -208,7 +208,7 @@ public class V142Network : DevTools.Network
                 headers.Add(new HeaderEntry() { Name = "Set-Cookie", Value = cookieHeader });
             }
 
-            commandSettings.ResponseHeaders = headers.ToArray();
+            commandSettings.ResponseHeaders = [.. headers];
         }
 
         if (!string.IsNullOrEmpty(responseData.Body))
@@ -322,8 +322,7 @@ public class V142Network : DevTools.Network
 
     private void OnFetchAuthRequired(object? sender, Fetch.AuthRequiredEventArgs e)
     {
-        AuthRequiredEventArgs wrapped = new AuthRequiredEventArgs
-        (
+        AuthRequiredEventArgs wrapped = new        (
             requestId: e.RequestId,
             uri: e.Request.Url
         );
@@ -344,7 +343,7 @@ public class V142Network : DevTools.Network
                 Headers = new Dictionary<string, string>(e.Request.Headers)
             };
 
-            RequestPausedEventArgs wrapped = new RequestPausedEventArgs(null, requestData);
+            RequestPausedEventArgs wrapped = new(null, requestData);
             this.OnRequestPaused(wrapped);
         }
         else

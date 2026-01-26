@@ -112,7 +112,7 @@ public class WebDriverWaitTest
         var mockDriver = new Mock<IWebDriver>();
         mockDriver.SetupGet<string>(_ => _.CurrentWindowHandle).Returns(SOME_STRING);
 
-        Func<IWebDriver, string> condition = driver => driver.CurrentWindowHandle;
+        static string condition(IWebDriver driver) => driver.CurrentWindowHandle;
 
         var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
 
@@ -153,22 +153,16 @@ public class WebDriverWaitTest
     }
 }
 
-class TickingClock : IClock
+class TickingClock(TimeSpan increment) : IClock
 {
-    private readonly TimeSpan increment;
+    private readonly TimeSpan increment = increment;
 
     public TickingClock() : this(TimeSpan.FromSeconds(0))
     {
 
     }
 
-    public TickingClock(TimeSpan increment)
-    {
-        this.increment = increment;
-        Now = new DateTime(0);
-    }
-
-    public DateTime Now { get; private set; }
+    public DateTime Now { get; private set; } = new DateTime(0);
 
     public DateTime LaterBy(TimeSpan delay)
     {
@@ -177,7 +171,7 @@ class TickingClock : IClock
 
     public bool IsNowBefore(DateTime then)
     {
-        Now = Now + increment;
+        Now += increment;
         return Now < then;
     }
 }

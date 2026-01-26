@@ -23,14 +23,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class BrowsingContextConverter : JsonConverter<BrowsingContext.BrowsingContext>
+internal class BrowsingContextConverter(BiDi bidi) : JsonConverter<BrowsingContext.BrowsingContext>
 {
-    private readonly BiDi _bidi;
-
-    public BrowsingContextConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
+    private readonly BiDi _bidi = bidi;
 
     public override BrowsingContext.BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

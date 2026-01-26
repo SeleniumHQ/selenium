@@ -29,7 +29,14 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a way to send commands to the remote server
 /// </summary>
-public class Command
+/// <remarks>
+/// Initializes a new instance of the <see cref="Command"/> class for a Session
+/// </remarks>
+/// <param name="sessionId">Session ID the driver is using</param>
+/// <param name="name">Name of the command</param>
+/// <param name="parameters">Parameters for that command</param>
+/// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
+public class Command(SessionId? sessionId, string name, Dictionary<string, object?>? parameters)
 {
     private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
     {
@@ -52,36 +59,22 @@ public class Command
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Command"/> class for a Session
-    /// </summary>
-    /// <param name="sessionId">Session ID the driver is using</param>
-    /// <param name="name">Name of the command</param>
-    /// <param name="parameters">Parameters for that command</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
-    public Command(SessionId? sessionId, string name, Dictionary<string, object?>? parameters)
-    {
-        this.SessionId = sessionId;
-        this.Parameters = parameters ?? new Dictionary<string, object?>();
-        this.Name = name ?? throw new ArgumentNullException(nameof(name));
-    }
-
-    /// <summary>
     /// Gets the SessionID of the command
     /// </summary>
     [JsonPropertyName("sessionId")]
-    public SessionId? SessionId { get; }
+    public SessionId? SessionId { get; } = sessionId;
 
     /// <summary>
     /// Gets the command name
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; }
+    public string Name { get; } = name ?? throw new ArgumentNullException(nameof(name));
 
     /// <summary>
     /// Gets the parameters of the command
     /// </summary>
     [JsonPropertyName("parameters")]
-    public Dictionary<string, object?> Parameters { get; }
+    public Dictionary<string, object?> Parameters { get; } = parameters ?? [];
 
     /// <summary>
     /// Gets the parameters of the command as a JSON-encoded string.

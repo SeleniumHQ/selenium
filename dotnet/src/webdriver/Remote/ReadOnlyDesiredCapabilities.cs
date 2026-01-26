@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Remote;
 /// </summary>
 public class ReadOnlyDesiredCapabilities : ICapabilities, IHasCapabilitiesDictionary
 {
-    private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> capabilities = [];
 
     /// <summary>
     /// Prevents a default instance of the <see cref="ReadOnlyDesiredCapabilities"/> class.

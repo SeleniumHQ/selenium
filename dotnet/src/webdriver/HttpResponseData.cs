@@ -77,10 +77,10 @@ public class HttpResponseData
     /// <summary>
     /// Gets the headers of the HTTP response.
     /// </summary>
-    public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>();
+    public Dictionary<string, string> Headers { get; } = [];
 
     /// <summary>
     /// Gets the cookie headers of the HTTP response.
     /// </summary>
-    public List<string> CookieHeaders { get; } = new List<string>();
+    public List<string> CookieHeaders { get; } = [];
 }

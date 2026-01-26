@@ -31,26 +31,21 @@ namespace OpenQA.Selenium.Firefox;
 /// <summary>
 /// Provides the ability to install extensions into a <see cref="FirefoxProfile"/>.
 /// </summary>
-public class FirefoxExtension
+/// <remarks>
+/// Initializes a new instance of the <see cref="FirefoxExtension"/> class.
+/// </remarks>
+/// <param name="fileName">The name of the file containing the Firefox extension.</param>
+/// <remarks>WebDriver attempts to resolve the <paramref name="fileName"/> parameter
+/// by looking first for the specified file in the directory of the calling assembly,
+/// then using the full path to the file, if a full path is provided.</remarks>
+/// <exception cref="ArgumentNullException">If <paramref name="fileName"/> is <see langword="null"/>.</exception>
+public class FirefoxExtension(string fileName)
 {
     private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#";
     private const string RdfManifestFileName = "install.rdf";
     private const string JsonManifestFileName = "manifest.json";
 
-    private readonly string extensionFileName;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FirefoxExtension"/> class.
-    /// </summary>
-    /// <param name="fileName">The name of the file containing the Firefox extension.</param>
-    /// <remarks>WebDriver attempts to resolve the <paramref name="fileName"/> parameter
-    /// by looking first for the specified file in the directory of the calling assembly,
-    /// then using the full path to the file, if a full path is provided.</remarks>
-    /// <exception cref="ArgumentNullException">If <paramref name="fileName"/> is <see langword="null"/>.</exception>
-    public FirefoxExtension(string fileName)
-    {
-        this.extensionFileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
-    }
+    private readonly string extensionFileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
 
     /// <summary>
     /// Installs the extension into a profile directory.
@@ -59,7 +54,7 @@ public class FirefoxExtension
     /// <exception cref="ArgumentNullException">If <paramref name="profileDirectory"/> is <see langword="null"/>.</exception>
     public void Install(string profileDirectory)
     {
-        DirectoryInfo info = new DirectoryInfo(profileDirectory);
+        DirectoryInfo info = new(profileDirectory);
         string stagingDirectoryName = Path.Combine(Path.GetTempPath(), info.Name + ".staging");
         string tempFileName = Path.Combine(stagingDirectoryName, Path.GetFileName(this.extensionFileName));
         if (Directory.Exists(tempFileName))
@@ -70,7 +65,7 @@ public class FirefoxExtension
         // First, expand the .xpi archive into a temporary location.
         Directory.CreateDirectory(tempFileName);
         using Stream zipFileStream = new MemoryStream(Encoding.UTF8.GetBytes(ResourceUtilities.WebDriverPrefsJson));
-        using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
+        using (ZipArchive extensionZipArchive = new(zipFileStream, ZipArchiveMode.Read))
         {
             extensionZipArchive.ExtractToDirectory(tempFileName);
         }
@@ -118,10 +113,10 @@ public class FirefoxExtension
         string installRdf = Path.Combine(root, "install.rdf");
         try
         {
-            XmlDocument rdfXmlDocument = new XmlDocument();
+            XmlDocument rdfXmlDocument = new();
             rdfXmlDocument.Load(installRdf);
 
-            XmlNamespaceManager rdfNamespaceManager = new XmlNamespaceManager(rdfXmlDocument.NameTable);
+            XmlNamespaceManager rdfNamespaceManager = new(rdfXmlDocument.NameTable);
             rdfNamespaceManager.AddNamespace("em", EmNamespaceUri);
             rdfNamespaceManager.AddNamespace("RDF", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
@@ -129,12 +124,7 @@ public class FirefoxExtension
             if (node == null)
             {
                 XmlNode? descriptionNode = rdfXmlDocument.SelectSingleNode("//RDF:Description", rdfNamespaceManager);
-                XmlAttribute? attribute = descriptionNode?.Attributes?["id", EmNamespaceUri];
-                if (attribute == null)
-                {
-                    throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
-                }
-
+                XmlAttribute? attribute = (descriptionNode?.Attributes?["id", EmNamespaceUri]) ?? throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
                 id = attribute.Value;
             }
             else

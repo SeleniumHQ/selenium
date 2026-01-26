@@ -138,7 +138,7 @@ public class ImplicitWaitTest : DriverTestFixture
 
         string originalHandle = driver.CurrentWindowHandle;
         WaitFor(() => driver.WindowHandles.Count == 2, "Window handle count was not 2");
-        List<string> handles = new List<string>(driver.WindowHandles);
+        List<string> handles = new(driver.WindowHandles);
         handles.Remove(originalHandle);
 
         IWebDriver newWindow = driver.SwitchTo().Window(handles[0]);

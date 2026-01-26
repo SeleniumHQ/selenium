@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Edge;
 /// </summary>
 public class EdgeDriver : ChromiumDriver
 {
-    private static readonly Dictionary<string, CommandInfo> edgeCustomCommands = new Dictionary<string, CommandInfo>()
+    private static readonly Dictionary<string, CommandInfo> edgeCustomCommands = new()
     {
         { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute") },
         { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks") },
@@ -138,7 +138,7 @@ public class EdgeDriver : ChromiumDriver
     {
         get
         {
-            Dictionary<string, CommandInfo> customCommands = new Dictionary<string, CommandInfo>();
+            Dictionary<string, CommandInfo> customCommands = [];
             foreach (KeyValuePair<string, CommandInfo> entry in ChromiumCustomCommands)
             {
                 customCommands[entry.Key] = entry.Value;

@@ -64,7 +64,7 @@ public class SlowLoadableComponentTest
     [Test]
     public void TestShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout()
     {
-        HandCrankClock clock = new HandCrankClock();
+        HandCrankClock clock = new();
 
         Assert.That(
             () => new BasicSlowLoader(TimeSpan.FromSeconds(2), clock).Load(),
@@ -74,7 +74,7 @@ public class SlowLoadableComponentTest
     [Test]
     public void TestShouldCancelLoadingIfAnErrorIsDetected()
     {
-        HasError error = new HasError();
+        HasError error = new();
 
         Assert.That(
            () => error.Load(),
@@ -98,17 +98,11 @@ public class SlowLoadableComponentTest
         }
     }
 
-    private class SlowLoading : SlowLoadableComponent<SlowLoading>
+    private class SlowLoading(TimeSpan timeOut, SystemClock clock, int counts) : SlowLoadableComponent<SlowLoading>(timeOut, clock)
     {
 
-        private readonly int counts;
+        private readonly int counts = counts;
         private long loopCount;
-
-        public SlowLoading(TimeSpan timeOut, SystemClock clock, int counts)
-            : base(timeOut, clock)
-        {
-            this.counts = counts;
-        }
 
         protected override void ExecuteLoad()
         {
@@ -132,12 +126,10 @@ public class SlowLoadableComponentTest
         }
     }
 
-    private class OnlyOneLoad : SlowLoading
+    private class OnlyOneLoad(TimeSpan timeout, SystemClock clock, int counts) : SlowLoading(timeout, clock, counts)
     {
 
         private bool loadAlreadyCalled;
-
-        public OnlyOneLoad(TimeSpan timeout, SystemClock clock, int counts) : base(timeout, clock, counts) { }
 
         protected override void ExecuteLoad()
         {
@@ -149,15 +141,10 @@ public class SlowLoadableComponentTest
         }
     }
 
-    private class BasicSlowLoader : SlowLoadableComponent<BasicSlowLoader>
+    private class BasicSlowLoader(TimeSpan timeOut, HandCrankClock clock) : SlowLoadableComponent<BasicSlowLoader>(timeOut, clock)
     {
 
-        private readonly HandCrankClock handCrankClock;
-        public BasicSlowLoader(TimeSpan timeOut, HandCrankClock clock)
-            : base(timeOut, clock)
-        {
-            this.handCrankClock = clock;
-        }
+        private readonly HandCrankClock handCrankClock = clock;
 
         protected override void ExecuteLoad()
         {

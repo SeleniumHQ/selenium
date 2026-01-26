@@ -24,33 +24,27 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Event arguments present when the TargetAttached event is raised.
 /// </summary>
-public class TargetAttachedEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="TargetAttachedEventArgs"/> type.
+/// </remarks>
+/// <param name="sessionId">The ID of the session of the target attached.</param>
+/// <param name="targetInfo">The target which is attached.</param>
+/// <param name="waitingForDebugger">If the target is waiting on the debugger. Target continues after invoking <c>Runtime.runIfWaitingForDebugger</c>.</param>
+public class TargetAttachedEventArgs(string sessionId, TargetInfo? targetInfo, bool waitingForDebugger) : EventArgs
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TargetAttachedEventArgs"/> type.
-    /// </summary>
-    /// <param name="sessionId">The ID of the session of the target attached.</param>
-    /// <param name="targetInfo">The target which is attached.</param>
-    /// <param name="waitingForDebugger">If the target is waiting on the debugger. Target continues after invoking <c>Runtime.runIfWaitingForDebugger</c>.</param>
-    public TargetAttachedEventArgs(string sessionId, TargetInfo? targetInfo, bool waitingForDebugger)
-    {
-        SessionId = sessionId;
-        TargetInfo = targetInfo;
-        WaitingForDebugger = waitingForDebugger;
-    }
 
     /// <summary>
     /// Gets the ID of the session of the target attached.
     /// </summary>
-    public string SessionId { get; }
+    public string SessionId { get; } = sessionId;
 
     /// <summary>
     /// Gets the target which is attached.
     /// </summary>
-    public TargetInfo? TargetInfo { get; }
+    public TargetInfo? TargetInfo { get; } = targetInfo;
 
     /// <summary>
     /// Gets if the target is waiting on the debugger. Target continues after invoking <c>Runtime.runIfWaitingForDebugger</c>.
     /// </summary>
-    public bool WaitingForDebugger { get; }
+    public bool WaitingForDebugger { get; } = waitingForDebugger;
 }

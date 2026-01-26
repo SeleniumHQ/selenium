@@ -172,13 +172,8 @@ public class HttpCommandExecutor : ICommandExecutor
             _logger.Debug($"Executing command: [{commandToExecute.SessionId}]: {commandToExecute.Name}");
         }
 
-        HttpCommandInfo? info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
-        if (info == null)
-        {
-            throw new NotImplementedException(string.Format("The command you are attempting to execute, {0}, does not exist in the protocol dialect used by the remote end.", commandToExecute.Name));
-        }
-
-        HttpRequestInfo requestInfo = new HttpRequestInfo(this.remoteServerUri, commandToExecute, info);
+        HttpCommandInfo? info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name) ?? throw new NotImplementedException(string.Format("The command you are attempting to execute, {0}, does not exist in the protocol dialect used by the remote end.", commandToExecute.Name));
+        HttpRequestInfo requestInfo = new(this.remoteServerUri, commandToExecute, info);
         HttpResponseInfo responseInfo;
         try
         {
@@ -277,47 +272,49 @@ public class HttpCommandExecutor : ICommandExecutor
 
     private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
     {
-        SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(requestInfo.HttpMethod, requestInfo.FullUri.ToString(), requestInfo.RequestBody);
+        SendingRemoteHttpRequestEventArgs eventArgs = new(requestInfo.HttpMethod, requestInfo.FullUri.ToString(), requestInfo.RequestBody);
         this.OnSendingRemoteHttpRequest(eventArgs);
 
-        HttpMethod method = new HttpMethod(requestInfo.HttpMethod);
-        using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri))
+        HttpMethod method = new(requestInfo.HttpMethod);
+        using HttpRequestMessage requestMessage = new(method, requestInfo.FullUri);
+        foreach (KeyValuePair<string, string> header in eventArgs.Headers)
         {
-            foreach (KeyValuePair<string, string> header in eventArgs.Headers)
-            {
-                requestMessage.Headers.Add(header.Key, header.Value);
-            }
-
-            if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
-            {
-                CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
-                cacheControlHeader.NoCache = true;
-                requestMessage.Headers.CacheControl = cacheControlHeader;
-            }
-
-            if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
-            {
-                MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
-                acceptHeader.CharSet = Utf8CharsetType;
-                requestMessage.Headers.Accept.Add(acceptHeader);
-
-                byte[] bytes = Encoding.UTF8.GetBytes(requestInfo.RequestBody);
-                requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
-
-                MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
-                contentTypeHeader.CharSet = Utf8CharsetType;
-                requestMessage.Content.Headers.ContentType = contentTypeHeader;
-            }
-
-            using (HttpResponseMessage responseMessage = await this.client.Value.SendAsync(requestMessage).ConfigureAwait(false))
-            {
-                var responseBody = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var responseContentType = responseMessage.Content.Headers.ContentType?.ToString();
-                var responseStatusCode = responseMessage.StatusCode;
-
-                return new HttpResponseInfo(responseBody, responseContentType, responseStatusCode);
-            }
+            requestMessage.Headers.Add(header.Key, header.Value);
         }
+
+        if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
+        {
+            CacheControlHeaderValue cacheControlHeader = new()
+            {
+                NoCache = true
+            };
+            requestMessage.Headers.CacheControl = cacheControlHeader;
+        }
+
+        if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
+        {
+            MediaTypeWithQualityHeaderValue acceptHeader = new(JsonMimeType)
+            {
+                CharSet = Utf8CharsetType
+            };
+            requestMessage.Headers.Accept.Add(acceptHeader);
+
+            byte[] bytes = Encoding.UTF8.GetBytes(requestInfo.RequestBody);
+            requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+
+            MediaTypeHeaderValue contentTypeHeader = new(JsonMimeType)
+            {
+                CharSet = Utf8CharsetType
+            };
+            requestMessage.Content.Headers.ContentType = contentTypeHeader;
+        }
+
+        using HttpResponseMessage responseMessage = await this.client.Value.SendAsync(requestMessage).ConfigureAwait(false);
+        var responseBody = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var responseContentType = responseMessage.Content.Headers.ContentType?.ToString();
+        var responseStatusCode = responseMessage.StatusCode;
+
+        return new HttpResponseInfo(responseBody, responseContentType, responseStatusCode);
     }
 
     private Response CreateResponse(HttpResponseInfo responseInfo)
@@ -400,18 +397,11 @@ public class HttpCommandExecutor : ICommandExecutor
         public string RequestBody { get; set; }
     }
 
-    private class HttpResponseInfo
+    private class HttpResponseInfo(string body, string? contentType, HttpStatusCode statusCode)
     {
-        public HttpResponseInfo(string body, string? contentType, HttpStatusCode statusCode)
-        {
-            this.Body = body ?? throw new ArgumentNullException(nameof(body));
-            this.ContentType = contentType;
-            this.StatusCode = statusCode;
-        }
-
-        public HttpStatusCode StatusCode { get; set; }
-        public string Body { get; set; }
-        public string? ContentType { get; set; }
+        public HttpStatusCode StatusCode { get; set; } = statusCode;
+        public string Body { get; set; } = body ?? throw new ArgumentNullException(nameof(body));
+        public string? ContentType { get; set; } = contentType;
     }
 
     /// <summary>

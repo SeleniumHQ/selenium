@@ -32,31 +32,18 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides methods allowing the user to manage settings in the browser's JavaScript engine.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="JavaScriptEngine"/> class.
+/// </remarks>
+/// <param name="driver">The <see cref="IWebDriver"/> instance in which the JavaScript engine is executing.</param>
 [RequiresUnreferencedCode("JavaScriptEngine is currently implemented with CDP. When it is implemented with BiDi, AOT will be supported")]
 [RequiresDynamicCode("JavaScriptEngine is currently implemented with CDP. When it is implemented with BiDi, AOT will be supported.")]
-public class JavaScriptEngine : IJavaScriptEngine
+public class JavaScriptEngine(IWebDriver driver) : IJavaScriptEngine
 {
     private const string MonitorBindingName = "__webdriver_attribute";
 
-    private readonly IWebDriver driver;
-    private readonly Lazy<DevToolsSession> session;
-    private readonly Dictionary<string, InitializationScript> initializationScripts = new Dictionary<string, InitializationScript>();
-    private readonly Dictionary<string, PinnedScript> pinnedScripts = new Dictionary<string, PinnedScript>();
-    private readonly HashSet<string> bindings = new HashSet<string>();
-    private bool isEnabled = false;
-    private bool isDisposed = false;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JavaScriptEngine"/> class.
-    /// </summary>
-    /// <param name="driver">The <see cref="IWebDriver"/> instance in which the JavaScript engine is executing.</param>
-    public JavaScriptEngine(IWebDriver driver)
-    {
-        // Use of Lazy<T> means this exception won't be thrown until the user first
-        // attempts to access the DevTools session, probably on the first call to
-        // StartEventMonitoring() or in adding scripts to the instance.
-        this.driver = driver;
-        this.session = new Lazy<DevToolsSession>(() =>
+    private readonly IWebDriver driver = driver;
+    private readonly Lazy<DevToolsSession> session = new Lazy<DevToolsSession>(() =>
         {
             if (driver is not IDevTools devToolsDriver)
             {
@@ -65,7 +52,11 @@ public class JavaScriptEngine : IJavaScriptEngine
 
             return devToolsDriver.GetDevToolsSession();
         });
-    }
+    private readonly Dictionary<string, InitializationScript> initializationScripts = [];
+    private readonly Dictionary<string, PinnedScript> pinnedScripts = [];
+    private readonly HashSet<string> bindings = [];
+    private bool isEnabled = false;
+    private bool isDisposed = false;
 
     /// <summary>
     /// Occurs when a JavaScript callback with a named binding is executed.
@@ -185,7 +176,7 @@ public class JavaScriptEngine : IJavaScriptEngine
 
         string scriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(script).ConfigureAwait(false);
 
-        InitializationScript initializationScript = new InitializationScript(scriptId, scriptName, script);
+        InitializationScript initializationScript = new(scriptId, scriptName, script);
         this.initializationScripts[scriptName] = initializationScript;
         return initializationScript;
     }
@@ -219,7 +210,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     {
         // Use a copy of the list to prevent the iterator from becoming invalid
         // when we modify the collection.
-        List<string> scriptNames = new List<string>(this.initializationScripts.Keys);
+        List<string> scriptNames = new(this.initializationScripts.Keys);
         foreach (string scriptName in scriptNames)
         {
             await this.RemoveInitializationScript(scriptName).ConfigureAwait(false);
@@ -250,7 +241,7 @@ public class JavaScriptEngine : IJavaScriptEngine
         await this.session.Value.Domains.JavaScript.Evaluate(creationScript).ConfigureAwait(false);
         string scriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(creationScript).ConfigureAwait(false);
 
-        PinnedScript pinnedScript = new PinnedScript(script, newScriptHandle, scriptId);
+        PinnedScript pinnedScript = new(script, newScriptHandle, scriptId);
         this.pinnedScripts[pinnedScript.Handle] = pinnedScript;
         return pinnedScript;
     }
@@ -325,7 +316,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     {
         // Use a copy of the list to prevent the iterator from becoming invalid
         // when we modify the collection.
-        List<string> bindingList = new List<string>(this.bindings);
+        List<string> bindingList = new(this.bindings);
         foreach (string binding in bindingList)
         {
             await this.RemoveScriptCallbackBinding(binding).ConfigureAwait(false);
@@ -390,7 +381,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     {
         // Use a copy of the list to prevent the iterator from becoming invalid
         // when we modify the collection.
-        List<string> scriptHandles = new List<string>(this.pinnedScripts.Keys);
+        List<string> scriptHandles = new(this.pinnedScripts.Keys);
         foreach (string scriptHandle in scriptHandles)
         {
             await this.UnpinScript(this.pinnedScripts[scriptHandle]).ConfigureAwait(false);

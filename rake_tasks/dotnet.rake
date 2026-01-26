@@ -119,6 +119,8 @@ task :format do |_task, arguments|
 
   puts '  Running dotnet format whitespace...'
   Bazel.execute('run', ['--', 'whitespace'], '//dotnet:format')
+  puts '  Running dotnet format style --severity info...'
+  Bazel.execute('run', ['--', 'style', '--severity', 'info'], '//dotnet:format')
 end
 
 desc 'Run .NET linter (format + style + analyzers)'

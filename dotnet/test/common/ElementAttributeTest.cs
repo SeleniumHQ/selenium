@@ -80,8 +80,7 @@ public class ElementAttributeTest : DriverTestFixture
         IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
         Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
         Assert.That(inputElement.Enabled, "Element is not enabled");
-
-        IWebElement pElement = driver.FindElement(By.Id("peas"));
+        _ = driver.FindElement(By.Id("peas"));
         Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
         Assert.That(inputElement.Enabled, "Element is not enabled");
     }
@@ -305,10 +304,12 @@ public class ElementAttributeTest : DriverTestFixture
 
         string onClickValue = mouseclickDiv.GetAttribute("onclick");
         string expectedOnClickValue = "displayMessage('mouse click');";
-        List<string> acceptableOnClickValues = new List<string>();
-        acceptableOnClickValues.Add("javascript:" + expectedOnClickValue);
-        acceptableOnClickValues.Add("function anonymous()\n{\n" + expectedOnClickValue + "\n}");
-        acceptableOnClickValues.Add("function onclick()\n{\n" + expectedOnClickValue + "\n}");
+        List<string> acceptableOnClickValues =
+        [
+            "javascript:" + expectedOnClickValue,
+            "function anonymous()\n{\n" + expectedOnClickValue + "\n}",
+            "function onclick()\n{\n" + expectedOnClickValue + "\n}",
+        ];
         Assert.That(acceptableOnClickValues, Contains.Item(onClickValue));
 
         IWebElement mousedownDiv = driver.FindElement(By.Id("mousedown"));

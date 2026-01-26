@@ -28,12 +28,12 @@ namespace OpenQA.Selenium.Internal.Logging;
 public class FileLogHandler : ILogHandler, IDisposable
 {
     // performance trick to avoid expensive Enum.ToString() with fixed length
-    private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
+    private static readonly string[] _levels = ["TRACE", "DEBUG", " INFO", " WARN", "ERROR"];
 
     private FileStream _fileStream;
     private StreamWriter _streamWriter;
 
-    private readonly object _lockObj = new object();
+    private readonly object _lockObj = new();
     private bool _isDisposed;
 
     /// <summary>

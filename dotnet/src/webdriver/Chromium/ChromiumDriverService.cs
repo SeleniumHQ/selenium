@@ -107,7 +107,7 @@ public abstract class ChromiumDriverService : DriverService
     {
         get
         {
-            StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+            StringBuilder argsBuilder = new(base.CommandLineArguments);
             if (this.AndroidDebugBridgePort is int adb && adb > 0)
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --adb-port={0}", adb);

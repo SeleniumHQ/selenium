@@ -26,23 +26,18 @@ namespace OpenQA.Selenium.Interactions;
 /// <summary>
 /// Represents a wheel input device, such as a mouse wheel.
 /// </summary>
-public class WheelInputDevice : InputDevice
+/// <remarks>
+/// Initializes a new instance of the <see cref="WheelInputDevice"/> class, given the device's name.
+/// </remarks>
+/// <param name="deviceName">The unique name of this input device.</param>
+/// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+public class WheelInputDevice(string deviceName) : InputDevice(deviceName)
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WheelInputDevice"/> class.
     /// </summary>
     public WheelInputDevice()
         : this(Guid.NewGuid().ToString())
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WheelInputDevice"/> class, given the device's name.
-    /// </summary>
-    /// <param name="deviceName">The unique name of this input device.</param>
-    /// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-    public WheelInputDevice(string deviceName)
-        : base(deviceName)
     {
     }
 
@@ -57,10 +52,11 @@ public class WheelInputDevice : InputDevice
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
     public override Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new Dictionary<string, object>();
-
-        toReturn["type"] = "wheel";
-        toReturn["id"] = this.DeviceName;
+        Dictionary<string, object> toReturn = new()
+        {
+            ["type"] = "wheel",
+            ["id"] = this.DeviceName
+        };
 
         return toReturn;
     }
@@ -179,9 +175,10 @@ public class WheelInputDevice : InputDevice
 
         public override Dictionary<string, object> ToDictionary()
         {
-            Dictionary<string, object> toReturn = new Dictionary<string, object>();
-
-            toReturn["type"] = "scroll";
+            Dictionary<string, object> toReturn = new()
+            {
+                ["type"] = "scroll"
+            };
             if (this.duration != TimeSpan.MinValue)
             {
                 toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);

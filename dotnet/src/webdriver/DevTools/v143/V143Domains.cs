@@ -24,19 +24,14 @@ namespace OpenQA.Selenium.DevTools.V143;
 /// <summary>
 /// Class containing the domain implementation for version 143 of the DevTools Protocol.
 /// </summary>
-public class V143Domains : DevToolsDomains
+/// <remarks>
+/// Initializes a new instance of the V143Domains class.
+/// </remarks>
+/// <param name="session">The DevToolsSession to use with this set of domains.</param>
+/// <exception cref="ArgumentNullException">If <paramref name="session"/> is <see langword="null"/>.</exception>
+public class V143Domains(DevToolsSession session) : DevToolsDomains
 {
-    private readonly DevToolsSessionDomains domains;
-
-    /// <summary>
-    /// Initializes a new instance of the V143Domains class.
-    /// </summary>
-    /// <param name="session">The DevToolsSession to use with this set of domains.</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="session"/> is <see langword="null"/>.</exception>
-    public V143Domains(DevToolsSession session)
-    {
-        this.domains = new DevToolsSessionDomains(session ?? throw new ArgumentNullException(nameof(session)));
-    }
+    private readonly DevToolsSessionDomains domains = new DevToolsSessionDomains(session ?? throw new ArgumentNullException(nameof(session)));
 
     /// <summary>
     /// Gets the DevTools Protocol version for which this class is valid.

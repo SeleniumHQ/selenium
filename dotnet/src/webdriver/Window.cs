@@ -27,18 +27,13 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Defines the interface through which the user can manipulate the browser window.
 /// </summary>
-internal sealed class Window : IWindow
+/// <remarks>
+/// Initializes a new instance of the <see cref="Window"/> class.
+/// </remarks>
+/// <param name="driver">Instance of the driver currently in use</param>
+internal sealed class Window(WebDriver driver) : IWindow
 {
-    private WebDriver driver;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Window"/> class.
-    /// </summary>
-    /// <param name="driver">Instance of the driver currently in use</param>
-    public Window(WebDriver driver)
-    {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
-    }
+    private readonly WebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
 
     /// <summary>
     /// Gets or sets the position of the browser window relative to the upper-left corner of the screen.
@@ -59,9 +54,11 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("x", value.X);
-            parameters.Add("y", value.Y);
+            Dictionary<string, object> parameters = new()
+            {
+                { "x", value.X },
+                { "y", value.Y }
+            };
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);
         }
     }
@@ -85,9 +82,11 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("width", value.Width);
-            parameters.Add("height", value.Height);
+            Dictionary<string, object> parameters = new()
+            {
+                { "width", value.Width },
+                { "height", value.Height }
+            };
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);
         }
     }

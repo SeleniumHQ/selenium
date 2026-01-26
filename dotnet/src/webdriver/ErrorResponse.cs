@@ -67,7 +67,7 @@ public class ErrorResponse
             {
                 if (stackTraceObj is object?[] stackTraceArray)
                 {
-                    List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
+                    List<StackTraceElement> stackTraceList = [];
                     foreach (object? rawStackTraceElement in stackTraceArray)
                     {
                         if (rawStackTraceElement is Dictionary<string, object?> elementAsDictionary)
@@ -76,7 +76,7 @@ public class ErrorResponse
                         }
                     }
 
-                    this.StackTrace = stackTraceList.ToArray();
+                    this.StackTrace = [.. stackTraceList];
                 }
             }
         }

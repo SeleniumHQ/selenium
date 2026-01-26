@@ -30,20 +30,14 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Handles responses from the browser
 /// </summary>
-public class Response
+/// <remarks>
+/// Initializes a new instance of the <see cref="Response"/> class
+/// </remarks>
+/// <param name="sessionId">The Session ID in use, if any.</param>
+/// <param name="value">The JSON payload of the response.</param>
+/// <param name="status">The WebDriver result status of the response.</param>
+public class Response(string? sessionId, object? value, WebDriverResult status)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Response"/> class
-    /// </summary>
-    /// <param name="sessionId">The Session ID in use, if any.</param>
-    /// <param name="value">The JSON payload of the response.</param>
-    /// <param name="status">The WebDriver result status of the response.</param>
-    public Response(string? sessionId, object? value, WebDriverResult status)
-    {
-        this.SessionId = sessionId;
-        this.Value = value;
-        this.Status = status;
-    }
 
     /// <summary>
     /// Returns a new <see cref="Response"/> from a JSON-encoded string.
@@ -115,17 +109,17 @@ public class Response
     /// <summary>
     /// Gets or sets the value from JSON.
     /// </summary>
-    public object? Value { get; }
+    public object? Value { get; } = value;
 
     /// <summary>
     /// Gets or sets the session ID.
     /// </summary>
-    public string? SessionId { get; }
+    public string? SessionId { get; } = sessionId;
 
     /// <summary>
     /// Gets or sets the status value of the response.
     /// </summary>
-    public WebDriverResult Status { get; }
+    public WebDriverResult Status { get; } = status;
 
     /// <summary>
     /// Returns a new <see cref="Response"/> from a JSON-encoded string.

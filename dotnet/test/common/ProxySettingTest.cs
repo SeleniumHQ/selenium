@@ -103,21 +103,21 @@ public class ProxySettingTest : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
     public void CanConfigureProxyThroughAutoConfigFile()
     {
-        StringBuilder pacFileContentBuilder = new StringBuilder();
+        StringBuilder pacFileContentBuilder = new();
         pacFileContentBuilder.AppendLine("function FindProxyForURL(url, host) {");
         pacFileContentBuilder.AppendFormat("  return 'PROXY {0}';\n", proxyServer.BaseUrl);
         pacFileContentBuilder.AppendLine("}");
         string pacFileContent = pacFileContentBuilder.ToString();
 
-        using (ProxyAutoConfigServer pacServer = new ProxyAutoConfigServer(pacFileContent))
+        using ProxyAutoConfigServer pacServer = new(pacFileContent);
+        proxyServer.EnableContentOverwriteOnRequest();
+        Proxy proxyToUse = new()
         {
-            proxyServer.EnableContentOverwriteOnRequest();
-            Proxy proxyToUse = new Proxy();
-            proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
-            InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
-            Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
-        }
+            ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port)
+        };
+        InitLocalDriver(proxyToUse);
+        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
     }
 
     [Test]
@@ -125,7 +125,7 @@ public class ProxySettingTest : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
     public void CanUseAutoConfigFileThatOnlyProxiesCertainHosts()
     {
-        StringBuilder pacFileContentBuilder = new StringBuilder();
+        StringBuilder pacFileContentBuilder = new();
         pacFileContentBuilder.AppendLine("function FindProxyForURL(url, host) {");
         pacFileContentBuilder.AppendFormat("  if (url.indexOf('{0}') != -1) {{\n", EnvironmentManager.Instance.UrlBuilder.HostName);
         pacFileContentBuilder.AppendFormat("    return 'PROXY {0}';\n", proxyServer.BaseUrl);
@@ -134,17 +134,17 @@ public class ProxySettingTest : DriverTestFixture
         pacFileContentBuilder.AppendLine("}");
         string pacFileContent = pacFileContentBuilder.ToString();
 
-        using (ProxyAutoConfigServer pacServer = new ProxyAutoConfigServer(pacFileContent))
+        using ProxyAutoConfigServer pacServer = new(pacFileContent);
+        proxyServer.EnableContentOverwriteOnRequest();
+        Proxy proxyToUse = new()
         {
-            proxyServer.EnableContentOverwriteOnRequest();
-            Proxy proxyToUse = new Proxy();
-            proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
-            InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
-            Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
-            Assert.That(localDriver.FindElement(By.TagName("h1")).Text, Is.EqualTo("Heading"));
-        }
+            ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port)
+        };
+        InitLocalDriver(proxyToUse);
+        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
+        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
+        Assert.That(localDriver.FindElement(By.TagName("h1")).Text, Is.EqualTo("Heading"));
     }
 
     private void EnvironmentManagerDriverStarting(object sender, DriverStartingEventArgs e)
@@ -158,13 +158,12 @@ public class ProxySettingTest : DriverTestFixture
     private void InitLocalDriver(Proxy proxy)
     {
         EnvironmentManager.Instance.CloseCurrentDriver();
-        if (localDriver != null)
-        {
-            localDriver.Quit();
-        }
+        localDriver?.Quit();
 
-        ProxyOptions options = new ProxyOptions();
-        options.Proxy = proxy;
+        ProxyOptions options = new()
+        {
+            Proxy = proxy
+        };
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
     }
 
@@ -207,7 +206,7 @@ public class ProxySettingTest : DriverTestFixture
 
         private static int DetectEmptyPort()
         {
-            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            TcpListener l = new(IPAddress.Loopback, 0);
             l.Start();
             var port = ((IPEndPoint)l.LocalEndpoint).Port;
             l.Stop();
@@ -282,7 +281,7 @@ public class ProxySettingTest : DriverTestFixture
 
     private class ProxyServer
     {
-        private readonly List<string> uris = new List<string>();
+        private readonly List<string> uris = [];
 
         public ProxyServer()
             : this("127.0.0.1")
@@ -340,8 +339,10 @@ public class ProxySettingTest : DriverTestFixture
 
         public Proxy AsProxy()
         {
-            Proxy proxy = new Proxy();
-            proxy.HttpProxy = this.BaseUrl;
+            Proxy proxy = new()
+            {
+                HttpProxy = this.BaseUrl
+            };
             return proxy;
         }
 
@@ -355,14 +356,14 @@ public class ProxySettingTest : DriverTestFixture
             string[] parts = context.RequestHeader.RequestURI.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 0)
             {
-                string finalPart = parts[parts.Length - 1];
+                string finalPart = parts[^1];
                 uris.Add(finalPart);
             }
         }
 
         private void OverwriteRequestedContent(ProcessingContext context)
         {
-            StringBuilder pageContentBuilder = new StringBuilder("<!DOCTYPE html>");
+            StringBuilder pageContentBuilder = new("<!DOCTYPE html>");
             pageContentBuilder.AppendLine("<html>");
             pageContentBuilder.AppendLine("<head>");
             pageContentBuilder.AppendLine("  <title>Hello</title>");
@@ -374,7 +375,7 @@ public class ProxySettingTest : DriverTestFixture
             string pageContent = pageContentBuilder.ToString();
 
             context.StopProcessing();
-            MemoryStream responseStream = new MemoryStream(Encoding.UTF8.GetBytes(pageContent));
+            MemoryStream responseStream = new(Encoding.UTF8.GetBytes(pageContent));
             var responseHeader = new BenderProxy.Headers.HttpResponseHeader(200, "OK", "1.1");
             responseHeader.EntityHeaders.ContentType = "text/html";
             responseHeader.EntityHeaders.ContentEncoding = "utf-8";

@@ -100,14 +100,16 @@ public class DownLoadsTest : DriverTestFixture
         driver.FindElement(By.Id("file-1")).Click();
         driver.FindElement(By.Id("file-2")).Click();
 
-        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+        WebDriverWait wait = new(driver, TimeSpan.FromSeconds(3));
         wait.Until(d => ((RemoteWebDriver)d).GetDownloadableFiles().Contains("file_2.jpg"));
     }
 
     private void InitLocalDriver()
     {
-        DownloadableFilesOptions options = new DownloadableFilesOptions();
-        options.EnableDownloads = true;
+        DownloadableFilesOptions options = new()
+        {
+            EnableDownloads = true
+        };
 
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
     }

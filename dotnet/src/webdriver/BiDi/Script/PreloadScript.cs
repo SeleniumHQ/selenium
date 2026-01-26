@@ -57,11 +57,4 @@ public sealed record PreloadScript
     {
         return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
     }
-
-    // Includes Id only for brevity
-    private bool PrintMembers(StringBuilder builder)
-    {
-        builder.Append($"Id = {Id}");
-        return true;
-    }
 }

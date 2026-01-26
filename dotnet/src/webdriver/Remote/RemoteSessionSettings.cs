@@ -32,10 +32,10 @@ public class RemoteSessionSettings : ICapabilities
     private const string FirstMatchCapabilityName = "firstMatch";
     private const string AlwaysMatchCapabilityName = "alwaysMatch";
 
-    private readonly HashSet<string> reservedSettingNames = new HashSet<string>() { FirstMatchCapabilityName, AlwaysMatchCapabilityName };
+    private readonly HashSet<string> reservedSettingNames = [FirstMatchCapabilityName, AlwaysMatchCapabilityName];
     private DriverOptions? mustMatchDriverOptions;
-    private readonly List<DriverOptions> firstMatchOptions = new List<DriverOptions>();
-    private readonly Dictionary<string, object> remoteMetadataSettings = new Dictionary<string, object>();
+    private readonly List<DriverOptions> firstMatchOptions = [];
+    private readonly Dictionary<string, object> remoteMetadataSettings = [];
 
     /// <summary>
     /// Creates a new instance of the <see cref="RemoteSessionSettings"/> class.
@@ -230,7 +230,7 @@ public class RemoteSessionSettings : ICapabilities
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representation of this <see cref="RemoteSessionSettings"/>.</returns>
     public Dictionary<string, object?> ToDictionary()
     {
-        Dictionary<string, object?> capabilitiesDictionary = new Dictionary<string, object?>();
+        Dictionary<string, object?> capabilitiesDictionary = [];
 
         foreach (KeyValuePair<string, object> remoteMetadataSetting in this.remoteMetadataSettings)
         {
@@ -269,7 +269,7 @@ public class RemoteSessionSettings : ICapabilities
 
     private List<object?> GetFirstMatchOptionsAsSerializableList()
     {
-        List<object?> optionsMatches = new List<object?>(this.firstMatchOptions.Count);
+        List<object?> optionsMatches = new(this.firstMatchOptions.Count);
         foreach (DriverOptions options in this.firstMatchOptions)
         {
             optionsMatches.Add(options.ToDictionary());

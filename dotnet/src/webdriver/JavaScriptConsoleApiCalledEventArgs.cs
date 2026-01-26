@@ -24,33 +24,27 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides data for the JavaScriptConsoleApiCalled event.
 /// </summary>
-public class JavaScriptConsoleApiCalledEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="JavaScriptConsoleApiCalledEventArgs"/> type.
+/// </remarks>
+/// <param name="messageContent">The content of the message written to the JavaScript console.</param>
+/// <param name="messageTimeStamp">The time stamp of the message written to the JavaScript console.</param>
+/// <param name="messageType">The type of message written to the JavaScript console.</param>
+public class JavaScriptConsoleApiCalledEventArgs(string? messageContent, DateTime messageTimeStamp, string messageType) : EventArgs
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JavaScriptConsoleApiCalledEventArgs"/> type.
-    /// </summary>
-    /// <param name="messageContent">The content of the message written to the JavaScript console.</param>
-    /// <param name="messageTimeStamp">The time stamp of the message written to the JavaScript console.</param>
-    /// <param name="messageType">The type of message written to the JavaScript console.</param>
-    public JavaScriptConsoleApiCalledEventArgs(string? messageContent, DateTime messageTimeStamp, string messageType)
-    {
-        this.MessageContent = messageContent;
-        this.MessageTimeStamp = messageTimeStamp;
-        this.MessageType = messageType;
-    }
 
     /// <summary>
     /// Gets or sets the content of the message written to the JavaScript console.
     /// </summary>
-    public string? MessageContent { get; set; }
+    public string? MessageContent { get; set; } = messageContent;
 
     /// <summary>
     /// Gets or sets the time stamp of the message written to the JavaScript console.
     /// </summary>
-    public DateTime MessageTimeStamp { get; set; }
+    public DateTime MessageTimeStamp { get; set; } = messageTimeStamp;
 
     /// <summary>
     /// Gets or sets the type of message written to the JavaScript console.
     /// </summary>
-    public string MessageType { get; set; }
+    public string MessageType { get; set; } = messageType;
 }

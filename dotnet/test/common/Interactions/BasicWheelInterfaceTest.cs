@@ -40,7 +40,7 @@ public class BasicWheelInterfaceTest : DriverTestFixture
     [Test]
     public void ShouldSetActiveWheel()
     {
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new(driver);
         actionProvider.SetActiveWheel("test wheel");
 
         WheelInputDevice device = actionProvider.GetActiveWheel();
@@ -68,7 +68,7 @@ public class BasicWheelInterfaceTest : DriverTestFixture
     {
         driver.Url = scrollFrameOutOfViewport;
         IWebElement iframe = driver.FindElement(By.TagName("iframe"));
-        WheelInputDevice.ScrollOrigin scrollOrigin = new WheelInputDevice.ScrollOrigin
+        WheelInputDevice.ScrollOrigin scrollOrigin = new()
         {
             Element = iframe
         };

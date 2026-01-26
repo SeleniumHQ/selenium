@@ -26,33 +26,27 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Event data used when receiving events from the DevTools session.
 /// </summary>
-public class DevToolsEventReceivedEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the DevToolsEventReceivedEventArgs class.
+/// </remarks>
+/// <param name="domainName">The domain on which the event is to be raised.</param>
+/// <param name="eventName">The name of the event to be raised.</param>
+/// <param name="eventData">The data for the event to be raised.</param>
+public class DevToolsEventReceivedEventArgs(string domainName, string eventName, JsonElement eventData) : EventArgs
 {
-    /// <summary>
-    /// Initializes a new instance of the DevToolsEventReceivedEventArgs class.
-    /// </summary>
-    /// <param name="domainName">The domain on which the event is to be raised.</param>
-    /// <param name="eventName">The name of the event to be raised.</param>
-    /// <param name="eventData">The data for the event to be raised.</param>
-    public DevToolsEventReceivedEventArgs(string domainName, string eventName, JsonElement eventData)
-    {
-        DomainName = domainName;
-        EventName = eventName;
-        EventData = eventData;
-    }
 
     /// <summary>
     /// Gets the domain on which the event is to be raised.
     /// </summary>
-    public string DomainName { get; }
+    public string DomainName { get; } = domainName;
 
     /// <summary>
     /// Gets the name of the event to be raised.
     /// </summary>
-    public string EventName { get; }
+    public string EventName { get; } = eventName;
 
     /// <summary>
     /// Gets the data with which the event is to be raised.
     /// </summary>
-    public JsonElement EventData { get; }
+    public JsonElement EventData { get; } = eventData;
 }

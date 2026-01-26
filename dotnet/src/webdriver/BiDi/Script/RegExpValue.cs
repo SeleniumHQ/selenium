@@ -56,18 +56,18 @@ public sealed record RegExpValue(string Pattern)
         if ((options & RegexOptions.IgnoreCase) != 0)
         {
             flags += "i";
-            options = options & ~RegexOptions.IgnoreCase;
+            options &= ~RegexOptions.IgnoreCase;
         }
 
         if ((options & RegexOptions.Multiline) != 0)
         {
-            options = options & ~RegexOptions.Multiline;
+            options &= ~RegexOptions.Multiline;
             flags += "m";
         }
 
         if ((options & RegexOptions.Singleline) != 0)
         {
-            options = options & ~RegexOptions.Singleline;
+            options &= ~RegexOptions.Singleline;
             flags += "s";
         }
 

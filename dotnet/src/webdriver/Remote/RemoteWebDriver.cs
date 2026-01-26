@@ -63,7 +63,12 @@ namespace OpenQA.Selenium.Remote;
 /// }
 /// </code>
 /// </example>
-public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
+/// <remarks>
+/// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
+/// </remarks>
+/// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+/// <param name="capabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+public class RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities capabilities) : WebDriver(commandExecutor, capabilities), IDevTools, IHasDownloads
 {
     private static readonly ILogger _logger = OpenQA.Selenium.Internal.Logging.Log.GetLogger(typeof(RemoteWebDriver));
 
@@ -127,16 +132,6 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
     public RemoteWebDriver(Uri remoteAddress, ICapabilities capabilities, TimeSpan commandTimeout)
         : this(new HttpCommandExecutor(remoteAddress, commandTimeout), capabilities)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
-    /// </summary>
-    /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
-    /// <param name="capabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-    public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities capabilities)
-        : base(commandExecutor, capabilities)
     {
     }
 
@@ -455,25 +450,15 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
 
         if (this.devToolsSession == null)
         {
-            object? debuggerAddressObject = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName);
-            if (debuggerAddressObject is null)
-            {
-                throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
-            }
-
+            object? debuggerAddressObject = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName) ?? throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
             string debuggerAddress = debuggerAddressObject.ToString()!;
 
             if (!options.ProtocolVersion.HasValue || options.ProtocolVersion == DevToolsSession.AutoDetectDevToolsProtocolVersion)
             {
-                object? versionObject = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName);
-                if (versionObject is null)
-                {
-                    throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
-                }
-
+                object? versionObject = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName) ?? throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
                 string version = versionObject.ToString()!;
 
-                if (!int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion))
+                if (!int.TryParse(version[..version.IndexOf(".")], out int devToolsProtocolVersion))
                 {
                     throw new WebDriverException("Cannot parse protocol version from reported version string: " + version);
                 }
@@ -483,7 +468,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
 
             try
             {
-                DevToolsSession session = new DevToolsSession(debuggerAddress, options);
+                DevToolsSession session = new(debuggerAddress, options);
                 Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                 this.devToolsSession = session;
             }
@@ -533,7 +518,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
             throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object> parameters = new()
         {
             { "name", fileName }
         };
@@ -549,17 +534,13 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
 
         Directory.CreateDirectory(targetDirectory);
 
-        using (var memoryReader = new MemoryStream(fileData))
+        using var memoryReader = new MemoryStream(fileData);
+        using var zipArchive = new ZipArchive(memoryReader, ZipArchiveMode.Read);
+        foreach (ZipArchiveEntry entry in zipArchive.Entries)
         {
-            using (var zipArchive = new ZipArchive(memoryReader, ZipArchiveMode.Read))
-            {
-                foreach (ZipArchiveEntry entry in zipArchive.Entries)
-                {
-                    string destinationPath = Path.Combine(targetDirectory, entry.FullName);
+            string destinationPath = Path.Combine(targetDirectory, entry.FullName);
 
-                    entry.ExtractToFile(destinationPath);
-                }
-            }
+            entry.ExtractToFile(destinationPath);
         }
     }
 

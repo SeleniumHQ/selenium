@@ -39,13 +39,13 @@ public class DevToolsLogTest : DevToolsTestFixture
     public async Task VerifyEntryAddedAndClearLog()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        ManualResetEventSlim sync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
+        ManualResetEventSlim sync = new(false);
+        void entryAddedHandler(object sender, CurrentCdpVersion.Log.EntryAddedEventArgs e)
         {
             Assert.That(e.Entry.Text.Contains("404"));
             Assert.That(e.Entry.Level == CurrentCdpVersion.Log.LogEntryLevelValues.Error);
             sync.Set();
-        };
+        }
 
         await domains.Log.Enable();
         domains.Log.EntryAdded += entryAddedHandler;

@@ -28,19 +28,14 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a mechanism for finding elements on the page with locators.
 /// </summary>
-internal sealed class TargetLocator : ITargetLocator
+/// <remarks>
+/// Initializes a new instance of the <see cref="TargetLocator"/> class
+/// </remarks>
+/// <param name="driver">The driver that is currently in use</param>
+/// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+internal sealed class TargetLocator(WebDriver driver) : ITargetLocator
 {
-    private readonly WebDriver driver;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TargetLocator"/> class
-    /// </summary>
-    /// <param name="driver">The driver that is currently in use</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
-    public TargetLocator(WebDriver driver)
-    {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
-    }
+    private readonly WebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
 
     /// <summary>
     /// Move to a different frame using its index
@@ -49,8 +44,10 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>A WebDriver instance that is currently in use</returns>
     public IWebDriver Frame(int frameIndex)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("id", frameIndex);
+        Dictionary<string, object> parameters = new()
+        {
+            { "id", frameIndex }
+        };
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
     }
@@ -112,8 +109,10 @@ internal sealed class TargetLocator : ITargetLocator
 
         Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("id", elementDictionary);
+        Dictionary<string, object> parameters = new()
+        {
+            { "id", elementDictionary }
+        };
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
     }
@@ -124,7 +123,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
     public IWebDriver ParentFrame()
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object> parameters = [];
         this.driver.Execute(DriverCommand.SwitchToParentFrame, parameters);
         return this.driver;
     }
@@ -142,8 +141,10 @@ internal sealed class TargetLocator : ITargetLocator
             throw new ArgumentNullException(nameof(windowHandleOrName));
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("handle", windowHandleOrName);
+        Dictionary<string, object> parameters = new()
+        {
+            { "handle", windowHandleOrName }
+        };
         try
         {
             this.driver.Execute(DriverCommand.SwitchToWindow, parameters);
@@ -190,8 +191,10 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
     public IWebDriver NewWindow(WindowType typeHint)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("type", typeHint.ToString().ToLowerInvariant());
+        Dictionary<string, object> parameters = new()
+        {
+            { "type", typeHint.ToString().ToLowerInvariant() }
+        };
 
         Response response = this.driver.Execute(DriverCommand.NewWindow, parameters);
 
@@ -208,8 +211,10 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>Element of the default</returns>
     public IWebDriver DefaultContent()
     {
-        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
-        parameters.Add("id", null);
+        Dictionary<string, object?> parameters = new()
+        {
+            { "id", null }
+        };
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
     }

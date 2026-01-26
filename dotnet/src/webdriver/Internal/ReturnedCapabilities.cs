@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Internal;
 /// </summary>
 internal sealed class ReturnedCapabilities : ICapabilities, IHasCapabilitiesDictionary
 {
-    private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> capabilities = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReturnedCapabilities"/> class

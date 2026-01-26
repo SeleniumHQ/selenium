@@ -31,17 +31,13 @@ namespace OpenQA.Selenium.Support.Events;
 /// A wrapper around an arbitrary WebDriver instance which supports registering for
 /// events, e.g. for logging purposes.
 /// </summary>
-public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScreenshot, IWrapsDriver
+/// <remarks>
+/// Initializes a new instance of the <see cref="EventFiringWebDriver"/> class.
+/// </remarks>
+/// <param name="parentDriver">The driver to register events for.</param>
+/// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
+public class EventFiringWebDriver(IWebDriver parentDriver) : IWebDriver, IJavaScriptExecutor, ITakesScreenshot, IWrapsDriver
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EventFiringWebDriver"/> class.
-    /// </summary>
-    /// <param name="parentDriver">The driver to register events for.</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
-    public EventFiringWebDriver(IWebDriver parentDriver)
-    {
-        this.WrappedDriver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
-    }
 
     /// <summary>
     /// Fires before the driver begins navigation.
@@ -131,7 +127,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// Gets the <see cref="IWebDriver"/> wrapped by this EventsFiringWebDriver instance.
     /// </summary>
-    public IWebDriver WrappedDriver { get; }
+    public IWebDriver WrappedDriver { get; } = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
 
     /// <summary>
     /// Gets or sets the URL the browser is currently displaying.
@@ -169,7 +165,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.WrappedDriver, value);
+                WebDriverNavigationEventArgs e = new(this.WrappedDriver, value);
                 this.OnNavigating(e);
                 this.WrappedDriver.Url = value;
                 this.OnNavigated(e);
@@ -353,7 +349,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         IWebElement wrappedElement;
         try
         {
-            FindElementEventArgs e = new FindElementEventArgs(this.WrappedDriver, by);
+            FindElementEventArgs e = new(this.WrappedDriver, by);
             this.OnFindingElement(e);
             IWebElement element = this.WrappedDriver.FindElement(by);
             this.OnFindElementCompleted(e);
@@ -379,12 +375,12 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     {
         try
         {
-            FindElementEventArgs e = new FindElementEventArgs(this.WrappedDriver, by);
+            FindElementEventArgs e = new(this.WrappedDriver, by);
             this.OnFindingElement(e);
             ReadOnlyCollection<IWebElement> elements = this.WrappedDriver.FindElements(by);
             this.OnFindElementCompleted(e);
 
-            List<IWebElement> wrappedElementList = new List<IWebElement>(elements.Count);
+            List<IWebElement> wrappedElementList = new(elements.Count);
             foreach (IWebElement element in elements)
             {
                 IWebElement wrappedElement = this.WrapElement(element);
@@ -456,7 +452,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             object?[] unwrappedArgs = UnwrapElementArguments(args);
 
-            WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.WrappedDriver, script);
+            WebDriverScriptEventArgs e = new(this.WrappedDriver, script);
             this.OnScriptExecuting(e);
             scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
             this.OnScriptExecuted(e);
@@ -524,7 +520,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             object?[] unwrappedArgs = UnwrapElementArguments(args);
 
-            WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.WrappedDriver, script.Source);
+            WebDriverScriptEventArgs e = new(this.WrappedDriver, script.Source);
             this.OnScriptExecuting(e);
             scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
             this.OnScriptExecuted(e);
@@ -556,7 +552,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             object?[] unwrappedArgs = UnwrapElementArguments(args);
 
-            WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.WrappedDriver, script);
+            WebDriverScriptEventArgs e = new(this.WrappedDriver, script);
             this.OnScriptExecuting(e);
             scriptResult = javascriptDriver.ExecuteAsyncScript(script, unwrappedArgs);
             this.OnScriptExecuted(e);
@@ -603,10 +599,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigating(WebDriverNavigationEventArgs e)
     {
-        if (this.Navigating != null)
-        {
-            this.Navigating(this, e);
-        }
+        this.Navigating?.Invoke(this, e);
     }
 
     /// <summary>
@@ -615,10 +608,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigated(WebDriverNavigationEventArgs e)
     {
-        if (this.Navigated != null)
-        {
-            this.Navigated(this, e);
-        }
+        this.Navigated?.Invoke(this, e);
     }
 
     /// <summary>
@@ -627,10 +617,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatingBack(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatingBack != null)
-        {
-            this.NavigatingBack(this, e);
-        }
+        this.NavigatingBack?.Invoke(this, e);
     }
 
     /// <summary>
@@ -639,10 +626,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatedBack(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatedBack != null)
-        {
-            this.NavigatedBack(this, e);
-        }
+        this.NavigatedBack?.Invoke(this, e);
     }
 
     /// <summary>
@@ -651,10 +635,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatingForward(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatingForward != null)
-        {
-            this.NavigatingForward(this, e);
-        }
+        this.NavigatingForward?.Invoke(this, e);
     }
 
     /// <summary>
@@ -663,10 +644,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatedForward(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatedForward != null)
-        {
-            this.NavigatedForward(this, e);
-        }
+        this.NavigatedForward?.Invoke(this, e);
     }
 
     /// <summary>
@@ -675,10 +653,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementClicking(WebElementEventArgs e)
     {
-        if (this.ElementClicking != null)
-        {
-            this.ElementClicking(this, e);
-        }
+        this.ElementClicking?.Invoke(this, e);
     }
 
     /// <summary>
@@ -687,10 +662,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementClicked(WebElementEventArgs e)
     {
-        if (this.ElementClicked != null)
-        {
-            this.ElementClicked(this, e);
-        }
+        this.ElementClicked?.Invoke(this, e);
     }
 
     /// <summary>
@@ -699,10 +671,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementValueChanging(WebElementValueEventArgs e)
     {
-        if (this.ElementValueChanging != null)
-        {
-            this.ElementValueChanging(this, e);
-        }
+        this.ElementValueChanging?.Invoke(this, e);
     }
 
     /// <summary>
@@ -711,10 +680,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementValueChanged(WebElementValueEventArgs e)
     {
-        if (this.ElementValueChanged != null)
-        {
-            this.ElementValueChanged(this, e);
-        }
+        this.ElementValueChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -723,10 +689,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="FindElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnFindingElement(FindElementEventArgs e)
     {
-        if (this.FindingElement != null)
-        {
-            this.FindingElement(this, e);
-        }
+        this.FindingElement?.Invoke(this, e);
     }
 
     /// <summary>
@@ -735,10 +698,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="FindElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnFindElementCompleted(FindElementEventArgs e)
     {
-        if (this.FindElementCompleted != null)
-        {
-            this.FindElementCompleted(this, e);
-        }
+        this.FindElementCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -747,10 +707,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="GetShadowRootEventArgs"/> that contains the event data.</param>
     protected virtual void OnGettingShadowRoot(GetShadowRootEventArgs e)
     {
-        if (this.GettingShadowRoot != null)
-        {
-            this.GettingShadowRoot(this, e);
-        }
+        this.GettingShadowRoot?.Invoke(this, e);
     }
 
     /// <summary>
@@ -759,10 +716,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="GetShadowRootEventArgs"/> that contains the event data.</param>
     protected virtual void OnGetShadowRootCompleted(GetShadowRootEventArgs e)
     {
-        if (this.GetShadowRootCompleted != null)
-        {
-            this.GetShadowRootCompleted(this, e);
-        }
+        this.GetShadowRootCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -771,10 +725,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverScriptEventArgs"/> that contains the event data.</param>
     protected virtual void OnScriptExecuting(WebDriverScriptEventArgs e)
     {
-        if (this.ScriptExecuting != null)
-        {
-            this.ScriptExecuting(this, e);
-        }
+        this.ScriptExecuting?.Invoke(this, e);
     }
 
     /// <summary>
@@ -783,10 +734,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverScriptEventArgs"/> that contains the event data.</param>
     protected virtual void OnScriptExecuted(WebDriverScriptEventArgs e)
     {
-        if (this.ScriptExecuted != null)
-        {
-            this.ScriptExecuted(this, e);
-        }
+        this.ScriptExecuted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -795,10 +743,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverExceptionEventArgs"/> that contains the event data.</param>
     protected virtual void OnException(WebDriverExceptionEventArgs e)
     {
-        if (this.ExceptionThrown != null)
-        {
-            this.ExceptionThrown(this, e);
-        }
+        this.ExceptionThrown?.Invoke(this, e);
     }
 
     private static object?[] UnwrapElementArguments(object?[] args)
@@ -809,7 +754,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         }
 
         // Walk the args: the various drivers expect unwrapped versions of the elements
-        List<object?> unwrappedArgs = new List<object?>(args.Length);
+        List<object?> unwrappedArgs = new(args.Length);
         foreach (object? arg in args)
         {
             if (arg is IWrapsElement eventElementArg)
@@ -822,7 +767,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             }
         }
 
-        return unwrappedArgs.ToArray();
+        return [.. unwrappedArgs];
     }
 
     private IWebElement WrapElement(IWebElement underlyingElement)
@@ -867,7 +812,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
+                WebDriverNavigationEventArgs e = new(this.parentDriver);
 
                 this.parentDriver.OnNavigatingBack(e);
                 await this.wrappedNavigation.BackAsync().ConfigureAwait(false);
@@ -899,7 +844,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
+                WebDriverNavigationEventArgs e = new(this.parentDriver);
                 this.parentDriver.OnNavigatingForward(e);
                 await this.wrappedNavigation.ForwardAsync().ConfigureAwait(false);
                 this.parentDriver.OnNavigatedForward(e);
@@ -937,7 +882,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
 
             try
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url);
+                WebDriverNavigationEventArgs e = new(this.parentDriver, url);
                 this.parentDriver.OnNavigating(e);
                 await this.wrappedNavigation.GoToUrlAsync(url).ConfigureAwait(false);
                 this.parentDriver.OnNavigated(e);
@@ -1008,18 +953,13 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// Provides a mechanism for setting options needed for the driver during the test.
     /// </summary>
-    private class EventFiringOptions : IOptions
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EventFiringOptions"/> class
+    /// </remarks>
+    /// <param name="driver">Instance of the driver currently in use</param>
+    private class EventFiringOptions(EventFiringWebDriver driver) : IOptions
     {
-        private readonly IOptions wrappedOptions;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventFiringOptions"/> class
-        /// </summary>
-        /// <param name="driver">Instance of the driver currently in use</param>
-        public EventFiringOptions(EventFiringWebDriver driver)
-        {
-            this.wrappedOptions = driver.WrappedDriver.Manage();
-        }
+        private readonly IOptions wrappedOptions = driver.WrappedDriver.Manage();
 
         /// <summary>
         /// Gets an object allowing the user to manipulate cookies on the page.
@@ -1259,18 +1199,13 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// Defines the interface through which the user can define timeouts.
     /// </summary>
-    private class EventFiringTimeouts : ITimeouts
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EventFiringTimeouts"/> class
+    /// </remarks>
+    /// <param name="options">The <see cref="IOptions"/> object to wrap.</param>
+    private class EventFiringTimeouts(IOptions options) : ITimeouts
     {
-        private readonly ITimeouts wrappedTimeouts;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventFiringTimeouts"/> class
-        /// </summary>
-        /// <param name="options">The <see cref="IOptions"/> object to wrap.</param>
-        public EventFiringTimeouts(IOptions options)
-        {
-            this.wrappedTimeouts = options.Timeouts();
-        }
+        private readonly ITimeouts wrappedTimeouts = options.Timeouts();
 
         /// <summary>
         /// Gets or sets the implicit wait timeout, which is the  amount of time the
@@ -1322,25 +1257,19 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringWebElement allows you to have access to specific items that are found on the page
     /// </summary>
-    private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver, IEquatable<IWebElement>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EventFiringWebElement"/> class.
+    /// </remarks>
+    /// <param name="driver">The <see cref="EventFiringWebDriver"/> instance hosting this element.</param>
+    /// <param name="element">The <see cref="IWebElement"/> to wrap for event firing.</param>
+    private class EventFiringWebElement(EventFiringWebDriver driver, IWebElement element) : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver, IEquatable<IWebElement>
     {
-        private readonly EventFiringWebDriver parentDriver;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventFiringWebElement"/> class.
-        /// </summary>
-        /// <param name="driver">The <see cref="EventFiringWebDriver"/> instance hosting this element.</param>
-        /// <param name="element">The <see cref="IWebElement"/> to wrap for event firing.</param>
-        public EventFiringWebElement(EventFiringWebDriver driver, IWebElement element)
-        {
-            this.WrappedElement = element ?? throw new ArgumentNullException(nameof(element));
-            this.parentDriver = driver ?? throw new ArgumentNullException(nameof(driver));
-        }
+        private readonly EventFiringWebDriver parentDriver = driver ?? throw new ArgumentNullException(nameof(driver));
 
         /// <summary>
         /// Gets the underlying wrapped <see cref="IWebElement"/>.
         /// </summary>
-        public IWebElement WrappedElement { get; }
+        public IWebElement WrappedElement { get; } = element ?? throw new ArgumentNullException(nameof(element));
 
         /// <summary>
         /// Gets the underlying parent wrapped <see cref="IWebDriver"/>
@@ -1513,7 +1442,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebElementValueEventArgs e = new WebElementValueEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement, null);
+                WebElementValueEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement, null);
                 this.parentDriver.OnElementValueChanging(e);
                 this.WrappedElement.Clear();
                 this.parentDriver.OnElementValueChanged(e);
@@ -1533,7 +1462,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebElementValueEventArgs e = new WebElementValueEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement, text);
+                WebElementValueEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement, text);
                 this.parentDriver.OnElementValueChanging(e);
                 this.WrappedElement.SendKeys(text);
                 this.parentDriver.OnElementValueChanged(e);
@@ -1574,7 +1503,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement);
+                WebElementEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement);
                 this.parentDriver.OnElementClicking(e);
                 this.WrappedElement.Click();
                 this.parentDriver.OnElementClicked(e);
@@ -1678,7 +1607,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                GetShadowRootEventArgs e = new GetShadowRootEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement);
+                GetShadowRootEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement);
                 this.parentDriver.OnGettingShadowRoot(e);
                 ISearchContext shadowRoot = this.WrappedElement.GetShadowRoot();
                 this.parentDriver.OnGetShadowRootCompleted(e);
@@ -1701,7 +1630,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             IWebElement wrappedElement;
             try
             {
-                FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement, by);
+                FindElementEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement, by);
                 this.parentDriver.OnFindingElement(e);
                 IWebElement element = this.WrappedElement.FindElement(by);
                 this.parentDriver.OnFindElementCompleted(e);
@@ -1725,12 +1654,12 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.WrappedElement, by);
+                FindElementEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedElement, by);
                 this.parentDriver.OnFindingElement(e);
                 ReadOnlyCollection<IWebElement> elements = this.WrappedElement.FindElements(by);
                 this.parentDriver.OnFindElementCompleted(e);
 
-                List<IWebElement> wrappedElementList = new List<IWebElement>(elements.Count);
+                List<IWebElement> wrappedElementList = new(elements.Count);
                 foreach (IWebElement element in elements)
                 {
                     IWebElement wrappedElement = this.parentDriver.WrapElement(element);
@@ -1798,25 +1727,19 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringShadowElement allows you to have access to specific shadow elements
     /// </summary>
-    private class EventFiringShadowRoot : ISearchContext, IWrapsDriver, IEquatable<ISearchContext>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EventFiringShadowRoot"/> class.
+    /// </remarks>
+    /// <param name="driver">The <see cref="EventFiringWebDriver"/> instance hosting this element.</param>
+    /// <param name="searchContext">The <see cref="ISearchContext"/> to wrap for event firing.</param>
+    private class EventFiringShadowRoot(EventFiringWebDriver driver, ISearchContext searchContext) : ISearchContext, IWrapsDriver, IEquatable<ISearchContext>
     {
-        private readonly EventFiringWebDriver parentDriver;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventFiringShadowRoot"/> class.
-        /// </summary>
-        /// <param name="driver">The <see cref="EventFiringWebDriver"/> instance hosting this element.</param>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> to wrap for event firing.</param>
-        public EventFiringShadowRoot(EventFiringWebDriver driver, ISearchContext searchContext)
-        {
-            this.WrappedSearchContext = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
-            this.parentDriver = driver;
-        }
+        private readonly EventFiringWebDriver parentDriver = driver;
 
         /// <summary>
         /// Gets the underlying wrapped <see cref="ISearchContext"/>.
         /// </summary>
-        public ISearchContext WrappedSearchContext { get; }
+        public ISearchContext WrappedSearchContext { get; } = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
 
         /// <summary>
         /// Gets the underlying parent wrapped <see cref="IWebDriver"/>
@@ -1833,7 +1756,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             IWebElement wrappedElement;
             try
             {
-                GetShadowRootEventArgs e = new GetShadowRootEventArgs(this.parentDriver.WrappedDriver, this.WrappedSearchContext);
+                GetShadowRootEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedSearchContext);
                 this.parentDriver.OnGettingShadowRoot(e);
                 IWebElement element = this.WrappedSearchContext.FindElement(by);
                 this.parentDriver.OnGetShadowRootCompleted(e);
@@ -1857,12 +1780,12 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         {
             try
             {
-                GetShadowRootEventArgs e = new GetShadowRootEventArgs(this.parentDriver.WrappedDriver, this.WrappedSearchContext);
+                GetShadowRootEventArgs e = new(this.parentDriver.WrappedDriver, this.WrappedSearchContext);
                 this.parentDriver.OnGettingShadowRoot(e);
                 ReadOnlyCollection<IWebElement> elements = this.WrappedSearchContext.FindElements(by);
                 this.parentDriver.OnGetShadowRootCompleted(e);
 
-                List<IWebElement> wrappedElementList = new List<IWebElement>(elements.Count);
+                List<IWebElement> wrappedElementList = new(elements.Count);
                 foreach (IWebElement element in elements)
                 {
                     IWebElement wrappedElement = this.parentDriver.WrapElement(element);

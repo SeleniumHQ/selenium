@@ -25,7 +25,13 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides the execution information for a <see cref="DriverCommand"/>.
 /// </summary>
-public class HttpCommandInfo : CommandInfo
+/// <remarks>
+/// Initializes a new instance of the <see cref="HttpCommandInfo"/> class
+/// </remarks>
+/// <param name="method">Method of the Command</param>
+/// <param name="resourcePath">Relative URL path to the resource used to execute the command</param>
+/// <exception cref="ArgumentNullException">If <paramref name="method"/> or <paramref name="resourcePath"/> are <see langword="null"/>.</exception>
+public class HttpCommandInfo(string method, string resourcePath) : CommandInfo
 {
     /// <summary>
     /// POST verb for the command info
@@ -45,26 +51,31 @@ public class HttpCommandInfo : CommandInfo
     private const string SessionIdPropertyName = "sessionId";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpCommandInfo"/> class
-    /// </summary>
-    /// <param name="method">Method of the Command</param>
-    /// <param name="resourcePath">Relative URL path to the resource used to execute the command</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="method"/> or <paramref name="resourcePath"/> are <see langword="null"/>.</exception>
-    public HttpCommandInfo(string method, string resourcePath)
-    {
-        this.ResourcePath = resourcePath ?? throw new ArgumentNullException(nameof(resourcePath));
-        this.Method = method ?? throw new ArgumentNullException(nameof(method));
-    }
-
-    /// <summary>
     /// Gets the URL representing the path to the resource.
     /// </summary>
+
+/* Unmerged change from project 'Selenium.WebDriver(net8.0)'
+Before:
     public string ResourcePath { get; }
 
     /// <summary>
     /// Gets the HTTP method associated with the command.
     /// </summary>
     public string Method { get; }
+After:
+    public string ResourcePath { get; } = resourcePath ?? throw new ArgumentNullException(nameof(resourcePath));
+
+    /// <summary>
+    /// Gets the HTTP method associated with the command.
+    /// </summary>
+    public string Method { get; } = method ?? throw new ArgumentNullException(nameof(method));
+*/
+    public string ResourcePath { get; } = resourcePath ?? throw new ArgumentNullException(nameof(resourcePath));
+
+    /// <summary>
+    /// Gets the HTTP method associated with the command.
+    /// </summary>
+    public string Method { get; } = method ?? throw new ArgumentNullException(nameof(method));
 
     /// <summary>
     /// Gets the unique identifier for this command within the scope of its protocol definition
@@ -96,7 +107,7 @@ public class HttpCommandInfo : CommandInfo
         }
 
         string relativeUrlString = string.Join("/", urlParts);
-        Uri relativeUri = new Uri(relativeUrlString, UriKind.Relative);
+        Uri relativeUri = new(relativeUrlString, UriKind.Relative);
         if (!Uri.TryCreate(baseUri, relativeUri, out Uri? fullUri))
         {
             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri?.ToString(), relativeUrlString));
@@ -110,7 +121,7 @@ public class HttpCommandInfo : CommandInfo
         string propertyValue = string.Empty;
 
         // Strip the curly braces
-        propertyName = propertyName.Substring(1, propertyName.Length - 2);
+        propertyName = propertyName[1..^1];
 
         if (propertyName == SessionIdPropertyName)
         {

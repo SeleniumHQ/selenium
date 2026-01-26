@@ -100,7 +100,7 @@ public class SelectElement : IWrapsElement
     {
         get
         {
-            List<IWebElement> returnValue = new List<IWebElement>();
+            List<IWebElement> returnValue = [];
             foreach (IWebElement option in this.Options)
             {
                 if (option.Selected)
@@ -204,7 +204,7 @@ public class SelectElement : IWrapsElement
     /// <exception cref="NoSuchElementException">Thrown when no element with the specified value is found.</exception>
     public void SelectByValue(string value)
     {
-        StringBuilder builder = new StringBuilder(".//option[@value = ");
+        StringBuilder builder = new(".//option[@value = ");
         builder.Append(EscapeQuotes(value));
         builder.Append("]");
         IList<IWebElement> options = this.WrappedElement.FindElements(By.XPath(builder.ToString()));
@@ -286,7 +286,7 @@ public class SelectElement : IWrapsElement
         }
 
         bool matched = false;
-        StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
+        StringBuilder builder = new(".//option[normalize-space(.) = ");
         builder.Append(EscapeQuotes(text));
         builder.Append("]");
         IList<IWebElement> options = this.WrappedElement.FindElements(By.XPath(builder.ToString()));
@@ -322,7 +322,7 @@ public class SelectElement : IWrapsElement
         }
 
         bool matched = false;
-        StringBuilder builder = new StringBuilder(".//option[@value = ");
+        StringBuilder builder = new(".//option[@value = ");
         builder.Append(EscapeQuotes(value));
         builder.Append("]");
         IList<IWebElement> options = this.WrappedElement.FindElements(By.XPath(builder.ToString()));
@@ -376,7 +376,7 @@ public class SelectElement : IWrapsElement
                 quoteIsLast = true;
             }
 
-            List<string> substrings = new List<string>(toEscape.Split('\"'));
+            List<string> substrings = new(toEscape.Split('\"'));
             if (quoteIsLast && string.IsNullOrEmpty(substrings[substrings.Count - 1]))
             {
                 // If the last character is a quote ('"'), we end up with an empty entry
@@ -386,7 +386,7 @@ public class SelectElement : IWrapsElement
                 substrings.RemoveAt(substrings.Count - 1);
             }
 
-            StringBuilder quoted = new StringBuilder("concat(");
+            StringBuilder quoted = new("concat(");
             for (int i = 0; i < substrings.Count; i++)
             {
                 quoted.Append("\"").Append(substrings[i]).Append("\"");

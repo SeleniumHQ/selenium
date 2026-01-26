@@ -40,12 +40,12 @@ public class DevToolsConsoleTest : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         string consoleMessage = "Hello Selenium";
 
-        ManualResetEventSlim sync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
+        ManualResetEventSlim sync = new(false);
+        void messageAddedHandler(object sender, CurrentCdpVersion.Console.MessageAddedEventArgs e)
         {
             Assert.That(e.Message.Text, Is.EqualTo(consoleMessage));
             sync.Set();
-        };
+        }
 
         domains.Console.MessageAdded += messageAddedHandler;
 

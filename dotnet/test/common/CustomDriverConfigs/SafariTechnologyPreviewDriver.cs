@@ -44,7 +44,7 @@ public class SafariTechnologyPreviewDriver : SafariDriver
     {
         get
         {
-            SafariOptions options = new SafariOptions();
+            SafariOptions options = new();
             options.UseTechnologyPreview();
             return options;
         }

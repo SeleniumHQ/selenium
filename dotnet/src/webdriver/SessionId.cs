@@ -24,19 +24,14 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a mechanism for maintaining a session for a test
 /// </summary>
-public class SessionId : IEquatable<SessionId>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SessionId"/> class
+/// </remarks>
+/// <param name="opaqueKey">Key for the session in use</param>
+/// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
+public class SessionId(string opaqueKey) : IEquatable<SessionId>
 {
-    private readonly string sessionOpaqueKey;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SessionId"/> class
-    /// </summary>
-    /// <param name="opaqueKey">Key for the session in use</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
-    public SessionId(string opaqueKey)
-    {
-        this.sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
-    }
+    private readonly string sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
 
     /// <summary>
     /// Get the value of the key

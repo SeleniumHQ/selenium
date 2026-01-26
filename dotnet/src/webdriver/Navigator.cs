@@ -26,19 +26,14 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a mechanism for Navigating with the driver.
 /// </summary>
-internal sealed class Navigator : INavigation
+/// <remarks>
+/// Initializes a new instance of the <see cref="Navigator"/> class
+/// </remarks>
+/// <param name="driver">Driver in use</param>
+/// <exception cref="ArgumentNullException">If <paramref name="driver"/> is null.</exception>
+internal sealed class Navigator(WebDriver driver) : INavigation
 {
-    private readonly WebDriver driver;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Navigator"/> class
-    /// </summary>
-    /// <param name="driver">Driver in use</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is null.</exception>
-    public Navigator(WebDriver driver)
-    {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
-    }
+    private readonly WebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
 
     /// <summary>
     /// Move back a single entry in the browser's history.
@@ -106,7 +101,7 @@ internal sealed class Navigator : INavigation
             throw new ArgumentNullException(nameof(url), "URL cannot be null.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object> parameters = new()
         {
             { "url", url }
         };

@@ -61,7 +61,15 @@ namespace OpenQA.Selenium.IE;
 /// }
 /// </code>
 /// </example>
-public class InternetExplorerDriver : WebDriver
+/// <remarks>
+/// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified
+/// <see cref="DriverService"/>, <see cref="InternetExplorerOptions"/>, and command timeout.
+/// </remarks>
+/// <param name="service">The <see cref="InternetExplorerDriverService"/> to use.</param>
+/// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+/// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+/// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
+public class InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout) : WebDriver(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class.
@@ -140,19 +148,6 @@ public class InternetExplorerDriver : WebDriver
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified
-    /// <see cref="DriverService"/>, <see cref="InternetExplorerOptions"/>, and command timeout.
-    /// </summary>
-    /// <param name="service">The <see cref="InternetExplorerDriverService"/> to use.</param>
-    /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
-    /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
-    public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
-        : base(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
-    {
-    }
-
-    /// <summary>
     /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
     /// </summary>
     /// <param name="service"></param>
@@ -173,7 +168,7 @@ public class InternetExplorerDriver : WebDriver
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new DriverFinder(options);
+            DriverFinder finder = new(options);
             string fullServicePath = finder.GetDriverPath();
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);

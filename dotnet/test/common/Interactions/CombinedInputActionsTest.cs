@@ -57,7 +57,7 @@ public class CombinedInputActionsTest : DriverTestFixture
 
         ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
 
-        Actions actionBuider = new Actions(driver);
+        Actions actionBuider = new(driver);
         IAction selectThreeOptions = actionBuider.Click(options[1])
             .Click(options[2])
             .Click(options[3]).Build();
@@ -80,7 +80,7 @@ public class CombinedInputActionsTest : DriverTestFixture
         IWebElement password = driver.FindElement(By.Id("password-field"));
         IWebElement login = driver.FindElement(By.Id("login-form-submit"));
 
-        Actions actionProvider = new Actions(driver);
+        Actions actionProvider = new(driver);
         IAction loginAction = actionProvider
         .SendKeys(username, "username")
         .SendKeys(password, "password")
@@ -105,7 +105,7 @@ public class CombinedInputActionsTest : DriverTestFixture
 
         ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
 
-        Actions actionBuider = new Actions(driver);
+        Actions actionBuider = new(driver);
         IAction selectThreeOptions = actionBuider.Click(options[1])
             .KeyDown(Keys.Shift)
             .Click(options[2])
@@ -135,7 +135,7 @@ public class CombinedInputActionsTest : DriverTestFixture
 
         ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
 
-        Actions actionBuider = new Actions(driver);
+        Actions actionBuider = new(driver);
         IAction selectThreeOptions = actionBuider.Click(options[1])
             .KeyDown(controlModifier)
             .Click(options[3])

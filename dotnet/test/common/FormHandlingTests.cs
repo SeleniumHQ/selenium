@@ -176,7 +176,7 @@ public class FormHandlingTests : DriverTestFixture
         Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.Empty);
 
         string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
-        System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
+        System.IO.FileInfo inputFile = new(filePath);
         System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
         inputFileWriter.WriteLine("Hello world");
         inputFileWriter.Close();
@@ -184,7 +184,7 @@ public class FormHandlingTests : DriverTestFixture
         uploadElement.SendKeys(inputFile.FullName);
 
         string uploadElementValue = uploadElement.GetAttribute("value");
-        System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
+        System.IO.FileInfo outputFile = new(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
         Assert.That(inputFile.Name, Is.EqualTo(outputFile.Name));
         inputFile.Delete();
     }
@@ -205,7 +205,7 @@ public class FormHandlingTests : DriverTestFixture
 
         string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
         string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
-        System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
+        System.IO.FileInfo inputFile = new(filePath);
         System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
         inputFileWriter.WriteLine("Hello world");
         inputFileWriter.Close();
@@ -213,7 +213,7 @@ public class FormHandlingTests : DriverTestFixture
         uploadElement.SendKeys(inputFile.FullName);
 
         string uploadElementValue = uploadElement.GetAttribute("value");
-        System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
+        System.IO.FileInfo outputFile = new(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
         Assert.That(outputFile.Name, Is.EqualTo(inputFile.Name));
         inputFile.Delete();
     }
@@ -224,7 +224,7 @@ public class FormHandlingTests : DriverTestFixture
     {
         string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
         string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
-        System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
+        System.IO.FileInfo inputFile = new(filePath);
         System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
         inputFileWriter.WriteLine("Hello world");
         inputFileWriter.Close();
@@ -289,8 +289,7 @@ public class FormHandlingTests : DriverTestFixture
         driver.Url = formsPage;
         IWebElement emptyTextBox = driver.FindElement(By.Id("working"));
         Assert.That(emptyTextBox.GetAttribute("value"), Is.Empty);
-
-        IWebElement emptyTextArea = driver.FindElement(By.Id("emptyTextArea"));
+        _ = driver.FindElement(By.Id("emptyTextArea"));
         Assert.That(emptyTextBox.GetAttribute("value"), Is.Empty);
     }
 

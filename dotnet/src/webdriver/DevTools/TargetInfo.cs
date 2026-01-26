@@ -22,61 +22,51 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Represents information about the target of a DevTools Protocol command
 /// </summary>
-public class TargetInfo
+/// <remarks>
+/// Initializes a new instance of the <see cref="TargetInfo"/> type.
+/// </remarks>
+/// <param name="targetId">The ID of the target.</param>
+/// <param name="type">The type of target.</param>
+/// <param name="title">The title of the target.</param>
+/// <param name="url">The URL of the target.</param>
+/// <param name="isAttached">Whether the protocol is attached to the target.</param>
+/// <param name="openerId">The ID of the opener of the target.</param>
+/// <param name="browserContextId">The browser context ID.</param>
+public class TargetInfo(string targetId, string type, string title, string url, bool isAttached, string? openerId, string? browserContextId)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TargetInfo"/> type.
-    /// </summary>
-    /// <param name="targetId">The ID of the target.</param>
-    /// <param name="type">The type of target.</param>
-    /// <param name="title">The title of the target.</param>
-    /// <param name="url">The URL of the target.</param>
-    /// <param name="isAttached">Whether the protocol is attached to the target.</param>
-    /// <param name="openerId">The ID of the opener of the target.</param>
-    /// <param name="browserContextId">The browser context ID.</param>
-    public TargetInfo(string targetId, string type, string title, string url, bool isAttached, string? openerId, string? browserContextId)
-    {
-        this.TargetId = targetId;
-        this.Type = type;
-        this.Title = title;
-        this.Url = url;
-        this.IsAttached = isAttached;
-        this.OpenerId = openerId;
-        this.BrowserContextId = browserContextId;
-    }
 
     /// <summary>
     /// Gets the ID of the target.
     /// </summary>
-    public string TargetId { get; }
+    public string TargetId { get; } = targetId;
 
     /// <summary>
     /// Gets the type of target.
     /// </summary>
-    public string Type { get; }
+    public string Type { get; } = type;
 
     /// <summary>
     /// Gets the title of the target.
     /// </summary>
-    public string Title { get; }
+    public string Title { get; } = title;
 
     /// <summary>
     /// Gets the URL of the target.
     /// </summary>
-    public string Url { get; }
+    public string Url { get; } = url;
 
     /// <summary>
     /// Gets a value indicating if the protocol is attached to the target.
     /// </summary>
-    public bool IsAttached { get; }
+    public bool IsAttached { get; } = isAttached;
 
     /// <summary>
     /// Gets the ID of the opener of the target.
     /// </summary>
-    public string? OpenerId { get; }
+    public string? OpenerId { get; } = openerId;
 
     /// <summary>
     /// Gets the browser context ID.
     /// </summary>
-    public string? BrowserContextId { get; }
+    public string? BrowserContextId { get; } = browserContextId;
 }

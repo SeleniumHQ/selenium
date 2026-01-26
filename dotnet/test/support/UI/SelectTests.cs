@@ -78,11 +78,13 @@ public class SelectTests
     [Test]
     public void CanGetSingleSelectedOption()
     {
-        Mock<IWebElement> selected = new Mock<IWebElement>();
-        Mock<IWebElement> notSelected = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(notSelected.Object);
-        options.Add(selected.Object);
+        Mock<IWebElement> selected = new();
+        Mock<IWebElement> notSelected = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            notSelected.Object,
+            selected.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -100,11 +102,13 @@ public class SelectTests
     [Test]
     public void CanGetAllSelectedOptions()
     {
-        Mock<IWebElement> selected = new Mock<IWebElement>();
-        Mock<IWebElement> notSelected = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(selected.Object);
-        options.Add(notSelected.Object);
+        Mock<IWebElement> selected = new();
+        Mock<IWebElement> notSelected = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            selected.Object,
+            notSelected.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -123,9 +127,11 @@ public class SelectTests
     [Test]
     public void CanSetSingleOptionSelectedByText()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -143,9 +149,11 @@ public class SelectTests
     [Test]
     public void CanSetSingleOptionSelectedByValue()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns((string)null);
@@ -163,9 +171,11 @@ public class SelectTests
     [Test]
     public void CanSetSingleOptionSelectedByIndex()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns((string)null);
@@ -185,11 +195,13 @@ public class SelectTests
     [Test]
     public void CanSetMultipleOptionSelectedByText()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -212,11 +224,13 @@ public class SelectTests
     [Test]
     public void CanSetMultipleOptionSelectedByValue()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -239,11 +253,13 @@ public class SelectTests
     [Test]
     public void CanSetMultipleOptionSelectedByIndex()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -270,9 +286,11 @@ public class SelectTests
     [Test]
     public void CanDeselectSingleOptionSelectedByText()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -289,9 +307,11 @@ public class SelectTests
     [Test]
     public void CanDeselectSingleOptionSelectedByValue()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -308,9 +328,11 @@ public class SelectTests
     [Test]
     public void CanDeselectSingleOptionSelectedByIndex()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
+        Mock<IWebElement> option1 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -329,11 +351,13 @@ public class SelectTests
     [Test]
     public void CanDeselectMultipleOptionSelectedByText()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -349,11 +373,13 @@ public class SelectTests
     [Test]
     public void CanDeselectMultipleOptionSelectedByValue()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -374,11 +400,13 @@ public class SelectTests
     [Test]
     public void CanDeselectMultipleOptionSelectedByIndex()
     {
-        Mock<IWebElement> option1 = new Mock<IWebElement>();
-        Mock<IWebElement> option2 = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(option1.Object);
-        options.Add(option2.Object);
+        Mock<IWebElement> option1 = new();
+        Mock<IWebElement> option2 = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            option1.Object,
+            option2.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
@@ -403,17 +431,19 @@ public class SelectTests
     [Test]
     public void SelectedOptionPropertyShouldThrowExceptionWhenNoOptionSelected()
     {
-        Mock<IWebElement> selected = new Mock<IWebElement>();
-        Mock<IWebElement> notSelected = new Mock<IWebElement>();
-        IList<IWebElement> options = new List<IWebElement>();
-        options.Add(notSelected.Object);
+        Mock<IWebElement> selected = new();
+        Mock<IWebElement> notSelected = new();
+        IList<IWebElement> options = new List<IWebElement>
+        {
+            notSelected.Object
+        };
 
         webElement.SetupGet<string>(_ => _.TagName).Returns("select");
         webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
         notSelected.SetupGet<bool>(_ => _.Selected).Returns(false);
         webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
-        SelectElement element = new SelectElement(webElement.Object);
+        SelectElement element = new(webElement.Object);
         Assert.That(
             () => element.SelectedOption,
             Throws.TypeOf<NoSuchElementException>());

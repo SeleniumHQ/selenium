@@ -29,11 +29,8 @@ public interface IJavaScriptExecutingWebDriver : IWebDriver, IJavaScriptExecutor
 {
 }
 
-public class SubClassOfReadOnlyCollectionOfObject : ReadOnlyCollection<object>
+public class SubClassOfReadOnlyCollectionOfObject(IList<object> list) : ReadOnlyCollection<object>(list)
 {
-    public SubClassOfReadOnlyCollectionOfObject(IList<object> list) : base(list)
-    {
-    }
 }
 
 [TestFixture]

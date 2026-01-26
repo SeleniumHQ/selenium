@@ -38,7 +38,7 @@ public abstract class CommandInfoRepository
     /// </summary>
     protected CommandInfoRepository()
     {
-        this.commandDictionary = new Dictionary<string, CommandInfo>();
+        this.commandDictionary = [];
     }
 
     /// <summary>

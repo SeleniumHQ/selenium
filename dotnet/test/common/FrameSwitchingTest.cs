@@ -516,7 +516,7 @@ public class FrameSwitchingTest : DriverTestFixture
                 // IE6 and Chrome add "?"-symbol to the end of the URL
                 if (url.EndsWith("?"))
                 {
-                    url = url.Substring(0, url.Length - 1);
+                    url = url[..^1];
                 }
                 Assert.That(url, Is.EqualTo(baseUrl + "bug4876_iframe.html"));
             }

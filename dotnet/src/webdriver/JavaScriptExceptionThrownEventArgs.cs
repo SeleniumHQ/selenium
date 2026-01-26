@@ -24,19 +24,15 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides data for the JavaScriptExceptionThrown event.
 /// </summary>
-public class JavaScriptExceptionThrownEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="JavaScriptExceptionThrownEventArgs"/> type.
+/// </remarks>
+/// <param name="message">The message of the exception thrown by JavaScript executing in the browser.</param>
+public class JavaScriptExceptionThrownEventArgs(string message) : EventArgs
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JavaScriptExceptionThrownEventArgs"/> type.
-    /// </summary>
-    /// <param name="message">The message of the exception thrown by JavaScript executing in the browser.</param>
-    public JavaScriptExceptionThrownEventArgs(string message)
-    {
-        Message = message;
-    }
 
     /// <summary>
     /// Gets or sets the message of the exception thrown by JavaScript executing in the browser.
     /// </summary>
-    public string Message { get; set; }
+    public string Message { get; set; } = message;
 }

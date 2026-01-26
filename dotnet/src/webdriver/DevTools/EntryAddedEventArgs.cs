@@ -24,20 +24,16 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Provides data for events relating to entries being added to the browser's log.
 /// </summary>
-public class EntryAddedEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="EntryAddedEventArgs"/> type.
+/// </remarks>
+/// <param name="entry">The entry added to the browser's log.</param>
+/// <exception cref="ArgumentNullException">If </exception>
+public class EntryAddedEventArgs(LogEntry entry) : EventArgs
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EntryAddedEventArgs"/> type.
-    /// </summary>
-    /// <param name="entry">The entry added to the browser's log.</param>
-    /// <exception cref="ArgumentNullException">If </exception>
-    public EntryAddedEventArgs(LogEntry entry)
-    {
-        Entry = entry ?? throw new ArgumentNullException(nameof(entry));
-    }
 
     /// <summary>
     /// The entry added to the browser's log.
     /// </summary>
-    public LogEntry Entry { get; }
+    public LogEntry Entry { get; } = entry ?? throw new ArgumentNullException(nameof(entry));
 }

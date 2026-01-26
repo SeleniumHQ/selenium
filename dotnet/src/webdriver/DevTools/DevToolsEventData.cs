@@ -24,27 +24,22 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Class containing the data used for an event raised by the DevTools session.
 /// </summary>
-public class DevToolsEventData
+/// <remarks>
+/// Initializes a new instance of the DevToolsEventData class.
+/// </remarks>
+/// <param name="eventArgsType">The type of the event args for the event to be raised.</param>
+/// <param name="invoker">The method that will be used to invoke the event.</param>
+/// <exception cref="ArgumentNullException">If<paramref name="eventArgsType"/> or <paramref name="invoker"/> is <see langword="null"/>.</exception>
+public class DevToolsEventData(Type eventArgsType, Action<object?> invoker)
 {
-    /// <summary>
-    /// Initializes a new instance of the DevToolsEventData class.
-    /// </summary>
-    /// <param name="eventArgsType">The type of the event args for the event to be raised.</param>
-    /// <param name="invoker">The method that will be used to invoke the event.</param>
-    /// <exception cref="ArgumentNullException">If<paramref name="eventArgsType"/> or <paramref name="invoker"/> is <see langword="null"/>.</exception>
-    public DevToolsEventData(Type eventArgsType, Action<object?> invoker)
-    {
-        EventArgsType = eventArgsType ?? throw new ArgumentNullException(nameof(eventArgsType));
-        EventInvoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
-    }
 
     /// <summary>
     /// Gets the type of the event args object for the event.
     /// </summary>
-    public Type EventArgsType { get; }
+    public Type EventArgsType { get; } = eventArgsType ?? throw new ArgumentNullException(nameof(eventArgsType));
 
     /// <summary>
     /// The method to called to raise the event.
     /// </summary>
-    public Action<object?> EventInvoker { get; }
+    public Action<object?> EventInvoker { get; } = invoker ?? throw new ArgumentNullException(nameof(invoker));
 }

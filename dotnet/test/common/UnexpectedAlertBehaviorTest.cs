@@ -87,7 +87,7 @@ public class UnexpectedAlertBehaviorTest : DriverTestFixture
     private void ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior behavior, string expectedAlertText)
     {
         bool silentlyHandlePrompt = behavior == UnhandledPromptBehavior.Accept || behavior == UnhandledPromptBehavior.Dismiss;
-        UnhandledPromptBehaviorOptions options = new UnhandledPromptBehaviorOptions();
+        UnhandledPromptBehaviorOptions options = new();
         if (behavior != UnhandledPromptBehavior.Default)
         {
             options.UnhandledPromptBehavior = behavior;

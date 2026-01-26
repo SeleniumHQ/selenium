@@ -26,27 +26,20 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Defines the interface through which the user can define timeouts.
 /// </summary>
-internal class Timeouts : ITimeouts
+/// <remarks>
+/// Initializes a new instance of the <see cref="Timeouts"/> class
+/// </remarks>
+/// <param name="driver">The driver that is currently in use</param>
+internal class Timeouts(WebDriver driver) : ITimeouts
 {
     private const string ImplicitTimeoutName = "implicit";
     private const string AsyncScriptTimeoutName = "script";
     private const string PageLoadTimeoutName = "pageLoad";
-    private const string LegacyPageLoadTimeoutName = "page load";
-
     private static readonly TimeSpan DefaultImplicitWaitTimeout = TimeSpan.FromSeconds(0);
     private static readonly TimeSpan DefaultAsyncScriptTimeout = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan DefaultPageLoadTimeout = TimeSpan.FromSeconds(300);
 
-    private readonly WebDriver driver;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Timeouts"/> class
-    /// </summary>
-    /// <param name="driver">The driver that is currently in use</param>
-    public Timeouts(WebDriver driver)
-    {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
-    }
+    private readonly WebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
 
     /// <summary>
     /// Gets or sets the implicit wait timeout, which is the  amount of time the
@@ -139,8 +132,10 @@ internal class Timeouts : ITimeouts
             }
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
+        Dictionary<string, object> parameters = new()
+        {
+            { timeoutType, Convert.ToInt64(milliseconds) }
+        };
 
         this.driver.Execute(DriverCommand.SetTimeouts, parameters);
     }

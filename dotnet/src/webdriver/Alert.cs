@@ -25,18 +25,13 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Defines the interface through which the user can manipulate JavaScript alerts.
 /// </summary>
-internal class Alert : IAlert
+/// <remarks>
+/// Initializes a new instance of the <see cref="Alert"/> class.
+/// </remarks>
+/// <param name="driver">The <see cref="WebDriver"/> for which the alerts will be managed.</param>
+internal class Alert(WebDriver driver) : IAlert
 {
-    private readonly WebDriver driver;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Alert"/> class.
-    /// </summary>
-    /// <param name="driver">The <see cref="WebDriver"/> for which the alerts will be managed.</param>
-    public Alert(WebDriver driver)
-    {
-        this.driver = driver;
-    }
+    private readonly WebDriver driver = driver;
 
     /// <summary>
     /// Gets the text of the alert.
@@ -78,8 +73,10 @@ internal class Alert : IAlert
             throw new ArgumentNullException(nameof(keysToSend), "Keys to send must not be null.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        parameters.Add("text", keysToSend);
+        Dictionary<string, object> parameters = new()
+        {
+            { "text", keysToSend }
+        };
 
         this.driver.Execute(DriverCommand.SetAlertValue, parameters);
     }

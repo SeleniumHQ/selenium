@@ -103,7 +103,7 @@ public class EnvironmentManager
             // Walk up the directory tree until we find ourselves in a directory
             // where the path to the Java web server can be determined.
             bool continueTraversal = true;
-            DirectoryInfo info = new DirectoryInfo(currentDirectory);
+            DirectoryInfo info = new(currentDirectory);
             while (continueTraversal)
             {
                 if (info == info.Root)
@@ -258,9 +258,6 @@ public class EnvironmentManager
 
     protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
     {
-        if (this.DriverStarting != null)
-        {
-            this.DriverStarting(sender, e);
-        }
+        this.DriverStarting?.Invoke(sender, e);
     }
 }

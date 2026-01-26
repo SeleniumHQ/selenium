@@ -79,7 +79,7 @@ public class Proxy
     private string? socksUserName;
     private string? socksPassword;
     private int? socksVersion;
-    private List<string> noProxyAddresses = new List<string>();
+    private readonly List<string> noProxyAddresses = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -122,7 +122,7 @@ public class Proxy
 
         if (settings.TryGetValue("noProxy", out object? noProxy) && noProxy != null)
         {
-            List<string> bypassAddresses = new List<string>();
+            List<string> bypassAddresses = [];
             if (noProxy is string addressesAsString)
             {
                 bypassAddresses.AddRange(addressesAsString.Split(';'));
@@ -446,7 +446,7 @@ public class Proxy
         Dictionary<string, object?>? serializedDictionary = null;
         if (this.proxyKind != ProxyKind.Unspecified)
         {
-            serializedDictionary = new Dictionary<string, object?>();
+            serializedDictionary = [];
             if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
             {
                 serializedDictionary["proxyType"] = "pac";

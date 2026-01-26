@@ -32,7 +32,7 @@ public sealed class RelativeBy : By
 {
     private readonly string wrappedAtom;
     private readonly object root;
-    private readonly List<object> filters = new List<object>();
+    private readonly List<object> filters = [];
 
     private static string GetWrappedAtom()
     {
@@ -89,10 +89,12 @@ public sealed class RelativeBy : By
     public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
     {
         IJavaScriptExecutor js = GetExecutor(context);
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        Dictionary<string, object> filterParameters = new Dictionary<string, object>();
-        filterParameters["root"] = GetSerializableObject(this.root);
-        filterParameters["filters"] = this.filters;
+        Dictionary<string, object> parameters = [];
+        Dictionary<string, object> filterParameters = new()
+        {
+            ["root"] = GetSerializableObject(this.root),
+            ["filters"] = this.filters
+        };
         parameters["relative"] = filterParameters;
         object? rawElements = js.ExecuteScript(wrappedAtom, parameters);
 
@@ -307,9 +309,11 @@ public sealed class RelativeBy : By
             throw new ArgumentOutOfRangeException(nameof(atMostDistanceInPixels), "Distance must be greater than zero");
         }
 
-        Dictionary<string, object> filter = new Dictionary<string, object>();
-        filter["kind"] = "near";
-        filter["args"] = new List<object>() { GetSerializableObject(locator), atMostDistanceInPixels };
+        Dictionary<string, object> filter = new()
+        {
+            ["kind"] = "near",
+            ["args"] = new List<object>() { GetSerializableObject(locator), atMostDistanceInPixels }
+        };
         this.filters.Add(filter);
 
         return new RelativeBy(this.root, this.filters);
@@ -327,9 +331,11 @@ public sealed class RelativeBy : By
             throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
         }
 
-        Dictionary<string, object> filter = new Dictionary<string, object>();
-        filter["kind"] = direction;
-        filter["args"] = new List<object>() { GetSerializableObject(locator) };
+        Dictionary<string, object> filter = new()
+        {
+            ["kind"] = direction,
+            ["args"] = new List<object>() { GetSerializableObject(locator) }
+        };
         this.filters.Add(filter);
 
         return new RelativeBy(this.root, this.filters);
@@ -369,8 +375,10 @@ public sealed class RelativeBy : By
 
         if (root is By asBy)
         {
-            Dictionary<string, object> serializedBy = new Dictionary<string, object>();
-            serializedBy[asBy.Mechanism] = asBy.Criteria;
+            Dictionary<string, object> serializedBy = new()
+            {
+                [asBy.Mechanism] = asBy.Criteria
+            };
             return serializedBy;
         }
 

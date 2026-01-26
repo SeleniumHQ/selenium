@@ -54,8 +54,8 @@ public class DevToolsSession : IDevToolsSession
     private string? attachedTargetId;
 
     private WebSocketConnection? connection;
-    private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
-    private readonly BlockingCollection<string> messageQueue = new BlockingCollection<string>();
+    private readonly ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new();
+    private readonly BlockingCollection<string> messageQueue = [];
     private readonly Task messageQueueMonitorTask;
     private long currentCommandId = 0;
     private readonly DevToolsOptions options;
@@ -403,7 +403,7 @@ public class DevToolsSession : IDevToolsSession
         {
             string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
             string rawVersionInfo;
-            using (HttpClient client = new HttpClient())
+            using (HttpClient client = new())
             {
                 client.BaseAddress = new Uri(debuggerUrl);
                 rawVersionInfo = await client.GetStringAsync("/json/version").ConfigureAwait(false);
@@ -598,7 +598,7 @@ public class DevToolsSession : IDevToolsSession
         if (messageObject.TryGetProperty("method", out var methodProperty))
         {
             var method = methodProperty.GetString() ?? throw new InvalidOperationException("CDP message contained \"method\" property with a value of \"null\".");
-            var methodParts = method.Split(new char[] { '.' }, 2);
+            var methodParts = method.Split(['.'], 2);
             var eventData = messageObject.GetProperty("params");
 
             LogTrace("Received Event {0}: {1}", method, eventData.ToString());
@@ -633,10 +633,7 @@ public class DevToolsSession : IDevToolsSession
 
     private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
     {
-        if (DevToolsEventReceived != null)
-        {
-            DevToolsEventReceived(this, e);
-        }
+        DevToolsEventReceived?.Invoke(this, e);
     }
 
     private void OnConnectionDataReceived(object? sender, WebSocketConnectionDataReceivedEventArgs e)
@@ -646,17 +643,11 @@ public class DevToolsSession : IDevToolsSession
 
     private void LogTrace(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
     }
 
     private void LogError(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
     }
 }

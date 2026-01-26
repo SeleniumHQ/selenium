@@ -82,8 +82,8 @@ public class NavigationTest : DriverTestFixture
     [Test]
     public void ShouldGoToUrlUsingUri()
     {
-        Uri macBeth = new Uri(macbethPage);
-        Uri simpleTest = new Uri(simpleTestPage);
+        Uri macBeth = new(macbethPage);
+        Uri simpleTest = new(simpleTestPage);
         INavigation navigation;
         navigation = driver.Navigate();
 

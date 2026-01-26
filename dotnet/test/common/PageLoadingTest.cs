@@ -463,13 +463,12 @@ public class PageLoadingTest : DriverTestFixture
     private void InitLocalDriver(PageLoadStrategy strategy)
     {
         EnvironmentManager.Instance.CloseCurrentDriver();
-        if (localDriver != null)
-        {
-            localDriver.Quit();
-        }
+        localDriver?.Quit();
 
-        PageLoadStrategyOptions options = new PageLoadStrategyOptions();
-        options.PageLoadStrategy = strategy;
+        PageLoadStrategyOptions options = new()
+        {
+            PageLoadStrategy = strategy
+        };
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
     }
 

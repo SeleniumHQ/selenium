@@ -238,7 +238,7 @@ public class ClickScrollingTest : DriverTestFixture
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
         double scrollTop = GetScrollTop();
-        Size ignoredSize = driver.FindElement(By.Id("button1")).Size;
+        _ = driver.FindElement(By.Id("button1")).Size;
         Assert.That(GetScrollTop(), Is.EqualTo(scrollTop));
     }
 

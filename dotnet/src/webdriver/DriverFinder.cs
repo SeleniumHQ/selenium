@@ -30,19 +30,14 @@ namespace OpenQA.Selenium;
 /// Finds a driver, checks if the provided path exists, if not, Selenium Manager is used.
 /// This implementation is still in beta and may change.
 /// </summary>
-public class DriverFinder
+/// <remarks>
+/// Initializes a new instance of the <see cref="DriverFinder"/> class.
+/// </remarks>
+/// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+public class DriverFinder(DriverOptions options)
 {
-    private readonly DriverOptions options;
-    private Dictionary<string, string> paths = new Dictionary<string, string>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DriverFinder"/> class.
-    /// </summary>
-    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-    public DriverFinder(DriverOptions options)
-    {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-    }
+    private readonly DriverOptions options = options ?? throw new ArgumentNullException(nameof(options));
+    private readonly Dictionary<string, string> paths = [];
 
     /// <summary>
     /// Gets the browser path retrieved by Selenium Manager
@@ -141,7 +136,7 @@ public class DriverFinder
     /// <exception cref="NoSuchDriverException"></exception>
     private string CreateArguments()
     {
-        StringBuilder argsBuilder = new StringBuilder();
+        StringBuilder argsBuilder = new();
         argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
 
         if (!string.IsNullOrEmpty(options.BrowserVersion))

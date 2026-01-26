@@ -25,38 +25,31 @@ namespace OpenQA.Selenium.Remote;
 /// <summary>
 /// Provides data for the SendingRemoteHttpRequest event of a <see cref="HttpCommandExecutor"/> object.
 /// </summary>
-public class SendingRemoteHttpRequestEventArgs : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
+/// </remarks>
+/// <param name="method">The HTTP method of the request being sent.</param>
+/// <param name="fullUrl">The full URL of the request being sent.</param>
+/// <param name="requestBody">The body of the request.</param>
+/// <exception cref="ArgumentNullException">If <paramref name="method"/>, <paramref name="fullUrl"/> are null.</exception>
+public class SendingRemoteHttpRequestEventArgs(string method, string fullUrl, string? requestBody) : EventArgs
 {
-    private readonly Dictionary<string, string> headers = new Dictionary<string, string>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
-    /// </summary>
-    /// <param name="method">The HTTP method of the request being sent.</param>
-    /// <param name="fullUrl">The full URL of the request being sent.</param>
-    /// <param name="requestBody">The body of the request.</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="method"/>, <paramref name="fullUrl"/> are null.</exception>
-    public SendingRemoteHttpRequestEventArgs(string method, string fullUrl, string? requestBody)
-    {
-        this.Method = method ?? throw new ArgumentNullException(nameof(method));
-        this.FullUrl = fullUrl ?? throw new ArgumentNullException(nameof(fullUrl));
-        this.RequestBody = requestBody;
-    }
+    private readonly Dictionary<string, string> headers = [];
 
     /// <summary>
     /// Gets the HTTP method for the HTTP request.
     /// </summary>
-    public string Method { get; }
+    public string Method { get; } = method ?? throw new ArgumentNullException(nameof(method));
 
     /// <summary>
     /// Gets the full URL of the HTTP request.
     /// </summary>
-    public string FullUrl { get; }
+    public string FullUrl { get; } = fullUrl ?? throw new ArgumentNullException(nameof(fullUrl));
 
     /// <summary>
     /// Gets the body of the HTTP request as a string.
     /// </summary>
-    public string? RequestBody { get; }
+    public string? RequestBody { get; } = requestBody;
 
     /// <summary>
     /// Gets a read-only dictionary of the headers of the HTTP request.
@@ -83,11 +76,6 @@ public class SendingRemoteHttpRequestEventArgs : EventArgs
             throw new ArgumentException("Header name may not be null or the empty string.", nameof(headerName));
         }
 
-        if (headerValue == null)
-        {
-            throw new ArgumentNullException(nameof(headerValue), "Header value may not be null.");
-        }
-
-        this.headers[headerName] = headerValue;
+        this.headers[headerName] = headerValue ?? throw new ArgumentNullException(nameof(headerValue), "Header value may not be null.");
     }
 }

@@ -26,23 +26,18 @@ namespace OpenQA.Selenium.Interactions;
 /// <summary>
 /// Represents a key input device, such as a keyboard.
 /// </summary>
-public class KeyInputDevice : InputDevice
+/// <remarks>
+/// Initializes a new instance of the <see cref="KeyInputDevice"/> class, given the device's name.
+/// </remarks>
+/// <param name="deviceName">The unique name of this input device.</param>
+/// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+public class KeyInputDevice(string deviceName) : InputDevice(deviceName)
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="KeyInputDevice"/> class.
     /// </summary>
     public KeyInputDevice()
         : this(Guid.NewGuid().ToString())
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="KeyInputDevice"/> class, given the device's name.
-    /// </summary>
-    /// <param name="deviceName">The unique name of this input device.</param>
-    /// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-    public KeyInputDevice(string deviceName)
-        : base(deviceName)
     {
     }
 
@@ -57,10 +52,11 @@ public class KeyInputDevice : InputDevice
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this input device.</returns>
     public override Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new Dictionary<string, object>();
-
-        toReturn["type"] = "key";
-        toReturn["id"] = this.DeviceName;
+        Dictionary<string, object> toReturn = new()
+        {
+            ["type"] = "key",
+            ["id"] = this.DeviceName
+        };
 
         return toReturn;
     }
@@ -85,51 +81,35 @@ public class KeyInputDevice : InputDevice
         return new KeyUpInteraction(this, codePoint);
     }
 
-    private class KeyDownInteraction : TypingInteraction
+    private class KeyDownInteraction(InputDevice sourceDevice, char codePoint) : TypingInteraction(sourceDevice, "keyDown", codePoint)
     {
-        public KeyDownInteraction(InputDevice sourceDevice, char codePoint)
-            : base(sourceDevice, "keyDown", codePoint)
-        {
-        }
-
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Key down [key: {0}]", Keys.GetDescription(this.Value));
         }
     }
 
-    private class KeyUpInteraction : TypingInteraction
+    private class KeyUpInteraction(InputDevice sourceDevice, char codePoint) : TypingInteraction(sourceDevice, "keyUp", codePoint)
     {
-        public KeyUpInteraction(InputDevice sourceDevice, char codePoint)
-            : base(sourceDevice, "keyUp", codePoint)
-        {
-        }
-
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Key up [key: {0}]", Keys.GetDescription(this.Value));
         }
     }
 
-    private class TypingInteraction : Interaction
+    private class TypingInteraction(InputDevice sourceDevice, string type, char codePoint) : Interaction(sourceDevice)
     {
-        private readonly string type;
+        private readonly string type = type;
 
-        public TypingInteraction(InputDevice sourceDevice, string type, char codePoint)
-            : base(sourceDevice)
-        {
-            this.type = type;
-            this.Value = codePoint.ToString();
-        }
-
-        protected string Value { get; }
+        protected string Value { get; } = codePoint.ToString();
 
         public override Dictionary<string, object> ToDictionary()
         {
-            Dictionary<string, object> toReturn = new Dictionary<string, object>();
-
-            toReturn["type"] = this.type;
-            toReturn["value"] = this.Value;
+            Dictionary<string, object> toReturn = new()
+            {
+                ["type"] = this.type,
+                ["value"] = this.Value
+            };
 
             return toReturn;
         }

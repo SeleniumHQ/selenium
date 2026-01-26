@@ -103,24 +103,24 @@ public class DevToolsProfilerTest : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Profiler.Enable();
         driver.Url = simpleTestPage;
-        ManualResetEventSlim startSync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
+        ManualResetEventSlim startSync = new(false);
+        void consoleProfileStartedHandler(object sender, CurrentCdpVersion.Profiler.ConsoleProfileStartedEventArgs e)
         {
             Assert.That(e, Is.Not.Null);
             startSync.Set();
-        };
+        }
         domains.Profiler.ConsoleProfileStarted += consoleProfileStartedHandler;
 
         await domains.Profiler.Start();
         startSync.Wait(TimeSpan.FromSeconds(5));
         driver.Navigate().Refresh();
 
-        ManualResetEventSlim finishSync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
+        ManualResetEventSlim finishSync = new(false);
+        void consoleProfileFinishedHandler(object sender, CurrentCdpVersion.Profiler.ConsoleProfileFinishedEventArgs e)
         {
             Assert.That(e, Is.Not.Null);
             finishSync.Set();
-        };
+        }
         domains.Profiler.ConsoleProfileFinished += consoleProfileFinishedHandler;
 
         var response = await domains.Profiler.Stop();

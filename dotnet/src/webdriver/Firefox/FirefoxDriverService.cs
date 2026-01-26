@@ -158,7 +158,7 @@ public sealed class FirefoxDriverService : DriverService
     {
         get
         {
-            StringBuilder argsBuilder = new StringBuilder();
+            StringBuilder argsBuilder = new();
             if (this.ConnectToRunningBrowser)
             {
                 argsBuilder.Append(" --connect-existing");
@@ -279,10 +279,7 @@ public sealed class FirefoxDriverService : DriverService
 
         if (!string.IsNullOrEmpty(this.LogPath))
         {
-            if (logWriter != null)
-            {
-                logWriter.WriteLine(args.Data);
-            }
+            logWriter?.WriteLine(args.Data);
         }
         else
         {

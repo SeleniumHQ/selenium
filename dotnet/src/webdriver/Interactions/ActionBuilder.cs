@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Interactions;
 /// </summary>
 public class ActionBuilder
 {
-    private readonly Dictionary<InputDevice, ActionSequence> sequences = new Dictionary<InputDevice, ActionSequence>();
+    private readonly Dictionary<InputDevice, ActionSequence> sequences = [];
 
     /// <summary>
     /// Adds an action to the built set of actions. Adding an action will
@@ -80,7 +80,7 @@ public class ActionBuilder
     /// <returns>A string that represents the current <see cref="ActionBuilder"/>.</returns>
     public override string ToString()
     {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new();
         foreach (ActionSequence sequence in this.sequences.Values)
         {
             builder.AppendLine(sequence.ToString());
@@ -91,7 +91,7 @@ public class ActionBuilder
 
     private void ProcessTick(params Interaction[] interactionsToAdd)
     {
-        List<InputDevice> usedDevices = new List<InputDevice>();
+        List<InputDevice> usedDevices = [];
         foreach (Interaction interaction in interactionsToAdd)
         {
             if (usedDevices.Contains(interaction.SourceDevice))
@@ -100,7 +100,7 @@ public class ActionBuilder
             }
         }
 
-        List<InputDevice> unusedDevices = new List<InputDevice>(this.sequences.Keys);
+        List<InputDevice> unusedDevices = new(this.sequences.Keys);
         foreach (Interaction interaction in interactionsToAdd)
         {
             ActionSequence sequence = this.GetOrAddSequence(interaction.SourceDevice);
@@ -129,7 +129,7 @@ public class ActionBuilder
             longestSequenceLength = Math.Max(longestSequenceLength, pair.Value.Count);
         }
 
-        ActionSequence sequence = new ActionSequence(device, longestSequenceLength);
+        ActionSequence sequence = new(device, longestSequenceLength);
         this.sequences[device] = sequence;
 
         return sequence;

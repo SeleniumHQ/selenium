@@ -40,12 +40,12 @@ public class Cookie : IEquatable<Cookie>
     private readonly bool isHttpOnly;
     private readonly bool secure;
     private readonly DateTime? cookieExpiry;
-    private readonly HashSet<string?> sameSiteValues = new HashSet<string?>()
-    {
+    private readonly HashSet<string?> sameSiteValues =
+    [
         "Strict",
         "Lax",
         "None"
-    };
+    ];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name and value.
@@ -241,7 +241,7 @@ public class Cookie : IEquatable<Cookie>
                 return null;
             }
 
-            DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime zeroDate = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             TimeSpan span = this.cookieExpiry.Value.ToUniversalTime().Subtract(zeroDate);
             long totalSeconds = Convert.ToInt64(span.TotalSeconds);
             return totalSeconds;

@@ -104,7 +104,7 @@ public class MiscTest : DriverTestFixture
     public void ClickingShouldNotTrampleWOrHInGlobalScope()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("globalscope.html");
-        List<string> values = new List<string>() { "w", "h" };
+        List<string> values = ["w", "h"];
 
         foreach (string val in values)
         {

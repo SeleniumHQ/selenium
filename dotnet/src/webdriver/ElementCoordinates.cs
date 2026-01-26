@@ -26,18 +26,13 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Defines the interface through which the user can discover where an element is on the screen.
 /// </summary>
-internal sealed class ElementCoordinates : ICoordinates
+/// <remarks>
+/// Initializes a new instance of the <see cref="ElementCoordinates"/> class.
+/// </remarks>
+/// <param name="element">The <see cref="WebElement"/> to be located.</param>
+internal sealed class ElementCoordinates(WebElement element) : ICoordinates
 {
-    private readonly WebElement element;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ElementCoordinates"/> class.
-    /// </summary>
-    /// <param name="element">The <see cref="WebElement"/> to be located.</param>
-    public ElementCoordinates(WebElement element)
-    {
-        this.element = element ?? throw new ArgumentNullException(nameof(element));
-    }
+    private readonly WebElement element = element ?? throw new ArgumentNullException(nameof(element));
 
     /// <summary>
     /// Gets the location of an element in absolute screen coordinates.

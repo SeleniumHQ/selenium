@@ -31,8 +31,8 @@ public class DefaultWaitTest
     private Mock<IClock> mockClock;
 
     private int executionCount;
-    private DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
-    private readonly object defaultReturnValue = new object();
+    private readonly DateTime startDate = new(2011, 1, 1, 13, 30, 0);
+    private readonly object defaultReturnValue = new();
 
     [SetUp]
     public void Setup()
@@ -50,9 +50,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.PollingInterval = TimeSpan.FromSeconds(2);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            PollingInterval = TimeSpan.FromSeconds(2)
+        };
         wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
 
         Assert.That(wait.Until(condition), Is.EqualTo(defaultReturnValue));
@@ -66,9 +68,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.PollingInterval = TimeSpan.FromSeconds(2);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            PollingInterval = TimeSpan.FromSeconds(2)
+        };
         wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
 
         Assert.That(wait.Until(condition), Is.True);
@@ -82,8 +86,10 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0)
+        };
 
         Assert.Throws<WebDriverTimeoutException>(() => wait.Until(condition), "Timed out after 0 seconds");
     }
@@ -97,9 +103,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.PollingInterval = TimeSpan.FromSeconds(2);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            PollingInterval = TimeSpan.FromSeconds(2)
+        };
         wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
 
         Assert.That(wait.Until(condition), Is.EqualTo(defaultReturnValue));
@@ -113,9 +121,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.PollingInterval = TimeSpan.FromSeconds(2);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            PollingInterval = TimeSpan.FromSeconds(2)
+        };
         wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
 
         var caughtException = Assert.Throws<NoSuchWindowException>(() => wait.Until(condition));
@@ -133,9 +143,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.PollingInterval = TimeSpan.FromSeconds(2);
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            PollingInterval = TimeSpan.FromSeconds(2)
+        };
         wait.IgnoreExceptionTypes(typeof(NoSuchWindowException));
 
         var caughtException = Assert.Throws<WebDriverTimeoutException>(() => wait.Until(condition));
@@ -149,9 +161,11 @@ public class DefaultWaitTest
         mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
         mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
-        wait.Timeout = TimeSpan.FromMilliseconds(0);
-        wait.Message = "Expected custom timeout message";
+        IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object)
+        {
+            Timeout = TimeSpan.FromMilliseconds(0),
+            Message = "Expected custom timeout message"
+        };
 
         Assert.Throws<WebDriverTimeoutException>(() => wait.Until(condition), "Timed out after 0 seconds: Expected custom timeout message");
     }

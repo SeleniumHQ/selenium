@@ -91,7 +91,7 @@ public class ChromiumNetworkConditions
     /// <returns>The ChromiumNetworkConditions object created from the dictionary.</returns>
     public static ChromiumNetworkConditions FromDictionary(Dictionary<string, object?> dictionary)
     {
-        ChromiumNetworkConditions conditions = new ChromiumNetworkConditions();
+        ChromiumNetworkConditions conditions = new();
         if (dictionary.TryGetValue("offline", out object? offline))
         {
             conditions.IsOffline = (bool)offline!;

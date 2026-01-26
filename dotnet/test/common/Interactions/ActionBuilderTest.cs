@@ -29,7 +29,7 @@ public class ActionBuilderTest
     [Test]
     public void OutputsPointerEventsToDictionary()
     {
-        ActionBuilder actionBuilder = new ActionBuilder();
+        ActionBuilder actionBuilder = new();
 
         var pointerInputDevice = new PointerInputDevice(PointerKind.Pen);
         var properties = new PointerInputDevice.PointerEventProperties()
