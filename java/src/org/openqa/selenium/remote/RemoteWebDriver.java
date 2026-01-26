@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -357,6 +358,7 @@ public class RemoteWebDriver
     this.executor = executor;
   }
 
+  @NonNull
   @Override
   public Capabilities getCapabilities() {
     if (capabilities == null) {

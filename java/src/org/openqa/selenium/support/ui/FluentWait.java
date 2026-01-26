@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -76,7 +77,7 @@ public class FluentWait<T> implements Wait<T> {
 
   protected Duration timeout = DEFAULT_WAIT_DURATION;
   protected Duration interval = DEFAULT_WAIT_DURATION;
-  protected Supplier<String> messageSupplier = () -> null;
+  protected Supplier<@Nullable String> messageSupplier = () -> null;
 
   protected final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
@@ -117,6 +118,7 @@ public class FluentWait<T> implements Wait<T> {
    * @return A self reference.
    */
   public FluentWait<T> withMessage(final String message) {
+    Require.nonNull("Message", message);
     this.messageSupplier = () -> message;
     return this;
   }
@@ -128,7 +130,7 @@ public class FluentWait<T> implements Wait<T> {
    * @return A self reference.
    */
   public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
-    this.messageSupplier = messageSupplier;
+    this.messageSupplier = Require.nonNull("Message supplier", messageSupplier);
     return this;
   }
 
@@ -165,7 +167,7 @@ public class FluentWait<T> implements Wait<T> {
    * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
-    return this.ignoreAll(List.<Class<? extends Throwable>>of(exceptionType));
+    return this.ignoreAll(List.of(exceptionType));
   }
 
   /**
@@ -198,7 +200,7 @@ public class FluentWait<T> implements Wait<T> {
    * @throws TimeoutException If the timeout expires.
    */
   @Override
-  public <V> V until(Function<? super T, V> isTrue) {
+  public <V> V until(Function<? super T, @Nullable V> isTrue) {
     Instant end = clock.instant().plus(timeout);
 
     Throwable lastException;
@@ -220,7 +222,7 @@ public class FluentWait<T> implements Wait<T> {
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
       if (end.isBefore(clock.instant())) {
-        String message = messageSupplier != null ? messageSupplier.get() : null;
+        String message = messageSupplier.get();
 
         String timeoutMessage =
             String.format(
@@ -272,7 +274,7 @@ public class FluentWait<T> implements Wait<T> {
    *     on a function.
    * @return Nothing will ever be returned; this return type is only specified as a convenience.
    */
-  protected RuntimeException timeoutException(String message, Throwable lastException) {
+  protected RuntimeException timeoutException(String message, @Nullable Throwable lastException) {
     throw new TimeoutException(message, lastException);
   }
 }
