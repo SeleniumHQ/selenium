@@ -609,28 +609,48 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 BROWSER_TESTS = {
     "chrome": {
         "browser_srcs": ["test/selenium/webdriver/chrome/**/*.py"],
-        "deps": [":chrome", ":common", ":support"],
+        "deps": [
+            ":chrome",
+            ":common",
+            ":support",
+        ],
         "bidi": True,
     },
     "edge": {
         "browser_srcs": ["test/selenium/webdriver/edge/**/*.py"],
-        "deps": [":edge", ":common", ":support"],
+        "deps": [
+            ":edge",
+            ":common",
+            ":support",
+        ],
     },
     "firefox": {
         "browser_srcs": [
             "test/selenium/webdriver/firefox/**/*.py",
         ],
-        "deps": [":firefox", ":common", ":support"],
+        "deps": [
+            ":firefox",
+            ":common",
+            ":support",
+        ],
         "extra_excludes": ["test/selenium/webdriver/common/devtools_tests.py"],
         "bidi": True,
     },
     "ie": {
         "browser_srcs": ["test/selenium/webdriver/ie/**/*.py"],
-        "deps": [":ie", ":common", ":support"],
+        "deps": [
+            ":ie",
+            ":common",
+            ":support",
+        ],
     },
     "safari": {
         "browser_srcs": ["test/selenium/webdriver/safari/**/*.py"],
-        "deps": [":safari", ":common", ":support"],
+        "deps": [
+            ":safari",
+            ":common",
+            ":support",
+        ],
     },
 }
 
