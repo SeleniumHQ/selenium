@@ -22,7 +22,6 @@ import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class NoHandler implements HttpHandler {
     responseMap.put("sessionId", null);
     responseMap.put(
         "value",
-        ImmutableMap.of(
+        Map.of(
             "error", "unknown command",
             "message",
                 String.format(

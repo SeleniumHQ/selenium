@@ -72,7 +72,6 @@ public class Proxy
 {
     private ProxyKind proxyKind = ProxyKind.Unspecified;
     private bool isAutoDetect;
-    private string? ftpProxyLocation;
     private string? httpProxyLocation;
     private string? proxyAutoConfigUrl;
     private string? sslProxyLocation;
@@ -114,11 +113,6 @@ public class Proxy
                 ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), proxyType, ignoreCase: true);
                 this.Kind = rawType;
             }
-        }
-
-        if (settings.TryGetValue("ftpProxy", out object? ftpProxyObj) && ftpProxyObj?.ToString() is string ftpProxy)
-        {
-            this.FtpProxy = ftpProxy;
         }
 
         if (settings.TryGetValue("httpProxy", out object? httpProxyObj) && httpProxyObj?.ToString() is string httpProxy)
@@ -233,24 +227,6 @@ public class Proxy
             this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
             this.proxyKind = ProxyKind.AutoDetect;
             this.isAutoDetect = value;
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the value of the proxy for the FTP protocol.
-    /// </summary>
-    [JsonPropertyName("ftpProxy")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    [Obsolete("FTP proxy support is deprecated and will be removed in the 4.37 version.")]
-    public string? FtpProxy
-    {
-        get => this.ftpProxyLocation;
-
-        set
-        {
-            this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-            this.proxyKind = ProxyKind.Manual;
-            this.ftpProxyLocation = value;
         }
     }
 
@@ -492,11 +468,6 @@ public class Proxy
             if (!string.IsNullOrEmpty(this.sslProxyLocation))
             {
                 serializedDictionary["sslProxy"] = this.sslProxyLocation;
-            }
-
-            if (!string.IsNullOrEmpty(this.ftpProxyLocation))
-            {
-                serializedDictionary["ftpProxy"] = this.ftpProxyLocation;
             }
 
             if (!string.IsNullOrEmpty(this.socksProxyLocation))

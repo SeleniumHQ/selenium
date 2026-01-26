@@ -18,107 +18,50 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed class Intercept : IAsyncDisposable
+public sealed record Intercept
 {
-    private readonly BiDi _bidi;
-
-    internal Intercept(BiDi bidi, string id)
+    public Intercept(BiDi bidi, string id)
+        : this(id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
+    internal Intercept(string id)
+    {
         Id = id;
     }
 
     internal string Id { get; }
 
-    IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
-    IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
-    IList<Subscription> OnAuthRequiredSubscriptions { get; } = [];
+    private BiDi? _bidi;
 
-    public async Task RemoveAsync()
+    [JsonIgnore]
+    public BiDi BiDi
     {
-        await _bidi.Network.RemoveInterceptAsync(this).ConfigureAwait(false);
-
-        foreach (var subscription in OnBeforeRequestSentSubscriptions)
-        {
-            await subscription.UnsubscribeAsync().ConfigureAwait(false);
-        }
-
-        foreach (var subscription in OnResponseStartedSubscriptions)
-        {
-            await subscription.UnsubscribeAsync().ConfigureAwait(false);
-        }
-
-        foreach (var subscription in OnAuthRequiredSubscriptions)
-        {
-            await subscription.UnsubscribeAsync().ConfigureAwait(false);
-        }
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
     }
 
-    public async Task OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public bool Equals(Intercept? other)
     {
-        var subscription = await _bidi.Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
-
-        OnBeforeRequestSentSubscriptions.Add(subscription);
-    }
-
-    public async Task OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
-    {
-        var subscription = await _bidi.Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
-
-        OnResponseStartedSubscriptions.Add(subscription);
-    }
-
-    public async Task OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
-    {
-        var subscription = await _bidi.Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
-
-        OnAuthRequiredSubscriptions.Add(subscription);
-    }
-
-    private async Task Filter(BeforeRequestSentEventArgs args, Func<BeforeRequestSentEventArgs, Task> handler)
-    {
-        if (args.Intercepts?.Contains(this) is true && args.IsBlocked)
-        {
-            await handler(args).ConfigureAwait(false);
-        }
-    }
-
-    private async Task Filter(ResponseStartedEventArgs args, Func<ResponseStartedEventArgs, Task> handler)
-    {
-        if (args.Intercepts?.Contains(this) is true && args.IsBlocked)
-        {
-            await handler(args).ConfigureAwait(false);
-        }
-    }
-
-    private async Task Filter(AuthRequiredEventArgs args, Func<AuthRequiredEventArgs, Task> handler)
-    {
-        if (args.Intercepts?.Contains(this) is true && args.IsBlocked)
-        {
-            await handler(args).ConfigureAwait(false);
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await RemoveAsync();
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is Intercept interceptObj) return interceptObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

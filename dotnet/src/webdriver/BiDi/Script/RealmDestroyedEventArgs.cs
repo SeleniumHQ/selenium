@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed record RealmDestroyedEventArgs(BiDi BiDi, Realm Realm) : EventArgs(BiDi);
+public sealed record RealmDestroyedEventArgs(Realm Realm) : EventArgs;

@@ -17,14 +17,16 @@
 
 package org.openqa.selenium.net;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import org.openqa.selenium.internal.Require;
 
 public class Urls {
@@ -41,7 +43,11 @@ public class Urls {
    * @see URLEncoder#encode(java.lang.String, java.lang.String)
    */
   public static String urlEncode(String value) {
-    return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    return URLEncoder.encode(value, UTF_8);
+  }
+
+  public static String urlDecode(String encodedValue) {
+    return URLDecoder.decode(encodedValue, UTF_8);
   }
 
   public static URL fromUri(URI uri) {

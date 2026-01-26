@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0;</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net8.0;</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
     <LangVersion>12.0</LangVersion>
@@ -56,8 +56,9 @@
     <InternalsVisibleTo Include="WebDriver.Common.Tests" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,30 +80,16 @@
     <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
   </ItemGroup>
 
-  <Target Name="GenerateAtoms" BeforeTargets="BeforeBuild">
-    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
 
     <ItemGroup>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
-        <Visible>False</Visible>
-        <LogicalName>webdriver_prefs.json</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
-        <Visible>False</Visible>
-        <LogicalName>get-attribute.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
-        <Visible>False</Visible>
-        <LogicalName>is-displayed.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
-        <Visible>False</Visible>
-        <LogicalName>find-elements.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
-        <Visible>False</Visible>
-        <LogicalName>mutation-listener.js</LogicalName>
-      </EmbeddedResource>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
     </ItemGroup>
   </Target>
 
@@ -113,5 +100,10 @@
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
     </ItemGroup>
   </Target>
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
 
 </Project>

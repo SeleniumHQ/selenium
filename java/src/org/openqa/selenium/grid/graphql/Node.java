@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class Node {
   public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
     return activeSessions.entrySet().stream()
         .map(this::createGraphqlSession)
-        .collect(ImmutableList.toImmutableList());
+        .collect(toUnmodifiableList());
   }
 
   public int getSlotCount() {
@@ -98,7 +99,7 @@ public class Node {
   public List<String> getActiveSessionIds() {
     return activeSessions.keySet().stream()
         .map(session -> session.getId().toString())
-        .collect(ImmutableList.toImmutableList());
+        .collect(toUnmodifiableList());
   }
 
   public String getStereotypes() {

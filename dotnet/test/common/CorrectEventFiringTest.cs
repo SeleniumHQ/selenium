@@ -256,7 +256,7 @@ public class CorrectEventFiringTest : DriverTestFixture
         driver.FindElement(By.Id("labelForCheckbox")).Click();
 
         IWebElement result = driver.FindElement(By.Id("result"));
-        Assert.That(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text), Is.True);
+        Assert.That(() => WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text), Throws.Nothing);
     }
 
 

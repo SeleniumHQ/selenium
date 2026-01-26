@@ -31,7 +31,6 @@ public class ProxyTest
         Proxy proxy = new Proxy();
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Unspecified));
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -54,7 +53,6 @@ public class ProxyTest
         Assert.That(() => proxy.SocksUserName = "", Throws.InvalidOperationException);
         Assert.That(() => proxy.SocksProxy = "", Throws.InvalidOperationException);
         Assert.That(() => proxy.SocksVersion = 5, Throws.InvalidOperationException);
-        Assert.That(() => proxy.FtpProxy = "", Throws.InvalidOperationException);
         Assert.That(() => proxy.HttpProxy = "", Throws.InvalidOperationException);
         Assert.That(() => proxy.SslProxy = "", Throws.InvalidOperationException);
         Assert.That(() => proxy.ProxyAutoConfigUrl = "", Throws.InvalidOperationException);
@@ -73,7 +71,6 @@ public class ProxyTest
         Proxy proxy = new Proxy();
 
         proxy.HttpProxy = "http.proxy:1234";
-        proxy.FtpProxy = "ftp.proxy";
         proxy.SslProxy = "ssl.proxy";
         proxy.AddBypassAddresses("localhost", "127.0.0.*");
         proxy.SocksProxy = "socks.proxy:65555";
@@ -82,7 +79,6 @@ public class ProxyTest
         proxy.SocksPassword = "test2";
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Manual));
-        Assert.That(proxy.FtpProxy, Is.EqualTo("ftp.proxy"));
         Assert.That(proxy.HttpProxy, Is.EqualTo("http.proxy:1234"));
         Assert.That(proxy.SslProxy, Is.EqualTo("ssl.proxy"));
         Assert.That(proxy.SocksProxy, Is.EqualTo("socks.proxy:65555"));
@@ -104,7 +100,6 @@ public class ProxyTest
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.ProxyAutoConfigure));
         Assert.That(proxy.ProxyAutoConfigUrl, Is.EqualTo("http://aaa/bbb.pac"));
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -124,7 +119,6 @@ public class ProxyTest
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.AutoDetect));
         Assert.That(proxy.IsAutoDetect, Is.True);
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -153,7 +147,6 @@ public class ProxyTest
         Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Manual));
-        Assert.That(proxy.FtpProxy, Is.EqualTo("ftp.proxy"));
         Assert.That(proxy.HttpProxy, Is.EqualTo("http.proxy:1234"));
         Assert.That(proxy.SslProxy, Is.EqualTo("ssl.proxy"));
         Assert.That(proxy.SocksProxy, Is.EqualTo("socks.proxy:65555"));
@@ -199,7 +192,6 @@ public class ProxyTest
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.ProxyAutoConfigure));
         Assert.That(proxy.ProxyAutoConfigUrl, Is.EqualTo("http://aaa/bbb.pac"));
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -222,7 +214,6 @@ public class ProxyTest
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.AutoDetect));
         Assert.That(proxy.IsAutoDetect, Is.True);
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -243,7 +234,6 @@ public class ProxyTest
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.System));
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -265,7 +255,6 @@ public class ProxyTest
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Direct));
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.HttpProxy, Is.Null);
         Assert.That(proxy.SslProxy, Is.Null);
         Assert.That(proxy.SocksProxy, Is.Null);
@@ -281,13 +270,11 @@ public class ProxyTest
     public void ConstructingWithNullKeysWorksAsExpected()
     {
         Dictionary<string, object> rawProxy = new Dictionary<string, object>();
-        rawProxy.Add("ftpProxy", null);
         rawProxy.Add("httpProxy", "http://www.example.com");
         rawProxy.Add("autodetect", null);
 
         Proxy proxy = new Proxy(rawProxy);
 
-        Assert.That(proxy.FtpProxy, Is.Null);
         Assert.That(proxy.IsAutoDetect, Is.False);
         Assert.That(proxy.HttpProxy, Is.EqualTo("http://www.example.com"));
     }

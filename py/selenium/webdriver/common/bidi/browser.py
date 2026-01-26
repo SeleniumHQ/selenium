@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 import warnings
 from typing import Any, Optional
+import os
+
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import UserPromptHandler
@@ -60,7 +61,6 @@ class ClientWindowInfo:
         """Gets the state of the client window.
 
         Returns:
-        -------
             str: The state of the client window (one of the ClientWindowState constants).
         """
         warnings.warn("get_state method is deprecated, use `state` property instead", DeprecationWarning, stacklevel=2)
@@ -92,7 +92,6 @@ class ClientWindowInfo:
         """Gets the client window identifier.
 
         Returns:
-        -------
             str: The client window identifier.
         """
         warnings.warn(
@@ -126,7 +125,6 @@ class ClientWindowInfo:
         """Gets the width of the client window.
 
         Returns:
-        -------
             int: The width of the client window.
         """
         warnings.warn("get_width method is deprecated, use `width` property instead", DeprecationWarning, stacklevel=2)
@@ -156,7 +154,6 @@ class ClientWindowInfo:
         """Gets the height of the client window.
 
         Returns:
-        -------
             int: The height of the client window.
         """
         warnings.warn(
@@ -188,7 +185,6 @@ class ClientWindowInfo:
         """Gets the x coordinate of the client window.
 
         Returns:
-        -------
             int: The x coordinate of the client window.
         """
         warnings.warn("get_x method is deprecated, use `x` property instead", DeprecationWarning, stacklevel=2)
@@ -218,7 +214,6 @@ class ClientWindowInfo:
         """Gets the y coordinate of the client window.
 
         Returns:
-        -------
             int: The y coordinate of the client window.
         """
         warnings.warn("get_y method is deprecated, use `y` property instead", DeprecationWarning, stacklevel=2)
@@ -268,7 +263,6 @@ class ClientWindowInfo:
         """Checks if the client window is active.
 
         Returns:
-        -------
             bool: True if the client window is active, False otherwise.
         """
         warnings.warn("is_active method is deprecated, use `active` property instead", DeprecationWarning, stacklevel=2)
@@ -278,12 +272,10 @@ class ClientWindowInfo:
     def from_dict(cls, data: dict) -> "ClientWindowInfo":
         """Creates a ClientWindowInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the client window information.
 
         Returns:
-        -------
             ClientWindowInfo: A new instance of ClientWindowInfo.
         """
         return cls(
@@ -305,20 +297,18 @@ class Browser:
 
     def create_user_context(
         self,
-        accept_insecure_certs: Optional[bool] = None,
-        proxy: Optional[Proxy] = None,
-        unhandled_prompt_behavior: Optional[UserPromptHandler] = None,
+        accept_insecure_certs: bool | None = None,
+        proxy: Proxy | None = None,
+        unhandled_prompt_behavior: UserPromptHandler | None = None,
     ) -> str:
         """Creates a new user context.
 
-        Parameters:
-        -----------
-            accept_insecure_certs: Optional flag to accept insecure TLS certificates
-            proxy: Optional proxy configuration for the user context
-            unhandled_prompt_behavior: Optional configuration for handling user prompts
+        Args:
+            accept_insecure_certs: Optional flag to accept insecure TLS certificates.
+            proxy: Optional proxy configuration for the user context.
+            unhandled_prompt_behavior: Optional configuration for handling user prompts.
 
         Returns:
-        -------
             str: The ID of the created user context.
         """
         params: dict[str, Any] = {}
@@ -339,7 +329,6 @@ class Browser:
         """Gets all user contexts.
 
         Returns:
-        -------
             List[str]: A list of user context IDs.
         """
         result = self.conn.execute(command_builder("browser.getUserContexts", {}))
@@ -348,16 +337,14 @@ class Browser:
     def remove_user_context(self, user_context_id: str) -> None:
         """Removes a user context.
 
-        Parameters:
-        -----------
+        Args:
             user_context_id: The ID of the user context to remove.
 
         Raises:
-        ------
-            Exception: If the user context ID is "default" or does not exist.
+            ValueError: If the user context ID is "default" or does not exist.
         """
         if user_context_id == "default":
-            raise Exception("Cannot remove the default user context")
+            raise ValueError("Cannot remove the default user context")
 
         params = {"userContext": user_context_id}
         self.conn.execute(command_builder("browser.removeUserContext", params))
@@ -366,8 +353,50 @@ class Browser:
         """Gets all client windows.
 
         Returns:
-        -------
             List[ClientWindowInfo]: A list of client window information.
         """
         result = self.conn.execute(command_builder("browser.getClientWindows", {}))
         return [ClientWindowInfo.from_dict(window) for window in result["clientWindows"]]
+
+    def set_download_behavior(
+        self,
+        *,
+        allowed: bool | None = None,
+        destination_folder: str | os.PathLike | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set the download behavior for the browser or specific user contexts.
+
+        Args:
+            allowed: True to allow downloads, False to deny downloads, or None to
+                clear download behavior (revert to default).
+            destination_folder: Required when allowed is True. Specifies the folder
+                to store downloads in.
+            user_contexts: Optional list of user context IDs to apply this
+                behavior to. If omitted, updates the default behavior.
+
+        Raises:
+            ValueError: If allowed=True and destination_folder is missing, or if
+                allowed=False and destination_folder is provided.
+        """
+        params: dict[str, Any] = {}
+
+        if allowed is None:
+            params["downloadBehavior"] = None
+        else:
+            if allowed:
+                if not destination_folder:
+                    raise ValueError("destination_folder is required when allowed=True.")
+                params["downloadBehavior"] = {
+                    "type": "allowed",
+                    "destinationFolder": os.fspath(destination_folder),
+                }
+            else:
+                if destination_folder:
+                    raise ValueError("destination_folder should not be provided when allowed=False.")
+                params["downloadBehavior"] = {"type": "denied"}
+
+        if user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("browser.setDownloadBehavior", params))

@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -306,11 +305,11 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public void runHealthChecks() {
-    ImmutableMap<NodeId, Runnable> nodeHealthChecks;
+    Map<NodeId, Runnable> nodeHealthChecks;
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      nodeHealthChecks = ImmutableMap.copyOf(allChecks);
+      nodeHealthChecks = Map.copyOf(allChecks);
     } finally {
       readLock.unlock();
     }
@@ -357,13 +356,18 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public Set<NodeStatus> getAvailableNodes() {
+    // Filter nodes are UP and have capacity (available slots)
+    return getUpNodes().stream().filter(NodeStatus::hasCapacity).collect(toUnmodifiableSet());
+  }
+
+  @Override
+  public Set<NodeStatus> getUpNodes() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
       return model.getSnapshot().stream()
-          // Filter nodes are UP and have capacity (available slots)
-          .filter(node -> UP.equals(node.getAvailability()) && node.hasCapacity())
-          .collect(ImmutableSet.toImmutableSet());
+          .filter(node -> UP.equals(node.getAvailability()))
+          .collect(toUnmodifiableSet());
     } finally {
       readLock.unlock();
     }
@@ -405,7 +409,7 @@ public class LocalNodeRegistry implements NodeRegistry {
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(bus).parallelStream()
+      return Set.of(bus).parallelStream()
           .map(HasReadyState::isReady)
           .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {

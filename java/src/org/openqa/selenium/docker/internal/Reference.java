@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.docker.internal;
 
+import static java.util.Locale.ROOT;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import java.util.Objects;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
@@ -59,38 +60,46 @@ public class Reference {
   public static Reference parse(String input) {
     Require.nonNull("Reference to parse", input);
 
-    ImmutableMap<String, String> splitDockerDomain = splitDockerDomain(input);
-    String domain = splitDockerDomain.get("domain");
-    String remainder = splitDockerDomain.get("remainder");
+    DockerDomain docker = parseDockerDomain(input);
 
     String name;
-    String digest =
-        splitDockerDomain.get("digest").isEmpty() ? null : splitDockerDomain.get("digest");
-    String platform = splitDockerDomain.get("platform");
+    String digest = docker.digest.isEmpty() ? null : docker.digest;
     String tag = DEFAULT_TAG;
 
-    int tagSep = remainder.indexOf(":");
+    int tagSep = docker.remainder.indexOf(":");
     if (digest != null) {
       tag = null;
-      name = remainder;
+      name = docker.remainder;
     } else if (tagSep > -1) {
-      tag = remainder.substring(tagSep + 1);
-      name = remainder.substring(0, tagSep);
+      tag = docker.remainder.substring(tagSep + 1);
+      name = docker.remainder.substring(0, tagSep);
     } else {
-      name = remainder;
+      name = docker.remainder;
     }
 
-    if (!name.toLowerCase().equals(name)) {
+    if (!name.toLowerCase(ROOT).equals(name)) {
       throw new DockerException(
           String.format("Invalid reference format: repository name (%s) must be lowercase", name));
     }
 
-    return new Reference(domain, name, tag, digest, platform);
+    return new Reference(docker.domain, name, tag, digest, docker.platform);
   }
 
-  private static ImmutableMap<String, String> splitDockerDomain(String name) {
-    String domain;
-    String remainder;
+  private static class DockerDomain {
+    private final String domain;
+    private final String remainder;
+    private final String platform;
+    private final String digest;
+
+    private DockerDomain(String domain, String remainder, String platform, String digest) {
+      this.domain = domain;
+      this.remainder = remainder;
+      this.platform = platform;
+      this.digest = digest;
+    }
+  }
+
+  private static DockerDomain parseDockerDomain(String name) {
     String platform = getDefaultPlatform();
     String digest = "";
 
@@ -106,6 +115,8 @@ public class Reference {
       name = name.substring(0, platformSep);
     }
 
+    String domain;
+    String remainder;
     int domSep = name.indexOf("/");
     String possibleDomain = domSep == -1 ? "" : name.substring(0, domSep);
     if (domSep == -1
@@ -125,8 +136,7 @@ public class Reference {
     if (DEFAULT_DOMAIN.equals(domain) && !remainder.contains("/")) {
       remainder = String.format("%s/%s", DEFAULT_REPO, remainder);
     }
-    return ImmutableMap.of(
-        "domain", domain, "remainder", remainder, "platform", platform, "digest", digest);
+    return new DockerDomain(domain, remainder, platform, digest);
   }
 
   public String getDomain() {

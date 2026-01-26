@@ -62,18 +62,20 @@ public class StaleElementReferenceTest : DriverTestFixture
 
         driver.FindElement(By.Id("delete")).Click();
 
-        bool wasStale = WaitFor(() =>
+        Assert.That(() =>
         {
-            try
+            WaitFor(() =>
             {
-                string tagName = toBeDeleted.TagName;
-                return false;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return true;
-            }
-        }, "Element did not become stale.");
-        Assert.That(wasStale, Is.True, "Element should be stale at this point");
+                try
+                {
+                    string tagName = toBeDeleted.TagName;
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return true;
+                }
+            }, "Element did not become stale.");
+        }, Throws.Nothing, "Element should be stale at this point");
     }
 }

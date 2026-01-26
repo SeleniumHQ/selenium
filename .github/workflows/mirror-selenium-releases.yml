@@ -4,31 +4,52 @@ on:
   schedule:
     - cron:  '0 */12 * * *'
   workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
-        fetch-depth: 0
     - name: Read api.github.com and filter response
       run: |
+        set -euo pipefail
         cd common/mirror
-        export JQ_FILTER="[.[] | {tag_name: .tag_name, assets: [.assets[] | {browser_download_url: .browser_download_url} ] } ]"
-        curl -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SeleniumHQ/selenium/releases | jq "$JQ_FILTER" > selenium
+        TOKEN="${{ secrets.GITHUB_TOKEN }}"
+        JQ_FILTER='[.[] | {tag_name: .tag_name, assets: [.assets[] | {browser_download_url: .browser_download_url} ] } ]'
+        page=1
+        tmpfile="$(mktemp)"
+        : > "$tmpfile"
+        while :; do
+          echo "Fetching SeleniumHQ/selenium releases page $page..."
+          resp=$(curl -fsSL \
+            -H "Authorization: token $TOKEN" \
+            "https://api.github.com/repos/SeleniumHQ/selenium/releases?per_page=100&page=${page}")
+          if [ "$(echo "$resp" | jq 'length')" -eq 0 ]; then
+            break
+          fi
+          echo "$resp" | jq "$JQ_FILTER" >> "$tmpfile"
+          page=$((page+1))
+        done
+        jq -s 'add' "$tmpfile" > selenium
+        rm "$tmpfile"
     - name: Commit files
       id: git
       run: |
-        export CHANGES=$(git status -s)
+        CHANGES=$(git status -s)
+        export CHANGES
         if [ -n "$CHANGES" ]; then
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add common/mirror/selenium
-          git commit -m "Update mirror info (`date`)" -a
-          echo "::set-output name=commit::true"
+          git commit -m "Update mirror info ($(date))" -a
+          echo "commit=true" >> "$GITHUB_OUTPUT"
         fi
     - name: Push changes
       if: steps.git.outputs.commit == 'true'

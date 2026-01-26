@@ -17,15 +17,19 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs(BiDi BiDi)
+public abstract record EventArgs
 {
-    [JsonIgnore]
-    public BiDi BiDi { get; internal set; } = BiDi;
-}
+    private BiDi? _bidi;
 
-public abstract record BrowsingContextEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext Context)
-    : EventArgs(BiDi);
+    [JsonIgnore]
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
+}

@@ -21,6 +21,7 @@ goog.module.declareLegacyNamespace();
 var TagName = goog.require('goog.dom.TagName');
 var array = goog.require('goog.array');
 var domCore = goog.require('bot.dom.core');
+var utils = goog.require('goog.utils');
 
 
 /**
@@ -113,7 +114,7 @@ exports.get = function(element, attribute) {
   if ('style' == name) {
     value = element.style;
 
-    if (value && !goog.isString(value)) {
+    if (value && typeof value !== 'string') {
       value = value.cssText;
     }
 
@@ -144,7 +145,7 @@ exports.get = function(element, attribute) {
 
   if ('spellcheck' == name) {
     value = domCore.getAttribute(element, name);
-    if (!goog.isNull(value)) {
+    if (value !== null) {
       if (value.toLowerCase() == 'false') {
         return 'false';
       } else if (value.toLowerCase() == 'true') {
@@ -157,7 +158,7 @@ exports.get = function(element, attribute) {
 
   var propName = PROPERTY_ALIASES[attribute] || attribute;
   if (array.contains(BOOLEAN_PROPERTIES, name)) {
-    value = !goog.isNull(domCore.getAttribute(element, attribute)) ||
+    value = domCore.getAttribute(element, attribute) !== null ||
         domCore.getProperty(element, propName);
     return value ? 'true' : null;
   }
@@ -179,13 +180,13 @@ exports.get = function(element, attribute) {
   // 2- When property is an object we fall back to the
   // actual attribute instead.
   // See issue http://code.google.com/p/selenium/issues/detail?id=966
-  if (!goog.isDefAndNotNull(property) || goog.isObject(property)) {
+  if (property == null || utils.isObject(property)) {
     value = domCore.getAttribute(element, attribute);
   } else {
     value = property;
   }
 
   // The empty string is a valid return value.
-  return goog.isDefAndNotNull(value) ? value.toString() : null;
+  return value != null ? value.toString() : null;
 };
 

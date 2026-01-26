@@ -97,8 +97,8 @@ suite(
 
         assert.equal(beforeRequestEvent[0].request.method, 'GET')
         assert(beforeRequestEvent[0].request.url.includes('redirected_http_equiv.html'))
-        assert.equal(beforeRequestEvent[2].request.method, 'GET')
-        assert(beforeRequestEvent[2].request.url.includes('redirected.html'))
+        assert.equal(beforeRequestEvent[1].request.method, 'GET')
+        assert(beforeRequestEvent[1].request.url.includes('redirected.html'))
       })
 
       it('can subscribe to response started', async function () {

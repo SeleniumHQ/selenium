@@ -17,22 +17,25 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 public class JdbcException extends WebDriverException {
   public JdbcException() {
     super();
   }
 
-  public JdbcException(String message) {
+  public JdbcException(@Nullable String message) {
     super(message);
   }
 
-  public JdbcException(Throwable cause) {
+  public JdbcException(@Nullable Throwable cause) {
     super(cause);
   }
 
-  public JdbcException(String message, Throwable cause) {
+  public JdbcException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

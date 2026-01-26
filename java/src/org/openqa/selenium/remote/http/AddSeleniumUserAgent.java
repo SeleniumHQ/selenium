@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import static org.openqa.selenium.remote.http.HttpHeader.UserAgent;
+
 import java.util.Locale;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
@@ -35,8 +37,8 @@ public class AddSeleniumUserAgent implements Filter {
   public HttpHandler apply(HttpHandler next) {
 
     return req -> {
-      if (req.getHeader("User-Agent") == null) {
-        req.addHeader("User-Agent", USER_AGENT);
+      if (req.getHeader(UserAgent) == null) {
+        req.addHeader(UserAgent, USER_AGENT);
       }
 
       return next.execute(req);

@@ -141,7 +141,7 @@ class LocalDistributorTest {
 
     // Check the size
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
 
     // Check a couple attributes
     NodeStatus distributorNode = nodes.iterator().next();
@@ -182,7 +182,7 @@ class LocalDistributorTest {
     // Check the size
     DistributorStatus statusBefore = distributor.getStatus();
     final Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
 
     // Recheck the status--should be zero
     distributor.remove(localNode.getId());
@@ -223,7 +223,7 @@ class LocalDistributorTest {
 
     // Should only be one node after dupe check
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
   }
 
   @Test
@@ -249,7 +249,7 @@ class LocalDistributorTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }
@@ -353,7 +353,7 @@ class LocalDistributorTest {
     // Check the size - there should be one node
     DistributorStatus statusBefore = distributor.getStatus();
     Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
     NodeStatus nodeBefore = nodesBefore.iterator().next();
     assertThat(nodeBefore.getAvailability()).isNotEqualTo(DRAINING);
 
@@ -482,7 +482,7 @@ class LocalDistributorTest {
           try {
             f.get();
           } catch (InterruptedException e) {
-            fail("Interrupted");
+            fail(e.toString(), e);
           } catch (ExecutionException e) {
             throw new RuntimeException(e);
           }
@@ -775,6 +775,140 @@ class LocalDistributorTest {
       assertThat(hasFreeSlot).isTrue();
       assertThat(nodeStatus.getAvailability()).isEqualTo(UP);
     }
+  }
+
+  @Test
+  void shouldNotRejectRequestsWhenNodesHaveCapabilityButNoFreeSlots() throws URISyntaxException {
+    // Create a distributor with rejectUnsupportedCaps enabled
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            true, // Enable rejectUnsupportedCaps
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create a node that supports Chrome with single slot
+    URI nodeUri = new URI("http://example:1234");
+    Node node =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "chrome"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+            .maximumConcurrentSessions(1)
+            .build();
+    distributor.add(node);
+
+    // Occupy the node's only slot
+    SessionRequest sessionRequest =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(new ImmutableCapabilities("browserName", "chrome")),
+            Map.of(),
+            Map.of());
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(sessionRequest);
+    assertThat(result.isRight()).isTrue(); // Session created successfully
+
+    // Verify node has no available capacity but still supports Chrome
+    assertThat(distributor.getAvailableNodes()).isEmpty(); // No available nodes
+
+    // Test that the distributor status shows the node is still UP and supports Chrome
+    // even though it has no available capacity
+    DistributorStatus status = distributor.getStatus();
+    Set<NodeStatus> allNodes = status.getNodes();
+    assertThat(allNodes).hasSize(1);
+
+    NodeStatus nodeStatus = allNodes.iterator().next();
+    assertThat(nodeStatus.getAvailability()).isEqualTo(UP);
+
+    // Verify the node still supports Chrome capability even with no free slots
+    boolean supportsChrome =
+        nodeStatus.hasCapability(
+            new ImmutableCapabilities("browserName", "chrome"), new DefaultSlotMatcher());
+    assertThat(supportsChrome).isTrue();
+
+    // Verify the node has no capacity (all slots occupied)
+    assertThat(nodeStatus.hasCapacity()).isFalse();
+  }
+
+  @Test
+  void shouldRejectRequestsWhenNoNodesHaveCapability() throws URISyntaxException {
+    // Create a distributor with rejectUnsupportedCaps enabled
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            true, // Enable rejectUnsupportedCaps
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create a node that only supports Chrome
+    URI nodeUri = new URI("http://example:1234");
+    Node node =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "chrome"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+            .build();
+    distributor.add(node);
+
+    // Add a Firefox request to the queue (unsupported capability)
+    SessionRequest unsupportedRequest =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(new ImmutableCapabilities("browserName", "firefox")),
+            Map.of(),
+            Map.of());
+    queue.addToQueue(unsupportedRequest);
+
+    // Wait for checkMatchingSlot to run and reject the request
+    wait.until(obj -> queue.getQueueContents().isEmpty());
+
+    // The request should be rejected and removed from queue
+    assertThat(queue.getQueueContents()).isEmpty();
   }
 
   @Test

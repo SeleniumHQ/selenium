@@ -420,7 +420,7 @@ public class AlertsTest : DriverTestFixture
                 IWebElement el = driver.FindElement(By.Id("open-new-window"));
                 WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5), "No alert found");
             },
-            Throws.TypeOf<WebDriverException>());
+            Throws.InstanceOf<WebDriverException>());
 
         }
         finally

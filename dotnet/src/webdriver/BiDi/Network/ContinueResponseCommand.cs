@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class ContinueResponseCommand(ContinueResponseParameters @params)
-    : Command<ContinueResponseParameters, EmptyResult>(@params, "network.continueResponse");
+    : Command<ContinueResponseParameters, ContinueResponseResult>(@params, "network.continueResponse");
 
 internal sealed record ContinueResponseParameters(Request Request, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<AuthCredentials>? Credentials, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
@@ -39,3 +38,5 @@ public sealed class ContinueResponseOptions : CommandOptions
 
     public long? StatusCode { get; set; }
 }
+
+public sealed record ContinueResponseResult : EmptyResult;

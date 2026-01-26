@@ -32,8 +32,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
     public void Setup()
     {
         //new Actions(driver).SendKeys(Keys.Null).Perform();
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -43,8 +42,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
     public void ReleaseModifierKeys()
     {
         //new Actions(driver).SendKeys(Keys.Null).Perform();
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -220,8 +218,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
             // inadvertent double-clicks with multiple actions calls),
             // so we call the "release actions" end point before
             // doing the second action.
-            IActionExecutor executor = driver as IActionExecutor;
-            if (executor != null)
+            if (driver is IActionExecutor executor)
             {
                 executor.ResetInputState();
             }
@@ -263,8 +260,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
             // inadvertent double-clicks with multiple actions calls),
             // so we call the "release actions" end point before
             // doing the second action.
-            IActionExecutor executor = driver as IActionExecutor;
-            if (executor != null)
+            if (driver is IActionExecutor executor)
             {
                 executor.ResetInputState();
             }

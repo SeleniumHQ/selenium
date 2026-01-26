@@ -30,7 +30,7 @@ Updated documentation published with each commit is available at: `readthedocs.i
 Supported Python Versions
 =========================
 
-* Python 3.9+
+* Python 3.10+
 
 Supported Browsers
 ==================

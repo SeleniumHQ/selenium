@@ -29,6 +29,8 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
+import org.openqa.selenium.bidi.browsingcontext.DownloadEnded;
+import org.openqa.selenium.bidi.browsingcontext.DownloadInfo;
 import org.openqa.selenium.bidi.browsingcontext.HistoryUpdated;
 import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptClosed;
@@ -61,6 +63,22 @@ public class BrowsingContextInspector implements AutoCloseable {
         }
       };
 
+  private final Function<Map<String, Object>, DownloadInfo> downloadWillBeginMapper =
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(DownloadInfo.class);
+        }
+      };
+
+  private final Function<Map<String, Object>, DownloadEnded> downloadEndMapper =
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(DownloadEnded.class);
+        }
+      };
+
   private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
@@ -78,6 +96,12 @@ public class BrowsingContextInspector implements AutoCloseable {
           });
 
   private final Set<Event<NavigationInfo>> navigationEventSet = new HashSet<>();
+
+  private final Event<DownloadInfo> downloadWillBeginEvent =
+      new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
+
+  private final Event<DownloadEnded> downloadEndEvent =
+      new Event<>("browsingContext.downloadEnd", downloadEndMapper);
 
   private final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
@@ -151,8 +175,20 @@ public class BrowsingContextInspector implements AutoCloseable {
     addNavigationEventListener("browsingContext.load", consumer);
   }
 
-  public void onDownloadWillBegin(Consumer<NavigationInfo> consumer) {
-    addNavigationEventListener("browsingContext.downloadWillBegin", consumer);
+  public void onDownloadWillBegin(Consumer<DownloadInfo> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadWillBeginEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadWillBeginEvent, consumer);
+    }
+  }
+
+  public void onDownloadEnd(Consumer<DownloadEnded> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadEndEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadEndEvent, consumer);
+    }
   }
 
   public void onNavigationAborted(Consumer<NavigationInfo> consumer) {
@@ -210,6 +246,8 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(userPromptOpened);
     this.bidi.clearListener(userPromptClosed);
     this.bidi.clearListener(historyUpdated);
+    this.bidi.clearListener(downloadWillBeginEvent);
+    this.bidi.clearListener(downloadEndEvent);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }

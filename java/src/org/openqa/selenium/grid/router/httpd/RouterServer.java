@@ -29,14 +29,13 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -94,8 +93,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(
-        DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -110,7 +108,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   protected Config getDefaultConfig() {
-    return new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)));
+    return new MapConfig(Map.of("server", Map.of("port", 4444)));
   }
 
   @Override

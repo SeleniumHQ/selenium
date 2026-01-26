@@ -18,19 +18,22 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.json.JsonInput;
 
 public class RegExpValue extends LocalValue {
 
   private final String pattern;
-  private String flags;
+
+  @Nullable private final String flags;
 
   public RegExpValue(String pattern) {
-    this.pattern = pattern;
+    this(pattern, null);
   }
 
-  public RegExpValue(String pattern, String flags) {
+  public RegExpValue(String pattern, @Nullable String flags) {
     this.pattern = pattern;
     this.flags = flags;
   }
@@ -78,7 +81,25 @@ public class RegExpValue extends LocalValue {
     return pattern;
   }
 
+  @Nullable
   public String getFlags() {
     return flags;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof RegExpValue)) return false;
+    RegExpValue other = (RegExpValue) object;
+    return Objects.equals(pattern, other.pattern) && Objects.equals(flags, other.flags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(pattern, flags);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s{pattern:%s, flags:%s}", getClass().getSimpleName(), pattern, flags);
   }
 }

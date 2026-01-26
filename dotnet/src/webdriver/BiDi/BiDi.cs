@@ -17,175 +17,95 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
-    private readonly Broker _broker;
-
-    private Session.SessionModule? _sessionModule;
-    private BrowsingContext.BrowsingContextModule? _browsingContextModule;
-    private Browser.BrowserModule? _browserModule;
-    private Network.NetworkModule? _networkModule;
-    private Input.InputModule? _inputModule;
-    private Script.ScriptModule? _scriptModule;
-    private Log.LogModule? _logModule;
-    private Storage.StorageModule? _storageModule;
-    private WebExtension.WebExtensionModule? _webExtensionModule;
-
-    private readonly object _moduleLock = new();
+    private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
     private BiDi(string url)
     {
         var uri = new Uri(url);
 
-        _broker = new Broker(this, uri);
+        Broker = new Broker(this, uri);
     }
 
-    internal Session.SessionModule SessionModule
-    {
-        get
-        {
-            if (_sessionModule is not null) return _sessionModule;
-            lock (_moduleLock)
-            {
-                _sessionModule ??= new Session.SessionModule(_broker);
-            }
-            return _sessionModule;
-        }
-    }
+    private Broker Broker { get; }
 
-    public BrowsingContext.BrowsingContextModule BrowsingContext
-    {
-        get
-        {
-            if (_browsingContextModule is not null) return _browsingContextModule;
-            lock (_moduleLock)
-            {
-                _browsingContextModule ??= new BrowsingContext.BrowsingContextModule(_broker);
-            }
-            return _browsingContextModule;
-        }
-    }
+    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
 
-    public Browser.BrowserModule Browser
-    {
-        get
-        {
-            if (_browserModule is not null) return _browserModule;
-            lock (_moduleLock)
-            {
-                _browserModule ??= new Browser.BrowserModule(_broker);
-            }
-            return _browserModule;
-        }
-    }
+    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
 
-    public Network.NetworkModule Network
-    {
-        get
-        {
-            if (_networkModule is not null) return _networkModule;
-            lock (_moduleLock)
-            {
-                _networkModule ??= new Network.NetworkModule(_broker);
-            }
-            return _networkModule;
-        }
-    }
+    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
 
-    internal Input.InputModule InputModule
-    {
-        get
-        {
-            if (_inputModule is not null) return _inputModule;
-            lock (_moduleLock)
-            {
-                _inputModule ??= new Input.InputModule(_broker);
-            }
-            return _inputModule;
-        }
-    }
+    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
 
-    public Script.ScriptModule Script
-    {
-        get
-        {
-            if (_scriptModule is not null) return _scriptModule;
-            lock (_moduleLock)
-            {
-                _scriptModule ??= new Script.ScriptModule(_broker);
-            }
-            return _scriptModule;
-        }
-    }
+    public Input.InputModule Input => AsModule<Input.InputModule>();
 
-    public Log.LogModule Log
-    {
-        get
-        {
-            if (_logModule is not null) return _logModule;
-            lock (_moduleLock)
-            {
-                _logModule ??= new Log.LogModule(_broker);
-            }
-            return _logModule;
-        }
-    }
+    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
 
-    public Storage.StorageModule Storage
-    {
-        get
-        {
-            if (_storageModule is not null) return _storageModule;
-            lock (_moduleLock)
-            {
-                _storageModule ??= new Storage.StorageModule(_broker);
-            }
-            return _storageModule;
-        }
-    }
+    public Log.LogModule Log => AsModule<Log.LogModule>();
 
-    public WebExtension.WebExtensionModule WebExtension
-    {
-        get
-        {
-            if (_webExtensionModule is not null) return _webExtensionModule;
-            lock (_moduleLock)
-            {
-                _webExtensionModule ??= new WebExtension.WebExtensionModule(_broker);
-            }
-            return _webExtensionModule;
-        }
-    }
+    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
 
-    public Task<Session.StatusResult> StatusAsync()
-    {
-        return SessionModule.StatusAsync();
-    }
+    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
 
-    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
+    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
+
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await bidi.Broker.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         return bidi;
     }
 
-    public Task EndAsync(Session.EndOptions? options = null)
+    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.EndAsync(options);
+        return SessionModule.StatusAsync(options, cancellationToken);
+    }
+
+    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return SessionModule.NewAsync(capabilities, options, cancellationToken);
+    }
+
+    public Task EndAsync(Session.EndOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return SessionModule.EndAsync(options, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _broker.DisposeAsync().ConfigureAwait(false);
+        await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
+    }
+
+    public T AsModule<T>() where T : Module, new()
+    {
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, CreateDefaultJsonOptions()));
+    }
+
+    private static JsonSerializerOptions CreateDefaultJsonOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new DateTimeOffsetConverter(),
+            }
+        };
     }
 }

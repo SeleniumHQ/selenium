@@ -85,7 +85,14 @@ public interface NodeRegistry extends HasReadyState, Closeable {
   DistributorStatus getStatus();
 
   /**
-   * Gets all available nodes that are not DOWN or DRAINING.
+   * Get all nodes that are UP.
+   *
+   * @return Set of UP node statuses.
+   */
+  Set<NodeStatus> getUpNodes();
+
+  /**
+   * Gets all available nodes that are not DOWN or DRAINING and has free slots.
    *
    * @return Set of available node statuses.
    */

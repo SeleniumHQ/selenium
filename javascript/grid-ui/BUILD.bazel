@@ -1,5 +1,6 @@
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
+load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@npm//:defs.bzl", "npm_link_all_packages")
@@ -48,6 +49,15 @@ DEPS = [
     ":node_modules/react-dom",
     ":node_modules/react-modal",
     ":node_modules/react-router-dom",
+]
+
+TEST_DEPS = [
+    ":node_modules/@testing-library/jest-dom",
+    ":node_modules/@testing-library/react",
+    ":node_modules/@testing-library/user-event",
+    ":node_modules/@types/jest",
+    ":node_modules/jest-environment-jsdom",
+    ":node_modules/ts-jest",
 ]
 
 ts_project(
@@ -124,4 +134,13 @@ java_import(
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
     ],
+)
+
+jest_test(
+    name = "test",
+    config = "jest.config.cjs",
+    data = glob(["src/**/*"]) + DEPS + TEST_DEPS + [
+        "tsconfig.json",
+    ],
+    node_modules = ":node_modules",
 )

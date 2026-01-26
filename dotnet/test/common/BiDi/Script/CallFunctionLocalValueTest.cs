@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class CallFunctionLocalValueTest : BiDiTestFixture
+internal class CallFunctionLocalValueTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCallFunctionWithArgumentUndefined()
@@ -221,8 +221,6 @@ class CallFunctionLocalValueTest : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
     public async Task CanCallFunctionWithArgumentNumberNegativeZero()
     {
         var arg = new NumberLocalValue(double.NegativeZero);
@@ -359,6 +357,48 @@ class CallFunctionLocalValueTest : BiDiTestFixture
             (arg) => {
               if (!arg.has('setKey') || arg.size !== 1) {
                 throw new Error("Assert failed: " + arg);
+              }
+            }
+            """, false, new() { Arguments = [arg] });
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
+    }
+
+    [Test]
+    public async Task CanCallFunctionWithSharedReferenceLocalValue()
+    {
+        // Navigate to a page with a known element
+        driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
+
+        var node = (await context.LocateNodesAsync(new BrowsingContext.CssLocator("#consoleLog"))).Nodes[0];
+
+        var arg = new SharedReferenceLocalValue(node.SharedId);
+
+        var result = await context.Script.CallFunctionAsync($$"""
+            (el) => {
+              if (!(el instanceof Element) || el.id !== 'consoleLog') {
+                throw new Error("Assert failed: " + (el && el.id));
+              }
+            }
+            """, false, new() { Arguments = [arg] });
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
+    }
+
+    [Test]
+    public async Task CanCallFunctionWithRemoteObjectReferenceLocalValue()
+    {
+        ObjectRemoteValue objectRemoteValue = await context.Script.CallFunctionAsync<ObjectRemoteValue>(
+            "() => ({ a: 42 })",
+            true,
+            new() { ResultOwnership = ResultOwnership.Root });
+
+        var arg = new RemoteObjectReferenceLocalValue(objectRemoteValue.Handle!);
+
+        var result = await context.Script.CallFunctionAsync($$"""
+            (refObj) => {
+              if (typeof refObj !== 'object' || refObj.a !== 42) {
+                throw new Error("Assert failed: ref a=" + (refObj && refObj.a));
               }
             }
             """, false, new() { Arguments = [arg] });

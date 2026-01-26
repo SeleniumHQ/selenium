@@ -22,6 +22,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +32,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
@@ -44,7 +47,8 @@ public class DevTools implements Closeable {
   private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(30);
   private final Connection connection;
-  private SessionID cdpSession = null;
+  private volatile String windowHandle;
+  private volatile SessionID cdpSession;
 
   public DevTools(Function<DevTools, Domains> protocol, Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
@@ -73,6 +77,8 @@ public class DevTools implements Closeable {
 
       SessionID id = cdpSession;
       cdpSession = null;
+      windowHandle = null;
+
       try {
         connection.sendAndWait(
             cdpSession,
@@ -132,17 +138,20 @@ public class DevTools implements Closeable {
   }
 
   public void createSessionIfThereIsNotOne() {
-    createSessionIfThereIsNotOne(null);
+    createSessionIfThereIsNotOne(windowHandle);
   }
 
-  public void createSessionIfThereIsNotOne(String windowHandle) {
+  public void createSessionIfThereIsNotOne(@Nullable String windowHandle) {
     if (cdpSession == null) {
       createSession(windowHandle);
+    } else if (!Objects.equals(this.windowHandle, windowHandle)) {
+      disconnectSession();
+      attachToWindow(windowHandle);
     }
   }
 
   public void createSession() {
-    createSession(null);
+    createSession(windowHandle);
   }
 
   /**
@@ -152,12 +161,20 @@ public class DevTools implements Closeable {
    *
    * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
    */
-  public void createSession(String windowHandle) {
+  public void createSession(@Nullable String windowHandle) {
     if (connection.isClosed()) {
       connection.reopen();
     }
-    TargetID targetId = findTarget(windowHandle);
+    attachToWindow(windowHandle);
+  }
 
+  private void attachToWindow(String windowHandle) {
+    TargetID targetId = findTarget(windowHandle);
+    attachToTarget(targetId);
+    this.windowHandle = windowHandle;
+  }
+
+  private void attachToTarget(TargetID targetId) {
     // Starts the session
     // CDP creates a parent browser session when websocket connection is made
     // Create session that is child of parent browser session and not child of already existing
@@ -193,6 +210,7 @@ public class DevTools implements Closeable {
     }
   }
 
+  @NonNull
   private TargetID findTarget(String windowHandle) {
     // Figure out the targets.
     List<TargetInfo> infos =
@@ -204,7 +222,7 @@ public class DevTools implements Closeable {
     return infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
-        .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
+        .filter(id -> windowHandle == null || windowHandle.endsWith(id.toString()))
         .findAny()
         .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
   }

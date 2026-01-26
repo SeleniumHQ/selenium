@@ -20,8 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events;
 
@@ -442,7 +444,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// variable, as if the function were called via "Function.apply"
     /// </para>
     /// </remarks>
-    public object? ExecuteScript(string script, params object?[] args)
+    public object? ExecuteScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
@@ -542,7 +544,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteAsyncScript(string script, params object?[] args)
+    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
@@ -1320,7 +1322,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringWebElement allows you to have access to specific items that are found on the page
     /// </summary>
-    private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver
+    private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver, IEquatable<IWebElement>
     {
         private readonly EventFiringWebDriver parentDriver;
 
@@ -1759,17 +1761,22 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="EventFiringWebElement"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
+        /// <param name="obj">The <see cref="object"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringWebElement"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object? obj)
         {
-            if (obj is not IWebElement other)
-            {
-                return false;
-            }
+            return Equals(obj as IWebElement);
+        }
 
+        /// <summary>
+        /// Indicates whether the current <see cref="EventFiringWebElement"/> is equal to another <see cref="IWebElement"/>.
+        /// </summary>
+        /// <param name="other">An <see cref="IWebElement"/> to compare with this <see cref="EventFiringWebElement"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringWebElement"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+        public bool Equals(IWebElement? other)
+        {
             if (other is IWrapsElement otherWrapper)
             {
                 other = otherWrapper.WrappedElement;
@@ -1791,7 +1798,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringShadowElement allows you to have access to specific shadow elements
     /// </summary>
-    private class EventFiringShadowRoot : ISearchContext, IWrapsDriver
+    private class EventFiringShadowRoot : ISearchContext, IWrapsDriver, IEquatable<ISearchContext>
     {
         private readonly EventFiringWebDriver parentDriver;
 
@@ -1869,21 +1876,25 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
                 this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
                 throw;
             }
+        }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="EventFiringShadowRoot"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="object"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringShadowRoot"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ISearchContext);
         }
 
         /// <summary>
         /// Determines whether the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
+        /// <param name="other">The <see cref="ISearchContext"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringShadowRoot"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+        public bool Equals(ISearchContext? other)
         {
-            if (obj is not ISearchContext other)
-            {
-                return false;
-            }
-
             return WrappedSearchContext.Equals(other);
         }
 

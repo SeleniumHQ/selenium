@@ -32,32 +32,32 @@ def print_linux(base_url, sha):
     return """    http_file(
         name = "download_sm_linux",
         executable = True,
-        sha256 = "%s",
-        url = "%s",
+        sha256 = "{}",
+        url = "{}",
     )
 
-""" % (sha, base_url + "/selenium-manager-linux")
+""".format(sha, base_url + "/selenium-manager-linux")
 
 
 def print_macos(base_url, sha):
     return """    http_file(
         name = "download_sm_macos",
         executable = True,
-        sha256 = "%s",
-        url = "%s",
+        sha256 = "{}",
+        url = "{}",
     )
 
-""" % (sha, base_url + "/selenium-manager-macos")
+""".format(sha, base_url + "/selenium-manager-macos")
 
 
 def print_windows(base_url, sha):
     return """    http_file(
         name = "download_sm_windows",
         executable = True,
-        sha256 = "%s",
-        url = "%s",
+        sha256 = "{}",
+        url = "{}",
     )
-""" % (sha, base_url + "/selenium-manager-windows.exe")
+""".format(sha, base_url + "/selenium-manager-windows.exe")
 
 
 if __name__ == "__main__":

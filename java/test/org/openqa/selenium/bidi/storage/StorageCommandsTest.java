@@ -18,13 +18,12 @@
 package org.openqa.selenium.bidi.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
@@ -158,8 +157,7 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(result.getCookies().get(0).getValue().getValue()).isEqualTo(value);
     PartitionKey partitionKey = result.getPartitionKey();
 
-    assertThat(partitionKey.getUserContext()).isNotNull();
-    assertThat(partitionKey.getUserContext()).isEqualTo(userContext);
+    assertThat(partitionKey.getUserContext()).isNotNull().isEqualTo(userContext);
 
     driver.switchTo().window(windowHandle);
 
@@ -171,7 +169,7 @@ class StorageCommandsTest extends JupiterTestBase {
 
     GetCookiesResult result1 = storage.getCookies(params1);
 
-    assertThat(result1.getCookies().size()).isEqualTo(0);
+    assertThat(result1.getCookies()).hasSize(0);
   }
 
   @Test
@@ -251,38 +249,28 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(resultCookie.isSecure()).isEqualTo(false);
     assertThat(resultCookie.getSameSite())
         .isEqualTo(org.openqa.selenium.bidi.network.Cookie.SameSite.LAX);
-    assertThat(resultCookie.getExpiry().get()).isEqualTo(expiry);
+    assertThat(resultCookie.getExpiry()).hasValue(expiry);
     assertThat(key.getSourceOrigin()).isNotNull();
     assertThat(key.getUserContext()).isNotNull();
     assertThat(key.getUserContext()).isEqualTo("default");
   }
 
-  @NotYetImplemented(EDGE)
   @Test
   public void canGetAllCookies() {
-    String key1 = generateUniqueKey();
-    String key2 = generateUniqueKey();
-
-    assertCookieIsNotPresentWithName(key1);
-    assertCookieIsNotPresentWithName(key2);
+    addRandomCookie("there might be other cookies before this test");
 
     GetCookiesParameters params = new GetCookiesParameters(new CookieFilter());
-    GetCookiesResult result = storage.getCookies(params);
+    int countBefore = storage.getCookies(params).getCookies().size();
 
-    int countBefore = result.getCookies().size();
-
-    Cookie one = new Cookie.Builder(key1, "value").build();
-    Cookie two = new Cookie.Builder(key2, "value").build();
-
-    driver.manage().addCookie(one);
-    driver.manage().addCookie(two);
+    String key1 = addRandomCookie("one");
+    String key2 = addRandomCookie("two");
 
     openAnotherPage();
-    result = storage.getCookies(params);
-    assertThat(result.getCookies().size()).isEqualTo(countBefore + 2);
+    GetCookiesResult result = storage.getCookies(params);
+    assertThat(result.getCookies()).hasSize(countBefore + 2);
 
-    assertThat(result.getCookies().get(0).getName().contains(key1)).isTrue();
-    assertThat(result.getCookies().get(1).getName().contains(key2)).isTrue();
+    assertThat(result.getCookies().get(countBefore).getName()).isEqualTo(key1);
+    assertThat(result.getCookies().get(countBefore + 1).getName()).isEqualTo(key2);
   }
 
   @Test
@@ -348,13 +336,6 @@ class StorageCommandsTest extends JupiterTestBase {
     assertCookieIsNotPresentWithName("fish");
   }
 
-  @AfterEach
-  public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
-  }
-
   private String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
   }
@@ -414,10 +395,6 @@ class StorageCommandsTest extends JupiterTestBase {
     }
   }
 
-  private Date someTimeInTheFuture() {
-    return new Date(System.currentTimeMillis() + 100000);
-  }
-
   private void openAnotherPage() {
     driver.get(appServer.whereIs("simpleTest.html"));
   }
@@ -447,5 +424,12 @@ class StorageCommandsTest extends JupiterTestBase {
       url.append("&httpOnly=").append(cookie.isHttpOnly());
     }
     driver.get(url.toString());
+  }
+
+  private String addRandomCookie(String value) {
+    String key = generateUniqueKey();
+    assertCookieIsNotPresentWithName(key);
+    driver.manage().addCookie(new Cookie.Builder(key, value).build());
+    return key;
   }
 }

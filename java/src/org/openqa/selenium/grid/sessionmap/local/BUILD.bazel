@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 java_library(
@@ -16,5 +17,6 @@ java_library(
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionmap",
         "//java/src/org/openqa/selenium/remote",
+        artifact("com.github.ben-manes.caffeine:caffeine"),
     ],
 )

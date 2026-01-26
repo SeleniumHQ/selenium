@@ -15,26 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { createTheme, Theme } from '@mui/material/styles'
-import typography from './typography'
+import { lightTheme } from './themes'
 
-// A custom theme for this app
-const theme: Theme = createTheme({
-  palette: {
-    primary: {
-      main: '#615E9B'
-    },
-    secondary: {
-      main: '#F7F8F8'
-    },
-    error: {
-      main: '#FF1744'
-    },
-    background: {
-      default: '#F7F8F8'
-    }
-  },
-  typography
-})
+// Backward compatibility - export light theme as default
+const theme = lightTheme
 
 export default theme

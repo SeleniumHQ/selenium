@@ -18,29 +18,50 @@
 // </copyright>
 
 using System;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class PreloadScript : IAsyncDisposable
+public sealed record PreloadScript
 {
-    private readonly BiDi _bidi;
-
     public PreloadScript(BiDi bidi, string id)
+        : this(id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
+    internal PreloadScript(string id)
+    {
         Id = id;
     }
 
-    public string Id { get; }
+    internal string Id { get; }
 
-    public Task RemoveAsync()
+    private BiDi? _bidi;
+
+    [JsonIgnore]
+    public BiDi BiDi
     {
-        return _bidi.Script.RemovePreloadScriptAsync(this);
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
     }
 
-    public async ValueTask DisposeAsync()
+    public bool Equals(PreloadScript? other)
     {
-        await RemoveAsync().ConfigureAwait(false);
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

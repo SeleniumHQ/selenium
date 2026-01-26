@@ -17,7 +17,7 @@
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
@@ -124,7 +124,7 @@ class PointerCommonProperties:
 class PauseAction:
     """Represents a pause action."""
 
-    duration: Optional[int] = None
+    duration: int | None = None
 
     @property
     def type(self) -> str:
@@ -173,7 +173,7 @@ class PointerDownAction:
     """Represents a pointer down action."""
 
     button: int = 0
-    properties: Optional[PointerCommonProperties] = None
+    properties: PointerCommonProperties | None = None
 
     @property
     def type(self) -> str:
@@ -208,9 +208,9 @@ class PointerMoveAction:
 
     x: float = 0
     y: float = 0
-    duration: Optional[int] = None
-    origin: Optional[Union[str, ElementOrigin]] = None
-    properties: Optional[PointerCommonProperties] = None
+    duration: int | None = None
+    origin: str | ElementOrigin | None = None
+    properties: PointerCommonProperties | None = None
 
     @property
     def type(self) -> str:
@@ -239,8 +239,8 @@ class WheelScrollAction:
     y: int = 0
     delta_x: int = 0
     delta_y: int = 0
-    duration: Optional[int] = None
-    origin: Optional[Union[str, ElementOrigin]] = Origin.VIEWPORT
+    duration: int | None = None
+    origin: str | ElementOrigin | None = Origin.VIEWPORT
 
     @property
     def type(self) -> str:
@@ -287,7 +287,7 @@ class KeySourceActions:
     """Represents a sequence of key actions."""
 
     id: str = ""
-    actions: list[Union[PauseAction, KeyDownAction, KeyUpAction]] = field(default_factory=list)
+    actions: list[PauseAction | KeyDownAction | KeyUpAction] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -303,10 +303,8 @@ class PointerSourceActions:
     """Represents a sequence of pointer actions."""
 
     id: str = ""
-    parameters: Optional[PointerParameters] = None
-    actions: list[Union[PauseAction, PointerDownAction, PointerUpAction, PointerMoveAction]] = field(
-        default_factory=list
-    )
+    parameters: PointerParameters | None = None
+    actions: list[PauseAction | PointerDownAction | PointerUpAction | PointerMoveAction] = field(default_factory=list)
 
     def __post_init__(self):
         if self.parameters is None:
@@ -333,7 +331,7 @@ class WheelSourceActions:
     """Represents a sequence of wheel actions."""
 
     id: str = ""
-    actions: list[Union[PauseAction, WheelScrollAction]] = field(default_factory=list)
+    actions: list[PauseAction | WheelScrollAction] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -350,18 +348,16 @@ class FileDialogInfo:
 
     context: str
     multiple: bool
-    element: Optional[dict] = None
+    element: dict | None = None
 
     @classmethod
     def from_dict(cls, data: dict) -> "FileDialogInfo":
         """Creates a FileDialogInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the file dialog information.
 
         Returns:
-        -------
             FileDialogInfo: A new instance of FileDialogInfo.
         """
         return cls(context=data["context"], multiple=data["multiple"], element=data.get("element"))
@@ -380,9 +376,7 @@ class FileDialogOpened:
 
 
 class Input:
-    """
-    BiDi implementation of the input module.
-    """
+    """BiDi implementation of the input module."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -392,12 +386,11 @@ class Input:
     def perform_actions(
         self,
         context: str,
-        actions: list[Union[NoneSourceActions, KeySourceActions, PointerSourceActions, WheelSourceActions]],
+        actions: list[NoneSourceActions | KeySourceActions | PointerSourceActions | WheelSourceActions],
     ) -> None:
         """Performs a sequence of user input actions.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID where actions should be performed.
             actions: A list of source actions to perform.
         """
@@ -407,8 +400,7 @@ class Input:
     def release_actions(self, context: str) -> None:
         """Releases all input state for the given context.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to release actions for.
         """
         params = {"context": context}
@@ -417,8 +409,7 @@ class Input:
     def set_files(self, context: str, element: dict, files: list[str]) -> None:
         """Sets files for a file input element.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             element: The element reference (script.SharedReference).
             files: A list of file paths to set.
@@ -426,15 +417,13 @@ class Input:
         params = {"context": context, "element": element, "files": files}
         self.conn.execute(command_builder("input.setFiles", params))
 
-    def add_file_dialog_handler(self, handler):
+    def add_file_dialog_handler(self, handler) -> int:
         """Add a handler for file dialog opened events.
 
-        Parameters:
-        -----------
+        Args:
             handler: Callback function that takes a FileDialogInfo object.
 
         Returns:
-        --------
             int: Callback ID for removing the handler later.
         """
         # Subscribe to the event if not already subscribed
@@ -454,8 +443,7 @@ class Input:
     def remove_file_dialog_handler(self, callback_id: int) -> None:
         """Remove a file dialog handler.
 
-        Parameters:
-        -----------
+        Args:
             callback_id: The callback ID returned by add_file_dialog_handler.
         """
         if callback_id in self.callbacks:

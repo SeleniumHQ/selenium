@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
@@ -56,6 +55,6 @@ class ClassPathResourceTest {
 
     Set<String> names = resource.list().stream().map(Resource::name).collect(Collectors.toSet());
 
-    assertThat(names).isEqualTo(ImmutableSet.of("packaged-file.txt"));
+    assertThat(names).containsExactly("packaged-file.txt");
   }
 }

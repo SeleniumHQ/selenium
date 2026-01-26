@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.server;
 
+import java.time.Duration;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
@@ -25,6 +26,7 @@ public class EventBusOptions {
 
   static final String EVENTS_SECTION = "events";
   private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
+  private static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   private final Config config;
   private volatile EventBus bus;
 
@@ -45,6 +47,12 @@ public class EventBusOptions {
     }
 
     return localBus;
+  }
+
+  public Duration getHeartbeatPeriod() {
+    int period =
+        config.getInt(EVENTS_SECTION, "eventbus-heartbeat-period").orElse(DEFAULT_HEARTBEAT_PERIOD);
+    return Duration.ofSeconds(period);
   }
 
   private EventBus createBus() {

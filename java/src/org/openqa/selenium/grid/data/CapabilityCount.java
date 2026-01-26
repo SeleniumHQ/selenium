@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class CapabilityCount {
   private final Map<Capabilities, Integer> counts;
 
   public CapabilityCount(Map<Capabilities, Integer> counts) {
-    this.counts = unmodifiableMap(new HashMap<>(counts));
+    this.counts = Map.copyOf(counts);
   }
 
   public Map<Capabilities, Integer> getCounts() {

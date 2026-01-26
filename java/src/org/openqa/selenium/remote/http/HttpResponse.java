@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.http;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 public class HttpResponse extends HttpMessage<HttpResponse> {
 
@@ -60,6 +59,9 @@ public class HttpResponse extends HttpMessage<HttpResponse> {
 
   @Override
   public String toString() {
-    return String.format("%s: %s", getStatus(), string(this));
+    String content = super.toString();
+    return content.isEmpty()
+        ? String.format("%s", getStatus())
+        : String.format("%s: %s", getStatus(), content);
   }
 }

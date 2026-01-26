@@ -20,24 +20,23 @@ package org.openqa.selenium.grid.node.docker;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.docker.Device.device;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -50,6 +49,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.HostIdentifier;
@@ -115,8 +115,12 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private String getApiVersion() {
+    return config.get(DOCKER_SECTION, "api-version").orElse(null);
+  }
+
   private boolean isEnabled(Docker docker) {
-    if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
+    if (config.getAll(DOCKER_SECTION, "configs").isEmpty()) {
       return false;
     }
 
@@ -129,7 +133,8 @@ public class DockerOptions {
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
+    String apiVersion = getApiVersion();
+    Docker docker = new Docker(client, apiVersion);
 
     if (!isEnabled(docker)) {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
@@ -143,7 +148,7 @@ public class DockerOptions {
     List<String> hostConfigKeys =
         config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
 
-    Multimap<String, Capabilities> kinds = HashMultimap.create();
+    Multimap<String, Capabilities> kinds = new Multimap<>();
     int configsCount = allConfigs.size();
     for (int i = 0; i < configsCount; i++) {
       String imageName = allConfigs.get(i);
@@ -168,11 +173,12 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
+    Map<String, String> groupingLabels = getGroupingLabels(info);
 
-    loadImages(docker, kinds.keySet().toArray(new String[0]));
+    loadImages(docker, kinds.keySet());
     Image videoImage = getVideoImage(docker);
     if (videoImage != null) {
-      loadImages(docker, videoImage.getName());
+      loadImages(docker, Set.of(videoImage.getName()));
     }
 
     // Hard coding the config section value "node" to avoid an extra dependency
@@ -180,7 +186,7 @@ public class DockerOptions {
         Math.min(
             config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
             DEFAULT_MAX_SESSIONS);
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
+    Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     kinds.forEach(
         (name, caps) -> {
           Image image = docker.getImage(name);
@@ -203,13 +209,14 @@ public class DockerOptions {
                     info.isPresent(),
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
-                    hostConfigKeys));
+                    hostConfigKeys,
+                    groupingLabels));
           }
           LOG.info(
               String.format(
                   "Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
         });
-    return factories.build().asMap();
+    return factories.asMap();
   }
 
   protected List<Device> getDevicesMapping() {
@@ -253,6 +260,27 @@ public class DockerOptions {
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private Map<String, String> getGroupingLabels(Optional<ContainerInfo> info) {
+    if (info.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    // Get custom grouping labels from configuration
+    List<String> customLabelKeys =
+        config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
+
+    Set<String> groupingKeys = new HashSet<>(customLabelKeys);
+    groupingKeys.add("com.docker.compose.project");
+    groupingKeys.add("io.podman.compose.project");
+
+    Map<String, String> allLabels = info.get().getLabels();
+    // Filter for grouping labels that work across orchestration systems
+    return allLabels.entrySet().stream()
+        .filter(entry -> groupingKeys.contains(entry.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private DockerAssetsPath getAssetsPath(Optional<ContainerInfo> info) {
     if (info.isPresent()) {
       Optional<Map<String, Object>> mountedVolume =
@@ -275,10 +303,10 @@ public class DockerOptions {
     return assetsPath.map(path -> new DockerAssetsPath(path, path)).orElse(null);
   }
 
-  private void loadImages(Docker docker, String... imageNames) {
+  private void loadImages(Docker docker, Set<String> imageNames) {
     CompletableFuture<Void> cd =
         CompletableFuture.allOf(
-            Arrays.stream(imageNames)
+            imageNames.stream()
                 .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
                 .toArray(CompletableFuture[]::new));
 

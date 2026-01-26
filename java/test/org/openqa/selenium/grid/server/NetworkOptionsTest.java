@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.server;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -69,7 +68,7 @@ class NetworkOptionsTest {
     rootLogger.addHandler(handler);
 
     try {
-      Config config = new MapConfig(emptyMap());
+      Config config = new MapConfig();
       Tracer tracer = DefaultTestTracer.createTracer();
       HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 

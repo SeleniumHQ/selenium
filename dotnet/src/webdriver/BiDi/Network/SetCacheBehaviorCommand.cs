@@ -17,35 +17,36 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
-using OpenQA.Selenium.BiDi.Communication;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class SetCacheBehaviorCommand(SetCacheBehaviorParameters @params)
-    : Command<SetCacheBehaviorParameters, EmptyResult>(@params, "network.setCacheBehavior");
+    : Command<SetCacheBehaviorParameters, SetCacheBehaviorResult>(@params, "network.setCacheBehavior");
 
 internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 
 public sealed class SetCacheBehaviorOptions : CommandOptions
 {
-    public SetCacheBehaviorOptions()
-    {
-
-    }
-
-    internal SetCacheBehaviorOptions(BrowsingContextSetCacheBehaviorOptions? options)
-    {
-
-    }
-
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 }
 
-public sealed record BrowsingContextSetCacheBehaviorOptions;
+public sealed class ContextSetCacheBehaviorOptions : CommandOptions
+{
+    internal static SetCacheBehaviorOptions WithContext(ContextSetCacheBehaviorOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Contexts = [context],
+        Timeout = options?.Timeout
+    };
+}
 
+[JsonConverter(typeof(CamelCaseEnumConverter<CacheBehavior>))]
 public enum CacheBehavior
 {
     Default,
     Bypass
 }
+
+public sealed record SetCacheBehaviorResult : EmptyResult;

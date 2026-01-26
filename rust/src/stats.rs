@@ -16,9 +16,9 @@
 // under the License.
 
 use crate::format_one_arg;
+use reqwest::Client;
 use reqwest::header::CONTENT_TYPE;
 use reqwest::header::USER_AGENT;
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::mpsc::Sender;
 use std::time::Duration;

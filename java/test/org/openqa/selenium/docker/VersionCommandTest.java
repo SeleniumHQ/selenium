@@ -93,6 +93,102 @@ class VersionCommandTest {
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
     assertThat(maybeDocker).isPresent();
-    assertThat(maybeDocker.get().version()).isEqualTo("1.41");
+    assertThat(maybeDocker.get().version()).isEqualTo("1.40");
+  }
+
+  @Test
+  void shouldSupportDockerEngine290WithApi152() {
+    // Docker Engine 29.0 uses API version 1.52 (max) and 1.44 (min)
+    // Should select 1.48 as it's within the supported range [1.44, 1.52]
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.52\",\"MinAPIVersion\":\"1.44\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.48");
+  }
+
+  @Test
+  void shouldSupportDockerEngine250WithApi144() {
+    // Docker Engine 25.0 uses API version 1.44 (max) and 1.24 (min)
+    // Should select 1.44 as it matches exactly
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.44\",\"MinAPIVersion\":\"1.24\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.44");
+  }
+
+  @Test
+  void shouldSupportDockerEngine2010WithApi140() {
+    // Docker Engine 20.10 uses API version 1.41 (max) and 1.12 (min)
+    // Should select 1.40 as it's within the supported range [1.12, 1.41]
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.41\",\"MinAPIVersion\":\"1.12\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.40");
+  }
+
+  @Test
+  void shouldSupportDockerEngine1903WithApi140() {
+    // Docker Engine 19.03 uses API version 1.40 (max) and 1.12 (min)
+    // Should select 1.40 as it matches exactly
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.40\",\"MinAPIVersion\":\"1.12\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.40");
+  }
+
+  @Test
+  void shouldSupportDockerEngine280WithApi148() {
+    // Docker Engine 28.0 uses API version 1.48 (max) and 1.24 (min)
+    // Should select 1.48 as it matches exactly
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.48\",\"MinAPIVersion\":\"1.24\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.48");
+  }
+
+  @Test
+  void shouldSupportDockerEngine290WithApi150() {
+    // Docker Engine 29.0 uses API version 1.50 (max) and 1.24 (min)
+    // Should select 1.48 as it's the highest supported version within range
+    HttpHandler handler =
+        req ->
+            new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(utf8String("{\"ApiVersion\":\"1.50\",\"MinAPIVersion\":\"1.24\"}"));
+
+    Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
+
+    assertThat(maybeDocker).isPresent();
+    assertThat(maybeDocker.get().version()).isEqualTo("1.48");
   }
 }

@@ -34,7 +34,6 @@ rb_library(
         "//rb/spec/integration/selenium/webdriver:virtual_authenticator",
         "//rb/spec/integration/selenium/webdriver:window",
         "//rb/spec/integration/selenium/webdriver/bidi:browsing_context",
-        "//rb/spec/integration/selenium/webdriver/bidi:log_inspector",
         "//rb/spec/integration/selenium/webdriver/bidi:network",
         "//rb/spec/integration/selenium/webdriver/bidi:script",
         "//rb/spec/integration/selenium/webdriver/chrome:driver",

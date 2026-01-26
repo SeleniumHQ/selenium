@@ -19,12 +19,30 @@
 
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-class NetworkTest : BiDiTestFixture
+internal class NetworkTest : BiDiTestFixture
 {
+    [Test]
+    public async Task CanAddDataCollector()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        var addDataCollectorResult = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        Assert.That(addDataCollectorResult, Is.Not.Null);
+        Assert.That(addDataCollectorResult.Collector, Is.Not.Null);
+
+        // or context aware
+        addDataCollectorResult = await context.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        Assert.That(addDataCollectorResult, Is.Not.Null);
+        Assert.That(addDataCollectorResult.Collector, Is.Not.Null);
+    }
+
     [Test]
     public async Task CanAddIntercept()
     {
@@ -211,9 +229,41 @@ class NetworkTest : BiDiTestFixture
     }
 
     [Test]
+    public async Task CanGetData()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        TaskCompletionSource<string> responseBodyCompletionSource = new();
+
+        await using var _ = await bidi.Network.OnResponseCompletedAsync(async e =>
+        {
+            if (e.Response.Url.Contains("simpleTest.html"))
+            {
+                responseBodyCompletionSource.SetResult((string)await bidi.Network.GetDataAsync(DataType.Response, e.Request.Request));
+            }
+        });
+
+        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+
+        var responseBody = await responseBodyCompletionSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(responseBody, Contains.Substring("Hello WebDriver"));
+    }
+
+    [Test]
     public void CanSetCacheBehavior()
     {
         Assert.That(async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
         Assert.That(async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
+    }
+
+    [Test]
+    public async Task CanSetExtraHeaders()
+    {
+        var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);
+
+        Assert.That(result, Is.Not.Null);
     }
 }

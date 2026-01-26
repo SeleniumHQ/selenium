@@ -32,10 +32,10 @@ namespace OpenQA.Selenium.Environment;
 
 public class DriverFactory
 {
-    string driverPath;
-    string browserBinaryLocation;
-    private Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
-    private Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
+    private readonly string driverPath;
+    private readonly string browserBinaryLocation;
+    private readonly Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
+    private readonly Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
 
     public DriverFactory(string driverPath, string browserBinaryLocation)
     {

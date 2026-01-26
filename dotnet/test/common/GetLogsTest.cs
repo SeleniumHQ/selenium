@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium;
 
+[Ignore("")]
 [TestFixture]
 [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
 [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
@@ -42,7 +43,7 @@ public class GetLogsTest : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Test]
     public void LogBufferShouldBeResetAfterEachGetLogCall()
     {
         ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -58,7 +59,7 @@ public class GetLogsTest : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Test]
     public void DifferentLogsShouldNotContainTheSameLogEntries()
     {
         driver.Url = simpleTestPage;
@@ -81,7 +82,7 @@ public class GetLogsTest : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Test]
     public void TurningOffLogShouldMeanNoLogMessages()
     {
         ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;

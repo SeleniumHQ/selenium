@@ -195,7 +195,7 @@ public class WebDriverDecorator<T extends WebDriver> {
 
     public Definition(Decorated<?> decorated) {
       this.decoratedClass = decorated.getClass();
-      this.originalClass = decorated.getOriginal().getClass();
+      this.originalClass = unwrapOriginal(decorated).getClass();
     }
 
     @Override
@@ -215,6 +215,17 @@ public class WebDriverDecorator<T extends WebDriver> {
             System.identityHashCode(decoratedClass), System.identityHashCode(originalClass)
           });
     }
+  }
+
+  private static Object unwrapOriginal(Decorated<?> decorated) {
+    return unwrapWebdriver(decorated.getOriginal());
+  }
+
+  private static Object unwrapWebdriver(Object webDriver) {
+    if (webDriver instanceof WebDriver && webDriver instanceof WrapsDriver) {
+      return unwrapWebdriver(((WrapsDriver) webDriver).getWrappedDriver());
+    }
+    return webDriver;
   }
 
   public interface HasTarget<Z> {
@@ -480,12 +491,15 @@ public class WebDriverDecorator<T extends WebDriver> {
   private <Z> Map<Class<?>, Function<Z, InvocationHandler>> deriveAdditionalInterfaces(Z sample) {
     Map<Class<?>, Function<Z, InvocationHandler>> handlers = new HashMap<>();
 
-    if (sample instanceof WebDriver && !(sample instanceof WrapsDriver)) {
+    if (sample instanceof WebDriver) {
       handlers.put(
           WrapsDriver.class,
           (instance) ->
               (proxy, method, args) -> {
                 if ("getWrappedDriver".equals(method.getName())) {
+                  return unwrapWebdriver(instance);
+                }
+                if (sample instanceof WrapsDriver) {
                   return instance;
                 }
                 throw new UnsupportedOperationException(method.getName());

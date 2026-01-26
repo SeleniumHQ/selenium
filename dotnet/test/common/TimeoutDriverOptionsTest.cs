@@ -131,7 +131,7 @@ public class TimeoutDriverOptionsTest
         Assert.That(driver.Manage().Timeouts().ImplicitWait, Is.EqualTo(expectedImplicitWaitTimeout));
     }
 
-    class TestDriverOptions : DriverOptions
+    private class TestDriverOptions : DriverOptions
     {
         public override ICapabilities ToCapabilities()
         {

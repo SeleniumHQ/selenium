@@ -149,7 +149,7 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(id: 'not-there')
-          }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
+          }.to raise_error(Error::NoSuchElementError, /errors#nosuchelementexception/)
         end
 
         it 'raises if invalid locator',
@@ -157,7 +157,7 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
-          }.to raise_error(Error::InvalidSelectorError, /errors#invalid-selector-exception/)
+          }.to raise_error(Error::InvalidSelectorError, /errors#invalidselectorexception/)
         end
       end
 

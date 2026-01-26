@@ -5,7 +5,7 @@
  * See the COPYING file for details.
  */
 
-/* Author: larrypo@google.com (Larry Powelson) */
+@provide 'goog.css.hovercard';
 
 .goog-hovercard div {
   border: solid 5px #69748C;

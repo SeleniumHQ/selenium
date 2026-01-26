@@ -76,8 +76,8 @@ rust_binary(
     # instead of an underscore
     name = "selenium-manager",
     srcs = ["src/main.rs"],
-    edition = "2021",
-    version = "0.4.36-nightly",
+    edition = "2024",
+    version = "0.4.41-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -91,7 +91,11 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
-    edition = "2021",
+    crate_features = select({
+        "//common:stamp": [],
+        "//conditions:default": ["avoid_stats"],
+    }),
+    edition = "2024",
     visibility = ["//rust:__subpackages__"],
     deps = all_crate_deps(normal = True),
 )
@@ -115,6 +119,6 @@ rust_test(
     name = "unit",
     size = "small",
     crate = ":selenium_manager",
-    edition = "2021",
+    edition = "2024",
     tags = ["no-sandbox"],
 )

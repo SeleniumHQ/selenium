@@ -7,10 +7,9 @@
 
 /*
  * Styling for dimension pickers rendered by goog.ui.DimensionPickerRenderer.
- *
- * Author: robbyw@google.com (Robby Walker)
- * Author: abefettig@google.com (Abe Fettig)
  */
+
+@provide 'goog.css.dimensionpicker';
 
 .goog-dimension-picker {
   font-size: 18px;

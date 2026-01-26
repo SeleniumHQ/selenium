@@ -20,7 +20,10 @@ package org.openqa.selenium.support;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class Color {
   private final int red;
   private final int green;
@@ -122,7 +125,7 @@ public class Color {
   }
 
   private abstract static class Converter {
-    public Color getColor(String value) {
+    public @Nullable Color getColor(String value) {
       Matcher matcher = getPattern().matcher(value);
       if (matcher.find()) {
         double a = 1.0;

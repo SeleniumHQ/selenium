@@ -53,6 +53,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -213,11 +214,9 @@ public class ModuleGenerator {
     }
     if (result != 0) {
       throw new RuntimeException(
-          "Unable to process module:\n"
-              + "jdeps "
-              + String.join(" ", jdepsArgs)
-              + "\n"
-              + new String(bos.toByteArray()));
+          String.format(
+              "Unable to process module:%njdeps %s%n%s",
+              String.join(" ", jdepsArgs), bos.toString(StandardCharsets.UTF_8)));
     }
 
     AtomicReference<Path> moduleInfo = new AtomicReference<>();

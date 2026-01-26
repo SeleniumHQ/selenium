@@ -15,36 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::chrome::{CHROME_NAME, CHROMEDRIVER_NAME, ChromeManager};
 use crate::config::ARCH::{ARM64, ARMV7, X32, X64};
 use crate::config::OS::{MACOS, WINDOWS};
-use crate::config::{str_to_os, ManagerConfig};
+use crate::config::{ManagerConfig, str_to_os};
 use crate::downloads::download_to_tmp_folder;
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
-use crate::electron::{ElectronManager, ELECTRON_NAME};
+use crate::edge::{EDGE_NAMES, EDGEDRIVER_NAME, EdgeManager, WEBVIEW2_NAME};
+use crate::electron::{ELECTRON_NAME, ElectronManager};
 use crate::files::get_win_file_version;
+use crate::files::{BrowserPath, parse_version, uncompress};
 use crate::files::{
     capitalize, collect_files_from_cache, create_path_if_not_exists, default_cache_folder,
     find_latest_from_cache, get_binary_extension, path_to_string,
 };
-use crate::files::{parse_version, uncompress, BrowserPath};
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
+use crate::firefox::{FIREFOX_NAME, FirefoxManager, GECKODRIVER_NAME};
 use crate::grid::GRID_NAME;
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
+use crate::iexplorer::{IE_NAMES, IEDRIVER_NAME, IExplorerManager};
 use crate::lock::Lock;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
     get_metadata, is_stats_in_metadata, write_metadata,
 };
-use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
+use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
+use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
 use crate::shell::{
-    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, Command,
+    Command, run_shell_command, run_shell_command_by_os, run_shell_command_with_log,
 };
-use crate::stats::{send_stats_to_plausible, Props};
-use anyhow::anyhow;
+use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
+use anyhow::anyhow;
+use fs_extra::file;
+use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -179,7 +181,7 @@ pub trait SeleniumManager {
     fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error>;
 
     fn get_browser_label_for_download(&self, _browser_version: &str)
-        -> Result<Option<&str>, Error>;
+    -> Result<Option<&str>, Error>;
 
     fn is_download_browser(&self) -> bool;
 
@@ -222,7 +224,7 @@ pub trait SeleniumManager {
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
-            fs::rename(driver_zip_file, driver_path_in_cache)?;
+            file::move_file(driver_zip_file, driver_path_in_cache, &CopyOptions::new())?;
         } else {
             uncompress(
                 &driver_zip_file,
@@ -313,56 +315,77 @@ pub trait SeleniumManager {
             browser_version
         ));
 
-        // Checking if browser version is in the cache
+        // Checking if browser version already in expected location
         let browser_binary_path = self.get_browser_binary_path(original_browser_version)?;
         if browser_binary_path.exists() {
+            let location_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+                " (Edge uses system path, not cache)"
+            } else {
+                ""
+            };
             self.get_logger().debug(format!(
-                "{} {} already exists",
+                "{} {} already exists at {}{}",
                 self.get_browser_name(),
-                browser_version
+                browser_version,
+                browser_binary_path.display(),
+                location_note
             ));
-        } else {
-            // If browser is not available, download it
-            if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
-                return Err(anyhow!(format_one_arg(
-                    NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
-                    self.get_browser_name(),
-                )));
-            }
-
-            let browser_path_in_cache = self.get_browser_path_in_cache()?;
-            let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
-            if !lock.exists() && browser_binary_path.exists() {
-                self.get_logger().debug(format!(
-                    "Browser already in cache: {}",
-                    browser_binary_path.display()
-                ));
-                self.set_browser_path(path_to_string(&browser_binary_path));
-                return Ok(Some(browser_binary_path.clone()));
-            }
-
-            let browser_url = self.get_browser_url_for_download(original_browser_version)?;
-            self.get_logger().debug(format!(
-                "Downloading {} {} from {}",
-                self.get_browser_name(),
-                self.get_browser_version(),
-                browser_url
-            ));
-            let (_tmp_folder, driver_zip_file) =
-                download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
-
-            let browser_label_for_download =
-                self.get_browser_label_for_download(original_browser_version)?;
-            uncompress(
-                &driver_zip_file,
-                &browser_path_in_cache,
-                self.get_logger(),
-                self.get_os(),
-                None,
-                browser_label_for_download,
-            )?;
-            lock.release();
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path));
         }
+
+        // Browser not available, download it
+        if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
+            return Err(anyhow!(format_one_arg(
+                NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
+                self.get_browser_name(),
+            )));
+        }
+
+        let browser_path_in_cache = self.get_browser_path_in_cache()?;
+        let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
+        // If lock file was deleted, another process held it and released (deleting the file).
+        // Check if that process already downloaded the browser.
+        if !lock.exists() && browser_binary_path.exists() {
+            self.get_logger().debug(format!(
+                "{} {} now available at {}",
+                self.get_browser_name(),
+                browser_version,
+                browser_binary_path.display()
+            ));
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path.clone()));
+        }
+
+        let browser_url = self.get_browser_url_for_download(original_browser_version)?;
+        // Edge on Windows: MSI installs to system path, not cache
+        let install_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+            " (will install to system path via MSI)"
+        } else {
+            ""
+        };
+        self.get_logger().debug(format!(
+            "Downloading {} {} from {}{}",
+            self.get_browser_name(),
+            self.get_browser_version(),
+            browser_url,
+            install_note
+        ));
+        let (_tmp_folder, driver_zip_file) =
+            download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+
+        let browser_label_for_download =
+            self.get_browser_label_for_download(original_browser_version)?;
+        uncompress(
+            &driver_zip_file,
+            &browser_path_in_cache,
+            self.get_logger(),
+            self.get_os(),
+            None,
+            browser_label_for_download,
+        )?;
+        lock.release();
+
         if browser_binary_path.exists() {
             self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
@@ -479,6 +502,12 @@ pub trait SeleniumManager {
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
+        if download_browser && self.is_safari() {
+            self.get_logger().debug(
+                "Force browser download requested for Safari, but downloads are not supported; using local discovery",
+            );
+            download_browser = false;
+        }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
@@ -490,58 +519,66 @@ pub trait SeleniumManager {
                             discovered_version
                         ));
                     }
-                    let discovered_major_browser_version = self
-                        .get_major_version(&discovered_version)
-                        .unwrap_or_default();
+                    if self.is_browser_version_specific()
+                        && !self.get_browser_version().eq(&discovered_version)
+                    {
+                        download_browser = true;
+                    } else {
+                        let discovered_major_browser_version = self
+                            .get_major_version(&discovered_version)
+                            .unwrap_or_default();
 
-                    if self.is_browser_version_stable() || self.is_browser_version_unstable() {
-                        let online_browser_version = self.request_browser_version()?;
-                        if online_browser_version.is_some() {
-                            let major_online_browser_version =
-                                self.get_major_version(&online_browser_version.unwrap())?;
-                            if discovered_major_browser_version.eq(&major_online_browser_version) {
-                                self.get_logger().debug(format!(
-                                    "Discovered online {} version ({}) is the same as the detected local {} version",
-                                    self.get_browser_name(),
-                                    discovered_major_browser_version,
-                                    self.get_browser_name(),
-                                ));
-                                self.set_browser_version(discovered_version);
+                        if self.is_browser_version_stable() || self.is_browser_version_unstable() {
+                            let online_browser_version = self.request_browser_version()?;
+                            if online_browser_version.is_some() {
+                                let major_online_browser_version =
+                                    self.get_major_version(&online_browser_version.unwrap())?;
+                                if discovered_major_browser_version
+                                    .eq(&major_online_browser_version)
+                                {
+                                    self.get_logger().debug(format!(
+                                        "Discovered online {} version ({}) is the same as the detected local {} version",
+                                        self.get_browser_name(),
+                                        discovered_major_browser_version,
+                                        self.get_browser_name(),
+                                    ));
+                                    self.set_browser_version(discovered_version);
+                                } else {
+                                    self.get_logger().debug(format!(
+                                        "Discovered online {} version ({}) is different to the detected local {} version ({})",
+                                        self.get_browser_name(),
+                                        major_online_browser_version,
+                                        self.get_browser_name(),
+                                        discovered_major_browser_version,
+                                    ));
+                                    download_browser = true;
+                                }
                             } else {
-                                self.get_logger().debug(format!(
-                                    "Discovered online {} version ({}) is different to the detected local {} version ({})",
-                                    self.get_browser_name(),
-                                    major_online_browser_version,
-                                    self.get_browser_name(),
-                                    discovered_major_browser_version,
-                                ));
-                                download_browser = true;
+                                self.set_browser_version(discovered_version);
                             }
+                        } else if !major_browser_version.is_empty()
+                            && !self.is_browser_version_unstable()
+                            && !major_browser_version.eq(&discovered_major_browser_version)
+                        {
+                            self.get_logger().debug(format!(
+                                "Discovered {} version ({}) different to specified browser version ({})",
+                                self.get_browser_name(),
+                                discovered_major_browser_version,
+                                major_browser_version,
+                            ));
+                            download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);
                         }
-                    } else if !major_browser_version.is_empty()
-                        && !self.is_browser_version_unstable()
-                        && !major_browser_version.eq(&discovered_major_browser_version)
-                    {
-                        self.get_logger().debug(format!(
-                            "Discovered {} version ({}) different to specified browser version ({})",
-                            self.get_browser_name(),
-                            discovered_major_browser_version,
-                            major_browser_version,
-                        ));
-                        download_browser = true;
-                    } else {
-                        self.set_browser_version(discovered_version);
-                    }
-                    if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
-                        let browser_path = format!(
-                            r"{}\{}\msedge{}",
-                            self.get_browser_path(),
-                            &self.get_browser_version(),
-                            get_binary_extension(self.get_os())
-                        );
-                        self.set_browser_path(browser_path);
+                        if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
+                            let browser_path = format!(
+                                r"{}\{}\msedge{}",
+                                self.get_browser_path(),
+                                &self.get_browser_version(),
+                                get_binary_extension(self.get_os())
+                            );
+                            self.set_browser_path(browser_path);
+                        }
                     }
                 }
                 None => {
@@ -616,17 +653,16 @@ pub trait SeleniumManager {
             if let Some(path) = browser_path {
                 self.get_logger()
                     .debug(format!("Found {} in PATH: {}", browser_name, &path));
-                if self.is_snap(&path) {
-                    if let Some(snap_path) = self.get_snap_path() {
-                        if snap_path.exists() {
-                            self.get_logger().debug(format!(
-                                "Using {} snap: {}",
-                                browser_name,
-                                path_to_string(snap_path.as_path())
-                            ));
-                            return Some(snap_path);
-                        }
-                    }
+                if self.is_snap(&path)
+                    && let Some(snap_path) = self.get_snap_path()
+                    && snap_path.exists()
+                {
+                    self.get_logger().debug(format!(
+                        "Using {} snap: {}",
+                        browser_name,
+                        path_to_string(snap_path.as_path())
+                    ));
+                    return Some(snap_path);
                 }
                 return Some(Path::new(&path).to_path_buf());
             }
@@ -668,11 +704,7 @@ pub trait SeleniumManager {
             return None;
         }
         let first = vector.first().unwrap().to_string();
-        if first.is_empty() {
-            None
-        } else {
-            Some(first)
-        }
+        if first.is_empty() { None } else { Some(first) }
     }
 
     fn is_windows_admin(&self) -> bool {

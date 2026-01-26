@@ -595,15 +595,21 @@ public class PointerInputDevice : InputDevice
             if (elementReference == null)
             {
                 IWrapsElement? elementWrapper = this.target as IWrapsElement;
-                if (elementWrapper != null)
+                while (elementWrapper != null)
                 {
                     elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
+                    if (ReferenceEquals(elementWrapper, elementWrapper.WrappedElement))
+                    {
+                        throw new InvalidOperationException("Cannot determine root element: element wrapper wraps itself");
+                    }
+
+                    elementWrapper = elementWrapper.WrappedElement as IWrapsElement;
                 }
             }
 
             if (elementReference == null)
             {
-                throw new ArgumentException("Target element cannot be converted to IWebElementReference");
+                throw new ArgumentException($"Target element cannot be converted to {nameof(IWebDriverObjectReference)}");
             }
 
             Dictionary<string, object> elementDictionary = elementReference.ToDictionary();

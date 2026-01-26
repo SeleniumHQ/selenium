@@ -25,7 +25,7 @@ namespace OpenQA.Selenium;
 [TestFixture]
 public class TextPagesTest : DriverTestFixture
 {
-    private string textPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("plain.txt");
+    private readonly string textPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("plain.txt");
 
     [Test]
     public void ShouldBeAbleToLoadASimplePageOfText()

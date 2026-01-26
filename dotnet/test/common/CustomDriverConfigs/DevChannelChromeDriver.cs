@@ -37,8 +37,5 @@ public class DevChannelChromeDriver : ChromeDriver
     {
     }
 
-    public static ChromeOptions DefaultOptions
-    {
-        get { return new ChromeOptions() { BrowserVersion = "dev" }; }
-    }
+    public static ChromeOptions DefaultOptions => new ChromeOptions() { BrowserVersion = "dev" };
 }

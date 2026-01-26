@@ -1,17 +1,19 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_selenium_test_suite", "java_test_suite")
 load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
+
+STRESS_TESTS = [
+    "StressTest.java",
+]
 
 LARGE_TESTS = [
     "DistributedTest.java",
     "DistributedCdpTest.java",
-    "NewSessionCreationTest.java",
     "RemoteWebDriverDownloadTest.java",
-    "StressTest.java",
 ]
 
-FIREFOX_CHROMIUM_ONLY_LARGE_TESTS = [
+BIDI_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
@@ -40,20 +42,42 @@ java_library(
 )
 
 java_selenium_test_suite(
-    name = "large-tests",
+    name = "stress-tests",
     size = "large",
-    srcs = LARGE_TESTS,
-    browsers = [
-        "chrome",
-        "firefox",
-        "edge",
-    ],
+    srcs = STRESS_TESTS,
+    browsers = SINGLE_BROWSER,
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,
     ],
-    tags = [
-        "selenium-remote",
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/grid/testing",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+    ] + CDP_DEPS + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    browsers = SINGLE_BROWSER,
+    javacopts = [
+        "--release",
+        TOOLS_JAVA_VERSION,
     ],
     deps = [
         ":support",
@@ -78,14 +102,10 @@ java_selenium_test_suite(
 )
 
 java_selenium_test_suite(
-    name = "firefox-chromium-only-large-tests",
+    name = "bidi-tests",
     size = "large",
-    srcs = FIREFOX_CHROMIUM_ONLY_LARGE_TESTS,
-    browsers = [
-        "firefox",
-        "chrome",
-        "edge",
-    ],
+    srcs = BIDI_TESTS,
+    browsers = BIDI_BROWSERS,
     deps = [
         ":support",
         "//java/src/org/openqa/selenium/bidi",
@@ -108,7 +128,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + FIREFOX_CHROMIUM_ONLY_LARGE_TESTS,
+        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS,
     ),
     tags = [
         "requires-network",

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.support.ui;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.RoundingMode.HALF_UP;
+
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -220,10 +224,9 @@ public class FluentWait<T> implements Wait<T> {
 
         String timeoutMessage =
             String.format(
-                "Expected condition failed: %s (tried for %d second(s) with %d milliseconds"
-                    + " interval)",
+                "Expected condition failed: %s%n" + "(tried for %s with %d milliseconds interval)",
                 message == null ? "waiting for " + isTrue : message,
-                timeout.getSeconds(),
+                formatTimeout(timeout),
                 interval.toMillis());
         throw timeoutException(timeoutMessage, lastException);
       }
@@ -235,6 +238,14 @@ public class FluentWait<T> implements Wait<T> {
         throw new WebDriverException(e);
       }
     }
+  }
+
+  static String formatTimeout(Duration timeout) {
+    BigDecimal seconds =
+        BigDecimal.valueOf(timeout.toMillis()).divide(BigDecimal.valueOf(1000), 3, HALF_UP);
+    String value = seconds.stripTrailingZeros().toPlainString();
+    boolean singular = seconds.compareTo(ONE) == 0;
+    return value + (singular ? " second" : " seconds");
   }
 
   private Throwable propagateIfNotIgnored(Throwable e) {

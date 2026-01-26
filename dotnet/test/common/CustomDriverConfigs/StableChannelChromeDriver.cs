@@ -37,8 +37,5 @@ public class StableChannelChromeDriver : ChromeDriver
     {
     }
 
-    public static ChromeOptions DefaultOptions
-    {
-        get { return new ChromeOptions() { BrowserVersion = "139" }; }
-    }
+    public static ChromeOptions DefaultOptions => new ChromeOptions();
 }

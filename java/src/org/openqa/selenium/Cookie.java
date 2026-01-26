@@ -24,10 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class Cookie implements Serializable {
   private static final long serialVersionUID = 4115876353625612383L;
 

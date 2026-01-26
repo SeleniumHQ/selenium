@@ -16,16 +16,16 @@
 // under the License.
 
 use crate::chrome::CHROMEDRIVER_NAME;
-use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
+use crate::config::ManagerConfig;
 use crate::config::OS::MACOS;
 use crate::downloads::read_redirect_from_link;
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, Logger, SeleniumManager, LATEST_RELEASE, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+    LATEST_RELEASE, Logger, OFFLINE_REQUEST_ERR_MSG, SeleniumManager, WINDOWS, create_http_client,
 };
 use anyhow::Error;
 use reqwest::Client;

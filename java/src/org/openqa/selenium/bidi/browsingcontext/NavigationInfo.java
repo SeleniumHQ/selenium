@@ -33,7 +33,7 @@ public class NavigationInfo {
 
   private final String url;
 
-  private NavigationInfo(
+  protected NavigationInfo(
       String browsingContextId, String navigationId, long timestamp, String url) {
     this.browsingContextId = browsingContextId;
     this.navigationId = navigationId;

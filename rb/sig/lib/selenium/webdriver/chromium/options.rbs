@@ -6,21 +6,21 @@ module Selenium
 
         @profile: untyped
 
-        @options: untyped
+        @options: Hash[String | Symbol, untyped]
 
-        @logging_prefs: untyped
+        @logging_prefs: Hash[Symbol | String, untyped]
 
-        @encoded_extensions: untyped
+        @encoded_extensions: Array[String]
 
-        @extensions: untyped
+        @extensions: Array[String]
 
         attr_accessor profile: untyped
 
-        attr_accessor logging_prefs: untyped
+        attr_accessor logging_prefs: Hash[Symbol | String, untyped]
 
         CAPABILITIES: Hash[Symbol, String]
 
-        attr_reader extensions: untyped
+        attr_reader extensions: Array[String]
 
         def initialize: (?profile: untyped?, **untyped opts) -> void
 

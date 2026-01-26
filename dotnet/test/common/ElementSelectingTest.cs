@@ -269,77 +269,23 @@ public class ElementSelectingTest : DriverTestFixture
     //TODO: Test selecting options
 
 
-    private IWebElement EnabledUnselectedCheckbox
-    {
-        get
-        {
-            return driver.FindElement(By.Id("checky"));
-        }
-    }
+    private IWebElement EnabledUnselectedCheckbox => driver.FindElement(By.Id("checky"));
 
-    private IWebElement EnabledSelectedCheckbox
-    {
-        get
-        {
-            return driver.FindElement(By.Id("checkedchecky"));
-        }
-    }
+    private IWebElement EnabledSelectedCheckbox => driver.FindElement(By.Id("checkedchecky"));
 
-    private IWebElement DisabledUnselectedCheckbox
-    {
-        get
-        {
-            return driver.FindElement(By.Id("disabledchecky"));
-        }
-    }
+    private IWebElement DisabledUnselectedCheckbox => driver.FindElement(By.Id("disabledchecky"));
 
-    private IWebElement RandomlyDisabledSelectedCheckbox
-    {
-        get
-        {
-            return driver.FindElement(By.Id("randomly_disabled_checky"));
-        }
-    }
+    private IWebElement RandomlyDisabledSelectedCheckbox => driver.FindElement(By.Id("randomly_disabled_checky"));
 
-    private IWebElement EnabledUnselectedRadioButton
-    {
-        get
-        {
-            return driver.FindElement(By.Id("peas"));
-        }
-    }
+    private IWebElement EnabledUnselectedRadioButton => driver.FindElement(By.Id("peas"));
 
-    private IWebElement EnabledSelectedRadioButton
-    {
-        get
-        {
-            return driver.FindElement(By.Id("cheese_and_peas"));
-        }
-    }
+    private IWebElement EnabledSelectedRadioButton => driver.FindElement(By.Id("cheese_and_peas"));
 
-    private IWebElement DisabledSelectedRadioButton
-    {
-        get
-        {
-            return driver.FindElement(By.Id("lone_disabled_selected_radio"));
-        }
-    }
+    private IWebElement DisabledSelectedRadioButton => driver.FindElement(By.Id("lone_disabled_selected_radio"));
 
-    private IWebElement DisabledUnselectedRadioButton
-    {
-        get
-        {
-            return driver.FindElement(By.Id("nothing"));
-        }
-    }
+    private IWebElement DisabledUnselectedRadioButton => driver.FindElement(By.Id("nothing"));
 
-    private IWebElement RandomlyDisabledUnselectedRadioButton
-    {
-        get
-        {
-            return driver.FindElement(By.Id("randomly_disabled_nothing"));
-        }
-    }
+    private IWebElement RandomlyDisabledUnselectedRadioButton => driver.FindElement(By.Id("randomly_disabled_nothing"));
 
     private IWebElement SelectedMultipleSelectOption
     {
@@ -350,11 +296,5 @@ public class ElementSelectingTest : DriverTestFixture
         }
     }
 
-    private IWebElement NonSelectableElement
-    {
-        get
-        {
-            return driver.FindElement(By.TagName("div"));
-        }
-    }
+    private IWebElement NonSelectableElement => driver.FindElement(By.TagName("div"));
 }

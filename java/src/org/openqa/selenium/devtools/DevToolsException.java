@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.devtools;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 public class DevToolsException extends WebDriverException {
 
-  public DevToolsException(Throwable cause) {
+  public DevToolsException(@Nullable Throwable cause) {
     this(cause.getMessage(), cause);
   }
 
-  public DevToolsException(String message) {
+  public DevToolsException(@Nullable String message) {
     this(message, null);
   }
 
-  public DevToolsException(String message, Throwable cause) {
+  public DevToolsException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
     addInfo(WebDriverException.DRIVER_INFO, "DevTools Connection");
   }

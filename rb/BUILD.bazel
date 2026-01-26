@@ -122,12 +122,12 @@ rb_gem_push(
 rb_binary(
     name = "selenium-webdriver-bump-nightly-version",
     args = [
-        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/support/nightly_version_generator.rb",
         "rb/lib/selenium/webdriver/version.rb",
     ],
     deps = [
-        "//rb/lib/selenium/support:nightly_version_generator",
         "//rb/lib/selenium/webdriver:version",
+        "//rb/support:nightly_version_generator",
     ],
 )
 
@@ -143,12 +143,12 @@ rb_gem_push(
 rb_binary(
     name = "selenium-devtools-bump-nightly-version",
     args = [
-        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/support/nightly_version_generator.rb",
         "rb/lib/selenium/devtools/version.rb",
     ],
     deps = [
         "//rb/lib/selenium/devtools:version",
-        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/support:nightly_version_generator",
     ],
 )
 
@@ -177,28 +177,59 @@ rb_binary(
     ],
 )
 
-rb_test(
-    name = "lint",
+rb_binary(
+    name = "bundle-update",
     args = [
-        "--autocorrect",
-        "--config=rb/.rubocop.yml",
-        "rb/",
-        "Rakefile",
+        "rb/support/bundle_update.rb",
     ],
     data = [
-        ".rubocop.yml",
-        "//:rakefile",
+        "Gemfile",
     ],
-    main = "@bundle//bin:rubocop",
-    tags = ["no-sandbox"],
     deps = [
-        ":selenium-devtools",
-        ":selenium-webdriver",
-        "//rb/lib/selenium/devtools:cdp-generate",
-        "//rb/lib/selenium/support:nightly_version_generator",
-        "//rb/spec",
-        "@bundle",
+        "//rb/support:bundle_update",
     ],
+)
+
+_LINT_ARGS = [
+    "--config=rb/.rubocop.yml",
+    "rb/",
+    "Rakefile",
+    "rake_tasks/",
+]
+
+_LINT_DATA = [
+    ".rubocop.yml",
+    "//:rakefile",
+]
+
+_LINT_DEPS = [
+    ":selenium-devtools",
+    ":selenium-webdriver",
+    "//rb/lib/selenium/devtools:cdp-generate",
+    "//rb/support:nightly_version_generator",
+    "//rb/spec",
+    "@bundle",
+]
+
+rb_test(
+    name = "lint",
+    args = ["--autocorrect"] + _LINT_ARGS,
+    data = _LINT_DATA,
+    main = "@bundle//bin:rubocop",
+    tags = [
+        "no-sandbox",
+        "skip-rbe",
+    ],
+    deps = _LINT_DEPS,
+)
+
+rb_binary(
+    name = "lint-unsafe",
+    testonly = True,
+    args = ["--autocorrect-all"] + _LINT_ARGS,
+    data = _LINT_DATA,
+    main = "@bundle//bin:rubocop",
+    deps = _LINT_DEPS,
 )
 
 rb_binary(
@@ -212,6 +243,43 @@ rb_binary(
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
+        "@bundle",
+    ],
+)
+
+rb_binary(
+    name = "steep",
+    args = [
+        "rb/support/steep_check.rb",
+    ],
+    data = [
+        "Gemfile",
+        "Gemfile.lock",
+        "Steepfile",
+        "rbs_collection.lock.yaml",
+        "rbs_collection.yaml",
+    ],
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "//rb/support:steep_check",
+        "@bundle",
+    ],
+)
+
+rb_binary(
+    name = "rbs-update",
+    args = [
+        "rb/support/rbs_collection_update.rb",
+    ],
+    data = [
+        "Gemfile",
+        "Gemfile.lock",
+        "rbs_collection.lock.yaml",
+        "rbs_collection.yaml",
+    ],
+    deps = [
+        "//rb/support:rbs_collection_update",
         "@bundle",
     ],
 )

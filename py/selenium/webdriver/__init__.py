@@ -15,36 +15,46 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .chrome.options import Options as ChromeOptions  # noqa
-from .chrome.service import Service as ChromeService  # noqa
-from .chrome.webdriver import WebDriver as Chrome  # noqa
-from .common.action_chains import ActionChains  # noqa
-from .common.desired_capabilities import DesiredCapabilities  # noqa
-from .common.keys import Keys  # noqa
-from .common.proxy import Proxy  # noqa
-from .edge.options import Options as EdgeOptions  # noqa
-from .edge.service import Service as EdgeService  # noqa
-from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
-from .edge.webdriver import WebDriver as Edge  # noqa
-from .firefox.firefox_profile import FirefoxProfile  # noqa
-from .firefox.options import Options as FirefoxOptions  # noqa
-from .firefox.service import Service as FirefoxService  # noqa
-from .firefox.webdriver import WebDriver as Firefox  # noqa
-from .ie.options import Options as IeOptions  # noqa
-from .ie.service import Service as IeService  # noqa
-from .ie.webdriver import WebDriver as Ie  # noqa
-from .remote.webdriver import WebDriver as Remote  # noqa
-from .safari.options import Options as SafariOptions
-from .safari.service import Service as SafariService  # noqa
-from .safari.webdriver import WebDriver as Safari  # noqa
-from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
-from .webkitgtk.service import Service as WebKitGTKService  # noqa
-from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
-from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
-from .wpewebkit.service import Service as WPEWebKitService  # noqa
-from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
+import logging
+import os
 
-__version__ = "4.36.0.202508121825"
+# Enable debug logging if SE_DEBUG environment variable is set
+if os.environ.get("SE_DEBUG"):
+    logger = logging.getLogger("selenium")
+    logger.setLevel(logging.DEBUG)
+    if not logger.handlers:
+        logger.addHandler(logging.StreamHandler())
+
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.webdriver import WebDriver as Chrome
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.edge.service import Service as EdgeService
+from selenium.webdriver.edge.webdriver import WebDriver as ChromiumEdge
+from selenium.webdriver.edge.webdriver import WebDriver as Edge
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
+from selenium.webdriver.ie.options import Options as IeOptions
+from selenium.webdriver.ie.service import Service as IeService
+from selenium.webdriver.ie.webdriver import WebDriver as Ie
+from selenium.webdriver.remote.webdriver import WebDriver as Remote
+from selenium.webdriver.safari.options import Options as SafariOptions
+from selenium.webdriver.safari.service import Service as SafariService
+from selenium.webdriver.safari.webdriver import WebDriver as Safari
+from selenium.webdriver.webkitgtk.options import Options as WebKitGTKOptions
+from selenium.webdriver.webkitgtk.service import Service as WebKitGTKService
+from selenium.webdriver.webkitgtk.webdriver import WebDriver as WebKitGTK
+from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
+from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
+from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit
+
+__version__ = "4.41.0.202601181916"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [

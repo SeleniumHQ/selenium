@@ -30,7 +30,7 @@ public class InvalidSelectorException : WebDriverException
     /// <summary>
     /// Link to the documentation for this error
     /// </summary>
-    private static string supportUrl = baseSupportUrl + "#invalid-selector-exception";
+    private static string supportUrl = baseSupportUrl + "#invalidselectorexception";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class.

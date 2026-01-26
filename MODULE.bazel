@@ -1,32 +1,31 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
-bazel_dep(name = "aspect_bazel_lib", version = "2.13.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.14.0")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.21.0")
+bazel_dep(name = "aspect_rules_jest", version = "0.24.3")
 bazel_dep(name = "aspect_rules_js", version = "2.3.7")
 bazel_dep(name = "aspect_rules_ts", version = "3.6.0")
-bazel_dep(name = "bazel_features", version = "1.23.0")
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "buildifier_prebuilt", version = "6.4.0")
+bazel_dep(name = "bazel_features", version = "1.32.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "buildifier_prebuilt", version = "7.3.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.27.0")
-bazel_dep(name = "platforms", version = "0.0.11")
-
-# Required for the closure rules
-bazel_dep(name = "protobuf", version = "29.2", dev_dependency = True, repo_name = "com_google_protobuf")
+bazel_dep(name = "platforms", version = "1.0.0")
 
 # Required for rules_rust to import the crates properly
-bazel_dep(name = "rules_cc", version = "0.2.0", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.8", dev_dependency = True)
 
-bazel_dep(name = "rules_dotnet", version = "0.17.5")
+bazel_dep(name = "rules_closure", version = "0.15.0")
+bazel_dep(name = "rules_dotnet", version = "0.20.5")
 bazel_dep(name = "rules_java", version = "8.7.1")
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 bazel_dep(name = "rules_multitool", version = "1.3.0")
 bazel_dep(name = "rules_nodejs", version = "6.3.2")
-bazel_dep(name = "rules_oci", version = "1.8.0")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
-bazel_dep(name = "rules_python", version = "1.5.0")
+bazel_dep(name = "rules_python", version = "1.7.0")
 bazel_dep(name = "rules_proto", version = "7.0.2")
 bazel_dep(name = "rules_ruby", version = "0.19.0")
+bazel_dep(name = "rules_rust", version = "0.67.0")
 
 # Until `rules_jvm_external` 6.8 ships
 single_version_override(
@@ -66,7 +65,9 @@ npm.npm_translate_lock(
     data = [
         "@//:package.json",
         "@//:pnpm-workspace.yaml",
+        "@//javascript/atoms:package.json",
         "@//javascript/grid-ui:package.json",
+        "@//javascript/private:package.json",
         "@//javascript/selenium-webdriver:package.json",
     ],
     generate_bzl_library_targets = True,
@@ -100,35 +101,20 @@ use_repo(dotnet, "dotnet_toolchains")
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
 use_repo(selenium_paket, "paket.nuget")
 
-register_toolchains("@dotnet_toolchains//:all")
+docfx_ext = use_extension("//dotnet/private:docfx_repo.bzl", "docfx_extension")
+use_repo(docfx_ext, "docfx")
 
-oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
-oci.pull(
-    name = "java_image_base",
-    digest = "sha256:1df9f3e6a2de0544dd04f1840aa811d334045c9126f9e93d8da45448061ad51e",
-    image = "gcr.io/distroless/java17",
-)
-oci.pull(
-    name = "firefox_standalone",
-    digest = "sha256:b6d8279268b3183d0d33e667e82fec1824298902f77718764076de763673124f",
-    image = "index.docker.io/selenium/standalone-firefox",
-)
-oci.pull(
-    name = "chrome_standalone",
-    digest = "sha256:1b809a961a0a77787a7cccac74ddc5570b7e89747f925b8469ddb9a6624d4ece",
-    image = "index.docker.io/selenium/standalone-chrome",
-)
-use_repo(oci, "chrome_standalone", "firefox_standalone", "java_image_base")
+register_toolchains("@dotnet_toolchains//:all")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    python_version = "3.9",
+    python_version = "3.10.19",
 )
-python.toolchain(python_version = "3.10")
-python.toolchain(python_version = "3.11")
-python.toolchain(python_version = "3.12")
-python.toolchain(python_version = "3.13")
+python.toolchain(python_version = "3.11.14")
+python.toolchain(python_version = "3.12.12")
+python.toolchain(python_version = "3.13.9")
+python.toolchain(python_version = "3.14.0")
 use_repo(python, "pythons_hub")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
@@ -140,11 +126,11 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         requirements_lock = "//py:requirements_lock.txt",
     )
     for version in [
-        "3.9",
-        "3.10",
-        "3.11",
-        "3.12",
-        "3.13",
+        "3.10.19",
+        "3.11.14",
+        "3.12.12",
+        "3.13.9",
+        "3.14.0",
     ]
 ]
 
@@ -173,21 +159,25 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "com.github.javaparser:javaparser-core:3.27.0",
-        "com.github.spotbugs:spotbugs:4.9.4",
+        "org.checkerframework:checker-qual:3.53.0",
+        "com.github.javaparser:javaparser-core:3.28.0",
+        "com.github.spotbugs:spotbugs:4.9.8",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         "com.google.code.findbugs:jsr305:3.0.2",
-        "com.google.code.gson:gson:2.13.1",
-        "com.google.guava:guava:33.4.8-jre",
-        "com.github.ben-manes.caffeine:caffeine:3.2.2",
+        "com.google.code.gson:gson:2.13.2",
+        "com.google.guava:guava:33.5.0-jre",
+        "com.github.ben-manes.caffeine:caffeine:3.2.3",
         "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
-        "com.google.googlejavaformat:google-java-format:1.28.0",
+        "com.google.googlejavaformat:google-java-format:1.33.0",
+        "com.google.protobuf:protobuf-java:4.33.4",
+        "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:24.1",
+        "com.uber.nullaway:nullaway:0.12.15",
         "dev.failsafe:failsafe:3.3.2",
-        "io.grpc:grpc-context:1.74.0",
-        "io.lettuce:lettuce-core:6.8.0.RELEASE",
+        "io.grpc:grpc-context:1.78.0",
+        "io.lettuce:lettuce-core:7.2.1.RELEASE",
         "io.netty:netty-buffer",
         "io.netty:netty-codec-http",
         "io.netty:netty-codec-http2",
@@ -205,14 +195,15 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
         "it.ozimov:embedded-redis:0.7.3",
-        "net.bytebuddy:byte-buddy:1.17.7",
-        "org.htmlunit:htmlunit-core-js:4.14.0",
-        "org.apache.commons:commons-exec:1.5.0",
-        "org.apache.logging.log4j:log4j-core:2.25.1",
-        "org.assertj:assertj-core:3.27.4",
-        "org.bouncycastle:bcpkix-jdk18on:1.81",
+        "javax.inject:javax.inject:1",
+        "net.bytebuddy:byte-buddy:1.18.4",
+        "org.htmlunit:htmlunit-core-js:4.21.0",
+        "org.apache.logging.log4j:log4j-core:2.25.3",
+        "org.assertj:assertj-core:3.27.6",
+        "org.bouncycastle:bcpkix-jdk18on:1.83",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.4",
+        "org.jboss.marshalling:jboss-marshalling:2.2.3.Final",
         "org.jspecify:jspecify:1.0.0",
         "org.junit.jupiter:junit-jupiter-api",
         "org.junit.jupiter:junit-jupiter-engine",
@@ -221,8 +212,8 @@ maven.install(
         "org.junit.platform:junit-platform-reporting",
         "org.junit.platform:junit-platform-commons",
         "org.junit.platform:junit-platform-engine",
-        "org.mockito:mockito-core:5.18.0",
-        "org.redisson:redisson:3.50.0",
+        "org.mockito:mockito-core:5.21.0",
+        "org.redisson:redisson:4.1.0",
         "org.slf4j:slf4j-api:2.0.17",
         "org.slf4j:slf4j-jdk14:2.0.17",
         "org.tomlj:tomlj:1.1.1",
@@ -231,9 +222,9 @@ maven.install(
         "uk.org.webcompere:system-stubs-core:2.1.8",
     ],
     boms = [
-        "io.opentelemetry:opentelemetry-bom:1.53.0",
-        "io.netty:netty-bom:4.1.121.Final",
-        "org.junit:junit-bom:5.13.4",
+        "io.opentelemetry:opentelemetry-bom:1.58.0",
+        "io.netty:netty-bom:4.2.9.Final",
+        "org.junit:junit-bom:6.0.2",
     ],
     excluded_artifacts = [
         "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
@@ -243,6 +234,11 @@ maven.install(
     fail_if_repin_required = True,
     fail_on_missing_checksum = True,
     fetch_sources = True,
+    known_contributing_modules = [
+        "rules_closure",
+        "rules_web_testing_java",
+        "selenium",
+    ],
     lock_file = "//java:maven_install.json",
     repositories = [
         "https://repo1.maven.org/maven2",
@@ -259,6 +255,7 @@ ruby.toolchain(
         "curl",
         "libyaml",
     ],
+    ruby_build_version = "20260110",
     version_file = "//:rb/.ruby-version",
 )
 ruby.bundle_fetch(
@@ -270,88 +267,90 @@ ruby.bundle_fetch(
         "//:rb/selenium-webdriver.gemspec",
     ],
     gem_checksums = {
-        "activesupport-7.2.2.1": "842bcbf8a92977f80fb4750661a237cf5dd4fdd442066b3c35e88afb488647f5",
-        "addressable-2.8.7": "462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232",
+        "activesupport-7.2.3": "5675c9770dac93e371412684249f9dc3c8cec104efd0624362a520ae685c7b10",
+        "addressable-2.8.8": "7c13b8f9536cf6364c03b9d417c19986019e28f7c00ac8132da4eb0fe393b057",
         "ast-2.4.3": "954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383",
-        "base64-0.2.0": "0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507",
-        "benchmark-0.4.0": "0f12f8c495545e3710c3e4f0480f63f06b4c842cc94cec7f33a956f5180e874a",
-        "bigdecimal-3.1.9": "2ffc742031521ad69c2dfc815a98e426a230a3d22aeac1995826a75dabfad8cc",
-        "bigdecimal-3.1.9-java": "dd9b8f7c870664cd9538a1325ce385ba57a6627969177258c4f0e661a7be4456",
-        "concurrent-ruby-1.3.5": "813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6",
-        "connection_pool-2.5.3": "cfd74a82b9b094d1ce30c4f1a346da23ee19dc8a062a16a85f58eab1ced4305b",
-        "crack-1.0.0": "c83aefdb428cdc7b66c7f287e488c796f055c0839e6e545fec2c7047743c4a49",
-        "csv-3.3.4": "e96ecd5a8c3494aa5b596282249daba5c6033203c199248e6146e36d2a78d8cd",
+        "base64-0.3.0": "27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b",
+        "benchmark-0.5.0": "465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c",
+        "bigdecimal-4.0.1": "8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7",
+        "bigdecimal-4.0.1-java": "95c40a0a92dfb83b293f4b9865cd27caa7c045bedab86f3620e5dc27e6553083",
+        "concurrent-ruby-1.3.6": "6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab",
+        "connection_pool-3.0.2": "33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a",
+        "crack-1.0.1": "ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e",
+        "csv-3.3.5": "6e5134ac3383ef728b7f02725d9872934f523cb40b961479f69cf3afa6c8e73f",
         "curb-1.0.9": "07e5b74a4836103ce186827528f76a22d3991a9b7c45f5c10ee18ee7b03feb0d",
-        "date-3.4.1": "bf268e14ef7158009bfeaec40b5fa3c7271906e88b196d958a89d4b408abe64f",
-        "date-3.4.1-java": "74740d914c65a922a15657c25ff0e203c16f1d0f7aa910a9ebed712afe9819c4",
-        "debug-1.10.0": "11e28ca74875979e612444104f3972bd5ffb9e79179907d7ad46dba44bd2e7a4",
-        "diff-lcs-1.6.1": "12a5a83f3e37a8e2f4427268e305914d5f1879f22b4e73bb1a09f76a3dd86cd4",
-        "drb-2.2.1": "e9d472bf785f558b96b25358bae115646da0dbfd45107ad858b0bc0d935cb340",
-        "ffi-1.17.2": "297235842e5947cc3036ebe64077584bff583cd7a4e94e9a02fdec399ef46da6",
-        "ffi-1.17.2-java": "94c8516d7c97b21915497b994e41f69e7e8e21d5fc085c498b68e52044e191ec",
-        "ffi-1.17.2-x64-mingw-ucrt": "15d2da54ee578657a333a6059ed16eaba1cbd794ceecd15944825b65c8381ac0",
-        "ffi-1.17.2-x86_64-darwin": "981f2d4e32ea03712beb26e55e972797c2c5a7b0257955d8667ba58f2da6440e",
-        "ffi-1.17.2-x86_64-linux-gnu": "05d2026fc9dbb7cfd21a5934559f16293815b7ce0314846fee2ac8efbdb823ea",
-        "fileutils-1.7.3": "57271e854b694a87755d76f836f5c57b2c9538ebbaf4b2154bb66addf15eb5da",
+        "date-3.5.1": "750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0",
+        "date-3.5.1-java": "12e09477dc932afe45bf768cd362bf73026804e0db1e6c314186d6cd0bee3344",
+        "debug-1.11.1": "2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6",
+        "diff-lcs-1.6.2": "9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962",
+        "drb-2.2.3": "0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373",
+        "erb-6.0.1": "28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5",
+        "erb-6.0.1-java": "5c6b8d885fb0220d4a8ad158f70430d805845939dd44827e5130ef7fdbaed8ba",
+        "ffi-1.17.3": "0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c",
+        "fileutils-1.8.0": "8c6b1df54e2540bdb2f39258f08af78853aa70bad52b4d394bbc6424593c6e02",
         "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
-        "hashdiff-1.1.2": "2c30eeded6ed3dce8401d2b5b99e6963fe5f14ed85e60dd9e33c545a44b71a77",
-        "i18n-1.14.7": "ceba573f8138ff2c0915427f1fc5bdf4aa3ab8ae88c8ce255eb3ecf0a11a5d0f",
-        "io-console-0.8.0": "cd6a9facbc69871d69b2cb8b926fc6ea7ef06f06e505e81a64f14a470fddefa2",
-        "io-console-0.8.0-java": "3cc6fd5c66e587145c1fdf8dc40c2e3d851e90722a5d0cc3f38da352f06fe1bd",
-        "irb-1.15.2": "222f32952e278da34b58ffe45e8634bf4afc2dc7aa9da23fed67e581aa50fdba",
+        "hashdiff-1.2.1": "9c079dbc513dfc8833ab59c0c2d8f230fa28499cc5efb4b8dd276cf931457cd1",
+        "i18n-1.14.8": "285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5",
+        "io-console-0.8.2": "d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc",
+        "io-console-0.8.2-java": "837efefe96084c13ae91114917986ae6c6d1cf063b27b8419cc564a722a38af8",
+        "irb-1.16.0": "2abe56c9ac947cdcb2f150572904ba798c1e93c890c256f8429981a7675b0806",
         "jar-dependencies-0.5.5": "2972b9fcba4b014e6446a84b5c09674a3e8648b95b71768e729f0e8e40568059",
-        "json-2.11.3": "9a10f658a2de67c0eb837eb795dd48132ce797c403e52b5ebef87dcdc7f9ccc1",
-        "json-2.11.3-java": "cfe8db24e49073c5bcd93699d106a1c1c9e5bc301fcc0de05965e72fad999a34",
-        "language_server-protocol-3.17.0.4": "c484626478664fd13482d8180947c50a8590484b1258b99b7aedb3b69df89669",
+        "json-2.18.0": "b10506aee4183f5cf49e0efc48073d7b75843ce3782c68dbeb763351c08fd505",
+        "json-2.18.0-java": "74706f684baeb1a40351ed26fc8fe6e958afa861320d1c28ff4eb7073b29c7aa",
+        "language_server-protocol-3.17.0.5": "fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc",
         "lint_roller-1.1.0": "2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87",
-        "listen-3.9.0": "db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67",
+        "listen-3.10.0": "c6e182db62143aeccc2e1960033bebe7445309c7272061979bb098d03760c9d2",
         "logger-1.7.0": "196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203",
-        "minitest-5.25.5": "391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756",
+        "minitest-6.0.1": "7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb",
+        "mutex_m-0.3.0": "cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751",
         "parallel-1.27.0": "4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130",
-        "parser-3.3.8.0": "2476364142b307fa5a1b1ece44f260728be23858a9c71078e956131a75453c45",
-        "pp-0.6.2": "947ec3120c6f92195f8ee8aa25a7b2c5297bb106d83b41baa02983686577b6ff",
+        "parser-3.3.10.1": "06f6a725d2cd91e5e7f2b7c32ba143631e1f7c8ae2fb918fc4cebec187e6a688",
+        "pp-0.6.3": "2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6",
         "prettyprint-0.2.0": "2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193",
-        "prism-1.4.0": "dc0e3e00e93160213dc2a65519d9002a4a1e7b962db57d444cf1a71565bb703e",
-        "psych-5.2.4": "f2d9810f7f383a6b0fbc705202851e1a55b236bcb8e168ab5dfa5741842ec7c5",
-        "psych-5.2.4-java": "a3ae584e85e11fd069f17a563ef18f204d3df0fde0c093d35ae494fd64164664",
-        "public_suffix-6.0.2": "bfa7cd5108066f8c9602e0d6d4114999a5df5839a63149d3e8b0f9c1d3558394",
+        "prism-1.8.0": "84453a16ef5530ea62c5f03ec16b52a459575ad4e7b9c2b360fd8ce2c39c1254",
+        "psych-5.3.1": "eb7a57cef10c9d70173ff74e739d843ac3b2c019a003de48447b2963d81b1974",
+        "psych-5.3.1-java": "20a4a81ad01479ef060f604ed75ba42fe673169e67d923b1bae5aa4e13cc5820",
+        "public_suffix-7.0.2": "9114090c8e4e7135c1fd0e7acfea33afaab38101884320c65aaa0ffb8e26a857",
         "racc-1.8.1": "4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f",
         "racc-1.8.1-java": "54f2e6d1e1b91c154013277d986f52a90e5ececbe91465d29172e49342732b98",
-        "rack-2.2.13": "ccee101719696a5da12ee9da6fb3b1d20cb329939e089e0e458be6e93667f0fb",
+        "rack-2.2.21": "14e2f72f0765455fe424ff601588ac5ce84e95784f59e99251ffe1527152f739",
         "rainbow-3.1.1": "039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a",
-        "rake-13.2.1": "46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d",
+        "rake-13.3.1": "8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c",
         "rb-fsevent-0.11.2": "43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe",
         "rb-inotify-0.11.1": "a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e",
-        "rbs-3.9.2": "873b5d01a11f3dc15a7cc3bd66d9d50c3d05fad4fbb73b47704eb96f0ba6faf2",
-        "rchardet-1.9.0": "26889486cdd83b378652baf7603f71d93e431bb11bc237b4cd8c65151af4a590",
-        "rdoc-6.13.1": "62a0dac99493c94e8eb7a3fb44e55aefcb4cecb119f7991f25bddc5ed8d472f7",
-        "regexp_parser-2.10.0": "cb6f0ddde88772cd64bff1dbbf68df66d376043fe2e66a9ef77fcb1b0c548c61",
-        "reline-0.6.1": "1afcc9d7cb1029cdbe780d72f2f09251ce46d3780050f3ec39c3ccc6b60675fb",
-        "rexml-3.4.1": "c74527a9a0a04b4ec31dbe0dc4ed6004b960af943d8db42e539edde3a871abca",
-        "rspec-3.13.0": "d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993",
-        "rspec-core-3.13.3": "25136507f4f9cf2e8977a2851e64e438b4331646054e345998714108745cdfe4",
-        "rspec-expectations-3.13.4": "4e43459765dfee900b25aa1361e106ab0799895ede65fc57872069feb559ecd8",
-        "rspec-mocks-3.13.3": "be08abadfe28e932d03b8e70215cd5972bd7693e0f1a45c7479b11e9a773c3c2",
-        "rspec-support-3.13.3": "2a61e393f6e18b7228726e0c6869c5d5a1419d37206116c4d917d145276b3f43",
-        "rubocop-1.75.4": "e0656af44d0811bb40f6d0bd4ed6c8d80c0f05f3444f0e8f0839833dd46d18c6",
-        "rubocop-ast-1.44.1": "e3cc04203b2ef04f6d6cf5f85fe6d643f442b18cc3b23e3ada0ce5b6521b8e92",
-        "rubocop-performance-1.25.0": "6f7d03568a770054117a78d0a8e191cefeffb703b382871ca7743831b1a52ec1",
+        "rbs-3.10.2": "bd8a5dc4c62f229f020146b61844a31f9c79e649449d212904a474eb79c846fc",
+        "rchardet-1.10.0": "d5ea2ed61a720a220f1914778208e718a0c7ed2a484b6d357ba695aa7001390f",
+        "rdoc-7.1.0": "494899df0706c178596ca6e1d50f1b7eb285a9b2aae715be5abd742734f17363",
+        "regexp_parser-2.11.3": "ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4",
+        "reline-0.6.3": "1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835",
+        "rexml-3.4.4": "19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142",
+        "rspec-3.13.2": "206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587",
+        "rspec-core-3.13.6": "a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d",
+        "rspec-expectations-3.13.5": "33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836",
+        "rspec-mocks-3.13.7": "0979034e64b1d7a838aaaddf12bf065ea4dc40ef3d4c39f01f93ae2c66c62b1c",
+        "rspec-support-3.13.6": "2e8de3702427eab064c9352fe74488cc12a1bfae887ad8b91cba480ec9f8afb2",
+        "rubocop-1.82.1": "09f1a6a654a960eda767aebea33e47603080f8e9c9a3f019bf9b94c9cab5e273",
+        "rubocop-ast-1.49.0": "49c3676d3123a0923d333e20c6c2dbaaae2d2287b475273fddee0c61da9f71fd",
+        "rubocop-performance-1.26.1": "cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834",
         "rubocop-rake-0.7.1": "3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d",
-        "rubocop-rspec-3.6.0": "c0e4205871776727e54dee9cc91af5fd74578001551ba40e1fe1a1ab4b404479",
+        "rubocop-rspec-3.9.0": "8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2",
         "ruby-progressbar-1.13.0": "80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33",
-        "rubyzip-2.4.1": "8577c88edc1fde8935eb91064c5cb1aef9ad5494b940cf19c775ee833e075615",
+        "rubyzip-3.2.2": "c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c",
         "securerandom-0.4.1": "cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1",
-        "steep-1.5.3": "7c6302a4d5932d0a46176ebc79766e52b853c223a85525aa2f8911e345123b85",
-        "stringio-3.1.7": "5b78b7cb242a315fb4fca61a8255d62ec438f58da2b90be66048546ade4507fa",
-        "strscan-3.1.4": "8e130a503aa6c79352c6ac02a9819507c8b8720c174ce8335e3eb2c8cc2ae042",
-        "strscan-3.1.4-java": "5551e01d215ba8ac7dadb6dab46b9fb4c33303ba63eaf3e1b0496c078b8d3fb8",
-        "terminal-table-3.0.2": "f951b6af5f3e00203fb290a669e0a85c5dd5b051b3b023392ccfd67ba5abae91",
+        "steep-1.10.0": "1b295b55f9aaff1b8d3ee42453ee55bc2a1078fda0268f288edb2dc014f4d7d1",
+        "stringio-3.2.0": "c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1",
+        "strscan-3.1.7": "5f76462b94a3ea50b44973225b7d75b2cb96d4e1bee9ef1319b99ca117b72c8c",
+        "strscan-3.1.7-java": "acde34c12323095e46f9c46d869d41d0170e0a6817fc723ffc296372ed1088ee",
+        "terminal-table-4.0.0": "f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2",
+        "tsort-0.2.0": "9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f",
         "tzinfo-2.0.6": "8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b",
-        "unicode-display_width-2.6.0": "12279874bba6d5e4d2728cef814b19197dbb10d7a7837a869bab65da943b7f5a",
-        "webmock-3.25.1": "ab9d5d9353bcbe6322c83e1c60a7103988efc7b67cd72ffb9012629c3d396323",
-        "webrick-1.9.1": "b42d3c94f166f3fb73d87e9b359def9b5836c426fc8beacf38f2184a21b2a989",
+        "unicode-display_width-3.2.0": "0cdd96b5681a5949cdbc2c55e7b420facae74c4aaf9a9815eee1087cb1853c42",
+        "unicode-emoji-4.2.0": "519e69150f75652e40bf736106cfbc8f0f73aa3fb6a65afe62fefa7f80b0f80f",
+        "uri-1.1.1": "379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6",
+        "webmock-3.26.1": "4f696fb57c90a827c20aadb2d4f9058bbff10f7f043bd0d4c3f58791143b1cd7",
+        "webrick-1.9.2": "beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131",
         "websocket-1.2.11": "b7e7a74e2410b5e85c25858b26b3322f29161e300935f70a0e0d3c35e0462737",
-        "yard-0.9.37": "a6e910399e78e613f80ba9add9ba7c394b1a935f083cccbef82903a3d2a26992",
+        "yard-0.9.38": "721fb82afb10532aa49860655f6cc2eaa7130889df291b052e1e6b268283010f",
     },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
@@ -359,6 +358,18 @@ ruby.bundle_fetch(
 use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 
 register_toolchains("@ruby_toolchains//:all")
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(versions = ["1.89.0"])
+
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    cargo_lockfile = "//rust:Cargo.lock",
+    lockfile = "//rust:Cargo.Bazel.lock",
+    manifests = ["//rust:Cargo.toml"],
+)
+use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
 use_repo(

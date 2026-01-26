@@ -55,6 +55,14 @@ public class DockerFlags implements HasRoles {
   private Integer dockerPort;
 
   @Parameter(
+      names = {"--docker-api-version"},
+      description =
+          "Docker API version to use. Pin an API version instead of auto-detecting by"
+              + " implementation")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.40")
+  private String apiVersion;
+
+  @Parameter(
       names = {"--docker-server-start-timeout"},
       description =
           "Max time (in seconds) to wait for the server to successfully start up, before cancelling"
@@ -106,6 +114,17 @@ public class DockerFlags implements HasRoles {
       name = "devices",
       example = "[\"/dev/kvm:/dev/kvm\"]")
   private List<String> devices;
+
+  @Parameter(
+      names = {"--docker-grouping-labels"},
+      description =
+          "Users to specify custom labels for grouping dynamic containers. This will make the"
+              + " system more flexible for different platforms and use cases")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "grouping-labels",
+      example = "[\"azure.container.group\", \"aws.ecs.cluster\"]")
+  private List<String> groupingLabels;
 
   @Parameter(
       names = {"--docker-video-image"},

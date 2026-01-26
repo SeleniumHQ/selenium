@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.distributor;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -38,6 +38,6 @@ class GetDistributorStatus implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     DistributorStatus status = distributor.getStatus();
 
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", status)));
+    return new HttpResponse().setContent(asJson(Map.of("value", status)));
   }
 }

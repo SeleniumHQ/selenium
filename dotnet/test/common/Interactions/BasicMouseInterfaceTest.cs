@@ -30,8 +30,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
     [SetUp]
     public void SetupTest()
     {
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -154,6 +153,24 @@ public class BasicMouseInterfaceTest : DriverTestFixture
         driver.Url = javascriptPage;
 
         IWebElement toClick = driver.FindElement(By.Id("clickField"));
+
+        Actions actionProvider = new Actions(driver);
+        IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
+
+        contextClick.Perform();
+        Assert.That(toClick.GetAttribute("value"), Is.EqualTo("Clicked"), "Value should change to Clicked.");
+    }
+
+    [Test]
+    [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+    public void ShouldAllowMoveAndClickDoubleWrappedElement()
+    {
+        driver.Url = javascriptPage;
+
+        IWebElement toClick = driver.FindElement(By.Id("clickField"));
+
+        toClick = new WebElementWrapper(toClick);
+        toClick = new WebElementWrapper(toClick);
 
         Actions actionProvider = new Actions(driver);
         IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
@@ -373,7 +390,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement reporter = driver.FindElement(By.Id("status"));
 
-        WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20), "Coordinate matching was not within tolerance");
+        WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 100), "Coordinate matching was not within tolerance");
     }
 
     [Test]

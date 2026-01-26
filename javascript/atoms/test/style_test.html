@@ -1,315 +1,215 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>style_test.html</title>
+    <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+    <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+    <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
     <script src="test_bootstrap.js"></script>
     <script type="text/javascript">
+      goog.require('bot.color');
       goog.require('bot.dom');
       goog.require('bot.locators');
       goog.require('bot.userAgent');
       goog.require('goog.array');
-      goog.require('goog.testing.jsunit');
     </script>
 
     <script type="text/javascript">
-      function testStyleAttributeReturnsCssText() {
-        var e = bot.locators.findElement({id: 'child'});
-        assertEquals('visibility: inherit;', bot.dom.getAttribute(e, 'style'));
+      function assertColorFuzzyEquals(assert, str, expected, actual, delta) {
+        assert.ok(
+            (Math.abs(expected[0] - actual[0]) <= delta) &&
+                (Math.abs(expected[1] - actual[1]) <= delta) &&
+                (Math.abs(expected[2] - actual[2]) <= delta),
+            str + ' Expected: ' + expected + '  and got: ' + actual +
+            ' w/ delta: ' + delta);
       }
 
-      function testStyleAttributeReturnsWithTrailingSemicolon() {
+      QUnit.test('style attribute returns css text', function(assert) {
+        var e = bot.locators.findElement({id: 'child'});
+        assert.strictEqual(bot.dom.getAttribute(e, 'style'), 'visibility: inherit;');
+      });
+
+      QUnit.test('style attribute returns with trailing semicolon', function(assert) {
         var e = bot.locators.findElement({id: 'parent'});
-        assertEquals('visibility: visible;', bot.dom.getAttribute(e, 'style'));
-      }
+        assert.strictEqual(bot.dom.getAttribute(e, 'style'), 'visibility: visible;');
+      });
 
-      function testInlineStyleReturnsEmptyStringForNonexistentProperty() {
+      QUnit.test('inline style returns empty string for nonexistent property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'gibberish'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'gibberish'), '');
+      });
 
-      function testInlineStyleReturnsEmptyStringForUnspecifiedProperty() {
+      QUnit.test('inline style returns empty string for unspecified property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'display'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'display'), '');
+      });
 
-      function testInlineStyleReturnsEmptyStringForCssSpecifiedProperty() {
+      QUnit.test('inline style returns empty string for css specified property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'height'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'height'), '');
+      });
 
-      function testInlineStyleReturnsInlineProperty() {
+      QUnit.test('inline style returns inline property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('inherit', bot.dom.getInlineStyle(e, 'visibility'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'visibility'), 'inherit');
+      });
 
-      function testEffectiveStyleReturnsInlineProperty() {
+      QUnit.test('effective style returns inline property', function(assert) {
         var e = bot.locators.findElement({id: 'parent'});
-        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
-      }
+        assert.strictEqual(bot.dom.getEffectiveStyle(e, 'visibility'), 'visible');
+      });
 
-      function testEffectiveStyleReturnsCssSpecifiedProperty() {
+      QUnit.test('effective style returns css specified property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('20px', bot.dom.getEffectiveStyle(e, 'height'));
-      }
+        assert.strictEqual(bot.dom.getEffectiveStyle(e, 'height'), '20px');
+      });
 
-      function testEffectiveStyleReturnsInheritedProperty() {
+      QUnit.test('effective style returns inherited property', function(assert) {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
-      }
+        assert.strictEqual(bot.dom.getEffectiveStyle(e, 'visibility'), 'visible');
+      });
 
-      function testGetEffectiveStyleReturnsNamedColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'namedColor'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        var rgba = bot.color.parseRgbaColor(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
-
-      function testGetEffectiveStyleReturnsRgbStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'rgb'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
-
-      function testGetEffectiveStyleReturnsRgbPercentStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'rgbpct'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
-
-      function testGetEffectiveStyleReturnsHexStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'hex'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        var rgba = bot.color.parseRgbaColor(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
-
-      function testGetEffectiveStyleReturnsHslStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'hsl'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle hsl, and returns 'transparent' instead
-        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
-          var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(1,rgba[3]);
-        } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
-        }
-      }
-
-      function testGetEffectiveStyleReturnsRgbaStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'rgba'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
-        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
-          var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
-        } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
-        }
-      }
-
-      function testGetEffectiveStyleReturnsRgbaPercentStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'rgbapct'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
-        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
-          var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
-        } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
-        }
-      }
-
-      function testGetEffectiveStyleReturnsHslaStyleColorStandardizedToRgbaFormat() {
-        var e = bot.locators.findElement({id: 'hsla'});
-        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
-        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
-          var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
-        } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
-        }
-      }
-
-      function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
-        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
-      }
-
-
-      function testGetEffectiveStyleReturnsNamedColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns named color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'namedColor'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
         var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
+        assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+        assert.strictEqual(rgba[3], 1);
+      });
 
-      function testGetEffectiveStyleReturnsRgbStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns rgb style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'rgb'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
         var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
+        assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+        assert.strictEqual(rgba[3], 1);
+      });
 
-      function testGetEffectiveStyleReturnsRgbPercentStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns rgb percent style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'rgbpct'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
         var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
+        assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+        assert.strictEqual(rgba[3], 1);
+      });
 
-      function testGetEffectiveStyleReturnsHexStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns hex style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'hex'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
         var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-        assertEquals(1,rgba[3]);
-      }
+        assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+        assert.strictEqual(rgba[3], 1);
+      });
 
-      function testGetEffectiveStyleReturnsHslStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns hsl style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'hsl'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle hsl, and returns 'transparent' instead
         if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
           var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(1,rgba[3]);
+          assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+          assert.strictEqual(rgba[3], 1);
         } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
+          assert.strictEqual(rgbaStyle.toLowerCase(), 'transparent');
         }
-      }
+      });
 
-      function testGetEffectiveStyleReturnsRgbaStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns rgba style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'rgba'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
         if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
           var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+          assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+          assert.strictEqual(Math.round(rgba[3] * 10) / 10, 0.5);
         } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
+          assert.strictEqual(rgbaStyle.toLowerCase(), 'transparent');
         }
-      }
+      });
 
-      function testGetEffectiveStyleReturnsRgbaPercentStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns rgba percent style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'rgbapct'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
         if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
           var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+          assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+          assert.strictEqual(Math.round(rgba[3] * 10) / 10, 0.5);
         } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
+          assert.strictEqual(rgbaStyle.toLowerCase(), 'transparent');
         }
-      }
+      });
 
-      function testGetEffectiveStyleReturnsHslaStyleColorStandardizedToRgbaFormat() {
+      QUnit.test('get effective style returns hsla style color standardized to rgba format', function(assert) {
         var e = bot.locators.findElement({id: 'hsla'});
         var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
-        // IE < 9 does not handle rgba, and returns 'transparent' instead
         if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
           var rgba = bot.color.maybeParseRgbaColor_(rgbaStyle);
-          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
-          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+          assertColorFuzzyEquals(assert, 'Color was off', [0,128,0], rgba, 1);
+          assert.strictEqual(Math.round(rgba[3] * 10) / 10, 0.5);
         } else {
-          assertEquals('transparent', rgbaStyle.toLowerCase());
+          assert.strictEqual(rgbaStyle.toLowerCase(), 'transparent');
         }
-      }
+      });
 
-      function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
+      QUnit.test('effective style does not return unquoted short ms filter as filter', function(assert) {
         var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'), '');
+      });
 
-      function testEffectiveStyleDoesNotReturnUnquotedLongMsFilterAsFilter() {
+      QUnit.test('effective style does not return unquoted long ms filter as filter', function(assert) {
         var e = bot.locators.findElement({id: 'msFilterUnquotedFilterLong'});
-        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
-      }
+        assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'), '');
+      });
 
-      function testEffectiveStyleReturnsQuotedShortMsFilterAsFilter() {
+      QUnit.test('effective style returns quoted short ms filter as filter', function(assert) {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterShort'});
         if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
             !bot.userAgent.isEngineVersion(10)) {
-          assertEquals('alpha(opacity=0)', bot.dom.getInlineStyle(e, 'filter'));
+          assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'), 'alpha(opacity=0)');
         } else {
-          // -ms-filters make sense only on IE.
-          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+          assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'), '');
         }
-      }
+      });
 
-      function testEffectiveStyleReturnsQuotedLongMsFilterAsFilter() {
+      QUnit.test('effective style returns quoted long ms filter as filter', function(assert) {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterLong'});
         if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
             !bot.userAgent.isEngineVersion(10)) {
-          assertEquals('progid:DXImageTransform.Microsoft.Alpha(Opacity=20)',
-              bot.dom.getInlineStyle(e, 'filter'));
+          assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'),
+              'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)');
         } else {
-          // -ms-filters make sense only on IE.
-          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+          assert.strictEqual(bot.dom.getInlineStyle(e, 'filter'), '');
         }
-      }
+      });
 
-      function testCanRetreiveValueFromStyleTag() {
+      QUnit.test('can retrieve value from style tag', function(assert) {
         var green = goog.dom.$('green');
         var color = bot.dom.getEffectiveStyle(green, 'background-color');
 
-        assertEquals('rgba(0, 128, 0, 1)', color);
-      }
+        assert.strictEqual(color, 'rgba(0, 128, 0, 1)');
+      });
 
-      function testGetAttributeShouldReturnStyleAttributeWithCaseOfValueMaintained() {
+      QUnit.test('get attribute should return style attribute with case of value maintained', function(assert) {
         var e = bot.locators.findElement({id: 'mixedCaseValues'});
         var style = bot.dom.getAttribute(e, 'style');
-        assertContains('left: 0px;', style);
-        assertContains('text-align: center;', style);
-        assertContains('background-image: url(', style);
-        assertContains('testdata/kitten3.jpg', style);
-      }
+        assert.ok(style.indexOf('left: 0px;') !== -1);
+        assert.ok(style.indexOf('text-align: center;') !== -1);
+        assert.ok(style.indexOf('background-image: url(') !== -1);
+        assert.ok(style.indexOf('testdata/kitten3.jpg') !== -1);
+      });
 
-      function testGetAttributeShouldReturnStyleAttributeWithCaseOfPropertyNormalizedToLowercase() {
+      QUnit.test('get attribute should return style attribute with case of property normalized to lowercase', function(assert) {
         var e = bot.locators.findElement({id: 'mixedCaseProperties'});
         var style = bot.dom.getAttribute(e, 'style');
-        assertContains('left: 0px;', style);
-        assertContains('text-align: center;', style);
-      }
+        assert.ok(style.indexOf('left: 0px;') !== -1);
+        assert.ok(style.indexOf('text-align: center;') !== -1);
+      });
 
-      function testGetsFloat() {
+      QUnit.test('gets float', function(assert) {
         var rightFloated = bot.locators.findElement({id: 'right-floated'});
         var notFloated = bot.locators.findElement({id: 'green'});
-        assertEquals('right', bot.dom.getEffectiveStyle(rightFloated, 'float'));
-        assertEquals('none', bot.dom.getEffectiveStyle(notFloated, 'float'));
-      }
-
-      /**
-       * Checks equivalence between two colors' respective values.  Accepts +- delta
-       * for each pair of values
-       * @param {string} Str
-       * @param {Array.<number>} expected
-       * @param {Array.<number>} actual
-       * @param {number} delta Margin of error for each element in color array
-       */
-      function assertColorFuzzyEquals(str, expected, actual, delta) {
-        assertTrue(str + ' Expected: ' + expected + '  and got: ' + actual +
-            ' w/ delta: ' + delta,
-            (Math.abs(expected[0] - actual[0]) <= delta) &&
-                (Math.abs(expected[1] - actual[1]) <= delta) &&
-                (Math.abs(expected[2] - actual[2]) <= delta));
-      }
-
+        assert.strictEqual(bot.dom.getEffectiveStyle(rightFloated, 'float'), 'right');
+        assert.strictEqual(bot.dom.getEffectiveStyle(notFloated, 'float'), 'none');
+      });
     </script>
 
     <style type="text/css">
@@ -319,6 +219,8 @@
       </style>
   </head>
   <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
     <div id="msFilterUnquotedFilterShort" style="-ms-filter:alpha(opacity=0)">A div</div>
     <div id="msFilterUnquotedFilterLong" style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=20)">A div</div>
     <div id="msFilterQuotedFilterShort" style="-ms-filter:'alpha(opacity=0)'">A div</div>

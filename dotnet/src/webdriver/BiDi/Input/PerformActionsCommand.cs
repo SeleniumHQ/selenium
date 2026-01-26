@@ -17,14 +17,15 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
 internal sealed class PerformActionsCommand(PerformActionsParameters @params)
-    : Command<PerformActionsParameters, EmptyResult>(@params, "input.performActions");
+    : Command<PerformActionsParameters, PerformActionsResult>(@params, "input.performActions");
 
 internal sealed record PerformActionsParameters(BrowsingContext.BrowsingContext Context, IEnumerable<SourceActions> Actions) : Parameters;
 
 public sealed class PerformActionsOptions : CommandOptions;
+
+public sealed record PerformActionsResult : EmptyResult;

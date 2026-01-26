@@ -29,7 +29,8 @@ namespace OpenQA.Selenium.Firefox;
 [TestFixture]
 public class FirefoxDriverTest : DriverTestFixture
 {
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldContinueToWorkIfUnableToFindElementById()
     {
         driver.Url = formsPage;
@@ -42,7 +43,8 @@ public class FirefoxDriverTest : DriverTestFixture
         driver.Url = xhtmlTestPage;
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldWaitUntilBrowserHasClosedProperly()
     {
         driver.Url = simpleTestPage;
@@ -61,7 +63,8 @@ public class FirefoxDriverTest : DriverTestFixture
         Assert.That(seenText, Is.EqualTo(expectedText));
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously()
     {
         IWebDriver secondDriver = new FirefoxDriver();
@@ -76,7 +79,8 @@ public class FirefoxDriverTest : DriverTestFixture
         secondDriver.Quit();
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldBeAbleToStartANamedProfile()
     {
         FirefoxProfile profile = new FirefoxProfileManager().GetProfile("default");
@@ -93,7 +97,8 @@ public class FirefoxDriverTest : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldRemoveProfileAfterExit()
     {
         FirefoxProfile profile = new FirefoxProfile();
@@ -106,7 +111,8 @@ public class FirefoxDriverTest : DriverTestFixture
         Assert.That(profileLocation, Does.Not.Exist);
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void FocusRemainsInOriginalWindowWhenOpeningNewWindow()
     {
@@ -130,7 +136,8 @@ public class FirefoxDriverTest : DriverTestFixture
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void SwitchingWindowShouldSwitchFocus()
     {
@@ -175,7 +182,8 @@ public class FirefoxDriverTest : DriverTestFixture
         Assert.That(keyReporter2.GetAttribute("value"), Is.EqualTo("QWERTY"));
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
     public void ClosingWindowAndSwitchingToOriginalSwitchesFocus()
     {
@@ -214,7 +222,8 @@ public class FirefoxDriverTest : DriverTestFixture
         Assert.That(keyReporter.GetAttribute("value"), Is.EqualTo("ABC DEF"));
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void CanBlockInvalidSslCertificates()
     {
         FirefoxProfile profile = new FirefoxProfile();
@@ -243,7 +252,8 @@ public class FirefoxDriverTest : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Ignore("")]
+    [Test]
     public void ShouldAllowUserToSuccessfullyOverrideTheHomePage()
     {
         FirefoxProfile profile = new FirefoxProfile();
@@ -323,6 +333,7 @@ public class FirefoxDriverTest : DriverTestFixture
     }
 
     [Test]
+    [IgnorePlatform("windows", "Signed directory add-on install fails on Windows (ERROR_CORRUPT_FILE).")]
     public void ShouldInstallAndUninstallSignedDirAddon()
     {
         FirefoxDriver firefoxDriver = driver as FirefoxDriver;
@@ -362,9 +373,18 @@ public class FirefoxDriverTest : DriverTestFixture
 
     private string GetPath(string name)
     {
-        string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        string sFile = Path.Combine(sCurrentDirectory, "../../../../common/extensions/" + name);
-        return Path.GetFullPath(sFile);
+        try
+        {
+            // For directories, locate a file inside and get parent (runfiles manifest only lists files)
+            string path = Bazel.Runfiles.Create().Rlocation($"_main/common/extensions/{name}/manifest.json");
+            return Path.GetDirectoryName(path);
+        }
+        catch (FileNotFoundException)
+        {
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = Path.Combine(sCurrentDirectory, "../../../../common/extensions/" + name);
+            return Path.GetFullPath(sFile);
+        }
     }
 
     private static bool PlatformHasNativeEvents()

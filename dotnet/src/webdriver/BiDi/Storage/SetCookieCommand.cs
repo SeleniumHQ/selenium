@@ -17,8 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json.Serialization;
 
@@ -46,6 +45,15 @@ public sealed record PartialCookie(string Name, Network.BytesValue Value, string
 public sealed class SetCookieOptions : CommandOptions
 {
     public PartitionDescriptor? Partition { get; set; }
+}
+
+public sealed class ContextSetCookieOptions : CommandOptions
+{
+    internal static SetCookieOptions WithContext(ContextSetCookieOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Partition = new ContextPartitionDescriptor(context),
+        Timeout = options?.Timeout
+    };
 }
 
 public sealed record SetCookieResult(PartitionKey PartitionKey) : EmptyResult;

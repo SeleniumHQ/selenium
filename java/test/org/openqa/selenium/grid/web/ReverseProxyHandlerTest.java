@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -48,7 +48,7 @@ class ReverseProxyHandlerTest {
       HttpResponse response = handler.execute(req);
 
       // HTTP headers are case insensitive.
-      assertEquals("Cake", response.getHeader("x-cheese"));
+      assertThat(response.getHeader("x-cheese")).isEqualTo("Cake");
     }
   }
 }

@@ -10,6 +10,6 @@
 *.xml    text
 
 *.csproj text merge=union
-*.sln    text merge=union eol=crlf
+*.slnx    text merge=union eol=crlf
 
 *.docx   diff=astextplain

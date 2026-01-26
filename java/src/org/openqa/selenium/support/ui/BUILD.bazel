@@ -1,5 +1,4 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "clock",
@@ -58,5 +57,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

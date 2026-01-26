@@ -1,3 +1,5 @@
 packages:
+  - 'javascript/atoms'
   - 'javascript/grid-ui'
+  - 'javascript/private'
   - 'javascript/selenium-webdriver'

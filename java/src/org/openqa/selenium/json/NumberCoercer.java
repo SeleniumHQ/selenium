@@ -19,8 +19,6 @@ package org.openqa.selenium.json;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -31,15 +29,14 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   private static final Map<Class<?>, Class<?>> PRIMITIVE_NUMBER_TYPES;
 
   static {
-    Map<Class<?>, Class<?>> builder = new HashMap<>();
-    builder.put(byte.class, Byte.class);
-    builder.put(double.class, Double.class);
-    builder.put(float.class, Float.class);
-    builder.put(int.class, Integer.class);
-    builder.put(long.class, Long.class);
-    builder.put(short.class, Short.class);
-
-    PRIMITIVE_NUMBER_TYPES = Collections.unmodifiableMap(builder);
+    PRIMITIVE_NUMBER_TYPES =
+        Map.ofEntries(
+            Map.entry(byte.class, Byte.class),
+            Map.entry(double.class, Double.class),
+            Map.entry(float.class, Float.class),
+            Map.entry(int.class, Integer.class),
+            Map.entry(long.class, Long.class),
+            Map.entry(short.class, Short.class));
   }
 
   private final Class<T> stereotype;

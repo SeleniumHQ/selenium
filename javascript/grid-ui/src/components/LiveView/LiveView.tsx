@@ -20,6 +20,7 @@ import RFB from '@novnc/novnc/lib/rfb'
 import PasswordDialog from './PasswordDialog'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
+import { useTheme } from '@mui/material/styles'
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
   props,
@@ -30,6 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
 
 const LiveView = forwardRef((props, ref) => {
   let canvas: any = null
+  const theme = useTheme()
 
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
@@ -62,7 +64,7 @@ const LiveView = forwardRef((props, ref) => {
 
     const newRfb = new RFB.default(canvas, props.url, {})
     newRfb.scaleViewport = props.scaleViewport
-    newRfb.background = 'rgb(247,248,248)'
+    newRfb.background = theme.palette.background.default
     newRfb.addEventListener('credentialsrequired', handleCredentials)
     newRfb.addEventListener('securityfailure', securityFailed)
     newRfb.addEventListener('connect', connectedToServer)

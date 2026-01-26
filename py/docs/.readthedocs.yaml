@@ -12,7 +12,6 @@ build:
   tools:
     python: "3.12"
   commands:
-    - pip install -r py/docs/requirements.txt
     - pip install -r py/requirements.txt
     - cd py && python3 generate_api_module_listing.py && cd
     - PYTHONPATH=py sphinx-autogen -o $READTHEDOCS_OUTPUT/html py/docs/source/api.rst

@@ -26,25 +26,19 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Environment;
 
-public class RemoteSeleniumServer
-{
-    private Process webserverProcess;
-    private string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
-    private string projectRootPath;
-    private bool autoStart;
+#nullable enable
 
-    public RemoteSeleniumServer(string projectRoot, bool autoStartServer)
-    {
-        projectRootPath = projectRoot;
-        autoStart = autoStartServer;
-    }
+public class RemoteSeleniumServer(string projectRoot, bool autoStartServer)
+{
+    private Process? webserverProcess;
+    private string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
 
     public async Task StartAsync()
     {
-        if (autoStart && (webserverProcess == null || webserverProcess.HasExited))
+        if (autoStartServer && (webserverProcess == null || webserverProcess.HasExited))
         {
             serverJarName = serverJarName.Replace('/', Path.DirectorySeparatorChar);
-            if (!File.Exists(Path.Combine(projectRootPath, serverJarName)))
+            if (!File.Exists(Path.Combine(projectRoot, serverJarName)))
             {
                 throw new FileNotFoundException(
                     string.Format(
@@ -56,7 +50,7 @@ public class RemoteSeleniumServer
             webserverProcess = new Process();
             webserverProcess.StartInfo.FileName = "java.exe";
             webserverProcess.StartInfo.Arguments = " -jar " + serverJarName + " standalone --port 6000 --selenium-manager true --enable-managed-downloads true";
-            webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
+            webserverProcess.StartInfo.WorkingDirectory = projectRoot;
             webserverProcess.Start();
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
             bool isRunning = false;
@@ -89,7 +83,7 @@ public class RemoteSeleniumServer
 
     public async Task StopAsync()
     {
-        if (autoStart && webserverProcess != null && !webserverProcess.HasExited)
+        if (autoStartServer && webserverProcess != null && !webserverProcess.HasExited)
         {
             using (var httpClient = new HttpClient())
             {

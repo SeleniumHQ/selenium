@@ -19,9 +19,11 @@ package org.openqa.selenium.interactions;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.internal.Require;
 
 /** An action for aggregating actions and triggering all of them at the same time. */
+@NullMarked
 public class CompositeAction implements Action {
 
   private final List<Action> actionsList = new ArrayList<>();

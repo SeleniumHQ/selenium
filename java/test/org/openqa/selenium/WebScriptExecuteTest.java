@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.script.RegExpValue;
 import org.openqa.selenium.bidi.script.RemoteValue;
@@ -85,7 +84,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "-0");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("-0");
+    assertThat(value.getValue()).hasValue("-0");
   }
 
   @Test
@@ -103,7 +102,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "Infinity");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("Infinity");
+    assertThat(value.getValue()).hasValue("Infinity");
   }
 
   @Test
@@ -121,7 +120,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "-Infinity");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("-Infinity");
+    assertThat(value.getValue()).hasValue("-Infinity");
   }
 
   @Test
@@ -138,7 +137,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 1.4);
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo(1.4);
+    assertThat(value.getValue()).hasValue(1.4);
   }
 
   @Test
@@ -155,7 +154,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 1);
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo(1L);
+    assertThat(value.getValue()).hasValue(1L);
   }
 
   @Test
@@ -172,7 +171,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 true);
 
     assertThat(value.getType()).isEqualTo("boolean");
-    assertThat(value.getValue().get()).isEqualTo(true);
+    assertThat(value.getValue()).hasValue(true);
   }
 
   @Test
@@ -189,7 +188,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 BigInteger.valueOf(42L));
 
     assertThat(value.getType()).isEqualTo("bigint");
-    assertThat(value.getValue().get()).isEqualTo("42");
+    assertThat(value.getValue()).hasValue("42");
   }
 
   @Test
@@ -212,7 +211,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
 
     assertThat(value.getType()).isEqualTo("array");
     List<RemoteValue> values = (List<RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -235,7 +234,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
 
     assertThat(value.getType()).isEqualTo("set");
     List<RemoteValue> values = (List<RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -276,7 +275,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("map");
 
     Map<Object, RemoteValue> values = (Map<Object, RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -299,7 +298,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("object");
 
     Map<Object, RemoteValue> values = (Map<Object, RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(6);
+    assertThat(values).hasSize(6);
   }
 
   @Test
@@ -321,10 +320,5 @@ class WebScriptExecuteTest extends JupiterTestBase {
     RegExpValue resultValue = (RegExpValue) value.getValue().get();
     assertThat(resultValue.getPattern()).isEqualTo("foo");
     assertThat(resultValue.getFlags()).isEqualTo("g");
-  }
-
-  @AfterEach
-  public void cleanUp() {
-    driver.quit();
   }
 }

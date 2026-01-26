@@ -19,8 +19,8 @@ package org.openqa.selenium.support;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -57,7 +57,7 @@ public class ThreadGuard {
       interfaces.add(base);
     }
     while (base != null && !Object.class.equals(base)) {
-      interfaces.addAll(Arrays.asList(base.getInterfaces()));
+      interfaces.addAll(List.of(base.getInterfaces()));
       base = base.getSuperclass();
     }
     return interfaces.toArray(new Class[0]);

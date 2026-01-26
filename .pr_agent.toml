@@ -1,6 +1,11 @@
 # Used by qodo-merge-pro bot
 
+[pr_description]
+publish_description_as_comment = true  # Stop rewriting the description
+generate_ai_title = false              # Keep original PR title
+
 [config]
+persistent_comment = true              # Keep it all in one comment
 enable_labeler = true
 enable_custom_labels=true
 labels_mode = "custom_only"

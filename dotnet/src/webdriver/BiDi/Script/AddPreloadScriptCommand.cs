@@ -17,26 +17,18 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params)
     : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
 
-internal sealed record AddPreloadScriptParameters(string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
+internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
 
 public sealed class AddPreloadScriptOptions : CommandOptions
 {
-    public AddPreloadScriptOptions() { }
-
-    internal AddPreloadScriptOptions(BrowsingContextAddPreloadScriptOptions? options)
-    {
-        Arguments = options?.Arguments;
-        Sandbox = options?.Sandbox;
-    }
-
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
@@ -44,11 +36,19 @@ public sealed class AddPreloadScriptOptions : CommandOptions
     public string? Sandbox { get; set; }
 }
 
-public sealed record BrowsingContextAddPreloadScriptOptions
+public sealed class ContextAddPreloadScriptOptions : CommandOptions
 {
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
 
     public string? Sandbox { get; set; }
+
+    internal static AddPreloadScriptOptions WithContext(ContextAddPreloadScriptOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Contexts = [context],
+        Arguments = options?.Arguments,
+        Sandbox = options?.Sandbox,
+        Timeout = options?.Timeout
+    };
 }
 
-internal sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;

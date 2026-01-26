@@ -657,8 +657,7 @@ public class ExecutingJavascriptTest : DriverTestFixture
     [Test]
     public void ShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed()
     {
-        IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
-        if (executor == null)
+        if (driver is not IJavaScriptExecutor executor)
         {
             return;
         }

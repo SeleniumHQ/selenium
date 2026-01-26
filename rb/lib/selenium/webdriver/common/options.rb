@@ -71,6 +71,8 @@ module Selenium
       def initialize(**opts)
         self.class.set_capabilities
 
+        opts[:web_socket_url] = opts.delete(:bidi) if opts.key?(:bidi)
+
         @options = opts
         @options[:browser_name] = self.class::BROWSER
       end
@@ -89,6 +91,14 @@ module Selenium
       def add_option(name, value = nil)
         name, value = name.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
+      end
+
+      def enable_bidi!
+        @options[:web_socket_url] = true
+      end
+
+      def bidi?
+        !!@options[:web_socket_url]
       end
 
       def ==(other)
@@ -131,9 +141,18 @@ module Selenium
 
       def process_w3c_options(options)
         w3c_options = options.select { |key, val| w3c?(key) && !val.nil? }
-        w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
+        w3c_options[:unhandled_prompt_behavior] &&=
+          process_unhandled_prompt_behavior_value(w3c_options[:unhandled_prompt_behavior])
         options.delete_if { |key, _val| w3c?(key) }
         w3c_options
+      end
+
+      def process_unhandled_prompt_behavior_value(value)
+        if value.is_a?(Hash)
+          value.transform_values { |v| process_unhandled_prompt_behavior_value(v) }
+        else
+          value&.to_s&.tr('_', ' ')
+        end
       end
 
       def process_browser_options(_browser_options)

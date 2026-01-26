@@ -134,4 +134,9 @@ public class BrowsingContextInfo {
     return new BrowsingContextInfo(
         id, url, children, clientWindow, originalOpener, userContext, parentBrowsingContext);
   }
+
+  @Override
+  public String toString() {
+    return String.format("BrowsingContextInfo(%s %s)", id, url);
+  }
 }

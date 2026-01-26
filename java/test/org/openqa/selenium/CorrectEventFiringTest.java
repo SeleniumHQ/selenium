@@ -18,8 +18,8 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -180,11 +180,9 @@ class CorrectEventFiringTest extends JupiterTestBase {
   void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
-    try {
-      driver.findElement(By.id("throwing-mouseover")).click();
-    } catch (WebDriverException e) {
-      fail("Error in event handler should not have propagated: " + e);
-    }
+    assertThatCode(() -> driver.findElement(By.id("throwing-mouseover")).click())
+        .as("Error in event handler should not have propagated")
+        .doesNotThrowAnyException();
   }
 
   @Test
@@ -396,23 +394,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     element.click();
 
     // Wait until focused
-    boolean focused = false;
-    WebElement result = driver.findElement(By.id("result"));
-    for (int i = 0; i < 5; ++i) {
-      String fired = result.getText();
-      if (fired.contains("focus")) {
-        focused = true;
-        break;
-      }
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    if (!focused) {
-      fail("Clicking on element didn't focus it in time - can't proceed so failing");
-    }
+    wait.until(elementTextToContain(By.id("result"), "focus"));
 
     element.sendKeys("a");
     assertEventNotFired("blur", driver);

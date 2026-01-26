@@ -12,7 +12,7 @@ rust_test_suite(
     data = [
         "//rust:selenium-manager",
     ],
-    edition = "2021",
+    edition = "2024",
     rustc_env = {
         "CARGO_BIN_EXE_selenium-manager": "rust/selenium-manager",
     },
