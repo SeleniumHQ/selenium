@@ -256,6 +256,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":exceptions",
+        ":remote",
         requirement("trio"),
         requirement("trio-websocket"),
         requirement("websocket-client"),
@@ -293,6 +294,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        ":common",
         ":exceptions",
         ":remote",
     ],
