@@ -22,6 +22,33 @@ def setup_npm_auth
   File.chmod(0o600, npmrc)
 end
 
+def setup_github_npm_auth
+  token = ENV.fetch('GITHUB_TOKEN', nil)
+  raise 'Missing GitHub token: set GITHUB_TOKEN for nightly npm publish' if token.nil? || token.empty?
+
+  # Configure npm for GitHub Packages
+  npmrc = File.join(Dir.home, '.npmrc')
+  npmrc_content = [
+    "//npm.pkg.github.com/:_authToken=#{token}",
+    '@seleniumhq:registry=https://npm.pkg.github.com',
+    'always-auth=true'
+  ].join("\n")
+
+  if File.exist?(npmrc)
+    File.open(npmrc, 'a') { |f| f.puts("\n#{npmrc_content}") }
+  else
+    File.write(npmrc, "#{npmrc_content}\n")
+  end
+  File.chmod(0o600, npmrc)
+
+  # Update package.json for GitHub Packages
+  package_json = 'javascript/selenium-webdriver/package.json'
+  content = File.read(package_json)
+  content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
+  content = content.gsub('"name": "selenium-webdriver"', '"name": "@seleniumhq/selenium-webdriver"')
+  File.write(package_json, content)
+end
+
 desc 'Build Node npm package'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -60,11 +87,13 @@ task :release do |_task, arguments|
   dry_run = args.delete('dry-run')
 
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
-  setup_npm_auth unless nightly || dry_run
 
   if nightly
     puts 'Updating Node version to nightly...'
     Rake::Task['node:version'].invoke('nightly')
+    setup_github_npm_auth unless dry_run
+  else
+    setup_npm_auth unless dry_run
   end
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'

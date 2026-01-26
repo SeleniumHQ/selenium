@@ -35,7 +35,7 @@ bazel run @rules_rust//:rustfmt
 
 section "Python"
 Write-Host "    python - ruff" -ForegroundColor Green
-bazel run //py:ruff
+bazel run //py:ruff-format
 
 section "Copyright"
 bazel run //scripts:update_copyright

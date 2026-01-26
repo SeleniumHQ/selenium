@@ -112,3 +112,17 @@ task :pin do
                         '--output-folder', "#{Dir.pwd}/dotnet"],
                 '@rules_dotnet//tools/paket2bazel:paket2bazel')
 end
+
+desc 'Run .NET formatter (whitespace only)'
+task :format do |_task, arguments|
+  raise ArgumentError, 'arguments not supported for this task' unless arguments.to_a.empty?
+
+  puts '  Running dotnet format whitespace...'
+  Bazel.execute('run', ['--', 'whitespace'], '//dotnet:format')
+end
+
+desc 'Run .NET linter (format + style + analyzers)'
+task :lint do |_task, arguments|
+  puts '  Running dotnet format...'
+  Bazel.execute('run', ['--'] + arguments.to_a, '//dotnet:format')
+end

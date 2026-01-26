@@ -48,7 +48,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel run //py:ruff -- --check
+      run: bazel run //py:ruff-check
 
   unit-tests:
     name: Unit Tests

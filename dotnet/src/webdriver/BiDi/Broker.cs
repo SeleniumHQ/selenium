@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
@@ -36,7 +37,11 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ITransport _transport;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
-    private readonly BlockingCollection<(string Method, EventArgs Params)> _pendingEvents = [];
+    private readonly Channel<(string Method, EventArgs Params)> _pendingEvents = Channel.CreateUnbounded<(string Method, EventArgs Params)>(new()
+    {
+        SingleReader = true,
+        SingleWriter = true
+    });
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
@@ -98,30 +103,34 @@ internal sealed class Broker : IAsyncDisposable
 
     private async Task ProcessEventsAwaiterAsync()
     {
-        foreach (var result in _pendingEvents.GetConsumingEnumerable())
+        var reader = _pendingEvents.Reader;
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            try
+            while (reader.TryRead(out var result))
             {
-                if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
+                try
                 {
-                    if (eventHandlers is not null)
+                    if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
                     {
-                        foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                        if (eventHandlers is not null)
                         {
-                            var args = result.Params;
+                            foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                            {
+                                var args = result.Params;
 
-                            args.BiDi = _bidi;
+                                args.BiDi = _bidi;
 
-                            await handler.InvokeAsync(args).ConfigureAwait(false);
+                                await handler.InvokeAsync(args).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                if (_logger.IsEnabled(LogEventLevel.Error))
+                catch (Exception ex)
                 {
-                    _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                    }
                 }
             }
         }
@@ -177,7 +186,7 @@ internal sealed class Broker : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        _pendingEvents.CompleteAdding();
+        _pendingEvents.Writer.Complete();
 
         _receiveMessagesCancellationTokenSource?.Cancel();
 
@@ -286,7 +295,7 @@ internal sealed class Broker : IAsyncDisposable
                     eventArgs.BiDi = _bidi;
 
                     var messageEvent = (method, eventArgs);
-                    _pendingEvents.Add(messageEvent);
+                    _pendingEvents.Writer.TryWrite(messageEvent);
                 }
                 else
                 {

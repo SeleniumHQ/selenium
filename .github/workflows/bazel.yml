@@ -133,9 +133,6 @@ jobs:
           path: ${{ inputs.cache-name }}
           key: ${{ inputs.cache-name }}-
           restore-keys: ${{ inputs.cache-name }}-
-      - name: Free space
-        if: inputs.os != 'windows'
-        run: ./scripts/github-actions/free-disk-space.sh
       - name: Remove driver directories Windows
         if: inputs.os == 'windows'
         run: |
@@ -269,3 +266,13 @@ jobs:
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
           if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'warn' }}
+      - name: Check disk space
+        if: always()
+        shell: bash
+        run: |
+          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+          echo "Remaining disk space: ${avail}GB"
+          if [ "$avail" -lt 5 ]; then
+            echo "::error::Low disk space: ${avail}GB remaining"
+            exit 1
+          fi
