@@ -18,8 +18,6 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.EMPTY_MAP;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
@@ -51,13 +49,13 @@ class NewSessionPayloadTest {
             "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertThat(payload.getDownstreamDialects()).isEqualTo(singleton(W3C));
+      assertThat(payload.getDownstreamDialects()).containsExactly(W3C);
     }
 
     String json = new Json().toJson(caps);
     try (NewSessionPayload payload =
         NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
-      assertThat(payload.getDownstreamDialects()).isEqualTo(singleton(W3C));
+      assertThat(payload.getDownstreamDialects()).containsExactly(W3C);
     }
   }
 
@@ -173,10 +171,9 @@ class NewSessionPayloadTest {
                         singletonMap("browserName", "firefox")))));
 
     assertThat(capabilities)
-        .isEqualTo(
-            List.of(
-                new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
-                new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")));
+        .containsExactly(
+            new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
+            new ImmutableCapabilities("browserName", "firefox", "platformName", "macos"));
   }
 
   @Test
@@ -225,7 +222,7 @@ class NewSessionPayloadTest {
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       Map<String, Object> seen = payload.getMetadata();
-      assertThat(seen).isEqualTo(Map.of("se:meta", "cheese is good"));
+      assertThat(seen).containsExactlyInAnyOrderEntriesOf(Map.of("se:meta", "cheese is good"));
     }
   }
 
@@ -238,7 +235,7 @@ class NewSessionPayloadTest {
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       Map<String, Object> seen = payload.getMetadata();
-      assertThat(seen).isEqualTo(Map.of("se:good", "cheese"));
+      assertThat(seen).containsExactlyInAnyOrderEntriesOf(Map.of("se:good", "cheese"));
     }
   }
 
@@ -249,7 +246,7 @@ class NewSessionPayloadTest {
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       Map<String, Object> seen = payload.getMetadata();
-      assertThat(seen).isEqualTo(emptyMap());
+      assertThat(seen).isEmpty();
     }
   }
 
@@ -267,7 +264,7 @@ class NewSessionPayloadTest {
       fromDisk = payload.stream().collect(toList());
     }
 
-    assertThat(fromDisk).isEqualTo(presumablyFromMemory);
+    assertThat(fromDisk).containsExactlyElementsOf(presumablyFromMemory);
 
     return presumablyFromMemory;
   }

@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ConcatenatingConfigTest {
@@ -38,7 +37,7 @@ class ConcatenatingConfigTest {
                 "FOO_", "should not show up",
                 "BAR_FOOD_IS", "cheese sticks"));
 
-    assertThat(config.getSectionNames()).isEqualTo(Set.of("cheese", "vegetables"));
+    assertThat(config.getSectionNames()).containsExactlyInAnyOrder("cheese", "vegetables");
   }
 
   @Test
@@ -54,6 +53,6 @@ class ConcatenatingConfigTest {
                 "FOO_", "should not show up",
                 "BAR_FOOD_IS", "cheese sticks"));
 
-    assertThat(config.getOptions("cheese")).isEqualTo(Set.of("current", "selected"));
+    assertThat(config.getOptions("cheese")).containsExactlyInAnyOrder("current", "selected");
   }
 }

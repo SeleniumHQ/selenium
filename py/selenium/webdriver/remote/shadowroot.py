@@ -27,7 +27,6 @@ from selenium.webdriver.remote.command import Command
 if TYPE_CHECKING:
     # we only import these when the module is analyzed for type annotations
     # to avoid a circular import when it is run normally
-    from selenium.webdriver.common.by import ByType
     from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -53,7 +52,7 @@ class ShadowRoot:
     def id(self) -> str:
         return self._id
 
-    def find_element(self, by: ByType = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str = By.ID, value: str | None = None) -> WebElement:
         """Find an element inside a shadow root given a By strategy and locator.
 
         Args:
@@ -88,7 +87,7 @@ class ShadowRoot:
 
         return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: ByType = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements inside a shadow root given a By strategy and locator.
 
         Args:

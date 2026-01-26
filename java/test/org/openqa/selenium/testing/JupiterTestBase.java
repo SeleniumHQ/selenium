@@ -23,12 +23,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -41,7 +43,8 @@ public abstract class JupiterTestBase {
 
   private static final Logger LOG = Logger.getLogger(JupiterTestBase.class.getName());
 
-  @RegisterExtension protected static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension
+  protected static final SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;
@@ -73,9 +76,10 @@ public abstract class JupiterTestBase {
       } catch (IllegalStateException ex) {
         // this should not happen with bazel, a new JVM is used for each class
         // the annotation is on class level, so we should never see this
-        LOG.info("appServer is restarted with secureServer=true");
+        LOG.log(Level.WARNING, "appServer is restarted with secureServer=true", ex);
         environment.stop();
         environment = new InProcessTestEnvironment(true);
+        appServer = environment.getAppServer();
       }
     }
 
@@ -87,7 +91,7 @@ public abstract class JupiterTestBase {
 
     if (driver != null) {
       driver.get("about:blank");
-      driver.get(pages.blankPage);
+      driver.get(pages.blankPage + "?test=" + seleniumExtension.currentTest());
       driver.manage().deleteAllCookies();
     }
   }
@@ -95,7 +99,14 @@ public abstract class JupiterTestBase {
   @AfterEach
   public void quitLocalDriver() {
     if (localDriver != null) {
-      localDriver.quit();
+      try {
+        localDriver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
   }
 

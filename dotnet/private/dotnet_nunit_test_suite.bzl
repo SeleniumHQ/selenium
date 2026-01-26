@@ -107,6 +107,10 @@ def _is_test(src, test_suffixes):
             return True
     return False
 
+_NUNIT_ARGS = [
+    "--workers=1",  # Bazel tests share a single driver instance; prevent NUnit parallelism
+]
+
 def dotnet_nunit_test_suite(
         name,
         srcs,
@@ -162,7 +166,7 @@ def dotnet_nunit_test_suite(
                     srcs = lib_srcs + [src] + ["@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"],
                     deps = deps + extra_deps,
                     target_frameworks = target_frameworks,
-                    args = _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
+                    args = _NUNIT_ARGS + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
                     data = data + _BROWSERS[browser]["data"],
                     tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
                     size = size,

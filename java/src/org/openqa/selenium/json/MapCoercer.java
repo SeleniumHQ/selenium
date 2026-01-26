@@ -19,24 +19,27 @@ package org.openqa.selenium.json;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.AbstractMap;
-import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.stream.Collector;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-class MapCoercer<T> extends TypeCoercer<T> {
+class MapCoercer<T, I extends T> extends TypeCoercer<T> {
 
   private final Class<T> stereotype;
   private final JsonTypeCoercer coercer;
-  private final Collector<Map.Entry<?, ?>, ?, ? extends T> collector;
+  private final Supplier<I> supplier;
+  private final Function<I, BiConsumer<Object, Object>> consumerFactory;
 
   public MapCoercer(
       Class<T> stereotype,
       JsonTypeCoercer coercer,
-      Collector<Map.Entry<?, ?>, ?, ? extends T> collector) {
+      Supplier<I> supplier,
+      Function<I, BiConsumer<Object, Object>> consumerFactory) {
     this.stereotype = stereotype;
     this.coercer = coercer;
-    this.collector = collector;
+    this.supplier = supplier;
+    this.consumerFactory = consumerFactory;
   }
 
   @Override
@@ -62,17 +65,23 @@ class MapCoercer<T> extends TypeCoercer<T> {
 
     return (jsonInput, setting) -> {
       jsonInput.beginObject();
-      T toReturn =
-          new JsonInputIterator(jsonInput)
-              .asStream()
-              .map(
-                  in -> {
-                    Object key = coercer.coerce(in, keyType, setting);
-                    Object value = coercer.coerce(in, valueType, setting);
+      I toReturn = supplier.get();
+      BiConsumer<Object, Object> consumer = consumerFactory.apply(toReturn);
+      // JSON should always have a string key, so we can take the fastpath
+      boolean stringKey = String.class.equals(keyType);
 
-                    return new AbstractMap.SimpleImmutableEntry<>(key, value);
-                  })
-              .collect(collector);
+      while (jsonInput.hasNext()) {
+        Object key;
+
+        if (stringKey) {
+          key = jsonInput.nextName();
+        } else {
+          key = coercer.coerce(jsonInput, keyType, setting);
+        }
+        Object value = coercer.coerce(jsonInput, valueType, setting);
+
+        consumer.accept(key, value);
+      }
       jsonInput.endObject();
 
       return toReturn;

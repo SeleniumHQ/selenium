@@ -24,7 +24,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +40,7 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 
 @Tag("UnitTests")
+@SuppressWarnings("deprecation")
 class RemoteLogsTest {
   @Mock private ExecuteMethod executeMethod;
 
@@ -105,17 +105,13 @@ class RemoteLogsTest {
   }
 
   @Test
-  void canGetServerLogs() {
-    when(executeMethod.execute(DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
-        .thenReturn(
-            singletonList(
-                Map.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
-
+  void serverLogsAreDeprecatedAndReturnEmpty() {
+    // SERVER log type is deprecated - Grid no longer supports it
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
-    assertThat(logEntries.getAll()).hasSize(1);
-    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("world");
+    assertThat(logEntries.getAll()).isEmpty();
 
-    // Server logs should not retrieve local logs.
+    // Should not call executeMethod or localLogs since SERVER is intercepted
+    verifyNoMoreInteractions(executeMethod);
     verifyNoMoreInteractions(localLogs);
   }
 
@@ -136,26 +132,16 @@ class RemoteLogsTest {
 
   @Test
   void canGetAvailableLogTypes() {
-    List<String> remoteAvailableLogTypes = new ArrayList<>();
-    remoteAvailableLogTypes.add(LogType.PROFILER);
-    remoteAvailableLogTypes.add(LogType.SERVER);
-
+    List<String> remoteAvailableLogTypes = List.of(LogType.PROFILER, LogType.SERVER);
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
         .thenReturn(remoteAvailableLogTypes);
 
-    Set<String> localAvailableLogTypes = new HashSet<>();
-    localAvailableLogTypes.add(LogType.PROFILER);
-    localAvailableLogTypes.add(LogType.CLIENT);
-
+    Set<String> localAvailableLogTypes = Set.of(LogType.PROFILER, LogType.CLIENT);
     when(localLogs.getAvailableLogTypes()).thenReturn(localAvailableLogTypes);
-
-    Set<String> expected = new HashSet<>();
-    expected.add(LogType.CLIENT);
-    expected.add(LogType.PROFILER);
-    expected.add(LogType.SERVER);
 
     Set<String> availableLogTypes = remoteLogs.getAvailableLogTypes();
 
-    assertThat(availableLogTypes).isEqualTo(expected);
+    assertThat(availableLogTypes)
+        .containsExactlyInAnyOrder(LogType.CLIENT, LogType.PROFILER, LogType.SERVER);
   }
 }

@@ -36,7 +36,7 @@ class InputAtomsTest {
     final String source = JavaScriptLoader.loadResource(RESOURCE_PATH);
     ContextFactory.getGlobal()
         .call(
-            new ContextAction<Object>() {
+            new ContextAction<>() {
               private ScriptableObject global;
 
               @Override

@@ -26,6 +26,7 @@ from urllib.parse import unquote, urlparse
 import urllib3
 
 from selenium import __version__
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote import utils
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -152,7 +153,7 @@ class RemoteConnection:
 
     _timeout = socket.getdefaulttimeout()
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
-    _client_config: ClientConfig | None = None
+    _client_config: ClientConfig
 
     system = sys.platform
     if system == "darwin":
@@ -307,18 +308,23 @@ class RemoteConnection:
     def __init__(
         self,
         remote_server_addr: str | None = None,
-        keep_alive: bool | None = True,
-        ignore_proxy: bool | None = False,
+        keep_alive: bool = True,
+        ignore_proxy: bool = False,
         ignore_certificates: bool | None = False,
         init_args_for_pool_manager: dict | None = None,
         client_config: ClientConfig | None = None,
     ):
-        self._client_config = client_config or ClientConfig(
-            remote_server_addr=remote_server_addr,
-            keep_alive=keep_alive,
-            ignore_certificates=ignore_certificates,
-            init_args_for_pool_manager=init_args_for_pool_manager,
-        )
+        if client_config:
+            self._client_config = client_config
+        elif remote_server_addr:
+            self._client_config = ClientConfig(
+                remote_server_addr=remote_server_addr,
+                keep_alive=keep_alive,
+                ignore_certificates=ignore_certificates,
+                init_args_for_pool_manager=init_args_for_pool_manager,
+            )
+        else:
+            raise WebDriverException("Must provide either 'remote_server_addr' or 'client_config'")
 
         # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
         RemoteConnection._timeout = self._client_config.timeout
@@ -356,11 +362,6 @@ class RemoteConnection:
             )
 
         if ignore_proxy:
-            warnings.warn(
-                "setting ignore_proxy in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
             self._proxy_url = None
         else:
             self._proxy_url = self._client_config.get_proxy_url()
@@ -369,7 +370,7 @@ class RemoteConnection:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
 
-    extra_commands = {}
+    extra_commands: dict[str, str] = {}
 
     def add_command(self, name, method, url):
         """Register a new command."""
@@ -452,7 +453,7 @@ class RemoteConnection:
                     if 199 < statuscode < 300:
                         status = ErrorCode.SUCCESS
                     else:
-                        status = ErrorCode.UNKNOWN_ERROR
+                        status = ErrorCode.UNKNOWN_ERROR  # type: ignore
                     return {"status": status, "value": data.strip()}
 
                 # Some drivers incorrectly return a response
@@ -471,7 +472,7 @@ class RemoteConnection:
         if hasattr(self, "_conn"):
             self._conn.clear()
 
-    def _trim_large_entries(self, input_dict, max_length=100) -> dict:
+    def _trim_large_entries(self, input_dict, max_length=100) -> dict | str:
         """Truncate string values in a dictionary if they exceed max_length.
 
         Args:

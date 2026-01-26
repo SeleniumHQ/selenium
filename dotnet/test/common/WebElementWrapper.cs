@@ -20,79 +20,78 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+public class WebElementWrapper(IWebElement element) : IWebElement, IWrapsElement
 {
-    public class WebElementWrapper(IWebElement element) : IWebElement, IWrapsElement
+    public IWebElement WrappedElement { get; } = element;
+
+    public string TagName => WrappedElement.TagName;
+
+    public string Text => WrappedElement.Text;
+
+    public bool Enabled => WrappedElement.Enabled;
+
+    public bool Selected => WrappedElement.Selected;
+
+    public Point Location => WrappedElement.Location;
+
+    public Size Size => WrappedElement.Size;
+
+    public bool Displayed => WrappedElement.Displayed;
+
+    public void Clear()
     {
-        public IWebElement WrappedElement { get; } = element;
+        WrappedElement.Clear();
+    }
 
-        public string TagName => WrappedElement.TagName;
+    public void Click()
+    {
+        WrappedElement.Click();
+    }
 
-        public string Text => WrappedElement.Text;
+    public IWebElement FindElement(By by)
+    {
+        return WrappedElement.FindElement(by);
+    }
 
-        public bool Enabled => WrappedElement.Enabled;
+    public ReadOnlyCollection<IWebElement> FindElements(By by)
+    {
+        return WrappedElement.FindElements(by);
+    }
 
-        public bool Selected => WrappedElement.Selected;
+    public string GetAttribute(string attributeName)
+    {
+        return WrappedElement.GetAttribute(attributeName);
+    }
 
-        public Point Location => WrappedElement.Location;
+    public string GetCssValue(string propertyName)
+    {
+        return WrappedElement.GetCssValue(propertyName);
+    }
 
-        public Size Size => WrappedElement.Size;
+    public string GetDomAttribute(string attributeName)
+    {
+        return WrappedElement.GetDomAttribute(attributeName);
+    }
 
-        public bool Displayed => WrappedElement.Displayed;
+    public string GetDomProperty(string propertyName)
+    {
+        return WrappedElement.GetDomProperty(propertyName);
+    }
 
-        public void Clear()
-        {
-            WrappedElement.Clear();
-        }
+    public ISearchContext GetShadowRoot()
+    {
+        return WrappedElement.GetShadowRoot();
+    }
 
-        public void Click()
-        {
-            WrappedElement.Click();
-        }
+    public void SendKeys(string text)
+    {
+        WrappedElement.SendKeys(text);
+    }
 
-        public IWebElement FindElement(By by)
-        {
-            return WrappedElement.FindElement(by);
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
-        {
-            return WrappedElement.FindElements(by);
-        }
-
-        public string GetAttribute(string attributeName)
-        {
-            return WrappedElement.GetAttribute(attributeName);
-        }
-
-        public string GetCssValue(string propertyName)
-        {
-            return WrappedElement.GetCssValue(propertyName);
-        }
-
-        public string GetDomAttribute(string attributeName)
-        {
-            return WrappedElement.GetDomAttribute(attributeName);
-        }
-
-        public string GetDomProperty(string propertyName)
-        {
-            return WrappedElement.GetDomProperty(propertyName);
-        }
-
-        public ISearchContext GetShadowRoot()
-        {
-            return WrappedElement.GetShadowRoot();
-        }
-
-        public void SendKeys(string text)
-        {
-            WrappedElement.SendKeys(text);
-        }
-
-        public void Submit()
-        {
-            WrappedElement.Submit();
-        }
+    public void Submit()
+    {
+        WrappedElement.Submit();
     }
 }

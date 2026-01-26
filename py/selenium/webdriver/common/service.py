@@ -25,7 +25,7 @@ from collections.abc import Mapping
 from io import IOBase
 from subprocess import PIPE
 from time import sleep
-from typing import IO, Any, cast
+from typing import IO, Any
 from urllib import request
 from urllib.error import URLError
 
@@ -42,8 +42,8 @@ class Service(ABC):
     communicate with a browser.
 
     Args:
-        executable: install path of the executable.
-        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
         log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
         driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
@@ -58,15 +58,15 @@ class Service(ABC):
         driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
-        self.log_output: int | IOBase | None
+        self.log_output: int | IO[Any] | None
         if isinstance(log_output, str):
-            self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
+            self.log_output = open(log_output, "a+", encoding="utf-8")
         elif log_output == subprocess.STDOUT:
             self.log_output = None
         elif log_output is None or log_output == subprocess.DEVNULL:
             self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = cast(int | IOBase, log_output)
+            self.log_output = log_output
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
@@ -123,12 +123,14 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establish a socket connection to determine if the service is accessible.
+        """Check if the service is ready via the W3C WebDriver /status endpoint.
+
+        This makes an HTTP request to the /status endpoint and verifies if it is ready to accept new sessions.
 
         Returns:
-            True if the service is connectable on the configured port, False otherwise.
+            True if the service is ready to accept new sessions, False otherwise.
         """
-        return utils.is_connectable(self.port)
+        return utils.is_url_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
@@ -220,8 +222,8 @@ class Service(ABC):
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=cast(int | IO[Any] | None, self.log_output),
-                stderr=cast(int | IO[Any] | None, self.log_output),
+                stdout=self.log_output,
+                stderr=self.log_output,
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 startupinfo=start_info,

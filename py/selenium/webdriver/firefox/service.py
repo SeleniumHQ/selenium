@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+import sys
 from collections.abc import Mapping, Sequence
 from typing import IO, Any
 
@@ -22,11 +24,11 @@ from selenium.webdriver.common import service, utils
 
 
 class Service(service.Service):
-    """Service class responsible for starting and stopping geckodriver.
+    """Service class responsible for starting and stopping of `geckodriver`.
 
     Args:
-        executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
-        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
         service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
         log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
@@ -45,6 +47,16 @@ class Service(service.Service):
     ) -> None:
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_GECKODRIVER"
+
+        if os.environ.get("SE_DEBUG"):
+            if "--log" in self._service_args:
+                idx = self._service_args.index("--log")
+                del self._service_args[idx : idx + 2]
+            else:
+                self._service_args = [arg for arg in self._service_args if not arg.startswith("--log=")]
+            self._service_args.append("--log")
+            self._service_args.append("debug")
+            log_output = sys.stderr
 
         super().__init__(
             executable_path=executable_path,

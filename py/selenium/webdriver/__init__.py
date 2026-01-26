@@ -15,6 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
+import os
+
+# Enable debug logging if SE_DEBUG environment variable is set
+if os.environ.get("SE_DEBUG"):
+    logger = logging.getLogger("selenium")
+    logger.setLevel(logging.DEBUG)
+    if not logger.handlers:
+        logger.addHandler(logging.StreamHandler())
+
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.webdriver import WebDriver as Chrome
@@ -44,7 +54,7 @@ from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
 from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
 from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit
 
-__version__ = "4.40.0.202512070022"
+__version__ = "4.41.0.202601181916"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [

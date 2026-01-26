@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.text.ParseException;
 import java.util.Map;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.DetachedShadowRootException;
@@ -119,11 +121,53 @@ public class ErrorCodecTest {
     encodeAndCheck(new ClassNotFoundException(msg), "unknown error", msg);
   }
 
+  @Test
+  void decode_w3cCompliantResponse() {
+    assertThat(
+            errorCodec.decode(
+                Map.of(
+                    "value",
+                    Map.of(
+                        "error", "script timeout",
+                        "message", "Script timed out"))))
+        .isInstanceOf(ScriptTimeoutException.class)
+        .hasMessageStartingWith("Script timed out");
+  }
+
+  @Test
+  void decode_unknownError() {
+    assertThat(
+            errorCodec.decode(
+                Map.of(
+                    "value",
+                    Map.of(
+                        "error", "some.magic.error.code",
+                        "message", "Something unbelievable happened"))))
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageStartingWith("Something unbelievable happened")
+        .hasMessageContaining("some.magic.error.code");
+  }
+
+  @Test
+  void decode_noValue() {
+    assertThatThrownBy(() -> errorCodec.decode(Map.of("unexpected", "format")))
+        .isInstanceOf(InvalidResponseException.class)
+        .hasMessageStartingWith("missing \"value\" field: {unexpected=format}")
+        .hasMessageContaining("See https://www.w3.org/TR/webdriver2/#errors");
+  }
+
+  @Test
+  void decode_noError() {
+    assertThat(errorCodec.decode(Map.of("value", Map.of("message", "Session was not created"))))
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageStartingWith("Session was not created");
+  }
+
   void encodeAndCheck(Throwable toEncode, String expectedType, String expectedMessage) {
     Map<String, Object> encoded = errorCodec.encode(toEncode);
     Map<String, Object> value = (Map<String, Object>) encoded.get("value");
 
-    Assertions.assertThat(value.get("error")).isEqualTo(expectedType);
-    Assertions.assertThat(value.get("message")).isEqualTo(toEncode.getMessage());
+    assertThat(value.get("error")).isEqualTo(expectedType);
+    assertThat(value.get("message")).isEqualTo(toEncode.getMessage());
   }
 }

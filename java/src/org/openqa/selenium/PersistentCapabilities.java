@@ -22,11 +22,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class PersistentCapabilities implements Capabilities {
 
   private final ImmutableCapabilities caps;

@@ -176,7 +176,8 @@ public abstract class DriverService : ICommandServer
     /// <remarks>Set this property to <see langword="true"/> to force all process output and error streams to
     /// be redirected, even if redirection is not required by default behavior. This can be useful in scenarios where
     /// capturing process output is necessary for logging or analysis.</remarks>
-    protected virtual internal bool EnableProcessRedirection { get; } = false;
+    protected virtual internal bool EnableProcessRedirection =>
+        Environment.GetEnvironmentVariable("SE_DEBUG") is not null;
 
     /// <summary>
     /// Gets a value indicating whether the service is responding to HTTP requests.
@@ -347,7 +348,10 @@ public abstract class DriverService : ICommandServer
     /// <param name="args">The data received event arguments.</param>
     protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
-
+        if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null && !string.IsNullOrEmpty(args.Data))
+        {
+            Console.Error.WriteLine(args.Data);
+        }
     }
 
     /// <summary>
