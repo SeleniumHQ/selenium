@@ -19,24 +19,26 @@ package org.openqa.selenium.devtools;
 
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class ConverterFunctions {
 
-  public static <X> Function<JsonInput, X> map(final String keyName, Type typeOfX) {
+  public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Type typeOfX) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Type to convert to", typeOfX);
 
     return map(keyName, input -> input.read(typeOfX));
   }
 
-  public static <X> Function<JsonInput, X> map(final String keyName, Function<JsonInput, X> read) {
+  public static <X> Function<JsonInput, @Nullable X> map(
+      final String keyName, Function<JsonInput, @Nullable X> read) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Read callback", read);
 
     return input -> {
-      X value = null;
+      @Nullable X value = null;
 
       input.beginObject();
       while (input.hasNext()) {
@@ -53,7 +55,7 @@ public class ConverterFunctions {
     };
   }
 
-  public static Function<JsonInput, Void> empty() {
+  public static Function<JsonInput, @Nullable Void> empty() {
     return input -> {
       // expects an empty object
       input.beginObject();

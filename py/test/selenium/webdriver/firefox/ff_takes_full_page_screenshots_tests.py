@@ -18,6 +18,11 @@
 import base64
 
 import filetype
+import pytest
+
+pytestmark = pytest.mark.xfail_remote(
+    reason="Remote WebDriver does not expose Firefox-specific full page screenshot APIs"
+)
 
 
 def test_get_full_page_screenshot_as_base64(driver, pages):

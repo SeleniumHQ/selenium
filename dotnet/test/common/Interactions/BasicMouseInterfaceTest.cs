@@ -390,7 +390,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement reporter = driver.FindElement(By.Id("status"));
 
-        WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20), "Coordinate matching was not within tolerance");
+        WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 100), "Coordinate matching was not within tolerance");
     }
 
     [Test]

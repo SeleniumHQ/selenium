@@ -333,6 +333,7 @@ public class FirefoxDriverTest : DriverTestFixture
     }
 
     [Test]
+    [IgnorePlatform("windows", "Signed directory add-on install fails on Windows (ERROR_CORRUPT_FILE).")]
     public void ShouldInstallAndUninstallSignedDirAddon()
     {
         FirefoxDriver firefoxDriver = driver as FirefoxDriver;
@@ -372,9 +373,18 @@ public class FirefoxDriverTest : DriverTestFixture
 
     private string GetPath(string name)
     {
-        string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        string sFile = Path.Combine(sCurrentDirectory, "../../../../common/extensions/" + name);
-        return Path.GetFullPath(sFile);
+        try
+        {
+            // For directories, locate a file inside and get parent (runfiles manifest only lists files)
+            string path = Bazel.Runfiles.Create().Rlocation($"_main/common/extensions/{name}/manifest.json");
+            return Path.GetDirectoryName(path);
+        }
+        catch (FileNotFoundException)
+        {
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = Path.Combine(sCurrentDirectory, "../../../../common/extensions/" + name);
+            return Path.GetFullPath(sFile);
+        }
     }
 
     private static bool PlatformHasNativeEvents()

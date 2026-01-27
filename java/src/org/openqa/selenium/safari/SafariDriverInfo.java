@@ -28,7 +28,8 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
@@ -85,12 +86,12 @@ public class SafariDriverInfo implements WebDriverInfo {
   }
 
   @Override
-  public Optional<WebDriver> createDriver(Capabilities capabilities)
+  public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
       throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }
 
-    return Optional.of(new SafariDriver(new SafariOptions().merge(capabilities)));
+    return Optional.of(new SafariDriver(new SafariOptions().merge(capabilities), clientConfig));
   }
 }

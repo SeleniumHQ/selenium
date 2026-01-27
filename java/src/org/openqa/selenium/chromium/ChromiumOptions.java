@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.internal.Require;
@@ -233,6 +234,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   }
 
   @Override
+  @Nullable
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
     if (!this.capabilityName.equals(capabilityName)) {

@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <title>enter_submit_test</title>
+<link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+<script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+<script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
   goog.require('bot.Keyboard');
@@ -11,9 +15,10 @@
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
-  goog.require('goog.testing.jsunit');
 </script>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <script type="text/javascript">
   var submitFired;
   var wasSubmitted;
@@ -21,7 +26,7 @@
 
   var submitted = goog.nullFunction;
 
-  function setUp() {
+  QUnit.testStart(function() {
     submitFired = false;
     wasSubmitted = false;
     waitForSubmit = new goog.Promise(function(done) {
@@ -30,7 +35,7 @@
         done();
       };
     });
-  }
+  });
 
   function submitForm(formName, opt_cancelSubmit) {
     var target = document.getElementById(formName + 'text1');
@@ -46,57 +51,67 @@
     keyboard.pressKey(bot.Keyboard.Keys.ENTER);
   }
 
-  function testTwoTextboxesAndOneSubmitIsSubmitted() {
+  QUnit.test('two textboxes and one submit is submitted', function(assert) {
+    var done = assert.async();
     submitForm('form1');
-    return waitForSubmit.then(function() {
-      assertTrue(submitFired);
+    waitForSubmit.then(function() {
+      assert.ok(submitFired);
+      done();
     });
-  }
+  });
 
-  function testOneTextboxesAndOneSubmitIsSubmitted() {
+  QUnit.test('one textboxes and one submit is submitted', function(assert) {
+    var done = assert.async();
     submitForm('form2');
-    return waitForSubmit.then(function() {
-      assertTrue(submitFired);
+    waitForSubmit.then(function() {
+      assert.ok(submitFired);
+      done();
     });
-  }
+  });
 
-  function testOneTextboxesAndNoSubmitIsSubmitted() {
+  QUnit.test('one textboxes and no submit is submitted', function(assert) {
+    var done = assert.async();
     submitForm('form4');
-    return waitForSubmit.then(function() {
-      assertTrue(submitFired);
+    waitForSubmit.then(function() {
+      assert.ok(submitFired);
+      done();
     });
-  }
+  });
 
-  function testTwoTextboxesAndTwoSubmitsIsSubmitted() {
+  QUnit.test('two textboxes and two submits is submitted', function(assert) {
+    var done = assert.async();
     submitForm('form5');
-    return waitForSubmit.then(function() {
-      assertTrue(submitFired);
+    waitForSubmit.then(function() {
+      assert.ok(submitFired);
+      done();
     });
-  }
+  });
 
-  function testKeyDownCancelNotSubmitted() {
+  QUnit.test('key down cancel not submitted', function(assert) {
     submitForm('form6');
-    assertFalse(submitFired);
-    assertFalse(wasSubmitted);
-  }
+    assert.notOk(submitFired);
+    assert.notOk(wasSubmitted);
+  });
 
-  function testKeyPressCancelNotSubmitted() {
+  QUnit.test('key press cancel not submitted', function(assert) {
     submitForm('form7');
-    assertFalse(submitFired);
-    assertFalse(wasSubmitted);
-  }
+    assert.notOk(submitFired);
+    assert.notOk(wasSubmitted);
+  });
 
-  function testKeyUpCancelSubmitted() {
+  QUnit.test('key up cancel submitted', function(assert) {
+    var done = assert.async();
     submitForm('form8');
-    return waitForSubmit.then(function() {
-      assertTrue(submitFired);
+    waitForSubmit.then(function() {
+      assert.ok(submitFired);
+      done();
     });
-  }
+  });
 
-  function testCancelSubmitFiredNotSubmitted() {
+  QUnit.test('cancel submit fired not submitted', function(assert) {
     submitForm('form9', true);
-    assertTrue(submitFired);
-  }
+    assert.ok(submitFired);
+  });
 </script>
 <form id="form1" action="javascript:submitted()">
   <input type="text" id="form1text1"></input><br/>

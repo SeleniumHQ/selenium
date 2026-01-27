@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
+import java.net.ConnectException;
 import java.net.PasswordAuthentication;
 import java.net.ProtocolException;
 import java.net.Proxy;
@@ -443,18 +444,18 @@ public class JdkHttpClient implements HttpClient {
     long start = System.currentTimeMillis();
 
     BodyHandler<InputStream> responseBodyHandler = BodyHandlers.ofInputStream();
+    URI rawUri = messages.getRawUri(req);
+    HttpMethod method = req.getMethod();
 
     try {
-      HttpMethod method = req.getMethod();
-      URI rawUri = messages.getRawUri(req);
-
       // We need a custom handling of redirects to:
       // - increase the maximum number of retries to 100
       // - avoid a downgrade of POST requests, see the javadoc of j.n.h.HttpClient.Redirect
       // - not run into https://bugs.openjdk.org/browse/JDK-8304701
       for (int i = 0; i < 100; i++) {
         if (Thread.interrupted()) {
-          throw new InterruptedException("http request has been interrupted");
+          throw new InterruptedException(
+              String.format("http request has been interrupted: %s", describe(req)));
         }
 
         java.net.http.HttpRequest request = messages.createRequest(req, method, rawUri);
@@ -469,26 +470,8 @@ public class JdkHttpClient implements HttpClient {
           case 302:
           case 307:
           case 308:
-            URI location =
-                rawUri.resolve(
-                    response
-                        .headers()
-                        .firstValue("location")
-                        .orElseThrow(
-                            () ->
-                                new ProtocolException(
-                                    "HTTP "
-                                        + response.statusCode()
-                                        + " without 'location' header set")));
-
-            if ("https".equalsIgnoreCase(rawUri.getScheme())
-                && !"https".equalsIgnoreCase(location.getScheme())) {
-              throw new SecurityException("Downgrade from secure to insecure connection.");
-            } else if ("wss".equalsIgnoreCase(rawUri.getScheme())
-                && !"wss".equalsIgnoreCase(location.getScheme())) {
-              throw new SecurityException("Downgrade from secure to insecure connection.");
-            }
-
+            URI location = rawUri.resolve(getLocationHeader(response, method, rawUri));
+            checkNotDowngrade(rawUri, location);
             rawUri = location;
             continue;
           default:
@@ -496,20 +479,87 @@ public class JdkHttpClient implements HttpClient {
         }
       }
 
-      throw new ProtocolException("Too many redirects: 101");
+      throw new ProtocolException(String.format("Too many redirects: 101 (%s)", describe(req)));
     } catch (HttpTimeoutException e) {
-      throw new TimeoutException(e);
+      throw new TimeoutException(
+          String.format("Timeout when executing request (%s)", describe(req)), e);
+    } catch (ConnectException e) {
+      throw new ConnectionException(
+          String.format("Connection error (%s)", describe(req)), maskUrlCredentials(rawUri), e);
     } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      throw new UncheckedIOException(
+          String.format("Failed to execute request (%s)", describe(req)), e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new WebDriverException(e.getMessage(), e);
+      throw new WebDriverException(
+          String.format("%s when executing request (%s)", e.getMessage(), describe(req)), e);
     } finally {
       LOG.log(
           Level.FINE,
           "Ending request {0} in {1}ms",
           new Object[] {req, (System.currentTimeMillis() - start)});
     }
+  }
+
+  private void checkNotDowngrade(URI from, URI to) {
+    if (isDowngradeFrom("https", from, to) || isDowngradeFrom("wss", from, to)) {
+      throw new SecurityException(
+          String.format("Downgrade from secure to insecure connection (%s -> %s)", from, to));
+    }
+  }
+
+  private boolean isDowngradeFrom(String protocol, URI from, URI to) {
+    return protocol.equalsIgnoreCase(from.getScheme())
+        && !protocol.equalsIgnoreCase(to.getScheme());
+  }
+
+  private String describe(HttpRequest req) {
+    String uri = maskUrlCredentials(messages.getRawUri(req));
+    HttpMethod method = req.getMethod();
+    return String.format("%s %s", method, uri);
+  }
+
+  static String maskUrlCredentials(String uri) {
+    try {
+      return maskUrlCredentials(new URI(uri));
+    } catch (URISyntaxException invalidUri) {
+      return uri;
+    }
+  }
+
+  private static String maskUrlCredentials(URI u) {
+    if (u.getUserInfo() == null) {
+      return u.toString();
+    }
+    try {
+      return new URI(
+              u.getScheme(),
+              "***",
+              u.getHost(),
+              u.getPort(),
+              u.getPath(),
+              u.getQuery(),
+              u.getFragment())
+          .toString();
+    } catch (URISyntaxException e) {
+      return u.toString();
+    }
+  }
+
+  private String getLocationHeader(
+      java.net.http.HttpResponse<InputStream> response, HttpMethod method, URI uri)
+      throws ProtocolException {
+    return response
+        .headers()
+        .firstValue("location")
+        .orElseThrow(
+            () -> {
+              String message =
+                  String.format(
+                      "HTTP response with status %d but without \"location\" header (%s %s)",
+                      response.statusCode(), method, maskUrlCredentials(uri));
+              return new ProtocolException(message);
+            });
   }
 
   @Override

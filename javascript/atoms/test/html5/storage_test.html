@@ -1,14 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>HTML5 storage</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.storage');
     goog.require('bot.html5');
     goog.require('goog.array');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent.product');
   </script>
 
@@ -21,63 +24,69 @@
         !bot.html5.isSupported(bot.html5.API.SESSION_STORAGE) ||
         goog.userAgent.product.FIREFOX;
 
-    function testGetLocalStorage() {
+    QUnit.test('getLocalStorage', function(assert) {
       if (LOCAL_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: local storage not working');
         return;
       }
 
       var storage = bot.storage.getLocalStorage();
-      assertEquals(storage.getStorageMap(), localStorage);
-    }
+      assert.strictEqual(storage.getStorageMap(), localStorage);
+    });
 
-    function testGetLocalStorageWithWindow() {
+    QUnit.test('getLocalStorageWithWindow', function(assert) {
       if (LOCAL_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: local storage not working');
         return;
       }
 
       var storage = bot.storage.getLocalStorage(bot.getWindow());
-      assertEquals(storage.getStorageMap(), localStorage);
-    }
+      assert.strictEqual(storage.getStorageMap(), localStorage);
+    });
 
-    function testGetSessionStorage() {
+    QUnit.test('getSessionStorage', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
       var storage = bot.storage.getSessionStorage();
-      assertEquals(storage.getStorageMap(), sessionStorage);
-    }
+      assert.strictEqual(storage.getStorageMap(), sessionStorage);
+    });
 
-    function testGetSessionStorageWithWindow() {
+    QUnit.test('getSessionStorageWithWindow', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
       var storage = bot.storage.getSessionStorage(bot.getWindow());
-      assertEquals(storage.getStorageMap(), storage.getStorageMap());
-    }
+      assert.strictEqual(storage.getStorageMap(), storage.getStorageMap());
+    });
 
-    function testClear() {
+    QUnit.test('clear', function(assert) {
       if (LOCAL_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: local storage not working');
         return;
       }
 
       var storage = bot.storage.getLocalStorage();
       storage.clear();
-      assertEquals(0, storage.size());
+      assert.strictEqual(storage.size(), 0);
 
       storage.setItem('first', 'one');
       storage.setItem('second', 'two');
       storage.setItem('third', 'two');
       storage.clear();
-      assertEquals(0, storage.size());
-      assertNull(storage.getItem('first'));
-      assertNull(storage.getItem('second'));
-      assertNull(storage.getItem('third'));
-    }
+      assert.strictEqual(storage.size(), 0);
+      assert.strictEqual(storage.getItem('first'), null);
+      assert.strictEqual(storage.getItem('second'), null);
+      assert.strictEqual(storage.getItem('third'), null);
+    });
 
-    function testSetAndGetSimpleItem() {
+    QUnit.test('setAndGetSimpleItem', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
@@ -85,20 +94,21 @@
 
       // set-get
       storage.setItem('first', 'one');
-      assertEquals('one', storage.getItem('first'));
+      assert.strictEqual(storage.getItem('first'), 'one');
       storage.setItem('second', 2);
-      assertEquals('2', storage.getItem('second'));
-      assertNull(storage.getItem('third'));
+      assert.strictEqual(storage.getItem('second'), '2');
+      assert.strictEqual(storage.getItem('third'), null);
 
       // resetItem
       storage.setItem('first', '1');
-      assertEquals('1', storage.getItem('first'));
+      assert.strictEqual(storage.getItem('first'), '1');
 
       storage.clear();
-    }
+    });
 
-    function testSetArbitraryValue() {
+    QUnit.test('setArbitraryValue', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
@@ -106,22 +116,23 @@
 
       // set different types of value
       storage.setItem('foo', '');
-      assertEquals('', storage.getItem('foo'));
+      assert.strictEqual(storage.getItem('foo'), '');
       var d = new Date(2011, 02, 29, 12, 33, 44, 44);
       storage.setItem('date', d);
-      assertEquals(d.toString(), storage.getItem('date'));
+      assert.strictEqual(storage.getItem('date'), d.toString());
 
       // set null value.
       storage.setItem('foo1', null);
-      assertEquals('null', storage.getItem('foo1'));
+      assert.strictEqual(storage.getItem('foo1'), 'null');
       storage.setItem('foo2', 'null');
-      assertEquals(storage.getItem('foo1'), storage.getItem('foo2'));
+      assert.strictEqual(storage.getItem('foo1'), storage.getItem('foo2'));
 
       storage.clear();
-    }
+    });
 
-    function testRemoveItem() {
+    QUnit.test('removeItem', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
@@ -131,14 +142,15 @@
       storage.setItem('first', 'one');
       storage.setItem('second', 'two');
 
-      assertEquals('one', storage.removeItem('first'));
-      assertEquals('two', storage.removeItem('second'));
-      assertEquals(null, storage.removeItem('first'));
-      assertEquals(null, storage.removeItem('foo'));
-    }
+      assert.strictEqual(storage.removeItem('first'), 'one');
+      assert.strictEqual(storage.removeItem('second'), 'two');
+      assert.strictEqual(storage.removeItem('first'), null);
+      assert.strictEqual(storage.removeItem('foo'), null);
+    });
 
-    function testSize() {
+    QUnit.test('size', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
@@ -148,11 +160,12 @@
       storage.setItem('first', 'one');
       storage.setItem('second', 'two');
       storage.setItem('third', 'three');
-      assertEquals(3, storage.size());
-    }
+      assert.strictEqual(storage.size(), 3);
+    });
 
-    function testKeySet() {
+    QUnit.test('keySet', function(assert) {
       if (SESSION_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: session storage not working');
         return;
       }
 
@@ -162,39 +175,41 @@
       storage.setItem('third', 'three');
       storage.setItem('first', 'one');
       storage.setItem('second', 'two');
-      assertEquals(3, storage.size());
+      assert.strictEqual(storage.size(), 3);
 
       // keySet
       var keys = storage.keySet();
       // Use goog.array.indexOf because IE9 doesn't have Array.indexOf
-      assertNotEquals(-1, goog.array.indexOf(keys, 'first'));
-      assertNotEquals(-1, goog.array.indexOf(keys, 'second'));
-      assertEquals(-1, goog.array.indexOf(keys, 'five'));
+      assert.notStrictEqual(goog.array.indexOf(keys, 'first'), -1);
+      assert.notStrictEqual(goog.array.indexOf(keys, 'second'), -1);
+      assert.strictEqual(goog.array.indexOf(keys, 'five'), -1);
       var sortedKeys = keys.sort();
-      assertArrayEquals(['first', 'second', 'third'], sortedKeys);
-    }
+      assert.deepEqual(sortedKeys, ['first', 'second', 'third']);
+    });
 
-    function testIdenticalLocalStorage() {
+    QUnit.test('identicalLocalStorage', function(assert) {
       if (LOCAL_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: local storage not working');
         return;
       }
       var localStorage1 = bot.storage.getLocalStorage();
       var localStorage2 = bot.storage.getLocalStorage();
 
       localStorage1.clear();
-      assertEquals(0, localStorage1.size());
-      assertEquals(0, localStorage2.size());
+      assert.strictEqual(localStorage1.size(), 0);
+      assert.strictEqual(localStorage2.size(), 0);
       localStorage1.setItem('foo', 'bar');
-      assertEquals('bar', localStorage1.getItem('foo'));
-      assertEquals('bar', localStorage2.getItem('foo'));
+      assert.strictEqual(localStorage1.getItem('foo'), 'bar');
+      assert.strictEqual(localStorage2.getItem('foo'), 'bar');
 
       localStorage2.removeItem('foo');
-      assertNull(localStorage1.getItem('foo'));
-      assertNull(localStorage2.getItem('foo'));
-    }
+      assert.strictEqual(localStorage1.getItem('foo'), null);
+      assert.strictEqual(localStorage2.getItem('foo'), null);
+    });
 
-    function testPersistentLocalStorage() {
+    QUnit.test('persistentLocalStorage', function(assert) {
       if (LOCAL_STORAGE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: local storage not working');
         return;
       }
 
@@ -203,13 +218,15 @@
       if (localStorage.getItem('foosession') === null) {
         localStorage.setItem('foosession', 'barsession');
       }
-      assertEquals('barsession', localStorage.getItem('foosession'));
+      assert.strictEqual(localStorage.getItem('foosession'), 'barsession');
       localStorage.removeItem('foosession');
-      assertNull(localStorage.getItem('foosession'));
-    }
+      assert.strictEqual(localStorage.getItem('foosession'), null);
+    });
   </script>
 
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
 </body>
 </html>

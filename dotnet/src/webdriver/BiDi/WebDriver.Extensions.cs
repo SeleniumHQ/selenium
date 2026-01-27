@@ -18,13 +18,14 @@
 // </copyright>
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
 public static class WebDriverExtensions
 {
-    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
+    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (webDriver is null) throw new ArgumentNullException(nameof(webDriver));
 
@@ -37,7 +38,7 @@ public static class WebDriverExtensions
 
         if (webSocketUrl is null) throw new BiDiException("The driver is not compatible with bidirectional protocol or \"webSocketUrl\" not enabled in driver options.");
 
-        var bidi = await BiDi.ConnectAsync(webSocketUrl, options).ConfigureAwait(false);
+        var bidi = await BiDi.ConnectAsync(webSocketUrl, options, cancellationToken).ConfigureAwait(false);
 
         return bidi;
     }

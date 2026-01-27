@@ -30,10 +30,12 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
 
+@SuppressWarnings("deprecation")
 class PerformanceLoggingMockTest {
 
   @Test
   void testMergesRemoteLogs() {
+    // This test verifies the deprecated LocalLogs behavior for backwards compatibility
     final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
 
     when(executeMethod.execute(

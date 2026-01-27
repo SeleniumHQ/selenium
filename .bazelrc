@@ -39,6 +39,7 @@ build --explicit_java_test_deps
 
 # Avoid ErrorProne getting annoyed about "impossible null checks"
 build --javacopt="-Xep:ImpossibleNullComparison:OFF"
+build --javacopt="-Xep:WildcardImport:ERROR"
 
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
@@ -63,8 +64,14 @@ build --incompatible_strict_action_env
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 build --incompatible_enable_cc_toolchain_resolution
-build --cxxopt=-std=c++17
-build --host_cxxopt=-std=c++17
+build:linux --cxxopt=-std=c++17
+build:linux --host_cxxopt=-std=c++17
+build:macos --cxxopt=-std=c++17
+build:macos --host_cxxopt=-std=c++17
+build:windows --cxxopt=/std:c++17
+build:windows --host_cxxopt=/std:c++17
+build:windows --per_file_copt=external/protobuf\\+.*@/w
+build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --define=protobuf_allow_msvc=true
 
 # For build stamping

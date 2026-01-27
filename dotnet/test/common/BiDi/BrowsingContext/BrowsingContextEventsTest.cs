@@ -26,7 +26,6 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 internal class BrowsingContextEventsTest : BiDiTestFixture
 {
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenDownloadWillBeginEvent()
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
@@ -42,11 +41,10 @@ internal class BrowsingContextEventsTest : BiDiTestFixture
         Assert.That(eventArgs, Is.Not.Null);
         Assert.That(eventArgs.Context, Is.EqualTo(context));
         Assert.That(eventArgs.Url, Does.EndWith("downloads/file_1.txt"));
-        Assert.That(eventArgs.SuggestedFilename, Is.EqualTo("file_1.txt"));
+        Assert.That(eventArgs.SuggestedFilename, Does.Contain("file_1")); // Avoid incremental prefix
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenDownloadEndEvent()
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });

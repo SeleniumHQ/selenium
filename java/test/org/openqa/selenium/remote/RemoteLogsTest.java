@@ -40,6 +40,7 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 
 @Tag("UnitTests")
+@SuppressWarnings("deprecation")
 class RemoteLogsTest {
   @Mock private ExecuteMethod executeMethod;
 
@@ -104,17 +105,13 @@ class RemoteLogsTest {
   }
 
   @Test
-  void canGetServerLogs() {
-    when(executeMethod.execute(DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
-        .thenReturn(
-            singletonList(
-                Map.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
-
+  void serverLogsAreDeprecatedAndReturnEmpty() {
+    // SERVER log type is deprecated - Grid no longer supports it
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
-    assertThat(logEntries.getAll()).hasSize(1);
-    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("world");
+    assertThat(logEntries.getAll()).isEmpty();
 
-    // Server logs should not retrieve local logs.
+    // Should not call executeMethod or localLogs since SERVER is intercepted
+    verifyNoMoreInteractions(executeMethod);
     verifyNoMoreInteractions(localLogs);
   }
 

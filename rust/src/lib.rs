@@ -45,6 +45,8 @@ use crate::shell::{
 use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
 use anyhow::anyhow;
+use fs_extra::file;
+use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -222,7 +224,7 @@ pub trait SeleniumManager {
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
-            fs::rename(driver_zip_file, driver_path_in_cache)?;
+            file::move_file(driver_zip_file, driver_path_in_cache, &CopyOptions::new())?;
         } else {
             uncompress(
                 &driver_zip_file,
@@ -500,6 +502,12 @@ pub trait SeleniumManager {
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
+        if download_browser && self.is_safari() {
+            self.get_logger().debug(
+                "Force browser download requested for Safari, but downloads are not supported; using local discovery",
+            );
+            download_browser = false;
+        }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
@@ -1194,7 +1202,7 @@ pub trait SeleniumManager {
 
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
-            if !escaped_browser_path.is_empty() {
+            if !escaped_browser_path.is_empty() && !self.is_webview2() {
                 return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {

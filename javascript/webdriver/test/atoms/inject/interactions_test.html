@@ -1,5 +1,11 @@
 <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
 <title>interactions_test</title>
+<link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+<script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+<script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
 <script src="../../test_bootstrap.js"></script>
 <script src="../../../atoms/inject/deps.js"></script>
 <script>
@@ -12,7 +18,6 @@ goog.require('bot.json');
 goog.require('bot.response');
 goog.require('bot.userAgent');
 goog.require('goog.array');
-goog.require('goog.testing.jsunit');
 goog.require('webdriver.Key');
 goog.require('webdriver.atoms.inject.action');
 </script>
@@ -25,7 +30,10 @@ goog.require('webdriver.atoms.inject.action');
   left: 50px;
 }
 </style>
+</head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <input id="focus-sync">
 <input id="text-input">
 <div id="click-box"></div>
@@ -56,33 +64,33 @@ function resetFocus() {
 
 function focusElement(el) {
   el.focus();
-  assertEquals(el, bot.dom.getActiveElement(document));
+  QUnit.assert.strictEqual(bot.dom.getActiveElement(document), el);
 }
 
 
-function testSendKeysToActiveElement() {
+QUnit.test('sendKeysToActiveElement', function(assert) {
   resetFocus();
 
   var input = document.getElementById('text-input');
   focusElement(input);
 
   var state = doType('foo');
-  assertEquals('foo', input.value);
+  assert.strictEqual(input.value, 'foo');
 
   resetFocus();
 
   state['pressed'].push(bot.Keyboard.Keys.SHIFT);
   state = doType('more', state);
-  assertEquals('foo', input.value);
+  assert.strictEqual(input.value, 'foo');
 
   focusElement(input);
   doType(['bar', webdriver.Key.SHIFT, 'baz'], state);
 
   // IE<10 does not preserve cursor position after changing focus.
   if (bot.userAgent.IE_DOC_PRE10) {
-    assertEquals('BARbazfoo', input.value);
+    assert.strictEqual(input.value, 'BARbazfoo');
   } else {
-    assertEquals('fooBARbaz', input.value);
+    assert.strictEqual(input.value, 'fooBARbaz');
   }
 
   function doType(keys, opt_state) {
@@ -92,35 +100,38 @@ function testSendKeysToActiveElement() {
     bot.response.checkResponse(res);
     return res['value'];
   }
-}
+});
 
-function testMouseClick() {
-  assertEquals('initial state is wrong', 'rgba(255, 0, 0, 1)', getColor());
+QUnit.test('mouseClick', function(assert) {
+  // Reset box color first
+  clickBox.style.background = 'red';
+  assert.strictEqual(getColor(), 'rgba(255, 0, 0, 1)', 'initial state is wrong');
 
   var state = doClick(bot.Mouse.Button.LEFT, {
     clientXY: {x: 60, y: 60}  // Click over the clickBox.
   });
-  assertEquals('rgba(0, 0, 255, 1)', getColor());
-  assertTrue(!!state['element']);
-  assertEquals(
-      clickBox, bot.inject.cache.getElement(state['element']['ELEMENT']));
+  assert.strictEqual(getColor(), 'rgba(0, 0, 255, 1)');
+  assert.ok(!!state['element']);
+  assert.strictEqual(
+      bot.inject.cache.getElement(state['element']['ELEMENT']),
+      clickBox);
 
   state = doClick(bot.Mouse.Button.RIGHT, state);
-  assertEquals('rgba(0, 128, 0, 1)', getColor());
+  assert.strictEqual(getColor(), 'rgba(0, 128, 0, 1)');
 
   state.clientXY.x += 41;
-  assertEquals(101, state.clientXY.x);
+  assert.strictEqual(state.clientXY.x, 101);
   doClick(bot.Mouse.Button.LEFT, state);
-  assertEquals('rgba(0, 255, 255, 1)', getColor());
+  assert.strictEqual(getColor(), 'rgba(0, 255, 255, 1)');
 
   state.clientXY.y += 41;
-  assertEquals(101, state.clientXY.y);
+  assert.strictEqual(state.clientXY.y, 101);
   doClick(bot.Mouse.Button.LEFT, state);
-  assertEquals('rgba(255, 255, 0, 1)', getColor());
+  assert.strictEqual(getColor(), 'rgba(255, 255, 0, 1)');
 
   state.clientXY = {x: 50, y: 50};
   doClick(bot.Mouse.Button.LEFT, state);
-  assertEquals('rgba(0, 0, 255, 1)', getColor());
+  assert.strictEqual(getColor(), 'rgba(0, 0, 255, 1)');
 
   function doClick(button, state) {
     var res = webdriver.atoms.inject.action.mouseClick(button, state);
@@ -133,5 +144,7 @@ function testMouseClick() {
     var value = bot.dom.getEffectiveStyle(clickBox, 'backgroundColor');
     return bot.color.standardizeColor('backgroundColor', value);
   }
-}
+});
 </script>
+</body>
+</html>

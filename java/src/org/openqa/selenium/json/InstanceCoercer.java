@@ -133,10 +133,10 @@ class InstanceCoercer extends TypeCoercer<Object> {
             Collectors.toMap(
                 SimplePropertyDescriptor::getName,
                 desc -> {
-                  Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
+                  Method method = desc.getWriteMethod();
+                  Type type = method.getGenericParameterTypes()[0];
                   BiConsumer<Object, Object> writer =
                       (instance, value) -> {
-                        Method method = desc.getWriteMethod();
                         method.setAccessible(true);
                         try {
                           method.invoke(instance, value);

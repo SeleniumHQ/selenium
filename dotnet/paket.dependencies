@@ -13,4 +13,5 @@ nuget NETStandard.Library 2.0.3
 nuget NUnit 3.13.2
 nuget NUnitLite 3.13.2
 nuget System.Text.Json 8.0.5
+nuget System.Threading.Channels 8.0.0
 nuget Runfiles 0.14.0
