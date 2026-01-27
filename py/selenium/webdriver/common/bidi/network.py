@@ -19,8 +19,8 @@ from __future__ import annotations
 
 import base64
 from collections.abc import Callable
-from typing import Any, Optional, Union
 from enum import Enum
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
@@ -34,7 +34,7 @@ class BytesValueType(str, Enum):
 class BytesValue:
     """Represents network.BytesValue that can be either string (UTF-8) or base64-encoded binary data."""
 
-    def __init__(self, value: Union[str, bytes]):
+    def __init__(self, value: str | bytes):
         if isinstance(value, str):
             self._type = BytesValueType.STRING
             self._value = value
@@ -56,7 +56,7 @@ class BytesValue:
         return {"type": self._type.value, "value": self._value}
 
     @classmethod
-    def from_dict(cls, data: dict) -> "BytesValue":
+    def from_dict(cls, data: dict) -> BytesValue:
         value_type = data.get("type")
         value = data.get("value")
 
@@ -68,21 +68,21 @@ class BytesValue:
             raise ValueError(f"Unknown BytesValue type: {value_type}")
 
     @classmethod
-    def from_string(cls, value: str) -> "BytesValue":
+    def from_string(cls, value: str) -> BytesValue:
         instance = cls.__new__(cls)
         instance._type = BytesValueType.STRING
         instance._value = value
         return instance
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> "BytesValue":
+    def from_bytes(cls, data: bytes) -> BytesValue:
         instance = cls.__new__(cls)
         instance._type = BytesValueType.BASE64
         instance._value = base64.b64encode(data).decode("ascii")
         return instance
 
     @classmethod
-    def from_base64(cls, encoded: str) -> "BytesValue":
+    def from_base64(cls, encoded: str) -> BytesValue:
         instance = cls.__new__(cls)
         instance._type = BytesValueType.BASE64
         instance._value = encoded
@@ -677,10 +677,10 @@ class Response:
         mime_type: str = None,
         from_cache: bool = False,
         bytes_received: int = None,
-        headers_size: Optional[int] = None,
-        body_size: Optional[int] = None,
+        headers_size: int | None = None,
+        body_size: int | None = None,
         content: dict = None,
-        auth_challenges: Optional[list] = None,
+        auth_challenges: list | None = None,
     ):
         self.network: Network = network
         self.request_id: str = request_id
@@ -692,10 +692,10 @@ class Response:
         self.mime_type: str = mime_type
         self.from_cache: bool = from_cache
         self.bytes_received: int = bytes_received
-        self.headers_size: Optional[int] = headers_size
-        self.body_size: Optional[int] = body_size
+        self.headers_size: int | None = headers_size
+        self.body_size: int | None = body_size
         self.content: dict = content
-        self.auth_challenges: Optional[list] = auth_challenges
+        self.auth_challenges: list | None = auth_challenges
 
     def continue_response(self, cookies=None, credentials=None, headers=None, reason_phrase=None, status_code=None):
         """Continue a response blocked by a network intercept.
