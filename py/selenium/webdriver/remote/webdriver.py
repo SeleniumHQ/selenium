@@ -116,6 +116,7 @@ def get_remote_connection(
         command_executor = RemoteConnection(client_config=client_config)
 
     browser_name = capabilities.get("browserName")
+    handler: type[RemoteConnection]
     if browser_name == "chrome":
         from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
 
