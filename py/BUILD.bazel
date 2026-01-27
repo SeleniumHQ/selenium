@@ -220,10 +220,13 @@ copy_file(
 # Module Targets (following Ruby's modular pattern)
 # ==============================================================================
 
-# Exceptions (no deps - foundational)
+# Exceptions and package init (no deps - foundational)
 py_library(
     name = "exceptions",
-    srcs = glob(["selenium/common/**/*.py"]),
+    srcs = [
+        "selenium/__init__.py",
+        "selenium/webdriver/__init__.py",
+    ] + glob(["selenium/common/**/*.py"]),
     imports = ["."],
     visibility = ["//visibility:public"],
 )
@@ -397,10 +400,7 @@ py_library(
 
 py_library(
     name = "selenium",
-    srcs = [
-        "selenium/__init__.py",
-        "selenium/webdriver/__init__.py",
-    ],
+    srcs = [],
     data = ["selenium/py.typed"],
     imports = ["."],
     visibility = ["//visibility:public"],
