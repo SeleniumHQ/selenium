@@ -668,6 +668,11 @@ py_binary(
 )
 
 alias(
-    name = "ruff",
-    actual = "//py/private:ruff",
+    name = "ruff-check",
+    actual = "//py/private:ruff_check",
+)
+
+alias(
+    name = "ruff-format",
+    actual = "//py/private:ruff_format",
 )

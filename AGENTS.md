@@ -2,6 +2,7 @@
 Guidance for AI agents working in the Selenium monorepo.
 Language-specific details live in respective subdirectories.
 -->
+See @.local/AGENTS.md for additional guidance
 
 Selenium is a Bazel-built monorepo implementing the W3C WebDriver (and related) protocols,
 shipping multiple language bindings plus Grid and Selenium Manager.
@@ -39,7 +40,6 @@ Shared/high-risk areas:
 ### Agent workspace
 The `.local/` directory (gitignored) is available for generated artifacts or temporary files:
 - Use `--output_base=.local/bazel-out` if bazel output directory restricted
-- Check `.local/AGENTS.md` for additional user-specific instructions
 
 ## Cross-binding consistency checks
 When changing user-visible behavior, compare with at least one other binding:

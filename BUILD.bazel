@@ -32,6 +32,17 @@ filegroup(
     visibility = ["//rb:__subpackages__"],
 )
 
+filegroup(
+    name = "rake_tasks",
+    srcs = [
+        "Rakefile",
+    ] + glob([
+        "rake_tasks/*.rake",
+        "rake_tasks/*.rb",
+    ]),
+    visibility = ["//visibility:public"],
+)
+
 alias(
     name = "grid",
     actual = "//java/src/org/openqa/selenium/grid:executable-grid",

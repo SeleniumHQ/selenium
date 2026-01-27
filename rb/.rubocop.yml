@@ -25,8 +25,6 @@ Metrics/AbcSize:
   Max: 30
   Exclude:
     - 'lib/selenium/webdriver/common/driver_finder.rb'
-    - 'lib/selenium/webdriver/common/options.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
     - '../rake_tasks/**/*'
@@ -36,6 +34,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
+    - 'Steepfile'
     - '../rake_tasks/**/*'
     - '../Rakefile'
 
@@ -43,28 +42,21 @@ Metrics/ClassLength:
   CountComments: false
   Max: 160
   Exclude:
-    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
-    - 'spec/**/*.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/support/color.rb'
-    - 'lib/selenium/webdriver/common/logger.rb'
     - '../rake_tasks/**/*'
 
 Metrics/MethodLength:
   CountComments: false
   Max: 22
   Exclude:
-    - 'lib/selenium/server.rb'
-    - 'lib/selenium/webdriver/common/options.rb'
-    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/common/driver_finder.rb'
-    - 'lib/selenium/webdriver/remote/http/default.rb'
     - '../rake_tasks/**/*'
 
 Metrics/ModuleLength:
@@ -77,9 +69,6 @@ Metrics/ModuleLength:
 Metrics/PerceivedComplexity:
   Max: 9
   Exclude:
-    - 'lib/selenium/webdriver/common/options.rb'
-    - 'lib/selenium/webdriver/common/local_driver.rb'
-    - 'lib/selenium/webdriver/common/logger.rb'
     - '../rake_tasks/**/*'
 
 Naming/BlockForwarding:
@@ -146,6 +135,10 @@ Style/Dir:
 # Consider documenting all top-level classes and modules
 Style/Documentation:
   Enabled: false
+
+Style/MixinUsage:
+  Exclude:
+    - 'spec/integration/selenium/webdriver/spec_helper.rb'
 
 Style/HashEachMethods:
   Enabled: true

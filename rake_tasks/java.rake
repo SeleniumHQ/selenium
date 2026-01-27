@@ -53,19 +53,19 @@ def verify_java_release_targets
     current_targets = output.lines.map(&:strip).reject(&:empty?).select { |line| line.start_with?('//') }
   end
 
-  missing_targets = JAVA_RELEASE_TARGETS - current_targets
-  extra_targets = current_targets - JAVA_RELEASE_TARGETS
+  obsolete_targets = JAVA_RELEASE_TARGETS - current_targets
+  unlisted_targets = current_targets - JAVA_RELEASE_TARGETS
 
-  return if missing_targets.empty? && extra_targets.empty?
+  return if obsolete_targets.empty? && unlisted_targets.empty?
 
   error_message = 'Java release targets are out of sync with Bazel query results.'
 
-  unless missing_targets.empty?
-    error_message += "\nObsolete targets (in list but not in Bazel): #{missing_targets.join(', ')}"
+  unless obsolete_targets.empty?
+    error_message += "\nObsolete targets (in list but not in Bazel): #{obsolete_targets.join(', ')}"
   end
 
-  unless extra_targets.empty?
-    error_message += "\nMissing targets (in Bazel but not in list): #{extra_targets.join(', ')}"
+  unless unlisted_targets.empty?
+    error_message += "\nMissing targets (in Bazel but not in list): #{unlisted_targets.join(', ')}"
   end
 
   raise error_message

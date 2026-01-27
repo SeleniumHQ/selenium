@@ -47,6 +47,11 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "update_py_deps",
+    srcs = ["update_py_deps.py"],
+)
+
 java_binary(
     name = "google-java-format",
     jvm_flags = [
