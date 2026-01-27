@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Collections.unmodifiableSet;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSortedSet;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.openqa.selenium.json.Json;
 
@@ -103,12 +104,13 @@ public class ConfigFlags implements HasRoles {
             .collect(
                 Collectors.toMap(
                     DescribedOption::section,
-                    ImmutableSortedSet::of,
-                    (l, r) ->
-                        ImmutableSortedSet.<DescribedOption>naturalOrder()
-                            .addAll(l)
-                            .addAll(r)
-                            .build()));
+                    Set::of,
+                    (l, r) -> {
+                      TreeSet<DescribedOption> set = new TreeSet<>();
+                      set.addAll(l);
+                      set.addAll(r);
+                      return unmodifiableSet(set);
+                    }));
 
     StringBuilder demoToml = new StringBuilder();
     demoToml.append("Configuration help for Toml config file").append("\n\n");

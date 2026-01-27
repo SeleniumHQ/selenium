@@ -25,7 +25,6 @@ public abstract class TypeToken<T> {
   private final Type type;
 
   public TypeToken() {
-    // This code is taken from Guava's TypeToken class.
     Type superclass = getClass().getGenericSuperclass();
     if (!(superclass instanceof ParameterizedType)) {
       throw new IllegalStateException(String.format("%s isn't parameterized", superclass));

@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Function;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 
@@ -29,13 +28,12 @@ import org.openqa.selenium.WebDriver;
  *
  * <p>Note that it is expected that ExpectedConditions are idempotent. They will be called in a loop
  * by the {@link WebDriverWait} and any modification of the state of the application under test may
- * have unexpected side-effects.
+ * have unexpected side effects.
  *
  * @param <T> The return type
  */
 // NB: this originally extended Guava's Function interface since Java didn't have one. To avoid code
 // such as "com.google.common.base.Function condition = ExpectedConditions.elementFound(By);"
 // breaking at compile time, we continue to extend Guava's Function interface.
-@NullMarked
 public interface ExpectedCondition<T extends @Nullable Object>
     extends Function<WebDriver, T>, java.util.function.Function<WebDriver, T> {}

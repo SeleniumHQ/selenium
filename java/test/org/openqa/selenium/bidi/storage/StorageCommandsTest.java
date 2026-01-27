@@ -18,12 +18,12 @@
 package org.openqa.selenium.bidi.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
@@ -334,13 +334,6 @@ class StorageCommandsTest extends JupiterTestBase {
 
     driver.get(appServer.whereIs("/common/simpleTest.html"));
     assertCookieIsNotPresentWithName("fish");
-  }
-
-  @AfterEach
-  public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
   }
 
   private String generateUniqueKey() {

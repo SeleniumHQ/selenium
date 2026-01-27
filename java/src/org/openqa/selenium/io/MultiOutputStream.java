@@ -19,14 +19,16 @@ package org.openqa.selenium.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import org.jspecify.annotations.Nullable;
 
 /** Output stream demultiplexer */
 public class MultiOutputStream extends OutputStream {
 
   private final OutputStream mandatory;
-  private final OutputStream optional;
 
-  public MultiOutputStream(OutputStream mandatory, OutputStream optional) {
+  @Nullable private final OutputStream optional;
+
+  public MultiOutputStream(OutputStream mandatory, @Nullable OutputStream optional) {
     this.mandatory = mandatory;
     this.optional = optional;
   }

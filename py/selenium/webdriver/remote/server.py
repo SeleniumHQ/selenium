@@ -43,9 +43,20 @@ class Server:
         log_level: Logging level to control logging output ("INFO" if not specified).
             Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".
         env: Mapping that defines the environment variables for the server process.
+        java_path: Path to the java executable to run the server.
     """
 
-    def __init__(self, host=None, port=4444, path=None, version=None, log_level="INFO", env=None):
+    def __init__(
+        self,
+        host=None,
+        port=4444,
+        path=None,
+        version=None,
+        log_level="INFO",
+        env=None,
+        java_path=None,
+        startup_timeout=10,
+    ):
         if path and version:
             raise TypeError("Not allowed to specify a version when using an existing server path")
 
@@ -55,7 +66,17 @@ class Server:
         self.version = version
         self.log_level = log_level
         self.env = env
+        self.java_path = java_path
+        self.startup_timeout = startup_timeout
         self.process = None
+
+    @property
+    def startup_timeout(self):
+        return self._startup_timeout
+
+    @startup_timeout.setter
+    def startup_timeout(self, timeout):
+        self._startup_timeout = int(timeout)
 
     @property
     def status_url(self):
@@ -118,6 +139,16 @@ class Server:
             raise TypeError("env must be a mapping of environment variables")
         self._env = env
 
+    @property
+    def java_path(self):
+        return self._java_path
+
+    @java_path.setter
+    def java_path(self, java_path):
+        if java_path and not os.path.exists(java_path):
+            raise OSError(f"Can't find java executable located at {java_path}")
+        self._java_path = java_path
+
     def _wait_for_server(self, timeout=10):
         start = time.time()
         while time.time() - start < timeout:
@@ -146,7 +177,7 @@ class Server:
         """
         path = self.download_if_needed(self.version) if self.path is None else self.path
 
-        java_path = shutil.which("java")
+        java_path = self.java_path or shutil.which("java")
         if java_path is None:
             raise OSError("Can't find java on system PATH. JRE is required to run the Selenium server")
 
@@ -177,7 +208,7 @@ class Server:
             print("Starting Selenium server...")
             self.process = subprocess.Popen(command, env=self.env)
             print(f"Selenium server running as process: {self.process.pid}")
-            if not self._wait_for_server():
+            if not self._wait_for_server(timeout=self.startup_timeout):
                 raise TimeoutError(f"Timed out waiting for Selenium server at {self.status_url}")
             print("Selenium server is ready")
         return self.process

@@ -17,9 +17,15 @@
 
 package org.openqa.selenium.testing;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNullElse;
+import static java.util.UUID.randomUUID;
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -27,8 +33,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
@@ -37,6 +45,9 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -53,19 +64,14 @@ public class SeleniumExtension
         TestExecutionExceptionHandler {
 
   private static final ThreadLocal<SeleniumExtension.Instances> instances = new ThreadLocal<>();
-
   private static final Logger LOG = Logger.getLogger(SeleniumExtension.class.getName());
+  protected static final ThreadLocal<String> testName = new ThreadLocal<>();
 
   private final Duration regularWait;
-
   private final Duration shortWait;
-
   private boolean nullDriver = false;
-
   private final TestIgnorance ignorance;
-
-  private final CaptureLoggingRule captureLoggingRule;
-
+  private final CaptureLoggingRule captureLoggingRule = new CaptureLoggingRule();
   private boolean failedWithNotYetImplemented = false;
   private boolean failedWithRemoteBuild = false;
 
@@ -79,12 +85,13 @@ public class SeleniumExtension
 
     this.ignorance =
         new TestIgnorance(Optional.ofNullable(Browser.detect()).orElse(Browser.CHROME));
-    this.captureLoggingRule = new CaptureLoggingRule();
   }
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
+    captureLoggingRule.startLogCapture();
     nullDriver = false;
+    testName.set(displayName(context));
 
     // ManageDriverRule.starting
     Browser current = Objects.requireNonNull(Browser.detect());
@@ -95,7 +102,7 @@ public class SeleniumExtension
     if (noDriverBeforeTest.isPresent()) {
       NoDriverBeforeTest annotation = noDriverBeforeTest.get();
       if (current.matches(annotation.value())) {
-        LOG.info("Destroying driver before test " + context.getDisplayName());
+        LOG.info(() -> "Destroying driver before test " + displayName(context));
         removeDriver();
         nullDriver = true;
         return;
@@ -106,13 +113,13 @@ public class SeleniumExtension
     if (needsFreshDriver.isPresent()) {
       NeedsFreshDriver annotation = needsFreshDriver.get();
       if (current.matches(annotation.value())) {
-        LOG.info("Restarting driver before test " + context.getDisplayName());
+        LOG.info(() -> "Restarting driver before test " + displayName(context));
         removeDriver();
       }
     }
 
     // TraceMethodNameRule.starting
-    LOG.info(">>> Starting " + context.getDisplayName());
+    LOG.info(() -> ">>> Starting " + displayName(context));
 
     // NotYetImplementedRule
     failedWithNotYetImplemented = false;
@@ -121,17 +128,27 @@ public class SeleniumExtension
     failedWithRemoteBuild = false;
   }
 
+  @NonNull
+  private static String displayName(ExtensionContext context) {
+    return context
+        .getTestClass()
+        .map(testClass -> testClass.getSimpleName() + '.' + context.getDisplayName())
+        .orElse(context.getDisplayName());
+  }
+
   @Override
   public void afterEach(ExtensionContext context) throws Exception {
+    testName.remove();
+
     // SwitchToTopRule
     SwitchToTopRule switchToTopRule = new SwitchToTopRule(context);
     switchToTopRule.apply();
 
-    // TraceMethodNameRule.finished
-    LOG.info("<<< Finished  " + context.getDisplayName());
+    Level logLevel =
+        context.getExecutionException().map(testFailed -> Level.ALL).orElse(Level.WARNING);
+    captureLoggingRule.endLogCapture(logLevel);
 
-    // CaptureLoggingRule
-    captureLoggingRule.endLogCapture();
+    LOG.info(() -> "<<< Finished  " + displayName(context));
 
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
@@ -187,6 +204,8 @@ public class SeleniumExtension
   public void testFailed(ExtensionContext context, Throwable cause) {
     TestWatcher.super.testFailed(context, cause);
 
+    logWebdriverDetails(context);
+
     // ManageDriverRule.failed
     Browser current = Objects.requireNonNull(Browser.detect());
     Optional<Method> testMethod = context.getTestMethod();
@@ -200,8 +219,7 @@ public class SeleniumExtension
       }
     }
 
-    // CaptureLoggingRule
-    captureLoggingRule.writeCapturedLogs();
+    captureLoggingRule.endLogCapture(Level.ALL);
   }
 
   @Override
@@ -250,9 +268,9 @@ public class SeleniumExtension
       return null;
     }
 
-    LOG.info("CREATING DRIVER");
+    LOG.info(() -> "CREATING DRIVER");
     WebDriver driver = actuallyCreateDriver();
-    LOG.info("CREATED " + driver);
+    LOG.info(() -> "CREATED " + driver);
     return driver;
   }
 
@@ -291,13 +309,22 @@ public class SeleniumExtension
       return;
     }
 
-    try {
-      current.driver.quit();
-    } catch (RuntimeException ignored) {
-      // fall through
+    if (current.driver != null) {
+      try {
+        current.driver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
 
     instances.remove();
+  }
+
+  public String currentTest() {
+    return testName.get();
   }
 
   private static class Instances {
@@ -330,7 +357,7 @@ public class SeleniumExtension
       return nyi.anyMatch(driver -> current.matches(driver.value()));
     }
 
-    public boolean check() throws Exception {
+    public boolean check() {
       Optional<AnnotatedElement> element = context.getElement();
       Optional<NotYetImplementedList> notYetImplementedList =
           findAnnotation(element, NotYetImplementedList.class);
@@ -387,6 +414,72 @@ public class SeleniumExtension
         }
         currentInstances.driver.switchTo().defaultContent();
       }
+    }
+  }
+
+  private void logWebdriverDetails(ExtensionContext context) {
+    try {
+      Optional.ofNullable(instances.get())
+          .ifPresent(
+              (Instances current) -> {
+                System.err.println();
+                System.err.println("Test failure details:");
+                System.err.printf("  URL: %s%n", current.driver.getCurrentUrl());
+                System.err.printf("  Title: %s%n", current.driver.getTitle());
+                System.err.printf("  Page source: %s%n", savePageSource(current.driver, context));
+                System.err.printf("  Screenshot: %s%n", saveScreenshot(current.driver, context));
+              });
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Failed to log webdriver details: " + e.getMessage(), e);
+    }
+  }
+
+  private File artifact(ExtensionContext context, String suffix, byte[] content)
+      throws IOException {
+    File parent = new File("build/failures/java/" + Browser.detect());
+    File testClassFolder =
+        new File(parent, context.getTestClass().map(Class::getName).orElse("-").replace('.', '/'));
+    if (!testClassFolder.exists()) {
+      if (!testClassFolder.mkdirs()) {
+        throw new IOException("Cannot create folder " + testClassFolder);
+      }
+    }
+    File result =
+        new File(
+            testClassFolder,
+            context.getTestMethod().map(Method::getName).orElse(randomUUID().toString()) + suffix);
+    try (FileOutputStream out = new FileOutputStream(result)) {
+      out.write(content);
+    }
+    return result;
+  }
+
+  private String savePageSource(WebDriver driver, ExtensionContext context) {
+    try {
+      String pageSource = requireNonNullElse(driver.getPageSource(), "");
+      return toURL(artifact(context, ".html", pageSource.getBytes(UTF_8)));
+    } catch (IOException | RuntimeException e) {
+      return String.format("- (%s)", e);
+    }
+  }
+
+  private String saveScreenshot(WebDriver driver, ExtensionContext context) {
+    if (!(driver instanceof TakesScreenshot)) {
+      return "-";
+    }
+    try {
+      byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+      return toURL(artifact(context, ".png", screenshot));
+    } catch (IOException | RuntimeException e) {
+      return String.format("- (%s)", e);
+    }
+  }
+
+  private String toURL(File artifact) {
+    try {
+      return artifact.getCanonicalFile().toURI().toURL().toExternalForm();
+    } catch (IOException e) {
+      return artifact.getAbsolutePath();
     }
   }
 }

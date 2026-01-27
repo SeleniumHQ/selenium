@@ -26,7 +26,11 @@ import java.util.Set;
 /**
  * LocalLogs instance that has its own storage. This should be used for explicit storing of logs,
  * such as for profiling.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
  */
+@Deprecated(forRemoval = true)
 class StoringLocalLogs extends LocalLogs {
   private final Map<String, List<LogEntry>> localLogs = new HashMap<>();
   private final Set<String> logTypesToInclude;

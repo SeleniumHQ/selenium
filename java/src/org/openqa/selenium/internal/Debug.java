@@ -17,18 +17,23 @@
 
 package org.openqa.selenium.internal;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 /** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
 
   private static final boolean IS_DEBUG;
+  private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
+  private static boolean loggerConfigured = false;
+  private static Logger seleniumLogger;
 
   static {
-    boolean simpleProperty = Boolean.getBoolean("selenium.debug");
-    boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
-
-    IS_DEBUG = simpleProperty || longerProperty;
+    IS_DEBUG =
+        Boolean.getBoolean("selenium.debug") || Boolean.getBoolean("selenium.webdriver.verbose");
   }
 
   private Debug() {
@@ -41,5 +46,30 @@ public class Debug {
 
   public static Level getDebugLogLevel() {
     return isDebugging() ? Level.INFO : Level.FINE;
+  }
+
+  public static boolean isDebugAll() {
+    boolean everything = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
+    if (everything && DEBUG_WARNING_LOGGED.compareAndSet(false, true)) {
+      String warn =
+          "WARNING: Environment Variable `SE_DEBUG` is set; Selenium is forcing verbose logging"
+              + " which may override user-specified settings.";
+      System.err.println(warn);
+    }
+    return everything;
+  }
+
+  public static void configureLogger() {
+    if (!isDebugAll() || loggerConfigured) {
+      return;
+    }
+
+    seleniumLogger = Logger.getLogger("org.openqa.selenium");
+    seleniumLogger.setLevel(Level.FINE);
+
+    StreamHandler handler = new StreamHandler(System.err, new SimpleFormatter());
+    handler.setLevel(Level.FINE);
+    seleniumLogger.addHandler(handler);
+    loggerConfigured = true;
   }
 }

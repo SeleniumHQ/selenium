@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.openqa.selenium.internal.Sets.sortedSet;
 
-import com.google.common.collect.ImmutableSortedSet;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -128,7 +129,7 @@ public class TomlConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSortedSet.copyOf(toml.keySet());
+    return sortedSet(toml.keySet());
   }
 
   @Override
@@ -137,9 +138,9 @@ public class TomlConfig implements Config {
 
     Object raw = toml.get(section);
     if (!(raw instanceof TomlTable)) {
-      return ImmutableSortedSet.of();
+      return emptySet();
     }
 
-    return ImmutableSortedSet.copyOf(((TomlTable) raw).keySet());
+    return sortedSet(((TomlTable) raw).keySet());
   }
 }

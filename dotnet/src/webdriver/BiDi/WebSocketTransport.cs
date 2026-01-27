@@ -28,13 +28,11 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
     private readonly ClientWebSocket _webSocket = new();
-    private readonly byte[] _receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
-
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
 
@@ -45,28 +43,37 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     public async Task<byte[]> ReceiveAsync(CancellationToken cancellationToken)
     {
-        _sharedMemoryStream.SetLength(0);
+        var receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
 
-        ArraySegment<byte> segment = new(_receiveBuffer);
-
-        WebSocketReceiveResult result;
-
-        do
+        try
         {
-            result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
+            _sharedMemoryStream.SetLength(0);
 
-            _sharedMemoryStream.Write(segment.Array!, segment.Offset, result.Count);
+            ArraySegment<byte> segment = new(receiveBuffer);
+
+            WebSocketReceiveResult result;
+
+            do
+            {
+                result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
+
+                _sharedMemoryStream.Write(receiveBuffer, 0, result.Count);
+            }
+            while (!result.EndOfMessage);
+
+            byte[] data = _sharedMemoryStream.ToArray();
+
+            if (_logger.IsEnabled(LogEventLevel.Trace))
+            {
+                _logger.Trace($"BiDi RCV <-- {Encoding.UTF8.GetString(data)}");
+            }
+
+            return data;
         }
-        while (!result.EndOfMessage);
-
-        byte[] data = _sharedMemoryStream.ToArray();
-
-        if (_logger.IsEnabled(LogEventLevel.Trace))
+        finally
         {
-            _logger.Trace($"BiDi RCV <-- {Encoding.UTF8.GetString(data)}");
+            ArrayPool<byte>.Shared.Return(receiveBuffer);
         }
-
-        return data;
     }
 
     public async Task SendAsync(byte[] data, CancellationToken cancellationToken)
@@ -92,28 +99,24 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     public void Dispose()
     {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
         if (_disposed)
         {
             return;
         }
 
-        _webSocket.Dispose();
-        _sharedMemoryStream.Dispose();
-        _socketSendSemaphoreSlim.Dispose();
-        ReleaseBuffer();
-        _disposed = true;
-    }
-
-    ~WebSocketTransport()
-    {
-        ReleaseBuffer();
-    }
-
-    private void ReleaseBuffer()
-    {
-        if (_receiveBuffer is not null)
+        if (disposing)
         {
-            ArrayPool<byte>.Shared.Return(_receiveBuffer);
+            _webSocket.Dispose();
+            _sharedMemoryStream.Dispose();
+            _socketSendSemaphoreSlim.Dispose();
         }
+
+        _disposed = true;
     }
 }

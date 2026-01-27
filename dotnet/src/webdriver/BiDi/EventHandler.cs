@@ -32,7 +32,7 @@ internal abstract class EventHandler(string eventName)
 internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, Task> func)
     : EventHandler(eventName) where TEventArgs : EventArgs
 {
-    private readonly Func<TEventArgs, Task> _func = func;
+    private readonly Func<TEventArgs, Task> _func = func ?? throw new ArgumentNullException(nameof(func), "Async event handler function cannot be null.");
 
     public override async ValueTask InvokeAsync(EventArgs args)
     {
@@ -43,7 +43,7 @@ internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, 
 internal class SyncEventHandler<TEventArgs>(string eventName, Action<TEventArgs> action)
     : EventHandler(eventName) where TEventArgs : EventArgs
 {
-    private readonly Action<TEventArgs> _action = action;
+    private readonly Action<TEventArgs> _action = action ?? throw new ArgumentNullException(nameof(action), "Sync event handler action cannot be null.");
 
     public override ValueTask InvokeAsync(EventArgs args)
     {

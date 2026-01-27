@@ -26,7 +26,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         vendor_prefix: str,
         browser_name: str,
         keep_alive: bool = True,
-        ignore_proxy: bool | None = False,
+        ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:
         client_config = client_config or ClientConfig(

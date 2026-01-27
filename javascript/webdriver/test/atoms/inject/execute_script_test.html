@@ -17,13 +17,16 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>execute_script_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../../test_bootstrap.js"></script>
   <script src="../../../atoms/inject/deps.js"></script>
   <script type="text/javascript">
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
-    goog.require("goog.testing.jsunit");
     goog.require("webdriver.atoms.inject");
     goog.require("webdriver.atoms.inject.frame");
   </script>
@@ -33,53 +36,57 @@ limitations under the License.
       return goog.userAgent.IE || goog.userAgent.product.SAFARI;
     }
 
-    function testExecuteScriptWithWindow() {
+    function getValue(rawResult) {
+      return goog.json.parse(rawResult).value;
+    }
+
+    QUnit.test('executeScriptWithWindow', function(assert) {
       if (isTestSkipped()) {
+        assert.ok(true, 'Test skipped for IE/Safari');
         return;
       }
       var func = function () {return document.getElementById('bou').value;};
       var win = getValue(webdriver.atoms.inject.frame.findFrameByIdOrName("iframe"));
-      assertEquals("there", getValue(webdriver.atoms.inject.executeScript(func, [], win)));
-    }
+      assert.strictEqual(getValue(webdriver.atoms.inject.executeScript(func, [], win)), "there");
+    });
 
-    function testExecuteScriptWithStringFunctionWithWindow() {
+    QUnit.test('executeScriptWithStringFunctionWithWindow', function(assert) {
       if (isTestSkipped()) {
+        assert.ok(true, 'Test skipped for IE/Safari');
         return;
       }
       var func = "return document.getElementById('bou').value";
       var win = getValue(webdriver.atoms.inject.frame.findFrameByIdOrName("iframe"));
-      assertEquals("there", getValue(webdriver.atoms.inject.executeScript(func, [], win)));
-    }
+      assert.strictEqual(getValue(webdriver.atoms.inject.executeScript(func, [], win)), "there");
+    });
 
-    function testExecuteScriptWithNullWindow() {
+    QUnit.test('executeScriptWithNullWindow', function(assert) {
       var func = function () {return document.getElementById('bou').value;};
-      assertEquals("here", getValue(webdriver.atoms.inject.executeScript(func, [], null)));
-    }
+      assert.strictEqual(getValue(webdriver.atoms.inject.executeScript(func, [], null)), "here");
+    });
 
-    function testExecuteScriptWithoutWindow() {
+    QUnit.test('executeScriptWithoutWindow', function(assert) {
       var func = function () {return document.getElementById('bou').value;};
-      assertEquals("here", getValue(webdriver.atoms.inject.executeScript(func, [])));
-    }
+      assert.strictEqual(getValue(webdriver.atoms.inject.executeScript(func, [])), "here");
+    });
 
-    function testCanExecuteScriptsThatReturnPrimitives() {
+    QUnit.test('canExecuteScriptsThatReturnPrimitives', function(assert) {
       var execute = webdriver.atoms.inject.executeScript;
-      assertEquals(2, getValue(execute('return 1 + 1;', [])));
-      assertEquals('hello', getValue(execute('return "hello";', [])));
-      assertTrue(getValue(execute('return true;', [])));
-    }
+      assert.strictEqual(getValue(execute('return 1 + 1;', [])), 2);
+      assert.strictEqual(getValue(execute('return "hello";', [])), 'hello');
+      assert.ok(getValue(execute('return true;', [])));
+    });
 
-    function testCanReturnElements() {
+    QUnit.test('canReturnElements', function(assert) {
       var execute = webdriver.atoms.inject.executeScript;
       var webElement = getValue(execute('return document.body', []));
-      assertEquals(document.body, bot.inject.cache.getElement(webElement['ELEMENT']));
-    }
-
-    function getValue(rawResult) {
-      return goog.json.parse(rawResult).value;
-    }
+      assert.strictEqual(bot.inject.cache.getElement(webElement['ELEMENT']), document.body);
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <p id="x" name="para">Para</p>
   <input type="text" id="bou" value="here"/>
   <iframe src="nested_iframes.html" id="iframe"></iframe>

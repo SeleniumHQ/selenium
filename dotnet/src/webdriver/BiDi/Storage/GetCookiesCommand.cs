@@ -35,6 +35,18 @@ public sealed class GetCookiesOptions : CommandOptions
     public PartitionDescriptor? Partition { get; set; }
 }
 
+public sealed class ContextGetCookiesOptions : CommandOptions
+{
+    public CookieFilter? Filter { get; set; }
+
+    internal static GetCookiesOptions WithContext(ContextGetCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Filter = options?.Filter,
+        Partition = new ContextPartitionDescriptor(context),
+        Timeout = options?.Timeout
+    };
+}
+
 public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
 public sealed record CookieFilter

@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.edge.options import Options
@@ -36,19 +35,17 @@ class WebDriver(ChromiumDriver):
         Starts the service and then creates new instance of edge driver.
 
         Args:
-            options: An instance of EdgeOptions.
-            service: Service object for handling the browser driver if you need
-                to pass extra details.
-            keep_alive: Whether to configure EdgeRemoteConnection to use HTTP
-                keep-alive.
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
+            keep_alive: Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
         """
-        service = service if service else Service()
-        options = options if options else Options()
+        self.service = service if service else Service()
+        self.options = options if options else Options()
 
         super().__init__(
             browser_name=DesiredCapabilities.EDGE["browserName"],
             vendor_prefix="ms",
-            options=options,
-            service=service,
+            options=self.options,
+            service=self.service,
             keep_alive=keep_alive,
         )

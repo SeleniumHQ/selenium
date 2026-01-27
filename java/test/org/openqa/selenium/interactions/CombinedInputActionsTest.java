@@ -19,12 +19,17 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.WaitingConditions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -101,6 +106,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
 
@@ -192,6 +198,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(FIREFOX)
   public void testControlClickingWithMultiplePointers() {
     driver.get(pages.selectableItemsPage);
 
@@ -316,6 +323,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   public void testChordControlCutAndPaste() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");

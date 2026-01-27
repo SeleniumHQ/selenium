@@ -19,7 +19,7 @@
 
 const jszip = require('jszip')
 const path = require('node:path')
-
+const fs = require('fs/promises')
 const io = require('./index')
 const { InvalidArgumentError } = require('../lib/error')
 
@@ -44,9 +44,11 @@ class Zip {
    * @return {!Promise<?>} a promise that will resolve when added.
    */
   addFile(filePath, zipPath = path.basename(filePath)) {
-    let add = io
-      .read(filePath)
-      .then((buffer) => this.z_.file(/** @type {string} */ (zipPath.replace(/\\/g, '/')), buffer))
+    let add = Promise.all([io.read(filePath), fs.stat(filePath)]).then(([buffer, stats]) =>
+      this.z_.file(/** @type {string} */ (zipPath.replace(/\\/g, '/')), buffer, {
+        date: stats.mtime, // preserve file's "last modified" value
+      }),
+    )
     this.pendingAdds_.add(add)
     return add.then(
       () => this.pendingAdds_.delete(add),

@@ -19,6 +19,16 @@ load("//java/private:suite.bzl", _java_selenium_test_suite = "java_selenium_test
 def java_test_suite(name, runner = "junit5", **kwargs):
     _java_test_suite(name = name, runner = runner, **kwargs)
 
+SINGLE_BROWSER = ["chrome"]
+
+BIDI_BROWSERS = [
+    "chrome",
+    "chrome-beta",
+    "edge",
+    "firefox",
+    "firefox-beta",
+]
+
 artifact = _artifact
 java_binary = _java_binary
 java_dist_zip = _java_dist_zip

@@ -1,12 +1,17 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "io",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/src/dev/selenium/tools/javadoc:__pkg__",
         "//java/src/dev/selenium/tools/modules:__pkg__",
         "//java/src/org/openqa/selenium:__pkg__",
         "//java/src/org/openqa/selenium/os:__pkg__",
         "//java/test/org/openqa/selenium/io:__pkg__",
+    ],
+    deps = [
+        artifact("org.jspecify:jspecify"),
     ],
 )
