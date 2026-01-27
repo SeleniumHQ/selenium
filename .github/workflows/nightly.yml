@@ -63,21 +63,25 @@ jobs:
           echo "release-in-progress=$([[ "$ENFORCEMENT" == "active" ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
 
   nightly-release:
-    name: Nightly ${{ needs.prepare.outputs.language }}
+    name: Nightly ${{ matrix.language }}
     needs: prepare
     if: needs.prepare.outputs.release-in-progress != 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Nightly ${{ needs.prepare.outputs.language }} Release
-      run: ./go ${{ needs.prepare.outputs.language }}:release nightly
-      artifact-name: ${{ needs.prepare.outputs.artifact-name }}
-      artifact-path: ${{ needs.prepare.outputs.artifact-path }}
+      name: Nightly ${{ matrix.language }} Release
+      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly', matrix.language) || 'echo skipping' }}
+      artifact-name: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-name || '' }}
+      artifact-path: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-path || '' }}
     secrets: inherit
 
   release-grid:
     name: Release Grid
     needs: [prepare, nightly-release]
-    if: needs.prepare.outputs.artifact-name
+    if: always() && needs.prepare.outputs.artifact-name
     runs-on: ubuntu-latest
     permissions:
       contents: write

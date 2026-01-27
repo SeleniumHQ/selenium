@@ -276,6 +276,15 @@ public class ChromeDriverService extends DriverService {
       }
       if (Debug.isDebugAll()
           || (verbose == null && Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY))) {
+        if (Debug.isDebugAll()
+            && (logLevel != null
+                || silent != null
+                || Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)
+                || System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null)) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromeDriver --verbose and"
+                  + " overriding --silent/--log-level settings.");
+        }
         withVerbose(true);
       }
       if (silent == null && Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)) {

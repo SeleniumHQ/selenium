@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
 import os
 import sys
 from collections.abc import Mapping, Sequence
@@ -55,9 +56,17 @@ class ChromiumService(service.Service):
             self.log_output = log_output
 
         if os.environ.get("SE_DEBUG"):
-            self._service_args = [
-                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-path", "silent"))
-            ]
+            has_arg_conflicts = any(x in arg for arg in self._service_args for x in ("log-level", "log-path", "silent"))
+            has_output_conflict = self.log_output is not None
+            if has_arg_conflicts or has_output_conflict:
+                logging.getLogger(__name__).warning(
+                    "Environment Variable `SE_DEBUG` is set; "
+                    "forcing ChromiumDriver --verbose and overriding log-level/log-output/silent settings."
+                )
+            if has_arg_conflicts:
+                self._service_args = [
+                    arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-path", "silent"))
+                ]
             self._service_args.append("--verbose")
             self.log_output = sys.stderr
 

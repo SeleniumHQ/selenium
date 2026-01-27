@@ -3,6 +3,8 @@
 [pr_description]
 publish_description_as_comment = true  # Stop rewriting the description
 generate_ai_title = false              # Keep original PR title
+add_original_user_description = false  # Do not need duplication
+enable_pr_diagram = false              # Do not need the diagram
 
 [config]
 persistent_comment = true              # Keep it all in one comment
