@@ -1,16 +1,8 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 goog.provide('goog.string.Const');
 
@@ -24,7 +16,7 @@ goog.require('goog.string.TypedString');
  *
  * Const is a wrapper for strings that can only be created from program
  * constants (i.e., string literals).  This property relies on a custom Closure
- * compiler check that {@code goog.string.Const.from} is only invoked on
+ * compiler check that `goog.string.Const.from` is only invoked on
  * compile-time-constant expressions.
  *
  * Const is useful in APIs whose correct and secure use requires that certain
@@ -33,25 +25,33 @@ goog.require('goog.string.TypedString');
  * attackers, and hence are safe to use in such contexts.
  *
  * Instances of this type must be created via its factory method
- * {@code goog.string.Const.from} and not by invoking its constructor.  The
+ * `goog.string.Const.from` and not by invoking its constructor.  The
  * constructor intentionally takes no parameters and the type is immutable;
  * hence only a default instance corresponding to the empty string can be
- * obtained via constructor invocation.
+ * obtained via constructor invocation.  Use goog.string.Const.EMPTY
+ * instead of using this constructor to get an empty Const string.
  *
  * @see goog.string.Const#from
  * @constructor
  * @final
  * @struct
  * @implements {goog.string.TypedString}
+ * @param {Object=} opt_token package-internal implementation detail.
+ * @param {string=} opt_content package-internal implementation detail.
  */
-goog.string.Const = function() {
+goog.string.Const = function(opt_token, opt_content) {
+  'use strict';
   /**
    * The wrapped value of this Const object.  The field has a purposely ugly
    * name to make (non-compiled) code that attempts to directly access this
    * field stand out.
    * @private {string}
    */
-  this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ = '';
+  this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ =
+      ((opt_token ===
+        goog.string.Const.GOOG_STRING_CONSTRUCTOR_TOKEN_PRIVATE_) &&
+       opt_content) ||
+      '';
 
   /**
    * A type marker used to implement additional run-time type checking.
@@ -72,46 +72,53 @@ goog.string.Const.prototype.implementsGoogStringTypedString = true;
 
 
 /**
- * Returns this Const's value a string.
+ * Returns this Const's value as a string.
  *
  * IMPORTANT: In code where it is security-relevant that an object's type is
- * indeed {@code goog.string.Const}, use {@code goog.string.Const.unwrap}
+ * indeed `goog.string.Const`, use `goog.string.Const.unwrap`
  * instead of this method.
  *
  * @see goog.string.Const#unwrap
  * @override
+ * @return {string}
  */
 goog.string.Const.prototype.getTypedStringValue = function() {
+  'use strict';
   return this.stringConstValueWithSecurityContract__googStringSecurityPrivate_;
 };
 
 
-/**
- * Returns a debug-string representation of this value.
- *
- * To obtain the actual string value wrapped inside an object of this type,
- * use {@code goog.string.Const.unwrap}.
- *
- * @see goog.string.Const#unwrap
- * @override
- */
-goog.string.Const.prototype.toString = function() {
-  return 'Const{' +
-      this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
-      '}';
-};
+if (goog.DEBUG) {
+  /**
+   * Returns a debug-string representation of this value.
+   *
+   * To obtain the actual string value wrapped inside an object of this type,
+   * use `goog.string.Const.unwrap`.
+   *
+   * @see goog.string.Const#unwrap
+   * @override
+   * @return {string}
+   */
+  goog.string.Const.prototype.toString = function() {
+    'use strict';
+    return 'Const{' +
+        this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
+        '}';
+  };
+}
 
 
 /**
  * Performs a runtime check that the provided object is indeed an instance
- * of {@code goog.string.Const}, and returns its value.
+ * of `goog.string.Const`, and returns its value.
  * @param {!goog.string.Const} stringConst The object to extract from.
  * @return {string} The Const object's contained string, unless the run-time
- *     type check fails. In that case, {@code unwrap} returns an innocuous
+ *     type check fails. In that case, `unwrap` returns an innocuous
  *     string, or, if assertions are enabled, throws
- *     {@code goog.asserts.AssertionError}.
+ *     `goog.asserts.AssertionError`.
  */
 goog.string.Const.unwrap = function(stringConst) {
+  'use strict';
   // Perform additional run-time type-checking to ensure that stringConst is
   // indeed an instance of the expected type.  This provides some additional
   // protection against security bugs due to application code that disables type
@@ -134,7 +141,7 @@ goog.string.Const.unwrap = function(stringConst) {
  * Creates a Const object from a compile-time constant string.
  *
  * It is illegal to invoke this function on an expression whose
- * compile-time-contant value cannot be determined by the Closure compiler.
+ * compile-time-constant value cannot be determined by the Closure compiler.
  *
  * Correct invocations include,
  * <pre>
@@ -152,9 +159,10 @@ goog.string.Const.unwrap = function(stringConst) {
  * @return {!goog.string.Const} A Const object initialized to stringConst.
  */
 goog.string.Const.from = function(s) {
-  return goog.string.Const.create__googStringSecurityPrivate_(s);
+  'use strict';
+  return new goog.string.Const(
+      goog.string.Const.GOOG_STRING_CONSTRUCTOR_TOKEN_PRIVATE_, s);
 };
-
 
 /**
  * Type marker for the Const type, used to implement additional run-time
@@ -164,20 +172,12 @@ goog.string.Const.from = function(s) {
  */
 goog.string.Const.TYPE_MARKER_ = {};
 
-
 /**
- * Utility method to create Const instances.
- * @param {string} s The string to initialize the Const object with.
- * @return {!goog.string.Const} The initialized Const object.
+ * @type {!Object}
  * @private
+ * @const
  */
-goog.string.Const.create__googStringSecurityPrivate_ = function(s) {
-  var stringConst = new goog.string.Const();
-  stringConst.stringConstValueWithSecurityContract__googStringSecurityPrivate_ =
-      s;
-  return stringConst;
-};
-
+goog.string.Const.GOOG_STRING_CONSTRUCTOR_TOKEN_PRIVATE_ = {};
 
 /**
  * A Const instance wrapping the empty string.

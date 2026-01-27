@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,7 +145,7 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("find by magic", true);
     StubExecutor executor = new StubExecutor(caps);
     final WebElement element = mock(WebElement.class);
-    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "magic", "value", "cheese"), element);
+    executor.expect(FIND_ELEMENT, Map.of("using", "magic", "value", "cheese"), element);
 
     WebDriver driver = new RemoteWebDriver(executor, caps);
     WebDriver returned =

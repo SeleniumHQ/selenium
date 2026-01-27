@@ -20,7 +20,9 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -231,7 +233,7 @@ class NetworkCommandsTest extends JupiterTestBase {
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE))
+      assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE, Duration.ofMillis(200)))
           .isInstanceOf(WebDriverException.class);
     }
   }

@@ -22,11 +22,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;

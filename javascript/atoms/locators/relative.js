@@ -18,11 +18,14 @@
 goog.provide('bot.locators.relative');
 
 goog.require('bot');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Rect');
+goog.require('goog.utils');
 
 
 /**
@@ -215,7 +218,7 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
   var distance;
   if (opt_distance) {
     distance = opt_distance;
-  } else if (goog.isNumber(selector['distance'])) {
+  } else if (typeof selector['distance'] === 'number') {
     distance = /** @type {number} */ (selector['distance']);
     // delete selector['distance'];
   }
@@ -262,12 +265,12 @@ bot.locators.relative.resolve_ = function (selector) {
     return /** @type {!Element} */ (selector);
   }
 
-  if (goog.isFunction(selector)) {
+  if (typeof selector === 'function') {
     var func = /** @type {function():!Element} */ (selector);
     return bot.locators.relative.resolve_(func.call(null));
   }
 
-  if (goog.isObject(selector)) {
+  if (goog.utils.isObject(selector)) {
     var element = bot.locators.findElement(selector);
     if (!element) {
       throw new bot.Error(
@@ -434,7 +437,7 @@ bot.locators.relative.many = function (target, root) {
       bot.ErrorCode.INVALID_ARGUMENT,
       "Locator not suitable for relative locators: " + JSON.stringify(target));
   }
-  if (!goog.isArrayLike(target["filters"])) {
+  if (!goog.utils.isArrayLike(target["filters"])) {
     throw new bot.Error(
       bot.ErrorCode.INVALID_ARGUMENT,
       "Targets should be an array: " + JSON.stringify(target));

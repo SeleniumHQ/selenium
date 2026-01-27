@@ -5,7 +5,7 @@
  * See the COPYING file for details.
  */
 
-/* Author: pupius@google.com (Daniel Pupius) */
+@provide 'goog.css.multitestrunner';
 
 .goog-testrunner {
   background-color: #EEE;

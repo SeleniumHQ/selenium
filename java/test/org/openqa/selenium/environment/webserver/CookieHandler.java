@@ -19,18 +19,18 @@ package org.openqa.selenium.environment.webserver;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.base.Splitter;
 import java.io.UncheckedIOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.http.Contents;
@@ -110,7 +110,7 @@ class CookieHandler implements HttpHandler {
   private Collection<Cookie> getCookies(HttpRequest request) {
     return StreamSupport.stream(request.getHeaders("Cookie").spliterator(), false)
         .map(this::parse)
-        .collect(Collectors.toList());
+        .collect(toList());
   }
 
   private void addCookie(HttpResponse response, Cookie cook) {
@@ -148,7 +148,10 @@ class CookieHandler implements HttpHandler {
     }
 
     List<String> keysAndValues =
-        Splitter.on(";").trimResults().omitEmptyStrings().splitToList(split[1]);
+        Arrays.stream(split[1].split(";"))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .collect(toList());
     Cookie.Builder builder = new Cookie.Builder(split[0], keysAndValues.get(0));
 
     keysAndValues.stream()
@@ -156,11 +159,11 @@ class CookieHandler implements HttpHandler {
         .forEach(
             keyAndValue -> {
               List<String> parts =
-                  Splitter.on("=")
-                      .limit(2)
-                      .trimResults()
-                      .omitEmptyStrings()
-                      .splitToList(keyAndValue);
+                  Arrays.stream(keyAndValue.split("=", 2))
+                      .map(String::trim)
+                      .filter(s -> !s.isEmpty())
+                      .collect(toList());
+
               String key = parts.get(0).toLowerCase();
               switch (key) {
                 case "domain":

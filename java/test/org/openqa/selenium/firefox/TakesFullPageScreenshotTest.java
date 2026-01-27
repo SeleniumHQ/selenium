@@ -20,12 +20,12 @@ package org.openqa.selenium.firefox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import com.google.common.collect.Sets;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.imageio.ImageIO;
@@ -223,7 +223,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     assertThat(onlyWhite(actualColors)).as("Only white").isFalse();
 
     // Ignore black and white for further comparison
-    Set<String> cleanActualColors = Sets.newHashSet(actualColors);
+    Set<String> cleanActualColors = new HashSet<>(actualColors);
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 

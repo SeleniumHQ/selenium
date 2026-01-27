@@ -28,6 +28,7 @@ module Selenium
 
           before do
             allow(Platform).to receive(:assert_executable)
+            allow(WebDriver.logger).to receive(:debug?).and_return(false)
           end
 
           after { described_class.driver_path = nil }
@@ -80,6 +81,35 @@ module Selenium
             service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
+          end
+
+          context 'when SE_DEBUG is set' do
+            around do |example|
+              ENV['SE_DEBUG'] = '1'
+              example.run
+            ensure
+              ENV.delete('SE_DEBUG')
+            end
+
+            it 'adds --verbose flag' do
+              service = described_class.new
+
+              expect(service.extra_args).to include('--verbose')
+            end
+
+            it 'removes conflicting --log-level args' do
+              service = described_class.new(args: ['--log-level=INFO'])
+
+              expect(service.extra_args).to include('--verbose')
+              expect(service.extra_args).not_to include('--log-level=INFO')
+            end
+
+            it 'removes conflicting --silent args' do
+              service = described_class.new(args: ['--silent'])
+
+              expect(service.extra_args).to include('--verbose')
+              expect(service.extra_args).not_to include('--silent')
+            end
           end
         end
 

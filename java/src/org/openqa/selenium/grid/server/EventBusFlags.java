@@ -22,7 +22,6 @@ import static org.openqa.selenium.grid.server.EventBusOptions.EVENTS_SECTION;
 
 import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
@@ -73,6 +72,6 @@ public class EventBusFlags implements HasRoles {
 
   @Override
   public Set<Role> getRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE);
+    return Set.of(EVENT_BUS_ROLE);
   }
 }

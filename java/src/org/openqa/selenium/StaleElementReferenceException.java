@@ -17,14 +17,12 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * Indicates that a reference to an element is now "stale" --- the element no longer appears on the
  * DOM of the page.
  */
-@NullMarked
 public class StaleElementReferenceException extends WebDriverException {
 
   private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#staleelementreferenceexception";

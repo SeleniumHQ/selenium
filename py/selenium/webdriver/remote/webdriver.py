@@ -775,7 +775,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by=By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -801,7 +801,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -1035,18 +1035,26 @@ class WebDriver(BaseWebDriver):
         import_cdp()
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
-            version = self.caps.get("se:cdpVersion").split(".")[0]
+            cdp_version = self.caps.get("se:cdpVersion")
+            if cdp_version is None:
+                raise WebDriverException("CDP version not found in capabilities")
+            version = cdp_version.split(".")[0]
         else:
             version, ws_url = self._get_cdp_details()
 
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if cdp is None:
+            raise WebDriverException("CDP module not loaded")
+
         self._devtools = cdp.import_devtools(version)
         if self._websocket_connection:
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
@@ -1100,6 +1108,9 @@ class WebDriver(BaseWebDriver):
         else:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
+
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
@@ -1111,7 +1122,9 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
+            assert self._websocket_connection is not None
             self._network = Network(self._websocket_connection)
 
         return self._network
@@ -1189,6 +1202,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._storage is None:
             self._storage = Storage(self._websocket_connection)
 
@@ -1255,6 +1269,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._emulation is None:
             self._emulation = Emulation(self._websocket_connection)
 

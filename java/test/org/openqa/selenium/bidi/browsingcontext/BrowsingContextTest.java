@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
+import java.util.Base64;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -511,8 +513,12 @@ class BrowsingContextTest extends JupiterTestBase {
     // Comparing expected PDF is a hard problem.
     // As long as we are sending the parameters correctly it should be fine.
     // Trusting the browsers to do the right thing.
-    // Hence, just checking if the response is base64 encoded string.
+    // Hence, just checking if the response is base64 encoded string looking like PDF.
     assertThat(printPage).contains("JVBER");
+    byte[] pdf = Base64.getDecoder().decode(printPage);
+    assertThat(pdf)
+        .containsSequence("%PDF-".getBytes(US_ASCII))
+        .containsSequence("%%EOF".getBytes(US_ASCII));
   }
 
   @Test

@@ -28,7 +28,6 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -245,7 +244,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(bus, sessions).parallelStream()
+      return Set.of(bus, sessions).parallelStream()
           .map(HasReadyState::isReady)
           .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {
@@ -442,27 +441,34 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
+    // Use read lock for slot selection to allow concurrent reads
+    // This reduces contention compared to using write lock for the entire operation
+    Set<SlotId> slotIds;
+    Lock readLock = lock.readLock();
+    readLock.lock();
     try {
-      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
-      if (slotIds.isEmpty()) {
-        LOG.log(
-            getDebugLogLevel(),
-            String.format("No slots found for request %s and capabilities %s", requestId, caps));
-        return null;
-      }
-
-      for (SlotId slotId : slotIds) {
-        if (reserve(slotId)) {
-          return slotId;
-        }
-      }
-
-      return null;
+      slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
     } finally {
-      writeLock.unlock();
+      readLock.unlock();
     }
+
+    if (slotIds.isEmpty()) {
+      LOG.log(
+          getDebugLogLevel(),
+          String.format("No slots found for request %s and capabilities %s", requestId, caps));
+      return null;
+    }
+
+    // Try to reserve each candidate slot
+    // The reserve() method uses write lock briefly and atomic operations ensure thread safety
+    // Multiple threads may select the same slot but only one will successfully reserve it
+    for (SlotId slotId : slotIds) {
+      if (reserve(slotId)) {
+        return slotId;
+      }
+    }
+
+    return null;
   }
 
   private boolean isNotSupported(Capabilities caps) {

@@ -27,11 +27,11 @@ module Selenium
 
       SECONDS_PER_DAY: Float
 
-      def datetime_at: (Integer int) -> Date
+      def datetime_at: (Integer | Numeric) -> Date
 
       def seconds_from: (Time | DateTime | Numeric obj) -> (Float | Numeric)
 
-      def strip_port: (String str) -> String?
+      def strip_port: (String) -> String?
 
       def convert_cookie: (String) -> (Hash[Symbol, untyped] | Error::NoSuchCookieError)
     end

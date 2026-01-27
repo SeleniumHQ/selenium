@@ -1,0 +1,34 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "promise",
+    srcs = [
+        "promise.js",
+        "resolver.js",
+        "thenable.js",
+    ],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:freelist",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/async:throwexception",
+        "//third_party/closure/goog/debug:asyncstacktag",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/functions",
+    ],
+)
+
+alias(
+    name = "resolver",
+    actual = ":promise",
+)
+
+alias(
+    name = "thenable",
+    actual = ":promise",
+)

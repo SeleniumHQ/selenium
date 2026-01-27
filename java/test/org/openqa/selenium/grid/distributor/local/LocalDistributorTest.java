@@ -249,7 +249,7 @@ class LocalDistributorTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }

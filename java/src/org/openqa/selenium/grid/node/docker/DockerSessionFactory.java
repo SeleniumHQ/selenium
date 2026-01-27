@@ -34,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -457,12 +456,12 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
       String tz = timeZone.get().toString();
-      if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
+      if (List.of(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
     }
     String envTz = System.getenv("TZ");
-    if (Arrays.asList(TimeZone.getAvailableIDs()).contains(envTz)) {
+    if (List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
       return TimeZone.getTimeZone(envTz);
     }
     return null;
@@ -471,7 +470,7 @@ public class DockerSessionFactory implements SessionFactory {
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
         ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
-    if (!screenResolution.isPresent()) {
+    if (screenResolution.isEmpty()) {
       return null;
     }
     try {

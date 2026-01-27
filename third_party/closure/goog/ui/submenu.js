@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A class representing menu items that open a submenu.
@@ -35,6 +27,13 @@ goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.SubMenuRenderer');
 goog.require('goog.ui.registry');
+goog.requireType('goog.events.BrowserEvent');
+goog.requireType('goog.events.Event');
+goog.requireType('goog.events.KeyEvent');
+goog.requireType('goog.ui.ControlContent');
+goog.requireType('goog.ui.MenuHeader');
+goog.requireType('goog.ui.MenuItemRenderer');
+goog.requireType('goog.ui.MenuSeparator');
 
 
 
@@ -53,12 +52,12 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.MenuItem}
  */
 goog.ui.SubMenu = function(content, opt_model, opt_domHelper, opt_renderer) {
+  'use strict';
   goog.ui.MenuItem.call(
       this, content, opt_model, opt_domHelper,
       opt_renderer || goog.ui.SubMenuRenderer.getInstance());
 };
 goog.inherits(goog.ui.SubMenu, goog.ui.MenuItem);
-goog.tagUnsealableClass(goog.ui.SubMenu);
 
 
 /**
@@ -129,6 +128,7 @@ goog.ui.SubMenu.prototype.isPositionAdjustable_ = false;
 
 /** @override */
 goog.ui.SubMenu.prototype.enterDocument = function() {
+  'use strict';
   goog.ui.SubMenu.superClass_.enterDocument.call(this);
 
   this.getHandler().listen(
@@ -142,6 +142,7 @@ goog.ui.SubMenu.prototype.enterDocument = function() {
 
 /** @override */
 goog.ui.SubMenu.prototype.exitDocument = function() {
+  'use strict';
   this.getHandler().unlisten(
       this.getParent(), goog.ui.Component.EventType.HIDE, this.onParentHidden_);
 
@@ -159,6 +160,7 @@ goog.ui.SubMenu.prototype.exitDocument = function() {
 
 /** @override */
 goog.ui.SubMenu.prototype.disposeInternal = function() {
+  'use strict';
   if (this.subMenu_ && !this.externalSubMenu_) {
     this.subMenu_.dispose();
   }
@@ -176,6 +178,7 @@ goog.ui.SubMenu.prototype.disposeInternal = function() {
  * @param {boolean=} opt_btnPressed Whether the mouse button is held down.
  */
 goog.ui.SubMenu.prototype.setHighlighted = function(highlight, opt_btnPressed) {
+  'use strict';
   goog.ui.SubMenu.superClass_.setHighlighted.call(this, highlight);
 
   if (opt_btnPressed) {
@@ -186,8 +189,8 @@ goog.ui.SubMenu.prototype.setHighlighted = function(highlight, opt_btnPressed) {
     if (this.dismissTimer_) {
       goog.Timer.clear(this.dismissTimer_);
     }
-    this.dismissTimer_ = goog.Timer.callOnce(
-        this.dismissSubMenu, goog.ui.SubMenu.MENU_DELAY_MS, this);
+    this.dismissTimer_ =
+        goog.Timer.callOnce(this.dismissSubMenu, this.getMenuDelay(), this);
   }
 };
 
@@ -196,6 +199,7 @@ goog.ui.SubMenu.prototype.setHighlighted = function(highlight, opt_btnPressed) {
  * Show the submenu and ensure that all siblings are hidden.
  */
 goog.ui.SubMenu.prototype.showSubMenu = function() {
+  'use strict';
   // Only show the menu if this item is still selected. This is called on a
   // timeout, so make sure our parent still exists.
   var parent = this.getParent();
@@ -210,12 +214,14 @@ goog.ui.SubMenu.prototype.showSubMenu = function() {
  * Dismisses the menu and all further submenus.
  */
 goog.ui.SubMenu.prototype.dismissSubMenu = function() {
+  'use strict';
   // Because setHighlighted calls this function on a timeout, we need to make
   // sure that the sub menu hasn't been disposed when we come back.
   var subMenu = this.subMenu_;
   if (subMenu && subMenu.getParent() == this) {
     this.setSubMenuVisible_(false);
     subMenu.forEachChild(function(child) {
+      'use strict';
       if (typeof child.dismissSubMenu == 'function') {
         child.dismissSubMenu();
       }
@@ -228,6 +234,7 @@ goog.ui.SubMenu.prototype.dismissSubMenu = function() {
  * Clears the show and hide timers for the sub menu.
  */
 goog.ui.SubMenu.prototype.clearTimers = function() {
+  'use strict';
   if (this.dismissTimer_) {
     goog.Timer.clear(this.dismissTimer_);
   }
@@ -246,6 +253,7 @@ goog.ui.SubMenu.prototype.clearTimers = function() {
  * @override
  */
 goog.ui.SubMenu.prototype.setVisible = function(visible, opt_force) {
+  'use strict';
   var visibilityChanged =
       goog.ui.SubMenu.superClass_.setVisible.call(this, visible, opt_force);
   // For menus that allow menu items to be hidden (i.e. ComboBox) ensure that
@@ -262,7 +270,9 @@ goog.ui.SubMenu.prototype.setVisible = function(visible, opt_force) {
  * @private
  */
 goog.ui.SubMenu.prototype.dismissSiblings_ = function() {
+  'use strict';
   this.getParent().forEachChild(function(child) {
+    'use strict';
     if (child != this && typeof child.dismissSubMenu == 'function') {
       child.dismissSubMenu();
       child.clearTimers();
@@ -273,25 +283,27 @@ goog.ui.SubMenu.prototype.dismissSiblings_ = function() {
 
 /**
  * Handles a key event that is passed to the menu item from its parent because
- * it is highlighted.  If the right key is pressed the sub menu takes control
- * and delegates further key events to its menu until it is dismissed OR the
- * left key is pressed.
+ * it is highlighted.  If the arrow keys or enter key is pressed the sub menu
+ * takes control and delegates further key events to its menu until it is
+ * dismissed.
  * @param {goog.events.KeyEvent} e A key event.
  * @return {boolean} Whether the event was handled.
  * @override
  */
 goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
+  'use strict';
   var keyCode = e.keyCode;
-  var openKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.LEFT :
-                                           goog.events.KeyCodes.RIGHT;
+  var arrowOpenKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.LEFT :
+                                                goog.events.KeyCodes.RIGHT;
   var closeKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.RIGHT :
                                             goog.events.KeyCodes.LEFT;
 
   if (!this.menuIsVisible_) {
-    // Menu item doesn't have keyboard control and the right key was pressed.
+    // Menu item doesn't have keyboard control and the correct key was pressed.
     // So open take keyboard control and open the sub menu.
     if (this.isEnabled() &&
-        (keyCode == openKeyCode || keyCode == this.getMnemonic())) {
+        (keyCode == arrowOpenKeyCode || keyCode == goog.events.KeyCodes.ENTER ||
+         keyCode == this.getMnemonic())) {
       this.showSubMenu();
       this.getMenu().highlightFirst();
       this.clearTimers();
@@ -330,6 +342,7 @@ goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
  * @private
  */
 goog.ui.SubMenu.prototype.onChildEnter_ = function(e) {
+  'use strict';
   if (this.subMenu_.getParent() == this) {
     this.clearTimers();
     this.getParentEventTarget().setHighlighted(this);
@@ -345,6 +358,7 @@ goog.ui.SubMenu.prototype.onChildEnter_ = function(e) {
  * @private
  */
 goog.ui.SubMenu.prototype.onParentHidden_ = function(e) {
+  'use strict';
   // Ignore propagated events
   if (e.target == this.getParentEventTarget()) {
     // TODO(user): Using an event for this is expensive.  Consider having a
@@ -361,15 +375,26 @@ goog.ui.SubMenu.prototype.onParentHidden_ = function(e) {
  * Sets a timer to show the submenu and then dispatches an ENTER event to the
  * parent menu.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
- * @protected
  */
 goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
+  'use strict';
   if (this.isEnabled()) {
     this.clearTimers();
-    this.showTimer_ = goog.Timer.callOnce(
-        this.showSubMenu, goog.ui.SubMenu.MENU_DELAY_MS, this);
+    this.showTimer_ =
+        goog.Timer.callOnce(this.showSubMenu, this.getMenuDelay(), this);
   }
   goog.ui.SubMenu.superClass_.handleMouseOver.call(this, e);
+};
+
+
+/**
+ * Returns the delay before opening or closing the menu in milliseconds.
+ * @return {number}
+ * @protected
+ */
+goog.ui.SubMenu.prototype.getMenuDelay = function() {
+  'use strict';
+  return goog.ui.SubMenu.MENU_DELAY_MS;
 };
 
 
@@ -381,6 +406,7 @@ goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
  * @override
  */
 goog.ui.SubMenu.prototype.performActionInternal = function(e) {
+  'use strict';
   this.clearTimers();
   var shouldHandleClick =
       this.isSupportedState(goog.ui.Component.State.SELECTED) ||
@@ -400,6 +426,7 @@ goog.ui.SubMenu.prototype.performActionInternal = function(e) {
  * @private
  */
 goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
+  'use strict';
   // Unhighlighting the menuitems if closing the menu so the event handlers can
   // determine the correct state.
   if (!visible && this.getMenu()) {
@@ -444,6 +471,7 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
  * @private
  */
 goog.ui.SubMenu.prototype.setMenuListenersEnabled_ = function(menu, attach) {
+  'use strict';
   var handler = this.getHandler();
   var method = attach ? handler.listen : handler.unlisten;
   method.call(
@@ -456,6 +484,7 @@ goog.ui.SubMenu.prototype.setMenuListenersEnabled_ = function(menu, attach) {
  * @param {boolean} alignToEnd True to align to end, false to align to start.
  */
 goog.ui.SubMenu.prototype.setAlignToEnd = function(alignToEnd) {
+  'use strict';
   if (alignToEnd != this.alignToEnd_) {
     this.alignToEnd_ = alignToEnd;
     if (this.isInDocument()) {
@@ -479,6 +508,7 @@ goog.ui.SubMenu.prototype.setAlignToEnd = function(alignToEnd) {
  *     aligned to the start.
  */
 goog.ui.SubMenu.prototype.isAlignedToEnd = function() {
+  'use strict';
   return this.alignToEnd_;
 };
 
@@ -489,6 +519,7 @@ goog.ui.SubMenu.prototype.isAlignedToEnd = function() {
  * to an opened sub menu).
  */
 goog.ui.SubMenu.prototype.positionSubMenu = function() {
+  'use strict';
   var position = new goog.positioning.AnchoredViewportPosition(
       this.getElement(),
       this.isAlignedToEnd() ? goog.positioning.Corner.TOP_END :
@@ -523,6 +554,7 @@ goog.ui.SubMenu.prototype.positionSubMenu = function() {
  *     item to add to the menu.
  */
 goog.ui.SubMenu.prototype.addItem = function(item) {
+  'use strict';
   this.getMenu().addChild(item, true);
 };
 
@@ -534,6 +566,7 @@ goog.ui.SubMenu.prototype.addItem = function(item) {
  * @param {number} n Index at which to insert the menu item.
  */
 goog.ui.SubMenu.prototype.addItemAt = function(item, n) {
+  'use strict';
   this.getMenu().addChildAt(item, n, true);
 };
 
@@ -543,6 +576,7 @@ goog.ui.SubMenu.prototype.addItemAt = function(item, n) {
  * @param {goog.ui.MenuItem} item The menu item to remove.
  */
 goog.ui.SubMenu.prototype.removeItem = function(item) {
+  'use strict';
   var child = this.getMenu().removeChild(item, true);
   if (child) {
     child.dispose();
@@ -555,6 +589,7 @@ goog.ui.SubMenu.prototype.removeItem = function(item) {
  * @param {number} n Index of item.
  */
 goog.ui.SubMenu.prototype.removeItemAt = function(n) {
+  'use strict';
   var child = this.getMenu().removeChildAt(n, true);
   if (child) {
     child.dispose();
@@ -568,6 +603,7 @@ goog.ui.SubMenu.prototype.removeItemAt = function(n) {
  * @return {goog.ui.Component} Reference to the menu item.
  */
 goog.ui.SubMenu.prototype.getItemAt = function(n) {
+  'use strict';
   return this.getMenu().getChildAt(n);
 };
 
@@ -577,6 +613,7 @@ goog.ui.SubMenu.prototype.getItemAt = function(n) {
  * @return {number} The number of items in the menu.
  */
 goog.ui.SubMenu.prototype.getItemCount = function() {
+  'use strict';
   return this.getMenu().getChildCount();
 };
 
@@ -587,6 +624,7 @@ goog.ui.SubMenu.prototype.getItemCount = function() {
  * @deprecated Use getItemAt/getItemCount instead.
  */
 goog.ui.SubMenu.prototype.getItems = function() {
+  'use strict';
   return this.getMenu().getItems();
 };
 
@@ -596,6 +634,7 @@ goog.ui.SubMenu.prototype.getItems = function() {
  * @return {!goog.ui.Menu} Reference to the object representing the sub menu.
  */
 goog.ui.SubMenu.prototype.getMenu = function() {
+  'use strict';
   if (!this.subMenu_) {
     this.setMenu(
         new goog.ui.Menu(this.getDomHelper()), /* opt_internal */ true);
@@ -619,6 +658,7 @@ goog.ui.SubMenu.prototype.getMenu = function() {
  *     should be disposed of when this object is disposed of.
  */
 goog.ui.SubMenu.prototype.setMenu = function(menu, opt_internal) {
+  'use strict';
   var oldMenu = this.subMenu_;
   if (menu != oldMenu) {
     if (oldMenu) {
@@ -653,6 +693,7 @@ goog.ui.SubMenu.prototype.setMenu = function(menu, opt_internal) {
  * @return {boolean} Whether or not the provided element is contained.
  */
 goog.ui.SubMenu.prototype.containsElement = function(element) {
+  'use strict';
   return this.getMenu().containsElement(element);
 };
 
@@ -661,6 +702,7 @@ goog.ui.SubMenu.prototype.containsElement = function(element) {
  * @param {boolean} isAdjustable Whether this submenu is adjustable.
  */
 goog.ui.SubMenu.prototype.setPositionAdjustable = function(isAdjustable) {
+  'use strict';
   this.isPositionAdjustable_ = !!isAdjustable;
 };
 
@@ -669,11 +711,14 @@ goog.ui.SubMenu.prototype.setPositionAdjustable = function(isAdjustable) {
  * @return {boolean} Whether this submenu is adjustable.
  */
 goog.ui.SubMenu.prototype.isPositionAdjustable = function() {
+  'use strict';
   return this.isPositionAdjustable_;
 };
 
 
 // Register a decorator factory function for goog.ui.SubMenus.
 goog.ui.registry.setDecoratorByClassName(
-    goog.getCssName('goog-submenu'),
-    function() { return new goog.ui.SubMenu(null); });
+    goog.getCssName('goog-submenu'), function() {
+      'use strict';
+      return new goog.ui.SubMenu(null);
+    });

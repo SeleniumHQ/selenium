@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 
 bool_flag(
     name = "pin_browsers",
-    build_setting_default = False,
+    build_setting_default = True,
 )
 
 config_setting(

@@ -88,7 +88,16 @@ internal class WebExtensionTest : BiDiTestFixture
     {
         try
         {
-            return Bazel.Runfiles.Create().Rlocation($"_main/{path}");
+            var runfiles = Bazel.Runfiles.Create();
+            string resolved = runfiles.Rlocation($"_main/{path}");
+            if (!string.IsNullOrEmpty(resolved))
+            {
+                return resolved;
+            }
+
+            // For directories, locate a file inside and get parent (runfiles manifest only lists files)
+            string manifestPath = runfiles.Rlocation($"_main/{path}/manifest.json");
+            return Path.GetDirectoryName(manifestPath) ?? Path.GetFullPath(path);
         }
         catch (FileNotFoundException)
         {

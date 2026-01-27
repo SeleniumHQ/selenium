@@ -30,7 +30,7 @@ namespace OpenQA.Selenium;
 /// Represents a cookie in the browser.
 /// </summary>
 [Serializable]
-public class Cookie
+public class Cookie : IEquatable<Cookie>
 {
     private readonly string cookieName;
     private readonly string cookieValue;
@@ -330,32 +330,44 @@ public class Cookie
     /// <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        // Two cookies are equal if the name and value match
-        if (this == obj)
+        return Equals(obj as Cookie);
+    }
+
+    /// <summary>
+    /// Indicates whether the current <see cref="Cookie"/> is equal to another <see cref="Cookie"/>.
+    /// </summary>
+    /// <param name="other">A <see cref="Cookie"/> to compare with this <see cref="Cookie"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="Cookie"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>Two cookies are equal if the <see cref="Name"/> and <see cref="Value"/> match.</remarks>
+    public bool Equals(Cookie? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
         {
             return true;
         }
 
-        if (obj is not Cookie cookie)
-        {
-            return false;
-        }
-
-        if (!this.cookieName.Equals(cookie.cookieName))
-        {
-            return false;
-        }
-
-        return string.Equals(this.cookieValue, cookie.cookieValue);
+        return string.Equals(this.cookieName, other.cookieName)
+            && string.Equals(this.cookieValue, other.cookieValue);
     }
 
     /// <summary>
     /// Serves as a hash function for a particular type.
     /// </summary>
-    /// <returns>A hash code for the current <see cref="object">Object</see>.</returns>
+    /// <returns>A hash code for the current <see cref="Cookie" />, based on the <see cref="Name"/> and <see cref="Value"/>.</returns>
     public override int GetHashCode()
     {
-        return this.cookieName.GetHashCode();
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + this.cookieName.GetHashCode();
+            hash = hash * 23 + (this.cookieValue?.GetHashCode() ?? 0);
+            return hash;
+        }
     }
 
     private static string? StripPort(string? domain)

@@ -23,10 +23,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class UnpinnedScriptKey extends ScriptKey {
 
   private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts =

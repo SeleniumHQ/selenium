@@ -1,3 +1,20 @@
+v4.40.0
+======
+* [bidi] Support SetScreenSettingsOverrideAsync method in Emulation module (#16704)
+* [bidi] Added missing Script.RemoteReference LocaclValue type (#16717)
+* Standardize `IEquatable<T>` implementations across types overriding Equals (#16665)
+* Fix nullability warnings in `WebDriver` (#16662)
+* Hide driver service window by default (#16782)
+* [bidi] Fix context aware event handlers (#16787)
+* [bidi] Properly return shared buffer when disposing websocket (#16804)
+* use SE_DEBUG to enable debugging (#16816)
+* [bidi] Context aware network collector (#16866)
+* [bidi] Rent and return buffer to shared pool per remote message (#16838)
+* [bidi] Allow consumer to combine input actions via identifier (#16885)
+* [bidi] Expose New session command (#16907)
+* [bidi] FileDialogOpened event in Input module (#16934)
+* [bidi] Expose Input module in root BiDi class (#16940)
+
 v4.39.0
 ======
 * Add CDP for Chrome 143 and remove 140

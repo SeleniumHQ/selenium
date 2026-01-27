@@ -1,4 +1,5 @@
 load("@py_dev_requirements//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary")
 load("//java:defs.bzl", "artifact")
 
 py_binary(
@@ -30,6 +31,25 @@ py_binary(
 py_binary(
     name = "update_copyright",
     srcs = ["update_copyright.py"],
+)
+
+py_binary(
+    name = "update_multitool_binaries",
+    srcs = ["update_multitool_binaries.py"],
+)
+
+py_binary(
+    name = "update_docfx",
+    srcs = ["update_docfx.py"],
+    deps = [
+        requirement("packaging"),
+        requirement("urllib3"),
+    ],
+)
+
+py_binary(
+    name = "update_py_deps",
+    srcs = ["update_py_deps.py"],
 )
 
 java_binary(

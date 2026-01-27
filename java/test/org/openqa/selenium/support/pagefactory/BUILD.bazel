@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_selenium_test_suite", "java_test_suite")
 
 MEDIUM_TESTS = [
     "UsingPageFactoryTest.java",
@@ -30,7 +30,7 @@ java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
     srcs = MEDIUM_TESTS,
-    browsers = ["firefox"],
+    browsers = SINGLE_BROWSER,
     deps = [
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",

@@ -18,8 +18,9 @@
 package org.openqa.selenium.grid.node;
 
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import java.util.Map;
@@ -55,7 +56,7 @@ class ForwardWebDriverCommandTest {
     when(mockNode.executeWebDriverCommand(mockRequest)).thenReturn(expectedResponse);
 
     HttpResponse actualResponse = command.execute(mockRequest);
-    assertEquals(expectedResponse, actualResponse);
+    assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
   @Test
@@ -81,7 +82,7 @@ class ForwardWebDriverCommandTest {
                             "Cannot find session with id: " + sessionId,
                             "stacktrace",
                             ""))));
-    assertEquals(expectResponse.getStatus(), actualResponse.getStatus());
-    assertEquals(expectResponse.getContentEncoding(), actualResponse.getContentEncoding());
+    assertThat(actualResponse.getStatus()).isEqualTo(expectResponse.getStatus());
+    assertThat(actualResponse.getContentEncoding()).isEqualTo(expectResponse.getContentEncoding());
   }
 }

@@ -1,0 +1,16 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "command",
+    srcs = ["command.js"],
+    lenient = True,
+)
+
+alias(
+    name = "plugin_impl",
+    actual = ":field",
+)

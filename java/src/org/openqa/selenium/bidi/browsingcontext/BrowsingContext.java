@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,17 +135,22 @@ public class BrowsingContext {
   }
 
   public NavigationResult navigate(String url) {
-    return this.bidi.send(
-        new Command<>(
-            "browsingContext.navigate", Map.of(CONTEXT, id, "url", url), navigationInfoMapper));
+    return navigate(url, ReadinessState.NONE);
   }
 
   public NavigationResult navigate(String url, ReadinessState readinessState) {
-    return this.bidi.send(
-        new Command<>(
-            "browsingContext.navigate",
-            Map.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
-            navigationInfoMapper));
+    return this.bidi.send(navigateCommand(url, readinessState));
+  }
+
+  public NavigationResult navigate(String url, ReadinessState readinessState, Duration timeout) {
+    return this.bidi.send(navigateCommand(url, readinessState), timeout);
+  }
+
+  private Command<NavigationResult> navigateCommand(String url, ReadinessState readinessState) {
+    return new Command<>(
+        "browsingContext.navigate",
+        Map.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
+        navigationInfoMapper);
   }
 
   public List<BrowsingContextInfo> getTree() {

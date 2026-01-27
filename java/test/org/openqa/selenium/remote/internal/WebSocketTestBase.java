@@ -22,7 +22,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -139,7 +139,6 @@ public abstract class WebSocketTestBase {
 
   private static BaseServerOptions defaultOptions() {
     return new BaseServerOptions(
-        new MapConfig(
-            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+        new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
   }
 }

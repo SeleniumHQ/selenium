@@ -21,7 +21,7 @@ import pytest
 
 from selenium.webdriver.common.virtual_authenticator import Credential
 
-BASE64__ENCODED_PK = """
+BASE64_ENCODED_PK = """
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
 MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
 oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
@@ -43,12 +43,12 @@ BYGpI8g==
 """
 
 
-@pytest.fixture()
+@pytest.fixture
 def data() -> tuple:
     _id = bytearray({1, 2, 3, 4})
     rp_id = "localhost"
     user_handle = bytearray({1})
-    privatekey = urlsafe_b64decode(BASE64__ENCODED_PK)
+    privatekey = urlsafe_b64decode(BASE64_ENCODED_PK)
     sign_count = 0
     return (_id, rp_id, user_handle, privatekey, sign_count)
 
@@ -58,8 +58,7 @@ def test_rk_enabled_credential(data):
 
     credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)
     assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
-    if credential.is_resident_credential is True:
-        assert True
+    assert credential.is_resident_credential is True
     assert credential.rp_id == "localhost"
     assert credential.user_handle == urlsafe_b64encode(bytearray({1})).decode()
     assert credential.private_key == urlsafe_b64encode(privatekey).decode()
@@ -74,14 +73,8 @@ def test_rk_disabled_credentials(data):
     assert credential.private_key == urlsafe_b64encode(privatekey).decode()
     assert credential.sign_count == 0
     assert credential.rp_id == "localhost"
-    if credential.is_resident_credential is False:
-        assert True
-    else:
-        assert False
-    if credential.user_handle is None:
-        assert True
-    else:
-        assert False
+    assert credential.is_resident_credential is False
+    assert credential.user_handle is None
 
 
 def test_to_dict(data):
@@ -90,10 +83,7 @@ def test_to_dict(data):
 
     credential_dict = credential.to_dict()
     assert credential_dict["credentialId"] == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
-    if credential_dict["isResidentCredential"] is True:
-        assert True
-    else:
-        assert False
+    assert credential_dict["isResidentCredential"] is True
     assert credential_dict["rpId"] == "localhost"
     assert credential_dict["userHandle"] == urlsafe_b64encode(bytearray({1})).decode()
     assert credential_dict["privateKey"] == urlsafe_b64encode(privatekey).decode()
@@ -106,19 +96,16 @@ def test_from_dict():
         "isResidentCredential": True,
         "rpId": "localhost",
         "userHandle": urlsafe_b64encode(bytearray({1})).decode(),
-        "privateKey": BASE64__ENCODED_PK,
+        "privateKey": BASE64_ENCODED_PK,
         "signCount": 0,
     }
 
     credential = Credential.from_dict(data)
 
-    key = urlsafe_b64decode(BASE64__ENCODED_PK)
+    key = urlsafe_b64decode(BASE64_ENCODED_PK)
 
     assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
-    if credential.is_resident_credential is True:
-        assert True
-    else:
-        assert False
+    assert credential.is_resident_credential is True
     assert credential.rp_id == "localhost"
     assert credential.user_handle == urlsafe_b64encode(bytearray({1})).decode()
     assert credential.private_key == urlsafe_b64encode(key).decode()

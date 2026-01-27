@@ -21,8 +21,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -31,6 +29,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -81,7 +80,7 @@ class ProxyWebsocketTest {
     Supplier<String> s1 = () -> "cdp";
     Supplier<String> s2 = () -> "bidi";
 
-    return ImmutableSet.of(s1, s2).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2));
   }
 
   public void setFields(Supplier<String> values) {
@@ -196,8 +195,7 @@ class ProxyWebsocketTest {
           NoSuchAlgorithmException,
           KeyManagementException {
     setFields(values);
-    Config secureConfig =
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("https-self-signed", true)));
+    Config secureConfig = new MapConfig(Map.of("server", Map.of("https-self-signed", true)));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);

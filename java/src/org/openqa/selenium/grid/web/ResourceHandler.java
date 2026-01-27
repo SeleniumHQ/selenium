@@ -68,7 +68,7 @@ public class ResourceHandler implements Routable {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Optional<Resource> result = resource.get(req.getUri());
 
-    if (!result.isPresent()) {
+    if (result.isEmpty()) {
       String errorMessage;
       try {
         new URL(req.getUri());

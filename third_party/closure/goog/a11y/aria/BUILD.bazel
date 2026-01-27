@@ -1,0 +1,44 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "aria",
+    srcs = ["aria.js"],
+    lenient = True,
+    deps = [
+        ":attributes",
+        ":datatables",
+        ":roles",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "attributes",
+    srcs = ["attributes.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "datatables",
+    srcs = ["datatables.js"],
+    lenient = True,
+    deps = [
+        ":attributes",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "roles",
+    srcs = ["roles.js"],
+    lenient = True,
+)

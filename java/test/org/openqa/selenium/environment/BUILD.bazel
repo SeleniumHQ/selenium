@@ -34,7 +34,6 @@ java_library(
         "//javascript/atoms:deps",
         "//third_party/closure/goog",
         "//third_party/js/sizzle",
-        "@com_google_javascript_closure_library",
     ],
     javacopts = [
         "--release",
@@ -96,6 +95,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
     ] + JUNIT5_DEPS,
 )
@@ -110,7 +110,6 @@ java_test_suite(
     jvm_flags = firefox["jvm_flags"],
     tags = [
         "firefox",
-        "selenium-remote",
     ] + firefox["tags"],
     deps = [
         ":environment",

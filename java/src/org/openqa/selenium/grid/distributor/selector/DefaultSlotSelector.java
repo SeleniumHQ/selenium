@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Comparator;
@@ -59,8 +59,7 @@ public class DefaultSlotSelector implements SlotSelector {
                 // Then sort by stereotype browserVersion (descending order). SemVer comparison with
                 // considering empty value at first.
                 .thenComparing(
-                    Comparator.comparing(
-                        NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed()))
+                    NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed())
                 // And use the node id as a tie-breaker.
                 .thenComparing(NodeStatus::getNodeId))
         .flatMap(
@@ -69,7 +68,7 @@ public class DefaultSlotSelector implements SlotSelector {
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(toImmutableSet());
+        .collect(toSequencedSet());
   }
 
   @VisibleForTesting

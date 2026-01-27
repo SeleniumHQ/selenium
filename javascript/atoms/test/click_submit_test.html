@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>click_submit_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -11,7 +15,6 @@
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
     var findElement = bot.locators.findElement;
@@ -23,138 +26,156 @@
       return true;
     }
 
-    function setUp() {
+    QUnit.testStart(function() {
       var iframe = findElement({id: 'iframe'});
       var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      return new goog.Promise(function(done) {
-        goog.events.listenOnce(iframe, 'load', done);
-        iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
-      });
-    }
+      iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
+    });
 
-   function doesNotSubmitFormWhenEventDefaultPrevented(action) {
+    function doesNotSubmitFormWhenEventDefaultPrevented(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
+      var done = assert.async();
       var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+      goog.events.listenOnce(iframe, 'load', function() {
+        var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+        var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+        var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
 
-      var previousLocation = iframeWindow.location.href;
-      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
-        e.preventDefault();
-      });
+        var previousLocation = iframeWindow.location.href;
+        goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+          e.preventDefault();
+        });
 
-      action(clickTarget);
-      assertEquals(previousLocation, iframeWindow.location.href);
-    }
-
-    var testClickDoesNotSubmitFormWhenEventDefaultPrevented =
-        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
-                     bot.action.click);
-
-    var testTapDoesNotSubmitFormWhenEventDefaultPrevented =
-        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
-                     bot.action.tap);
-
-    function doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(action) {
-      if (!checkActionCompatibility(action)) {
-        return;
-      }
-      var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var clickTarget =
-          findElement({'id': 'submitFormWithInlineHandler'}, iframeDoc);
-
-      var previousLocation = iframeWindow.location.href;
-      action(clickTarget);
-      assertEquals(previousLocation, iframeWindow.location.href);
-    }
-
-    var testClickDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
-        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
-                     bot.action.click);
-
-    var testTapDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
-        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
-                     bot.action.tap);
-
-    function submitExecutesDefaultHandler(action) {
-      if (!checkActionCompatibility(action)) {
-        return;
-      }
-      var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
-      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
-
-      return new goog.Promise(function(done) {
-        // As the iframe loads asynchronously we need to wait to check out
-        // if the url matches the expected one.
-        goog.events.listenOnce(iframe, 'load', done);
         action(clickTarget);
-      }).then(function() {
-        assertContains(targetHref, iframeWindow.location.href);
+        assert.strictEqual(iframeWindow.location.href, previousLocation);
+        done();
       });
     }
 
-    var testClickSubmitExecutesDefaultHandler =
-        goog.partial(submitExecutesDefaultHandler, bot.action.click);
+    QUnit.test('click does not submit form when event default prevented', function(assert) {
+      doesNotSubmitFormWhenEventDefaultPrevented(assert, bot.action.click);
+    });
 
-    var testTapSubmitExecutesDefaultHandler =
-        goog.partial(submitExecutesDefaultHandler, bot.action.tap);
+    QUnit.test('tap does not submit form when event default prevented', function(assert) {
+      doesNotSubmitFormWhenEventDefaultPrevented(assert, bot.action.tap);
+    });
 
-    function submitButtonTag(action) {
+    function doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
+      var done = assert.async();
       var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
-      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+      goog.events.listenOnce(iframe, 'load', function() {
+        var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+        var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+        var clickTarget =
+            findElement({'id': 'submitFormWithInlineHandler'}, iframeDoc);
 
-      return new goog.Promise(function(done) {
-        goog.events.listenOnce(iframe, 'load', done);
+        var previousLocation = iframeWindow.location.href;
         action(clickTarget);
-      }).then(function() {
-        assertContains(targetHref, iframeWindow.location.href);
+        assert.strictEqual(iframeWindow.location.href, previousLocation);
+        done();
       });
     }
 
-    var testClickSubmitButtonTag =
-        goog.partial(submitButtonTag, bot.action.click);
+    QUnit.test('click do not submit form when event default prevented with inline handler', function(assert) {
+      doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(assert, bot.action.click);
+    });
 
-    var testTapSubmitButtonTag =
-        goog.partial(submitButtonTag, bot.action.tap);
+    QUnit.test('tap do not submit form when event default prevented with inline handler', function(assert) {
+      doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(assert, bot.action.tap);
+    });
 
-    function formWithCorrectSubmitButton(action) {
+    function submitExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
+      var done = assert.async();
       var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+      goog.events.listenOnce(iframe, 'load', function() {
+        var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+        var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+        var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+        var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
 
-      return new goog.Promise(function(done) {
-        // As the iframe loads asynchronously we need to wait to check out
-        // if the url matches the expected one.
-        goog.events.listenOnce(iframe, 'load', done);
+        goog.events.listenOnce(iframe, 'load', function() {
+          assert.ok(iframeWindow.location.href.indexOf(targetHref) !== -1);
+          done();
+        });
         action(clickTarget);
-      }).then(function() {
-        assertContains('submitButton=Submit', iframeWindow.location.href);
       });
     }
 
-    var testClickFormWithCorrectSubmitButton =
-        goog.partial(formWithCorrectSubmitButton, bot.action.click);
+    QUnit.test('click submit executes default handler', function(assert) {
+      submitExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapFormWithCorrectSubmitButton =
-        goog.partial(formWithCorrectSubmitButton, bot.action.tap);
+    QUnit.test('tap submit executes default handler', function(assert) {
+      submitExecutesDefaultHandler(assert, bot.action.tap);
+    });
+
+    function submitButtonTag(assert, action) {
+      if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
+        return;
+      }
+      var done = assert.async();
+      var iframe = findElement({id: 'iframe'});
+      goog.events.listenOnce(iframe, 'load', function() {
+        var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+        var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+        var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
+        var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+        goog.events.listenOnce(iframe, 'load', function() {
+          assert.ok(iframeWindow.location.href.indexOf(targetHref) !== -1);
+          done();
+        });
+        action(clickTarget);
+      });
+    }
+
+    QUnit.test('click submit button tag', function(assert) {
+      submitButtonTag(assert, bot.action.click);
+    });
+
+    QUnit.test('tap submit button tag', function(assert) {
+      submitButtonTag(assert, bot.action.tap);
+    });
+
+    function formWithCorrectSubmitButton(assert, action) {
+      if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
+        return;
+      }
+      var done = assert.async();
+      var iframe = findElement({id: 'iframe'});
+      goog.events.listenOnce(iframe, 'load', function() {
+        var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+        var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+        var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+        goog.events.listenOnce(iframe, 'load', function() {
+          assert.ok(iframeWindow.location.href.indexOf('submitButton=Submit') !== -1);
+          done();
+        });
+        action(clickTarget);
+      });
+    }
+
+    QUnit.test('click form with correct submit button', function(assert) {
+      formWithCorrectSubmitButton(assert, bot.action.click);
+    });
+
+    QUnit.test('tap form with correct submit button', function(assert) {
+      formWithCorrectSubmitButton(assert, bot.action.tap);
+    });
 
     function buildAbsoluteUrl(url) {
       var loc = location.href;
@@ -163,6 +184,8 @@
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <iframe id="iframe" src="testdata/click_iframe.html">
   </iframe>
 </body>

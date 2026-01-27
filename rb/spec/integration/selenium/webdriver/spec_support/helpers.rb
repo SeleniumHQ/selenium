@@ -93,8 +93,10 @@ module Selenium
           wait.until { driver.find_element(locator) }
         end
 
-        def wait_for_url(new_url)
-          wait = Wait.new(timeout: 5)
+        def wait_for_url(new_url, timeout = 15)
+          wait = Wait.new(timeout: timeout, message_provider: lambda {
+            "could not wait for URL #{new_url} in #{timeout} seconds;\nactual page url: #{driver.current_url};\n"
+          })
           wait.until do
             driver.current_url.include?(new_url)
           end
@@ -106,8 +108,15 @@ module Selenium
         end
 
         def wait_for_title(title:)
-          wait = Wait.new(timeout: 5)
+          wait = Wait.new(timeout: 15)
           wait.until { driver.title == title }
+        end
+
+        def open_file(file_name)
+          driver.navigate.to 'about:blank'
+          driver.navigate.to url_for('blank.html')
+          driver.navigate.to url_for(file_name)
+          wait_for_url(file_name)
         end
 
         def wait(timeout = 10)

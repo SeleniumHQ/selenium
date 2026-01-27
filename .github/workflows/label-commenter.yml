@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   comment:
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout base repo to get config file

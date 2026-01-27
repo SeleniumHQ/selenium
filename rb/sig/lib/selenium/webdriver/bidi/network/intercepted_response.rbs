@@ -5,14 +5,14 @@ module Selenium
         @body: untyped
         @cookies: Hash[Symbol, String | Integer]?
 
-        @reason: String?
+        @reason: (String | nil)
 
         @credentials: untyped
 
         @headers: untyped
 
         attr_reader body: untyped
-        attr_accessor reason: String
+        attr_accessor reason: (String | nil)
 
         attr_accessor status: Integer?
 

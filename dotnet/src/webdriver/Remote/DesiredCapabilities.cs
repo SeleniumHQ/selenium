@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Remote;
 /// <summary>
 /// Internal class to specify the requested capabilities of the browser for <see cref="IWebDriver"/>.
 /// </summary>
-internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary
+internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary, IEquatable<DesiredCapabilities>
 {
     private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
@@ -229,9 +229,9 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
     public override int GetHashCode()
     {
         int result;
-        result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
-        result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
-        result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+        result = this.BrowserName?.GetHashCode() ?? 0;
+        result = (31 * result) + (this.Version?.GetHashCode() ?? 0);
+        result = (31 * result) + (this.Platform?.GetHashCode() ?? 0);
         return result;
     }
 
@@ -245,23 +245,33 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
     }
 
     /// <summary>
-    /// Compare two DesiredCapabilities and will return either true or false
+    /// Indicates whether the current <see cref="DesiredCapabilities"/> is equal to another <see cref="object"/>.
     /// </summary>
-    /// <param name="obj">DesiredCapabilities you wish to compare</param>
-    /// <returns>true if they are the same or false if they are not</returns>
+    /// <param name="obj">An object to compare with this <see cref="DesiredCapabilities"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="DesiredCapabilities"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        if (this == obj)
-        {
-            return true;
-        }
+        return Equals(obj as DesiredCapabilities);
+    }
 
-        if (obj is not DesiredCapabilities other)
+    /// <summary>
+    /// Indicates whether the current <see cref="DesiredCapabilities"/> is equal to another <see cref="DesiredCapabilities"/>.
+    /// </summary>
+    /// <param name="other">An <see cref="DesiredCapabilities"/> to compare with this <see cref="DesiredCapabilities"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="DesiredCapabilities"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(DesiredCapabilities? other)
+    {
+        if (other is null)
         {
             return false;
         }
 
-        if (this.BrowserName != null ? this.BrowserName != other.BrowserName : other.BrowserName != null)
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        if (this.BrowserName != other.BrowserName)
         {
             return false;
         }
@@ -271,7 +281,7 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
             return false;
         }
 
-        if (this.Version != null ? this.Version != other.Version : other.Version != null)
+        if (this.Version != other.Version)
         {
             return false;
         }

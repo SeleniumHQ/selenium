@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import static java.lang.System.currentTimeMillis;
+import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
@@ -29,6 +33,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -288,17 +293,22 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       inspector.onNavigationFailed(future::complete);
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
-      try {
-        context.navigate(
-            "http://invalid-domain-that-does-not-exist.test/", ReadinessState.COMPLETE);
-      } catch (Exception e) {
-        // Expect an exception due to navigation failure
-      }
 
-      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThatThrownBy(
+              () ->
+                  context.navigate(
+                      "http://invalid-domain-that-does-not-exist.test/",
+                      ReadinessState.COMPLETE,
+                      ofSeconds(1)))
+          .as("Expect an exception due to navigation failure")
+          .isInstanceOf(BiDiException.class);
+
+      NavigationInfo navigationInfo = future.get(100, MILLISECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl())
           .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
+      assertThat(navigationInfo.getTimestamp())
+          .isBetween(currentTimeMillis() - 1000, currentTimeMillis());
     }
   }
 
