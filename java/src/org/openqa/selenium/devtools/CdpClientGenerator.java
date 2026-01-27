@@ -51,6 +51,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -213,7 +214,7 @@ public class CdpClientGenerator {
               : type.toTypeDeclaration().setPublic(true);
 
       if (description != null) {
-        typeDeclaration.setJavadocComment(description);
+        typeDeclaration.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         typeDeclaration.addAnnotation(Beta.class.getCanonicalName());
@@ -305,7 +306,7 @@ public class CdpClientGenerator {
 
       ClassOrInterfaceDeclaration classDecl = unit.addClass(name);
       if (description != null) {
-        classDecl.setJavadocComment(description);
+        classDecl.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         classDecl.addAnnotation(Beta.class);
@@ -629,7 +630,7 @@ public class CdpClientGenerator {
       MethodDeclaration methodDecl =
           new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
       if (description != null) {
-        methodDecl.setJavadocComment(description);
+        methodDecl.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         methodDecl.addAnnotation(Beta.class);
@@ -1162,7 +1163,7 @@ public class CdpClientGenerator {
                 classDecl.addMethod("get" + capitalize(property.name)).setPublic(true);
             getter.setType(property.getJavaType());
             if (property.description != null) {
-              getter.setJavadocComment(property.description);
+              getter.setJavadocComment(sanitizeJavadoc(property.description));
             }
             if (property.experimental) {
               getter.addAnnotation(Beta.class);
@@ -1370,6 +1371,7 @@ public class CdpClientGenerator {
       return "null";
     }
 
+    @Nullable
     public TypeDeclaration<?> toTypeDeclaration() {
       return null;
     }
@@ -1410,6 +1412,14 @@ public class CdpClientGenerator {
 
   private static String toJavaConstant(String text) {
     return text.toUpperCase().replace("-", "_");
+  }
+
+  private static String sanitizeJavadoc(String description) {
+    if (description == null) {
+      return null;
+    }
+    // Escape */ sequences which would prematurely close the JavaDoc comment
+    return description.replace("*/", "*&#47;");
   }
 
   private static <K, V> Map<K, V> mergeMaps(Map<K, V> one, Map<K, V> two) {

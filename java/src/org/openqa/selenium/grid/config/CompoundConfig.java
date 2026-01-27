@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +59,7 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(Config::getSectionNames)
         .flatMap(Collection::stream)
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 
   @Override
@@ -70,6 +69,6 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(config -> config.getOptions(section))
         .flatMap(Collection::stream)
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 }

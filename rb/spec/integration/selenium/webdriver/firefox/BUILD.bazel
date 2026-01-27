@@ -4,12 +4,27 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        # No need to run in other browsers.
         browsers = [
             "firefox",
             "firefox-beta",
         ],
         data = ["//common/extensions"],
     )
-    for file in glob(["*_spec.rb"])
+    for file in glob(
+        ["*_spec.rb"],
+        exclude = ["service_spec.rb"],
+    )
 ]
+
+rb_integration_test(
+    name = "service",
+    srcs = ["service_spec.rb"],
+    browsers = [
+        "firefox",
+        "firefox-beta",
+    ],
+    tags = [
+        "no-grid",
+        "skip-rbe",
+    ],
+)

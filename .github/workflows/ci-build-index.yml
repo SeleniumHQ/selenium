@@ -1,0 +1,34 @@
+name: CI - Build Index
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build Test Index
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Test Index
+      os: ubuntu
+      run: ./go bazel:build_test_index bazel-test-target-index
+      artifact-name: bazel-test-target-index
+      artifact-path: bazel-test-target-index
+
+  cache:
+    name: Cache Index
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Download index
+        uses: actions/download-artifact@v4
+        with:
+          name: bazel-test-target-index
+      - name: Cache index
+        uses: actions/cache/save@v4
+        with:
+          path: bazel-test-target-index
+          key: bazel-test-target-index-${{ github.run_id }}

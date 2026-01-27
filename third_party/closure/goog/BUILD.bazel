@@ -107,6 +107,7 @@ closure_js_deps(
     testonly = True,
     deps = [
         ":library",
+        ":testing",
     ],
 )
 

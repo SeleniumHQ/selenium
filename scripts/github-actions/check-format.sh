@@ -12,7 +12,7 @@ else
   # code.
   git config user.email "selenium@example.com"
   git config user.name "CI Build"
-  git commit -am 'Temp commit to allow format to run cleanly'
+  git commit --allow-empty -am 'Temp commit to allow format to run cleanly'
 
   # Fail the build if the format script needs to be re-run
   ./scripts/format.sh

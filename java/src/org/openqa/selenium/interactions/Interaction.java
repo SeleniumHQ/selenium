@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
+import static java.util.Objects.requireNonNull;
+
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -29,11 +31,7 @@ public abstract class Interaction {
   private final InputSource source;
 
   protected Interaction(InputSource source) {
-    // Avoiding a guava dependency.
-    if (source == null) {
-      throw new NullPointerException("Input source must not be null");
-    }
-    this.source = source;
+    this.source = requireNonNull(source, "Input source must not be null");
   }
 
   protected boolean isValidFor(SourceType sourceType) {

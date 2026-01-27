@@ -4,6 +4,7 @@ on:
   schedule:
     - cron:  '0 */12 * * *'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -16,7 +17,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
-        fetch-depth: 0
     - name: Read api.github.com and filter response
       run: |
         set -euo pipefail
@@ -42,13 +42,14 @@ jobs:
     - name: Commit files
       id: git
       run: |
-        export CHANGES=$(git status -s)
+        CHANGES=$(git status -s)
+        export CHANGES
         if [ -n "$CHANGES" ]; then
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add common/mirror/selenium
-          git commit -m "Update mirror info (`date`)" -a
-          echo "::set-output name=commit::true"
+          git commit -m "Update mirror info ($(date))" -a
+          echo "commit=true" >> "$GITHUB_OUTPUT"
         fi
     - name: Push changes
       if: steps.git.outputs.commit == 'true'

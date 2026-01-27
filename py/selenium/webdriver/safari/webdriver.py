@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
@@ -29,22 +28,21 @@ class WebDriver(LocalWebDriver):
 
     def __init__(
         self,
-        keep_alive=True,
         options: Options | None = None,
         service: Service | None = None,
+        keep_alive: bool = True,
     ) -> None:
         """Create a new Safari driver instance and launch or find a running safaridriver service.
 
         Args:
-            keep_alive: Whether to configure SafariRemoteConnection to use
-                HTTP keep-alive. Defaults to True.
-            options: Instance of ``options.Options``.
-            service: Service object for handling the browser driver if you need to pass extra details
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
+            keep_alive: Whether to configure SafariRemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else Service()
-        options = options if options else Options()
+        self.options = options if options else Options()
 
-        self.service.path = self.service.env_path() or DriverFinder(self.service, options).get_driver_path()
+        self.service.path = self.service.env_path() or DriverFinder(self.service, self.options).get_driver_path()
 
         if not self.service.reuse_service:
             self.service.start()
@@ -52,11 +50,11 @@ class WebDriver(LocalWebDriver):
         executor = SafariRemoteConnection(
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise

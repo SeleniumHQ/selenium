@@ -14,3 +14,19 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import importlib
+
+_LAZY_SUBMODULES = ["options", "remote_connection", "service", "webdriver"]
+
+
+def __getattr__(name):
+    if name in _LAZY_SUBMODULES:
+        module = importlib.import_module(f".{name}", __name__)
+        globals()[name] = module
+        return module
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__():
+    return sorted(_LAZY_SUBMODULES)

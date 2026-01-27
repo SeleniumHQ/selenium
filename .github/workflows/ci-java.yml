@@ -20,17 +20,16 @@ jobs:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      run: |
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
-            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
-            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
-            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
-            //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
+      rerun-with-debug: true
+      run: >
+        bazel test --flaky_test_attempts 2
+        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
+        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
 
   browser-tests-macos:
     name: Browser Tests
@@ -44,16 +43,15 @@ jobs:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      run: |
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
-            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
-          //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
-            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+      rerun-with-debug: true
+      run: >
+        bazel test --flaky_test_attempts 2
+        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
+        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
 
   remote-tests:
     name: Remote Tests
@@ -67,8 +65,7 @@ jobs:
       name: Remote Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      run: |
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+      rerun-with-debug: true
+      run: >
+        bazel test --flaky_test_attempts 2
+        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

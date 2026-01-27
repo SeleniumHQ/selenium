@@ -52,7 +52,7 @@ module Selenium
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: 1234, background: true)
-      allow(server).to receive(:socket).and_return(mock_poller)
+      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
 
       server.start
       expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
@@ -67,7 +67,7 @@ module Selenium
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: port)
-      allow(server).to receive(:socket).and_return(mock_poller)
+      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
       allow(mock_process).to receive(:wait)
 
       server.start
@@ -85,7 +85,7 @@ module Selenium
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
-      allow(server).to receive(:socket).and_return(mock_poller)
+      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
 
       server << %w[foo bar]
 
@@ -109,7 +109,7 @@ module Selenium
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', background: true)
-      allow(server).to receive(:socket).and_return(mock_poller)
+      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
 
       server << %w[foo bar]
       server << '-Dwebdriver.chrome.driver=/bin/chromedriver'

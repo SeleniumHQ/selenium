@@ -1,3 +1,16 @@
+4.40.0 (2026-01-18)
+=========================
+* add synchronization and error handling for socket interactions (#16487)
+* mark low level bidi implementation as private api (#16475)
+* ensure driver process is always stopped (#15635)
+* create user-friendly method for enabling bidi (#14284)
+* Add force encoding to remove warnings caused by json 3.0 (#16728)
+* use SE_DEBUG to enable debugging (#16816)
+* ensure the grid is properly restarted in tests when there is a problem (#16842)
+* wait for grid to be ready when starting server (#16896)
+* check driver status endpoint rather than socket connection (#16877)
+* [build] update ruby gems with bazel (#16924)
+
 4.39.0 (2025-12-06)
 =========================
 * Add CDP for Chrome 143 and remove 140

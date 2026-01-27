@@ -19,9 +19,9 @@ package org.openqa.selenium.ie;
 
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -86,10 +86,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
-    this(
-        InternetExplorerDriverService.createDefaultService(),
-        options,
-        ClientConfig.defaultConfig());
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public InternetExplorerDriver(InternetExplorerOptions options, ClientConfig clientConfig) {
+    this(InternetExplorerDriverService.createDefaultService(), options, clientConfig);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
@@ -111,26 +112,20 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public InternetExplorerDriver(
       @Nullable InternetExplorerDriverService service,
       @Nullable InternetExplorerOptions options,
-      @Nullable ClientConfig clientConfig) {
+      ClientConfig clientConfig) {
     options = options == null ? new InternetExplorerOptions() : options;
     service = service == null ? InternetExplorerDriverService.createDefaultService() : service;
-    clientConfig = clientConfig == null ? ClientConfig.defaultConfig() : clientConfig;
+    Require.nonNull("Client config", clientConfig);
+
     service.setExecutable(new DriverFinder(service, options).getDriverPath());
-    run(service, options, clientConfig);
+    assertOnWindows();
+    setCommandExecutor(new DriverCommandExecutor(service, clientConfig));
+    startSession(options);
   }
 
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
-  }
-
-  private void run(
-      InternetExplorerDriverService service, Capabilities capabilities, ClientConfig clientConfig) {
-    assertOnWindows();
-
-    setCommandExecutor(new DriverCommandExecutor(service, clientConfig));
-
-    startSession(capabilities);
   }
 
   @Override

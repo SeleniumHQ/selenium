@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
@@ -29,8 +28,8 @@ class ChromiumDriver(LocalWebDriver):
 
     def __init__(
         self,
-        browser_name: str | None = None,
-        vendor_prefix: str | None = None,
+        browser_name: str,
+        vendor_prefix: str,
         options: ChromiumOptions | None = None,
         service: ChromiumService | None = None,
         keep_alive: bool = True,
@@ -40,17 +39,17 @@ class ChromiumDriver(LocalWebDriver):
         Args:
             browser_name: Browser name used when matching capabilities.
             vendor_prefix: Company prefix to apply to vendor-specific WebDriver extension commands.
-            options: This takes an instance of ChromiumOptions.
+            options: Instance of ChromiumOptions.
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else ChromiumService()
-        options = options if options else ChromiumOptions()
+        self.options = options if options else ChromiumOptions()
 
-        finder = DriverFinder(self.service, options)
+        finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():
-            options.binary_location = finder.get_browser_path()
-            options.browser_version = None
+            self.options.binary_location = finder.get_browser_path()
+            self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
@@ -60,11 +59,11 @@ class ChromiumDriver(LocalWebDriver):
             browser_name=browser_name,
             vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise

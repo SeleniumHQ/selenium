@@ -17,7 +17,13 @@
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.WaitingConditions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementTextToMatch;
+import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 import java.time.Duration;
@@ -44,6 +50,18 @@ class WaitingConditionsTest extends JupiterTestBase {
   }
 
   @Test
+  void textEquals_errorMessage() {
+    assertThatThrownBy(() -> wait.until(elementTextToEqual(header, "WRONG TEXT")))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for element found by By.tagName: h1 to have text"
+                + " \"WRONG TEXT\", but was: \"The Tragedy of Macbeth\"")
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)")
+        .hasMessageContaining("Build info: version:")
+        .hasMessageContaining("The Tragedy of Macbeth");
+  }
+
+  @Test
   void textContains() {
     wait.until(elementTextToContain(driver.findElement(header), "he Tragedy of"));
     wait.until(elementTextToContain(driver.findElement(header), "The Tragedy"));
@@ -51,8 +69,82 @@ class WaitingConditionsTest extends JupiterTestBase {
   }
 
   @Test
+  void textContains_errorMessage() {
+    assertThatThrownBy(() -> wait.until(elementTextToContain(header, "WRONG TEXT")))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for element found by By.tagName: h1 to contain text"
+                + " \"WRONG TEXT\", but was: \"The Tragedy of Macbeth\"")
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)")
+        .hasMessageContaining("Build info: version:")
+        .hasMessageContaining("The Tragedy of Macbeth");
+  }
+
+  @Test
   void textMatches() {
     wait.until(elementTextToMatch(header, "The Tragedy of Macbeth"));
     wait.until(elementTextToMatch(header, ".+ Tragedy of .+"));
+  }
+
+  @Test
+  void textMatches_errorMessage() {
+    assertThatThrownBy(() -> wait.until(elementTextToMatch(header, "WRONG TEXT")))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for element found by By.tagName: h1 to match text"
+                + " \"WRONG TEXT\", but was: \"The Tragedy of Macbeth\"")
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)")
+        .hasMessageContaining("Build info: version:")
+        .hasMessageContaining("The Tragedy of Macbeth");
+  }
+
+  @Test
+  void pageSource() {
+    wait.until(pageSourceToContain("The Tragedy of Macbeth"));
+  }
+
+  @Test
+  void pageSource_errorMessage() {
+    assertThatThrownBy(() -> wait.until(pageSourceToContain("WRONG TEXT")))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for page source to contain: \"WRONG TEXT\", but"
+                + " was: \"<html>")
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)")
+        .hasMessageContaining("Build info: version:")
+        .hasMessageContaining("The Tragedy of Macbeth");
+  }
+
+  @Test
+  void elementLocation() {
+    WebElement element = driver.findElement(header);
+    wait.until(elementLocationToBe(element, element.getLocation()));
+  }
+
+  @Test
+  void elementLocation_errorMessage() {
+    assertThatThrownBy(
+            () ->
+                wait.until(elementLocationToBe(driver.findElement(header), new Point(1000, 2000))))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for location to be: (1000, 2000), but was: (")
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)");
+  }
+
+  @Test
+  void windowCount() {
+    wait.until(windowHandleCountToBe(driver.getWindowHandles().size()));
+  }
+
+  @Test
+  void windowCount_errorMessage() {
+    assertThatThrownBy(() -> wait.until(windowHandleCountToBe(666)))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith(
+            "Expected condition failed: waiting for window count to be: 666, but was: "
+                + driver.getWindowHandles().size())
+        .hasMessageContaining("(tried for 0.001 seconds with 500 milliseconds interval)")
+        .hasMessageContaining("Build info: version:");
   }
 }

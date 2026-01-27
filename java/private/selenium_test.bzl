@@ -1,6 +1,7 @@
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
+    "chrome_beta_data",
     "chrome_data",
     "edge_data",
     "firefox_beta_data",
@@ -8,6 +9,7 @@ load(
 )
 load(
     "//java:browsers.bzl",
+    "chrome_beta_jvm_flags",
     "chrome_jvm_flags",
     "edge_jvm_flags",
     "firefox_beta_jvm_flags",
@@ -23,6 +25,12 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
         "data": chrome_data,
         "tags": COMMON_TAGS + ["chrome"],
+    },
+    "chrome-beta": {
+        "deps": ["//java/src/org/openqa/selenium/chrome"],
+        "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_beta_jvm_flags,
+        "data": chrome_beta_data,
+        "tags": COMMON_TAGS + ["chrome", "chrome-beta"],
     },
     "edge": {
         "deps": ["//java/src/org/openqa/selenium/edge"],

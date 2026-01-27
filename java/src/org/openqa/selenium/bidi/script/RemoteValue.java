@@ -90,7 +90,7 @@ public class RemoteValue {
 
   private final Optional<String> handle;
 
-  private final Optional<Long> internalId;
+  private final Optional<String> internalId;
 
   private final Optional<Object> value;
 
@@ -99,7 +99,7 @@ public class RemoteValue {
   public RemoteValue(
       Type type,
       Optional<String> handle,
-      Optional<Long> internalId,
+      Optional<String> internalId,
       Optional<Object> value,
       Optional<String> sharedId) {
     this.type = type;
@@ -114,7 +114,7 @@ public class RemoteValue {
 
     Optional<String> handle = Optional.empty();
 
-    Optional<Long> internalId = Optional.empty();
+    Optional<String> internalId = Optional.empty();
 
     Optional<Object> value = Optional.empty();
 
@@ -133,7 +133,7 @@ public class RemoteValue {
           break;
 
         case "internalId":
-          internalId = Optional.ofNullable(input.read(Long.class));
+          internalId = Optional.ofNullable(input.read(String.class));
           break;
 
         case "value":
@@ -168,7 +168,7 @@ public class RemoteValue {
     return handle;
   }
 
-  public Optional<Long> getInternalId() {
+  public Optional<String> getInternalId() {
     return internalId;
   }
 

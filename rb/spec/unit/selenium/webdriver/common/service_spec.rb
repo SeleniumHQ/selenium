@@ -26,6 +26,7 @@ module Selenium
 
       before do
         allow(Platform).to receive(:assert_executable)
+        allow(WebDriver.logger).to receive(:debug?).and_return(false)
         stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
@@ -48,7 +49,7 @@ module Selenium
         it 'creates Firefox instance' do
           service = described_class.firefox(args: args)
           expect(service).to be_a(Firefox::Service)
-          expect(service.args).to eq args
+          expect(service.args).to eq(args + %w[--websocket-port 0])
         end
 
         it 'creates IE instance' do

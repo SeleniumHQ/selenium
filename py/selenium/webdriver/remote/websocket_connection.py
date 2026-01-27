@@ -21,7 +21,7 @@ from ssl import CERT_NONE
 from threading import Thread
 from time import sleep
 
-from websocket import WebSocketApp  # type: ignore
+from websocket import WebSocketApp
 
 from selenium.common import WebDriverException
 

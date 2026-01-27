@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.wpewebkit.options import Options
@@ -27,7 +26,7 @@ class WebDriver(LocalWebDriver):
 
     def __init__(
         self,
-        options=None,
+        options: Options | None = None,
         service: Service | None = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
@@ -35,12 +34,16 @@ class WebDriver(LocalWebDriver):
         Starts the service and then creates new instance of WPEWebKit Driver.
 
         Args:
-            options: an instance of ``WPEWebKitOptions``
-            service: Service object for handling the browser driver if you need to pass extra details
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
         """
-        options = options if options else Options()
+        self.options = options if options else Options()
         self.service = service if service else Service()
-        self.service.path = DriverFinder(self.service, options).get_driver_path()
+        self.service.path = DriverFinder(self.service, self.options).get_driver_path()
         self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, options=options)
+        try:
+            super().__init__(command_executor=self.service.service_url, options=self.options)
+        except Exception:
+            self.quit()
+            raise

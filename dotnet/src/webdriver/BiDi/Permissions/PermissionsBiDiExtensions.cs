@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Extensions.Permissions;
 using System;
 
 namespace OpenQA.Selenium.BiDi.Permissions;

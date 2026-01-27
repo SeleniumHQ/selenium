@@ -276,14 +276,18 @@ public class Connection implements Closeable {
             try {
               handle(data);
             } catch (Exception e) {
-              throw new BiDiException("Unable to process: " + data, e);
+              throw new BiDiException("Unable to process BiDi response: " + data, e);
             }
           });
     }
 
     @Override
     public void onClose(int code, String reason) {
-      LOG.fine("BiDi connection websocket closed");
+      LOG.log(
+          Level.FINE,
+          () ->
+              String.format(
+                  "BiDi connection websocket closed (code: %s, reason: \"%s\")", code, reason));
       underlyingSocketClosed.set(true);
     }
   }
@@ -303,7 +307,7 @@ public class Connection implements Closeable {
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
       handleEventResponse(raw);
     } else {
-      LOG.warning(() -> "Unhandled type:" + data);
+      LOG.warning(() -> "Unhandled type BiDi response type: " + data);
     }
   }
 
@@ -340,11 +344,9 @@ public class Connection implements Closeable {
     LOG.log(
         getDebugLogLevel(),
         () ->
-            "Method"
-                + rawDataMap.get("method")
-                + "called with"
-                + eventCallbacks.size()
-                + "callbacks available");
+            String.format(
+                "Method %s called with %s callbacks available",
+                rawDataMap.get("method"), eventCallbacks.size()));
     Lock lock = callbacksLock.readLock();
     // A waiting writer will block a reader to enter the lock, even if there are currently other
     // readers holding the lock. TryLock will bypass the waiting writers and acquire the read lock.

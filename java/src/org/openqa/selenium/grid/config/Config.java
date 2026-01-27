@@ -48,7 +48,7 @@ public interface Config {
 
   default Optional<List<List<String>>> getArray(String section, String option) {
     Optional<List<String>> flatConfigs = getAll(section, option);
-    if (!flatConfigs.isPresent()) {
+    if (flatConfigs.isEmpty()) {
       return Optional.empty();
     }
 
