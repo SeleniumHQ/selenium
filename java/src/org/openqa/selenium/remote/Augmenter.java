@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableSet;
 import static net.bytebuddy.matcher.ElementMatchers.anyOf;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -212,7 +213,9 @@ public class Augmenter {
             .asSubclass(driver.getClass());
 
     try {
-      WebDriver toReturn = definition.getDeclaredConstructor().newInstance();
+      Constructor<? extends WebDriver> constructor = definition.getDeclaredConstructor();
+      constructor.setAccessible(true);
+      WebDriver toReturn = constructor.newInstance();
 
       copyFields(driver.getClass(), driver, toReturn);
 
@@ -285,7 +288,7 @@ public class Augmenter {
   }
 
   private void copyField(Object source, Object target, Field field) {
-    if (Modifier.isFinal(field.getModifiers())) {
+    if (Modifier.isStatic(field.getModifiers())) {
       return;
     }
 

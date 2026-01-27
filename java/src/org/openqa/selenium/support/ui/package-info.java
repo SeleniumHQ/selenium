@@ -15,24 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+@NullMarked
+package org.openqa.selenium.support.ui;
 
-import org.jspecify.annotations.Nullable;
-
-/** Thrown when a command does not complete in enough time. */
-public class TimeoutException extends WebDriverException {
-
-  public TimeoutException() {}
-
-  public TimeoutException(String message) {
-    super(message);
-  }
-
-  public TimeoutException(Throwable cause) {
-    super(cause);
-  }
-
-  public TimeoutException(String message, @Nullable Throwable cause) {
-    super(message, cause);
-  }
-}
+import org.jspecify.annotations.NullMarked;

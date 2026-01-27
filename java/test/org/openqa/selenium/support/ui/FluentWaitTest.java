@@ -28,6 +28,7 @@ import static org.openqa.selenium.support.ui.FluentWait.formatTimeout;
 
 import java.time.Duration;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.NoSuchElementException;
@@ -251,7 +252,8 @@ class FluentWaitTest {
     FluentWait<WebDriver> wait =
         new FluentWait<>(mockDriver, mockClock, mockSleeper) {
           @Override
-          protected RuntimeException timeoutException(String message, Throwable lastException) {
+          protected RuntimeException timeoutException(
+              String message, @Nullable Throwable lastException) {
             throw sentinelException;
           }
         };
