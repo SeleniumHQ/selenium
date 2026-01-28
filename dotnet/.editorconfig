@@ -42,5 +42,7 @@ csharp_space_after_keywords_in_control_flow_statements = true
 csharp_style_namespace_declarations=file_scoped:warning
 
 # Using directives
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
 csharp_using_directive_placement = outside_namespace:warning
 

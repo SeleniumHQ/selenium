@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +24,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 

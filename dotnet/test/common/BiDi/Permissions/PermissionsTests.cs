@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
+using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Environment;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 

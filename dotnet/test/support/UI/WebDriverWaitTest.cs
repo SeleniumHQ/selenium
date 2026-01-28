@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System;
 using Moq;
 using NUnit.Framework;
-using System;
 
 namespace OpenQA.Selenium.Support.UI;
 

@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
+using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.IE;
-using System;
 
 namespace OpenQA.Selenium.Remote;
 
