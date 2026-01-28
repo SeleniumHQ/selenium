@@ -258,9 +258,6 @@ public class EnvironmentManager
 
     protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
     {
-        if (this.DriverStarting != null)
-        {
-            this.DriverStarting(sender, e);
-        }
+        this.DriverStarting?.Invoke(sender, e);
     }
 }
