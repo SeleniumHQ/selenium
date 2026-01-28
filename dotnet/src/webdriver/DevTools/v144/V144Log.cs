@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V144.Log;
 using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V144.Log;
 
 namespace OpenQA.Selenium.DevTools.V144;
 

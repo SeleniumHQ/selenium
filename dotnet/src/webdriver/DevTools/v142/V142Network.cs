@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V142.Fetch;
-using OpenQA.Selenium.DevTools.V142.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V142.Fetch;
+using OpenQA.Selenium.DevTools.V142.Network;
 
 namespace OpenQA.Selenium.DevTools.V142;
 

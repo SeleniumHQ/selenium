@@ -17,11 +17,10 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using NUnit.Framework;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V144;
 
 namespace OpenQA.Selenium.DevTools;
