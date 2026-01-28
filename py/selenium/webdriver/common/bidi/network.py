@@ -61,8 +61,12 @@ class BytesValue:
         value = data.get("value")
 
         if value_type == BytesValueType.STRING.value:
+            if not isinstance(value, str):
+                raise ValueError("Value must be a string for STRING type")
             return cls.from_string(value)
         elif value_type == BytesValueType.BASE64.value:
+            if not isinstance(value, str):
+                raise ValueError("Value must be a string for BASE64 type")
             return cls.from_base64(value)
         else:
             raise ValueError(f"Unknown BytesValue type: {value_type}")
@@ -299,7 +303,14 @@ class Network:
                     del self.callbacks[callback_id]
         self.subscriptions = {}
 
-    def add_response_handler(self, event, callback, url_patterns=None, contexts=None, intercept=False):
+    def add_response_handler(
+        self,
+        event: str,
+        callback: Callable[[Response], Any],
+        url_patterns: list[Any] | None = None,
+        contexts: list[str] | None = None,
+        intercept: bool = False,
+    ) -> int:
         """Add a response handler to the network.
 
         Parameters:
@@ -351,7 +362,7 @@ class Network:
 
         return callback_id
 
-    def remove_response_handler(self, event, callback_id):
+    def remove_response_handler(self, event: str, callback_id: int) -> None:
         """Remove a response handler from the network.
 
         Parameters:
@@ -378,7 +389,7 @@ class Network:
             if len(self.subscriptions[event_name]) == 0:
                 del self.subscriptions[event_name]
 
-    def clear_response_handlers(self):
+    def clear_response_handlers(self) -> None:
         """Clear all response handlers from the network."""
         response_events = ["response_started", "response_completed"]
 
@@ -400,7 +411,7 @@ class Network:
                 # Event not found, skip
                 continue
 
-    def _on_response(self, event_name, callback):
+    def _on_response(self, event_name: str, callback: Callable[[Response], Any]) -> int:
         """Set a callback function to subscribe to a response network event.
 
         Parameters:
@@ -415,7 +426,7 @@ class Network:
         """
         event = NetworkEvent(event_name)
 
-        def _callback(event_data):
+        def _callback(event_data: NetworkEvent) -> None:
             # Response events contain both request and response data in params
             response_data = event_data.params.get("response", {})
             request_data = event_data.params.get("request", {})
@@ -480,8 +491,8 @@ class Network:
         data_types: list,
         max_encoded_data_size: int,
         collector_type: str = "blob",
-        contexts: list = None,
-        user_contexts: list = None,
+        contexts: list | None = None,
+        user_contexts: list | None = None,
     ):
         """Add a data collector to the network.
 
@@ -542,7 +553,7 @@ class Network:
         self.conn.execute(cmd)
         self.data_collectors.remove(collector_id)
 
-    def get_data(self, data_type: str, request_id: str, collector_id: str = None, disown: bool = False):
+    def get_data(self, data_type: str, request_id: str, collector_id: str | None = None, disown: bool = False):
         """Retrieve network data for a request.
 
         Parameters:
@@ -669,35 +680,42 @@ class Response:
         self,
         network: Network,
         request_id: str,
-        url: str = None,
-        protocol: str = None,
-        status_code: int = None,
-        status_text: str = None,
-        headers: list = None,
-        mime_type: str = None,
+        url: str | None = None,
+        protocol: str | None = None,
+        status_code: int | None = None,
+        status_text: str | None = None,
+        headers: list | None = None,
+        mime_type: str | None = None,
         from_cache: bool = False,
-        bytes_received: int = None,
+        bytes_received: int | None = None,
         headers_size: int | None = None,
         body_size: int | None = None,
-        content: dict = None,
+        content: dict | None = None,
         auth_challenges: list | None = None,
     ):
         self.network: Network = network
         self.request_id: str = request_id
-        self.url: str = url
-        self.protocol: str = protocol
-        self.status_code: int = status_code
-        self.status_text: str = status_text
+        self.url: str | None = url
+        self.protocol: str | None = protocol
+        self.status_code: int | None = status_code
+        self.status_text: str | None = status_text
         self.headers: list = headers or []
-        self.mime_type: str = mime_type
+        self.mime_type: str | None = mime_type
         self.from_cache: bool = from_cache
-        self.bytes_received: int = bytes_received
+        self.bytes_received: int | None = bytes_received
         self.headers_size: int | None = headers_size
         self.body_size: int | None = body_size
-        self.content: dict = content
+        self.content: dict | None = content
         self.auth_challenges: list | None = auth_challenges
 
-    def continue_response(self, cookies=None, credentials=None, headers=None, reason_phrase=None, status_code=None):
+    def continue_response(
+        self,
+        cookies: list | None = None,
+        credentials: dict | None = None,
+        headers: list | None = None,
+        reason_phrase: str | None = None,
+        status_code: int | None = None,
+    ) -> None:
         """Continue a response blocked by a network intercept.
 
         This can be called in the responseStarted phase to modify the status
@@ -721,7 +739,7 @@ class Response:
         if not self.request_id:
             raise ValueError("Response not found.")
 
-        params = {"request": self.request_id}
+        params: dict[str, Any] = {"request": self.request_id}
         if cookies is not None:
             params["cookies"] = cookies
         if credentials is not None:
