@@ -47,7 +47,7 @@ dotnet_separate_import_directive_groups = false
 csharp_using_directive_placement = outside_namespace:warning
 
 # Roslyn 
-dotnet_diagnostic.IDE1006.severity = warning  # Naming rule violation
+dotnet_diagnostic.IDE1006.severity = suggestion  # Naming rule violation
 dotnet_diagnostic.IDE0059.severity = warning  # Unnecessary assignment
 dotnet_diagnostic.IDE0044.severity = warning  # Make field readonly
 dotnet_diagnostic.IDE0076.severity = warning  # Invalid suppression
