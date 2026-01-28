@@ -16,6 +16,7 @@
 # under the License.
 
 from conftest import Driver
+
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 
