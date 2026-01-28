@@ -28,7 +28,7 @@ bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER
 
 section "Ruby"
 echo "    rubocop" >&2
-bazel run //rb:lint --fail-level F
+bazel run //rb:rubocop -- -a --fail-level F
 
 section "Rust"
 echo "   rustfmt" >&2

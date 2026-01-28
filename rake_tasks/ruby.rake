@@ -149,7 +149,7 @@ end
 desc 'Run Ruby linters (rubocop, steep, docs)'
 task :lint do
   puts '  Running rubocop...'
-  Bazel.execute('run', [], '//rb:rubocop')
+  Bazel.execute('run', ['--', '-a'], '//rb:rubocop')
   puts '  Running steep type checker...'
   Bazel.execute('run', [], '//rb:steep')
   Rake::Task['rb:docs_generate'].invoke
