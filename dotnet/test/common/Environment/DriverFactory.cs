@@ -79,7 +79,6 @@ public class DriverFactory
         bool enableLogging = logging;
 
         List<Type> constructorArgTypeList = new List<Type>();
-        IWebDriver driver = null;
         if (typeof(ChromeDriver).IsAssignableFrom(driverType))
         {
             browser = Browser.Chrome;
@@ -166,7 +165,7 @@ public class DriverFactory
             }
         }
 
-        driver = (IWebDriver)Activator.CreateInstance(driverType);
+        IWebDriver driver = (IWebDriver)Activator.CreateInstance(driverType);
         return driver;
     }
 

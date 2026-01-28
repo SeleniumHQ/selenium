@@ -42,7 +42,7 @@ public abstract class ChromiumOptions : DriverOptions
     private const string PerformanceLoggingPreferencesChromeOption = "perfLoggingPrefs";
     private const string WindowTypesChromeOption = "windowTypes";
     private const string UseSpecCompliantProtocolOption = "w3c";
-    private bool useSpecCompliantProtocol = true;
+    private readonly bool useSpecCompliantProtocol = true;
     private readonly List<string> arguments = new List<string>();
     private readonly List<string> extensionFiles = new List<string>();
     private readonly List<string> encodedExtensions = new List<string>();
