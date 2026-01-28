@@ -393,7 +393,7 @@ end
 desc 'Format Java code with google-java-format'
 task :format do
   puts '  Running google-java-format...'
-  files = Dir.glob('java/**/*.java')
+  files = Dir.glob("#{Dir.pwd}/java/**/*.java")
   Bazel.execute('run', ['--', '--replace'] + files, '//scripts:google-java-format')
 end
 
