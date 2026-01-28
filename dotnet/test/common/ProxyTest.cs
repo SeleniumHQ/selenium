@@ -28,7 +28,7 @@ public class ProxyTest
     [Test]
     public void NotInitializedProxy()
     {
-        Proxy proxy = new();
+        Proxy proxy = new Proxy();
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Unspecified));
         Assert.That(proxy.HttpProxy, Is.Null);
@@ -45,10 +45,8 @@ public class ProxyTest
     [Test]
     public void CanNotChangeAlreadyInitializedProxyType()
     {
-        Proxy proxy = new()
-        {
-            Kind = ProxyKind.Direct
-        };
+        Proxy proxy = new Proxy();
+        proxy.Kind = ProxyKind.Direct;
 
         Assert.That(() => proxy.IsAutoDetect = true, Throws.InvalidOperationException);
         Assert.That(() => proxy.SocksPassword = "", Throws.InvalidOperationException);
@@ -62,21 +60,18 @@ public class ProxyTest
         Assert.That(() => proxy.AddBypassAddresses("", ""), Throws.InvalidOperationException);
         Assert.That(() => proxy.Kind = ProxyKind.System, Throws.InvalidOperationException);
 
-        Proxy proxy2 = new()
-        {
-            Kind = ProxyKind.AutoDetect
-        };
+        Proxy proxy2 = new Proxy();
+        proxy2.Kind = ProxyKind.AutoDetect;
         Assert.That(() => proxy2.Kind = ProxyKind.System, Throws.InvalidOperationException);
     }
 
     [Test]
     public void ManualProxy()
     {
-        Proxy proxy = new()
-        {
-            HttpProxy = "http.proxy:1234",
-            SslProxy = "ssl.proxy"
-        };
+        Proxy proxy = new Proxy();
+
+        proxy.HttpProxy = "http.proxy:1234";
+        proxy.SslProxy = "ssl.proxy";
         proxy.AddBypassAddresses("localhost", "127.0.0.*");
         proxy.SocksProxy = "socks.proxy:65555";
         proxy.SocksVersion = 5;
@@ -99,10 +94,8 @@ public class ProxyTest
     [Test]
     public void PACProxy()
     {
-        Proxy proxy = new()
-        {
-            ProxyAutoConfigUrl = "http://aaa/bbb.pac"
-        };
+        Proxy proxy = new Proxy();
+        proxy.ProxyAutoConfigUrl = "http://aaa/bbb.pac";
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.ProxyAutoConfigure));
         Assert.That(proxy.ProxyAutoConfigUrl, Is.EqualTo("http://aaa/bbb.pac"));
@@ -120,10 +113,8 @@ public class ProxyTest
     [Test]
     public void AutoDetectProxy()
     {
-        Proxy proxy = new()
-        {
-            IsAutoDetect = true
-        };
+        Proxy proxy = new Proxy();
+        proxy.IsAutoDetect = true;
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.AutoDetect));
         Assert.That(proxy.IsAutoDetect, Is.True);
@@ -142,20 +133,18 @@ public class ProxyTest
     [Test]
     public void ManualProxyFromDictionary()
     {
-        Dictionary<string, object> proxyData = new()
-        {
-            { "proxyType", "manual" },
-            { "httpProxy", "http.proxy:1234" },
-            { "ftpProxy", "ftp.proxy" },
-            { "sslProxy", "ssl.proxy" },
-            { "noProxy", "localhost;127.0.0.*" },
-            { "socksProxy", "socks.proxy:65555" },
-            { "socksVersion", 5 },
-            { "socksUsername", "test1" },
-            { "socksPassword", "test2" }
-        };
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
+        proxyData.Add("proxyType", "manual");
+        proxyData.Add("httpProxy", "http.proxy:1234");
+        proxyData.Add("ftpProxy", "ftp.proxy");
+        proxyData.Add("sslProxy", "ssl.proxy");
+        proxyData.Add("noProxy", "localhost;127.0.0.*");
+        proxyData.Add("socksProxy", "socks.proxy:65555");
+        proxyData.Add("socksVersion", 5);
+        proxyData.Add("socksUsername", "test1");
+        proxyData.Add("socksPassword", "test2");
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Manual));
         Assert.That(proxy.HttpProxy, Is.EqualTo("http.proxy:1234"));
@@ -173,7 +162,7 @@ public class ProxyTest
     [Test]
     public void LongSocksVersionFromDictionary()
     {
-        Dictionary<string, object> proxyData = [];
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
         long longValue = 5;
         proxyData.Add("proxyType", "manual");
         proxyData.Add("httpProxy", "http.proxy:1234");
@@ -185,7 +174,7 @@ public class ProxyTest
         proxyData.Add("socksUsername", "test1");
         proxyData.Add("socksPassword", "test2");
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         int intValue = 5;
         Assert.That(proxy.SocksVersion, Is.EqualTo(intValue));
@@ -194,13 +183,11 @@ public class ProxyTest
     [Test]
     public void PacProxyFromDictionary()
     {
-        Dictionary<string, object> proxyData = new()
-        {
-            { "proxyType", "pac" },
-            { "proxyAutoconfigUrl", "http://aaa/bbb.pac" }
-        };
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
+        proxyData.Add("proxyType", "pac");
+        proxyData.Add("proxyAutoconfigUrl", "http://aaa/bbb.pac");
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.ProxyAutoConfigure));
         Assert.That(proxy.ProxyAutoConfigUrl, Is.EqualTo("http://aaa/bbb.pac"));
@@ -218,13 +205,11 @@ public class ProxyTest
     [Test]
     public void AutoDetectProxyFromDictionary()
     {
-        Dictionary<string, object> proxyData = new()
-        {
-            { "proxyType", "autodetect" },
-            { "autodetect", true }
-        };
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
+        proxyData.Add("proxyType", "autodetect");
+        proxyData.Add("autodetect", true);
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.AutoDetect));
         Assert.That(proxy.IsAutoDetect, Is.True);
@@ -242,12 +227,10 @@ public class ProxyTest
     [Test]
     public void SystemProxyFromDictionary()
     {
-        Dictionary<string, object> proxyData = new()
-        {
-            { "proxyType", "SYSTEM" }
-        };
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
+        proxyData.Add("proxyType", "SYSTEM");
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.System));
 
@@ -265,12 +248,10 @@ public class ProxyTest
     [Test]
     public void DirectProxyFromDictionary()
     {
-        Dictionary<string, object> proxyData = new()
-        {
-            { "proxyType", "direct" }
-        };
+        Dictionary<string, object> proxyData = new Dictionary<string, object>();
+        proxyData.Add("proxyType", "direct");
 
-        Proxy proxy = new(proxyData);
+        Proxy proxy = new Proxy(proxyData);
 
         Assert.That(proxy.Kind, Is.EqualTo(ProxyKind.Direct));
 
@@ -288,13 +269,11 @@ public class ProxyTest
     [Test]
     public void ConstructingWithNullKeysWorksAsExpected()
     {
-        Dictionary<string, object> rawProxy = new()
-        {
-            { "httpProxy", "http://www.example.com" },
-            { "autodetect", null }
-        };
+        Dictionary<string, object> rawProxy = new Dictionary<string, object>();
+        rawProxy.Add("httpProxy", "http://www.example.com");
+        rawProxy.Add("autodetect", null);
 
-        Proxy proxy = new(rawProxy);
+        Proxy proxy = new Proxy(rawProxy);
 
         Assert.That(proxy.IsAutoDetect, Is.False);
         Assert.That(proxy.HttpProxy, Is.EqualTo("http://www.example.com"));

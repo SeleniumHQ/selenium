@@ -62,7 +62,7 @@ public sealed class SafariDriverService : DriverService
     {
         get
         {
-            StringBuilder argsBuilder = new(base.CommandLineArguments);
+            StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
 
             if (this.Diagnose is true)
             {

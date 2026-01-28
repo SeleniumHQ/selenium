@@ -111,7 +111,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     private readonly string optionsCapabilityName;
     private DevToolsSession? devToolsSession;
 
-    private static readonly Dictionary<string, CommandInfo> chromiumCustomCommands = new()
+    private static readonly Dictionary<string, CommandInfo> chromiumCustomCommands = new Dictionary<string, CommandInfo>()
     {
         { GetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions") },
         { SetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions") },
@@ -162,7 +162,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new(options);
+            DriverFinder finder = new DriverFinder(options);
             string fullServicePath = finder.GetDriverPath();
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
@@ -221,10 +221,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
                 throw new ArgumentNullException(nameof(value), "value must not be null");
             }
 
-            Dictionary<string, object> parameters = new()
-            {
-                ["network_conditions"] = value
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["network_conditions"] = value;
 
             this.Execute(SetNetworkConditionsCommand, parameters);
         }
@@ -242,10 +240,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(id), "id must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["id"] = id
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["id"] = id;
 
         this.Execute(LaunchAppCommand, parameters);
     }
@@ -268,15 +264,11 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
         }
 
-        Dictionary<string, object> nameParameter = new()
-        {
-            ["name"] = permissionName
-        };
-        Dictionary<string, object> parameters = new()
-        {
-            ["descriptor"] = nameParameter,
-            ["state"] = permissionValue
-        };
+        Dictionary<string, object> nameParameter = new Dictionary<string, object>();
+        nameParameter["name"] = permissionName;
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["descriptor"] = nameParameter;
+        parameters["state"] = permissionValue;
         this.Execute(SetPermissionCommand, parameters);
     }
 
@@ -294,11 +286,9 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["cmd"] = commandName,
-            ["params"] = commandParameters
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["cmd"] = commandName;
+        parameters["params"] = commandParameters;
         Response response = this.Execute(ExecuteCdp, parameters);
         return response.Value;
     }
@@ -342,7 +332,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
 
             try
             {
-                DevToolsSession session = new(debuggerAddress?.ToString()!, options);
+                DevToolsSession session = new DevToolsSession(debuggerAddress?.ToString()!, options);
                 Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                 this.devToolsSession = session;
             }
@@ -382,7 +372,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// <returns>The list of available sinks.</returns>
     public List<Dictionary<string, string>> GetCastSinks()
     {
-        List<Dictionary<string, string>> returnValue = [];
+        List<Dictionary<string, string>> returnValue = new List<Dictionary<string, string>>();
         Response response = this.Execute(GetCastSinksCommand, null);
         if (response.Value is object?[] responseValue)
         {
@@ -390,7 +380,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             {
                 if (entry is Dictionary<string, object?> entryValue)
                 {
-                    Dictionary<string, string> sink = [];
+                    Dictionary<string, string> sink = new Dictionary<string, string>();
                     foreach (KeyValuePair<string, object?> pair in entryValue)
                     {
                         sink[pair.Key] = pair.Value!.ToString()!;
@@ -414,10 +404,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["sinkName"] = deviceName
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
         this.Execute(SelectCastSinkCommand, parameters);
     }
 
@@ -432,10 +420,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["sinkName"] = deviceName
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
         this.Execute(StartCastTabMirroringCommand, parameters);
     }
 
@@ -450,10 +436,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["sinkName"] = deviceName
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
         this.Execute(StartCastDesktopMirroringCommand, parameters);
     }
 
@@ -478,10 +462,8 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["sinkName"] = deviceName
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
         this.Execute(StopCastingCommand, parameters);
     }
 

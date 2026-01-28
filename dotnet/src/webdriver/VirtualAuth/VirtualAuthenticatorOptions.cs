@@ -172,15 +172,14 @@ public class VirtualAuthenticatorOptions
     /// <returns>The dictionary containing the values of this set of options.</returns>
     public Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new()
-        {
-            ["protocol"] = this.protocol,
-            ["transport"] = this.transport,
-            ["hasResidentKey"] = this.hasResidentKey,
-            ["hasUserVerification"] = this.hasUserVerification,
-            ["isUserConsenting"] = this.isUserConsenting,
-            ["isUserVerified"] = this.isUserVerified
-        };
+        Dictionary<string, object> toReturn = new Dictionary<string, object>();
+
+        toReturn["protocol"] = this.protocol;
+        toReturn["transport"] = this.transport;
+        toReturn["hasResidentKey"] = this.hasResidentKey;
+        toReturn["hasUserVerification"] = this.hasUserVerification;
+        toReturn["isUserConsenting"] = this.isUserConsenting;
+        toReturn["isUserVerified"] = this.isUserVerified;
 
         return toReturn;
     }

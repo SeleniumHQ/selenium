@@ -45,14 +45,12 @@ public class NetworkInterceptionTests : DriverTestFixture
         if (driver is IDevTools)
         {
             INetwork network = driver.Manage().Network;
-            NetworkResponseHandler handler = new()
+            NetworkResponseHandler handler = new NetworkResponseHandler();
+            handler.ResponseMatcher = (responseData) => responseData.Url.Contains("simpleTest.html");
+            handler.ResponseTransformer = (responseData) =>
             {
-                ResponseMatcher = (responseData) => responseData.Url.Contains("simpleTest.html"),
-                ResponseTransformer = (responseData) =>
-                {
-                    responseData.Body = "<html><body><p>I intercepted you</p></body></html>";
-                    return responseData;
-                }
+                responseData.Body = "<html><body><p>I intercepted you</p></body></html>";
+                return responseData;
             };
             network.AddResponseHandler(handler);
             await network.StartMonitoring();
@@ -70,7 +68,7 @@ public class NetworkInterceptionTests : DriverTestFixture
         if (driver is IDevTools)
         {
             INetwork network = driver.Manage().Network;
-            NetworkAuthenticationHandler handler = new()
+            NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
             {
                 UriMatcher = (uri) => uri.PathAndQuery.Contains("basicAuth"),
                 Credentials = new PasswordCredentials("test", "test")

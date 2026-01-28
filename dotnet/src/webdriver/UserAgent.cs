@@ -22,17 +22,21 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Represents a user agent string.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="UserAgent"/> type.
-/// </remarks>
-/// <param name="userAgentString">The user agent string.</param>
-public class UserAgent(string userAgentString)
+public class UserAgent
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserAgent"/> type.
+    /// </summary>
+    /// <param name="userAgentString">The user agent string.</param>
+    public UserAgent(string userAgentString)
+    {
+        UserAgentString = userAgentString;
+    }
 
     /// <summary>
     /// Gets or sets the user agent string.
     /// </summary>
-    public string UserAgentString { get; set; } = userAgentString;
+    public string UserAgentString { get; set; }
 
     /// <summary>
     /// Gets or sets the language to accept in headers.

@@ -86,10 +86,8 @@ public class FirefoxDriverTest : DriverTestFixture
         FirefoxProfile profile = new FirefoxProfileManager().GetProfile("default");
         if (profile != null)
         {
-            FirefoxOptions options = new()
-            {
-                Profile = profile
-            };
+            FirefoxOptions options = new FirefoxOptions();
+            options.Profile = profile;
             IWebDriver firefox = new FirefoxDriver(options);
             firefox.Quit();
         }
@@ -103,11 +101,9 @@ public class FirefoxDriverTest : DriverTestFixture
     [Test]
     public void ShouldRemoveProfileAfterExit()
     {
-        FirefoxProfile profile = new();
-        FirefoxOptions options = new()
-        {
-            Profile = profile
-        };
+        FirefoxProfile profile = new FirefoxProfile();
+        FirefoxOptions options = new FirefoxOptions();
+        options.Profile = profile;
         IWebDriver firefox = new FirefoxDriver(options);
         string profileLocation = profile.ProfileDirectory;
 
@@ -159,7 +155,7 @@ public class FirefoxDriverTest : DriverTestFixture
 
         SleepBecauseWindowsTakeTimeToOpen();
 
-        List<string> allWindowHandles = new(driver.WindowHandles);
+        List<string> allWindowHandles = new List<string>(driver.WindowHandles);
 
         // There should be two windows. We should also see each of the window titles at least once.
         Assert.That(allWindowHandles, Has.Exactly(2).Items);
@@ -203,7 +199,7 @@ public class FirefoxDriverTest : DriverTestFixture
         driver.FindElement(By.Name("windowOne")).Click();
 
         SleepBecauseWindowsTakeTimeToOpen();
-        List<string> allWindowHandles = new(driver.WindowHandles);
+        List<string> allWindowHandles = new List<string>(driver.WindowHandles);
         // There should be two windows. We should also see each of the window titles at least once.
         Assert.That(allWindowHandles, Has.Exactly(2).Items);
 
@@ -230,20 +226,16 @@ public class FirefoxDriverTest : DriverTestFixture
     [Test]
     public void CanBlockInvalidSslCertificates()
     {
-        FirefoxProfile profile = new();
+        FirefoxProfile profile = new FirefoxProfile();
         string url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
 
         IWebDriver secondDriver = null;
         try
         {
-            FirefoxOptions options = new()
-            {
-                Profile = profile
-            };
-            secondDriver = new FirefoxDriver(options)
-            {
-                Url = url
-            };
+            FirefoxOptions options = new FirefoxOptions();
+            options.Profile = profile;
+            secondDriver = new FirefoxDriver(options);
+            secondDriver.Url = url;
             string gotTitle = secondDriver.Title;
             Assert.That(gotTitle, Is.EqualTo("Hello IWebDriver"));
         }
@@ -253,7 +245,10 @@ public class FirefoxDriverTest : DriverTestFixture
         }
         finally
         {
-            secondDriver?.Quit();
+            if (secondDriver != null)
+            {
+                secondDriver.Quit();
+            }
         }
     }
 
@@ -261,14 +256,12 @@ public class FirefoxDriverTest : DriverTestFixture
     [Test]
     public void ShouldAllowUserToSuccessfullyOverrideTheHomePage()
     {
-        FirefoxProfile profile = new();
+        FirefoxProfile profile = new FirefoxProfile();
         profile.SetPreference("browser.startup.page", "1");
         profile.SetPreference("browser.startup.homepage", javascriptPage);
 
-        FirefoxOptions options = new()
-        {
-            Profile = profile
-        };
+        FirefoxOptions options = new FirefoxOptions();
+        options.Profile = profile;
 
         IWebDriver driver2 = new FirefoxDriver(options);
 

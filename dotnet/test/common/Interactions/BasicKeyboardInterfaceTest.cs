@@ -51,7 +51,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
     [Test]
     public void ShouldSetActiveKeyboard()
     {
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.SetActiveKeyboard("test keyboard");
 
         KeyInputDevice device = actionProvider.GetActiveKeyboard();
@@ -70,7 +70,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
         // Scroll the element into view before attempting any actions on it.
         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", keyReporter);
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction sendLowercase = actionProvider.SendKeys(keyReporter, "abc def").Build();
 
         sendLowercase.Perform();
@@ -90,7 +90,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
         // Scroll the element into view before attempting any actions on it.
         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", keysEventInput);
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
 
         IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
         pressShift.Perform();
@@ -118,14 +118,15 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
         pressShift.Perform();
 
         IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
-        _ = keyLoggingElement.Text;
+
+        string eventsText = keyLoggingElement.Text;
         Assert.That(keyLoggingElement.Text, Does.EndWith("keydown"));
 
         IAction releaseShift = new Actions(driver).KeyUp(keysEventInput, Keys.Shift).Build();
 
         releaseShift.Perform();
 
-        _ = keyLoggingElement.Text;
+        eventsText = keyLoggingElement.Text;
         Assert.That(keyLoggingElement.Text, Does.EndWith("keyup"));
     }
 
@@ -160,12 +161,12 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
     {
         driver.Url = bodyTypingPage;
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction someKeys = actionProvider.SendKeys("ab").Build();
         someKeys.Perform();
 
         AssertThatBodyEventsFiredAreExactly("keypress keypress");
-        _ = driver.FindElement(By.Id("result"));
+        IWebElement formLoggingElement = driver.FindElement(By.Id("result"));
         AssertThatFormEventsFiredAreExactly(string.Empty);
     }
 
@@ -344,6 +345,18 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
     private void AssertThatBodyEventsFiredAreExactly(string expected)
     {
         Assert.That(driver.FindElement(By.Id("body_result")).Text.Trim(), Is.EqualTo(expected));
+    }
+
+    private Func<bool> BackgroundColorToChangeFrom(IWebElement element, Color currentColor)
+    {
+        return () =>
+        {
+            string hexValue = string.Format("#{0:x2}{1:x2}{2:x2}", currentColor.R, currentColor.G, currentColor.B);
+            string rgbValue = string.Format("rgb({0}, {1}, {2})", currentColor.R, currentColor.G, currentColor.B);
+            string rgbaValue = string.Format("rgba({0}, {1}, {2}, 1)", currentColor.R, currentColor.G, currentColor.B);
+            string actual = element.GetCssValue("background-color");
+            return actual != hexValue && actual != rgbValue && actual != rgbaValue;
+        };
     }
 
     private void AssertBackgroundColor(IWebElement el, Color expected)

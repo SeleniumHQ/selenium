@@ -113,9 +113,9 @@ internal class Timeout
 /// </summary>
 public abstract class DriverOptions
 {
-    private readonly Dictionary<string, object> additionalCapabilities = [];
-    private readonly Dictionary<string, LogLevel> loggingPreferences = [];
-    private readonly Dictionary<string, string> knownCapabilityNames = [];
+    private readonly Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+    private readonly Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
+    private readonly Dictionary<string, string> knownCapabilityNames = new Dictionary<string, string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverOptions"/> class.
@@ -274,7 +274,7 @@ public abstract class DriverOptions
             throw new ArgumentNullException(nameof(other));
         }
 
-        DriverOptionsMergeResult result = new();
+        DriverOptionsMergeResult result = new DriverOptionsMergeResult();
         if (this.BrowserName != null && other.BrowserName != null)
         {
             result.IsMergeConflict = true;
@@ -439,7 +439,7 @@ public abstract class DriverOptions
             return null;
         }
 
-        Dictionary<string, object> loggingPreferenceCapability = [];
+        Dictionary<string, object> loggingPreferenceCapability = new Dictionary<string, object>();
         foreach (string logType in this.loggingPreferences.Keys)
         {
             loggingPreferenceCapability[logType] = this.loggingPreferences[logType].ToString().ToUpperInvariant();
@@ -455,7 +455,7 @@ public abstract class DriverOptions
     /// <returns>A <see cref="IWritableCapabilities"/> object representing the current options for further processing.</returns>
     protected IWritableCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
     {
-        DesiredCapabilities capabilities = new();
+        DesiredCapabilities capabilities = new DesiredCapabilities();
         if (!string.IsNullOrEmpty(this.BrowserName))
         {
             capabilities.SetCapability(CapabilityType.BrowserName, this.BrowserName!);

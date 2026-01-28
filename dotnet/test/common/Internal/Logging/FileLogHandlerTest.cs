@@ -30,9 +30,9 @@ public class FileLogHandlerTest
     [TestCase("")]
     public void ShouldNotAcceptIncorrectPath(string path)
     {
-        FileLogHandler act() => new FileLogHandler(path);
+        var act = () => new FileLogHandler(path);
 
-        Assert.That((Func<FileLogHandler>)act, Throws.ArgumentException);
+        Assert.That(act, Throws.ArgumentException);
     }
 
     [Test]

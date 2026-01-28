@@ -25,28 +25,34 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Event arguments present when the ConsoleApiCalled event is raised.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ConsoleApiCalledEventArgs"/> type.
-/// </remarks>
-/// <param name="timestamp">The time stamp when the browser's console API is called.</param>
-/// <param name="type">The type of message when the browser's console API is called.</param>
-/// <param name="arguments">The arguments of the call to the browser's console API.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="arguments"/> is <see langword="null"/>.</exception>
-public class ConsoleApiCalledEventArgs(DateTime timestamp, string type, ReadOnlyCollection<ConsoleApiArgument> arguments) : EventArgs
+public class ConsoleApiCalledEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleApiCalledEventArgs"/> type.
+    /// </summary>
+    /// <param name="timestamp">The time stamp when the browser's console API is called.</param>
+    /// <param name="type">The type of message when the browser's console API is called.</param>
+    /// <param name="arguments">The arguments of the call to the browser's console API.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="arguments"/> is <see langword="null"/>.</exception>
+    public ConsoleApiCalledEventArgs(DateTime timestamp, string type, ReadOnlyCollection<ConsoleApiArgument> arguments)
+    {
+        Timestamp = timestamp;
+        Type = type;
+        Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
+    }
 
     /// <summary>
     /// Gets the time stamp when the browser's console API is called.
     /// </summary>
-    public DateTime Timestamp { get; } = timestamp;
+    public DateTime Timestamp { get; }
 
     /// <summary>
     /// Gets the type of message when the browser's console API is called.
     /// </summary>
-    public string Type { get; } = type;
+    public string Type { get; }
 
     /// <summary>
     /// Gets the arguments of the call to the browser's console API.
     /// </summary>
-    public ReadOnlyCollection<ConsoleApiArgument> Arguments { get; } = arguments ?? throw new ArgumentNullException(nameof(arguments));
+    public ReadOnlyCollection<ConsoleApiArgument> Arguments { get; }
 }

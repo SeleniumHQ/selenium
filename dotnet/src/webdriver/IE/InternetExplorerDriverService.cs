@@ -88,7 +88,7 @@ public sealed class InternetExplorerDriverService : DriverService
     {
         get
         {
-            StringBuilder argsBuilder = new(base.CommandLineArguments);
+            StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
             if (!string.IsNullOrEmpty(this.Host))
             {
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -host={0}", this.Host));

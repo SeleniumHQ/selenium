@@ -58,7 +58,7 @@ public class V143Target : DevTools.Target
 
         var response = await adapter.GetTargets((GetTargetsCommandSettings)settings).ConfigureAwait(false);
 
-        List<TargetInfo> targets = new(response.TargetInfos.Length);
+        List<TargetInfo> targets = new List<TargetInfo>(response.TargetInfos.Length);
         for (int i = 0; i < response.TargetInfos.Length; i++)
         {
             var targetInfo = response.TargetInfos[i];

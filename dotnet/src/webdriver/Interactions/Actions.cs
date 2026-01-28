@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Interactions;
 public class Actions : IAction
 {
     private readonly TimeSpan duration;
-    private ActionBuilder actionBuilder = new();
+    private ActionBuilder actionBuilder = new ActionBuilder();
     private PointerInputDevice? activePointer;
     private KeyInputDevice? activeKeyboard;
     private WheelInputDevice? activeWheel;
@@ -638,7 +638,10 @@ public class Actions : IAction
             wrapper = wrapper.WrappedElement as IWrapsElement;
         }
 
-        target ??= element as ILocatable;
+        if (target == null)
+        {
+            target = element as ILocatable;
+        }
 
         if (target == null)
         {

@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// </remarks>
 public static class Log
 {
-    private static readonly LogContextManager _logContextManager = new();
+    private static readonly LogContextManager _logContextManager = new LogContextManager();
 
     /// <summary>
     /// Creates a new log context with the current context properties and the specified minimum log event level.

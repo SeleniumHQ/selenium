@@ -42,13 +42,13 @@ public abstract class ChromiumOptions : DriverOptions
     private const string PerformanceLoggingPreferencesChromeOption = "perfLoggingPrefs";
     private const string WindowTypesChromeOption = "windowTypes";
     private const string UseSpecCompliantProtocolOption = "w3c";
-    private readonly bool useSpecCompliantProtocol = true;
-    private readonly List<string> arguments = [];
-    private readonly List<string> extensionFiles = [];
-    private readonly List<string> encodedExtensions = [];
-    private readonly List<string> excludedSwitches = [];
-    private readonly List<string> windowTypes = [];
-    private readonly Dictionary<string, object> additionalChromeOptions = [];
+    private bool useSpecCompliantProtocol = true;
+    private readonly List<string> arguments = new List<string>();
+    private readonly List<string> extensionFiles = new List<string>();
+    private readonly List<string> encodedExtensions = new List<string>();
+    private readonly List<string> excludedSwitches = new List<string>();
+    private readonly List<string> windowTypes = new List<string>();
+    private readonly Dictionary<string, object> additionalChromeOptions = new Dictionary<string, object>();
     private Dictionary<string, object>? userProfilePreferences;
     private Dictionary<string, object>? localStatePreferences;
 
@@ -114,7 +114,7 @@ public abstract class ChromiumOptions : DriverOptions
     {
         get
         {
-            List<string> allExtensions = new(this.encodedExtensions);
+            List<string> allExtensions = new List<string>(this.encodedExtensions);
             foreach (string extensionFile in this.extensionFiles)
             {
                 byte[] extensionByteArray = File.ReadAllBytes(extensionFile);
@@ -353,7 +353,10 @@ public abstract class ChromiumOptions : DriverOptions
     /// <exception cref="ArgumentNullException">If <paramref name="preferenceName"/> is <see langword="null"/>.</exception>
     public void AddUserProfilePreference(string preferenceName, object preferenceValue)
     {
-        this.userProfilePreferences ??= [];
+        if (this.userProfilePreferences == null)
+        {
+            this.userProfilePreferences = new Dictionary<string, object>();
+        }
 
         this.userProfilePreferences[preferenceName] = preferenceValue;
     }
@@ -367,7 +370,10 @@ public abstract class ChromiumOptions : DriverOptions
     /// <exception cref="ArgumentNullException">If <paramref name="preferenceName"/> is <see langword="null"/>.</exception>
     public void AddLocalStatePreference(string preferenceName, object preferenceValue)
     {
-        this.localStatePreferences ??= [];
+        if (this.localStatePreferences == null)
+        {
+            this.localStatePreferences = new Dictionary<string, object>();
+        }
 
         this.localStatePreferences[preferenceName] = preferenceValue;
     }
@@ -511,7 +517,7 @@ public abstract class ChromiumOptions : DriverOptions
 
     private Dictionary<string, object> BuildChromeOptionsDictionary()
     {
-        Dictionary<string, object> chromeOptions = [];
+        Dictionary<string, object> chromeOptions = new Dictionary<string, object>();
         if (this.Arguments.Count > 0)
         {
             chromeOptions[ArgumentsChromeOption] = this.Arguments;
@@ -618,11 +624,9 @@ public abstract class ChromiumOptions : DriverOptions
 
     private static Dictionary<string, object> GeneratePerformanceLoggingPreferencesDictionary(ChromiumPerformanceLoggingPreferences prefs)
     {
-        Dictionary<string, object> perfLoggingPrefsDictionary = new()
-        {
-            ["enableNetwork"] = prefs.IsCollectingNetworkEvents,
-            ["enablePage"] = prefs.IsCollectingPageEvents
-        };
+        Dictionary<string, object> perfLoggingPrefsDictionary = new Dictionary<string, object>();
+        perfLoggingPrefsDictionary["enableNetwork"] = prefs.IsCollectingNetworkEvents;
+        perfLoggingPrefsDictionary["enablePage"] = prefs.IsCollectingPageEvents;
 
         string tracingCategories = prefs.TracingCategories;
         if (!string.IsNullOrEmpty(tracingCategories))
@@ -637,7 +641,7 @@ public abstract class ChromiumOptions : DriverOptions
 
     private static Dictionary<string, object?> GenerateMobileEmulationSettingsDictionary(ChromiumMobileEmulationDeviceSettings? settings, string? deviceName)
     {
-        Dictionary<string, object?> mobileEmulationSettings = [];
+        Dictionary<string, object?> mobileEmulationSettings = new Dictionary<string, object?>();
 
         if (!string.IsNullOrEmpty(deviceName))
         {
@@ -646,12 +650,10 @@ public abstract class ChromiumOptions : DriverOptions
         else if (settings != null)
         {
             mobileEmulationSettings["userAgent"] = settings.UserAgent;
-            Dictionary<string, object> deviceMetrics = new()
-            {
-                ["width"] = settings.Width,
-                ["height"] = settings.Height,
-                ["pixelRatio"] = settings.PixelRatio
-            };
+            Dictionary<string, object> deviceMetrics = new Dictionary<string, object>();
+            deviceMetrics["width"] = settings.Width;
+            deviceMetrics["height"] = settings.Height;
+            deviceMetrics["pixelRatio"] = settings.PixelRatio;
             if (!settings.EnableTouchEvents)
             {
                 deviceMetrics["touch"] = settings.EnableTouchEvents;

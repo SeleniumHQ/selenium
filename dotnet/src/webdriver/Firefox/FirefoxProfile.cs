@@ -36,7 +36,7 @@ public class FirefoxProfile
     private readonly string? sourceProfileDir;
     private readonly bool deleteSource;
     private readonly Preferences profilePreferences;
-    private readonly Dictionary<string, FirefoxExtension> extensions = [];
+    private readonly Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxProfile"/> class.
@@ -90,10 +90,12 @@ public class FirefoxProfile
     {
         string destinationDirectory = FileUtilities.GenerateRandomTempDirectoryName("webdriver.{0}.duplicated");
         byte[] zipContent = Convert.FromBase64String(base64);
-        using (MemoryStream zipStream = new(zipContent))
+        using (MemoryStream zipStream = new MemoryStream(zipContent))
         {
-            using ZipArchive profileZipArchive = new(zipStream, ZipArchiveMode.Read);
-            profileZipArchive.ExtractToDirectory(destinationDirectory);
+            using (ZipArchive profileZipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+            {
+                profileZipArchive.ExtractToDirectory(destinationDirectory);
+            }
         }
 
         return new FirefoxProfile(destinationDirectory, true);
@@ -198,14 +200,14 @@ public class FirefoxProfile
         string base64zip;
         this.WriteToDisk();
 
-        using (MemoryStream profileMemoryStream = new())
+        using (MemoryStream profileMemoryStream = new MemoryStream())
         {
-            using (ZipArchive profileZipArchive = new(profileMemoryStream, ZipArchiveMode.Create, true))
+            using (ZipArchive profileZipArchive = new ZipArchive(profileMemoryStream, ZipArchiveMode.Create, true))
             {
                 string[] files = Directory.GetFiles(this.ProfileDirectory, "*.*", SearchOption.AllDirectories);
                 foreach (string file in files)
                 {
-                    string fileNameInZip = file[(this.ProfileDirectory.Length + 1)..].Replace(Path.DirectorySeparatorChar, '/');
+                    string fileNameInZip = file.Substring(this.ProfileDirectory.Length + 1).Replace(Path.DirectorySeparatorChar, '/');
                     profileZipArchive.CreateEntryFromFile(file, fileNameInZip);
                 }
             }
@@ -254,7 +256,7 @@ public class FirefoxProfile
     /// succeeds.</remarks>
     private void DeleteExtensionsCache(string profileDirectory)
     {
-        DirectoryInfo ex = new(Path.Combine(profileDirectory, "extensions"));
+        DirectoryInfo ex = new DirectoryInfo(Path.Combine(profileDirectory, "extensions"));
         string cacheFile = Path.Combine(ex.Parent!.FullName, "extensions.cache");
         if (File.Exists(cacheFile))
         {
@@ -310,7 +312,7 @@ public class FirefoxProfile
     /// <remarks>Assumes that we only really care about the preferences, not the comments</remarks>
     private Dictionary<string, string> ReadExistingPreferences()
     {
-        Dictionary<string, string> prefs = [];
+        Dictionary<string, string> prefs = new Dictionary<string, string>();
 
         try
         {
@@ -324,10 +326,10 @@ public class FirefoxProfile
                     {
                         if (line.StartsWith("user_pref(\"", StringComparison.OrdinalIgnoreCase))
                         {
-                            string parsedLine = line["user_pref(\"".Length..];
-                            parsedLine = parsedLine[..^");".Length];
+                            string parsedLine = line.Substring("user_pref(\"".Length);
+                            parsedLine = parsedLine.Substring(0, parsedLine.Length - ");".Length);
                             string[] parts = line.Split(new string[] { "," }, StringSplitOptions.None);
-                            parts[0] = parts[0][..^1];
+                            parts[0] = parts[0].Substring(0, parts[0].Length - 1);
                             prefs.Add(parts[0].Trim(), parts[1].Trim());
                         }
                     }

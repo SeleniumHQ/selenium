@@ -111,7 +111,7 @@ public class UrlBuilder
     }
     public string CreateInlinePage(InlinePage page)
     {
-        Uri createPageUri = new(new Uri(WhereIs(string.Empty)), "createPage");
+        Uri createPageUri = new Uri(new Uri(WhereIs(string.Empty)), "createPage");
 
         var payloadDictionary = new JsonObject
         {

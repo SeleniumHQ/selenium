@@ -33,20 +33,26 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// A base class representing an HTML element on a page.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WebElement"/> class.
-/// </remarks>
-/// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this element.</param>
-/// <param name="id">The ID value provided to identify the element.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
-public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference, IEquatable<IWebElement>
+public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference, IEquatable<IWebElement>
 {
     /// <summary>
     /// The property name that represents a web element in the wire protocol.
     /// </summary>
     public const string ElementReferencePropertyName = "element-6066-11e4-a52e-4f735466cecf";
 
-    private readonly WebDriver driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+    private readonly WebDriver driver;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebElement"/> class.
+    /// </summary>
+    /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this element.</param>
+    /// <param name="id">The ID value provided to identify the element.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
+    public WebElement(WebDriver parentDriver, string id)
+    {
+        this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+        this.Id = id ?? throw new ArgumentNullException(nameof(id));
+    }
 
     /// <summary>
     /// Gets the <see cref="IWebDriver"/> driving this element.
@@ -66,10 +72,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetElementTagName, parameters);
 
@@ -87,10 +91,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetElementText, parameters);
 
@@ -109,10 +111,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.IsElementEnabled, parameters);
 
@@ -130,10 +130,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.IsElementSelected, parameters);
 
@@ -150,10 +148,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetElementRect, parameters);
 
@@ -176,10 +172,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetElementRect, parameters);
 
@@ -205,7 +199,7 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = [];
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
             string atom = GetWrappedAtom("is_displayed", ResourceUtilities.IsDisplayedAtom);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
@@ -240,10 +234,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleLabel, parameters);
 
@@ -259,10 +251,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     {
         get
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "id", this.Id }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
 
             Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleRole, parameters);
 
@@ -297,7 +287,7 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// and the parent driver hosting the element have a need to access the
     /// internal element ID. Therefore, we have two properties returning the
     /// same value, one scoped as internal, the other as protected.</remarks>
-    protected string Id { get; } = id ?? throw new ArgumentNullException(nameof(id));
+    protected string Id { get; }
 
     /// <summary>
     /// Clears the content of this element.
@@ -308,10 +298,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
     public virtual void Clear()
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
 
         this.Execute(DriverCommand.ClearElement, parameters);
     }
@@ -331,10 +319,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
     public virtual void Click()
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
 
         this.Execute(DriverCommand.ClickElement, parameters);
     }
@@ -364,12 +350,10 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
     public virtual IWebElement FindElement(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "using", mechanism },
-            { "value", value }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("using", mechanism);
+        parameters.Add("value", value);
 
         Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
 
@@ -401,12 +385,10 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
     public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "using", mechanism },
-            { "value", value }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("using", mechanism);
+        parameters.Add("value", value);
 
         Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
 
@@ -452,7 +434,7 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
     public virtual string? GetAttribute(string attributeName)
     {
-        Dictionary<string, object> parameters = [];
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
         string atom = GetWrappedAtom("get_attribute", ResourceUtilities.GetAttributeAtom);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
@@ -484,11 +466,9 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// </remarks>
     public virtual string? GetDomAttribute(string attributeName)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "name", attributeName }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("name", attributeName);
 
         Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
 
@@ -504,11 +484,9 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
     public virtual string? GetDomProperty(string propertyName)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "name", propertyName }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("name", propertyName);
 
         Response commandResponse = this.Execute(DriverCommand.GetElementProperty, parameters);
 
@@ -523,10 +501,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
     public virtual ISearchContext GetShadowRoot()
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
 
         Response commandResponse = this.Execute(DriverCommand.GetElementShadowRoot, parameters);
         if (commandResponse.Value is not Dictionary<string, object?> shadowRootDictionary)
@@ -555,11 +531,9 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
     public virtual string GetCssValue(string propertyName)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "name", propertyName }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("name", propertyName);
 
         Response commandResponse = this.Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
 
@@ -573,10 +547,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
     /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
     public virtual Screenshot GetScreenshot()
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
 
         // Get the screenshot as base64.
         Response screenshotResponse = this.Execute(DriverCommand.ElementScreenshot, parameters);
@@ -622,12 +594,10 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
         // to get the same effect.
         // TODO: Remove either "keysToSend" or "value" property, whichever is not the
         // appropriate one for spec compliance.
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.Id },
-            { "text", text },
-            { "value", text.ToCharArray() }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.Id);
+        parameters.Add("text", text);
+        parameters.Add("value", text.ToCharArray());
 
         this.Execute(DriverCommand.SendKeysToElement, parameters);
     }
@@ -722,10 +692,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
 
     Dictionary<string, object> IWebDriverObjectReference.ToDictionary()
     {
-        Dictionary<string, object> elementDictionary = new()
-        {
-            { ElementReferencePropertyName, this.Id }
-        };
+        Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
+        elementDictionary.Add(ElementReferencePropertyName, this.Id);
         return elementDictionary;
     }
 
@@ -754,9 +722,9 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
         string base64zip;
         try
         {
-            using (MemoryStream fileUploadMemoryStream = new())
+            using (MemoryStream fileUploadMemoryStream = new MemoryStream())
             {
-                using (ZipArchive zipArchive = new(fileUploadMemoryStream, ZipArchiveMode.Create))
+                using (ZipArchive zipArchive = new ZipArchive(fileUploadMemoryStream, ZipArchiveMode.Create))
                 {
                     string fileName = Path.GetFileName(localFile);
                     zipArchive.CreateEntryFromFile(localFile, fileName);
@@ -764,10 +732,8 @@ public class WebElement(WebDriver parentDriver, string id) : IWebElement, IFinds
                 base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
             }
 
-            Dictionary<string, object> parameters = new()
-            {
-                { "file", base64zip }
-            };
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("file", base64zip);
             Response response = this.Execute(DriverCommand.UploadFile, parameters);
 
             response.EnsureValueIsNotNull();

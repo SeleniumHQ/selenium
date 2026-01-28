@@ -37,5 +37,5 @@ public class StableChannelChromeDriver : ChromeDriver
     {
     }
 
-    public static ChromeOptions DefaultOptions => new();
+    public static ChromeOptions DefaultOptions => new ChromeOptions();
 }

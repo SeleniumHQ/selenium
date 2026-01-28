@@ -141,7 +141,8 @@ public class V144JavaScript : JavaScript
 
     private void OnRuntimeBindingCalled(object? sender, Runtime.BindingCalledEventArgs e)
     {
-        BindingCalledEventArgs wrapped = new        (
+        BindingCalledEventArgs wrapped = new BindingCalledEventArgs
+        (
             executionContextId: e.ExecutionContextId,
             name: e.Name,
             payload: e.Payload
@@ -164,7 +165,7 @@ public class V144JavaScript : JavaScript
 
     private void OnRuntimeConsoleApiCalled(object? sender, ConsoleAPICalledEventArgs e)
     {
-        List<ConsoleApiArgument> args = new(e.Args.Length);
+        List<ConsoleApiArgument> args = new List<ConsoleApiArgument>(e.Args.Length);
         foreach (var arg in e.Args)
         {
             string? argValue = arg.Value?.ToString();

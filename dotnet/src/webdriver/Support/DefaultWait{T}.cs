@@ -35,7 +35,7 @@ public class DefaultWait<T> : IWait<T>
 {
     private readonly T input;
     private readonly IClock clock;
-    private readonly List<Type> ignoredExceptions = [];
+    private readonly List<Type> ignoredExceptions = new List<Type>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.

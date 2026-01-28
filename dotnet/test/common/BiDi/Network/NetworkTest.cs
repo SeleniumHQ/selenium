@@ -196,9 +196,9 @@ internal class NetworkTest : BiDiTestFixture
             await auth.ContinueAsync(new ContinueWithAuthDefaultCredentialsOptions());
         });
 
-        async Task<NavigateResult> action() => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That((Func<Task<NavigateResult>>)action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
+        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
     }
 
     [Test]
@@ -210,9 +210,9 @@ internal class NetworkTest : BiDiTestFixture
             await auth.ContinueAsync(new ContinueWithAuthCancelCredentialsOptions());
         });
 
-        async Task<NavigateResult> action() => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That((Func<Task<NavigateResult>>)action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
+        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
     }
 
     [Test]
@@ -223,9 +223,9 @@ internal class NetworkTest : BiDiTestFixture
             await req.FailAsync();
         });
 
-        async Task<NavigateResult> action() => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That((Func<Task<NavigateResult>>)action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
+        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
     }
 
     [Test]

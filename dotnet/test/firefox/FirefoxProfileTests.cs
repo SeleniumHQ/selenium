@@ -97,7 +97,7 @@ public class FirefoxProfileTests
     private List<string> ReadGeneratedProperties()
     {
         profile.WriteToDisk();
-        List<string> generatedProperties = [];
+        List<string> generatedProperties = new List<string>();
         string userPrefs = System.IO.Path.Combine(profile.ProfileDirectory, "user.js");
         if (System.IO.File.Exists(userPrefs))
         {

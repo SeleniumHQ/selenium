@@ -24,22 +24,27 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Represents information about a an argument in call to the browser's console API.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ConsoleApiArgument"/> type.
-/// </remarks>
-/// <param name="type">The type of the argument in the call to the browser's console API.</param>
-/// <param name="value">The value of the argument in the call to the browser's console API.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="type"/> is <see langword="null"/>.</exception>
-public class ConsoleApiArgument(string type, string? value)
+public class ConsoleApiArgument
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleApiArgument"/> type.
+    /// </summary>
+    /// <param name="type">The type of the argument in the call to the browser's console API.</param>
+    /// <param name="value">The value of the argument in the call to the browser's console API.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="type"/> is <see langword="null"/>.</exception>
+    public ConsoleApiArgument(string type, string? value)
+    {
+        Type = type ?? throw new ArgumentNullException(nameof(type));
+        Value = value;
+    }
 
     /// <summary>
     /// Gets the type of the argument in the call to the browser's console API.
     /// </summary>
-    public string Type { get; } = type ?? throw new ArgumentNullException(nameof(type));
+    public string Type { get; }
 
     /// <summary>
     /// Gets the value of the argument in the call to the browser's console API.
     /// </summary>
-    public string? Value { get; } = value;
+    public string? Value { get; }
 }

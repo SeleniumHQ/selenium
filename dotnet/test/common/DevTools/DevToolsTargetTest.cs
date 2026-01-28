@@ -76,7 +76,7 @@ public class DevToolsTargetTest : DevToolsTestFixture
         string sessionId = null;
         CurrentCdpVersion.Target.TargetInfo targetInfo = null;
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
-        ManualResetEventSlim sync = new(false);
+        ManualResetEventSlim sync = new ManualResetEventSlim(false);
         domains.Target.ReceivedMessageFromTarget += (sender, e) =>
         {
             ValidateMessage(e);
@@ -116,28 +116,28 @@ public class DevToolsTargetTest : DevToolsTestFixture
     public async Task CreateAndContentLifeCycle()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        void targetCreatedHandler(object sender, CurrentCdpVersion.Target.TargetCreatedEventArgs e)
+        EventHandler<CurrentCdpVersion.Target.TargetCreatedEventArgs> targetCreatedHandler = (sender, e) =>
         {
             ValidateTargetInfo(e.TargetInfo);
-        }
+        };
         domains.Target.TargetCreated += targetCreatedHandler;
 
-        void targetCrashedHandler(object sender, CurrentCdpVersion.Target.TargetCrashedEventArgs e)
+        EventHandler<CurrentCdpVersion.Target.TargetCrashedEventArgs> targetCrashedHandler = (sender, e) =>
         {
             ValidateTargetCrashed(e);
-        }
+        };
         domains.Target.TargetCrashed += targetCrashedHandler;
 
-        void targetDestroyedHandler(object sender, CurrentCdpVersion.Target.TargetDestroyedEventArgs e)
+        EventHandler<CurrentCdpVersion.Target.TargetDestroyedEventArgs> targetDestroyedHandler = (sender, e) =>
         {
             ValidateTargetId(e.TargetId);
-        }
+        };
         domains.Target.TargetDestroyed += targetDestroyedHandler;
 
-        void targetInfoChangedHandler(object sender, CurrentCdpVersion.Target.TargetInfoChangedEventArgs e)
+        EventHandler<CurrentCdpVersion.Target.TargetInfoChangedEventArgs> targetInfoChangedHandler = (sender, e) =>
         {
             ValidateTargetInfo(e.TargetInfo);
-        }
+        };
         domains.Target.TargetInfoChanged += targetInfoChangedHandler;
 
         var response = await domains.Target.CreateTarget(new CurrentCdpVersion.Target.CreateTargetCommandSettings()

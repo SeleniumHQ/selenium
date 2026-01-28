@@ -96,7 +96,7 @@ public class FirefoxDriver : WebDriver
     /// </summary>
     public static readonly string GetFullPageScreenshotCommand = "fullPageScreenshot";
 
-    private static readonly Dictionary<string, CommandInfo> firefoxCustomCommands = new()
+    private static readonly Dictionary<string, CommandInfo> firefoxCustomCommands = new Dictionary<string, CommandInfo>()
     {
         { SetContextCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context") },
         { GetContextCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context") },
@@ -215,7 +215,7 @@ public class FirefoxDriver : WebDriver
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new(options);
+            DriverFinder finder = new DriverFinder(options);
             string fullServicePath = finder.GetDriverPath();
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
@@ -276,10 +276,8 @@ public class FirefoxDriver : WebDriver
     public void SetContext(FirefoxCommandContext context)
     {
         string contextValue = context.ToString().ToLowerInvariant();
-        Dictionary<string, object> parameters = new()
-        {
-            ["context"] = contextValue
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["context"] = contextValue;
         this.Execute(SetContextCommand, parameters);
     }
 
@@ -356,7 +354,7 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new()
+        Dictionary<string, object> parameters = new Dictionary<string, object>
         {
             ["addon"] = base64EncodedAddOn,
             ["temporary"] = temporary
@@ -378,10 +376,8 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(addOnId), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["id"] = addOnId
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["id"] = addOnId;
         this.Execute(UninstallAddOnCommand, parameters);
     }
 

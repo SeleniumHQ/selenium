@@ -62,11 +62,10 @@ internal class PauseInteraction : Interaction
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
     public override Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new()
-        {
-            ["type"] = "pause",
-            ["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds)
-        };
+        Dictionary<string, object> toReturn = new Dictionary<string, object>();
+
+        toReturn["type"] = "pause";
+        toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);
 
         return toReturn;
     }

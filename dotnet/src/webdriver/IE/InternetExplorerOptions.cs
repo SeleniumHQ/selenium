@@ -93,7 +93,7 @@ public class InternetExplorerOptions : DriverOptions
     private const string AttachToEdgeChromeCapability = "ie.edgechromium";
     private const string IgnoreProcessMatchCapability = "ie.ignoreprocessmatch";
     private readonly bool enableFullPageScreenshot = true;
-    private readonly Dictionary<string, object> additionalInternetExplorerOptions = [];
+    private readonly Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InternetExplorerOptions"/> class.
@@ -277,11 +277,9 @@ public class InternetExplorerOptions : DriverOptions
 
     private Dictionary<string, object> BuildInternetExplorerOptionsDictionary()
     {
-        Dictionary<string, object> internetExplorerOptionsDictionary = new()
-        {
-            [CapabilityType.HasNativeEvents] = this.EnableNativeEvents,
-            [EnablePersistentHoverCapability] = this.EnablePersistentHover
-        };
+        Dictionary<string, object> internetExplorerOptionsDictionary = new Dictionary<string, object>();
+        internetExplorerOptionsDictionary[CapabilityType.HasNativeEvents] = this.EnableNativeEvents;
+        internetExplorerOptionsDictionary[EnablePersistentHoverCapability] = this.EnablePersistentHover;
 
         if (this.RequireWindowFocus)
         {

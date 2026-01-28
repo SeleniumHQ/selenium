@@ -174,7 +174,7 @@ public class WindowSwitchingTest : DriverTestFixture
         ReadOnlyCollection<string> allWindowHandles = driver.WindowHandles;
 
         // There should be three windows. We should also see each of the window titles at least once.
-        List<string> seenHandles = [];
+        List<string> seenHandles = new List<string>();
         foreach (string handle in allWindowHandles)
         {
             Assert.That(seenHandles, Has.No.Member(handle));

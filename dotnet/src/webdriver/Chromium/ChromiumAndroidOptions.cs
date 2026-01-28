@@ -24,12 +24,15 @@ namespace OpenQA.Selenium.Chromium;
 /// <summary>
 /// Generates the capabilities for automating Chromium applications on Android
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ChromiumAndroidOptions"/> class.
-/// </remarks>
-/// <param name="androidPackage"></param>
-public class ChromiumAndroidOptions(string androidPackage) : AndroidOptions(androidPackage)
+public class ChromiumAndroidOptions : AndroidOptions
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChromiumAndroidOptions"/> class.
+    /// </summary>
+    /// <param name="androidPackage"></param>
+    public ChromiumAndroidOptions(string androidPackage) : base(androidPackage)
+    {
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether to use an already running app.

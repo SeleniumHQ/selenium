@@ -24,16 +24,20 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Object containing event data for events raised when data is received from a WebDriver Bidi connection.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WebSocketConnectionDataReceivedEventArgs" /> class.
-/// </remarks>
-/// <param name="data">The data received from the connection.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="data"/> is <see langword="null"/>.</exception>
-public class WebSocketConnectionDataReceivedEventArgs(string data) : EventArgs
+public class WebSocketConnectionDataReceivedEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketConnectionDataReceivedEventArgs" /> class.
+    /// </summary>
+    /// <param name="data">The data received from the connection.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="data"/> is <see langword="null"/>.</exception>
+    public WebSocketConnectionDataReceivedEventArgs(string data)
+    {
+        this.Data = data ?? throw new ArgumentNullException(nameof(data));
+    }
 
     /// <summary>
     /// Gets the data received from the connection.
     /// </summary>
-    public string Data { get; } = data ?? throw new ArgumentNullException(nameof(data));
+    public string Data { get; }
 }

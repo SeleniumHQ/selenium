@@ -25,19 +25,22 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Represents a printed document in the form of a PDF document.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="PrintDocument"/> class.
-/// </remarks>
-/// <param name="base64EncodedDocument">The printed document as a Base64-encoded string.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="base64EncodedDocument"/> is <see langword="null"/>.</exception>
-/// <exception cref="FormatException">
-/// <para>The length of <paramref name="base64EncodedDocument"/>, ignoring white-space characters, is not zero or a multiple of 4.</para>
-/// <para>-or-</para>
-/// <para>The format of <paramref name="base64EncodedDocument"/> is invalid. <paramref name="base64EncodedDocument"/> contains a non-base-64 character,
-/// more than two padding characters, or a non-white space-character among the padding characters.</para>
-/// </exception>
-public class PrintDocument(string base64EncodedDocument) : EncodedFile(base64EncodedDocument)
+public class PrintDocument : EncodedFile
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PrintDocument"/> class.
+    /// </summary>
+    /// <param name="base64EncodedDocument">The printed document as a Base64-encoded string.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="base64EncodedDocument"/> is <see langword="null"/>.</exception>
+    /// <exception cref="FormatException">
+    /// <para>The length of <paramref name="base64EncodedDocument"/>, ignoring white-space characters, is not zero or a multiple of 4.</para>
+    /// <para>-or-</para>
+    /// <para>The format of <paramref name="base64EncodedDocument"/> is invalid. <paramref name="base64EncodedDocument"/> contains a non-base-64 character,
+    /// more than two padding characters, or a non-white space-character among the padding characters.</para>
+    /// </exception>
+    public PrintDocument(string base64EncodedDocument) : base(base64EncodedDocument)
+    {
+    }
 
     /// <summary>
     /// Saves this <see cref="PrintDocument"/> as a PDF formatted file, overwriting the file if it already exists.
@@ -58,8 +61,12 @@ public class PrintDocument(string base64EncodedDocument) : EncodedFile(base64Enc
             throw new ArgumentException("The file name to be saved cannot be null or the empty string", nameof(fileName));
         }
 
-        using MemoryStream imageStream = new(this.AsByteArray);
-        using FileStream fileStream = new(fileName, FileMode.Create);
-        imageStream.WriteTo(fileStream);
+        using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
+        {
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+            {
+                imageStream.WriteTo(fileStream);
+            }
+        }
     }
 }

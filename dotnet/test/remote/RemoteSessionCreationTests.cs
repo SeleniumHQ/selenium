@@ -30,10 +30,8 @@ public class RemoteSessionCreationTests : DriverTestFixture
     [Test]
     public void CreateChromeRemoteSession()
     {
-        IWebDriver chrome = new ChromeRemoteWebDriver
-        {
-            Url = xhtmlTestPage
-        };
+        IWebDriver chrome = new ChromeRemoteWebDriver();
+        chrome.Url = xhtmlTestPage;
         try
         {
             Assert.That(chrome.Title, Is.EqualTo("XHTML Test Page"));
@@ -47,10 +45,8 @@ public class RemoteSessionCreationTests : DriverTestFixture
     [Test]
     public void CreateFirefoxRemoteSession()
     {
-        IWebDriver firefox = new FirefoxRemoteWebDriver
-        {
-            Url = xhtmlTestPage
-        };
+        IWebDriver firefox = new FirefoxRemoteWebDriver();
+        firefox.Url = xhtmlTestPage;
         try
         {
             Assert.That(firefox.Title, Is.EqualTo("XHTML Test Page"));
@@ -64,10 +60,8 @@ public class RemoteSessionCreationTests : DriverTestFixture
     [Test]
     public void CreateEdgeRemoteSession()
     {
-        IWebDriver edge = new EdgeRemoteWebDriver
-        {
-            Url = xhtmlTestPage
-        };
+        IWebDriver edge = new EdgeRemoteWebDriver();
+        edge.Url = xhtmlTestPage;
         try
         {
             Assert.That(edge.Title, Is.EqualTo("XHTML Test Page"));
@@ -129,7 +123,7 @@ public class RemoteSessionCreationTests : DriverTestFixture
         Assert.That(settings.HasCapability("a"));
         Assert.That(settings.GetCapability("a"), Is.TypeOf<List<int>>().And.EqualTo(intValues));
 
-        Dictionary<string, int> dictionaryValues = new()
+        Dictionary<string, int> dictionaryValues = new Dictionary<string, int>
         {
             {"value1", 1 },
             {"value2", 1 },

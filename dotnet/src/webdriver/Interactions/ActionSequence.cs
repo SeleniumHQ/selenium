@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Interactions;
 /// </summary>
 public class ActionSequence
 {
-    private readonly List<Interaction> interactions = [];
+    private readonly List<Interaction> interactions = new List<Interaction>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ActionSequence"/> class.
@@ -94,7 +94,7 @@ public class ActionSequence
     {
         Dictionary<string, object> toReturn = this.InputDevice.ToDictionary();
 
-        List<object> encodedActions = [];
+        List<object> encodedActions = new List<object>();
         foreach (Interaction action in this.interactions)
         {
             encodedActions.Add(action.ToDictionary());

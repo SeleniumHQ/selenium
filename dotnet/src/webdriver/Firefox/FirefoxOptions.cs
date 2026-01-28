@@ -60,10 +60,10 @@ public class FirefoxOptions : DriverOptions
     private const string FirefoxEnvCapability = "env";
     private const string FirefoxOptionsCapability = "moz:firefoxOptions";
     private const string FirefoxEnableDevToolsProtocolCapability = "moz:debuggerAddress";
-    private readonly List<string> firefoxArguments = [];
-    private readonly Dictionary<string, object> profilePreferences = [];
-    private readonly Dictionary<string, object> additionalFirefoxOptions = [];
-    private readonly Dictionary<string, object> environmentVariables = [];
+    private readonly List<string> firefoxArguments = new List<string>();
+    private readonly Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> environmentVariables = new Dictionary<string, object>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxOptions"/> class.
@@ -268,7 +268,7 @@ public class FirefoxOptions : DriverOptions
 
     private Dictionary<string, object> GenerateFirefoxOptionsDictionary()
     {
-        Dictionary<string, object> firefoxOptions = [];
+        Dictionary<string, object> firefoxOptions = new Dictionary<string, object>();
 
         if (this.Profile != null)
         {
@@ -282,10 +282,8 @@ public class FirefoxOptions : DriverOptions
 
         if (this.LogLevel != FirefoxDriverLogLevel.Default)
         {
-            Dictionary<string, object> logObject = new()
-            {
-                ["level"] = this.LogLevel.ToString().ToLowerInvariant()
-            };
+            Dictionary<string, object> logObject = new Dictionary<string, object>();
+            logObject["level"] = this.LogLevel.ToString().ToLowerInvariant();
             firefoxOptions[FirefoxLogCapability] = logObject;
         }
 

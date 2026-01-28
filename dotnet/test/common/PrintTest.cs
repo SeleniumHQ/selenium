@@ -126,10 +126,9 @@ public class PrintTest : DriverTestFixture
     [Test]
     public void CanSetPredefinedPageSizes()
     {
-        var options = new PrintOptions
-        {
-            PageDimensions = PrintOptions.PageSize.A4
-        };
+        var options = new PrintOptions();
+
+        options.PageDimensions = PrintOptions.PageSize.A4;
         Assert.That(options.PageDimensions.Width, Is.EqualTo(PrintOptions.PageSize.A4.Width));
         Assert.That(options.PageDimensions.Height, Is.EqualTo(PrintOptions.PageSize.A4.Height));
 

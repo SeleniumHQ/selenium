@@ -25,9 +25,9 @@ namespace OpenQA.Selenium.Environment;
 public class InlinePage
 {
     private string title = string.Empty;
-    private readonly List<string> scripts = [];
-    private readonly List<string> styles = [];
-    private readonly List<string> bodyParts = [];
+    private readonly List<string> scripts = new List<string>();
+    private readonly List<string> styles = new List<string>();
+    private readonly List<string> bodyParts = new List<string>();
     private string onLoad;
     private string onBeforeUnload;
 
@@ -69,7 +69,7 @@ public class InlinePage
 
     public override string ToString()
     {
-        StringBuilder builder = new("<html>");
+        StringBuilder builder = new StringBuilder("<html>");
         builder.Append("<head>");
         builder.AppendFormat("<title>{0}</title>", this.title);
         builder.Append("</head>");

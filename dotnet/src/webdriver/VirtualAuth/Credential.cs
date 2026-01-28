@@ -124,11 +124,10 @@ public sealed class Credential
     /// <returns>The dictionary containing the values for this Credential.</returns>
     public Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new()
-        {
-            ["credentialId"] = Base64UrlEncoder.Encode(this.id),
-            ["isResidentCredential"] = this.IsResidentCredential
-        };
+        Dictionary<string, object> toReturn = new Dictionary<string, object>();
+
+        toReturn["credentialId"] = Base64UrlEncoder.Encode(this.id);
+        toReturn["isResidentCredential"] = this.IsResidentCredential;
         if (this.RpId is not null)
         {
             toReturn["rpId"] = this.RpId;

@@ -28,18 +28,25 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides methods for monitoring, intercepting, and modifying network requests and responses.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="NetworkManager"/> class.
-/// </remarks>
-/// <param name="driver">The <see cref="IWebDriver"/> instance on which the network should be monitored.</param>
-[method: UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Warnings are added to StartMonitoring and StopMonitoring")]
-[method: UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "Warnings are added to StartMonitoring and StopMonitoring")]
-/// <summary>
-/// Provides methods for monitoring, intercepting, and modifying network requests and responses.
-/// </summary>
-public class NetworkManager(IWebDriver driver) : INetwork
+public class NetworkManager : INetwork
 {
-    private readonly Lazy<DevToolsSession> session = new Lazy<DevToolsSession>(() =>
+    private readonly Lazy<DevToolsSession> session;
+    private readonly List<NetworkRequestHandler> requestHandlers = new List<NetworkRequestHandler>();
+    private readonly List<NetworkResponseHandler> responseHandlers = new List<NetworkResponseHandler>();
+    private readonly List<NetworkAuthenticationHandler> authenticationHandlers = new List<NetworkAuthenticationHandler>();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NetworkManager"/> class.
+    /// </summary>
+    /// <param name="driver">The <see cref="IWebDriver"/> instance on which the network should be monitored.</param>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Warnings are added to StartMonitoring and StopMonitoring")]
+    [UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "Warnings are added to StartMonitoring and StopMonitoring")]
+    public NetworkManager(IWebDriver driver)
+    {
+        // Use of Lazy<T> means this exception won't be thrown until the user first
+        // attempts to access the DevTools session, probably on the first call to
+        // StartMonitoring().
+        this.session = new Lazy<DevToolsSession>(() =>
         {
             if (driver is not IDevTools devToolsDriver)
             {
@@ -48,9 +55,7 @@ public class NetworkManager(IWebDriver driver) : INetwork
 
             return devToolsDriver.GetDevToolsSession();
         });
-    private readonly List<NetworkRequestHandler> requestHandlers = [];
-    private readonly List<NetworkResponseHandler> responseHandlers = [];
-    private readonly List<NetworkAuthenticationHandler> authenticationHandlers = [];
+    }
 
     /// <summary>
     /// Occurs when a browser sends a network request.
@@ -195,7 +200,7 @@ public class NetworkManager(IWebDriver driver) : INetwork
     private async Task OnAuthRequired(object sender, AuthRequiredEventArgs e)
     {
         string requestId = e.RequestId;
-        Uri uri = new(e.Uri);
+        Uri uri = new Uri(e.Uri);
         bool successfullyAuthenticated = false;
         foreach (var authenticationHandler in this.authenticationHandlers)
         {
@@ -216,7 +221,10 @@ public class NetworkManager(IWebDriver driver) : INetwork
 
     private async Task OnRequestPaused(object sender, RequestPausedEventArgs e)
     {
-        this.NetworkRequestSent?.Invoke(this, new NetworkRequestSentEventArgs(e.RequestData));
+        if (this.NetworkRequestSent != null)
+        {
+            this.NetworkRequestSent(this, new NetworkRequestSentEventArgs(e.RequestData));
+        }
 
         foreach (var handler in this.requestHandlers)
         {
@@ -247,7 +255,10 @@ public class NetworkManager(IWebDriver driver) : INetwork
             await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData).ConfigureAwait(false);
         }
 
-        this.NetworkResponseReceived?.Invoke(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
+        if (this.NetworkResponseReceived != null)
+        {
+            this.NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
+        }
 
         foreach (var handler in this.responseHandlers)
         {
@@ -257,7 +268,7 @@ public class NetworkManager(IWebDriver driver) : INetwork
                 // method demands one; however, the only property used by that method is the RequestId property.
                 // It might be better to refactor that method signature to simply pass the request ID, or
                 // alternatively, just pass the response data, which should also contain the request ID anyway.
-                HttpRequestData requestData = new() { RequestId = e.ResponseData.RequestId };
+                HttpRequestData requestData = new HttpRequestData { RequestId = e.ResponseData.RequestId };
                 await this.session.Value.Domains.Network.ContinueRequestWithResponse(requestData, handler.ResponseTransformer!(e.ResponseData)).ConfigureAwait(false);
                 return;
             }

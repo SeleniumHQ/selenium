@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Firefox.Internal;
 /// </summary>
 internal sealed class IniFileReader
 {
-    private readonly Dictionary<string, Dictionary<string, string>> iniFileStore = [];
+    private readonly Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniFileReader"/> class.
@@ -49,7 +49,7 @@ internal sealed class IniFileReader
             throw new FileNotFoundException("INI file not found", fileName);
         }
 
-        Dictionary<string, string> section = [];
+        Dictionary<string, string> section = new Dictionary<string, string>();
         string sectionName = string.Empty;
 
         string[] iniFileContent = File.ReadAllLines(fileName);
@@ -64,12 +64,12 @@ internal sealed class IniFileReader
                         this.iniFileStore.Add(sectionName, section);
                     }
 
-                    sectionName = iniFileLine[1..^1].ToUpperInvariant();
-                    section = [];
+                    sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToUpperInvariant();
+                    section = new Dictionary<string, string>();
                 }
                 else
                 {
-                    string[] entryParts = iniFileLine.Split(['='], 2);
+                    string[] entryParts = iniFileLine.Split(new char[] { '=' }, 2);
                     string name = entryParts[0].ToUpperInvariant();
                     string value = string.Empty;
                     if (entryParts.Length > 1)
@@ -88,7 +88,7 @@ internal sealed class IniFileReader
     /// <summary>
     /// Gets a <see cref="ReadOnlyCollection{T}"/> containing the names of the sections in the .INI file.
     /// </summary>
-    public ReadOnlyCollection<string> SectionNames => new(new List<string>(this.iniFileStore.Keys));
+    public ReadOnlyCollection<string> SectionNames => new ReadOnlyCollection<string>(new List<string>(this.iniFileStore.Keys));
 
     /// <summary>
     /// Gets a value from the .INI file.

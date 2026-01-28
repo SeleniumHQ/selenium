@@ -116,7 +116,7 @@ public abstract class DevToolsDomains
     private static DevToolsDomains CreateFallbackDomain(int desiredVersion, DevToolsSession session, int versionRange)
     {
         // Get the list of supported versions and sort descending
-        List<int> supportedVersions = new(SupportedDevToolsVersions);
+        List<int> supportedVersions = new List<int>(SupportedDevToolsVersions);
         supportedVersions.Sort((first, second) => second.CompareTo(first));
 
         foreach (int supportedVersion in supportedVersions)

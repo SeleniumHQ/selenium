@@ -105,15 +105,9 @@ public enum MouseButton
 /// <summary>
 /// Represents a pointer input device, such as a stylus, mouse, or finger on a touch screen.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
-/// </remarks>
-/// <param name="pointerKind">The kind of pointer represented by this input device.</param>
-/// <param name="deviceName">The unique name for this input device.</param>
-/// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-public class PointerInputDevice(PointerKind pointerKind, string deviceName) : InputDevice(deviceName)
+public class PointerInputDevice : InputDevice
 {
-    private readonly PointerKind pointerKind = pointerKind;
+    private readonly PointerKind pointerKind;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
@@ -133,6 +127,18 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
+    /// </summary>
+    /// <param name="pointerKind">The kind of pointer represented by this input device.</param>
+    /// <param name="deviceName">The unique name for this input device.</param>
+    /// <exception cref="ArgumentException">If <paramref name="deviceName"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+    public PointerInputDevice(PointerKind pointerKind, string deviceName)
+        : base(deviceName)
+    {
+        this.pointerKind = pointerKind;
+    }
+
+    /// <summary>
     /// Gets the type of device for this input device.
     /// </summary>
     public override InputDeviceKind DeviceKind => InputDeviceKind.Pointer;
@@ -143,16 +149,13 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
     public override Dictionary<string, object> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new()
-        {
-            ["type"] = "pointer",
-            ["id"] = this.DeviceName
-        };
+        Dictionary<string, object> toReturn = new Dictionary<string, object>();
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["pointerType"] = this.pointerKind.ToString().ToLowerInvariant()
-        };
+        toReturn["type"] = "pointer";
+        toReturn["id"] = this.DeviceName;
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["pointerType"] = this.pointerKind.ToString().ToLowerInvariant();
         toReturn["parameters"] = parameters;
 
         return toReturn;
@@ -365,7 +368,7 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
         /// <returns>The dictionary containing the properties of this device.</returns>
         public Dictionary<string, object> ToDictionary()
         {
-            Dictionary<string, object> toReturn = [];
+            Dictionary<string, object> toReturn = new Dictionary<string, object>();
 
             if (this.Width.HasValue)
             {
@@ -416,17 +419,24 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
         }
     }
 
-    private class PointerDownInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties) : Interaction(sourceDevice)
+    private class PointerDownInteraction : Interaction
     {
-        private readonly MouseButton button = button;
-        private readonly PointerEventProperties eventProperties = properties;
+        private readonly MouseButton button;
+        private readonly PointerEventProperties eventProperties;
+
+        public PointerDownInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties)
+            : base(sourceDevice)
+        {
+            this.button = button;
+            this.eventProperties = properties;
+        }
 
         public override Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> toReturn;
             if (eventProperties is null)
             {
-                toReturn = [];
+                toReturn = new Dictionary<string, object>();
             }
             else
             {
@@ -444,17 +454,24 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
         }
     }
 
-    private class PointerUpInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties) : Interaction(sourceDevice)
+    private class PointerUpInteraction : Interaction
     {
-        private readonly MouseButton button = button;
-        private readonly PointerEventProperties eventProperties = properties;
+        private readonly MouseButton button;
+        private readonly PointerEventProperties eventProperties;
+
+        public PointerUpInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties)
+            : base(sourceDevice)
+        {
+            this.button = button;
+            this.eventProperties = properties;
+        }
 
         public override Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> toReturn;
             if (eventProperties is null)
             {
-                toReturn = [];
+                toReturn = new Dictionary<string, object>();
             }
             else
             {
@@ -473,14 +490,17 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
         }
     }
 
-    private class PointerCancelInteraction(InputDevice sourceDevice) : Interaction(sourceDevice)
+    private class PointerCancelInteraction : Interaction
     {
+        public PointerCancelInteraction(InputDevice sourceDevice)
+            : base(sourceDevice)
+        {
+        }
+
         public override Dictionary<string, object> ToDictionary()
         {
-            Dictionary<string, object> toReturn = new()
-            {
-                ["type"] = "pointerCancel"
-            };
+            Dictionary<string, object> toReturn = new Dictionary<string, object>();
+            toReturn["type"] = "pointerCancel";
             return toReturn;
         }
 
@@ -495,7 +515,7 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
         private readonly IWebElement? target;
         private readonly int x = 0;
         private readonly int y = 0;
-        private readonly TimeSpan duration = TimeSpan.MinValue;
+        private TimeSpan duration = TimeSpan.MinValue;
         private readonly CoordinateOrigin origin = CoordinateOrigin.Pointer;
         private readonly PointerEventProperties eventProperties;
 
@@ -530,7 +550,7 @@ public class PointerInputDevice(PointerKind pointerKind, string deviceName) : In
             Dictionary<string, object> toReturn;
             if (eventProperties == null)
             {
-                toReturn = [];
+                toReturn = new Dictionary<string, object>();
             }
             else
             {

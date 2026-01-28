@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Chromium;
 public class ChromiumPerformanceLoggingPreferences
 {
     private TimeSpan bufferUsageReportingInterval = TimeSpan.FromMilliseconds(1000);
-    private readonly List<string> tracingCategories = [];
+    private readonly List<string> tracingCategories = new List<string>();
 
     /// <summary>
     /// Gets or sets a value indicating whether Chromium will collect events from the Network domain.

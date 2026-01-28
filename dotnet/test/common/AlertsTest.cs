@@ -410,7 +410,7 @@ public class AlertsTest : DriverTestFixture
         try
         {
             driver.FindElement(By.Id("open-new-window")).Click();
-            List<String> allWindows = new(driver.WindowHandles);
+            List<String> allWindows = new List<string>(driver.WindowHandles);
             allWindows.Remove(mainWindow);
             Assert.That(allWindows, Has.One.Items);
             onloadWindow = allWindows[0];
@@ -503,6 +503,28 @@ public class AlertsTest : DriverTestFixture
             .WithBody(
                 "<a href='#' id='prompt' onclick='displayPrompt();'>click me</a>",
                 "<div id='text'>acceptor</div>"));
+    }
+
+    private void SetSimpleOnBeforeUnload(string returnText)
+    {
+        ((IJavaScriptExecutor)driver).ExecuteScript(
+            "var returnText = arguments[0]; window.onbeforeunload = function() { return returnText; }",
+            returnText);
+    }
+
+    private Func<IWebElement> ElementToBePresent(By locator)
+    {
+        return () =>
+        {
+            try
+            {
+                return driver.FindElement(By.Id("open-page-with-onunload-alert"));
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+        };
     }
 
     private Func<bool> ElementTextToEqual(IWebElement element, string text)

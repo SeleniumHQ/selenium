@@ -113,7 +113,10 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="BindingCalledEventArgs"/> that contains the event data.</param>
     protected virtual void OnBindingCalled(BindingCalledEventArgs e)
     {
-        this.BindingCalled?.Invoke(this, e);
+        if (this.BindingCalled != null)
+        {
+            this.BindingCalled(this, e);
+        }
     }
 
     /// <summary>
@@ -122,7 +125,10 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="ConsoleApiCalledEventArgs"/> that contains the event data.</param>
     protected virtual void OnConsoleApiCalled(ConsoleApiCalledEventArgs e)
     {
-        this.ConsoleApiCalled?.Invoke(this, e);
+        if (this.ConsoleApiCalled != null)
+        {
+            this.ConsoleApiCalled(this, e);
+        }
     }
 
     /// <summary>
@@ -131,6 +137,9 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="ExceptionThrownEventArgs"/> that contains the event data.</param>
     protected virtual void OnExceptionThrown(ExceptionThrownEventArgs e)
     {
-        this.ExceptionThrown?.Invoke(this, e);
+        if (this.ExceptionThrown != null)
+        {
+            this.ExceptionThrown(this, e);
+        }
     }
 }

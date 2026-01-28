@@ -46,7 +46,7 @@ public class PopupWindowFinderTest : DriverTestFixture
         driver.Url = xhtmlTestPage;
         string current = driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new(driver);
+        PopupWindowFinder finder = new PopupWindowFinder(driver);
         string newHandle = finder.Invoke(() => { driver.FindElement(By.LinkText("Open new window")).Click(); });
 
         Assert.That(newHandle, Is.Not.Null.And.Not.Empty);
@@ -65,7 +65,7 @@ public class PopupWindowFinderTest : DriverTestFixture
         driver.Url = xhtmlTestPage;
         string current = driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new(driver);
+        PopupWindowFinder finder = new PopupWindowFinder(driver);
         string newHandle = finder.Click(driver.FindElement(By.LinkText("Open new window")));
 
         Assert.That(newHandle, Is.Not.Null.And.Not.Empty);
@@ -84,7 +84,7 @@ public class PopupWindowFinderTest : DriverTestFixture
         driver.Url = xhtmlTestPage;
         string first = driver.CurrentWindowHandle;
 
-        PopupWindowFinder finder = new(driver);
+        PopupWindowFinder finder = new PopupWindowFinder(driver);
         string second = finder.Click(driver.FindElement(By.Name("windowOne")));
         Assert.That(second, Is.Not.Null.And.Not.Empty);
         Assert.That(second, Is.Not.EqualTo(first));
@@ -108,7 +108,7 @@ public class PopupWindowFinderTest : DriverTestFixture
     public void ShouldNotFindPopupWindowWhenNoneExists()
     {
         driver.Url = xhtmlTestPage;
-        PopupWindowFinder finder = new(driver);
+        PopupWindowFinder finder = new PopupWindowFinder(driver);
         Assert.That(
             () => finder.Click(driver.FindElement(By.Id("linkId"))),
             Throws.TypeOf<WebDriverTimeoutException>());

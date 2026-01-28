@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Chrome;
 /// </example>
 public class ChromeDriver : ChromiumDriver
 {
-    private static readonly Dictionary<string, CommandInfo> chromeCustomCommands = new()
+    private static readonly Dictionary<string, CommandInfo> chromeCustomCommands = new Dictionary<string, CommandInfo>()
     {
         { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cdp/execute") },
         { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/goog/cast/get_sinks") },
@@ -168,7 +168,7 @@ public class ChromeDriver : ChromiumDriver
     {
         get
         {
-            Dictionary<string, CommandInfo> customCommands = [];
+            Dictionary<string, CommandInfo> customCommands = new Dictionary<string, CommandInfo>();
             foreach (KeyValuePair<string, CommandInfo> entry in ChromiumCustomCommands)
             {
                 customCommands[entry.Key] = entry.Value;

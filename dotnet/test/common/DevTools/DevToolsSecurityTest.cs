@@ -46,12 +46,12 @@ public class DevToolsSecurityTest : DevToolsTestFixture
         });
 
         string summary = null;
-        ManualResetEventSlim sync = new(false);
-        void securityStateChangedHandler(object sender, CurrentCdpVersion.Security.SecurityStateChangedEventArgs e)
+        ManualResetEventSlim sync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Security.SecurityStateChangedEventArgs> securityStateChangedHandler = (sender, e) =>
         {
             summary = e.Summary;
             sync.Set();
-        }
+        };
         domains.Security.SecurityStateChanged += securityStateChangedHandler;
 
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsSecurityTest");

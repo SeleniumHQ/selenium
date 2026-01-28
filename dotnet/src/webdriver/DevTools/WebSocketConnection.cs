@@ -28,20 +28,15 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Represents a connection to a WebDriver Bidi remote end.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WebSocketConnection" /> class with a given startup and shutdown timeout.
-/// </remarks>
-/// <param name="startupTimeout">The timeout before throwing an error when starting up the connection.</param>
-/// <param name="shutdownTimeout">The timeout before throwing an error when shutting down the connection.</param>
-public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeout)
+public class WebSocketConnection
 {
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(10);
-    private readonly CancellationTokenSource clientTokenSource = new();
-    private readonly TimeSpan startupTimeout = startupTimeout;
-    private readonly TimeSpan shutdownTimeout = shutdownTimeout;
+    private readonly CancellationTokenSource clientTokenSource = new CancellationTokenSource();
+    private readonly TimeSpan startupTimeout;
+    private readonly TimeSpan shutdownTimeout;
     private Task? dataReceiveTask;
-    private ClientWebSocket client = new();
-    private readonly SemaphoreSlim sendMethodSemaphore = new(1, 1);
+    private ClientWebSocket client = new ClientWebSocket();
+    private readonly SemaphoreSlim sendMethodSemaphore = new SemaphoreSlim(1, 1);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketConnection" /> class.
@@ -58,6 +53,17 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
     public WebSocketConnection(TimeSpan startupTimeout)
         : this(startupTimeout, DefaultTimeout)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketConnection" /> class with a given startup and shutdown timeout.
+    /// </summary>
+    /// <param name="startupTimeout">The timeout before throwing an error when starting up the connection.</param>
+    /// <param name="shutdownTimeout">The timeout before throwing an error when shutting down the connection.</param>
+    public WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeout)
+    {
+        this.startupTimeout = startupTimeout;
+        this.shutdownTimeout = shutdownTimeout;
     }
 
     /// <summary>
@@ -161,7 +167,7 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
             throw new ArgumentNullException(nameof(data));
         }
 
-        ArraySegment<byte> messageBuffer = new(Encoding.UTF8.GetBytes(data));
+        ArraySegment<byte> messageBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data));
         this.Log($"SEND >>> {data}");
 
         await sendMethodSemaphore.WaitAsync().ConfigureAwait(false);
@@ -183,7 +189,7 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
     protected virtual async Task CloseClientWebSocket()
     {
         // Close the socket first, because ReceiveAsync leaves an invalid socket (state = aborted) when the token is cancelled
-        CancellationTokenSource timeout = new(this.shutdownTimeout);
+        CancellationTokenSource timeout = new CancellationTokenSource(this.shutdownTimeout);
         try
         {
             // After this, the socket state which change to CloseSent
@@ -214,7 +220,10 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnDataReceived(WebSocketConnectionDataReceivedEventArgs e)
     {
-        this.DataReceived?.Invoke(this, e);
+        if (this.DataReceived != null)
+        {
+            this.DataReceived(this, e);
+        }
     }
 
     /// <summary>
@@ -223,7 +232,10 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnLogMessage(DevToolsSessionLogMessageEventArgs e)
     {
-        this.LogMessage?.Invoke(this, e);
+        if (this.LogMessage != null)
+        {
+            this.LogMessage(this, e);
+        }
     }
 
     private async Task ReceiveData()
@@ -231,7 +243,7 @@ public class WebSocketConnection(TimeSpan startupTimeout, TimeSpan shutdownTimeo
         CancellationToken cancellationToken = this.clientTokenSource.Token;
         try
         {
-            StringBuilder messageBuilder = new();
+            StringBuilder messageBuilder = new StringBuilder();
             ArraySegment<byte> buffer = WebSocket.CreateClientBuffer(this.BufferSize, this.BufferSize);
             while (this.client.State != WebSocketState.Closed && !cancellationToken.IsCancellationRequested)
             {

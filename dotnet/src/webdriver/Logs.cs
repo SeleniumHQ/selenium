@@ -26,14 +26,19 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a mechanism for examining logs for the driver during the test.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="Logs"/> class.
-/// </remarks>
-/// <param name="driver">Instance of the driver currently in use</param>
-/// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
-public class Logs(WebDriver driver) : ILogs
+public class Logs : ILogs
 {
-    private readonly WebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    private readonly WebDriver driver;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Logs"/> class.
+    /// </summary>
+    /// <param name="driver">Instance of the driver currently in use</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+    public Logs(WebDriver driver)
+    {
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
 
     /// <summary>
     /// Gets the list of available log types for this driver.
@@ -42,7 +47,7 @@ public class Logs(WebDriver driver) : ILogs
     {
         get
         {
-            List<string> availableLogTypes = [];
+            List<string> availableLogTypes = new List<string>();
             try
             {
                 Response commandResponse = this.driver.Execute(DriverCommand.GetAvailableLogTypes, null);
@@ -77,12 +82,10 @@ public class Logs(WebDriver driver) : ILogs
             throw new ArgumentNullException(nameof(logKind));
         }
 
-        List<LogEntry> entries = [];
+        List<LogEntry> entries = new List<LogEntry>();
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "type", logKind }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("type", logKind);
         Response commandResponse = this.driver.Execute(DriverCommand.GetLog, parameters);
 
         if (commandResponse.Value is object?[] responseValue)

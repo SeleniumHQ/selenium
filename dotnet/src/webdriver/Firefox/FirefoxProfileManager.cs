@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox;
 /// </summary>
 public class FirefoxProfileManager
 {
-    private readonly Dictionary<string, string> profiles = [];
+    private Dictionary<string, string> profiles = new Dictionary<string, string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.
@@ -80,7 +80,7 @@ public class FirefoxProfileManager
         string profilesIniFile = Path.Combine(appDataDirectory, "profiles.ini");
         if (File.Exists(profilesIniFile))
         {
-            IniFileReader reader = new(profilesIniFile);
+            IniFileReader reader = new IniFileReader(profilesIniFile);
             ReadOnlyCollection<string> sectionNames = reader.SectionNames;
             foreach (string sectionName in sectionNames)
             {

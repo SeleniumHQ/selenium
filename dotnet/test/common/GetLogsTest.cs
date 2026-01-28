@@ -63,7 +63,7 @@ public class GetLogsTest : DriverTestFixture
     public void DifferentLogsShouldNotContainTheSameLogEntries()
     {
         driver.Url = simpleTestPage;
-        Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = [];
+        Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = new Dictionary<string, ReadOnlyCollection<LogEntry>>();
         ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
         foreach (string logType in logTypes)
         {
@@ -99,7 +99,7 @@ public class GetLogsTest : DriverTestFixture
     {
         if (TestUtilities.IsChrome(driver))
         {
-            ChromeOptions options = new();
+            ChromeOptions options = new ChromeOptions();
             options.SetLoggingPreference(logType, logLevel);
             localDriver = new ChromeDriver(options);
         }

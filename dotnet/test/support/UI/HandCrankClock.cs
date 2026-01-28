@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Support.UI;
 
 public class HandCrankClock : IClock
 {
-    private DateTime fakeNow = new(50000);
+    private DateTime fakeNow = new DateTime(50000);
     public DateTime Now => fakeNow;
 
     public DateTime LaterBy(TimeSpan delay)
@@ -39,6 +39,6 @@ public class HandCrankClock : IClock
 
     public void MoveTime(TimeSpan timespan)
     {
-        fakeNow += timespan;
+        fakeNow = fakeNow + timespan;
     }
 }

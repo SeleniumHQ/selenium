@@ -168,8 +168,8 @@ public static class CapabilityType
     /// </summary>
     public static readonly string EnableDownloads = "se:downloadsEnabled";
 
-    private static readonly HashSet<string> KnownSpecCompliantCapabilityNames =
-    [
+    private static readonly HashSet<string> KnownSpecCompliantCapabilityNames = new HashSet<string>()
+    {
         BrowserName,
         BrowserVersion,
         PlatformName,
@@ -181,7 +181,7 @@ public static class CapabilityType
         UnhandledPromptBehavior,
         UseStrictFileInteractability,
         WebSocketUrl
-    ];
+    };
 
     /// <summary>
     /// Gets a value indicating whether a given capability name is compliant with the

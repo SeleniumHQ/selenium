@@ -22,21 +22,26 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Represents information about a log entry when the browser console is written to.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="LogEntry"/> type.
-/// </remarks>
-/// <param name="kind">The kind of message written to the log.</param>
-/// <param name="message">The text of the message written to the log.</param>
-public class LogEntry(string kind, string message)
+public class LogEntry
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogEntry"/> type.
+    /// </summary>
+    /// <param name="kind">The kind of message written to the log.</param>
+    /// <param name="message">The text of the message written to the log.</param>
+    public LogEntry(string kind, string message)
+    {
+        Kind = kind;
+        Message = message;
+    }
 
     /// <summary>
     /// Gets the kind of message written to the log.
     /// </summary>
-    public string Kind { get; } = kind;
+    public string Kind { get; }
 
     /// <summary>
     /// Gets the text of the message written to the log.
     /// </summary>
-    public string Message { get; } = message;
+    public string Message { get; }
 }

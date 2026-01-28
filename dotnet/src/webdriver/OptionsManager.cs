@@ -22,13 +22,18 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a mechanism for setting options needed for the driver during the test.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="OptionsManager"/> class
-/// </remarks>
-/// <param name="driver">Instance of the driver currently in use</param>
-internal sealed class OptionsManager(WebDriver driver) : IOptions
+internal sealed class OptionsManager : IOptions
 {
-    private readonly WebDriver driver = driver ?? throw new System.ArgumentNullException(nameof(driver));
+    private readonly WebDriver driver;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OptionsManager"/> class
+    /// </summary>
+    /// <param name="driver">Instance of the driver currently in use</param>
+    public OptionsManager(WebDriver driver)
+    {
+        this.driver = driver ?? throw new System.ArgumentNullException(nameof(driver));
+    }
 
     /// <summary>
     /// Gets an object allowing the user to manipulate cookies on the page.

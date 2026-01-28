@@ -362,66 +362,67 @@ public static class Keys
     /// <exception cref="ArgumentNullException">If <paramref name="value"/> is <see langword="null"/>.</exception>
     internal static object GetDescription(string value)
     {
-        descriptions ??= new Dictionary<string, string>
-            {
-                { Null, "Null" },
-                { Cancel, "Cancel" },
-                { Help, "Help" },
-                { Backspace, "Backspace" },
-                { Tab, "Tab" },
-                { Clear, "Clear" },
-                { Return, "Return" },
-                { Enter, "Enter" },
-                { Shift, "Shift" },
-                { Control, "Control" },
-                { Alt, "Alt" },
-                { Pause, "Pause" },
-                { Escape, "Escape" },
-                { Space, "Space" },
-                { PageUp, "Page Up" },
-                { PageDown, "PageDown" },
-                { End, "End" },
-                { Home, "Home" },
-                { Left, "Left" },
-                { Up, "Up" },
-                { Right, "Right" },
-                { Down, "Down" },
-                { Insert, "Insert" },
-                { Delete, "Delete" },
-                { Semicolon, "Semicolon" },
-                { Equal, "Equal" },
-                { NumberPad0, "Number Pad 0" },
-                { NumberPad1, "Number Pad 1" },
-                { NumberPad2, "Number Pad 2" },
-                { NumberPad3, "Number Pad 3" },
-                { NumberPad4, "Number Pad 4" },
-                { NumberPad5, "Number Pad 5" },
-                { NumberPad6, "Number Pad 6" },
-                { NumberPad7, "Number Pad 7" },
-                { NumberPad8, "Number Pad 8" },
-                { NumberPad9, "Number Pad 9" },
-                { Multiply, "Multiply" },
-                { Add, "Add" },
-                { Separator, "Separator" },
-                { Subtract, "Subtract" },
-                { Decimal, "Decimal" },
-                { Divide, "Divide" },
-                { F1, "F1" },
-                { F2, "F2" },
-                { F3, "F3" },
-                { F4, "F4" },
-                { F5, "F5" },
-                { F6, "F6" },
-                { F7, "F7" },
-                { F8, "F8" },
-                { F9, "F9" },
-                { F10, "F10" },
-                { F11, "F11" },
-                { F12, "F12" },
-                { Meta, "Meta" },
-                { Command, "Command" },
-                { ZenkakuHankaku, "Zenkaku Hankaku" }
-            };
+        if (descriptions == null)
+        {
+            descriptions = new Dictionary<string, string>();
+            descriptions.Add(Null, "Null");
+            descriptions.Add(Cancel, "Cancel");
+            descriptions.Add(Help, "Help");
+            descriptions.Add(Backspace, "Backspace");
+            descriptions.Add(Tab, "Tab");
+            descriptions.Add(Clear, "Clear");
+            descriptions.Add(Return, "Return");
+            descriptions.Add(Enter, "Enter");
+            descriptions.Add(Shift, "Shift");
+            descriptions.Add(Control, "Control");
+            descriptions.Add(Alt, "Alt");
+            descriptions.Add(Pause, "Pause");
+            descriptions.Add(Escape, "Escape");
+            descriptions.Add(Space, "Space");
+            descriptions.Add(PageUp, "Page Up");
+            descriptions.Add(PageDown, "PageDown");
+            descriptions.Add(End, "End");
+            descriptions.Add(Home, "Home");
+            descriptions.Add(Left, "Left");
+            descriptions.Add(Up, "Up");
+            descriptions.Add(Right, "Right");
+            descriptions.Add(Down, "Down");
+            descriptions.Add(Insert, "Insert");
+            descriptions.Add(Delete, "Delete");
+            descriptions.Add(Semicolon, "Semicolon");
+            descriptions.Add(Equal, "Equal");
+            descriptions.Add(NumberPad0, "Number Pad 0");
+            descriptions.Add(NumberPad1, "Number Pad 1");
+            descriptions.Add(NumberPad2, "Number Pad 2");
+            descriptions.Add(NumberPad3, "Number Pad 3");
+            descriptions.Add(NumberPad4, "Number Pad 4");
+            descriptions.Add(NumberPad5, "Number Pad 5");
+            descriptions.Add(NumberPad6, "Number Pad 6");
+            descriptions.Add(NumberPad7, "Number Pad 7");
+            descriptions.Add(NumberPad8, "Number Pad 8");
+            descriptions.Add(NumberPad9, "Number Pad 9");
+            descriptions.Add(Multiply, "Multiply");
+            descriptions.Add(Add, "Add");
+            descriptions.Add(Separator, "Separator");
+            descriptions.Add(Subtract, "Subtract");
+            descriptions.Add(Decimal, "Decimal");
+            descriptions.Add(Divide, "Divide");
+            descriptions.Add(F1, "F1");
+            descriptions.Add(F2, "F2");
+            descriptions.Add(F3, "F3");
+            descriptions.Add(F4, "F4");
+            descriptions.Add(F5, "F5");
+            descriptions.Add(F6, "F6");
+            descriptions.Add(F7, "F7");
+            descriptions.Add(F8, "F8");
+            descriptions.Add(F9, "F9");
+            descriptions.Add(F10, "F10");
+            descriptions.Add(F11, "F11");
+            descriptions.Add(F12, "F12");
+            descriptions.Add(Meta, "Meta");
+            descriptions.Add(Command, "Command");
+            descriptions.Add(ZenkakuHankaku, "Zenkaku Hankaku");
+        }
 
         if (descriptions.TryGetValue(value, out string? description))
         {

@@ -43,7 +43,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private NetworkManager? network;
     private WebElementFactory elementFactory;
 
-    private readonly List<string> registeredCommands = [];
+    private readonly List<string> registeredCommands = new List<string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebDriver"/> class.
@@ -166,7 +166,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
             commandResponse.EnsureValueIsNotNull();
             object?[] handles = (object?[])commandResponse.Value;
-            List<string> handleList = new(handles.Length);
+            List<string> handleList = new List<string>(handles.Length);
             foreach (object? handle in handles)
             {
                 handleList.Add(handle!.ToString()!);
@@ -297,11 +297,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
     public virtual IWebElement FindElement(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "using", mechanism },
-            { "value", value }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("using", mechanism);
+        parameters.Add("value", value);
 
         Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
 
@@ -337,11 +335,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
     public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new()
-        {
-            { "using", mechanism },
-            { "value", value }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("using", mechanism);
+        parameters.Add("value", value);
 
         Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
 
@@ -392,16 +388,14 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             throw new ArgumentNullException(nameof(actionSequenceList), "List of action sequences must not be null");
         }
 
-        List<object> objectList = [];
+        List<object> objectList = new List<object>();
         foreach (ActionSequence sequence in actionSequenceList)
         {
             objectList.Add(sequence.ToDictionary());
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            ["actions"] = objectList
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["actions"] = objectList;
 
         this.Execute(DriverCommand.Actions, parameters);
     }
@@ -541,7 +535,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>Collection of elements</returns>
     internal ReadOnlyCollection<IWebElement> GetElementsFromResponse(Response response)
     {
-        List<IWebElement> toReturn = [];
+        List<IWebElement> toReturn = new List<IWebElement>();
         if (response.Value is object?[] elements)
         {
             foreach (object? elementObject in elements)
@@ -586,7 +580,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 #nullable enable
         >? parameters)
     {
-        Command commandToExecute = new(SessionId, driverCommandToExecute, parameters);
+        Command commandToExecute = new Command(SessionId, driverCommandToExecute, parameters);
 
         Response commandResponse = await this.CommandExecutor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
 
@@ -606,7 +600,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     [MemberNotNull(nameof(Capabilities))]
     protected void StartSession(ICapabilities capabilities)
     {
-        Dictionary<string, object> parameters = [];
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
 
         // If the object passed into the RemoteWebDriver constructor is a
         // RemoteSessionSettings object, it is expected that all intermediate
@@ -617,12 +611,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
-            List<object> firstMatchCapabilitiesList = [matchCapabilities];
+            List<object> firstMatchCapabilitiesList = new List<object>();
+            firstMatchCapabilitiesList.Add(matchCapabilities);
 
-            Dictionary<string, object> specCompliantCapabilitiesDictionary = new()
-            {
-                ["firstMatch"] = firstMatchCapabilitiesList
-            };
+            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
+            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
 
             parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
         }
@@ -661,7 +654,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             throw new ArgumentNullException(nameof(capabilitiesToConvert));
         }
 
-        Dictionary<string, object> capabilitiesDictionary = [];
+        Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
 
         foreach (KeyValuePair<string, object> entry in ((IHasCapabilitiesDictionary)capabilitiesToConvert).CapabilitiesDictionary)
         {
@@ -722,7 +715,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             if (errorResponse.Value is Dictionary<string, object?> errorAsDictionary)
             {
-                ErrorResponse errorResponseObject = new(errorAsDictionary);
+                ErrorResponse errorResponseObject = new ErrorResponse(errorAsDictionary);
                 string errorMessage = errorResponseObject.Message;
                 switch (errorResponse.Status)
                 {
@@ -845,10 +838,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         object?[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "script", script }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("script", script);
 
         if (convertedArgs != null && convertedArgs.Length > 0)
         {
@@ -889,7 +880,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             // checking for IEnumerable, since dictionaries also implement IEnumerable.
             // Additionally, JavaScript objects have property names as strings, so all
             // keys will be converted to strings.
-            Dictionary<string, object?> dictionary = [];
+            Dictionary<string, object?> dictionary = new Dictionary<string, object?>();
             foreach (DictionaryEntry argEntry in argAsDictionary)
             {
                 dictionary.Add(argEntry.Key.ToString()!, ConvertObjectToJavaScriptObject(argEntry.Value));
@@ -899,7 +890,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
         else if (arg is IEnumerable argAsEnumerable)
         {
-            List<object?> objectList = [];
+            List<object?> objectList = new List<object?>();
             foreach (object? item in argAsEnumerable)
             {
                 objectList.Add(ConvertObjectToJavaScriptObject(item));
@@ -924,7 +915,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         if (args == null)
         {
-            return [null];
+            return new object?[] { null };
         }
 
         for (int i = 0; i < args.Length; i++)
@@ -965,7 +956,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         else if (responseValue is object?[] resultAsArray)
         {
             bool allElementsAreWebElements = true;
-            List<object?> toReturn = new(resultAsArray.Length);
+            List<object?> toReturn = new List<object?>(resultAsArray.Length);
             foreach (object? item in resultAsArray)
             {
                 object? parsedItem = this.ParseJavaScriptReturnValue(item);
@@ -979,7 +970,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
             if (toReturn.Count > 0 && allElementsAreWebElements)
             {
-                List<IWebElement> elementList = new(resultAsArray.Length);
+                List<IWebElement> elementList = new List<IWebElement>(resultAsArray.Length);
                 foreach (object? listItem in toReturn)
                 {
                     elementList.Add((IWebElement)listItem!);
@@ -1033,10 +1024,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             throw new ArgumentNullException(nameof(authenticatorId));
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "authenticatorId", authenticatorId }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(DriverCommand.RemoveVirtualAuthenticator, parameters);
         this.AuthenticatorId = null;
@@ -1062,10 +1051,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new(credential.ToDictionary())
-        {
-            { "authenticatorId", authenticatorId }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>(credential.ToDictionary());
+        parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(driverCommandToExecute: DriverCommand.AddCredential, parameters);
     }
@@ -1079,10 +1066,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "authenticatorId", authenticatorId }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("authenticatorId", authenticatorId);
 
         Response getCredentialsResponse = this.Execute(driverCommandToExecute: DriverCommand.GetCredentials, parameters);
 
@@ -1092,7 +1077,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             throw new WebDriverException($"Get credentials call succeeded, but the response was not a list of credentials: {getCredentialsResponse.Value}");
         }
 
-        List<Credential> credentials = new(credentialsList.Length);
+        List<Credential> credentials = new List<Credential>(credentialsList.Length);
         foreach (object? dictionary in credentialsList)
         {
             Credential credential = Credential.FromDictionary((Dictionary<string, object>)dictionary!);
@@ -1128,11 +1113,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "authenticatorId", authenticatorId },
-            { "credentialId", credentialId }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("authenticatorId", authenticatorId);
+        parameters.Add("credentialId", credentialId);
 
         this.Execute(driverCommandToExecute: DriverCommand.RemoveCredential, parameters);
     }
@@ -1145,10 +1128,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "authenticatorId", authenticatorId }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(driverCommandToExecute: DriverCommand.RemoveAllCredentials, parameters);
     }
@@ -1161,11 +1142,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "authenticatorId", authenticatorId },
-            { "isUserVerified", verified }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("authenticatorId", authenticatorId);
+        parameters.Add("isUserVerified", verified);
 
         this.Execute(driverCommandToExecute: DriverCommand.SetUserVerified, parameters);
     }

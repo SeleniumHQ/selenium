@@ -34,8 +34,8 @@ public class IeSpecificTests : DriverTestFixture
     [Test]
     public void KeysTest()
     {
-        List<string> keyComboNames =
-        [
+        List<string> keyComboNames = new List<string>()
+        {
             "Control",
             "Shift",
             "Alt",
@@ -43,10 +43,10 @@ public class IeSpecificTests : DriverTestFixture
             "Control + Alt",
             "Shift + Alt",
             "Control + Shift + Alt"
-        ];
+        };
 
-        List<string> colorNames =
-        [
+        List<string> colorNames = new List<string>()
+        {
             "red",
             "green",
             "lightblue",
@@ -54,10 +54,10 @@ public class IeSpecificTests : DriverTestFixture
             "lightgreen",
             "silver",
             "magenta"
-        ];
+        };
 
-        List<List<string>> modifierCombonations =
-        [
+        List<List<string>> modifierCombonations = new List<List<string>>()
+        {
             new List<string>() { Keys.Control },
             new List<string>() { Keys.Shift },
             new List<string>() { Keys.Alt },
@@ -65,10 +65,10 @@ public class IeSpecificTests : DriverTestFixture
             new List<string>() { Keys.Control, Keys.Alt },
             new List<string>() { Keys.Shift, Keys.Alt },
             new List<string>() { Keys.Control, Keys.Shift, Keys.Alt}
-        ];
+        };
 
-        List<string> expectedColors =
-        [
+        List<string> expectedColors = new List<string>()
+        {
             "rgba(255, 0, 0, 1)",
             "rgba(0, 128, 0, 1)",
             "rgba(173, 216, 230, 1)",
@@ -76,14 +76,14 @@ public class IeSpecificTests : DriverTestFixture
             "rgba(144, 238, 144, 1)",
             "rgba(192, 192, 192, 1)",
             "rgba(255, 0, 255, 1)"
-        ];
+        };
 
         bool passed = true;
         string errors = string.Empty;
 
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
         IWebElement body = driver.FindElement(By.CssSelector("body"));
-        Actions actions = new(driver);
+        Actions actions = new Actions(driver);
         for (int i = 0; i < keyComboNames.Count; i++)
         {
             for (int j = 0; j < modifierCombonations[i].Count; j++)

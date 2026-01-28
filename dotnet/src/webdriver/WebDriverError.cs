@@ -168,7 +168,7 @@ internal static class WebDriverError
     /// </summary>
     public const string UnsupportedOperation = "unsupported operation";
 
-    private static readonly Dictionary<string, WebDriverResult> resultMap = new()
+    private static readonly Dictionary<string, WebDriverResult> resultMap = new Dictionary<string, WebDriverResult>
     {
         { ElementClickIntercepted, WebDriverResult.ElementClickIntercepted },
         { ElementNotInteractable, WebDriverResult.ElementNotInteractable },

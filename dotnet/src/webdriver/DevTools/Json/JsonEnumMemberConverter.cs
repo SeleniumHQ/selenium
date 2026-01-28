@@ -30,8 +30,8 @@ namespace OpenQA.Selenium.DevTools.Json;
 internal sealed class JsonEnumMemberConverter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum> : JsonConverter<TEnum>
     where TEnum : struct, Enum
 {
-    private readonly Dictionary<TEnum, string> _enumToString = [];
-    private readonly Dictionary<string, TEnum> _stringToEnum = [];
+    private readonly Dictionary<TEnum, string> _enumToString = new Dictionary<TEnum, string>();
+    private readonly Dictionary<string, TEnum> _stringToEnum = new Dictionary<string, TEnum>();
 
     public JsonEnumMemberConverter()
     {

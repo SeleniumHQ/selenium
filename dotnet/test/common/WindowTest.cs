@@ -56,7 +56,7 @@ public class WindowTest : DriverTestFixture
         Size size = window.Size;
 
         // resize relative to the initial size, since we don't know what it is
-        Size targetSize = new(size.Width - 20, size.Height - 20);
+        Size targetSize = new Size(size.Width - 20, size.Height - 20);
         ChangeSizeBy(-20, -20);
 
         Size newSize = window.Size;
@@ -75,7 +75,7 @@ public class WindowTest : DriverTestFixture
         try
         {
             // resize relative to the initial size, since we don't know what it is
-            Size targetSize = new(size.Width - 20, size.Height - 20);
+            Size targetSize = new Size(size.Width - 20, size.Height - 20);
             window.Size = targetSize;
 
 
@@ -100,7 +100,7 @@ public class WindowTest : DriverTestFixture
         try
         {
             // resize relative to the initial size, since we don't know what it is
-            Size targetSize = new(size.Width - 20, size.Height - 20);
+            Size targetSize = new Size(size.Width - 20, size.Height - 20);
             window.Size = targetSize;
 
 
@@ -129,7 +129,7 @@ public class WindowTest : DriverTestFixture
         window.Size = new Size(200, 200);
         Point position = window.Position;
 
-        Point targetPosition = new(position.X + 10, position.Y + 10);
+        Point targetPosition = new Point(position.X + 10, position.Y + 10);
         window.Position = targetPosition;
 
         Point newLocation = window.Position;
@@ -141,7 +141,7 @@ public class WindowTest : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMaximizeTheCurrentWindow()
     {
-        Size targetSize = new(640, 400);
+        Size targetSize = new Size(640, 400);
 
         ChangeSizeTo(targetSize);
 
@@ -195,9 +195,9 @@ public class WindowTest : DriverTestFixture
     public void ShouldBeAbleToFullScreenTheCurrentWindow()
     {
         IWindow window = driver.Manage().Window;
-        _ = window.Size;
+        Size origSize = window.Size;
 
-        Size targetSize = new(640, 400);
+        Size targetSize = new Size(640, 400);
 
         ChangeSizeTo(targetSize);
 
@@ -212,7 +212,7 @@ public class WindowTest : DriverTestFixture
     [Test]
     public void ShouldBeAbleToMinimizeTheCurrentWindow()
     {
-        Size targetSize = new(640, 400);
+        Size targetSize = new Size(640, 400);
 
         ChangeSizeTo(targetSize);
 
@@ -224,7 +224,7 @@ public class WindowTest : DriverTestFixture
     private void FullScreen()
     {
         IWindow window = driver.Manage().Window;
-        _ = window.Size;
+        Size currentSize = window.Size;
         window.FullScreen();
     }
 
@@ -270,5 +270,15 @@ public class WindowTest : DriverTestFixture
     private Func<bool> WindowWidthToBeGreaterThan(int width)
     {
         return () => { return driver.Manage().Window.Size.Width > width; };
+    }
+
+    private Func<bool> WindowHeightToBeLessThan(int height)
+    {
+        return () => { return driver.Manage().Window.Size.Height < height; };
+    }
+
+    private Func<bool> WindowWidthToBeLessThan(int width)
+    {
+        return () => { return driver.Manage().Window.Size.Width < width; };
     }
 }

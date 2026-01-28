@@ -129,11 +129,11 @@ public class VisibilityTest : DriverTestFixture
     [Test]
     public void ElementHiddenByOverflowXIsNotVisible()
     {
-        string[] pages = [
+        string[] pages = new string[]{
             "overflow/x_hidden_y_hidden.html",
             "overflow/x_hidden_y_scroll.html",
             "overflow/x_hidden_y_auto.html",
-        ];
+        };
         foreach (string page in pages)
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
@@ -147,11 +147,11 @@ public class VisibilityTest : DriverTestFixture
     [Test]
     public void ElementHiddenByOverflowYIsNotVisible()
     {
-        string[] pages = [
+        string[] pages = new string[]{
             "overflow/x_hidden_y_hidden.html",
             "overflow/x_scroll_y_hidden.html",
             "overflow/x_auto_y_hidden.html",
-        ];
+        };
         foreach (string page in pages)
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
@@ -165,14 +165,14 @@ public class VisibilityTest : DriverTestFixture
     [Test]
     public void ElementScrollableByOverflowXIsVisible()
     {
-        string[] pages = [
+        string[] pages = new string[]{
             "overflow/x_scroll_y_hidden.html",
             "overflow/x_scroll_y_scroll.html",
             "overflow/x_scroll_y_auto.html",
             "overflow/x_auto_y_hidden.html",
             "overflow/x_auto_y_scroll.html",
             "overflow/x_auto_y_auto.html",
-        ];
+        };
         foreach (string page in pages)
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
@@ -184,14 +184,14 @@ public class VisibilityTest : DriverTestFixture
     [Test]
     public void ElementScrollableByOverflowYIsVisible()
     {
-        string[] pages = [
+        string[] pages = new string[]{
             "overflow/x_hidden_y_scroll.html",
             "overflow/x_scroll_y_scroll.html",
             "overflow/x_auto_y_scroll.html",
             "overflow/x_hidden_y_auto.html",
             "overflow/x_scroll_y_auto.html",
             "overflow/x_auto_y_auto.html",
-        ];
+        };
         foreach (string page in pages)
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
@@ -203,12 +203,12 @@ public class VisibilityTest : DriverTestFixture
     [Test]
     public void ElementScrollableByOverflowXAndYIsVisible()
     {
-        string[] pages = [
+        string[] pages = new string[]{
             "overflow/x_scroll_y_scroll.html",
             "overflow/x_scroll_y_auto.html",
             "overflow/x_auto_y_scroll.html",
             "overflow/x_auto_y_auto.html",
-        ];
+        };
         foreach (string page in pages)
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);

@@ -24,6 +24,8 @@ namespace OpenQA.Selenium;
 [TestFixture]
 public class ElementSelectingTest : DriverTestFixture
 {
+    private const string assertCannotPerformActionFormat_action_element = "Expected exception - should not be able to {0} element {1}";
+
     [Test]
     public void ShouldBeAbleToSelectAnEnabledUnselectedCheckbox()
     {
@@ -293,4 +295,6 @@ public class ElementSelectingTest : DriverTestFixture
             return select.FindElements(By.TagName("option"))[0];
         }
     }
+
+    private IWebElement NonSelectableElement => driver.FindElement(By.TagName("div"));
 }

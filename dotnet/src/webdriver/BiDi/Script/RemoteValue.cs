@@ -92,7 +92,7 @@ public abstract record RemoteValue
         {
             return (TResult)(((StringRemoteValue)this).Value as object);
         }
-        else if (type is not null)
+        else if (type is object)
         {
             // :)
             return (TResult)new object();

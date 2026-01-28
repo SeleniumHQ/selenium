@@ -54,7 +54,7 @@ public class FirefoxDriverServiceTest
     [Test]
     public void ShouldRedirectGeckoDriverLogsToFile()
     {
-        FirefoxOptions options = new();
+        FirefoxOptions options = new FirefoxOptions();
         string logPath = Path.GetTempFileName();
         options.LogLevel = FirefoxDriverLogLevel.Info;
 
@@ -80,10 +80,8 @@ public class FirefoxDriverServiceTest
     public void ShouldRedirectGeckoDriverLogsToConsole()
     {
         Log.SetLevel(LogEventLevel.Trace).Handlers.Add(testLogHandler);
-        FirefoxOptions options = new()
-        {
-            LogLevel = FirefoxDriverLogLevel.Info
-        };
+        FirefoxOptions options = new FirefoxOptions();
+        options.LogLevel = FirefoxDriverLogLevel.Info;
 
         FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
 

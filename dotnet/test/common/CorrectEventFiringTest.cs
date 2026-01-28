@@ -140,7 +140,7 @@ public class CorrectEventFiringTest : DriverTestFixture
         string text = driver.FindElement(By.Id("result")).Text;
 
         int lastIndex = -1;
-        List<string> eventList = ["mousedown", "focus", "mouseup", "click"];
+        List<string> eventList = new List<string>() { "mousedown", "focus", "mouseup", "click" };
         foreach (string eventName in eventList)
         {
             int index = text.IndexOf(eventName);
@@ -419,7 +419,7 @@ public class CorrectEventFiringTest : DriverTestFixture
         Assert.That(result.Text, Is.Empty);
 
         string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
-        System.IO.FileInfo inputFile = new(filePath);
+        System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
         System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
         inputFileWriter.WriteLine("Hello world");
         inputFileWriter.Close();
@@ -478,7 +478,7 @@ public class CorrectEventFiringTest : DriverTestFixture
             Assert.Ignore("Not supported on IE < 9");
         }
 
-        StringBuilder expectedLogBuilder = new();
+        StringBuilder expectedLogBuilder = new StringBuilder();
         expectedLogBuilder.AppendLine("Log:");
         expectedLogBuilder.AppendLine("mousedown in over (handled by over)");
         expectedLogBuilder.AppendLine("mousedown in over (handled by body)");

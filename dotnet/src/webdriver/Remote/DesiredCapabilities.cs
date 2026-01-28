@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Remote;
 /// </summary>
 internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary, IEquatable<DesiredCapabilities>
 {
-    private readonly Dictionary<string, object> capabilities = [];
+    private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class

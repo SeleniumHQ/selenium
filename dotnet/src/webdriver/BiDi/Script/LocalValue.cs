@@ -308,7 +308,7 @@ public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNum
 {
     internal override string Type { get; } = "number";
 
-    public static explicit operator NumberLocalValue(double n) => new(n);
+    public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }
 
 public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue

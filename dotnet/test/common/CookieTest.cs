@@ -60,7 +60,7 @@ public class CookieTest
     public void CookiesShouldAllowOptionalParametersToBeSet()
     {
         DateTime expiry = DateTime.Now;
-        Cookie cookie = new("name", "value", "test.com", "/", expiry, true, true, "None");
+        Cookie cookie = new Cookie("name", "value", "test.com", "/", expiry, true, true, "None");
         Assert.That(cookie.Domain, Is.EqualTo("test.com"));
         Assert.That(cookie.Path, Is.EqualTo("/"));
         Assert.That(cookie.IsHttpOnly, Is.True);
@@ -78,7 +78,7 @@ public class CookieTest
     [Test]
     public void SecureDefaultsToFalse()
     {
-        Cookie cookie = new("name", "value");
+        Cookie cookie = new Cookie("name", "value");
         Assert.That(cookie.Secure, Is.False);
     }
 
@@ -92,7 +92,7 @@ public class CookieTest
     [Test]
     public void HttpOnlyDefaultsToFalse()
     {
-        Cookie cookie = new("name", "value");
+        Cookie cookie = new Cookie("name", "value");
         Assert.That(cookie.IsHttpOnly, Is.False);
     }
 
@@ -108,6 +108,6 @@ public class CookieTest
     [Test]
     public void ShouldAllowExpiryToBeNull()
     {
-        _ = new ReturnedCookie("name", "value", "", "/", null, false, false);
+        Cookie cookie = new ReturnedCookie("name", "value", "", "/", null, false, false);
     }
 }

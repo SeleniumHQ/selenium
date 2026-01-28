@@ -25,18 +25,22 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Object used to create <see cref="WebElement"/> objects for a remote driver instance.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WebElementFactory"/> class.
-/// </remarks>
-/// <param name="parentDriver">The <see cref="WebDriver"/> object used to locate the elements.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
-public class WebElementFactory(WebDriver parentDriver)
+public class WebElementFactory
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebElementFactory"/> class.
+    /// </summary>
+    /// <param name="parentDriver">The <see cref="WebDriver"/> object used to locate the elements.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
+    public WebElementFactory(WebDriver parentDriver)
+    {
+        this.ParentDriver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+    }
 
     /// <summary>
     /// Gets the <see cref="WebDriver"/> instance used to locate elements.
     /// </summary>
-    protected WebDriver ParentDriver { get; } = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+    protected WebDriver ParentDriver { get; }
 
     /// <summary>
     /// Creates a <see cref="WebElement"/> from a dictionary containing a reference to an element.

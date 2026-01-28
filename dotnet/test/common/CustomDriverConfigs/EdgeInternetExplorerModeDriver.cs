@@ -40,5 +40,5 @@ public class EdgeInternetExplorerModeDriver : InternetExplorerDriver
     {
     }
 
-    public static InternetExplorerOptions DefaultOptions => new() { RequireWindowFocus = true, UsePerProcessProxy = true, AttachToEdgeChrome = true };
+    public static InternetExplorerOptions DefaultOptions => new InternetExplorerOptions() { RequireWindowFocus = true, UsePerProcessProxy = true, AttachToEdgeChrome = true };
 }

@@ -25,11 +25,17 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// The implementation of the <see cref="ILogger"/> interface through which log messages are emitted.
 /// </summary>
 /// <inheritdoc cref="ILogger"/>
-internal sealed class Logger(Type issuer, LogEventLevel level) : ILogger
+internal sealed class Logger : ILogger
 {
-    public LogEventLevel Level { get; set; } = level;
+    public Logger(Type issuer, LogEventLevel level)
+    {
+        Issuer = issuer;
+        Level = level;
+    }
 
-    public Type Issuer { get; internal set; } = issuer;
+    public LogEventLevel Level { get; set; }
+
+    public Type Issuer { get; internal set; }
 
     public void Trace(string message)
     {

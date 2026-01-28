@@ -61,7 +61,7 @@ public class EventFiringWebDriverTest
         mockNavigation.Setup(_ => _.Back());
         mockNavigation.Setup(_ => _.Forward());
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         firingDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigating);
         firingDriver.Navigated += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigated);
         firingDriver.NavigatingBack += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatingBack);
@@ -100,7 +100,7 @@ Navigated forward
         mockDriver.Setup(_ => _.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
         mockElement.Setup(_ => _.Click());
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         firingDriver.ElementClicking += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicking);
         firingDriver.ElementClicked += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicked);
 
@@ -119,7 +119,7 @@ Clicked
         mockElement.Setup(_ => _.Clear());
         mockElement.Setup(_ => _.SendKeys(It.IsAny<string>()));
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         firingDriver.ElementValueChanging += (sender, e) => log.AppendFormat("ValueChanging '{0}'", e.Value).AppendLine();
         firingDriver.ElementValueChanged += (sender, e) => log.AppendFormat("ValueChanged '{0}'", e.Value).AppendLine();
 
@@ -140,7 +140,7 @@ ValueChanged 'Dummy Text'
     {
         mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         var element1 = firingDriver.FindElement(By.Id("foo"));
         var element2 = firingDriver.FindElement(By.Id("foo"));
 
@@ -152,14 +152,14 @@ ValueChanged 'Dummy Text'
     {
         IList<IWebElement> driverElements = new List<IWebElement>();
         IList<IWebElement> subElements = new List<IWebElement>();
-        Mock<IWebElement> ignored = new();
+        Mock<IWebElement> ignored = new Mock<IWebElement>();
 
         mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
         mockElement.Setup(_ => _.FindElement(It.IsAny<By>())).Returns(ignored.Object);
         mockElement.Setup(_ => _.FindElements(It.Is<By>(x => x.Equals(By.Name("xyz"))))).Returns(new ReadOnlyCollection<IWebElement>(driverElements));
         mockDriver.Setup(_ => _.FindElements(It.Is<By>(x => x.Equals(By.XPath("//link[@type = 'text/css']"))))).Returns(new ReadOnlyCollection<IWebElement>(subElements));
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         firingDriver.FindingElement += new EventHandler<FindElementEventArgs>(firingDriver_FindingElement);
         firingDriver.FindElementCompleted += new EventHandler<FindElementEventArgs>(firingDriver_FindElementCompleted);
 
@@ -184,10 +184,10 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     [Test]
     public void ShouldCallListenerOnException()
     {
-        NoSuchElementException exception = new("argh");
+        NoSuchElementException exception = new NoSuchElementException("argh");
         mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Throws(exception);
 
-        EventFiringWebDriver firingDriver = new(mockDriver.Object);
+        EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
         firingDriver.ExceptionThrown += new EventHandler<WebDriverExceptionEventArgs>(firingDriver_ExceptionThrown);
 
         Assert.That(
@@ -200,11 +200,11 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     [Test]
     public void ShouldUnwrapElementArgsWhenCallingScripts()
     {
-        Mock<IExecutingDriver> executingDriver = new();
+        Mock<IExecutingDriver> executingDriver = new Mock<IExecutingDriver>();
         executingDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
         executingDriver.Setup(_ => _.ExecuteScript(It.IsAny<string>(), It.IsAny<object[]>())).Returns("foo");
 
-        EventFiringWebDriver testedDriver = new(executingDriver.Object);
+        EventFiringWebDriver testedDriver = new EventFiringWebDriver(executingDriver.Object);
 
         IWebElement element = testedDriver.FindElement(By.Id("foo"));
         try
@@ -222,14 +222,14 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     public void ShouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface()
     {
         // We should get this far
-        _ = new EventFiringWebDriver(new ChildDriver());
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(new ChildDriver());
     }
 
     [Test]
     public void ShouldBeAbleToAccessWrappedInstanceFromEventCalls()
     {
         stubDriver = new StubDriver();
-        EventFiringWebDriver testDriver = new(stubDriver);
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(stubDriver);
         StubDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver as StubDriver;
         Assert.That(wrapped, Is.EqualTo(stubDriver));
         testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(testDriver_Navigating);
@@ -241,7 +241,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     public void ShouldFireGetShadowRootEvents()
     {
         mockDriver.Setup(d => d.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
-        EventFiringWebDriver testDriver = new(mockDriver.Object);
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(mockDriver.Object);
 
         GetShadowRootEventArgs gettingShadowRootArgs = null;
         GetShadowRootEventArgs getShadowRootCompletedArgs = null;
@@ -268,7 +268,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         mockElement.Setup(e => e.GetShadowRoot()).Returns(mockShadowRoot.Object);
         mockElement.Setup(e => e.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
         mockDriver.Setup(d => d.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
-        EventFiringWebDriver testDriver = new(mockDriver.Object);
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(mockDriver.Object);
 
         FindElementEventArgs findingElementArgs = null;
         FindElementEventArgs findElementCompletedArgs = null;

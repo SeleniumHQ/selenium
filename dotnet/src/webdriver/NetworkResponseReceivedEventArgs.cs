@@ -27,7 +27,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 public class NetworkResponseReceivedEventArgs : EventArgs
 {
-    private readonly Dictionary<string, string> responseHeaders = [];
+    private readonly Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NetworkResponseReceivedEventArgs"/> class.

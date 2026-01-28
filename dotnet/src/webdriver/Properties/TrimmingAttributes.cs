@@ -32,21 +32,25 @@ namespace System.Diagnostics.CodeAnalysis;
 /// <remarks>
 /// This allows tools to understand which methods are unsafe to call when compiling ahead of time.
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="RequiresDynamicCodeAttribute"/> class
-/// with the specified message.
-/// </remarks>
-/// <param name="message">
-/// A message that contains information about the usage of dynamic code.
-/// </param>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, Inherited = false)]
-internal sealed class RequiresDynamicCodeAttribute(string message) : Attribute
+internal sealed class RequiresDynamicCodeAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequiresDynamicCodeAttribute"/> class
+    /// with the specified message.
+    /// </summary>
+    /// <param name="message">
+    /// A message that contains information about the usage of dynamic code.
+    /// </param>
+    public RequiresDynamicCodeAttribute(string message)
+    {
+        Message = message;
+    }
 
     /// <summary>
     /// Gets a message that contains information about the usage of dynamic code.
     /// </summary>
-    public string Message { get; } = message;
+    public string Message { get; }
 
     /// <summary>
     /// Gets or sets an optional URL that contains more information about the method,
@@ -63,21 +67,25 @@ internal sealed class RequiresDynamicCodeAttribute(string message) : Attribute
 /// This allows tools to understand which methods are unsafe to call when removing unreferenced
 /// code from an application.
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="RequiresUnreferencedCodeAttribute"/> class
-/// with the specified message.
-/// </remarks>
-/// <param name="message">
-/// A message that contains information about the usage of unreferenced code.
-/// </param>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, Inherited = false)]
-internal sealed class RequiresUnreferencedCodeAttribute(string message) : Attribute
+internal sealed class RequiresUnreferencedCodeAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequiresUnreferencedCodeAttribute"/> class
+    /// with the specified message.
+    /// </summary>
+    /// <param name="message">
+    /// A message that contains information about the usage of unreferenced code.
+    /// </param>
+    public RequiresUnreferencedCodeAttribute(string message)
+    {
+        Message = message;
+    }
 
     /// <summary>
     /// Gets a message that contains information about the usage of unreferenced code.
     /// </summary>
-    public string Message { get; } = message;
+    public string Message { get; }
 
     /// <summary>
     /// Gets or sets an optional URL that contains more information about the method,
@@ -95,15 +103,20 @@ internal sealed class RequiresUnreferencedCodeAttribute(string message) : Attrib
 /// <see cref="SuppressMessageAttribute"/> in that it doesn't have a
 /// <see cref="ConditionalAttribute"/>. So it is always preserved in the compiled assembly.
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="UnconditionalSuppressMessageAttribute"/>
-/// class, specifying the category of the tool and the identifier for an analysis rule.
-/// </remarks>
-/// <param name="category">The category for the attribute.</param>
-/// <param name="checkId">The identifier of the analysis rule the attribute applies to.</param>
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-internal sealed class UnconditionalSuppressMessageAttribute(string category, string checkId) : Attribute
+internal sealed class UnconditionalSuppressMessageAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnconditionalSuppressMessageAttribute"/>
+    /// class, specifying the category of the tool and the identifier for an analysis rule.
+    /// </summary>
+    /// <param name="category">The category for the attribute.</param>
+    /// <param name="checkId">The identifier of the analysis rule the attribute applies to.</param>
+    public UnconditionalSuppressMessageAttribute(string category, string checkId)
+    {
+        Category = category;
+        CheckId = checkId;
+    }
 
     /// <summary>
     /// Gets the category identifying the classification of the attribute.
@@ -112,7 +125,7 @@ internal sealed class UnconditionalSuppressMessageAttribute(string category, str
     /// The <see cref="Category"/> property describes the tool or tool analysis category
     /// for which a message suppression attribute applies.
     /// </remarks>
-    public string Category { get; } = category;
+    public string Category { get; }
 
     /// <summary>
     /// Gets the identifier of the analysis tool rule to be suppressed.
@@ -121,7 +134,7 @@ internal sealed class UnconditionalSuppressMessageAttribute(string category, str
     /// Concatenated together, the <see cref="Category"/> and <see cref="CheckId"/>
     /// properties form a unique check identifier.
     /// </remarks>
-    public string CheckId { get; } = checkId;
+    public string CheckId { get; }
 
     /// <summary>
     /// Gets or sets the scope of the code that is relevant for the attribute.
@@ -308,24 +321,28 @@ internal sealed class DynamicDependencyAttribute : Attribute
 /// should only be used on instance methods of types assignable to System.Type (or string, but no methods
 /// will use it there).
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="DynamicallyAccessedMembersAttribute"/> class
-/// with the specified member types.
-/// </remarks>
-/// <param name="memberTypes">The types of members dynamically accessed.</param>
 [AttributeUsage(
         AttributeTargets.Field | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter |
         AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Method |
         AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct,
         Inherited = false)]
-internal sealed class DynamicallyAccessedMembersAttribute(DynamicallyAccessedMemberTypes memberTypes) : Attribute
+internal sealed class DynamicallyAccessedMembersAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DynamicallyAccessedMembersAttribute"/> class
+    /// with the specified member types.
+    /// </summary>
+    /// <param name="memberTypes">The types of members dynamically accessed.</param>
+    public DynamicallyAccessedMembersAttribute(DynamicallyAccessedMemberTypes memberTypes)
+    {
+        MemberTypes = memberTypes;
+    }
 
     /// <summary>
     /// Gets the <see cref="DynamicallyAccessedMemberTypes"/> which specifies the type
     /// of members dynamically accessed.
     /// </summary>
-    public DynamicallyAccessedMemberTypes MemberTypes { get; } = memberTypes;
+    public DynamicallyAccessedMemberTypes MemberTypes { get; }
 }
 
 /// <summary>

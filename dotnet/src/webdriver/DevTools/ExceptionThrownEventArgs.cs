@@ -24,21 +24,26 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Provides data for events relating to JavaScript exception handling.
 /// </summary>
-/// <remarks>
-/// Initializes new instance of the <see cref="ExceptionThrownEventArgs"/> type.
-/// </remarks>
-/// <param name="timestamp">The time stamp of the exception.</param>
-/// <param name="message">The text of the exception.</param>
-public class ExceptionThrownEventArgs(DateTime timestamp, string message) : EventArgs
+public class ExceptionThrownEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes new instance of the <see cref="ExceptionThrownEventArgs"/> type.
+    /// </summary>
+    /// <param name="timestamp">The time stamp of the exception.</param>
+    /// <param name="message">The text of the exception.</param>
+    public ExceptionThrownEventArgs(DateTime timestamp, string message)
+    {
+        Timestamp = timestamp;
+        Message = message;
+    }
 
     /// <summary>
     /// Gets the time stamp of the exception.
     /// </summary>
-    public DateTime Timestamp { get; } = timestamp;
+    public DateTime Timestamp { get; }
 
     /// <summary>
     /// Gets the text of the exception.
     /// </summary>
-    public string Message { get; } = message;
+    public string Message { get; }
 }

@@ -50,9 +50,9 @@ public class PrintOptions
     private const double CentimetersPerInch = 2.54;
 
     private double scale = 1.0;
-    private PageSize pageSize = new();
-    private Margins margins = new();
-    private readonly HashSet<object> pageRanges = [];
+    private PageSize pageSize = new PageSize();
+    private Margins margins = new Margins();
+    private readonly HashSet<object> pageRanges = new HashSet<object>();
 
     /// <summary>
     /// Gets or sets the orientation of the pages in the printed document.
@@ -184,7 +184,7 @@ public class PrintOptions
 
     internal Dictionary<string, object?> ToDictionary()
     {
-        Dictionary<string, object?> toReturn = [];
+        Dictionary<string, object?> toReturn = new Dictionary<string, object?>();
 
         if (this.Orientation != PrintOrientation.Portrait)
         {
@@ -208,23 +208,19 @@ public class PrintOptions
 
         if (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth)
         {
-            Dictionary<string, object?> pageSizeDictionary = new()
-            {
-                ["width"] = this.pageSize.Width,
-                ["height"] = this.pageSize.Height
-            };
+            Dictionary<string, object?> pageSizeDictionary = new Dictionary<string, object?>();
+            pageSizeDictionary["width"] = this.pageSize.Width;
+            pageSizeDictionary["height"] = this.pageSize.Height;
             toReturn["page"] = pageSizeDictionary;
         }
 
         if (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize)
         {
-            Dictionary<string, object?> marginsDictionary = new()
-            {
-                ["top"] = this.margins.Top,
-                ["bottom"] = this.margins.Bottom,
-                ["left"] = this.margins.Left,
-                ["right"] = this.margins.Right
-            };
+            Dictionary<string, object?> marginsDictionary = new Dictionary<string, object?>();
+            marginsDictionary["top"] = this.margins.Top;
+            marginsDictionary["bottom"] = this.margins.Bottom;
+            marginsDictionary["left"] = this.margins.Left;
+            marginsDictionary["right"] = this.margins.Right;
             toReturn["margin"] = marginsDictionary;
         }
 
@@ -265,25 +261,25 @@ public class PrintOptions
         /// Represents the A4 paper size.
         /// Width: 21.0 cm, Height: 29.7 cm
         /// </summary>
-        public static PageSize A4 => new() { Width = 21.0, Height = 29.7 }; // cm
+        public static PageSize A4 => new PageSize { Width = 21.0, Height = 29.7 }; // cm
 
         /// <summary>
         /// Represents the Legal paper size.
         /// Width: 21.59 cm, Height: 35.56 cm
         /// </summary>
-        public static PageSize Legal => new() { Width = 21.59, Height = 35.56 }; // cm
+        public static PageSize Legal => new PageSize { Width = 21.59, Height = 35.56 }; // cm
 
         /// <summary>
         /// Represents the Letter paper size.
         /// Width: 21.59 cm, Height: 27.94 cm
         /// </summary>
-        public static PageSize Letter => new() { Width = 21.59, Height = 27.94 }; // cm
+        public static PageSize Letter => new PageSize { Width = 21.59, Height = 27.94 }; // cm
 
         /// <summary>
         /// Represents the Tabloid paper size.
         /// Width: 27.94 cm, Height: 43.18 cm
         /// </summary>
-        public static PageSize Tabloid => new() { Width = 27.94, Height = 43.18 }; // cm
+        public static PageSize Tabloid => new PageSize { Width = 27.94, Height = 43.18 }; // cm
 
         /// <summary>
         /// Gets or sets the height of each page in centimeters.

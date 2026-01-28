@@ -150,8 +150,8 @@ public class JavascriptEnabledBrowserTest : DriverTestFixture
         IWebElement input = driver.FindElement(By.Id("changeable"));
         input.SendKeys("test");
         driver.FindElement(By.Id("clickField")).Click(); // move focus
-        EqualConstraint firstConstraint = new("focus change blur");
-        EqualConstraint secondConstraint = new("focus change blur");
+        EqualConstraint firstConstraint = new EqualConstraint("focus change blur");
+        EqualConstraint secondConstraint = new EqualConstraint("focus change blur");
 
 
         Assert.That(driver.FindElement(By.Id("result")).Text.Trim(), firstConstraint | secondConstraint);
@@ -161,8 +161,8 @@ public class JavascriptEnabledBrowserTest : DriverTestFixture
 
         firstConstraint = new EqualConstraint("focus change blur focus blur");
         secondConstraint = new EqualConstraint("focus blur change focus blur");
-        EqualConstraint thirdConstraint = new("focus blur change focus blur change");
-        EqualConstraint fourthConstraint = new("focus change blur focus change blur"); //What Chrome does
+        EqualConstraint thirdConstraint = new EqualConstraint("focus blur change focus blur change");
+        EqualConstraint fourthConstraint = new EqualConstraint("focus change blur focus change blur"); //What Chrome does
         // I weep.
         Assert.That(driver.FindElement(By.Id("result")).Text.Trim(),
                    firstConstraint | secondConstraint | thirdConstraint | fourthConstraint);
@@ -189,7 +189,7 @@ public class JavascriptEnabledBrowserTest : DriverTestFixture
     {
         driver.Url = javascriptPage;
 
-        if (driver is not IJavaScriptExecutor)
+        if (!(driver is IJavaScriptExecutor))
         {
             return;
         }
@@ -197,7 +197,7 @@ public class JavascriptEnabledBrowserTest : DriverTestFixture
         ((IJavaScriptExecutor)driver).ExecuteScript("window.focus();");
         IWebElement element = driver.FindElement(By.Id("keyUp"));
 
-        if (element is not ILocatable)
+        if (!(element is ILocatable))
         {
             return;
         }

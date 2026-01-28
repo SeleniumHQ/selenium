@@ -37,23 +37,11 @@ namespace OpenQA.Selenium.Support.UI;
 /// driver.SwitchTo.Window(newHandle);
 /// </code>
 /// </example>
-/// <remarks>
-/// Initializes a new instance of the <see cref="PopupWindowFinder"/> class
-/// with the specified timeout and using the specified interval to check for
-/// the existence of the new window.
-/// </remarks>
-/// <param name="driver">The <see cref="IWebDriver"/> instance that is used
-/// to manipulate the popup window.</param>
-/// <param name="timeout">The <see cref="TimeSpan"/> representing the amount of
-/// time to wait for the popup window to appear.</param>
-/// <param name="sleepInterval">The <see cref="TimeSpan"/> representing the
-/// amount of time to wait between checks of the available window handles.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
-public class PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
+public class PopupWindowFinder
 {
-    private readonly IWebDriver driver = driver ?? throw new ArgumentNullException(nameof(driver));
-    private readonly TimeSpan timeout = timeout;
-    private readonly TimeSpan sleepInterval = sleepInterval;
+    private readonly IWebDriver driver;
+    private readonly TimeSpan timeout;
+    private readonly TimeSpan sleepInterval;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PopupWindowFinder"/> class.
@@ -82,6 +70,25 @@ public class PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sle
     public PopupWindowFinder(IWebDriver driver, TimeSpan timeout)
         : this(driver, timeout, DefaultSleepInterval)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PopupWindowFinder"/> class
+    /// with the specified timeout and using the specified interval to check for
+    /// the existence of the new window.
+    /// </summary>
+    /// <param name="driver">The <see cref="IWebDriver"/> instance that is used
+    /// to manipulate the popup window.</param>
+    /// <param name="timeout">The <see cref="TimeSpan"/> representing the amount of
+    /// time to wait for the popup window to appear.</param>
+    /// <param name="sleepInterval">The <see cref="TimeSpan"/> representing the
+    /// amount of time to wait between checks of the available window handles.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+    public PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
+    {
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.timeout = timeout;
+        this.sleepInterval = sleepInterval;
     }
 
     private static TimeSpan DefaultTimeout => TimeSpan.FromSeconds(5);
@@ -123,7 +130,7 @@ public class PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sle
 
         ReadOnlyCollection<string> existingHandles = this.driver.WindowHandles;
         popupMethod();
-        WebDriverWait wait = new(SystemClock.Instance, this.driver, this.timeout, this.sleepInterval);
+        WebDriverWait wait = new WebDriverWait(SystemClock.Instance, this.driver, this.timeout, this.sleepInterval);
         string popupHandle = wait.Until(driver =>
         {
             ReadOnlyCollection<string> newHandles = driver.WindowHandles;

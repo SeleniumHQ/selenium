@@ -154,10 +154,8 @@ public class By
         }
 
         string selector = EscapeCssSelector(idToFind);
-        By by = new(CssSelectorMechanism, "#" + selector)
-        {
-            Description = "By.Id: " + idToFind
-        };
+        By by = new By(CssSelectorMechanism, "#" + selector);
+        by.Description = "By.Id: " + idToFind;
         if (string.IsNullOrEmpty(selector))
         {
             // Finding multiple elements with an empty ID will return
@@ -396,13 +394,13 @@ public class By
         string escaped = InvalidCharsRegex.Replace(selector, @"\$1");
         if (selector.Length > 0 && char.IsDigit(selector[0]))
         {
-            int digitCode = 30 + int.Parse(selector[..1], CultureInfo.InvariantCulture);
+            int digitCode = 30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture);
 
-            escaped = $"\\{digitCode.ToString(CultureInfo.InvariantCulture)} {selector[1..]}";
+            escaped = $"\\{digitCode.ToString(CultureInfo.InvariantCulture)} {selector.Substring(1)}";
         }
 
         return escaped;
     }
 
-    private static readonly Regex InvalidCharsRegex = new(@"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", RegexOptions.Compiled);
+    private static readonly Regex InvalidCharsRegex = new Regex(@"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", RegexOptions.Compiled);
 }

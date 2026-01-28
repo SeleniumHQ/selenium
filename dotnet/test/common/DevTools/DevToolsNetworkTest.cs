@@ -91,17 +91,15 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             Urls = new string[] { "*://*/*.gif" }
         });
 
-        var additionalHeaders = new CurrentCdpVersion.Network.Headers
-        {
-            { "headerName", "headerValue" }
-        };
+        var additionalHeaders = new CurrentCdpVersion.Network.Headers();
+        additionalHeaders.Add("headerName", "headerValue");
         await domains.Network.SetExtraHTTPHeaders(new CurrentCdpVersion.Network.SetExtraHTTPHeadersCommandSettings()
         {
             Headers = additionalHeaders
         });
 
-        ManualResetEventSlim loadingFailedSync = new(false);
-        void loadingFailedHandler(object sender, CurrentCdpVersion.Network.LoadingFailedEventArgs e)
+        ManualResetEventSlim loadingFailedSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.LoadingFailedEventArgs> loadingFailedHandler = (sender, e) =>
         {
             if (e.Type == CurrentCdpVersion.Network.ResourceType.Image)
             {
@@ -109,11 +107,11 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             }
 
             loadingFailedSync.Set();
-        }
+        };
         domains.Network.LoadingFailed += loadingFailedHandler;
 
-        ManualResetEventSlim requestSentSync = new(false);
-        void requestWillBeSentHandler(object sender, CurrentCdpVersion.Network.RequestWillBeSentEventArgs e)
+        ManualResetEventSlim requestSentSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.RequestWillBeSentEventArgs> requestWillBeSentHandler = (sender, e) =>
         {
             if (e.Type != CurrentCdpVersion.Network.ResourceType.Image)
             {
@@ -121,15 +119,15 @@ public class DevToolsNetworkTest : DevToolsTestFixture
                 Assert.That(e.Request.Headers["headerName"] == "headerValue");
                 requestSentSync.Set();
             }
-        }
+        };
         domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
-        ManualResetEventSlim dataSync = new(false);
-        void dataReceivedHandler(object sender, CurrentCdpVersion.Network.DataReceivedEventArgs e)
+        ManualResetEventSlim dataSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.DataReceivedEventArgs> dataReceivedHandler = (sender, e) =>
         {
             Assert.That(e.RequestId, Is.Not.Null);
             dataSync.Set();
-        }
+        };
         domains.Network.DataReceived += dataReceivedHandler;
 
         driver.Url = linkedImage;
@@ -160,12 +158,12 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             ConnectionType = CurrentCdpVersion.Network.ConnectionType.Cellular3g
         });
 
-        ManualResetEventSlim loadingFailedSync = new(false);
-        void loadingFailedHandler(object sender, CurrentCdpVersion.Network.LoadingFailedEventArgs e)
+        ManualResetEventSlim loadingFailedSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.LoadingFailedEventArgs> loadingFailedHandler = (sender, e) =>
         {
             Assert.That(e.ErrorText, Is.EqualTo("net::ERR_INTERNET_DISCONNECTED"));
             loadingFailedSync.Set();
-        }
+        };
         domains.Network.LoadingFailed += loadingFailedHandler;
 
         try
@@ -196,21 +194,21 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             MaxResourceBufferSize = 100000000
         });
 
-        ManualResetEventSlim servedFromCacheSync = new(false);
-        void requestServedFromCacheHandler(object sender, CurrentCdpVersion.Network.RequestServedFromCacheEventArgs e)
+        ManualResetEventSlim servedFromCacheSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.RequestServedFromCacheEventArgs> requestServedFromCacheHandler = (sender, e) =>
         {
             Assert.That(e.RequestId, Is.Not.Null);
             requestIdFromCache[0] = e.RequestId;
             servedFromCacheSync.Set();
-        }
+        };
         domains.Network.RequestServedFromCache += requestServedFromCacheHandler;
 
-        ManualResetEventSlim loadingFinishedSync = new(false);
-        void loadingFinishedHandler(object sender, CurrentCdpVersion.Network.LoadingFinishedEventArgs e)
+        ManualResetEventSlim loadingFinishedSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.LoadingFinishedEventArgs> loadingFinishedHandler = (sender, e) =>
         {
             Assert.That(e.RequestId, Is.Not.Null);
             loadingFinishedSync.Set();
-        }
+        };
         domains.Network.LoadingFinished += loadingFinishedHandler;
 
         driver.Url = simpleTestPage;
@@ -241,13 +239,13 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             MaxResourceBufferSize = 100000000
         });
 
-        ManualResetEventSlim responseSync = new(false);
-        void responseReceivedHandler(object sender, CurrentCdpVersion.Network.ResponseReceivedEventArgs e)
+        ManualResetEventSlim responseSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.ResponseReceivedEventArgs> responseReceivedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
             requestIds[0] = e.RequestId;
             responseSync.Set();
-        }
+        };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
         driver.Url = simpleTestPage;
@@ -276,12 +274,12 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             MaxPostDataSize = 100000000
         });
 
-        ManualResetEventSlim responseSync = new(false);
-        void responseReceivedHandler(object sender, CurrentCdpVersion.Network.ResponseReceivedEventArgs e)
+        ManualResetEventSlim responseSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.ResponseReceivedEventArgs> responseReceivedHandler = (sender, e) =>
         {
             Assert.That(e.Response.FromDiskCache, Is.False);
             responseSync.Set();
-        }
+        };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
         driver.Url = simpleTestPage;
@@ -312,12 +310,12 @@ public class DevToolsNetworkTest : DevToolsTestFixture
             UserAgent = "userAgent"
         });
 
-        ManualResetEventSlim requestSync = new(false);
-        void requestWillBeSentHandler(object sender, CurrentCdpVersion.Network.RequestWillBeSentEventArgs e)
+        ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.RequestWillBeSentEventArgs> requestWillBeSentHandler = (sender, e) =>
         {
             Assert.That(e.Request.Headers["User-Agent"], Is.EqualTo("userAgent"));
             requestSync.Set();
-        }
+        };
         domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
         string origin = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
@@ -341,12 +339,12 @@ public class DevToolsNetworkTest : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Network.Enable(new CurrentCdpVersion.Network.EnableCommandSettings());
-        ManualResetEventSlim responseSync = new(false);
-        void responseReceivedHandler(object sender, CurrentCdpVersion.Network.ResponseReceivedEventArgs e)
+        ManualResetEventSlim responseSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.ResponseReceivedEventArgs> responseReceivedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
             responseSync.Set();
-        }
+        };
         domains.Network.ResponseReceived += responseReceivedHandler;
 
         driver.Url = simpleTestPage;
@@ -364,34 +362,34 @@ public class DevToolsNetworkTest : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Network.Enable(new CurrentCdpVersion.Network.EnableCommandSettings());
 
-        static void webSocketCreatedHandler(object sender, CurrentCdpVersion.Network.WebSocketCreatedEventArgs e)
+        EventHandler<CurrentCdpVersion.Network.WebSocketCreatedEventArgs> webSocketCreatedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-        }
+        };
         domains.Network.WebSocketCreated += webSocketCreatedHandler;
 
-        static void webSocketFrameReceivedHandler(object sender, CurrentCdpVersion.Network.WebSocketFrameReceivedEventArgs e)
+        EventHandler<CurrentCdpVersion.Network.WebSocketFrameReceivedEventArgs> webSocketFrameReceivedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-        }
+        };
         domains.Network.WebSocketFrameReceived += webSocketFrameReceivedHandler;
 
-        static void webSocketFrameErrorHandler(object sender, CurrentCdpVersion.Network.WebSocketFrameErrorEventArgs e)
+        EventHandler<CurrentCdpVersion.Network.WebSocketFrameErrorEventArgs> webSocketFrameErrorHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-        }
+        };
         domains.Network.WebSocketFrameError += webSocketFrameErrorHandler;
 
-        static void webSocketFrameSentHandler(object sender, CurrentCdpVersion.Network.WebSocketFrameSentEventArgs e)
+        EventHandler<CurrentCdpVersion.Network.WebSocketFrameSentEventArgs> webSocketFrameSentHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-        }
+        };
         domains.Network.WebSocketFrameSent += webSocketFrameSentHandler;
 
-        static void webSocketClosedHandler(object sender, CurrentCdpVersion.Network.WebSocketClosedEventArgs e)
+        EventHandler<CurrentCdpVersion.Network.WebSocketClosedEventArgs> webSocketClosedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-        }
+        };
         domains.Network.WebSocketClosed += webSocketClosedHandler;
 
         driver.Url = simpleTestPage;
@@ -409,8 +407,8 @@ public class DevToolsNetworkTest : DevToolsTestFixture
 
         string[] requestIds = new string[1];
 
-        ManualResetEventSlim requestSync = new(false);
-        void requestWillBeSentHandler(object sender, CurrentCdpVersion.Network.RequestWillBeSentEventArgs e)
+        ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.RequestWillBeSentEventArgs> requestWillBeSentHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
             if (string.Compare(e.Request.Method, "post", StringComparison.OrdinalIgnoreCase) == 0)
@@ -418,7 +416,7 @@ public class DevToolsNetworkTest : DevToolsTestFixture
                 requestIds[0] = e.RequestId;
                 requestSync.Set();
             }
-        }
+        };
 
         domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
@@ -460,12 +458,12 @@ public class DevToolsNetworkTest : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Network.Enable(new CurrentCdpVersion.Network.EnableCommandSettings());
 
-        ManualResetEventSlim requestSync = new(false);
-        void signedExchangeReceivedHandler(object sender, CurrentCdpVersion.Network.SignedExchangeReceivedEventArgs e)
+        ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Network.SignedExchangeReceivedEventArgs> signedExchangeReceivedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
             requestSync.Set();
-        }
+        };
         domains.Network.SignedExchangeReceived += signedExchangeReceivedHandler;
 
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
@@ -482,7 +480,7 @@ public class DevToolsNetworkTest : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Network.Enable(new CurrentCdpVersion.Network.EnableCommandSettings());
 
-        ManualResetEventSlim requestSync = new(false);
+        ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
         EventHandler<CurrentCdpVersion.Network.RequestInterceptedEventArgs> requestInterceptedHandler = (async (sender, e) =>
         {
             await domains.Network.ContinueInterceptedRequest(new CurrentCdpVersion.Network.ContinueInterceptedRequestCommandSettings()

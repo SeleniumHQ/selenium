@@ -41,7 +41,7 @@ public class LoadableComponentTests
     [Test]
     public void ShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded()
     {
-        LoadsOk ok = new(true);
+        LoadsOk ok = new LoadsOk(true);
 
         ok.Load();
 
@@ -51,7 +51,7 @@ public class LoadableComponentTests
     [Test]
     public void ShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad()
     {
-        LoadsOk ok = new(false);
+        LoadsOk ok = new LoadsOk(false);
 
         Assert.That(
             () => ok.Load(),
@@ -61,7 +61,7 @@ public class LoadableComponentTests
     [Test]
     public void ShouldCallHandleLoadErrorWhenWebDriverExceptionOccursDuringExecuteLoad()
     {
-        ExecuteLoadThrows loadThrows = new();
+        ExecuteLoadThrows loadThrows = new ExecuteLoadThrows();
 
         Assert.That(
             () => loadThrows.Load(),
@@ -85,11 +85,16 @@ public class LoadableComponentTests
         }
     }
 
-    private class LoadsOk(bool secondLoadCallPasses) : LoadableComponent<LoadsOk>
+    private class LoadsOk : LoadableComponent<LoadsOk>
     {
-        private readonly bool secondLoadCallPasses = secondLoadCallPasses;
+        private readonly bool secondLoadCallPasses;
         private bool callOfLoadMethodForced;
         private bool loadCalled;
+
+        public LoadsOk(bool secondLoadCallPasses)
+        {
+            this.secondLoadCallPasses = secondLoadCallPasses;
+        }
 
         protected override void ExecuteLoad()
         {

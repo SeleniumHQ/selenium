@@ -126,8 +126,8 @@ internal class BrowsingContextTest : BiDiTestFixture
     [Test]
     public async Task CanGetTreeTopLevel()
     {
-        _ = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
-        _ = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
+        var window1 = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
+        var window2 = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 

@@ -56,6 +56,9 @@ public abstract class Log
     /// <param name="e">An <see cref="EntryAddedEventArgs"/> that contains the event data.</param>
     protected virtual void OnEntryAdded(EntryAddedEventArgs e)
     {
-        this.EntryAdded?.Invoke(this, e);
+        if (this.EntryAdded != null)
+        {
+            this.EntryAdded(this, e);
+        }
     }
 }

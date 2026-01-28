@@ -326,7 +326,7 @@ public class TakesScreenshotTest : DriverTestFixture
 
     private HashSet<string> GenerateExpectedColors(int initialColor, int stepColor, int numberOfSamplesX, int numberOfSamplesY)
     {
-        HashSet<string> colors = [];
+        HashSet<string> colors = new HashSet<string>();
         int count = 1;
         for (int i = 1; i < numberOfSamplesX; i++)
         {
@@ -344,7 +344,7 @@ public class TakesScreenshotTest : DriverTestFixture
 
     private HashSet<string> ScanActualColors(Screenshot screenshot, int stepX, int stepY)
     {
-        HashSet<string> colors = [];
+        HashSet<string> colors = new HashSet<string>();
 
 #if !NET8_0
         try

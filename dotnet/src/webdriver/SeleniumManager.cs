@@ -176,7 +176,7 @@ public static class SeleniumManager
     /// </returns>
     public static Dictionary<string, string> BinaryPaths(string arguments)
     {
-        StringBuilder argsBuilder = new(arguments);
+        StringBuilder argsBuilder = new StringBuilder(arguments);
         argsBuilder.Append(" --language-binding csharp");
         argsBuilder.Append(" --output json");
         if (_logger.IsEnabled(LogEventLevel.Debug))
@@ -209,7 +209,7 @@ public static class SeleniumManager
     /// </returns>
     private static ResultResponse RunCommand(string arguments)
     {
-        Process process = new();
+        Process process = new Process();
         process.StartInfo.FileName = _lazyBinaryFullPath.Value;
         process.StartInfo.Arguments = arguments;
         process.StartInfo.UseShellExecute = false;
@@ -219,11 +219,11 @@ public static class SeleniumManager
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
 
-        StringBuilder outputBuilder = new();
-        StringBuilder errorOutputBuilder = new();
+        StringBuilder outputBuilder = new StringBuilder();
+        StringBuilder errorOutputBuilder = new StringBuilder();
 
-        void outputHandler(object sender, DataReceivedEventArgs e) => outputBuilder.AppendLine(e.Data);
-        void errorOutputHandler(object sender, DataReceivedEventArgs e) => errorOutputBuilder.AppendLine(e.Data);
+        DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
+        DataReceivedEventHandler errorOutputHandler = (sender, e) => errorOutputBuilder.AppendLine(e.Data);
 
         try
         {

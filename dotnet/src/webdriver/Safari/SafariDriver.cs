@@ -179,7 +179,7 @@ public class SafariDriver : WebDriver
 
         if (service.DriverServicePath == null)
         {
-            DriverFinder finder = new(options);
+            DriverFinder finder = new DriverFinder(options);
             string fullServicePath = finder.GetDriverPath();
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
@@ -194,10 +194,8 @@ public class SafariDriver : WebDriver
     /// </summary>
     public void AttachDebugger()
     {
-        Dictionary<string, object?> parameters = new()
-        {
-            ["attachDebugger"] = null
-        };
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
+        parameters["attachDebugger"] = null;
         this.Execute(AttachDebuggerCommand, parameters);
     }
 
@@ -214,14 +212,10 @@ public class SafariDriver : WebDriver
             throw new ArgumentNullException(nameof(permissionName), "permission must not be null or the empty string");
         }
 
-        Dictionary<string, object> permissions = new()
-        {
-            [permissionName] = permissionValue
-        };
-        Dictionary<string, object> parameters = new()
-        {
-            ["permissions"] = permissions
-        };
+        Dictionary<string, object> permissions = new Dictionary<string, object>();
+        permissions[permissionName] = permissionValue;
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["permissions"] = permissions;
         this.Execute(SetPermissionsCommand, parameters);
     }
 
@@ -263,7 +257,7 @@ public class SafariDriver : WebDriver
 
     private void AddCustomSafariCommand(string commandName, string method, string resourcePath)
     {
-        HttpCommandInfo commandInfoToAdd = new(method, resourcePath);
+        HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
         this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
     }
 }

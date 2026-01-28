@@ -42,8 +42,8 @@ internal static class FileUtilities
     public static bool CopyDirectory(string sourceDirectory, string destinationDirectory)
     {
         bool copyComplete;
-        DirectoryInfo sourceDirectoryInfo = new(sourceDirectory);
-        DirectoryInfo destinationDirectoryInfo = new(destinationDirectory);
+        DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDirectory);
+        DirectoryInfo destinationDirectoryInfo = new DirectoryInfo(destinationDirectory);
 
         if (sourceDirectoryInfo.Exists)
         {

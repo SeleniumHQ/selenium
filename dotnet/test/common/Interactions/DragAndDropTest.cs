@@ -58,7 +58,7 @@ public class DragAndDropTest : DriverTestFixture
         driver.Url = dragAndDropPage;
         IWebElement img1 = driver.FindElement(By.Id("test1"));
         IWebElement img2 = driver.FindElement(By.Id("test2"));
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.DragAndDrop(img2, img1).Perform();
         Assert.That(img2.Location, Is.EqualTo(img1.Location));
     }
@@ -147,8 +147,8 @@ public class DragAndDropTest : DriverTestFixture
 
         // Dragging too far left and up does not move the element. It will be at
         // its original location after the drag.
-        Point originalLocation = new(0, 0);
-        Actions actionProvider = new(driver);
+        Point originalLocation = new Point(0, 0);
+        Actions actionProvider = new Actions(driver);
         Assert.That(() => actionProvider.DragAndDropToOffset(img, 2147480000, 2147400000).Perform(), Throws.InstanceOf<WebDriverException>());
         new Actions(driver).Release().Perform();
     }
@@ -162,7 +162,7 @@ public class DragAndDropTest : DriverTestFixture
     public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
     {
         Size originalSize = driver.Manage().Window.Size;
-        Size testSize = new(300, 300);
+        Size testSize = new Size(300, 300);
         driver.Url = dragAndDropPage;
 
         driver.Manage().Window.Size = testSize;
@@ -190,7 +190,7 @@ public class DragAndDropTest : DriverTestFixture
         // Wait until all event handlers are installed.
         System.Threading.Thread.Sleep(500);
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.DragAndDrop(toDrag, dropInto).Perform();
 
         string text = dropInto.FindElement(By.TagName("p")).Text;
@@ -245,7 +245,7 @@ public class DragAndDropTest : DriverTestFixture
         driver.Url = dragAndDropPage;
         IWebElement img1 = driver.FindElement(By.Id("test1"));
         IWebElement img2 = driver.FindElement(By.Id("test2"));
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.DragAndDropToOffset(img1, 100, 100).Perform();
         actionProvider.Reset();
         actionProvider.DragAndDrop(img2, img1).Perform();
@@ -254,10 +254,10 @@ public class DragAndDropTest : DriverTestFixture
 
     private Point Drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
     {
-        Point expectedLocation = new(initialLocation.X, initialLocation.Y);
+        Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);
         expectedLocation.Offset(moveRightBy, moveDownBy);
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.DragAndDropToOffset(elem, moveRightBy, moveDownBy).Perform();
 
         return expectedLocation;

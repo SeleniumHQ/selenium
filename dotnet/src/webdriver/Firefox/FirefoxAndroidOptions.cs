@@ -27,13 +27,17 @@ namespace OpenQA.Selenium.Firefox;
 /// <summary>
 /// Generates the capabilities for automating Firefox applications on Android
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="FirefoxAndroidOptions"/> class.
-/// </remarks>
-/// <param name="androidPackage"></param>
-public class FirefoxAndroidOptions(string androidPackage) : AndroidOptions(androidPackage)
+public class FirefoxAndroidOptions : AndroidOptions
 {
-    private readonly List<string> androidIntentArguments = [];
+    private readonly List<string> androidIntentArguments = new List<string>();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FirefoxAndroidOptions"/> class.
+    /// </summary>
+    /// <param name="androidPackage"></param>
+    public FirefoxAndroidOptions(string androidPackage) : base(androidPackage)
+    {
+    }
 
     /// <summary>
     /// Gets a read-only list of the intent arguments set for this set of options.

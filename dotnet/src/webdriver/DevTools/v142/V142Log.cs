@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.DevTools.V142;
 /// </summary>
 public class V142Log : DevTools.Log
 {
-    private readonly LogAdapter adapter;
+    private LogAdapter adapter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V142Log"/> class.

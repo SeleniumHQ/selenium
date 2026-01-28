@@ -28,21 +28,27 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides a representation of an element's shadow root.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ShadowRoot"/> class.
-/// </remarks>
-/// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this shadow root.</param>
-/// <param name="id">The ID value provided to identify the shadow root.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
-public class ShadowRoot(WebDriver parentDriver, string id) : ISearchContext, IWrapsDriver, IWebDriverObjectReference
+public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReference
 {
     /// <summary>
     /// The property name that represents an element shadow root in the wire protocol.
     /// </summary>
     public const string ShadowRootReferencePropertyName = "shadow-6066-11e4-a52e-4f735466cecf";
 
-    private readonly WebDriver driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
-    private readonly string shadowRootId = id ?? throw new ArgumentNullException(nameof(id));
+    private readonly WebDriver driver;
+    private readonly string shadowRootId;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShadowRoot"/> class.
+    /// </summary>
+    /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this shadow root.</param>
+    /// <param name="id">The ID value provided to identify the shadow root.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
+    public ShadowRoot(WebDriver parentDriver, string id)
+    {
+        this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+        this.shadowRootId = id ?? throw new ArgumentNullException(nameof(id));
+    }
 
     /// <summary>
     /// Gets the <see cref="IWebDriver"/> driving this shadow root.
@@ -85,12 +91,10 @@ public class ShadowRoot(WebDriver parentDriver, string id) : ISearchContext, IWr
             throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.shadowRootId },
-            { "using", by.Mechanism },
-            { "value", by.Criteria }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.shadowRootId);
+        parameters.Add("using", by.Mechanism);
+        parameters.Add("value", by.Criteria);
 
         Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElement, parameters);
         return this.driver.GetElementFromResponse(commandResponse)!;
@@ -111,12 +115,10 @@ public class ShadowRoot(WebDriver parentDriver, string id) : ISearchContext, IWr
             throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        Dictionary<string, object> parameters = new()
-        {
-            { "id", this.shadowRootId },
-            { "using", by.Mechanism },
-            { "value", by.Criteria }
-        };
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.shadowRootId);
+        parameters.Add("using", by.Mechanism);
+        parameters.Add("value", by.Criteria);
 
         Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElements, parameters);
         return this.driver.GetElementsFromResponse(commandResponse);

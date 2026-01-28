@@ -34,8 +34,8 @@ public class DriverFactory
 {
     private readonly string driverPath;
     private readonly string browserBinaryLocation;
-    private readonly Dictionary<Browser, Type> serviceTypes = [];
-    private readonly Dictionary<Browser, Type> optionsTypes = [];
+    private readonly Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
+    private readonly Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
 
     public DriverFactory(string driverPath, string browserBinaryLocation)
     {
@@ -78,7 +78,7 @@ public class DriverFactory
         DriverOptions options = null;
         bool enableLogging = logging;
 
-        List<Type> constructorArgTypeList = [];
+        List<Type> constructorArgTypeList = new List<Type>();
         IWebDriver driver = null;
         if (typeof(ChromeDriver).IsAssignableFrom(driverType))
         {
@@ -159,7 +159,7 @@ public class DriverFactory
         {
             constructorArgTypeList.Add(this.serviceTypes[browser]);
             constructorArgTypeList.Add(this.optionsTypes[browser]);
-            ConstructorInfo ctorInfo = driverType.GetConstructor([.. constructorArgTypeList]);
+            ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
             if (ctorInfo != null)
             {
                 return (IWebDriver)ctorInfo.Invoke(new object[] { service, options });
@@ -174,14 +174,14 @@ public class DriverFactory
     {
         if (this.DriverStarting != null)
         {
-            DriverStartingEventArgs args = new(service, options);
+            DriverStartingEventArgs args = new DriverStartingEventArgs(service, options);
             this.DriverStarting(this, args);
         }
     }
 
     private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
     {
-        T options = new();
+        T options = new T();
         Type optionsType = typeof(T);
 
         PropertyInfo defaultOptionsProperty = driverType.GetProperty("DefaultOptions", BindingFlags.Public | BindingFlags.Static);
@@ -213,7 +213,7 @@ public class DriverFactory
         // get the value of that property, which should be a valid
         // options of the generic type (T). Otherwise, create a new
         // instance of the browser-specific options class.
-        T mergedOptions = new();
+        T mergedOptions = new T();
         if (baseOptions != null && baseOptions is T)
         {
             mergedOptions = (T)baseOptions;
@@ -231,7 +231,7 @@ public class DriverFactory
 
     private T CreateService<T>() where T : DriverService
     {
-        T service = default;
+        T service = default(T);
         Type serviceType = typeof(T);
 
         MethodInfo createDefaultServiceMethod = serviceType.GetMethod("CreateDefaultService", BindingFlags.Public | BindingFlags.Static, null, new Type[] { }, null);

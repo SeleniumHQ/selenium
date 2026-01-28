@@ -25,18 +25,22 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Provides data for the DriverProcessStarting event of a <see cref="DriverService"/> object.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
-/// </remarks>
-/// <param name="startInfo">The <see cref="ProcessStartInfo"/> of the
-/// driver process to be started.</param>
-/// <exception cref="ArgumentNullException">If <paramref name="startInfo"/> is <see langword="null"/>.</exception>
-public class DriverProcessStartingEventArgs(ProcessStartInfo startInfo) : EventArgs
+public class DriverProcessStartingEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
+    /// </summary>
+    /// <param name="startInfo">The <see cref="ProcessStartInfo"/> of the
+    /// driver process to be started.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="startInfo"/> is <see langword="null"/>.</exception>
+    public DriverProcessStartingEventArgs(ProcessStartInfo startInfo)
+    {
+        this.DriverServiceProcessStartInfo = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
+    }
 
     /// <summary>
     /// Gets the <see cref="ProcessStartInfo"/> object with which the
     /// driver service process will be started.
     /// </summary>
-    public ProcessStartInfo DriverServiceProcessStartInfo { get; } = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
+    public ProcessStartInfo DriverServiceProcessStartInfo { get; }
 }

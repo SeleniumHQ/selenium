@@ -125,7 +125,7 @@ public class VirtualAuthenticatorTest : DriverTestFixture
         Dictionary<string, object> responseJson = (Dictionary<string, object>)response;
         Dictionary<string, object> credentialJson = (Dictionary<string, object>)responseJson["credential"];
         ReadOnlyCollection<object> readOnlyCollection = (ReadOnlyCollection<object>)credentialJson["rawId"];
-        List<long> rawIdList = [];
+        List<long> rawIdList = new List<long>();
         foreach (object id in readOnlyCollection)
         {
             rawIdList.Add((long)id);
@@ -187,7 +187,7 @@ public class VirtualAuthenticatorTest : DriverTestFixture
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldRemoveAuthenticator()
     {
-        VirtualAuthenticatorOptions options = new();
+        VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
         string authenticatorId = webDriver.AddVirtualAuthenticator(options);
         Assert.That(webDriver.AuthenticatorId, Is.EqualTo(authenticatorId));
 
@@ -203,7 +203,7 @@ public class VirtualAuthenticatorTest : DriverTestFixture
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldSupportMultipleVirtualAuthenticatorsAtOnce()
     {
-        VirtualAuthenticatorOptions options = new();
+        VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
 
         string authenticatorId1 = webDriver.AddVirtualAuthenticator(options);
         Assert.That(webDriver.AuthenticatorId, Is.EqualTo(authenticatorId1));
@@ -224,13 +224,17 @@ public class VirtualAuthenticatorTest : DriverTestFixture
     public void ShouldAddNonResidentCredential()
     {
         CreateRKDisabledCTAP2Authenticator();
-        byte[] credentialId = [1, 2, 3, 4];
+        byte[] credentialId = { 1, 2, 3, 4 };
         Credential credential = Credential.CreateNonResidentCredential(
           credentialId, "localhost", base64EncodedPK, /*signCount=*/0);
 
         webDriver.AddCredential(credential);
 
-        List<int> id = [1, 2, 3, 4];
+        List<int> id = new List<int>();
+        id.Add(1);
+        id.Add(2);
+        id.Add(3);
+        id.Add(4);
 
         // Attempt to use the credential to generate an assertion.
         object response = GetAssertionFor(id);
@@ -253,12 +257,16 @@ public class VirtualAuthenticatorTest : DriverTestFixture
           + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
           + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
-        byte[] credentialId = [1, 2, 3, 4];
+        byte[] credentialId = { 1, 2, 3, 4 };
         Credential credential = Credential.CreateNonResidentCredential(
           credentialId, "localhost", base64EncodedEC256PK, /*signCount=*/0);
         webDriver.AddCredential(credential);
 
-        List<int> id = [1, 2, 3, 4];
+        List<int> id = new List<int>();
+        id.Add(1);
+        id.Add(2);
+        id.Add(3);
+        id.Add(4);
 
         // Attempt to use the credential to generate an assertion.
         object response = GetAssertionFor(id);
@@ -274,8 +282,8 @@ public class VirtualAuthenticatorTest : DriverTestFixture
     {
         // Add a resident credential using the testing API.
         CreateRKEnabledCTAP2Authenticator();
-        byte[] credentialId = [1, 2, 3, 4];
-        byte[] userHandle = [1];
+        byte[] credentialId = { 1, 2, 3, 4 };
+        byte[] userHandle = { 1 };
 
         Credential credential = Credential.CreateResidentCredential(
           credentialId, "localhost", base64EncodedPK, userHandle, /*signCount=*/0);
@@ -312,8 +320,8 @@ public class VirtualAuthenticatorTest : DriverTestFixture
           + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
           + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
-        byte[] credentialId = [1, 2, 3, 4];
-        byte[] userHandle = [1];
+        byte[] credentialId = { 1, 2, 3, 4 };
+        byte[] userHandle = { 1 };
         Credential credential = Credential.CreateResidentCredential(
           credentialId, "localhost", base64EncodedEC256PK, userHandle, /*signCount=*/0);
         Assert.That(

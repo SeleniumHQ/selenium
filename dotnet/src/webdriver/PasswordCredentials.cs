@@ -22,12 +22,7 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// A credentials provider that uses a user name and password for authentication.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="PasswordCredentials"/> class with the specified user name and password.
-/// </remarks>
-/// <param name="userName">The user name for the credentials.</param>
-/// <param name="password">The password for the credentials.</param>
-public class PasswordCredentials(string? userName, string? password) : ICredentials
+public class PasswordCredentials : ICredentials
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PasswordCredentials"/> class.
@@ -38,12 +33,23 @@ public class PasswordCredentials(string? userName, string? password) : ICredenti
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="PasswordCredentials"/> class with the specified user name and password.
+    /// </summary>
+    /// <param name="userName">The user name for the credentials.</param>
+    /// <param name="password">The password for the credentials.</param>
+    public PasswordCredentials(string? userName, string? password)
+    {
+        UserName = userName;
+        Password = password;
+    }
+
+    /// <summary>
     /// Gets the user name.
     /// </summary>
-    public string? UserName { get; } = userName;
+    public string? UserName { get; }
 
     /// <summary>
     /// Gets the password.
     /// </summary>
-    public string? Password { get; } = password;
+    public string? Password { get; }
 }

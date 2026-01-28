@@ -24,21 +24,26 @@ namespace OpenQA.Selenium.DevTools;
 /// <summary>
 /// Event arguments present when the RequestPaused event is raised.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="RequestPausedEventArgs"/> type.
-/// </remarks>
-/// <param name="requestId">The request ID.</param>
-/// <param name="requestData">The <see cref="HttpRequestData"/> object for this request.</param>
-public class RequestPausedEventArgs(string? requestId, HttpRequestData requestData) : EventArgs
+public class RequestPausedEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestPausedEventArgs"/> type.
+    /// </summary>
+    /// <param name="requestId">The request ID.</param>
+    /// <param name="requestData">The <see cref="HttpRequestData"/> object for this request.</param>
+    public RequestPausedEventArgs(string? requestId, HttpRequestData requestData)
+    {
+        RequestId = requestId;
+        RequestData = requestData;
+    }
 
     /// <summary>
     /// Gets the request ID.
     /// </summary>
-    public string? RequestId { get; } = requestId;
+    public string? RequestId { get; }
 
     /// <summary>
     /// Gets the <see cref="HttpRequestData"/> object for this request.
     /// </summary>
-    public HttpRequestData RequestData { get; } = requestData;
+    public HttpRequestData RequestData { get; }
 }

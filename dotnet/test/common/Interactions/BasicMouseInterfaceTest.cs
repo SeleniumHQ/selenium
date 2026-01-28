@@ -39,7 +39,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
     [Test]
     public void ShouldSetActivePointer()
     {
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.SetActivePointer(PointerKind.Mouse, "test mouse");
 
         PointerInputDevice device = actionProvider.GetActivePointer();
@@ -73,7 +73,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
 
         dblClick.Perform();
@@ -100,7 +100,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
         IWebElement toDrag = driver.FindElement(By.Id("draggable"));
         IWebElement dropInto = driver.FindElement(By.Id("droppable"));
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
 
         IAction holdDrag = actionProvider.ClickAndHold(toDrag).Build();
 
@@ -125,7 +125,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
 
         dblClick.Perform();
@@ -139,7 +139,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement toContextClick = driver.FindElement(By.Id("doubleClickField"));
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction contextClick = actionProvider.ContextClick(toContextClick).Build();
 
         contextClick.Perform();
@@ -154,7 +154,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
 
         IWebElement toClick = driver.FindElement(By.Id("clickField"));
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
 
         contextClick.Perform();
@@ -172,7 +172,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
         toClick = new WebElementWrapper(toClick);
         toClick = new WebElementWrapper(toClick);
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
 
         contextClick.Perform();
@@ -187,7 +187,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
     {
         driver.Url = mouseInteractionPage;
 
-        Actions actionProvider = new(driver);
+        Actions actionProvider = new Actions(driver);
         actionProvider.MoveToLocation(100, 200).Build().Perform();
 
         IWebElement location = driver.FindElement(By.Id("absolute-location"));
@@ -302,7 +302,7 @@ public class BasicMouseInterfaceTest : DriverTestFixture
         Assert.That(item.Text, Is.EqualTo(""));
 
         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-        Actions actionBuilder = new(driver);
+        Actions actionBuilder = new Actions(driver);
         actionBuilder.MoveToElement(element).Perform();
 
         item = driver.FindElement(By.Id("item1"));
@@ -501,6 +501,11 @@ public class BasicMouseInterfaceTest : DriverTestFixture
     private Func<bool> TitleToBe(string desiredTitle)
     {
         return () => driver.Title == desiredTitle;
+    }
+
+    private Func<bool> ValueToBe(IWebElement element, string desiredValue)
+    {
+        return () => element.GetDomProperty("value") == desiredValue;
     }
 
     private Func<bool> ElementTextToEqual(IWebElement element, string text)

@@ -30,8 +30,8 @@ namespace OpenQA.Selenium.Firefox;
 /// </summary>
 internal class Preferences
 {
-    private readonly Dictionary<string, string> preferences = [];
-    private readonly HashSet<string> immutablePreferences = [];
+    private readonly Dictionary<string, string> preferences = new Dictionary<string, string>();
+    private readonly HashSet<string> immutablePreferences = new HashSet<string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Preferences"/> class.
@@ -170,11 +170,13 @@ internal class Preferences
     /// <param name="filePath">The full path to the file to be written.</param>
     internal void WriteToFile(string filePath)
     {
-        using TextWriter writer = File.CreateText(filePath);
-        foreach (KeyValuePair<string, string> preference in this.preferences)
+        using (TextWriter writer = File.CreateText(filePath))
         {
-            string escapedValue = preference.Value.Replace(@"\", @"\\");
-            writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
+            foreach (KeyValuePair<string, string> preference in this.preferences)
+            {
+                string escapedValue = preference.Value.Replace(@"\", @"\\");
+                writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
+            }
         }
     }
 
