@@ -121,7 +121,6 @@ public class ExecutingJavascriptTest : DriverTestFixture
         expectedResult.Add(subList.AsReadOnly());
         object result = ExecuteScript("return ['zero', [true, false]];");
         Assert.That(result, Is.InstanceOf<ReadOnlyCollection<object>>());
-        ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
         Assert.That(result, Is.EqualTo(expectedResult.AsReadOnly()));
     }
 

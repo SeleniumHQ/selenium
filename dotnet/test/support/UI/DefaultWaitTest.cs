@@ -31,7 +31,7 @@ public class DefaultWaitTest
     private Mock<IClock> mockClock;
 
     private int executionCount;
-    private DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
+    private readonly DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
     private readonly object defaultReturnValue = new object();
 
     [SetUp]

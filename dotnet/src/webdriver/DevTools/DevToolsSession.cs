@@ -54,7 +54,7 @@ public class DevToolsSession : IDevToolsSession
     private string? attachedTargetId;
 
     private WebSocketConnection? connection;
-    private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
+    private readonly ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
     private readonly BlockingCollection<string> messageQueue = new BlockingCollection<string>();
     private readonly Task messageQueueMonitorTask;
     private long currentCommandId = 0;

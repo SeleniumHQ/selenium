@@ -30,7 +30,7 @@ public class StaleElementReferenceException : WebDriverException
     /// <summary>
     /// Link to the documentation for this error
     /// </summary>
-    private static string supportUrl = baseSupportUrl + "#staleelementreferenceexception";
+    private static readonly string supportUrl = baseSupportUrl + "#staleelementreferenceexception";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class.

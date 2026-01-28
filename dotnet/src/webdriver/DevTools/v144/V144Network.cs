@@ -31,8 +31,8 @@ namespace OpenQA.Selenium.DevTools.V144;
 /// </summary>
 public class V144Network : DevTools.Network
 {
-    private FetchAdapter fetch;
-    private NetworkAdapter network;
+    private readonly FetchAdapter fetch;
+    private readonly NetworkAdapter network;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V144Network"/> class.
