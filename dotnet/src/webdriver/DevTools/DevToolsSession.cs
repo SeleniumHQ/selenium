@@ -633,10 +633,7 @@ public class DevToolsSession : IDevToolsSession
 
     private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
     {
-        if (DevToolsEventReceived != null)
-        {
-            DevToolsEventReceived(this, e);
-        }
+        DevToolsEventReceived?.Invoke(this, e);
     }
 
     private void OnConnectionDataReceived(object? sender, WebSocketConnectionDataReceivedEventArgs e)
@@ -646,17 +643,11 @@ public class DevToolsSession : IDevToolsSession
 
     private void LogTrace(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
     }
 
     private void LogError(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
     }
 }
