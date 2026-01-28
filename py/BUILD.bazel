@@ -616,6 +616,7 @@ BROWSER_TESTS = {
             ":common",
             ":support",
         ],
+        "extra_excludes": ["test/selenium/webdriver/remote/remote_firefox_profile_tests.py"],
         "bidi": True,
     },
     "edge": {
