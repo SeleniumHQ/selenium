@@ -133,9 +133,10 @@ task :lint do
   Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
   Rake::Task['dotnet:docs_generate'].invoke
 
-  # TODO: Can also identify specific diagnostics to elevate and add to this list
-  # TODO: Add IDE0060 after merging #17019
+  # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
   enforced_diagnostics = []
+  next if enforced_diagnostics.empty?
+
   arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
   Bazel.execute('run', arguments, '//dotnet:format')
 end
