@@ -96,17 +96,23 @@ task :verify do
   end
 end
 
-desc 'Generate Ruby documentation'
+desc 'Generate and stage Ruby documentation'
 task :docs do |_task, arguments|
   if ruby_version.include?('nightly') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
-  puts 'Generating Ruby documentation'
 
-  FileUtils.rm_rf('build/docs/api/rb/')
-  Bazel.execute('run', [], '//rb:docs')
+  Rake::Task['rb:docs_generate'].invoke
+
   FileUtils.mkdir_p('build/docs/api')
   FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
+end
+
+desc 'Generate Ruby documentation without staging'
+task :docs_generate do
+  puts 'Generating Ruby documentation'
+  FileUtils.rm_rf('build/docs/api/rb/')
+  Bazel.execute('run', [], '//rb:docs')
 end
 
 desc 'Install Ruby gem locally'
@@ -134,13 +140,19 @@ task :version, [:version] do |_task, arguments|
   File.open(file, 'w') { |f| f.puts text }
 end
 
-desc 'Run Ruby linting'
-task :lint do |_task, arguments|
-  args = arguments.to_a
+desc 'Format Ruby code with rubocop (safe auto-correct only)'
+task :format do
+  puts '  Running rubocop (safe auto-correct)...'
+  Bazel.execute('run', ['--', '-a', '--fail-level', 'F'], '//rb:rubocop')
+end
+
+desc 'Run Ruby linters (rubocop, steep, docs)'
+task :lint do
   puts '  Running rubocop...'
-  Bazel.execute('run', args, '//rb:lint')
+  Bazel.execute('run', [], '//rb:rubocop')
   puts '  Running steep type checker...'
-  Bazel.execute('run', args, '//rb:steep')
+  Bazel.execute('run', [], '//rb:steep')
+  Rake::Task['rb:docs_generate'].invoke
 end
 
 desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'

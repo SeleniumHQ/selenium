@@ -300,13 +300,14 @@ task :install do
   end
 end
 
-desc 'Generate Java documentation'
-task docs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do |_task, arguments|
+desc 'Generate and stage Java documentation'
+task :docs do |_task, arguments|
   if java_version.include?('SNAPSHOT') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: snapshot versions should not update docs.')
   end
 
-  puts 'Generating Java documentation'
+  Rake::Task['java:docs_generate'].invoke
+
   FileUtils.rm_rf('build/docs/api/java')
   FileUtils.mkdir_p('build/docs/api/java')
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
@@ -331,6 +332,12 @@ task docs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do |_task, argum
     STYLE
               )
   end
+end
+
+desc 'Generate Java documentation without staging'
+task :docs_generate do
+  puts 'Generating Java documentation'
+  Bazel.execute('build', [], '//java/src/org/openqa/selenium/grid:all-javadocs')
 end
 
 desc 'Update Maven dependencies'
@@ -383,12 +390,18 @@ task :version, [:version] do |_task, arguments|
   File.open(file, 'w') { |f| f.puts text }
 end
 
-desc 'Run Java formatter (google-java-format)'
-task :lint do
+desc 'Format Java code with google-java-format'
+task :format do
   puts '  Running google-java-format...'
   formatter = nil
   Bazel.execute('run', ['--run_under=echo'], '//scripts:google-java-format') do |output|
     formatter = output.lines.last.strip
   end
   sh formatter, '--replace', *Dir.glob('java/**/*.java')
+end
+
+# ErrorProne runs at build time, SpotBugs runs as test targets in RBE
+desc 'Run Java linter (docs only, other linting happens during build/test)'
+task :lint do
+  Rake::Task['java:docs_generate'].invoke
 end

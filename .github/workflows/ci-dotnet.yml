@@ -8,6 +8,14 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      os: windows
+      run: ./go dotnet:lint
+
   build:
     name: Build
     uses: ./.github/workflows/bazel.yml
