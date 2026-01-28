@@ -218,7 +218,7 @@ public class Actions : IAction
             throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
         }
 
-        _ = GetLocatableFromElement(element);
+        ILocatable? target = GetLocatableFromElement(element);
         if (element != null)
         {
             this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, duration));
@@ -262,7 +262,7 @@ public class Actions : IAction
             throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
         }
 
-        _ = GetLocatableFromElement(element);
+        ILocatable? target = GetLocatableFromElement(element);
         if (element != null)
         {
             this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, duration));
@@ -299,7 +299,7 @@ public class Actions : IAction
             throw new ArgumentException("The key value must not be null or empty", nameof(keysToSend));
         }
 
-        _ = GetLocatableFromElement(element);
+        ILocatable? target = GetLocatableFromElement(element);
         if (element != null)
         {
             this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, duration));
@@ -662,7 +662,7 @@ public class Actions : IAction
                 driverAsType = wrapper.WrappedDriver as T;
                 if (driverAsType != null)
                 {
-                    _ = wrapper.WrappedDriver;
+                    driver = wrapper.WrappedDriver;
                     break;
                 }
 

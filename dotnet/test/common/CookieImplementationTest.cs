@@ -189,7 +189,8 @@ public class CookieImplementationTest : DriverTestFixture
 
         UrlBuilder builder = EnvironmentManager.Instance.UrlBuilder;
         driver.Url = builder.WhereIs("animals");
-        _ = options.Cookies.AllCookies;
+
+        ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         AssertCookieIsPresentWithName(cookie1.Name);
         AssertCookieIsPresentWithName(cookie2.Name);
 
@@ -367,21 +368,21 @@ public class CookieImplementationTest : DriverTestFixture
 
         Cookie cookie1 = new Cookie("fish", "cod");
         driver.Manage().Cookies.AddCookie(cookie1);
-        _ = driver.Manage().Cookies.AllCookies.Count;
+        int count = driver.Manage().Cookies.AllCookies.Count;
 
         driver.Url = childPage;
         Cookie cookie2 = new Cookie("rodent", "hamster", "/" + basePath + "/child");
         driver.Manage().Cookies.AddCookie(cookie2);
-        _ = driver.Manage().Cookies.AllCookies.Count;
+        count = driver.Manage().Cookies.AllCookies.Count;
 
         driver.Url = grandchildPage;
         Cookie cookie3 = new Cookie("dog", "dalmatian", "/" + basePath + "/child/grandchild/");
         driver.Manage().Cookies.AddCookie(cookie3);
-        _ = driver.Manage().Cookies.AllCookies.Count;
+        count = driver.Manage().Cookies.AllCookies.Count;
 
         driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("child/grandchild"));
         driver.Manage().Cookies.DeleteCookieNamed("rodent");
-        _ = driver.Manage().Cookies.AllCookies.Count;
+        count = driver.Manage().Cookies.AllCookies.Count;
 
         Assert.That(driver.Manage().Cookies.GetCookieNamed("rodent"), Is.Null);
 
@@ -655,7 +656,7 @@ public class CookieImplementationTest : DriverTestFixture
         Cookie cookie2 = new Cookie("planet", "earth", "/" + basePath + "/galaxy");
 
         IOptions options = driver.Manage();
-        _ = options.Cookies.AllCookies;
+        ReadOnlyCollection<Cookie> count = options.Cookies.AllCookies;
 
         options.Cookies.AddCookie(cookie1);
         options.Cookies.AddCookie(cookie2);
@@ -844,7 +845,7 @@ public class CookieImplementationTest : DriverTestFixture
         Cookie cookieToKeep = new Cookie("canIHaz", "Cheeseburguer");
         options.Cookies.AddCookie(cookieToDelete);
         options.Cookies.AddCookie(cookieToKeep);
-        _ = options.Cookies.AllCookies;
+        ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         options.Cookies.DeleteCookie(cookieToDelete);
         ReadOnlyCollection<Cookie> cookies2 = options.Cookies.AllCookies;
         Assert.That(cookies2, Does.Not.Contain(cookieToDelete), "Cookie was not deleted successfully");

@@ -49,7 +49,7 @@ public class ObjectStateAssumptionsTest : DriverTestFixture
     public void OptionsForUninitializedWebDriverDoesNotThrowException()
     {
         IOptions options = driver.Manage();
-        _ = options.Cookies.AllCookies;
+        ReadOnlyCollection<Cookie> allCookies = options.Cookies.AllCookies;
     }
 
     /**
@@ -57,9 +57,9 @@ public class ObjectStateAssumptionsTest : DriverTestFixture
     */
     private void VariousMethodCallsToCheckAssumptions()
     {
-        _ = driver.Url;
-        _ = driver.Title;
-        _ = driver.PageSource;
+        string currentUrl = driver.Url;
+        string currentTitle = driver.Title;
+        string pageSource = driver.PageSource;
         By byHtml = By.XPath("//html");
         driver.FindElement(byHtml);
         driver.FindElements(byHtml);

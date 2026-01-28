@@ -289,7 +289,8 @@ public class FormHandlingTests : DriverTestFixture
         driver.Url = formsPage;
         IWebElement emptyTextBox = driver.FindElement(By.Id("working"));
         Assert.That(emptyTextBox.GetAttribute("value"), Is.Empty);
-        _ = driver.FindElement(By.Id("emptyTextArea"));
+
+        IWebElement emptyTextArea = driver.FindElement(By.Id("emptyTextArea"));
         Assert.That(emptyTextBox.GetAttribute("value"), Is.Empty);
     }
 

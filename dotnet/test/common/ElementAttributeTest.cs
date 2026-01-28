@@ -80,7 +80,8 @@ public class ElementAttributeTest : DriverTestFixture
         IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
         Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
         Assert.That(inputElement.Enabled, "Element is not enabled");
-        _ = driver.FindElement(By.Id("peas"));
+
+        IWebElement pElement = driver.FindElement(By.Id("peas"));
         Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
         Assert.That(inputElement.Enabled, "Element is not enabled");
     }

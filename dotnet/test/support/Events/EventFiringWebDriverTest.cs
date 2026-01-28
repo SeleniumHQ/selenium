@@ -222,7 +222,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
     public void ShouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface()
     {
         // We should get this far
-        _ = new EventFiringWebDriver(new ChildDriver());
+        EventFiringWebDriver testDriver = new EventFiringWebDriver(new ChildDriver());
     }
 
     [Test]

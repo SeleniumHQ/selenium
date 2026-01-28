@@ -801,7 +801,7 @@ public class ExecutingJavascriptTest : DriverTestFixture
 
         driver.Url = javascriptPage;
         IWebElement element = driver.FindElement(By.TagName("body"));
-        _ = ExecuteScript(script, element);
+        object x = ExecuteScript(script, element);
     }
 
     [Test]
