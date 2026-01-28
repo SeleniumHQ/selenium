@@ -10,6 +10,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "pnpm": {
+    "onlyBuiltDependencies": [],
     "packageExtensions": {
       "google-closure-deps": {
         "dependencies": {
