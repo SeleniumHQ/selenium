@@ -83,7 +83,7 @@ public class PositionAndSizeTest : DriverTestFixture
     public void ShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_element_out_of_view.html");
-        int windowHeight = driver.Manage().Window.Size.Height;
+        _ = driver.Manage().Window.Size.Height;
         Point location = GetLocationInViewPort(By.Id("box"));
         Assert.That(location.X, Is.EqualTo(10));
         Assert.That(location.Y, Is.GreaterThanOrEqualTo(0));

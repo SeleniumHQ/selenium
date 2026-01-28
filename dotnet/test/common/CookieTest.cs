@@ -108,6 +108,6 @@ public class CookieTest
     [Test]
     public void ShouldAllowExpiryToBeNull()
     {
-        Cookie cookie = new ReturnedCookie("name", "value", "", "/", null, false, false);
+        _ = new ReturnedCookie("name", "value", "", "/", null, false, false);
     }
 }
