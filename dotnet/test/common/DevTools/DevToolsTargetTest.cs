@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V144;
 
 namespace OpenQA.Selenium.DevTools;
+
 [TestFixture]
 public class DevToolsTargetTest : DevToolsTestFixture
 {
