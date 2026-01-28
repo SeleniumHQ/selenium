@@ -195,7 +195,7 @@ public class WindowTest : DriverTestFixture
     public void ShouldBeAbleToFullScreenTheCurrentWindow()
     {
         IWindow window = driver.Manage().Window;
-        Size origSize = window.Size;
+        _ = window.Size;
 
         Size targetSize = new Size(640, 400);
 
@@ -224,7 +224,7 @@ public class WindowTest : DriverTestFixture
     private void FullScreen()
     {
         IWindow window = driver.Manage().Window;
-        Size currentSize = window.Size;
+        _ = window.Size;
         window.FullScreen();
     }
 

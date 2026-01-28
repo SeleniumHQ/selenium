@@ -118,15 +118,14 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
         pressShift.Perform();
 
         IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
-
-        string eventsText = keyLoggingElement.Text;
+        _ = keyLoggingElement.Text;
         Assert.That(keyLoggingElement.Text, Does.EndWith("keydown"));
 
         IAction releaseShift = new Actions(driver).KeyUp(keysEventInput, Keys.Shift).Build();
 
         releaseShift.Perform();
 
-        eventsText = keyLoggingElement.Text;
+        _ = keyLoggingElement.Text;
         Assert.That(keyLoggingElement.Text, Does.EndWith("keyup"));
     }
 
@@ -166,7 +165,7 @@ public class BasicKeyboardInterfaceTest : DriverTestFixture
         someKeys.Perform();
 
         AssertThatBodyEventsFiredAreExactly("keypress keypress");
-        IWebElement formLoggingElement = driver.FindElement(By.Id("result"));
+        _ = driver.FindElement(By.Id("result"));
         AssertThatFormEventsFiredAreExactly(string.Empty);
     }
 

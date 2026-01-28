@@ -513,7 +513,7 @@ public class TypingTest : DriverTestFixture
         element.SendKeys("" + EndKey() + Keys.Shift + HomeKey());
         Assert.That(element.GetAttribute("value"), Is.EqualTo("done"));
         // Note: trailing SHIFT up here
-        string text = result.Text.Trim();
+        _ = result.Text.Trim();
 
         element.SendKeys("" + Keys.Delete);
         Assert.That(element.GetAttribute("value"), Is.Empty);
@@ -587,7 +587,7 @@ public class TypingTest : DriverTestFixture
         IWebElement result = driver.FindElement(By.Id("result"));
 
         silent.SendKeys("s");
-        string text = result.Text;
+        _ = result.Text;
     }
 
     [Test]
