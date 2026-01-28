@@ -28,7 +28,7 @@ public class ObjectStateAssumptionsTest : DriverTestFixture
     [Test]
     public void UninitializedWebDriverDoesNotThrowException()
     {
-        VariousMethodCallsToCheckAssumptions();
+        variousMethodCallsToCheckAssumptions();
     }
 
     /**
@@ -39,7 +39,7 @@ public class ObjectStateAssumptionsTest : DriverTestFixture
     public void InitializedWebDriverDoesNotThrowException()
     {
         driver.Url = simpleTestPage;
-        VariousMethodCallsToCheckAssumptions();
+        variousMethodCallsToCheckAssumptions();
     }
 
     /**
@@ -55,7 +55,7 @@ public class ObjectStateAssumptionsTest : DriverTestFixture
     /**
     * Add the various method calls you want to try here...
     */
-    private void VariousMethodCallsToCheckAssumptions()
+    private void variousMethodCallsToCheckAssumptions()
     {
         string currentUrl = driver.Url;
         string currentTitle = driver.Title;

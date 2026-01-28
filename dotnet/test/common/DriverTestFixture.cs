@@ -25,7 +25,6 @@ using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium;
 
-#pragma warning disable IDE1006 // Legacy public member names are used widely across tests.
 public abstract class DriverTestFixture
 {
     public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
@@ -177,4 +176,3 @@ public abstract class DriverTestFixture
         });
     }
 }
-#pragma warning restore IDE1006

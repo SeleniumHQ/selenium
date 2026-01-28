@@ -62,12 +62,12 @@ public class EventFiringWebDriverTest
         mockNavigation.Setup(_ => _.Forward());
 
         EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
-        firingDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_Navigating);
-        firingDriver.Navigated += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_Navigated);
-        firingDriver.NavigatingBack += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_NavigatingBack);
-        firingDriver.NavigatedBack += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_NavigatedBack);
-        firingDriver.NavigatingForward += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_NavigatingForward);
-        firingDriver.NavigatedForward += new EventHandler<WebDriverNavigationEventArgs>(FiringDriver_NavigatedForward);
+        firingDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigating);
+        firingDriver.Navigated += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigated);
+        firingDriver.NavigatingBack += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatingBack);
+        firingDriver.NavigatedBack += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatedBack);
+        firingDriver.NavigatingForward += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatingForward);
+        firingDriver.NavigatedForward += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatedForward);
 
         firingDriver.Url = "http://www.get.com";
         firingDriver.Navigate().GoToUrl("http://www.navigate-to.com");
@@ -101,8 +101,8 @@ Navigated forward
         mockElement.Setup(_ => _.Click());
 
         EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
-        firingDriver.ElementClicking += new EventHandler<WebElementEventArgs>(FiringDriver_ElementClicking);
-        firingDriver.ElementClicked += new EventHandler<WebElementEventArgs>(FiringDriver_ElementClicked);
+        firingDriver.ElementClicking += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicking);
+        firingDriver.ElementClicked += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicked);
 
         firingDriver.FindElement(By.Name("foo")).Click();
 
@@ -160,8 +160,8 @@ ValueChanged 'Dummy Text'
         mockDriver.Setup(_ => _.FindElements(It.Is<By>(x => x.Equals(By.XPath("//link[@type = 'text/css']"))))).Returns(new ReadOnlyCollection<IWebElement>(subElements));
 
         EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
-        firingDriver.FindingElement += new EventHandler<FindElementEventArgs>(FiringDriver_FindingElement);
-        firingDriver.FindElementCompleted += new EventHandler<FindElementEventArgs>(FiringDriver_FindElementCompleted);
+        firingDriver.FindingElement += new EventHandler<FindElementEventArgs>(firingDriver_FindingElement);
+        firingDriver.FindElementCompleted += new EventHandler<FindElementEventArgs>(firingDriver_FindElementCompleted);
 
         IWebElement element = firingDriver.FindElement(By.Id("foo"));
         element.FindElement(By.LinkText("bar"));
@@ -188,7 +188,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Throws(exception);
 
         EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
-        firingDriver.ExceptionThrown += new EventHandler<WebDriverExceptionEventArgs>(FiringDriver_ExceptionThrown);
+        firingDriver.ExceptionThrown += new EventHandler<WebDriverExceptionEventArgs>(firingDriver_ExceptionThrown);
 
         Assert.That(
             () => firingDriver.FindElement(By.Id("foo")),
@@ -232,7 +232,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         EventFiringWebDriver testDriver = new EventFiringWebDriver(stubDriver);
         StubDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver as StubDriver;
         Assert.That(wrapped, Is.EqualTo(stubDriver));
-        testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(TestDriver_Navigating);
+        testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(testDriver_Navigating);
 
         testDriver.Url = "http://example.org";
     }
@@ -290,62 +290,62 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         Assert.That(findElementCompletedArgs.Element, Is.Null);
     }
 
-    void TestDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
+    void testDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
     {
         Assert.That(stubDriver, Is.EqualTo(e.Driver));
     }
 
-    void FiringDriver_ExceptionThrown(object sender, WebDriverExceptionEventArgs e)
+    void firingDriver_ExceptionThrown(object sender, WebDriverExceptionEventArgs e)
     {
         log.AppendLine(e.ThrownException.Message);
     }
 
-    void FiringDriver_FindingElement(object sender, FindElementEventArgs e)
+    void firingDriver_FindingElement(object sender, FindElementEventArgs e)
     {
         log.Append("FindingElement from ").Append(e.Element == null ? "IWebDriver " : "IWebElement ").AppendLine(e.FindMethod.ToString());
     }
 
-    void FiringDriver_FindElementCompleted(object sender, FindElementEventArgs e)
+    void firingDriver_FindElementCompleted(object sender, FindElementEventArgs e)
     {
         log.Append("FindElementCompleted from ").Append(e.Element == null ? "IWebDriver " : "IWebElement ").AppendLine(e.FindMethod.ToString());
     }
 
-    void FiringDriver_ElementClicking(object sender, WebElementEventArgs e)
+    void firingDriver_ElementClicking(object sender, WebElementEventArgs e)
     {
         log.AppendLine("Clicking");
     }
 
-    void FiringDriver_ElementClicked(object sender, WebElementEventArgs e)
+    void firingDriver_ElementClicked(object sender, WebElementEventArgs e)
     {
         log.AppendLine("Clicked");
     }
 
-    void FiringDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
     {
         log.Append("Navigating ").Append(e.Url).AppendLine();
     }
 
-    void FiringDriver_Navigated(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_Navigated(object sender, WebDriverNavigationEventArgs e)
     {
         log.Append("Navigated ").Append(e.Url).AppendLine();
     }
 
-    void FiringDriver_NavigatingBack(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_NavigatingBack(object sender, WebDriverNavigationEventArgs e)
     {
         log.AppendLine("Navigating back");
     }
 
-    void FiringDriver_NavigatedBack(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_NavigatedBack(object sender, WebDriverNavigationEventArgs e)
     {
         log.AppendLine("Navigated back");
     }
 
-    void FiringDriver_NavigatingForward(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_NavigatingForward(object sender, WebDriverNavigationEventArgs e)
     {
         log.AppendLine("Navigating forward");
     }
 
-    void FiringDriver_NavigatedForward(object sender, WebDriverNavigationEventArgs e)
+    void firingDriver_NavigatedForward(object sender, WebDriverNavigationEventArgs e)
     {
         log.AppendLine("Navigated forward");
     }

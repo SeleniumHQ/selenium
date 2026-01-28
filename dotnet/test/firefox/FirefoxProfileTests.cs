@@ -77,7 +77,7 @@ public class FirefoxProfileTests
     }
 
     [Test]
-    public void ShouldSetBooleanPreferences()
+    public void testShouldSetBooleanPreferences()
     {
         profile.SetPreference("cheese", false);
 
