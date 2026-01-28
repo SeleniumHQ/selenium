@@ -1,2 +1,9 @@
 [*.cs]
-csharp_style_namespace_declarations=file_scoped:suggestion
+# See all defaults set in selenium/.editorconfig
+
+# Namespace
+csharp_style_namespace_declarations=file_scoped:warning
+
+# Using directives
+csharp_using_directive_placement = outside_namespace:warning
+
