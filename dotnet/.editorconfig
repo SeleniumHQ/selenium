@@ -48,7 +48,6 @@ csharp_using_directive_placement = outside_namespace:warning
 
 # Roslyn 
 dotnet_diagnostic.IDE1006.severity = suggestion  # Naming rule violation
-dotnet_diagnostic.IDE0059.severity = warning  # Unnecessary assignment
 dotnet_diagnostic.IDE0044.severity = warning  # Make field readonly
 dotnet_diagnostic.IDE0076.severity = warning  # Invalid suppression
 dotnet_diagnostic.IDE1005.severity = warning  # Delegate invocation
@@ -70,6 +69,7 @@ dotnet_diagnostic.IDE1005.severity = warning  # Delegate invocation
 # 33 IDE0306
 # 31 IDE0083
 # 30 IDE0016
+# 30 IDE0059
 # 26 IDE0305
 # 18 IDE0031
 # 12 IDE0270
