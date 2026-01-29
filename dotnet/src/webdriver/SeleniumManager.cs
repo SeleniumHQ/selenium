@@ -332,7 +332,7 @@ public static partial class SeleniumManager
 #if NET8_0_OR_GREATER
                 var match = LogMessageRegex().Match(e.Data);
 #else
-                var match = Regex.Match(e.Data, LogMessageRegexPattern);
+                var match = Regex.Match(e.Data, LogMessageRegexPattern, RegexOptions.Compiled);
 #endif
 
                 if (match.Success)
