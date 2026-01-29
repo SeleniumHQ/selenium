@@ -60,6 +60,11 @@ public static class SeleniumManager
     // we will be able to use it directly from the .NET bindings, and this logic will be removed.
     private static readonly Lazy<string> _lazyBinaryFullPath = new(() =>
     {
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            _logger.Debug("Locating Selenium Manager executable binary...");
+        }
+
         string? binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
 
         if (binaryFullPath is not null)
@@ -232,13 +237,20 @@ public static class SeleniumManager
             argsBuilder.Append(" --trace");
         }
 
-        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.DiscoveryResult);
+        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.DiscoveryResult, options?.Timeout);
     }
 
-    private static TResult RunCommand<TResult>(string arguments, JsonTypeInfo<TResult> jsonResultTypeInfo)
+    private static TResult RunCommand<TResult>(string arguments, JsonTypeInfo<TResult> jsonResultTypeInfo, TimeSpan? timeout = null)
     {
+        string smBinaryPath = _lazyBinaryFullPath.Value;
+
+        if (_logger.IsEnabled(LogEventLevel.Info))
+        {
+            _logger.Info($"Starting Selenium Manager process: {Path.GetFileName(smBinaryPath)} {arguments}");
+        }
+
         Process process = new();
-        process.StartInfo.FileName = _lazyBinaryFullPath.Value;
+        process.StartInfo.FileName = smBinaryPath;
         process.StartInfo.Arguments = arguments;
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
@@ -260,7 +272,12 @@ public static class SeleniumManager
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
-            process.WaitForExit();
+            if (!process.WaitForExit(timeout is null ? -1 : (int)timeout.Value.TotalMilliseconds))
+            {
+                process.Kill();
+
+                throw new WebDriverException($"Selenium Manager process timed out after {(timeout ?? TimeSpan.FromMilliseconds(-1)).TotalMilliseconds} ms");
+            }
 
             if (process.ExitCode != 0)
             {
@@ -324,6 +341,7 @@ public static class SeleniumManager
         public string? BrowserPath { get; set; }
         public string? DriverVersion { get; set; }
         public string? Proxy { get; set; }
+        public TimeSpan? Timeout { get; set; }
     }
 
     public record DiscoveryResult(
