@@ -286,9 +286,9 @@ public static class SeleniumManager
                 if (!string.IsNullOrWhiteSpace(errorOutputBuilder.ToString()))
                 {
                     exceptionMessageBuilder.AppendLine();
-                    exceptionMessageBuilder.AppendLine("Error Output >>");
+                    exceptionMessageBuilder.AppendLine("--- Error Output ---");
                     exceptionMessageBuilder.Append(errorOutputBuilder);
-                    exceptionMessageBuilder.AppendLine("<<");
+                    exceptionMessageBuilder.AppendLine("--- End Error Output ---");
                 }
 
                 throw new WebDriverException(exceptionMessageBuilder.ToString());
