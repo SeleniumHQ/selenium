@@ -222,8 +222,14 @@ public static class SeleniumManager
         argsBuilder.Append(" --language-binding csharp");
         argsBuilder.Append(" --output json");
 
-        if (_logger.IsEnabled(LogEventLevel.Debug)){
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
             argsBuilder.Append(" --debug");
+        }
+
+        if (_logger.IsEnabled(LogEventLevel.Trace))
+        {
+            argsBuilder.Append(" --trace");
         }
 
         var smCommandResult = RunCommand(argsBuilder.ToString());
