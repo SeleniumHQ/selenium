@@ -284,6 +284,14 @@ public static partial class SeleniumManager
             {
                 var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {process.StartInfo.FileName} {arguments}");
 
+                if (!string.IsNullOrWhiteSpace(stdOutputBuilder.ToString()))
+                {
+                    exceptionMessageBuilder.AppendLine();
+                    exceptionMessageBuilder.AppendLine("--- Standard Output ---");
+                    exceptionMessageBuilder.Append(stdOutputBuilder);
+                    exceptionMessageBuilder.AppendLine("--- End Standard Output ---");
+                }
+
                 if (!string.IsNullOrWhiteSpace(errOutputBuilder.ToString()))
                 {
                     exceptionMessageBuilder.AppendLine();
