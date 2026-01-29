@@ -386,12 +386,38 @@ public static partial class SeleniumManager
         }
     }
 
+    /// <summary>
+    /// Provides optional configuration for browser and driver discovery.
+    /// </summary>
     public record DiscoveryOptions
     {
+        /// <summary>
+        /// Gets or sets the specific browser version to target (e.g., "120.0.6099.109").
+        /// If not specified, the installed browser version is detected automatically.
+        /// </summary>
         public string? BrowserVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path to the browser executable.
+        /// When specified, Selenium Manager uses this path instead of detecting the browser location.
+        /// </summary>
         public string? BrowserPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the specific driver version to download (e.g., "120.0.6099.109").
+        /// If not specified, the driver version matching the browser version is selected automatically.
+        /// </summary>
         public string? DriverVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the proxy server URL for downloading browser drivers.
+        /// </summary>
         public string? Proxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timeout for the Selenium Manager process execution.
+        /// If not specified, the process will run without a timeout.
+        /// </summary>
         public TimeSpan? Timeout { get; set; }
     }
 
