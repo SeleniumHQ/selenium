@@ -180,6 +180,14 @@ public static class SeleniumManager
         return binaryFullPath;
     });
 
+    /// <summary>
+    /// Discovers the browser and driver paths for the specified browser.
+    /// </summary>
+    /// <param name="browserName">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
+    /// <param name="options">Optional discovery options to control browser and driver resolution.</param>
+    /// <returns>A <see cref="DiscoveryResult"/> containing the paths to the driver and browser executables.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="browserName"/> is null or empty.</exception>
+    /// <exception cref="WebDriverException">Thrown when Selenium Manager fails to locate or download the required binaries.</exception>
     public static DiscoveryResult DiscoverBrowser(string browserName, DiscoveryOptions? options = null)
     {
         if (string.IsNullOrEmpty(browserName))
@@ -214,42 +222,13 @@ public static class SeleniumManager
         argsBuilder.Append(" --language-binding csharp");
         argsBuilder.Append(" --output json");
 
-        var smCommandResult = RunCommand(argsBuilder.ToString());
-
-        return new DiscoveryResult(smCommandResult.DriverPath, smCommandResult.BrowserPath);
-    }
-
-    /// <summary>
-    /// Determines the location of the browser and driver binaries.
-    /// </summary>
-    /// <param name="arguments">List of arguments to use when invoking Selenium Manager.</param>
-    /// <returns>
-    /// An array with two entries, one for the driver path, and another one for the browser path.
-    /// </returns>
-    public static Dictionary<string, string> BinaryPaths(string arguments)
-    {
-        StringBuilder argsBuilder = new StringBuilder(arguments);
-        argsBuilder.Append(" --language-binding csharp");
-        argsBuilder.Append(" --output json");
-        if (_logger.IsEnabled(LogEventLevel.Debug))
-        {
+        if (_logger.IsEnabled(LogEventLevel.Debug)){
             argsBuilder.Append(" --debug");
         }
 
         var smCommandResult = RunCommand(argsBuilder.ToString());
-        Dictionary<string, string> binaryPaths = new()
-        {
-            { BrowserPathKey, smCommandResult.BrowserPath },
-            { DriverPathKey, smCommandResult.DriverPath }
-        };
 
-        if (_logger.IsEnabled(LogEventLevel.Trace))
-        {
-            _logger.Trace($"Driver path: {binaryPaths[DriverPathKey]}");
-            _logger.Trace($"Browser path: {binaryPaths[BrowserPathKey]}");
-        }
-
-        return binaryPaths;
+        return new DiscoveryResult(smCommandResult.DriverPath, smCommandResult.BrowserPath);
     }
 
     /// <summary>
