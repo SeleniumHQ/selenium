@@ -54,9 +54,6 @@ namespace OpenQA.Selenium;
 /// </remarks>
 public static partial class SeleniumManager
 {
-    internal const string DriverPathKey = "driver_path";
-    internal const string BrowserPathKey = "browser_path";
-
     private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
 
     // This logic to find Selenium Manager binary is complex and strange.
@@ -421,9 +418,15 @@ public static partial class SeleniumManager
         public TimeSpan? Timeout { get; set; }
     }
 
+    /// <summary>
+    /// Contains the paths to the discovered browser driver and browser executable.
+    /// </summary>
+    /// <param name="DriverPath">The absolute path to the browser driver executable.</param>
+    /// <param name="BrowserPath">The absolute path to the browser executable.</param>
     public record DiscoveryResult(
-        [property: JsonPropertyName(DriverPathKey)] string DriverPath,
-        [property: JsonPropertyName(BrowserPathKey)] string BrowserPath);
+        [property: JsonPropertyName("driver_path")] string DriverPath,
+        [property: JsonPropertyName("browser_path")] string BrowserPath);
+    
     const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
 
 # if NET8_0_OR_GREATER

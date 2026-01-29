@@ -32,6 +32,9 @@ namespace OpenQA.Selenium;
 /// </summary>
 public class DriverFinder
 {
+    internal const string DriverPathKey = "driver_path";
+    internal const string BrowserPathKey = "browser_path";
+
     private readonly DriverOptions options;
     private readonly Dictionary<string, string> paths = new Dictionary<string, string>();
 
@@ -52,7 +55,7 @@ public class DriverFinder
     /// </returns>
     public string GetBrowserPath()
     {
-        return BinaryPaths()[SeleniumManager.BrowserPathKey];
+        return BinaryPaths()[BrowserPathKey];
     }
 
     /// <summary>
@@ -63,7 +66,7 @@ public class DriverFinder
     /// </returns>
     public string GetDriverPath()
     {
-        return BinaryPaths()[SeleniumManager.DriverPathKey];
+        return BinaryPaths()[DriverPathKey];
     }
 
     /// <summary>
@@ -102,7 +105,7 @@ public class DriverFinder
     /// <exception cref="NoSuchDriverException">If one of the paths does not exist.</exception>
     private Dictionary<string, string> BinaryPaths()
     {
-        if (paths.ContainsKey(SeleniumManager.DriverPathKey) && !string.IsNullOrWhiteSpace(paths[SeleniumManager.DriverPathKey]))
+        if (paths.ContainsKey(DriverPathKey) && !string.IsNullOrWhiteSpace(paths[DriverPathKey]))
         {
             return paths;
         }
@@ -124,7 +127,7 @@ public class DriverFinder
 
         if (File.Exists(driverPath))
         {
-            paths.Add(SeleniumManager.DriverPathKey, driverPath);
+            paths.Add(DriverPathKey, driverPath);
         }
         else
         {
@@ -133,7 +136,7 @@ public class DriverFinder
 
         if (File.Exists(browserPath))
         {
-            paths.Add(SeleniumManager.BrowserPathKey, browserPath);
+            paths.Add(BrowserPathKey, browserPath);
         }
         else
         {
