@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -32,9 +32,22 @@ using static OpenQA.Selenium.SeleniumManagerResponse;
 namespace OpenQA.Selenium;
 
 /// <summary>
-/// Wrapper for the Selenium Manager binary.
-/// This implementation is still in beta, and may change.
+/// Manages automatic discovery and configuration of browser drivers.
 /// </summary>
+/// <remarks>
+/// Selenium Manager automatically locates or downloads the appropriate browser driver
+/// for the specified browser. It eliminates the need for manual driver management by:
+/// <list type="bullet">
+/// <item><description>Detecting the installed browser version</description></item>
+/// <item><description>Downloading the matching driver binary if needed</description></item>
+/// <item><description>Caching drivers for subsequent use</description></item>
+/// <item><description>Providing paths to both driver and browser executables</description></item>
+/// </list>
+/// <para>
+/// The Selenium Manager binary is automatically included with the Selenium package.
+/// Set the SE_MANAGER_PATH environment variable to use a custom binary location.
+/// </para>
+/// </remarks>
 public static class SeleniumManager
 {
     internal const string DriverPathKey = "driver_path";
@@ -166,6 +179,45 @@ public static class SeleniumManager
 
         return binaryFullPath;
     });
+
+    public static DiscoveryResult DiscoverBrowser(string browserName, DiscoveryOptions? options = null)
+    {
+        if (string.IsNullOrEmpty(browserName))
+        {
+            throw new ArgumentException("Browser name must be specified to find the driver using Selenium Manager.", nameof(browserName));
+        }
+
+        StringBuilder argsBuilder = new();
+
+        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", browserName);
+
+        if (!string.IsNullOrEmpty(options?.BrowserVersion))
+        {
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version \"{0}\"", options?.BrowserVersion);
+        }
+
+        if (!string.IsNullOrEmpty(options?.BrowserPath))
+        {
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", options?.BrowserPath);
+        }
+
+        if (!string.IsNullOrEmpty(options?.DriverVersion))
+        {
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --driver-version \"{0}\"", options?.DriverVersion);
+        }
+
+        if (!string.IsNullOrEmpty(options?.Proxy))
+        {
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options?.Proxy);
+        }
+
+        argsBuilder.Append(" --language-binding csharp");
+        argsBuilder.Append(" --output json");
+
+        var smCommandResult = RunCommand(argsBuilder.ToString());
+
+        return new DiscoveryResult(smCommandResult.DriverPath, smCommandResult.BrowserPath);
+    }
 
     /// <summary>
     /// Determines the location of the browser and driver binaries.
@@ -299,6 +351,16 @@ public static class SeleniumManager
 
         return jsonResponse.Result;
     }
+
+    public record struct DiscoveryOptions
+    {
+        public string? BrowserVersion { get; set; }
+        public string? BrowserPath { get; set; }
+        public string? DriverVersion { get; set; }
+        public string? Proxy { get; set; }
+    }
+
+    public record struct DiscoveryResult(string DriverPath, string BrowserPath);
 }
 
 internal sealed record SeleniumManagerResponse(IReadOnlyList<LogEntryResponse> Logs, ResultResponse Result)
