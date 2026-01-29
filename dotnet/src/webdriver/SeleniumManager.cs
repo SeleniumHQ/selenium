@@ -352,7 +352,6 @@ public static partial class SeleniumManager
                                 _logger.LogMessage(dateTime, LogEventLevel.Info, message);
                             }
                             break;
-                        case "WARN":
                         case "WARNING":
                             if (_logger.IsEnabled(LogEventLevel.Warn))
                             {
@@ -399,7 +398,7 @@ public static partial class SeleniumManager
     public record DiscoveryResult(
         [property: JsonPropertyName(DriverPathKey)] string DriverPath,
         [property: JsonPropertyName(BrowserPathKey)] string BrowserPath);
-    const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|WARNING|ERROR|DEBUG|TRACE)\t?\] (.*)$";
+    const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
 
 # if NET8_0_OR_GREATER
     [GeneratedRegex(LogMessageRegexPattern)]
