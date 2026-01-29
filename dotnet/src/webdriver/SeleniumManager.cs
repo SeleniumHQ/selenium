@@ -250,7 +250,7 @@ public static partial class SeleniumManager
             _logger.Info($"Starting Selenium Manager process: {Path.GetFileName(smBinaryPath)} {arguments}");
         }
 
-        Process process = new();
+        using Process process = new();
         process.StartInfo.FileName = smBinaryPath;
         process.StartInfo.Arguments = arguments;
         process.StartInfo.UseShellExecute = false;
