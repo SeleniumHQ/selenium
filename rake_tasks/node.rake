@@ -164,9 +164,8 @@ task :format do
                 '//javascript:prettier')
 end
 
-desc 'Run JavaScript linter (eslint, docs)'
+desc 'Run JavaScript linter (docs only for now, eslint needs bazel integration work)'
 task :lint do
-  puts '  Running eslint...'
-  Bazel.execute('run', ['--', '--fix', '.'], '//javascript/selenium-webdriver:eslint')
+  # TODO: Add eslint once bazel target properly resolves workspace modules
   Rake::Task['node:docs_generate'].invoke
 end
