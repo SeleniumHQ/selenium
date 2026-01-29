@@ -344,34 +344,20 @@ public static partial class SeleniumManager
                     switch (logLevel)
                     {
                         case "INFO":
-                            if (_logger.IsEnabled(LogEventLevel.Info))
-                            {
-                                _logger.LogMessage(dateTime, LogEventLevel.Info, message);
-                            }
+                            _logger.LogMessage(dateTime, LogEventLevel.Info, message);
                             break;
                         case "WARNING":
-                            if (_logger.IsEnabled(LogEventLevel.Warn))
-                            {
-                                _logger.LogMessage(dateTime, LogEventLevel.Warn, message);
-                            }
+                            _logger.LogMessage(dateTime, LogEventLevel.Warn, message);
                             break;
                         case "ERROR":
-                            if (_logger.IsEnabled(LogEventLevel.Error))
-                            {
-                                _logger.LogMessage(dateTime, LogEventLevel.Error, message);
-                            }
+                            _logger.LogMessage(dateTime, LogEventLevel.Error, message);
                             break;
                         case "DEBUG":
-                            if (_logger.IsEnabled(LogEventLevel.Debug))
-                            {
-                                _logger.LogMessage(dateTime, LogEventLevel.Debug, message);
-                            }
+                            _logger.LogMessage(dateTime, LogEventLevel.Debug, message);
                             break;
                         case "TRACE":
-                            if (_logger.IsEnabled(LogEventLevel.Trace))
-                            {
-                                _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
-                            }
+                        default:
+                            _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
                             break;
                     }
                 }
@@ -426,7 +412,7 @@ public static partial class SeleniumManager
     public record DiscoveryResult(
         [property: JsonPropertyName("driver_path")] string DriverPath,
         [property: JsonPropertyName("browser_path")] string BrowserPath);
-    
+
     const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
 
 # if NET8_0_OR_GREATER
