@@ -26,8 +26,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using OpenQA.Selenium.Internal.Logging;
-using static OpenQA.Selenium.SeleniumManagerResponse;
 
 namespace OpenQA.Selenium;
 
@@ -220,7 +220,7 @@ public static class SeleniumManager
         }
 
         argsBuilder.Append(" --language-binding csharp");
-        argsBuilder.Append(" --output json");
+        argsBuilder.Append(" --output mixed");
 
         if (_logger.IsEnabled(LogEventLevel.Debug))
         {
@@ -232,21 +232,12 @@ public static class SeleniumManager
             argsBuilder.Append(" --trace");
         }
 
-        var smCommandResult = RunCommand(argsBuilder.ToString());
-
-        return new DiscoveryResult(smCommandResult.DriverPath, smCommandResult.BrowserPath);
+        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.DiscoveryResult);
     }
 
-    /// <summary>
-    /// Executes a process with the given arguments.
-    /// </summary>
-    /// <param name="arguments">The switches to be used by Selenium Manager.</param>
-    /// <returns>
-    /// the standard output of the execution.
-    /// </returns>
-    private static ResultResponse RunCommand(string arguments)
+    private static TResult RunCommand<TResult>(string arguments, JsonTypeInfo<TResult> jsonResultTypeInfo)
     {
-        Process process = new Process();
+        Process process = new();
         process.StartInfo.FileName = _lazyBinaryFullPath.Value;
         process.StartInfo.Arguments = arguments;
         process.StartInfo.UseShellExecute = false;
@@ -256,17 +247,14 @@ public static class SeleniumManager
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
 
-        StringBuilder outputBuilder = new StringBuilder();
-        StringBuilder errorOutputBuilder = new StringBuilder();
+        StringBuilder outputBuilder = new();
+        StringBuilder errorOutputBuilder = new();
 
-        DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
-        DataReceivedEventHandler errorOutputHandler = (sender, e) => errorOutputBuilder.AppendLine(e.Data);
+        process.OutputDataReceived += HandleOutput;
+        process.ErrorDataReceived += HandleErrorOutput;
 
         try
         {
-            process.OutputDataReceived += outputHandler;
-            process.ErrorDataReceived += errorOutputHandler;
-
             process.Start();
 
             process.BeginOutputReadLine();
@@ -276,8 +264,6 @@ public static class SeleniumManager
 
             if (process.ExitCode != 0)
             {
-                // We do not log any warnings coming from Selenium Manager like the other bindings, as we don't have any logging in the .NET bindings
-
                 var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {process.StartInfo.FileName} {arguments}");
 
                 if (!string.IsNullOrWhiteSpace(errorOutputBuilder.ToString()))
@@ -285,14 +271,6 @@ public static class SeleniumManager
                     exceptionMessageBuilder.AppendLine();
                     exceptionMessageBuilder.AppendLine("Error Output >>");
                     exceptionMessageBuilder.Append(errorOutputBuilder);
-                    exceptionMessageBuilder.AppendLine("<<");
-                }
-
-                if (!string.IsNullOrWhiteSpace(outputBuilder.ToString()))
-                {
-                    exceptionMessageBuilder.AppendLine();
-                    exceptionMessageBuilder.AppendLine("Standard Output >>");
-                    exceptionMessageBuilder.Append(outputBuilder);
                     exceptionMessageBuilder.AppendLine("<<");
                 }
 
@@ -305,39 +283,42 @@ public static class SeleniumManager
         }
         finally
         {
-            process.OutputDataReceived -= outputHandler;
-            process.ErrorDataReceived -= errorOutputHandler;
+            process.OutputDataReceived -= HandleOutput;
+            process.ErrorDataReceived -= HandleErrorOutput;
         }
 
         string output = outputBuilder.ToString().Trim();
 
-        SeleniumManagerResponse jsonResponse;
+        TResult result;
 
         try
         {
-            jsonResponse = JsonSerializer.Deserialize(output, SeleniumManagerSerializerContext.Default.SeleniumManagerResponse)!;
+            result = JsonSerializer.Deserialize(output, jsonResultTypeInfo)!;
         }
         catch (Exception ex)
         {
             throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
         }
 
-        if (jsonResponse.Logs is not null)
+        return result;
+
+        void HandleOutput(object sender, DataReceivedEventArgs e)
         {
-            // Treat SM's logs always as Trace to avoid SM writing at Info level
-            if (_logger.IsEnabled(LogEventLevel.Trace))
-            {
-                foreach (var entry in jsonResponse.Logs)
-                {
-                    _logger.Trace($"{entry.Level} {entry.Message}");
-                }
-            }
+            outputBuilder.AppendLine(e.Data);
         }
 
-        return jsonResponse.Result;
+        void HandleErrorOutput(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data?.Contains("TRACE") is true)
+            {
+                _logger.Trace(e.Data);
+            }
+
+            errorOutputBuilder.AppendLine(e.Data);
+        }
     }
 
-    public record struct DiscoveryOptions
+    public record DiscoveryOptions
     {
         public string? BrowserVersion { get; set; }
         public string? BrowserPath { get; set; }
@@ -345,23 +326,12 @@ public static class SeleniumManager
         public string? Proxy { get; set; }
     }
 
-    public record struct DiscoveryResult(string DriverPath, string BrowserPath);
+    public record DiscoveryResult(
+        [property: JsonPropertyName(DriverPathKey)] string DriverPath,
+        [property: JsonPropertyName(BrowserPathKey)] string BrowserPath);
 }
 
-internal sealed record SeleniumManagerResponse(IReadOnlyList<LogEntryResponse> Logs, ResultResponse Result)
-{
-    public sealed record LogEntryResponse(string Level, string Message);
-
-    public sealed record ResultResponse
-    (
-        [property: JsonPropertyName(SeleniumManager.DriverPathKey)]
-        string DriverPath,
-        [property: JsonPropertyName(SeleniumManager.BrowserPathKey)]
-        string BrowserPath
-    );
-}
-
-[JsonSerializable(typeof(SeleniumManagerResponse))]
+[JsonSerializable(typeof(SeleniumManager.DiscoveryResult))]
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 internal sealed partial class SeleniumManagerSerializerContext : JsonSerializerContext;
 
