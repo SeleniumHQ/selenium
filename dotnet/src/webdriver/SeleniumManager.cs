@@ -23,10 +23,14 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+#if !NET8_0_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium;
@@ -48,7 +52,7 @@ namespace OpenQA.Selenium;
 /// Set the SE_MANAGER_PATH environment variable to use a custom binary location.
 /// </para>
 /// </remarks>
-public static class SeleniumManager
+public static partial class SeleniumManager
 {
     internal const string DriverPathKey = "driver_path";
     internal const string BrowserPathKey = "browser_path";
@@ -259,10 +263,10 @@ public static class SeleniumManager
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
 
-        StringBuilder outputBuilder = new();
-        StringBuilder errorOutputBuilder = new();
+        StringBuilder stdOutputBuilder = new();
+        StringBuilder errOutputBuilder = new();
 
-        process.OutputDataReceived += HandleOutput;
+        process.OutputDataReceived += HandleStandardOutput;
         process.ErrorDataReceived += HandleErrorOutput;
 
         try
@@ -283,11 +287,11 @@ public static class SeleniumManager
             {
                 var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {process.StartInfo.FileName} {arguments}");
 
-                if (!string.IsNullOrWhiteSpace(errorOutputBuilder.ToString()))
+                if (!string.IsNullOrWhiteSpace(errOutputBuilder.ToString()))
                 {
                     exceptionMessageBuilder.AppendLine();
                     exceptionMessageBuilder.AppendLine("--- Error Output ---");
-                    exceptionMessageBuilder.Append(errorOutputBuilder);
+                    exceptionMessageBuilder.Append(errOutputBuilder);
                     exceptionMessageBuilder.AppendLine("--- End Error Output ---");
                 }
 
@@ -300,11 +304,11 @@ public static class SeleniumManager
         }
         finally
         {
-            process.OutputDataReceived -= HandleOutput;
+            process.OutputDataReceived -= HandleStandardOutput;
             process.ErrorDataReceived -= HandleErrorOutput;
         }
 
-        string output = outputBuilder.ToString().Trim();
+        string output = stdOutputBuilder.ToString().Trim();
 
         TResult result;
 
@@ -319,19 +323,61 @@ public static class SeleniumManager
 
         return result;
 
-        void HandleOutput(object sender, DataReceivedEventArgs e)
+        void HandleStandardOutput(object sender, DataReceivedEventArgs e)
         {
-            outputBuilder.AppendLine(e.Data);
+            stdOutputBuilder.AppendLine(e.Data);
         }
 
         void HandleErrorOutput(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data?.Contains("TRACE") is true)
+            if (e.Data is not null)
             {
-                _logger.Trace(e.Data);
-            }
+#if NET8_0_OR_GREATER
+                var match = LogMessageRegex().Match(e.Data);
+#else
+                var match = Regex.Match(e.Data, LogMessageRegexPattern);
+#endif
 
-            errorOutputBuilder.AppendLine(e.Data);
+                if (match.Success)
+                {
+                    var dateTime = DateTimeOffset.Parse(match.Groups[1].Value);
+                    var logLevel = match.Groups[2].Value;
+                    var message = match.Groups[3].Value;
+
+                    switch (logLevel)
+                    {
+                        case "INFO":
+                            if (_logger.IsEnabled(LogEventLevel.Info))
+                            {
+                                _logger.LogMessage(dateTime, LogEventLevel.Info, message);
+                            }
+                            break;
+                        case "WARN":
+                        case "WARNING":
+                            if (_logger.IsEnabled(LogEventLevel.Warn))
+                            {
+                                _logger.LogMessage(dateTime, LogEventLevel.Warn, message);
+                            }
+                            break;
+                        case "DEBUG":
+                            if (_logger.IsEnabled(LogEventLevel.Debug))
+                            {
+                                _logger.LogMessage(dateTime, LogEventLevel.Debug, message);
+                            }
+                            break;
+                        case "TRACE":
+                            if (_logger.IsEnabled(LogEventLevel.Trace))
+                            {
+                                _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    errOutputBuilder.AppendLine(e.Data);
+                }
+            }
         }
     }
 
@@ -347,6 +393,12 @@ public static class SeleniumManager
     public record DiscoveryResult(
         [property: JsonPropertyName(DriverPathKey)] string DriverPath,
         [property: JsonPropertyName(BrowserPathKey)] string BrowserPath);
+    const string LogMessageRegexPattern = @"^\[(.*) (DEBUG|INFO|WARN|WARNING|TRACE)\t?\] (.*)$";
+
+# if NET8_0_OR_GREATER
+    [GeneratedRegex(LogMessageRegexPattern)]
+    private static partial Regex LogMessageRegex();
+#endif
 }
 
 [JsonSerializable(typeof(SeleniumManager.DiscoveryResult))]

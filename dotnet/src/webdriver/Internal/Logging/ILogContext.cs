@@ -65,9 +65,10 @@ public interface ILogContext : IDisposable
     /// Emits a log message using the specified logger, log level, and message.
     /// </summary>
     /// <param name="logger">The logger to emit the log message.</param>
+    /// <param name="timestamp">The timestamp of the log event.</param>
     /// <param name="level">The log level of the message.</param>
     /// <param name="message">The log message.</param>
-    internal void EmitMessage(ILogger logger, LogEventLevel level, string message);
+    internal void EmitMessage(ILogger logger, DateTimeOffset timestamp, LogEventLevel level, string message);
 
     /// <summary>
     /// Sets the minimum log level for the current context.

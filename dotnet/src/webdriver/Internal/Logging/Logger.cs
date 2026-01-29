@@ -67,8 +67,13 @@ internal sealed class Logger : ILogger
         return Log.CurrentContext.IsEnabled(this, level);
     }
 
+    public void LogMessage(DateTimeOffset timestamp, LogEventLevel level, string message)
+    {
+        Log.CurrentContext.EmitMessage(this, timestamp, level, message);
+    }
+
     private void LogMessage(LogEventLevel level, string message)
     {
-        Log.CurrentContext.EmitMessage(this, level, message);
+        LogMessage(DateTimeOffset.UtcNow, level, message);
     }
 }
