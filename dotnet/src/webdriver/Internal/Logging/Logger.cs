@@ -69,11 +69,11 @@ internal sealed class Logger : ILogger
 
     public void LogMessage(DateTimeOffset timestamp, LogEventLevel level, string message)
     {
-        Log.CurrentContext.EmitMessage(this, timestamp, level, message);
+        Log.CurrentContext.EmitMessage(this, timestamp.ToLocalTime(), level, message);
     }
 
     private void LogMessage(LogEventLevel level, string message)
     {
-        LogMessage(DateTimeOffset.UtcNow, level, message);
+        LogMessage(DateTimeOffset.Now, level, message);
     }
 }
