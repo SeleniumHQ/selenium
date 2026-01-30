@@ -228,14 +228,12 @@ public class LocalGridModel extends GridModel {
 
   @Override
   public void purgeDeadNodes() {
-    Set<NodeStatus> removedNodes = new HashSet<>();
+    Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
+    Set<NodeStatus> toRemove = new HashSet<>();
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
-      Set<NodeStatus> toRemove = new HashSet<>();
-
       for (NodeStatus node : nodes) {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
@@ -281,13 +279,12 @@ public class LocalGridModel extends GridModel {
             nodes.remove(node);
             nodePurgeTimes.remove(node.getNodeId());
             nodeHealthCount.remove(node.getNodeId());
-            removedNodes.add(node);
           });
     } finally {
       writeLock.unlock();
     }
 
-    removedNodes.forEach(node -> events.fire(new NodeRemovedEvent(node)));
+    toRemove.forEach(node -> events.fire(new NodeRemovedEvent(node)));
   }
 
   @Override
