@@ -70,14 +70,16 @@ task :build_test_index, [:index_file] do |_task, args|
   puts "Found #{tests.size} test targets"
 
   puts 'Building file → tests mapping...'
+  srcs_cache = {}
   tests.each_with_index do |test, i|
     puts "Processing #{i + 1}/#{tests.size}: #{test}" if (i % 100).zero?
 
     query_test_deps(test).each do |dep|
-      srcs = query_dep_srcs(dep)
-      add_test_to_index(index, test, srcs)
+      srcs_cache[dep] ||= query_dep_srcs(dep)
+      add_test_to_index(index, test, srcs_cache[dep])
     end
   end
+  puts "Cached #{srcs_cache.size} dep → srcs lookups"
 
   sorted_index = index.keys.sort.each_with_object({}) do |filepath, h|
     h[filepath] = index[filepath].uniq.sort
