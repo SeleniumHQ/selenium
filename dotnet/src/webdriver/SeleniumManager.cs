@@ -337,11 +337,7 @@ public static partial class SeleniumManager
         {
             if (e.Data is not null)
             {
-#if NET8_0_OR_GREATER
-                var match = LogMessageRegex().Match(e.Data);
-#else
-                var match = Regex.Match(e.Data, LogMessageRegexPattern, RegexOptions.Compiled);
-#endif
+                var match = LogMessageRegex.Match(e.Data);
 
                 if (match.Success)
                 {
@@ -425,7 +421,11 @@ public static partial class SeleniumManager
 
 # if NET8_0_OR_GREATER
     [GeneratedRegex(LogMessageRegexPattern)]
-    private static partial Regex LogMessageRegex();
+    private static partial Regex GeneratedLogMessageRegex();
+
+    private static Regex LogMessageRegex { get; } = GeneratedLogMessageRegex();
+#else
+    private static Regex LogMessageRegex { get; } = new(LogMessageRegexPattern, RegexOptions.Compiled);
 #endif
 }
 
