@@ -96,8 +96,8 @@ def query_test_deps(test)
     deps = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
   deps.reject do |d|
-    # Skip high-impact dirs and generated root package targets (node_modules, etc)
-    HIGH_IMPACT_DIRS.any? { |dir| d.start_with?("//#{dir}") } || d.start_with?('//:.', '//:node_modules')
+    # Skip high-impact dirs and root package targets (generated files, LICENSE, etc)
+    HIGH_IMPACT_DIRS.any? { |dir| d.start_with?("//#{dir}") } || d.start_with?('//:')
   end
 rescue StandardError => e
   puts "  Warning: Failed to query deps for #{test}: #{e.message}"
@@ -118,7 +118,7 @@ end
 def query_dep_srcs(dep)
   srcs = []
   Bazel.execute('query', ['--output=label'], "labels(srcs, #{dep})") do |out|
-    srcs = out.lines.map(&:strip).select { |l| l.start_with?('//') }
+    srcs = out.lines.map(&:strip).select { |l| l.start_with?('//') && !l.start_with?('//:') }
   end
   srcs
 rescue StandardError
