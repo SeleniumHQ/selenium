@@ -105,6 +105,8 @@ def add_test_to_index(index, test, srcs)
   srcs.each do |src|
     # Convert //pkg:file to pkg/file
     filepath = src.sub(%r{^//}, '').tr(':', '/')
+    # Skip generated/external paths (node_modules, hidden dirs)
+    next if filepath.start_with?('.', '/') || filepath.include?('node_modules')
     # Skip dotnet tests for java sources (dotnet depends on java server but has no remote tests)
     next if filepath.start_with?('java/') && test.start_with?('//dotnet/')
 
