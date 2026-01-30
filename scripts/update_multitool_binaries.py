@@ -59,6 +59,7 @@ def run(lockfile_path):
 
     with open(lockfile_path, "w") as f:
         json.dump(data, f, indent=2)
+        f.write("\n")
 
     print(f"\ngenerated new '{lockfile_path}' with updated urls and hashes")
 
