@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
+using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Environment;
-using System.Threading.Tasks;
 
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly

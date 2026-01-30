@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Safari;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace OpenQA.Selenium.Environment;
 
@@ -79,7 +79,6 @@ public class DriverFactory
         bool enableLogging = logging;
 
         List<Type> constructorArgTypeList = new List<Type>();
-        IWebDriver driver = null;
         if (typeof(ChromeDriver).IsAssignableFrom(driverType))
         {
             browser = Browser.Chrome;
@@ -166,7 +165,7 @@ public class DriverFactory
             }
         }
 
-        driver = (IWebDriver)Activator.CreateInstance(driverType);
+        IWebDriver driver = (IWebDriver)Activator.CreateInstance(driverType);
         return driver;
     }
 

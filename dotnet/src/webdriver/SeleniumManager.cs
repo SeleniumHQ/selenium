@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,6 +26,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.Internal.Logging;
 using static OpenQA.Selenium.SeleniumManagerResponse;
 
 namespace OpenQA.Selenium;

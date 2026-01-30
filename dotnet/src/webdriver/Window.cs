@@ -29,7 +29,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 internal sealed class Window : IWindow
 {
-    private WebDriver driver;
+    private readonly WebDriver driver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Window"/> class.

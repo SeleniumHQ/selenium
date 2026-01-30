@@ -19,7 +19,7 @@ import pytest
 import urllib3
 
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.options import ArgOptions as Options
 
 
 def test_command_executor_ssl_certificate_is_verified():

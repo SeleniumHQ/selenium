@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V142.Log;
 using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V142.Log;
 
 namespace OpenQA.Selenium.DevTools.V142;
 
@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.DevTools.V142;
 /// </summary>
 public class V142Log : DevTools.Log
 {
-    private LogAdapter adapter;
+    private readonly LogAdapter adapter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V142Log"/> class.
