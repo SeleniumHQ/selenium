@@ -28,7 +28,7 @@ import sys
 from python.runfiles import Runfiles
 
 ALL_DIRS = ["py", "scripts", "common", "dotnet", "java", "javascript", "rb"]
-EXCLUDES = ["**/node_modules/**", "**/.bundle/**"]
+EXCLUDES = ["**/node_modules/**", "**/.bundle/**", "**/devtools/**"]
 
 
 def run_check(ruff, exclude_args, dirs, extra_args):

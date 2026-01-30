@@ -20,9 +20,10 @@ import zipfile
 
 import pytest
 
-from conftest import get_extensions_location
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+
+from conftest import get_extensions_location
 
 EXTENSIONS = get_extensions_location()
 
