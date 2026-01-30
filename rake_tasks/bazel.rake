@@ -95,7 +95,10 @@ def query_test_deps(test)
   Bazel.execute('query', ['--output=label'], "deps(#{test}) intersect //... except attr(testonly, 1, //...)") do |out|
     deps = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
-  deps.reject { |d| HIGH_IMPACT_DIRS.any? { |dir| d.start_with?("//#{dir}") } }
+  deps.reject do |d|
+    # Skip high-impact dirs and generated root package targets (node_modules, etc)
+    HIGH_IMPACT_DIRS.any? { |dir| d.start_with?("//#{dir}") } || d.start_with?('//:.', '//:node_modules')
+  end
 rescue StandardError => e
   puts "  Warning: Failed to query deps for #{test}: #{e.message}"
   []
@@ -105,8 +108,6 @@ def add_test_to_index(index, test, srcs)
   srcs.each do |src|
     # Convert //pkg:file to pkg/file
     filepath = src.sub(%r{^//}, '').tr(':', '/')
-    # Skip generated/external paths (node_modules, hidden dirs)
-    next if filepath.start_with?('.', '/') || filepath.include?('node_modules')
     # Skip dotnet tests for java sources (dotnet depends on java server but has no remote tests)
     next if filepath.start_with?('java/') && test.start_with?('//dotnet/')
 
