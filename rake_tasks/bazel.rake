@@ -16,7 +16,7 @@ task :affected_targets do |_task, args|
   values = args.to_a
   index_file = values.find { |value| File.exist?(value) }
   range = (values - [index_file]).first || 'HEAD'
-  index_file ||= 'build/bazel-test-target-index'
+  index_file ||= 'build/bazel-test-file-index'
 
   base_rev, head_rev = if range.include?('..')
                          range.split('..', 2)
@@ -48,11 +48,11 @@ task :affected_targets do |_task, args|
   end
 end
 
-# ./go bazel:build_test_index                    --> 'build/bazel-test-target-index'
+# ./go bazel:build_test_index                    --> 'build/bazel-test-file-index'
 # ./go bazel:build_test_index my-index           --> 'my-index'
 desc 'Build test target index for faster affected target lookup'
 task :build_test_index, [:index_file] do |_task, args|
-  output = args[:index_file] || 'build/bazel-test-target-index'
+  output = args[:index_file] || 'build/bazel-test-file-index'
 
   # Flat index: file path → [test targets]
   index = Hash.new { |h, k| h[k] = [] }
