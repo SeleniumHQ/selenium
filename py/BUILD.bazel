@@ -146,36 +146,42 @@ copy_file(
 
 copy_file(
     name = "webextensions-selenium-example-xpi",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.xpi",
     out = "test/extensions/webextensions-selenium-example.xpi",
 )
 
 copy_file(
     name = "webextensions-selenium-example-zip",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.zip",
     out = "test/extensions/webextensions-selenium-example.zip",
 )
 
 copy_file(
     name = "webextensions-selenium-example-unsigned-zip",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example-unsigned.zip",
     out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
 copy_file(
     name = "webextensions-selenium-example-crx",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.crx",
     out = "test/extensions/webextensions-selenium-example.crx",
 )
 
 copy_directory(
     name = "webextensions-selenium-example-dir",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example",
     out = "test/extensions/webextensions-selenium-example",
 )
 
 copy_directory(
     name = "webextensions-selenium-example-signed-dir",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example-signed",
     out = "test/extensions/webextensions-selenium-example-signed",
 )
