@@ -11,6 +11,11 @@ run_lint=false
 for arg in "$@"; do
     case "$arg" in
         --lint) run_lint=true ;;
+        *)
+            echo "Unknown option: $arg" >&2
+            echo "Usage: $0 [--lint]" >&2
+            exit 1
+            ;;
     esac
 done
 
@@ -28,7 +33,10 @@ trunk_ref="$(git rev-parse --verify selenium/trunk 2>/dev/null \
 if [[ -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"
     if [[ -n "$base" ]]; then
-        changed="$(git diff --name-only "$base" HEAD)"
+        # Include both committed changes (for pre-push) and staged changes (for pre-commit)
+        committed="$(git diff --name-only "$base" HEAD)"
+        staged="$(git diff --name-only --cached)"
+        changed="$(printf '%s\n%s' "$committed" "$staged" | sort -u)"
     else
         format_all=true
         changed=""
