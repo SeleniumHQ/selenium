@@ -143,7 +143,7 @@ def affected_targets_with_index(changed_files, index_file)
     index = JSON.parse(File.read(index_file))
   rescue JSON::ParserError => e
     puts "Invalid JSON in index file: #{e.message}"
-    puts "using directory-based fallback"
+    puts 'using directory-based fallback'
     return affected_targets_by_directory(changed_files)
   end
 
