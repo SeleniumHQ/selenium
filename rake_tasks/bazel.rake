@@ -5,7 +5,7 @@ require 'set'
 
 # Dirs that affect all bindings - changes here trigger "run all tests"
 HIGH_IMPACT_DIRS = %w[common rust/src javascript/atoms javascript/webdriver/atoms].freeze
-HIGH_IMPACT_PATTERN = /\A(?:#{HIGH_IMPACT_DIRS.map { |d| Regexp.escape(d) }.join('|')})/
+HIGH_IMPACT_PATTERN = /\A(?:#{HIGH_IMPACT_DIRS.map { |d| Regexp.escape(d) }.join('|')})(?:\/|$)/
 
 # ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
 # ./go bazel:affected_targets abc123..def456               --> explicit range
@@ -121,7 +121,8 @@ def query_dep_srcs(dep)
     srcs = out.lines.map(&:strip).select { |l| l.start_with?('//') && !l.start_with?('//:') }
   end
   srcs
-rescue StandardError
+rescue StandardError => e
+  puts "  Warning: Failed to query srcs for #{dep}: #{e.message}"
   []
 end
 
@@ -143,7 +144,7 @@ def affected_targets_with_index(changed_files, index_file)
     index = JSON.parse(File.read(index_file))
   rescue JSON::ParserError => e
     puts "Invalid JSON in index file: #{e.message}"
-    puts 'using directory-based fallback'
+    puts 'Using directory-based fallback'
     return affected_targets_by_directory(changed_files)
   end
 
@@ -189,7 +190,8 @@ def query_unindexed_file(filepath)
 
   # dotnet tests depend on java server, but there are no remote tests, so safe to ignore
   filepath.start_with?('java/') ? targets.reject { |t| t.start_with?('//dotnet/') } : targets
-rescue StandardError
+rescue StandardError => e
+  puts "  Warning: Failed to query unindexed file #{filepath}: #{e.message}"
   []
 end
 
