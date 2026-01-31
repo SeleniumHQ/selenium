@@ -141,7 +141,7 @@ task :format do |_task, arguments|
   Rake::Task['all:format'].invoke(*args)
 end
 
-desc 'Run linters (non-auto-fixable checks)'
+desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
 task :lint do
   puts 'Linting shell scripts and GitHub Actions...'
   shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
