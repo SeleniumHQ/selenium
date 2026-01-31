@@ -29,6 +29,7 @@ module Bazel
     cmd_out = ''
     cmd_exit_code = 0
 
+    puts "Executing: #{format_cmd(cmd, verbose: verbose)}"
     if windows?
       cmd += ['2>&1']
       cmd_line = cmd.join(' ')
@@ -36,7 +37,6 @@ module Bazel
       puts cmd_out if verbose
       cmd_exit_code = $CHILD_STATUS
     else
-      puts "Executing: #{format_cmd(cmd, verbose: verbose)}"
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
         is_running = true
         stdin.close
