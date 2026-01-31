@@ -393,14 +393,11 @@ end
 desc 'Format Java code with google-java-format'
 task :format do
   puts '  Running google-java-format...'
-  formatter = nil
-  Bazel.execute('run', ['--run_under=echo'], '//scripts:google-java-format') do |output|
-    formatter = output.lines.last&.strip
-  end
-  raise 'Failed to get google-java-format path' if formatter.nil? || formatter.empty?
-
   java_files = Dir.glob(File.join(Dir.pwd, 'java', '**', '*.java'))
-  sh formatter, '--replace', *java_files unless java_files.empty?
+  return if java_files.empty?
+
+  args = ['--', '--replace'] + java_files
+  Bazel.execute('run', args, '//scripts:google-java-format')
 end
 
 # ErrorProne runs at build time, SpotBugs runs as test targets in RBE
