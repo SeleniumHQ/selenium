@@ -35,6 +35,12 @@ public class SetScreenSettingsOverrideParameters extends AbstractOverrideParamet
     }
   }
 
+  public SetScreenSettingsOverrideParameters(int width, int height) {
+    this.width = width;
+    this.height = height;
+    map.put("screenArea", Map.of("width", width, "height", height));
+  }
+
   public int getHeight() {
     return height;
   }

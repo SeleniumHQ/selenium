@@ -65,7 +65,7 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
     Emulation emulation = new Emulation(driver);
     SetScreenSettingsOverrideParameters screenSettings =
-        new SetScreenSettingsOverrideParameters(Map.of("width", 800, "height", 600));
+        new SetScreenSettingsOverrideParameters(800, 600);
 
     emulation.setScreenSettingsOverride(screenSettings.contexts(List.of(contextId)));
 
@@ -105,7 +105,7 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
         Map<String, Object> initialDimensions = getScreenDimensions(contextId);
         SetScreenSettingsOverrideParameters screenSettings =
-            new SetScreenSettingsOverrideParameters(Map.of("width", 800, "height", 600));
+            new SetScreenSettingsOverrideParameters(800, 600);
 
         emulation.setScreenSettingsOverride(screenSettings.userContexts(List.of(userContext)));
 
