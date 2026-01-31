@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
 import os
 import sys
 from collections.abc import Mapping, Sequence
@@ -49,11 +50,19 @@ class Service(service.Service):
         driver_path_env_key = driver_path_env_key or "SE_GECKODRIVER"
 
         if os.environ.get("SE_DEBUG"):
-            if "--log" in self._service_args:
-                idx = self._service_args.index("--log")
-                del self._service_args[idx : idx + 2]
-            else:
-                self._service_args = [arg for arg in self._service_args if not arg.startswith("--log=")]
+            has_log_arg = "--log" in self._service_args or any(arg.startswith("--log=") for arg in self._service_args)
+            has_output_conflict = log_output is not None
+            if has_log_arg or has_output_conflict:
+                logging.getLogger(__name__).warning(
+                    "Environment Variable `SE_DEBUG` is set; "
+                    "forcing GeckoDriver log level to DEBUG and overriding configured log level/output."
+                )
+            if has_log_arg:
+                if "--log" in self._service_args:
+                    idx = self._service_args.index("--log")
+                    del self._service_args[idx : idx + 2]
+                else:
+                    self._service_args = [arg for arg in self._service_args if not arg.startswith("--log=")]
             self._service_args.append("--log")
             self._service_args.append("debug")
             log_output = sys.stderr

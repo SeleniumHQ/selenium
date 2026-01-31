@@ -16,38 +16,43 @@ jobs:
       run: bazel run //scripts:pinned_browsers
       artifact-name: pinned-browsers
 
-  pull-request:
-    if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+  push-changes:
+    name: Push Changes
     needs: update
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Download patch
-        uses: actions/download-artifact@v4
-        with:
-          name: pinned-browsers
-      - name: Apply Patch
-        run: |
-          git apply changes.patch
-          rm changes.patch
-      - name: Check Changes
-        run: |
-          if [[ -n $(git status --porcelain common/repositories.bzl) ]]; then
-            echo "CHANGES_FOUND=true" >> "$GITHUB_ENV"
-          fi
-      - name: Create Pull Request
-        if: env.CHANGES_FOUND == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          add-paths: common/repositories.bzl
-          commit-message: "Update pinned browser versions"
-          committer: Selenium CI Bot <selenium-ci@users.noreply.github.com>
-          author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
-          title: "[dotnet][rb][java][js][py] Automated Browser Version Update"
-          body: |
-            This is an automated pull request to update pinned browsers and drivers
+    if: github.event.repository.fork == false
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: pinned-browsers
+      commit-message: "Update pinned browser versions"
+      push-branch: pinned-browser-updates
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-            Merge after verify the new browser versions properly passing the tests and no bugs need to be filed
-          branch: "pinned-browser-updates"
+  create-pr:
+    name: Create Pull Request
+    needs: push-changes
+    if: github.event.repository.fork == false && needs.push-changes.outputs.changes-committed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+        run: |
+          existing=$(gh pr list --head pinned-browser-updates --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "::notice::PR #$existing already exists"
+            pr="$existing"
+          else
+            pr=$(gh pr create \
+              --head pinned-browser-updates \
+              --base trunk \
+              --title "[dotnet][rb][java][js][py] Automated Browser Version Update" \
+              --body $'This is an automated pull request to update pinned browsers and drivers\n\nMerge after verify the new browser versions properly passing the tests and no bugs need to be filed' \
+              --json number --jq '.number')
+          fi
+          gh pr merge "$pr" --auto --squash --delete-branch

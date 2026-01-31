@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 using static OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions;
 
 namespace OpenQA.Selenium.VirtualAuth;

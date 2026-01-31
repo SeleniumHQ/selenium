@@ -1202,7 +1202,7 @@ pub trait SeleniumManager {
 
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
-            if !escaped_browser_path.is_empty() {
+            if !escaped_browser_path.is_empty() && !self.is_webview2() {
                 return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {

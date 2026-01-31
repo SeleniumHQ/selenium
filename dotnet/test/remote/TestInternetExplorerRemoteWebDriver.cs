@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.IE;
 using System;
+using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium.Remote;
 

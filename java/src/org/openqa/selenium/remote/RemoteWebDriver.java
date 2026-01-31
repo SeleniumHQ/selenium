@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -93,6 +94,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.jdk.ConnectionException;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -356,6 +358,7 @@ public class RemoteWebDriver
     this.executor = executor;
   }
 
+  @NonNull
   @Override
   public Capabilities getCapabilities() {
     if (capabilities == null) {
@@ -628,6 +631,11 @@ public class RemoteWebDriver
         }
       } else if (e instanceof WebDriverException) {
         toThrow = (WebDriverException) e;
+      } else if (e instanceof ConnectionException) {
+        ConnectionException cause = (ConnectionException) e;
+        toThrow =
+            new UnreachableBrowserException(
+                "Error communicating with the remote browser at " + cause.uri(), cause);
       } else {
         toThrow =
             new UnreachableBrowserException(

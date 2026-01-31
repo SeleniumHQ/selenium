@@ -278,8 +278,8 @@ If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development,
 you can configure it use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
-2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
-3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
+2. From the `selenium` (parent) directory, run `./go rb:local_dev` to create up-to-date artifacts.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby++ruby+ruby/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust

@@ -19,6 +19,7 @@ package org.openqa.selenium.support.ui;
 
 import java.time.Clock;
 import java.time.Duration;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -79,7 +80,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
   }
 
   @Override
-  protected RuntimeException timeoutException(String message, Throwable lastException) {
+  protected RuntimeException timeoutException(String message, @Nullable Throwable lastException) {
     WebDriver exceptionDriver = driver;
     TimeoutException ex = new TimeoutException(message, lastException);
     ex.addInfo(WebDriverException.DRIVER_INFO, exceptionDriver.getClass().getName());

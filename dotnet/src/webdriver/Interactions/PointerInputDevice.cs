@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions;
 
@@ -515,7 +515,7 @@ public class PointerInputDevice : InputDevice
         private readonly IWebElement? target;
         private readonly int x = 0;
         private readonly int y = 0;
-        private TimeSpan duration = TimeSpan.MinValue;
+        private readonly TimeSpan duration = TimeSpan.MinValue;
         private readonly CoordinateOrigin origin = CoordinateOrigin.Pointer;
         private readonly PointerEventProperties eventProperties;
 

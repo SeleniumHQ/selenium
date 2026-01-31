@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import org.openqa.selenium.internal.Require;
 
-class ObjectCoercer extends TypeCoercer {
+class ObjectCoercer extends TypeCoercer<Object> {
 
   private final JsonTypeCoercer coercer;
 

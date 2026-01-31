@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari;
 

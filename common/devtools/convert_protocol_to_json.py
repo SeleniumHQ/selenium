@@ -12,9 +12,7 @@ import pdl
 
 
 def main(argv):
-    parser = argparse.ArgumentParser(
-        description=("Converts from .pdl to .json by invoking the pdl Python module.")
-    )
+    parser = argparse.ArgumentParser(description=("Converts from .pdl to .json by invoking the pdl Python module."))
     parser.add_argument(
         "--map_binary_to_string",
         type=bool,
@@ -28,14 +26,13 @@ def main(argv):
     parser.add_argument("json_file", help="The .json output file write.")
     args = parser.parse_args(argv)
     file_name = os.path.normpath(args.pdl_file)
-    input_file = open(file_name, "r")
-    pdl_string = input_file.read()
-    protocol = pdl.loads(pdl_string, file_name, args.map_binary_to_string)
-    input_file.close()
+    with open(file_name) as input_file:
+        pdl_string = input_file.read()
 
-    output_file = open(os.path.normpath(args.json_file), "w")
-    json.dump(protocol, output_file, indent=4, separators=(",", ": "))
-    output_file.close()
+    protocol = pdl.loads(pdl_string, file_name, args.map_binary_to_string)
+
+    with open(os.path.normpath(args.json_file), "w") as output_file:
+        json.dump(protocol, output_file, indent=4, separators=(",", ": "))
 
 
 if __name__ == "__main__":

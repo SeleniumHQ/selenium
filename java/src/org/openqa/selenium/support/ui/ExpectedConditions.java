@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -42,7 +41,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 /** Canned {@link ExpectedCondition}s which are generally useful within webdriver tests. */
-@NullMarked
 @SuppressWarnings("MismatchedJavadocCode")
 public class ExpectedConditions {
   private static final Logger LOG = Logger.getLogger(ExpectedConditions.class.getName());

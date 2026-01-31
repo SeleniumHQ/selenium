@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 

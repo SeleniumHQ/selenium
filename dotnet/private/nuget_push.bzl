@@ -13,7 +13,8 @@ def _nuget_push_impl(ctx):
     else:
         script = _create_unix_script(ctx, dotnet, nupkg_files)
 
-    runfiles = ctx.runfiles(files = nupkg_files).merge(toolchain.runtime.default_runfiles)
+    runfiles = ctx.runfiles(files = nupkg_files + [dotnet])
+    runfiles = runfiles.merge(toolchain.runtime.default_runfiles)
 
     return [
         DefaultInfo(
@@ -22,20 +23,45 @@ def _nuget_push_impl(ctx):
         ),
     ]
 
+def _to_runfiles_path(short_path):
+    """Convert a short_path to a runfiles path.
+
+    External repos in bzlmod have paths like ../repo_name/path,
+    which in runfiles becomes repo_name/path.
+    Main repo paths need _main/ prefix.
+    """
+    if short_path.startswith("../"):
+        return short_path[3:]
+    return "_main/" + short_path
+
 def _create_unix_script(ctx, dotnet, nupkg_files):
     """Create bash script for Unix/macOS/Linux."""
     push_commands = []
     for nupkg in nupkg_files:
+        nupkg_runfiles_path = _to_runfiles_path(nupkg.short_path)
         push_commands.append(
-            '"$DOTNET" nuget push "%s" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE"' % nupkg.short_path,
+            '"$DOTNET" nuget push "$RUNFILES_DIR/{nupkg}" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate'.format(nupkg = nupkg_runfiles_path),
         )
+
+    dotnet_runfiles_path = _to_runfiles_path(dotnet.short_path)
 
     script_content = """#!/usr/bin/env bash
 set -euo pipefail
-DOTNET="$(cd "$(dirname "$0")" && pwd)/{dotnet}"
+
+# Locate runfiles directory
+if [[ -d "$0.runfiles/_main" ]]; then
+    RUNFILES_DIR="$0.runfiles"
+elif [[ -n "${{RUNFILES_DIR:-}}" ]]; then
+    RUNFILES_DIR="$RUNFILES_DIR"
+else
+    echo "ERROR: Could not locate runfiles directory" >&2
+    exit 1
+fi
+
+DOTNET="$RUNFILES_DIR/{dotnet}"
 {push_commands}
 """.format(
-        dotnet = dotnet.short_path,
+        dotnet = dotnet_runfiles_path,
         push_commands = "\n".join(push_commands),
     )
 
@@ -51,19 +77,19 @@ def _create_windows_script(ctx, dotnet, nupkg_files):
     """Create batch script for Windows."""
     push_commands = []
     for nupkg in nupkg_files:
-        nupkg_path = nupkg.short_path.replace("/", "\\")
+        nupkg_runfiles_path = _to_runfiles_path(nupkg.short_path).replace("/", "\\")
         push_commands.append(
-            '"%%DOTNET%%" nuget push "%s" --api-key "%%NUGET_API_KEY%%" --source "%%NUGET_SOURCE%%"' % nupkg_path,
+            '"%%DOTNET%%" nuget push "%%~dp0%s" --api-key "%%NUGET_API_KEY%%" --source "%%NUGET_SOURCE%%" --skip-duplicate' % nupkg_runfiles_path,
         )
         push_commands.append("if %%ERRORLEVEL%% neq 0 exit /b %%ERRORLEVEL%%")
 
-    dotnet_path = dotnet.short_path.replace("/", "\\")
+    dotnet_runfiles_path = _to_runfiles_path(dotnet.short_path).replace("/", "\\")
 
     script_content = """@echo off
 set DOTNET=%~dp0{dotnet_path}
 {push_commands}
 """.format(
-        dotnet_path = dotnet_path,
+        dotnet_path = dotnet_runfiles_path,
         push_commands = "\n".join(push_commands),
     )
 

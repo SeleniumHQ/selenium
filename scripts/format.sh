@@ -14,6 +14,10 @@ section "Buildifier"
 echo "    buildifier" >&2
 bazel run //:buildifier
 
+section "Dotnet"
+echo "    dotnet format whitespace" >&2
+bazel run //dotnet:format -- whitespace
+
 section "Java"
 echo "    google-java-format" >&2
 find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
@@ -33,8 +37,7 @@ bazel run @rules_rust//:rustfmt
 
 section "Python"
 echo "    python - ruff" >&2
-bazel run @multitool//tools/ruff:cwd -- check --fix --show-fixes
-bazel run @multitool//tools/ruff:cwd -- format
+bazel run //py:ruff-format
 
 section "Copyright"
 bazel run //scripts:update_copyright

@@ -1,0 +1,79 @@
+name: Parse Release Tag
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., selenium-4.28.0 or selenium-4.28.1-ruby)'
+        required: true
+        type: string
+    outputs:
+      tag:
+        description: 'The validated tag'
+        value: ${{ jobs.parse.outputs.tag }}
+      version:
+        description: 'The version number (e.g., 4.28.0)'
+        value: ${{ jobs.parse.outputs.version }}
+      language:
+        description: 'The language (ruby, python, etc.) or "all" for full releases'
+        value: ${{ jobs.parse.outputs.language }}
+
+permissions: {}
+
+jobs:
+  parse:
+    name: Parse Tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.parse.outputs.tag }}
+      version: ${{ steps.parse.outputs.version }}
+      language: ${{ steps.parse.outputs.language }}
+    steps:
+      - name: Parse and validate tag
+        id: parse
+        shell: bash
+        run: |
+          TAG="${{ inputs.tag }}"
+          TAG="${TAG//[[:space:]]/}"
+
+          # Validate tag format: selenium-X.Y.Z or selenium-X.Y.Z-lang
+          if [[ ! "$TAG" =~ ^selenium-[0-9]+\.[0-9]+\.[0-9]+(-(ruby|python|javascript|java|dotnet))?$ ]]; then
+            echo "::error::Invalid tag format: '$TAG'. Expected selenium-X.Y.Z or selenium-X.Y.Z-lang (ruby, python, javascript, java, dotnet)"
+            exit 1
+          fi
+
+          # Extract version
+          VERSION=$(echo "$TAG" | sed -E 's/^selenium-([0-9]+\.[0-9]+\.[0-9]+)(-(ruby|python|javascript|java|dotnet))?$/\1/')
+          PATCH=$(echo "$VERSION" | cut -d. -f3)
+
+          # Extract language suffix
+          if [[ "$TAG" =~ -(ruby|python|javascript|java|dotnet)$ ]]; then
+            LANG_SUFFIX="${BASH_REMATCH[1]}"
+          else
+            LANG_SUFFIX=""
+          fi
+
+          # Patch releases must have a language suffix
+          if [[ "$PATCH" -gt 0 && -z "$LANG_SUFFIX" ]]; then
+            echo "::error::Patch releases must specify a language (e.g., selenium-${VERSION}-ruby)"
+            exit 1
+          fi
+
+          # Full releases must not have a language suffix
+          if [[ "$PATCH" -eq 0 && -n "$LANG_SUFFIX" ]]; then
+            echo "::error::Full releases (X.Y.0) cannot have a language suffix"
+            exit 1
+          fi
+
+          # Set language (already validated by regex above)
+          if [[ -n "$LANG_SUFFIX" ]]; then
+            LANGUAGE="$LANG_SUFFIX"
+          else
+            LANGUAGE="all"
+          fi
+
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "language=$LANGUAGE"
+          } >> "$GITHUB_OUTPUT"

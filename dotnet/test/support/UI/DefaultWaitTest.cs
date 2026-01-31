@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Runtime.CompilerServices;
+using Moq;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Support.UI;
 
@@ -31,7 +31,7 @@ public class DefaultWaitTest
     private Mock<IClock> mockClock;
 
     private int executionCount;
-    private DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
+    private readonly DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
     private readonly object defaultReturnValue = new object();
 
     [SetUp]

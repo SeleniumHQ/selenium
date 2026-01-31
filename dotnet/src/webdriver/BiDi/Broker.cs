@@ -17,18 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class Broker : IAsyncDisposable
+internal sealed class Broker : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
@@ -36,7 +37,11 @@ public sealed class Broker : IAsyncDisposable
     private readonly ITransport _transport;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
-    private readonly BlockingCollection<(string Method, EventArgs Params)> _pendingEvents = [];
+    private readonly Channel<(string Method, EventArgs Params)> _pendingEvents = Channel.CreateUnbounded<(string Method, EventArgs Params)>(new()
+    {
+        SingleReader = true,
+        SingleWriter = true
+    });
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
@@ -80,7 +85,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Error))
                     {
-                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
                     }
                 }
             }
@@ -89,7 +94,7 @@ public sealed class Broker : IAsyncDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
             throw;
@@ -98,43 +103,54 @@ public sealed class Broker : IAsyncDisposable
 
     private async Task ProcessEventsAwaiterAsync()
     {
-        foreach (var result in _pendingEvents.GetConsumingEnumerable())
+        var reader = _pendingEvents.Reader;
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            try
+            while (reader.TryRead(out var result))
             {
-                if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
+                try
                 {
-                    if (eventHandlers is not null)
+                    if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
                     {
-                        foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                        if (eventHandlers is not null)
                         {
-                            var args = result.Params;
+                            foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                            {
+                                var args = result.Params;
 
-                            args.BiDi = _bidi;
+                                args.BiDi = _bidi;
 
-                            await handler.InvokeAsync(args).ConfigureAwait(false);
+                                await handler.InvokeAsync(args).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                if (_logger.IsEnabled(LogEventLevel.Error))
+                catch (Exception ex)
                 {
-                    _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                    }
                 }
             }
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
         where TCommand : Command
         where TResult : EmptyResult
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
+
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        using var cts = cancellationToken.CanBeCanceled
+            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
+            : new CancellationTokenSource();
+
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
-        using var cts = new CancellationTokenSource(timeout);
+        cts.CancelAfter(timeout);
+
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
         var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
@@ -145,50 +161,32 @@ public sealed class Broker : IAsyncDisposable
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
-
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
         handlers.Add(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
-        where TEventArgs : EventArgs
-    {
-        _eventTypesMap[eventName] = jsonTypeInfo;
-
-        var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
-
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
-
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-
-        handlers.Add(eventHandler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
-    }
-
-    public async Task UnsubscribeAsync(Subscription subscription)
+    public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
 
         eventHandlers.Remove(subscription.EventHandler);
 
-        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId]).ConfigureAwait(false);
+        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
     {
-        _pendingEvents.CompleteAdding();
+        _pendingEvents.Writer.Complete();
 
         _receiveMessagesCancellationTokenSource?.Cancel();
 
@@ -297,7 +295,7 @@ public sealed class Broker : IAsyncDisposable
                     eventArgs.BiDi = _bidi;
 
                     var messageEvent = (method, eventArgs);
-                    _pendingEvents.Add(messageEvent);
+                    _pendingEvents.Writer.TryWrite(messageEvent);
                 }
                 else
                 {

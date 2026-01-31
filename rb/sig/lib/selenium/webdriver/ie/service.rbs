@@ -8,6 +8,8 @@ module Selenium
         EXECUTABLE: String
 
         SHUTDOWN_SUPPORTED: bool
+
+        def initialize: (?args: Array[String]?, **untyped) -> void
       end
     end
   end

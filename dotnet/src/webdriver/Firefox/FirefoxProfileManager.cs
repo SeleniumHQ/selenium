@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Firefox.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using OpenQA.Selenium.Firefox.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox;
 /// </summary>
 public class FirefoxProfileManager
 {
-    private Dictionary<string, string> profiles = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> profiles = new Dictionary<string, string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.

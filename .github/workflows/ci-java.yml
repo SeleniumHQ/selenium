@@ -20,9 +20,6 @@ jobs:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2
@@ -46,9 +43,6 @@ jobs:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2
@@ -71,9 +65,6 @@ jobs:
       name: Remote Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2

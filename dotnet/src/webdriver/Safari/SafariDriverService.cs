@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Safari;
 

@@ -60,6 +60,10 @@ module Selenium
       def launch: () -> untyped
 
       def shutdown_supported: () -> untyped
+
+      private
+
+      def warn_driver_log_override: () -> void
     end
   end
 end

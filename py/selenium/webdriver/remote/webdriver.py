@@ -114,13 +114,27 @@ def get_remote_connection(
         client_config = client_config or ClientConfig(remote_server_addr=command_executor)
         client_config.remote_server_addr = command_executor
         command_executor = RemoteConnection(client_config=client_config)
-    from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
-    from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
-    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
-    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
-    candidates = [ChromeRemoteConnection, EdgeRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
-    handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
+    browser_name = capabilities.get("browserName")
+    handler: type[RemoteConnection]
+    if browser_name == "chrome":
+        from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+
+        handler = ChromeRemoteConnection
+    elif browser_name == "MicrosoftEdge":
+        from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
+
+        handler = EdgeRemoteConnection
+    elif browser_name == "firefox":
+        from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+        handler = FirefoxRemoteConnection
+    elif browser_name == "Safari":
+        from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+
+        handler = SafariRemoteConnection
+    else:
+        handler = RemoteConnection
 
     if hasattr(command_executor, "client_config") and command_executor.client_config:
         remote_server_addr = command_executor.client_config.remote_server_addr

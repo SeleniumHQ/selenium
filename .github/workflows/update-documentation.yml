@@ -15,10 +15,10 @@ on:
         options:
           - all
           - java
-          - rb
-          - py
+          - ruby
+          - python
           - dotnet
-          - node
+          - javascript
 
   workflow_call:
     inputs:
@@ -26,9 +26,12 @@ on:
         required: true
         type: string
       language:
-        required: false
         type: string
         default: ""
+      skip:
+        description: We're not releasing this one right now
+        type: boolean
+        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -40,8 +43,13 @@ env:
   GITHUB_TOKEN: ${{ github.token }}
 
 jobs:
-  build-docs:
+  parse:
+    name: Parse Tag
+    if: ${{ !inputs.skip }}
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      language: ${{ steps.parse.outputs.language }}
     steps:
       - name: Parse tag
         id: parse
@@ -51,56 +59,54 @@ jobs:
         run: |
           echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-          # Check for language suffix and map to internal names
-          case "$TAG" in
-            *-javascript) LANG="node" ;;
-            *-python) LANG="py" ;;
-            *-ruby) LANG="rb" ;;
-            *-java) LANG="java" ;;
-            *-dotnet) LANG="dotnet" ;;
-            *) LANG="all" ;;
-          esac
-
+          # Extract language from tag suffix or use input
           if [ -n "$INPUT_LANG" ] && [ "$INPUT_LANG" != "all" ]; then
             LANG="$INPUT_LANG"
+          elif [[ "$TAG" =~ -(javascript|python|ruby|java|dotnet)$ ]]; then
+            LANG="${BASH_REMATCH[1]}"
+          else
+            LANG="all"
           fi
           echo "language=$LANG" >> "$GITHUB_OUTPUT"
-      - name: Checkout repository
+
+  generate-docs:
+    name: Generate Documentation
+    needs: parse
+    if: ${{ !inputs.skip }}
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Generate Docs
+      ref: ${{ inputs.tag }}
+      run: ./go ${{ needs.parse.outputs.language }}:docs
+      artifact-name: documentation
+      artifact-path: build/docs/api/**/*
+
+  commit-docs:
+    name: Commit Documentation
+    needs: [parse, generate-docs]
+    if: ${{ !inputs.skip }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
-      - name: Fetch gh-pages branch
-        run: git fetch origin gh-pages
-      - name: Setup gh-pages worktree
-        run: git worktree add ../gh-pages gh-pages
+          ref: gh-pages
+          token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
+      - name: Download documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: documentation
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Setup curl for Ubuntu
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.18.0
-        with:
-          cache-save: false
-          bazelisk-cache: true
-          external-cache: |
-            manifest:
-              crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
-          repository-cache: true
-          bazelrc: common --color=yes
-      - name: Generate Documentation for selected languages
-        run: ./go ${{ steps.parse.outputs.language }}:docs
-      - name: Commit documentation to gh-pages
+      - name: Commit documentation
         run: |
-          cp -r docs/api/* ../gh-pages/docs/api/
-          cd ../gh-pages
           git add docs/api/
           if git diff --staged --quiet; then
             echo "No documentation changes to commit"
           else
-            git commit -m "Update ${{ steps.parse.outputs.language }} documentation for Selenium ${{ steps.parse.outputs.version }}"
+            git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
             for _ in 1 2; do
               git pull --rebase origin gh-pages && git push origin gh-pages && exit 0
               sleep 2

@@ -38,4 +38,9 @@ public class CloseMessage implements Message {
   public String reason() {
     return reason;
   }
+
+  @Override
+  public String toString() {
+    return String.format("%s{code=%d, reason=%s}", getClass().getSimpleName(), code, reason);
+  }
 }

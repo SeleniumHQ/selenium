@@ -43,17 +43,17 @@ def write_atom_literal(out, name, contents, lang, utf8):
     elif "java" == lang:
         line_format = '      .append\("{}")\n'
     else:
-        raise RuntimeError("Unknown language: %s " % lang)
+        raise RuntimeError(f"Unknown language: {lang} ")
 
     name = get_atom_name(name)
 
     if "cc" == lang or "hh" == lang:
         char_type = "char" if utf8 else "wchar_t"
-        out.write("const %s* const %s[] = {\n" % (char_type, name))
+        out.write(f"const {char_type}* const {name}[] = {{\n")
     elif "java" == lang:
-        out.write("  %s(new StringBuilder()\n" % name)
+        out.write(f"  {name}(new StringBuilder()\n")
     else:
-        raise RuntimeError("Unknown language: %s " % lang)
+        raise RuntimeError(f"Unknown language: {lang} ")
 
     # Make the header file play nicely in a terminal: limit lines to 80
     # characters, but make sure we don't cut off a line in the middle
@@ -76,24 +76,21 @@ def write_atom_literal(out, name, contents, lang, utf8):
 
 
 def generate_header(file_name, out, js_map, just_declare, utf8):
-    define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(
-        ".", "_"
-    )
+    define_guard = "WEBDRIVER_{}".format(os.path.basename(file_name.upper()).replace(".", "_"))
     include_stddef = "" if utf8 else "\n#include <stddef.h>  // For wchar_t."
     out.write(
-        """%s
+        f"""{_copyright}
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
-#ifndef %s
-#define %s
-%s
+#ifndef {define_guard}
+#define {define_guard}
+{include_stddef}
 #include <string>    // For std::(w)string.
 
-namespace webdriver {
-namespace atoms {
+namespace webdriver {{
+namespace atoms {{
 
 """
-        % (_copyright, define_guard, define_guard, include_stddef)
     )
 
     string_type = "std::string" if utf8 else "std::wstring"
@@ -101,48 +98,46 @@ namespace atoms {
 
     for name, file in js_map.items():
         if just_declare:
-            out.write("extern const %s* const %s[];\n" % (char_type, name.upper()))
+            out.write(f"extern const {char_type}* const {name.upper()}[];\n")
         else:
-            contents = open(file, "r").read()
+            contents = open(file).read()
             write_atom_literal(out, name, contents, "hh", utf8)
 
     out.write(
-        """
-static inline %s asString(const %s* const atom[]) {
-  %s source;
-  for (int i = 0; atom[i] != NULL; i++) {
+        f"""
+static inline {string_type} asString(const {char_type}* const atom[]) {{
+  {string_type} source;
+  for (int i = 0; atom[i] != NULL; i++) {{
     source += atom[i];
-  }
+  }}
   return source;
-}
+}}
 
-}  // namespace atoms
-}  // namespace webdriver
+}}  // namespace atoms
+}}  // namespace webdriver
 
-#endif  // %s
+#endif  // {define_guard}
 """
-        % (string_type, char_type, string_type, define_guard)
     )
 
 
 def generate_cc_source(out, js_map, utf8):
     out.write(
-        """%s
+        f"""{_copyright}
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
 
 #include <stddef.h>  // For NULL.
 #include "atoms.h"
 
-namespace webdriver {
-namespace atoms {
+namespace webdriver {{
+namespace atoms {{
 
 """
-        % _copyright
     )
 
     for name, file in js_map.items():
-        contents = open(file, "r").read()
+        contents = open(file).read()
         write_atom_literal(out, name, contents, "cc", utf8)
 
     out.write("""
@@ -162,37 +157,35 @@ def generate_java_source(file_name, out, preamble, js_map):
     out.write(preamble)
     out.write("")
     out.write(
-        """
-public enum %s {
+        f"""
+public enum {class_name} {{
 
     // AUTO GENERATED - DO NOT EDIT BY HAND
 """
-        % class_name
     )
 
     for name, file in js_map.items():
-        contents = open(file, "r").read()
+        contents = open(file).read()
         write_atom_literal(out, name, contents, "java", True)
 
     out.write(
-        """
+        f"""
   ;
   private final String value;
 
-  public String getValue() {
+  public String getValue() {{
     return value;
-  }
+  }}
 
-  public String toString() {
+  public String toString() {{
     return getValue();
-  }
+  }}
 
-  %s(String value) {
+  {class_name}(String value) {{
     this.value = value;
-  }
-}
+  }}
+}}
 """
-        % class_name
     )
 
 
@@ -216,7 +209,7 @@ def main(argv=[]):
         elif "java" == lang:
             generate_java_source(file_name, out, preamble, js_map)
         else:
-            raise RuntimeError("Unknown lang: %s" % lang)
+            raise RuntimeError(f"Unknown lang: {lang}")
 
 
 if __name__ == "__main__":

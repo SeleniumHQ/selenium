@@ -194,11 +194,12 @@ _LINT_ARGS = [
     "--config=rb/.rubocop.yml",
     "rb/",
     "Rakefile",
+    "rake_tasks/",
 ]
 
 _LINT_DATA = [
     ".rubocop.yml",
-    "//:rakefile",
+    "//:rake_tasks",
 ]
 
 _LINT_DEPS = [
@@ -223,9 +224,9 @@ rb_test(
 )
 
 rb_binary(
-    name = "lint-unsafe",
+    name = "rubocop",
     testonly = True,
-    args = ["--autocorrect-all"] + _LINT_ARGS,
+    args = _LINT_ARGS,
     data = _LINT_DATA,
     main = "@bundle//bin:rubocop",
     deps = _LINT_DEPS,

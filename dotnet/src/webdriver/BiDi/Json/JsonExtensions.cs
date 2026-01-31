@@ -55,6 +55,11 @@ internal static class JsonExtensions
 
     public static JsonTypeInfo<T> GetTypeInfo<T>(this JsonSerializerOptions options)
     {
-        return (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
+        if (options.TryGetTypeInfo(typeof(T), out JsonTypeInfo? typeInfo))
+        {
+            return (JsonTypeInfo<T>)typeInfo;
+        }
+
+        throw new JsonException($"Type info for '{typeof(T).FullName}' is not available in the serializer context. Ensure the type is included in the JsonSerializerContext.");
     }
 }

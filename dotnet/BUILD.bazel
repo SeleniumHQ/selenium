@@ -1,5 +1,5 @@
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
-load("//dotnet:defs.bzl", "nuget_push")
+load("//dotnet:defs.bzl", "dotnet_format", "nuget_push", "paket_deps")
 load("//dotnet/private:docfx.bzl", "docfx")
 
 exports_files([
@@ -50,4 +50,18 @@ nuget_push(
         "//dotnet/src/support:support-pack",
         "//dotnet/src/webdriver:webdriver-pack",
     ],
+)
+
+paket_deps(
+    name = "paket-update",
+    mode = "update",
+)
+
+paket_deps(
+    name = "paket-install",
+    mode = "install",
+)
+
+dotnet_format(
+    name = "format",
 )
