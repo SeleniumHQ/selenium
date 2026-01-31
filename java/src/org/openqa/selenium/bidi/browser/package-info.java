@@ -15,20 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi.browser;
 
-/**
- * @deprecated Not used. In BiDi spec, type `browser.ClientWindow` is just text (String).
- */
-@Deprecated
-public class ClientWindow {
-  private final String id;
-
-  public ClientWindow(String id) {
-    this.id = id;
-  }
-
-  public String getId() {
-    return id;
-  }
-}
+import org.jspecify.annotations.NullMarked;

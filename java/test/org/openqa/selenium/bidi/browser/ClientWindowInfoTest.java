@@ -17,18 +17,26 @@
 
 package org.openqa.selenium.bidi.browser;
 
-/**
- * @deprecated Not used. In BiDi spec, type `browser.ClientWindow` is just text (String).
- */
-@Deprecated
-public class ClientWindow {
-  private final String id;
+import static org.assertj.core.api.Assertions.assertThat;
 
-  public ClientWindow(String id) {
-    this.id = id;
-  }
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
-  public String getId() {
-    return id;
+class ClientWindowInfoTest {
+  @Test
+  void stringRepresentations() {
+    assertThat(
+            ClientWindowInfo.fromJson(
+                Map.of(
+                    "clientWindow", "window-id-1234",
+                    "state", "maximized",
+                    "width", 1024,
+                    "height", 768,
+                    "x", 200,
+                    "y", 100,
+                    "active", true)))
+        .hasToString(
+            "ClientWindowInfo{clientWindow='window-id-1234', state=maximized, width=1024,"
+                + " height=768, x=200, y=100, active=true}");
   }
 }
