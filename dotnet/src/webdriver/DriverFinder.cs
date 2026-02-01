@@ -105,7 +105,7 @@ public class DriverFinder
     /// <exception cref="NoSuchDriverException">If one of the paths does not exist.</exception>
     private Dictionary<string, string> BinaryPaths()
     {
-        if (paths.ContainsKey(DriverPathKey) && !string.IsNullOrWhiteSpace(paths[DriverPathKey]))
+        if (paths.TryGetValue(DriverPathKey, out string driverPath) && !string.IsNullOrWhiteSpace(driverPath))
         {
             return paths;
         }
