@@ -228,14 +228,13 @@ public static partial class SeleniumManager
         argsBuilder.Append(" --language-binding csharp");
         argsBuilder.Append(" --output mixed");
 
-        if (_logger.IsEnabled(LogEventLevel.Debug))
-        {
-            argsBuilder.Append(" --debug");
-        }
-
         if (_logger.IsEnabled(LogEventLevel.Trace))
         {
-            argsBuilder.Append(" --trace");
+            argsBuilder.Append(" --log-level trace");
+        }
+        else if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            argsBuilder.Append(" --log-level debug");
         }
 
         return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.DiscoveryResult, options?.Timeout);
