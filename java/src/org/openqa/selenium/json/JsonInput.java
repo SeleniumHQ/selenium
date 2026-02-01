@@ -220,7 +220,7 @@ public class JsonInput implements Closeable {
    */
   public Number nextNumber() {
     expect(JsonType.NUMBER);
-    boolean decimal = false;
+    boolean mightBeDecimal = false;
     StringBuilder builder = new StringBuilder();
     // We know it's safe to use a do/while loop since the first character was a number
     boolean read = true;
@@ -243,7 +243,7 @@ public class JsonInput implements Closeable {
         case '.':
         case 'e':
         case 'E':
-          decimal = true;
+          mightBeDecimal = true;
           builder.append(input.read());
           break;
         default:
@@ -252,7 +252,11 @@ public class JsonInput implements Closeable {
     } while (read);
 
     try {
-      if (!decimal) {
+      // The JSON Schema does state the decimal point should not be used distinguish between
+      // integers and floating point values.
+      // Therefore, using a Long is only a fast path here, but we should not rely on the `double`
+      // value below is a real floating point.
+      if (!mightBeDecimal) {
         return Long.valueOf(builder.toString());
       }
 
@@ -277,13 +281,24 @@ public class JsonInput implements Closeable {
   /**
    * Read the next element of the JSON input stream as an instant.
    *
+   * @deprecated Instant is not a basic JSON type, use the {@link InstantCoercer} instead.
    * @return {@link Instant} object
    * @throws JsonException if the next element isn't a {@code Long}
    * @throws UncheckedIOException if an I/O exception is encountered
    */
+  @Deprecated(forRemoval = true)
   public @Nullable Instant nextInstant() {
     Long time = read(Long.class);
     return (null != time) ? Instant.ofEpochSecond(time) : null;
+  }
+
+  /**
+   * Read the next element of the JSON input stream and expect the end of the input.
+   *
+   * @throws JsonException if the next element isn't the end of the input
+   */
+  public void nextEnd() {
+    expect(JsonType.END);
   }
 
   /**

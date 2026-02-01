@@ -17,17 +17,22 @@
 
 package org.openqa.selenium.json;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.BiFunction;
-import java.util.regex.Pattern;
+import org.openqa.selenium.internal.Require;
 
 public class InstantCoercer extends TypeCoercer<Instant> {
-  private static final Pattern DIGITS_ONLY = Pattern.compile("\\d+");
+
+  private final JsonTypeCoercer typeCoercer;
+
+  InstantCoercer(JsonTypeCoercer typeCoercer) {
+    this.typeCoercer = Require.nonNull("TypeCoercer", typeCoercer);
+  }
 
   @Override
   public boolean test(Class<?> aClass) {
@@ -39,28 +44,43 @@ public class InstantCoercer extends TypeCoercer<Instant> {
     return (jsonInput, setting) -> {
       JsonType token = jsonInput.peek();
 
-      if (JsonType.NUMBER.equals(token)) {
-        return Instant.ofEpochMilli(jsonInput.nextNumber().longValue());
-      } else if (JsonType.STRING.equals(token)) {
-        String raw = jsonInput.nextString();
-        if (DIGITS_ONLY.matcher(raw).matches()) {
+      switch (token) {
+        case NUMBER:
+          return Instant.ofEpochMilli(jsonInput.nextNumber().longValue());
+        case STRING:
+          String raw = jsonInput.nextString();
           try {
-            return Instant.ofEpochMilli(new BigInteger(raw).longValueExact());
-          } catch (NumberFormatException | ArithmeticException invalidLong) {
-            throw new JsonException(
-                String.format("\"%s\" is not a valid timestamp", raw), invalidLong);
-          }
-        }
-        try {
-          TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(raw);
-          return Instant.from(parsed);
-        } catch (DateTimeParseException invalidDateTime) {
-          throw new JsonException(
-              String.format("\"%s\" does not look like an Instant", raw), invalidDateTime);
-        }
-      }
+            TemporalAccessor parsed = DateTimeFormatter.ISO_INSTANT.parse(raw);
+            return Instant.from(parsed);
+          } catch (DateTimeParseException invalidDateTime) {
+            var failure =
+                new JsonException(
+                    String.format("\"%s\" does not look like an Instant", raw), invalidDateTime);
 
-      throw new JsonException("Unable to parse: " + jsonInput.read(Object.class));
+            // any PropertySetting is okay here, as we know it won't be used
+            try (JsonInput nestedInput =
+                new JsonInput(new StringReader(raw), typeCoercer, PropertySetting.BY_NAME)) {
+              Number number = nestedInput.nextNumber();
+              // ensure the 'raw' string has been read to the end
+              nestedInput.nextEnd();
+              double doubleValue = number.doubleValue();
+              if (doubleValue % 1 != 0) {
+                throw new JsonException("unexpected decimal value");
+              } else if (doubleValue < Long.MIN_VALUE || doubleValue > Long.MAX_VALUE) {
+                throw new JsonException("value out of range");
+              }
+              return Instant.ofEpochMilli(number.longValue());
+            } catch (JsonException invalidLong) {
+              failure.addSuppressed(
+                  new JsonException(
+                      String.format("\"%s\" is not a valid timestamp", raw), invalidLong));
+            }
+
+            throw failure;
+          }
+        default:
+          throw new JsonException("Unable to parse: " + token + " as Instant");
+      }
     };
   }
 }
