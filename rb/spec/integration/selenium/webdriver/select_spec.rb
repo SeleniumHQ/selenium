@@ -27,6 +27,7 @@ module Selenium
         let(:multi_select) { described_class.new(driver.find_element(id: 'multi')) }
         let(:single_disabled) { described_class.new(driver.find_element(name: 'single_disabled')) }
         let(:multi_disabled) { described_class.new(driver.find_element(name: 'multi_disabled')) }
+        let(:multi_invisible) { described_class.new(driver.find_element(id: 'invisible_multi_select')) }
 
         before { driver.navigate.to url_for('formPage.html') }
         after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
@@ -119,6 +120,14 @@ module Selenium
 
               it 'errors when not found' do
                 expect { multi_select.select_by(:text, 'invalid') }.to raise_exception(Error::NoSuchElementError)
+              end
+
+              it 'errors when option is invisible', :aggregate_failures do
+                %w[Apples Pears Oranges Lemons].each do |text|
+                  expect {
+                    multi_invisible.select_by(:text, text)
+                  }.to raise_exception(Error::ElementNotInteractableError)
+                end
               end
             end
 
@@ -297,6 +306,14 @@ module Selenium
 
             it 'errors when not found' do
               expect { multi_select.deselect_by(:text, 'invalid') }.to raise_exception(Error::NoSuchElementError)
+            end
+
+            it 'errors when option is invisible', :aggregate_failures do
+              %w[Apples Pears Oranges Lemons].each do |text|
+                expect {
+                  multi_invisible.deselect_by(:text, text)
+                }.to raise_exception(Error::ElementNotInteractableError)
+              end
             end
           end
 

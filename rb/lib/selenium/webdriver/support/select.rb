@@ -217,10 +217,20 @@ module Selenium
         def select_option(option)
           raise Error::UnsupportedOperationError, 'You may not select a disabled option' unless option.enabled?
 
+          unless css_property_and_visible?(option)
+            raise Error::ElementNotInteractableError,
+                  'You may not select an invisible option'
+          end
+
           option.click unless option.selected?
         end
 
         def deselect_option(option)
+          unless css_property_and_visible?(option)
+            raise Error::ElementNotInteractableError,
+                  'You may not deselect an invisible option'
+          end
+
           option.click if option.selected?
         end
 
@@ -265,6 +275,15 @@ module Selenium
 
         def find_by_value(value)
           @element.find_elements(xpath: ".//option[@value = #{Escaper.escape value}]")
+        end
+
+        def css_property_and_visible?(element)
+          css_value_candidates = %w[hidden none 0 0.0].to_set
+          css_property_candidates = %w[visibility display opacity]
+
+          css_property_candidates.none? do |property|
+            css_value_candidates.include?(element.css_value(property))
+          end
         end
       end # Select
     end # Support
