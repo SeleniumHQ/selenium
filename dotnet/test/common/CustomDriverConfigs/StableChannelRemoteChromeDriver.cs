@@ -17,15 +17,15 @@
 // under the License.
 // </copyright>
 
-using System;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
 public class StableChannelRemoteChromeDriver : RemoteWebDriver
 {
     public StableChannelRemoteChromeDriver()
-        : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new ChromeOptions())
+        : base(RemoteSeleniumServer.ServerUri, new ChromeOptions())
     {
         this.FileDetector = new LocalFileDetector();
     }

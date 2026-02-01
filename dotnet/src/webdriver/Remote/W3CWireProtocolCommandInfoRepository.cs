@@ -134,5 +134,6 @@ public sealed class W3CWireProtocolCommandInfoRepository : CommandInfoRepository
         this.TryAddCommand(DriverCommand.GetDownloadableFiles, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/files"));
         this.TryAddCommand(DriverCommand.DownloadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/files"));
         this.TryAddCommand(DriverCommand.DeleteDownloadableFiles, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/se/files"));
+        this.TryAddCommand(DriverCommand.FireSessionEvent, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/event"));
     }
 }

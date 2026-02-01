@@ -186,6 +186,8 @@ const Name = {
   DOWNLOAD_FILE: 'downloadFile',
   DELETE_DOWNLOADABLE_FILES: 'deleteDownloadableFiles',
 
+  FIRE_SESSION_EVENT: 'fireSessionEvent',
+
   // Federated Credential Management API
   // https://www.w3.org/TR/fedcm/#automation
   CANCEL_DIALOG: 'cancelDialog',

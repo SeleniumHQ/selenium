@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Firefox;
 
 namespace OpenQA.Selenium.Remote;
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Remote;
 public class FirefoxRemoteWebDriver : RemoteWebDriver
 {
     public FirefoxRemoteWebDriver()
-        : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new FirefoxOptions())
+        : base(RemoteSeleniumServer.ServerUri, new FirefoxOptions())
     {
     }
 }
