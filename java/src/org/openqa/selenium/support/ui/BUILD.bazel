@@ -18,9 +18,13 @@ java_library(
     srcs = [
         "LoadableComponent.java",
         "SlowLoadableComponent.java",
+        "package-info.java",
     ],
     visibility = [
         "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
+    deps = [
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
