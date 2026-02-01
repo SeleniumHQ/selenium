@@ -205,24 +205,27 @@ public static partial class SeleniumManager
 
         argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", browserName);
 
-        if (!string.IsNullOrEmpty(options?.BrowserVersion))
+        if (options is not null)
         {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version \"{0}\"", options?.BrowserVersion);
-        }
+            if (!string.IsNullOrEmpty(options.BrowserVersion))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version \"{0}\"", options.BrowserVersion);
+            }
 
-        if (!string.IsNullOrEmpty(options?.BrowserPath))
-        {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", options?.BrowserPath);
-        }
+            if (!string.IsNullOrEmpty(options.BrowserPath))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", options.BrowserPath);
+            }
 
-        if (!string.IsNullOrEmpty(options?.DriverVersion))
-        {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --driver-version \"{0}\"", options?.DriverVersion);
-        }
+            if (!string.IsNullOrEmpty(options.DriverVersion))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --driver-version \"{0}\"", options.DriverVersion);
+            }
 
-        if (!string.IsNullOrEmpty(options?.Proxy))
-        {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options?.Proxy);
+            if (!string.IsNullOrEmpty(options.Proxy))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy);
+            }
         }
 
         argsBuilder.Append(" --language-binding csharp");
