@@ -195,6 +195,9 @@ jobs:
   nightly:
     name: Publish Nightly Packages
     needs: [parse-tag, update-version]
+    permissions:
+      contents: write
+      packages: write
     uses: ./.github/workflows/nightly.yml
     with:
       language: ${{ needs.parse-tag.outputs.language }}

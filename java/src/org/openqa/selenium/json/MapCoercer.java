@@ -53,9 +53,9 @@ class MapCoercer<T, I extends T> extends TypeCoercer<T> {
     Type valueType;
 
     if (type instanceof ParameterizedType) {
-      ParameterizedType pt = (ParameterizedType) type;
-      keyType = pt.getActualTypeArguments()[0];
-      valueType = pt.getActualTypeArguments()[1];
+      Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
+      keyType = typeArguments[0];
+      valueType = typeArguments[1];
     } else if (type instanceof Class) {
       keyType = Object.class;
       valueType = Object.class;
