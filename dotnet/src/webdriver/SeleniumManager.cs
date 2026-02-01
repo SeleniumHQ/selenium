@@ -349,7 +349,7 @@ public static partial class SeleniumManager
                         case "INFO":
                             _logger.LogMessage(dateTime, LogEventLevel.Info, message);
                             break;
-                        case "WARNING":
+                        case "WARN":
                             _logger.LogMessage(dateTime, LogEventLevel.Warn, message);
                             break;
                         case "ERROR":
