@@ -17,21 +17,18 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class HistoryUpdated {
 
   private final String browsingContextId;
 
-  private final int timestamp;
+  private final long timestamp;
 
   private final String url;
 
-  private HistoryUpdated(String browsingContextId, int timestamp, String url) {
+  private HistoryUpdated(String browsingContextId, long timestamp, String url) {
     this.browsingContextId = browsingContextId;
     this.timestamp = timestamp;
     this.url = url;
@@ -39,7 +36,7 @@ public class HistoryUpdated {
 
   public static HistoryUpdated fromJson(JsonInput input) {
     String browsingContextId = null;
-    int timestamp = 0;
+    Long timestamp = null;
     String url = null;
 
     input.beginObject();
@@ -50,7 +47,7 @@ public class HistoryUpdated {
           break;
 
         case "timestamp":
-          timestamp = input.read(int.class);
+          timestamp = input.read(long.class);
           break;
 
         case "url":
@@ -65,28 +62,21 @@ public class HistoryUpdated {
 
     input.endObject();
 
-    return new HistoryUpdated(browsingContextId, timestamp, url);
+    return new HistoryUpdated(
+        Require.nonNull("browsingContext", browsingContextId),
+        Require.positive("Timestamp", timestamp),
+        Require.nonNull("URL", url));
   }
 
   public String getBrowsingContextId() {
     return browsingContextId;
   }
 
-  public int getTimestamp() {
+  public long getTimestamp() {
     return timestamp;
   }
 
   public String getUrl() {
     return url;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("browsingContextId", this.getBrowsingContextId());
-    toReturn.put("timestamp", this.getTimestamp());
-    toReturn.put("url", this.getUrl());
-
-    return unmodifiableMap(toReturn);
   }
 }

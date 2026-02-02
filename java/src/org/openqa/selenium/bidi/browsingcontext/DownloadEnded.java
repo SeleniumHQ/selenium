@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import java.io.StringReader;
 import java.util.Map;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 public class DownloadEnded {
@@ -34,19 +32,18 @@ public class DownloadEnded {
   }
 
   public static DownloadEnded fromJson(JsonInput input) {
-    Map<String, Object> jsonMap = input.read(Map.class);
+    Map<String, Object> jsonMap = input.readMap();
     String status = (String) jsonMap.get("status");
 
-    try (StringReader reader = new StringReader(new Json().toJson(jsonMap));
-        JsonInput jsonInput = new Json().newInput(reader)) {
-      if (CANCELED.equals(status)) {
-        return new DownloadEnded(DownloadCanceled.fromJson(jsonInput));
-      } else if (COMPLETE.equals(status)) {
-        return new DownloadEnded(DownloadCompleted.fromJson(jsonInput));
-      } else {
+    switch (status) {
+      case CANCELED:
+        return new DownloadEnded(DownloadCanceled.fromJson(jsonMap));
+      case COMPLETE:
+        return new DownloadEnded(DownloadCompleted.fromJson(jsonMap));
+      default:
         throw new IllegalArgumentException(
-            "status must be either '" + CANCELED + "' or '" + COMPLETE + "', but got: " + status);
-      }
+            String.format(
+                "status must be either '%s' or '%s', but got: %s", CANCELED, COMPLETE, status));
     }
   }
 
