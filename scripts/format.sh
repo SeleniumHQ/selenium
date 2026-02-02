@@ -48,7 +48,8 @@ if [[ -n "$trunk_ref" ]]; then
                 committed="$(git diff --name-only "$base" HEAD)"
                 staged="$(git diff --name-only --cached)"
                 unstaged="$(git diff --name-only)"
-                changed="$(printf '%s\n%s\n%s' "$committed" "$staged" "$unstaged" | sort -u)"
+                untracked="$(git ls-files --others --exclude-standard)"
+                changed="$(printf '%s\n%s\n%s\n%s' "$committed" "$staged" "$unstaged" "$untracked" | sort -u)"
                 ;;
         esac
     else
@@ -128,7 +129,7 @@ fi
 # Run shellcheck and actionlint when --lint is passed
 if [[ "$run_lint" == "true" ]]; then
     section "Shell/Actions"
-    echo "    shellcheck + actionlint" >&2
+    echo "    actionlint (with shellcheck)" >&2
     SHELLCHECK="$(bazel run --run_under=echo @multitool//tools/shellcheck)"
     bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
 fi
