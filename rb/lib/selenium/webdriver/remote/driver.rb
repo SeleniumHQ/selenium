@@ -29,6 +29,7 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
         include DriverExtensions::HasFileDownloads
+        include DriverExtensions::HasSessionEvents
 
         def initialize(capabilities: nil, options: nil, service: nil, url: nil, **)
           raise ArgumentError, "Can not set :service object on #{self.class}" if service

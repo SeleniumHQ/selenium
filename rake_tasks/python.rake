@@ -95,11 +95,20 @@ task :local_dev, [:all] do |_task, arguments|
   end
 end
 
-desc 'Generate Python documentation'
+desc 'Generate and stage Python documentation'
 task :docs do |_task, arguments|
   if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/) && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
+
+  Rake::Task['py:docs_generate'].invoke
+
+  FileUtils.mkdir_p('build/docs/api')
+  FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
+end
+
+desc 'Generate Python documentation without staging'
+task :docs_generate do
   puts 'Generating Python documentation'
 
   FileUtils.rm_rf('build/docs/api/py/')
@@ -110,9 +119,6 @@ task :docs do |_task, arguments|
 
   # Build docs (outputs to bazel-bin)
   Bazel.execute('build', [], '//py:docs')
-
-  FileUtils.mkdir_p('build/docs/api')
-  FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
 end
 
 desc 'Install Python wheel locally'
@@ -162,19 +168,17 @@ task :version, [:version] do |_task, arguments|
   File.open(conf, 'w') { |f| f.puts text }
 end
 
-desc 'Run Python formatter (ruff format)'
-task :format do |_task, arguments|
+desc 'Format Python code with ruff'
+task :format do
   puts '  Running ruff format...'
-  Bazel.execute('run', arguments.to_a, '//py:ruff-format')
+  Bazel.execute('run', [], '//py:ruff-format')
 end
 
-desc 'Run Python linter (ruff check + format + mypy)'
-task :lint do |_task, arguments|
-  raise ArgumentError, 'arguments not supported in this task' unless arguments.to_a.empty?
-
-  Rake::Task['py:format'].invoke
+desc 'Run Python linters (ruff check, mypy, docs)'
+task :lint do
   puts '  Running ruff check...'
   Bazel.execute('run', %w[-- --fix --show-fixes], '//py:ruff-check')
   puts '  Running mypy...'
   Bazel.execute('run', [], '//py:mypy')
+  Rake::Task['py:docs_generate'].invoke
 end

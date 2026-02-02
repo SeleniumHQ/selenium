@@ -321,6 +321,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.DOWNLOAD_FILE, post(`/session/:sessionId/se/files`)],
   [cmd.Name.DELETE_DOWNLOADABLE_FILES, del(`/session/:sessionId/se/files`)],
 
+  [cmd.Name.FIRE_SESSION_EVENT, post(`/session/:sessionId/se/event`)],
+
   // Federated Credential Management Command
   [cmd.Name.CANCEL_DIALOG, post(`/session/:sessionId/fedcm/canceldialog`)],
   [cmd.Name.SELECT_ACCOUNT, post(`/session/:sessionId/fedcm/selectaccount`)],

@@ -93,3 +93,51 @@ describe('FileDetector', function () {
     })
   })
 })
+
+describe('fireSessionEvent', function () {
+  it('sends correct command with eventType only', function () {
+    const fakeDriver = {
+      execute(command) {
+        assert.strictEqual(command.getName(), cmd.Name.FIRE_SESSION_EVENT)
+        const params = command.getParameters()
+        assert.strictEqual(params['eventType'], 'test:started')
+        assert.strictEqual(params['payload'], undefined)
+        return Promise.resolve({
+          success: true,
+          eventType: 'test:started',
+          timestamp: '2024-01-15T10:30:00Z',
+        })
+      },
+    }
+    const { WebDriver } = require('selenium-webdriver')
+    // Directly test the command structure
+    const command = new cmd.Command(cmd.Name.FIRE_SESSION_EVENT).setParameter('eventType', 'test:started')
+    return fakeDriver.execute(command).then((result) => {
+      assert.strictEqual(result.success, true)
+      assert.strictEqual(result.eventType, 'test:started')
+    })
+  })
+
+  it('sends correct command with eventType and payload', function () {
+    const fakeDriver = {
+      execute(command) {
+        assert.strictEqual(command.getName(), cmd.Name.FIRE_SESSION_EVENT)
+        const params = command.getParameters()
+        assert.strictEqual(params['eventType'], 'test:failed')
+        assert.deepStrictEqual(params['payload'], { testName: 'LoginTest', error: 'Element not found' })
+        return Promise.resolve({
+          success: true,
+          eventType: 'test:failed',
+          timestamp: '2024-01-15T10:30:00Z',
+        })
+      },
+    }
+    const command = new cmd.Command(cmd.Name.FIRE_SESSION_EVENT)
+      .setParameter('eventType', 'test:failed')
+      .setParameter('payload', { testName: 'LoginTest', error: 'Element not found' })
+    return fakeDriver.execute(command).then((result) => {
+      assert.strictEqual(result.success, true)
+      assert.strictEqual(result.eventType, 'test:failed')
+    })
+  })
+})

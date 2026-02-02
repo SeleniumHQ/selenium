@@ -78,7 +78,7 @@ public class TestUtilities
             if (tokenEnd - tokenStart > 0)
             {
                 string substring = appVersionString.Substring(tokenStart, tokenEnd - tokenStart);
-                double version = 0;
+                double version;
                 bool parsed = double.TryParse(substring, out version);
                 if (parsed)
                 {

@@ -92,6 +92,15 @@ _BROWSERS = {
         "data": [],
         "tags": ["skip-rbe"],
     },
+    "remote": {
+        "args": [
+            "--params=ActiveDriverConfig=Remote",
+        ],
+        "data": [
+            "//:grid",
+        ],
+        "tags": ["skip-rbe"],
+    },
 }
 
 _HEADLESS_ARGS = select({

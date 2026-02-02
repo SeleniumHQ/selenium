@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.BrowsingContext;
 using System;
 using System.Collections.Generic;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.BiDi.Network;
 

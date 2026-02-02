@@ -22,6 +22,7 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
 )

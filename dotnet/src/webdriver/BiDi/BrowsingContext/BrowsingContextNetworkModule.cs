@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Network;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 

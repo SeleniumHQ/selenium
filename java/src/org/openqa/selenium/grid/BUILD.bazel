@@ -25,6 +25,7 @@ genrule(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
     ],
 )
 
@@ -185,6 +186,7 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",

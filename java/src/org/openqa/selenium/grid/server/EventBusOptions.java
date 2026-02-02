@@ -25,7 +25,8 @@ import org.openqa.selenium.internal.Require;
 public class EventBusOptions {
 
   static final String EVENTS_SECTION = "events";
-  private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
+  private static final String GUAVA_BUS_CLASS = "org.openqa.selenium.events.local.GuavaEventBus";
+  private static final String ZEROMQ_BUS_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
   private static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   private final Config config;
   private volatile EventBus bus;
@@ -56,6 +57,13 @@ public class EventBusOptions {
   }
 
   private EventBus createBus() {
-    return config.getClass(EVENTS_SECTION, "implementation", EventBus.class, DEFAULT_CLASS);
+    // Determine default implementation based on EventBus configuration:
+    // - If publish/subscribe endpoints are configured: use ZeroMqEventBus (distributed mode)
+    // - Otherwise: use GuavaEventBus (standalone mode, in-process, more efficient)
+    boolean hasZmqConfig =
+        config.get(EVENTS_SECTION, "publish").isPresent()
+            || config.get(EVENTS_SECTION, "subscribe").isPresent();
+    String defaultClass = hasZmqConfig ? ZEROMQ_BUS_CLASS : GUAVA_BUS_CLASS;
+    return config.getClass(EVENTS_SECTION, "implementation", EventBus.class, defaultClass);
   }
 }

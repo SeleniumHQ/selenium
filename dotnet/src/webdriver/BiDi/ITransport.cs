@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 

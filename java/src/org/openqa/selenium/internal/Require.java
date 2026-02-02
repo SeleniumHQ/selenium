@@ -40,6 +40,7 @@ import org.jspecify.annotations.Nullable;
 public final class Require {
 
   private static final String MUST_BE_SET = "%s must be set";
+  private static final String MUST_NOT_BE_SET = "%s must not be set";
   private static final String MUST_EXIST = "%s must exist: %s";
   private static final String MUST_BE_DIR = "%s must be a directory: %s";
   private static final String MUST_BE_FILE = "%s must be a regular file: %s";
@@ -70,6 +71,12 @@ public final class Require {
       throw new IllegalArgumentException(String.join(" ", argName, String.format(message, args)));
     }
     return arg;
+  }
+
+  public static <T> void isNull(String argName, @Nullable T arg) {
+    if (arg != null) {
+      throw new IllegalArgumentException(String.format(MUST_NOT_BE_SET, argName));
+    }
   }
 
   public static <T> ArgumentChecker<T> argument(String argName, @Nullable T arg) {

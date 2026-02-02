@@ -19,20 +19,21 @@ import os
 import zipfile
 
 import pytest
-from python.runfiles import Runfiles
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-r = Runfiles.Create()
-extensions = r.Rlocation("selenium/py/test/extensions")
+from conftest import get_extensions_location
+
+EXTENSIONS = get_extensions_location()
+
 
 pytestmark = pytest.mark.xfail_remote(reason="Remote WebDriver does not expose Firefox-specific addon APIs")
 
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_xpi(driver, pages):
-    extension = os.path.join(extensions, "webextensions-selenium-example.xpi")
+    extension = os.path.join(EXTENSIONS, "webextensions-selenium-example.xpi")
 
     id = driver.install_addon(extension)
     assert id == "webextensions-selenium-example-v3@example.com"
@@ -50,7 +51,7 @@ def test_install_uninstall_signed_addon_xpi(driver, pages):
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_zip(driver, pages):
-    extension = os.path.join(extensions, "webextensions-selenium-example.zip")
+    extension = os.path.join(EXTENSIONS, "webextensions-selenium-example.zip")
 
     id = driver.install_addon(extension)
     assert id == "webextensions-selenium-example-v3@example.com"
@@ -68,7 +69,7 @@ def test_install_uninstall_signed_addon_zip(driver, pages):
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_zip(driver, pages):
-    extension = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
+    extension = os.path.join(EXTENSIONS, "webextensions-selenium-example-unsigned.zip")
 
     id = driver.install_addon(extension, temporary=True)
     assert id == "webextensions-selenium-example-v3@example.com"
@@ -86,9 +87,9 @@ def test_install_uninstall_unsigned_addon_zip(driver, pages):
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_dir(driver, pages):
-    zip = os.path.join(extensions, "webextensions-selenium-example.zip")
+    zip = os.path.join(EXTENSIONS, "webextensions-selenium-example.zip")
 
-    target = os.path.join(extensions, "webextensions-selenium-example-unzip")
+    target = os.path.join(EXTENSIONS, "webextensions-selenium-example-unzip")
     with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 
@@ -108,8 +109,8 @@ def test_install_uninstall_signed_addon_dir(driver, pages):
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_dir(driver, pages):
-    zip = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
-    target = os.path.join(extensions, "webextensions-selenium-example-unsigned-unzip")
+    zip = os.path.join(EXTENSIONS, "webextensions-selenium-example-unsigned.zip")
+    target = os.path.join(EXTENSIONS, "webextensions-selenium-example-unsigned-unzip")
     with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 

@@ -83,6 +83,8 @@ public class LocalGridModel extends GridModel {
   public void add(NodeStatus node) {
     Require.nonNull("Node", node);
 
+    NodeStatus restartedNode = null;
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -115,9 +117,9 @@ public class LocalGridModel extends GridModel {
                   "Re-adding node with id %s and URI %s.",
                   node.getNodeId(), node.getExternalUri()));
 
-          // Send the previous state to allow cleaning up the old node related resources.
+          // Save the previous state to allow cleaning up the old node related resources.
           // Nodes are initially added in the "down" state, so the new state must be ignored.
-          events.fire(new NodeRestartedEvent(next));
+          restartedNode = next;
           iterator.remove();
           break;
         }
@@ -146,6 +148,10 @@ public class LocalGridModel extends GridModel {
       updateHealthCheckCount(refreshed.getNodeId(), refreshed.getAvailability());
     } finally {
       writeLock.unlock();
+    }
+
+    if (restartedNode != null) {
+      events.fire(new NodeRestartedEvent(restartedNode));
     }
   }
 
@@ -222,12 +228,12 @@ public class LocalGridModel extends GridModel {
 
   @Override
   public void purgeDeadNodes() {
+    Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
+    Set<NodeStatus> toRemove = new HashSet<>();
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
-      Set<NodeStatus> toRemove = new HashSet<>();
-
       for (NodeStatus node : nodes) {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
@@ -273,11 +279,12 @@ public class LocalGridModel extends GridModel {
             nodes.remove(node);
             nodePurgeTimes.remove(node.getNodeId());
             nodeHealthCount.remove(node.getNodeId());
-            events.fire(new NodeRemovedEvent(node));
           });
     } finally {
       writeLock.unlock();
     }
+
+    toRemove.forEach(node -> events.fire(new NodeRemovedEvent(node)));
   }
 
   @Override

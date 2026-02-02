@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools;
 
 namespace OpenQA.Selenium;
 
@@ -221,10 +221,7 @@ public class NetworkManager : INetwork
 
     private async Task OnRequestPaused(object sender, RequestPausedEventArgs e)
     {
-        if (this.NetworkRequestSent != null)
-        {
-            this.NetworkRequestSent(this, new NetworkRequestSentEventArgs(e.RequestData));
-        }
+        this.NetworkRequestSent?.Invoke(this, new NetworkRequestSentEventArgs(e.RequestData));
 
         foreach (var handler in this.requestHandlers)
         {
@@ -255,10 +252,7 @@ public class NetworkManager : INetwork
             await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData).ConfigureAwait(false);
         }
 
-        if (this.NetworkResponseReceived != null)
-        {
-            this.NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
-        }
+        this.NetworkResponseReceived?.Invoke(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
 
         foreach (var handler in this.responseHandlers)
         {
