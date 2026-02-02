@@ -75,6 +75,9 @@ changed_matches() {
 
 WORKSPACE_ROOT="$(bazel info workspace)"
 
+# Capture baseline to detect formatter-introduced changes (allows pre-existing uncommitted work)
+baseline="$(git status --porcelain)"
+
 # Always run buildifier and copyright
 section "Buildifier"
 echo "    buildifier" >&2
@@ -140,8 +143,8 @@ if [[ "$run_lint" == "true" ]]; then
     bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
 fi
 
-# Check if formatting made changes
-if ! git diff --quiet; then
+# Check if formatting introduced new changes (comparing to baseline)
+if [[ "$(git status --porcelain)" != "$baseline" ]]; then
     echo "" >&2
     echo "Formatters modified files:" >&2
     git diff --name-only >&2
