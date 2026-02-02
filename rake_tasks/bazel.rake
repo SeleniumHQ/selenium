@@ -5,7 +5,7 @@ require 'set'
 
 # Dirs that affect all bindings - changes here trigger "run all tests"
 HIGH_IMPACT_DIRS = %w[common rust/src javascript/atoms javascript/webdriver/atoms].freeze
-HIGH_IMPACT_PATTERN = /\A(?:#{HIGH_IMPACT_DIRS.map { |d| Regexp.escape(d) }.join('|')})(?:\/|$)/
+HIGH_IMPACT_PATTERN = %r{\A(?:#{HIGH_IMPACT_DIRS.map { |d| Regexp.escape(d) }.join('|')})(?:/|$)}
 
 # ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
 # ./go bazel:affected_targets abc123..def456               --> explicit range
