@@ -381,18 +381,12 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_platform_label(&self) -> &str {
-        let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
-        let minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
         if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
+            } else if ARM64.is(arch) {
                 "win-arm64"
             } else {
                 "win64"
@@ -401,7 +395,7 @@ impl SeleniumManager for FirefoxManager {
             if ARM64.is(arch) { "mac-arm64" } else { "mac64" }
         } else if X32.is(arch) {
             "linux32"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
+        } else if ARM64.is(arch) {
             "linux-arm64"
         } else {
             "linux64"
@@ -583,6 +577,15 @@ impl SeleniumManager for FirefoxManager {
                 } else {
                     platform_label = "linux64";
                 }
+            } else if ARM64.is(arch) {
+                if major_browser_version < 136 {
+                    return Err(anyhow!(
+                        "Firefox arm64 for Linux is only available from version 136 onwards. \
+                        You requested version {}. Please use version 136 or later.",
+                        self.get_browser_version()
+                    ));
+                }
+                platform_label = "linux-aarch64";
             } else {
                 platform_label = "linux-x86_64";
             }

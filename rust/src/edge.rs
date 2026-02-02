@@ -361,6 +361,14 @@ impl SeleniumManager for EdgeManager {
         browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);

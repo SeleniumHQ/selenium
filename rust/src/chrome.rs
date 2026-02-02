@@ -458,6 +458,14 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
             browser_name

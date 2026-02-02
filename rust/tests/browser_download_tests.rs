@@ -70,6 +70,14 @@ fn browser_version_download_test(#[case] browser: String, #[case] browser_versio
         println!(
             "Skipping non-Firefox download test on Linux arm64 since no other browsers are supported yet"
         );
+    } else if OS.eq("linux")
+        && ARCH.eq("aarch64")
+        && browser.eq("firefox")
+        && browser_version.starts_with("121")
+    {
+        println!(
+            "Skipping Firefox 121 download test on Linux arm64 since arm64 builds are only available from version 136 onwards"
+        );
     } else {
         let mut cmd = get_selenium_manager();
         cmd.args([
