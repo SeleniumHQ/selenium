@@ -12,6 +12,12 @@
 <!--- Why did you implement it this way? -->
 <!--- What alternatives to this approach did you consider? -->
 
+### 🤖 AI assistance (if used)
+<!-- Only required if substantial parts were AI-generated. See CONTRIBUTING.md for details. -->
+- Tool(s):
+- What was generated (code/tests/docs):
+- [ ] I reviewed all AI-assisted output and can explain the change
+
 ### 💡 Additional Considerations
 <!--- Are there any decisions that need to be made before accepting this PR? -->
 <!--- Is there any follow-on work that needs to be done? (e.g., docs, tests, etc.) -->
