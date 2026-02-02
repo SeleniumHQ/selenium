@@ -77,7 +77,7 @@ class TestUrlValidation:
         assert is_valid_url("http//example.com") is False
 
     def test_invalid_url_with_space(self):
-        """Test that URLs with spaces are rejected."""
+        """Test that URLs with spaces in the scheme are rejected."""
         assert is_valid_url("http ://example.com") is False
 
     def test_invalid_empty_string(self):

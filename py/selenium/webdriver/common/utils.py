@@ -187,21 +187,39 @@ def keys_to_typing(value: Iterable[str | int | float]) -> list[str]:
 def is_valid_url(url: str) -> bool:
     """Validates that a URL is an absolute URL with a scheme.
 
-    According to the W3C WebDriver specification, a URL must be an absolute URL
-    or an absolute URL with fragment, or a local scheme URL. This function
-    validates that the URL can be parsed and contains a scheme component.
+    According to the W3C WebDriver specification, a URL must be an absolute URL.
+    This function validates that the URL can be parsed and contains a valid scheme
+    component.
+
+    Valid schemes include standard ones like http, https, file, ftp, as well as
+    special schemes like data, about, and custom application-specific schemes.
 
     Args:
         url: The URL string to validate.
 
     Returns:
         True if the URL has a valid scheme, False otherwise.
+
+    Examples:
+        >>> is_valid_url("https://example.com")
+        True
+        >>> is_valid_url("example.com")  # Missing scheme
+        False
+        >>> is_valid_url("file:///path/to/file.html")
+        True
+        >>> is_valid_url("data:text/html,<h1>Test</h1>")
+        True
     """
     try:
         result = urlparse(url)
-        # A valid URL must have a scheme (e.g., http, https, file, data, about, etc.)
-        # We don't validate the netloc because some schemes (like file:, data:, about:)
-        # may not have a network location component
-        return bool(result.scheme)
+        # A valid URL must have a non-empty scheme
+        # We also check that the scheme doesn't contain invalid characters like spaces
+        if not result.scheme:
+            return False
+        # Schemes should only contain alphanumeric characters, +, -, and .
+        # per RFC 3986 section 3.1
+        if not all(c.isalnum() or c in "+-." for c in result.scheme):
+            return False
+        return True
     except (AttributeError, ValueError):
         return False
