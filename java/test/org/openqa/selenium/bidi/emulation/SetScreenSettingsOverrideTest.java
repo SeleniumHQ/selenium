@@ -65,13 +65,13 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
     Emulation emulation = new Emulation(driver);
     SetScreenSettingsOverrideParameters screenSettings =
-        new SetScreenSettingsOverrideParameters(800, 600);
+        new SetScreenSettingsOverrideParameters(new ScreenArea(800, 600));
 
     emulation.setScreenSettingsOverride(screenSettings.contexts(List.of(contextId)));
 
     Map<String, Object> currentDimensions = getScreenDimensions(contextId);
-    assertThat(currentDimensions.get("width")).isEqualTo(screenSettings.getWidth());
-    assertThat(currentDimensions.get("height")).isEqualTo(screenSettings.getHeight());
+    assertThat(currentDimensions.get("width")).isEqualTo(800);
+    assertThat(currentDimensions.get("height")).isEqualTo(600);
 
     emulation.setScreenSettingsOverride(
         new SetScreenSettingsOverrideParameters(null).contexts(List.of(contextId)));
@@ -105,13 +105,13 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
         Map<String, Object> initialDimensions = getScreenDimensions(contextId);
         SetScreenSettingsOverrideParameters screenSettings =
-            new SetScreenSettingsOverrideParameters(800, 600);
+            new SetScreenSettingsOverrideParameters(new ScreenArea(800, 600));
 
         emulation.setScreenSettingsOverride(screenSettings.userContexts(List.of(userContext)));
 
         Map<String, Object> currentDimensions = getScreenDimensions(contextId);
-        assertThat(currentDimensions.get("width")).isEqualTo(screenSettings.getWidth());
-        assertThat(currentDimensions.get("height")).isEqualTo(screenSettings.getHeight());
+        assertThat(currentDimensions.get("width")).isEqualTo(800);
+        assertThat(currentDimensions.get("height")).isEqualTo(600);
 
         emulation.setScreenSettingsOverride(
             new SetScreenSettingsOverrideParameters(null).userContexts(List.of(userContext)));
