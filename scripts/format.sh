@@ -7,14 +7,12 @@
 #   (default)     Check all changes: committed + staged + unstaged
 set -eufo pipefail
 
-echo "Note: for more flexibility, use './go format' or './go dotnet:format' or './go format -dotnet', etc" >&2
-echo "" >&2
-
 run_lint=false
 mode="default"
 for arg in "$@"; do
     case "$arg" in
         --lint) run_lint=true ;;
+
         --pre-commit) mode="pre-commit" ;;
         --pre-push) mode="pre-push" ;;
         *)
