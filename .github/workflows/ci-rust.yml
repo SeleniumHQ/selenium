@@ -298,5 +298,6 @@ jobs:
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
+            artifacts/selenium-manager-linux-arm64-debug/selenium-manager-linux-arm64-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
