@@ -169,6 +169,8 @@ docstring-code-line-length = 120
 
 [tool.ruff.lint.isort]
 known-first-party = ["selenium", "test"]
+known-third-party = []
+known-local-folder = ["conftest"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
