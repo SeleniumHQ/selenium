@@ -19,12 +19,17 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.WaitingConditions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -101,6 +106,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
 
@@ -192,6 +198,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(FIREFOX)
   public void testControlClickingWithMultiplePointers() {
     driver.get(pages.selectableItemsPage);
 
@@ -239,7 +246,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
     wait.until(presenceOfElementLocated(By.id("ifr")));
     driver.switchTo().frame("ifr");
 
-    WebElement link = driver.findElement(By.id("link"));
+    WebElement link = wait.until(presenceOfElementLocated(By.id("link")));
 
     new Actions(driver).moveToElement(link).click().perform();
 
@@ -292,13 +299,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
     assertThat(y).isCloseTo(location.getY() + 10, Offset.offset(5));
   }
 
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
-    // Everything within 5 pixels range is OK
-    final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION
-        && Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
-  }
-
   /**
    * This test demonstrates the following problem: When the representation of the mouse in the
    * driver keeps the wrong state, mouse movement will end up at the wrong coordinates.
@@ -316,6 +316,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   public void testChordControlCutAndPaste() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
@@ -380,7 +381,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
+  public void canClickOnASuckerFishStyleMenu() {
     driver.get(pages.javascriptPage);
     unfocusMenu();
 

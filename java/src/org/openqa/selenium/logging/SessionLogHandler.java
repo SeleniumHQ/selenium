@@ -21,6 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.openqa.selenium.InvalidArgumentException;
 
+/**
+ * Utility for parsing session logs from Grid.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public class SessionLogHandler {
 
   /**

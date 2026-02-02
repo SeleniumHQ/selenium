@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V142.Fetch;
-using OpenQA.Selenium.DevTools.V142.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V142.Fetch;
+using OpenQA.Selenium.DevTools.V142.Network;
 
 namespace OpenQA.Selenium.DevTools.V142;
 
@@ -31,8 +31,8 @@ namespace OpenQA.Selenium.DevTools.V142;
 /// </summary>
 public class V142Network : DevTools.Network
 {
-    private FetchAdapter fetch;
-    private NetworkAdapter network;
+    private readonly FetchAdapter fetch;
+    private readonly NetworkAdapter network;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V142Network"/> class.

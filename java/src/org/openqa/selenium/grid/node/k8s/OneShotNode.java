@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import java.lang.reflect.Field;
@@ -35,6 +36,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
@@ -43,7 +45,6 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -56,6 +57,8 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -75,6 +78,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -193,8 +198,10 @@ public class OneShotNode extends Node {
       throw new IllegalStateException("Only expected one session at a time");
     }
 
-    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getDesiredCapabilities());
-    if (!driver.isPresent()) {
+    ClientConfig config = ClientConfig.defaultConfig(); // get config from sessionRequest?
+    Optional<WebDriver> driver =
+        driverInfo.createDriver(sessionRequest.getDesiredCapabilities(), config);
+    if (driver.isEmpty()) {
       return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
 
@@ -335,6 +342,50 @@ public class OneShotNode extends Node {
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
     return null;
+  }
+
+  @Override
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    Require.nonNull("Session ID", id);
+
+    if (!isSessionOwner(id)) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+
+    // Parse the event data from request
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
+    String eventType = (String) incoming.get("eventType");
+    if (eventType == null || eventType.isEmpty()) {
+      throw new WebDriverException(
+          "Event type is required. Please provide 'eventType' in payload.");
+    }
+
+    Object rawPayload = incoming.get("payload");
+    Map<String, Object> payload =
+        (rawPayload instanceof Map) ? (Map<String, Object>) rawPayload : Map.of();
+
+    // Create event data with node context
+    SessionEventData eventData =
+        SessionEventData.create(id, eventType, payload).withNodeContext(getId(), getUri());
+
+    // Fire event via EventBus
+    events.fire(new SessionEvent(eventData));
+
+    LOG.log(
+        Level.FINE,
+        () -> String.format("Session event fired: type=%s, sessionId=%s", eventType, id));
+
+    // Return success response
+    Map<String, Object> responseData =
+        Map.of(
+            "success",
+            true,
+            "eventType",
+            eventType,
+            "timestamp",
+            eventData.getTimestamp().toString());
+    Map<String, Object> result = Map.of("value", responseData);
+    return new HttpResponse().setContent(asJson(result));
   }
 
   @Override

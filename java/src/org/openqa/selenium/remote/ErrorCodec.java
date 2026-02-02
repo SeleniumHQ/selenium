@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNullElse;
+import static java.util.Objects.requireNonNullElseGet;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import org.openqa.selenium.DetachedShadowRootException;
 import org.openqa.selenium.ElementClickInterceptedException;
@@ -88,7 +92,7 @@ public class ErrorCodec {
           new W3CError<>("unsupported operation", UnsupportedCommandException::new, 500),
           new W3CError<>("unknown command", UnsupportedCommandException::new, 404),
           new W3CError<>("unknown method", UnsupportedCommandException::new, 405),
-          new W3CError<>("unknown error", WebDriverException::new, 500));
+          DEFAULT_ERROR);
 
   private ErrorCodec() {
     // This will switch to being an interface at some point. Use `createDefault`
@@ -144,24 +148,28 @@ public class ErrorCodec {
 
   public WebDriverException decode(Map<String, Object> response) {
     if (!(response.get("value") instanceof Map)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response);
+      throw new InvalidResponseException("missing \"value\" field", response);
     }
 
     Map<?, ?> value = (Map<?, ?>) response.get("value");
-    if (!(value.get("error") instanceof String)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response);
+
+    Object error = requireNonNullElse(value.get("error"), "");
+    Object message = requireNonNullElseGet(value.get("message"), response::toString);
+
+    if (!(error instanceof String)) {
+      throw new InvalidResponseException("\"error\" field must be a string", response);
+    }
+    if (!(message instanceof String)) {
+      throw new InvalidResponseException("\"message\" field must be a string", response);
     }
 
-    String error = (String) value.get("error");
-    String message = value.get("message") instanceof String ? (String) value.get("message") : null;
-
-    W3CError<?> w3CError =
-        ERRORS.stream()
-            .filter(err -> error.equals(err.w3cErrorString))
-            .findFirst()
-            .orElse(DEFAULT_ERROR);
-
-    return w3CError.exceptionConstructor.apply(message);
+    Optional<W3CError<? extends WebDriverException>> w3CError =
+        ERRORS.stream().filter(err -> error.equals(err.w3cErrorString)).findFirst();
+    if (w3CError.isPresent()) {
+      return w3CError.get().exceptionConstructor.apply((String) message);
+    }
+    String extendedMessage = String.format("%s (error code: \"%s\")", message, error);
+    return DEFAULT_ERROR.exceptionConstructor.apply(extendedMessage);
   }
 
   private W3CError<? extends WebDriverException> fromThrowable(Throwable throwable) {

@@ -17,10 +17,11 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.IE;
 using System;
+using NUnit.Framework;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -51,7 +52,8 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
     public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
     {
         Environment.EnvironmentManager.Instance.CloseCurrentDriver();
-        RemoteWebDriver noSlashDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:6000/wd/hub"), new InternetExplorerOptions());
+        DriverOptions options = OperatingSystem.IsWindows() ? new EdgeOptions() : new ChromeOptions();
+        RemoteWebDriver noSlashDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, options);
         noSlashDriver.Url = javascriptPage;
         noSlashDriver.Quit();
     }

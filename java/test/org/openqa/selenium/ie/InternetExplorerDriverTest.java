@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 import static org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_NAME;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.time.Duration;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;

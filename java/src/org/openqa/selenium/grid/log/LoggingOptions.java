@@ -32,6 +32,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -84,6 +85,12 @@ public class LoggingOptions {
 
   public void setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
+    if (Debug.isDebugAll()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; forcing Grid log level to FINE and"
+              + " overriding configured log level.");
+      configLevel = Level.FINE.getName();
+    }
 
     try {
       level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
@@ -179,6 +186,11 @@ public class LoggingOptions {
   }
 
   private OutputStream getOutputStream() {
+    if (Debug.isDebugAll() && config.get(LOGGING_SECTION, "log-file").isEmpty()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; defaulting Grid log output to stderr"
+              + " instead of stdout.");
+    }
     return config
         .get(LOGGING_SECTION, "log-file")
         .map(
@@ -189,7 +201,7 @@ public class LoggingOptions {
                 throw new UncheckedIOException(e);
               }
             })
-        .orElse(System.out);
+        .orElseGet(() -> Debug.isDebugAll() ? System.err : System.out);
   }
 
   public String getLogTimestampFormat() {

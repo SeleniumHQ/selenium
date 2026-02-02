@@ -72,26 +72,26 @@ module Selenium
           end
         end
 
-        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/MethodParameterName
-          h = Float(h) / 360
-          s = Float(s) / 100
-          l = Float(l) / 100
-          a = Float(a || 1)
+        def self.from_hsl(hue, sat, light, alpha)
+          hue = Float(hue) / 360
+          sat = Float(sat) / 100
+          light = Float(light) / 100
+          alpha = Float(alpha || 1)
 
-          if s.zero?
-            r = l
+          if sat.zero?
+            r = light
             g = r
             b = r
           else
-            luminocity2 = l < 0.5 ? l * (s + 1) : l + s - (l * s)
-            luminocity1 = (l * 2) - luminocity2
+            luminocity2 = light < 0.5 ? light * (sat + 1) : light + sat - (light * sat)
+            luminocity1 = (light * 2) - luminocity2
 
-            r = hue_to_rgb(luminocity1, luminocity2, h + (1.0 / 3.0))
-            g = hue_to_rgb(luminocity1, luminocity2, h)
-            b = hue_to_rgb(luminocity1, luminocity2, h - (1.0 / 3.0))
+            r = hue_to_rgb(luminocity1, luminocity2, hue + (1.0 / 3.0))
+            g = hue_to_rgb(luminocity1, luminocity2, hue)
+            b = hue_to_rgb(luminocity1, luminocity2, hue - (1.0 / 3.0))
           end
 
-          new (r * 255).round, (g * 255).round, (b * 255).round, a
+          new (r * 255).round, (g * 255).round, (b * 255).round, alpha
         end
 
         def self.hue_to_rgb(lum1, lum2, hue)

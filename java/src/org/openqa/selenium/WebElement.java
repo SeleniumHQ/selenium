@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import java.util.List;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -30,7 +29,6 @@ import org.jspecify.annotations.Nullable;
  * fails, then an {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and all
  * future calls to this instance will fail.
  */
-@NullMarked
 public interface WebElement extends SearchContext, TakesScreenshot {
   /**
    * Click this element. If this causes a new page to load, you should discard all references to

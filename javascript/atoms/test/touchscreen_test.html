@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>touchscreen_test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.Touchscreen');
@@ -12,7 +16,6 @@
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
@@ -127,46 +130,58 @@
                    [goog.events.EventType.MOUSEOUT, elem]);
     }
 
-    function assertEvents(var_args) {
-      var expectedEvents = goog.array.concat.apply(null, arguments);
-      assertArrayEquals(expectedEvents, events);
+    function assertEvents(assert, var_args) {
+      var expectedEvents = goog.array.concat.apply(null,
+          Array.prototype.slice.call(arguments, 1));
+      assert.deepEqual(events, expectedEvents);
       events = [];
     }
 
-    function testTouchScreenPress() {
+    QUnit.begin(function() {
+      setUpPage();
+    });
+
+    QUnit.testStart(function() {
+      setUp();
+    });
+
+    QUnit.test('touchScreenPress', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
-      assertTrue(touchscreen.isPressed());
+      assert.ok(touchscreen.isPressed());
 
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target));
+        assertEvents(assert, msPointerDownEvents(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 1]);
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 1]);
       }
-    }
+    });
 
-    function testTouchScreen2FingerPress() {
+    QUnit.test('touchScreen2FingerPress', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target,
                        new goog.math.Coordinate(0, 0),
                        new goog.math.Coordinate(10, 10));
       touchscreen.press(/* opt_press2 */ true);
-      assertTrue(touchscreen.isPressed());
+      assert.ok(touchscreen.isPressed());
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerDownEvents(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 2]);
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 2]);
       }
-    }
+    });
 
-    function testTouchScreen2FingerPinch() {
+    QUnit.test('touchScreen2FingerPinch', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target,
@@ -178,21 +193,22 @@
                        new goog.math.Coordinate(0, 40));
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerDownEvents(target),
                      msPointerMoveEvents(target),
                      msPointerMoveEvents(target),
                      msPointerUpEventsWithClick(target),
                      msPointerUpEventsWithClick(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 2,
                       goog.events.EventType.TOUCHMOVE, target, 2,
                       goog.events.EventType.TOUCHEND, target, 2]);
       }
-    }
+    });
 
-    function testTouchScreen2FingerPinchReleaseOnNoTouchElement() {
+    QUnit.test('touchScreen2FingerPinchReleaseOnNoTouchElement', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
       touchscreen.move(noTouchTarget,
@@ -204,15 +220,16 @@
                        new goog.math.Coordinate(0, 40));
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(noTouchTarget),
+        assertEvents(assert, msPointerDownEvents(noTouchTarget),
                      [goog.events.EventType.MSPOINTEROUT, noTouchTarget,
                       goog.events.EventType.MOUSEOUT, noTouchTarget,
                       goog.events.EventType.MSPOINTERCANCEL, noTouchTarget]);
       }
-    }
+    });
 
-    function testTouchScreen2FingerRotate() {
+    QUnit.test('touchScreen2FingerRotate', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target,
@@ -223,7 +240,7 @@
       touchscreen.move(target, new goog.math.Coordinate(50, 50));
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerDownEvents(target),
                      msPointerMoveEvents(target),
                      msPointerMoveEvents(target),
@@ -232,68 +249,72 @@
                      msPointerUpEventsWithClick(target),
                      msPointerUpEventsWithClick(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 2,
                       goog.events.EventType.TOUCHMOVE, target, 2,
                       goog.events.EventType.TOUCHMOVE, target, 2,
                       goog.events.EventType.TOUCHEND, target, 2]);
       }
-    }
+    });
 
-    function verifyTapEvents(elem) {
+    function verifyTapEvents(assert, elem) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
-        return;
+        return false;
       }
       touchscreen.move(elem, new goog.math.Coordinate(0, 0));
       touchscreen.press();
       touchscreen.release();
-      assertFalse(touchscreen.isPressed());
+      assert.notOk(touchscreen.isPressed());
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(elem),
+        assertEvents(assert, msPointerDownEvents(elem),
                      msPointerUpEventsWithClick(elem));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, elem, 1,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, elem, 1,
                       goog.events.EventType.TOUCHEND, elem, 1,
                       goog.events.EventType.MOUSEMOVE, elem,
                       goog.events.EventType.MOUSEDOWN, elem,
                       goog.events.EventType.MOUSEUP, elem,
                       goog.events.EventType.CLICK, elem]);
       }
+      return true;
     }
 
-    function testTouchScreenRelease() {
-      verifyTapEvents(target);
-    }
+    QUnit.test('touchScreenRelease', function(assert) {
+      if (!verifyTapEvents(assert, target)) {
+        assert.ok(true, 'Skipping: touch events not supported');
+      }
+    });
 
-    function testTouchScreenReleaseOnNoTouchElement() {
+    QUnit.test('touchScreenReleaseOnNoTouchElement', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
-      // Tap events should fire normally even if -ms-touch-action == auto.
-      verifyTapEvents(noTouchTarget);
-    }
+      verifyTapEvents(assert, noTouchTarget);
+    });
 
-    function testTouchScreenReleaseAfterMove() {
+    QUnit.test('touchScreenReleaseAfterMove', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
-      // After a move, the mouseclick should not happen.
       touchscreen.move(target, new goog.math.Coordinate(10, 10));
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerMoveEvents(target),
                      msPointerUpEventsWithClick(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 1,
                       goog.events.EventType.TOUCHMOVE, target, 1,
                       goog.events.EventType.TOUCHEND, target, 1]);
       }
-    }
+    });
 
-    function testMsSetPointerCapture() {
+    QUnit.test('msSetPointerCapture', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
 
@@ -302,15 +323,14 @@
       touchscreen.move(lowerTarget, new goog.math.Coordinate(10, 10));
       touchscreen.release();
 
-      // The captureTarget calls msSetPointerCapture, so subsequent events
-      // should fire on captureTarget even after the move to lowerTarget.
-      assertEvents(msPointerDownEvents(captureTarget),
+      assertEvents(assert, msPointerDownEvents(captureTarget),
                    msPointerMoveEvents(captureTarget),
                    msPointerUpEventsWithoutClick(captureTarget));
-    }
+    });
 
-    function testBubblingMsSetPointerCapture() {
+    QUnit.test('bubblingMsSetPointerCapture', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
 
@@ -319,16 +339,14 @@
       touchscreen.move(lowerTarget, new goog.math.Coordinate(10, 10));
       touchscreen.release();
 
-      // The MSPointerDown event on innerCaptureTarget bubbles up to the
-      // captureTarget element which calls msSetPointerCapture, so subsequent
-      // events should fire on captureTarget even after the move to lowerTarget.
-      assertEvents(msPointerDownEvents(innerCaptureTarget),
+      assertEvents(assert, msPointerDownEvents(innerCaptureTarget),
                    msPointerMoveEvents(captureTarget),
                    msPointerUpEventsWithoutClick(captureTarget));
-    }
+    });
 
-    function testClickDoesNotFireOnCapturedPointer() {
+    QUnit.test('clickDoesNotFireOnCapturedPointer', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
 
@@ -337,19 +355,18 @@
       touchscreen.move(innerCaptureTarget, new goog.math.Coordinate(10, 10));
       touchscreen.release();
 
-      // After the pointer down event, captureTarget should receive the rest of
-      // the events except for the click event.
-      assertEvents(msPointerDownEvents(innerCaptureTarget),
+      assertEvents(assert, msPointerDownEvents(innerCaptureTarget),
                    msPointerMoveEvents(captureTarget),
                    [goog.events.EventType.MSPOINTERUP, captureTarget],
                    [goog.events.EventType.MOUSEUP, captureTarget],
                    [goog.events.EventType.CLICK, innerCaptureTarget],
                    [goog.events.EventType.MSPOINTEROUT, captureTarget],
                    [goog.events.EventType.MOUSEOUT, captureTarget]);
-    }
+    });
 
-    function testTouchScreenReleaseAfterMoveOnNoTouchElement_IE() {
+    QUnit.test('touchScreenReleaseAfterMoveOnNoTouchElement_IE', function(assert) {
       if (!bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: not IE 10');
         return;
       }
       touchscreen.move(noTouchTarget, new goog.math.Coordinate(0, 0));
@@ -358,80 +375,86 @@
       touchscreen.move(noTouchTarget, new goog.math.Coordinate(20, 20));
       touchscreen.release();
 
-      // Since the element does not support touch actions, the move triggers
-      // a pointerout and mouseout events followed by a pointer cancel.
-      assertEvents(msPointerDownEvents(noTouchTarget),
+      assertEvents(assert, msPointerDownEvents(noTouchTarget),
                    [goog.events.EventType.MSPOINTEROUT, noTouchTarget,
                     goog.events.EventType.MOUSEOUT, noTouchTarget,
                     goog.events.EventType.MSPOINTERCANCEL, noTouchTarget]);
-    }
+    });
 
-    function testTouchScreenReleaseAfterNewElement() {
+    QUnit.test('touchScreenReleaseAfterNewElement', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
-      // After moving to a new element, the touchmove and touchend
-      // events should fire on the element where the touch started.
       touchscreen.move(lowerTarget, new goog.math.Coordinate(0, 0));
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerMoveEvents(lowerTarget),
                      msPointerUpEventsWithoutClick(lowerTarget));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 1,
                       goog.events.EventType.TOUCHMOVE, target, 1,
                       goog.events.EventType.TOUCHEND, target, 1]);
       }
-    }
+    });
 
-    function testTouchScreenMoveWithoutPress() {
+    QUnit.test('touchScreenMoveWithoutPress', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
-      assertFalse(touchscreen.isPressed());
-    }
+      assert.notOk(touchscreen.isPressed());
+    });
 
-    function testTouchScreenMoveWithPress() {
+    QUnit.test('touchScreenMoveWithPress', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
       touchscreen.move(target, new goog.math.Coordinate(20, 20));
-      assertTrue(touchscreen.isPressed());
+      assert.ok(touchscreen.isPressed());
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerMoveEvents(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 1,
                       goog.events.EventType.TOUCHMOVE, target, 1]);
       }
-    }
+    });
 
-    function testExceptionReleasingWhenNotPressed() {
+    QUnit.test('exceptionReleasingWhenNotPressed', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
-      assertThrows('Releasing when not pressed should throw an exception',
-                   goog.bind(touchscreen.release, touchscreen));
-    }
+      assert.throws(
+        goog.bind(touchscreen.release, touchscreen),
+        'Releasing when not pressed should throw an exception'
+      );
+    });
 
-    function testExceptionPressedWhenAlreadyPressed() {
+    QUnit.test('exceptionPressedWhenAlreadyPressed', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
-      assertThrows('Pressing when already pressed should throw an exception',
-                   goog.bind(touchscreen.press, touchscreen));
-    }
+      assert.throws(
+        goog.bind(touchscreen.press, touchscreen),
+        'Pressing when already pressed should throw an exception'
+      );
+    });
 
-    function testPreventDefaultOnTouchstart() {
+    QUnit.test('preventDefaultOnTouchstart', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       goog.events.listen(target, goog.events.EventType.TOUCHSTART, function(e) {
@@ -441,16 +464,17 @@
       touchscreen.press();
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerUpEventsWithClick(target));
       } else {
-        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+        assertEvents(assert, [goog.events.EventType.TOUCHSTART, target, 1,
                       goog.events.EventType.TOUCHEND, target, 1]);
       }
-    }
+    });
 
-    function testPreventDefaultOnTouchend() {
+    QUnit.test('preventDefaultOnTouchend', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        assert.ok(true, 'Skipping: touch events not supported');
         return;
       }
       goog.events.listen(target, goog.events.EventType.TOUCHEND, function(e) {
@@ -460,42 +484,43 @@
       touchscreen.press();
       touchscreen.release();
       if (bot.userAgent.IE_DOC_10) {
-        assertEvents(msPointerDownEvents(target),
+        assertEvents(assert, msPointerDownEvents(target),
                      msPointerUpEventsWithClick(target));
       } else {
-        var events = [goog.events.EventType.TOUCHSTART, target, 1,
+        var expectedEvents = [goog.events.EventType.TOUCHSTART, target, 1,
                       goog.events.EventType.TOUCHEND, target, 1];
         if (!bot.userAgent.IOS && !goog.userAgent.product.CHROME) {
-          events.push(goog.events.EventType.MOUSEMOVE, target,
+          expectedEvents.push(goog.events.EventType.MOUSEMOVE, target,
                       goog.events.EventType.MOUSEDOWN, target,
                       goog.events.EventType.MOUSEUP, target,
                       goog.events.EventType.CLICK, target);
         }
-        assertEvents(events);
+        assertEvents(assert, expectedEvents);
       }
-    }
+    });
 
-    function testTouchEventCoords() {
+    QUnit.test('touchEventCoords', function(assert) {
       if (!bot.events.SUPPORTS_TOUCH_EVENTS || bot.userAgent.IE_DOC_10) {
+        assert.ok(true, 'Skipping: touch events not supported or IE 10');
         return;
       }
+      var done = assert.async();
       window.scrollTo(20, 30);
-      // Yield to ensure all browsers apply the scrolling change.
-      // Relying on the implicit tick in a promise resolution is enough.
-      return goog.Promise.resolve().then(function() {
+      goog.Promise.resolve().then(function() {
         var coords = bot.dom.getClientRect(coordsTarget);
         touchscreen.move(coordsTarget, new goog.math.Coordinate(0, 0));
         touchscreen.press();
         touchscreen.release();
-        // The client coords of the touch event should be the top left of the
-        // target and the page coords should include the scroll offset.
-        assertEvents([coords.left, coords.top,
+        assertEvents(assert, [coords.left, coords.top,
                       coords.left + 20, coords.top + 30]);
+        done();
       });
-    }
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   TouchScreen Test.<br>
   <div id="target"
        style="background-color:blue;

@@ -52,6 +52,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   protected CommandCodec<HttpRequest> commandCodec;
   protected ResponseCodec<HttpResponse> responseCodec;
 
+  @SuppressWarnings("deprecation")
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   private static class DefaultClientFactoryHolder {
@@ -153,11 +154,17 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
+  /**
+   * @deprecated logging is not in the W3C WebDriver spec and is no longer supported.
+   */
   @Override
+  @Deprecated(forRemoval = true)
+  @SuppressWarnings("deprecation")
   public void setLocalLogs(LocalLogs logs) {
     this.logs = logs;
   }
 
+  @SuppressWarnings("deprecation")
   private void log(String logType, LogEntry entry) {
     logs.addEntry(logType, entry);
   }
@@ -167,6 +174,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public Response execute(Command command) throws IOException {
     if (command.getSessionId() == null) {
       if (QUIT.equals(command.getName())) {

@@ -43,7 +43,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriverInfo;
@@ -62,6 +61,7 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.WebDriverInfo;
 import org.openqa.selenium.safari.SafariDriverInfo;
 
 @SuppressWarnings("DuplicatedCode")

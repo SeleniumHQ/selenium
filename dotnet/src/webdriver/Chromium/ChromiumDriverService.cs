@@ -113,19 +113,36 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --adb-port={0}", adb);
             }
 
-            if (this.SuppressInitialDiagnosticInformation)
-            {
-                argsBuilder.Append(" --silent");
-            }
-
             if (this.DisableBuildCheck)
             {
                 argsBuilder.Append(" --disable-build-check");
             }
 
-            if (this.EnableVerboseLogging)
+            if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LogLevel != ChromiumDriverLogLevel.Default && this.LogLevel != ChromiumDriverLogLevel.All))
+                {
+                    Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromiumDriver --verbose and overriding --silent/--log-level settings.");
+                }
                 argsBuilder.Append(" --verbose");
+            }
+            else
+            {
+                if (this.EnableVerboseLogging)
+                {
+                    argsBuilder.Append(" --verbose");
+                }
+
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" --silent");
+                }
+
+                if (this.LogLevel != ChromiumDriverLogLevel.Default)
+                {
+                    argsBuilder.Append($" --log-level={this.LogLevel.ToString().ToUpperInvariant()}");
+                }
             }
 
             if (this.EnableAppendLog)
@@ -155,12 +172,7 @@ public abstract class ChromiumDriverService : DriverService
 
             if (!string.IsNullOrEmpty(this.AllowedIPAddresses))
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -allowed-ips={0}", this.AllowedIPAddresses));
-            }
-
-            if (this.LogLevel != ChromiumDriverLogLevel.Default)
-            {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
+                argsBuilder.Append($" -allowed-ips={this.AllowedIPAddresses}");
             }
 
             // Unconditionally redirect browser logs to the same log as the driver

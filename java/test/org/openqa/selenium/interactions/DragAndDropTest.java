@@ -20,9 +20,12 @@ package org.openqa.selenium.interactions;
 import static java.lang.Integer.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.openqa.selenium.WaitingConditions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementTextToMatch;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -99,6 +102,7 @@ class DragAndDropTest extends JupiterTestBase {
   @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 

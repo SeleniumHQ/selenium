@@ -18,13 +18,13 @@
 package org.openqa.selenium.grid.config;
 
 import static java.util.Comparator.comparing;
-import static java.util.Comparator.naturalOrder;
+import static org.openqa.selenium.internal.Sets.haveCommonElements;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     this.repeats = isCollection(type);
     this.quotable = isTomlStringType(type);
     this.example = configValue.example();
-    this.flags = ImmutableSortedSet.<String>naturalOrder().add(parameter.names()).build();
+    this.flags = Set.of(parameter.names());
     this.defaultValue = defaultValue;
     this.hidden = parameter.hidden();
   }
@@ -80,9 +80,9 @@ public class DescribedOption implements Comparable<DescribedOption> {
     Set<Role> minimized = Set.copyOf(roles);
 
     return StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
-        .filter(hasRoles -> !Sets.intersection(hasRoles.getRoles(), minimized).isEmpty())
+        .filter(hasRoles -> haveCommonElements(hasRoles.getRoles(), minimized))
         .flatMap(DescribedOption::getAllFields)
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 
   private static Stream<DescribedOption> getAllFields(HasRoles hasRoles) {
@@ -95,9 +95,12 @@ public class DescribedOption implements Comparable<DescribedOption> {
         ConfigValue configValue = field.getAnnotation(ConfigValue.class);
         String fieldValue = "";
         try {
-          Object fieldInstance = field.get(clazz.newInstance());
+          Object fieldInstance = field.get(clazz.getDeclaredConstructor().newInstance());
           fieldValue = fieldInstance == null ? "" : fieldInstance.toString();
-        } catch (IllegalAccessException | InstantiationException ignore) {
+        } catch (IllegalAccessException
+            | InstantiationException
+            | NoSuchMethodException
+            | InvocationTargetException ignore) {
           // We'll swallow this exception since we are just trying to get field's default value
         }
         if (param != null && configValue != null) {

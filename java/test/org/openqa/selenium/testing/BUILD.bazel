@@ -66,6 +66,7 @@ java_library(
         artifact("org.junit.platform:junit-platform-commons"),
         artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 

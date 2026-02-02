@@ -118,7 +118,11 @@ class InstanceCoercer extends TypeCoercer<Object> {
                         try {
                           field.set(instance, value);
                         } catch (IllegalAccessException e) {
-                          throw new JsonException(e);
+                          throw new JsonException(
+                              String.format(
+                                  "Cannot set %s.%s = %s",
+                                  instance.getClass().getName(), field.getName(), value),
+                              e);
                         }
                       };
                   return new TypeAndWriter(type, writer);
@@ -133,15 +137,19 @@ class InstanceCoercer extends TypeCoercer<Object> {
             Collectors.toMap(
                 SimplePropertyDescriptor::getName,
                 desc -> {
-                  Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
+                  Method method = desc.getWriteMethod();
+                  Type type = method.getGenericParameterTypes()[0];
                   BiConsumer<Object, Object> writer =
                       (instance, value) -> {
-                        Method method = desc.getWriteMethod();
                         method.setAccessible(true);
                         try {
                           method.invoke(instance, value);
                         } catch (ReflectiveOperationException e) {
-                          throw new JsonException(e);
+                          throw new JsonException(
+                              String.format(
+                                  "Cannot call method %s.%s(%s)",
+                                  instance.getClass().getName(), method.getName(), value),
+                              e);
                         }
                       };
                   return new TypeAndWriter(type, writer);
@@ -156,26 +164,21 @@ class InstanceCoercer extends TypeCoercer<Object> {
       constructor.setAccessible(true);
       return constructor;
     } catch (ReflectiveOperationException e) {
-      throw new JsonException(e);
+      throw new JsonException("Cannot create instance of " + type, e);
     }
   }
 
   private static Class<?> getClss(Type type) {
-    Class<?> target = null;
-
     if (type instanceof Class) {
-      target = (Class<?>) type;
+      return (Class<?>) type;
     } else if (type instanceof ParameterizedType) {
       Type rawType = ((ParameterizedType) type).getRawType();
       if (rawType instanceof Class) {
-        target = (Class<?>) rawType;
+        return (Class<?>) rawType;
       }
     }
 
-    if (target == null) {
-      throw new JsonException("Cannot determine base class");
-    }
-    return target;
+    throw new JsonException("Cannot determine base class for " + type);
   }
 
   private static class TypeAndWriter {

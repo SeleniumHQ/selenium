@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.BiDi.BrowsingContext;
 using System;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -31,9 +31,16 @@ internal class NetworkTest : BiDiTestFixture
     {
         // Firefox doesn't like int.MaxValue as max encoded data size
         // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
-        var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+        var addDataCollectorResult = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
 
-        Assert.That(collector, Is.Not.Null);
+        Assert.That(addDataCollectorResult, Is.Not.Null);
+        Assert.That(addDataCollectorResult.Collector, Is.Not.Null);
+
+        // or context aware
+        addDataCollectorResult = await context.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        Assert.That(addDataCollectorResult, Is.Not.Null);
+        Assert.That(addDataCollectorResult.Collector, Is.Not.Null);
     }
 
     [Test]
@@ -253,9 +260,6 @@ internal class NetworkTest : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanSetExtraHeaders()
     {
         var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);

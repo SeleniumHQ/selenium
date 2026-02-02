@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
 import static java.util.UUID.randomUUID;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
 import java.net.URISyntaxException;

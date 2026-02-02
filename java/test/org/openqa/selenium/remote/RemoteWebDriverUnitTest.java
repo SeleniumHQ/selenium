@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.internal.Maps.sequencedMapOf;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
@@ -698,7 +699,7 @@ class RemoteWebDriverUnitTest {
   void canHandleGeneralExceptionInNonDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
       final Map<String, String> parameters =
-          Map.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
+          sequencedMapOf("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(false);
       WebDriverFixture fixture =
@@ -796,18 +797,58 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void getDownloadableFilesReturnsType() {
-    List<String> expectedFiles = List.of("file1.txt", "file2.pdf");
-
     WebDriverFixture fixture =
         new WebDriverFixture(
             new ImmutableCapabilities(ENABLE_DOWNLOADS, true),
             echoCapabilities,
-            valueResponder(Map.of("names", expectedFiles)));
+            valueResponder(Map.of("names", List.of("file1.txt", "file2.pdf"))));
 
     List<String> result = fixture.driver.getDownloadableFiles();
 
-    assertThat(result).isInstanceOf(List.class).isEqualTo(expectedFiles);
+    assertThat(result).containsExactly("file1.txt", "file2.pdf");
 
     fixture.verifyCommands(new CommandPayload(DriverCommand.GET_DOWNLOADABLE_FILES, emptyMap()));
+  }
+
+  @Test
+  void canFireSessionEventWithPayload() {
+    Map<String, Object> responseData =
+        Map.of("success", true, "eventType", "test:failed", "timestamp", "2024-01-15T10:30:00Z");
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(responseData));
+
+    Map<String, Object> payload = Map.of("testName", "LoginTest", "error", "Element not found");
+    Map<String, Object> result = fixture.driver.fireSessionEvent("test:failed", payload);
+
+    assertThat(result).containsEntry("success", true);
+    assertThat(result).containsEntry("eventType", "test:failed");
+
+    fixture.verifyCommands(
+        new CommandPayload(
+            DriverCommand.FIRE_SESSION_EVENT,
+            Map.of("eventType", "test:failed", "payload", payload)));
+  }
+
+  @Test
+  void canFireSessionEventWithoutPayload() {
+    Map<String, Object> responseData =
+        Map.of("success", true, "eventType", "log:collect", "timestamp", "2024-01-15T10:30:00Z");
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(responseData));
+
+    Map<String, Object> result = fixture.driver.fireSessionEvent("log:collect");
+
+    assertThat(result).containsEntry("success", true);
+    assertThat(result).containsEntry("eventType", "log:collect");
+
+    fixture.verifyCommands(
+        new CommandPayload(DriverCommand.FIRE_SESSION_EVENT, Map.of("eventType", "log:collect")));
+  }
+
+  @Test
+  void fireSessionEventRequiresEventType() {
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> fixture.driver.fireSessionEvent(null))
+        .withMessageContaining("Event type");
   }
 }

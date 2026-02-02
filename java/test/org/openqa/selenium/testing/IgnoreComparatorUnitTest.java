@@ -21,7 +21,9 @@ import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.Collections;
 import java.util.Set;

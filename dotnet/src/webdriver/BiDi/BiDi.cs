@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -48,7 +48,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
 
-    internal Input.InputModule InputModule => AsModule<Input.InputModule>();
+    public Input.InputModule Input => AsModule<Input.InputModule>();
 
     public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
 
@@ -60,23 +60,28 @@ public sealed class BiDi : IAsyncDisposable
 
     public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public Task<Session.StatusResult> StatusAsync()
-    {
-        return SessionModule.StatusAsync();
-    }
-
-    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         var bidi = new BiDi(url);
 
-        await bidi.Broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await bidi.Broker.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         return bidi;
     }
 
-    public Task EndAsync(Session.EndOptions? options = null)
+    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.EndAsync(options);
+        return SessionModule.StatusAsync(options, cancellationToken);
+    }
+
+    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return SessionModule.NewAsync(capabilities, options, cancellationToken);
+    }
+
+    public Task EndAsync(Session.EndOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return SessionModule.EndAsync(options, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()

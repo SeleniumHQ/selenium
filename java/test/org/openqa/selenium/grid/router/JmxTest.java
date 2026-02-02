@@ -25,7 +25,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.management.*;
+import javax.management.AttributeList;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanInfo;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -105,10 +111,10 @@ class JmxTest {
     assertThat(info).isNotNull();
 
     MBeanAttributeInfo[] attributeInfo = info.getAttributes();
-    assertThat(attributeInfo).hasSize(9);
+    assertThat(attributeInfo).hasSize(10);
 
     AttributeList attributeList = getAttributeList(name, attributeInfo);
-    assertThat(attributeList).isNotNull().hasSize(9);
+    assertThat(attributeList).isNotNull().hasSize(10);
 
     Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
     assertNumberAttribute(currentSessions, 0);
@@ -127,6 +133,9 @@ class JmxTest {
 
     Object load = beanServer.getAttribute(name, "Load");
     assertNumberAttribute(load, 0.0f);
+
+    Object consecutiveSessionFailures = beanServer.getAttribute(name, "ConsecutiveSessionFailures");
+    assertNumberAttribute(consecutiveSessionFailures, 0);
 
     String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
     assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());

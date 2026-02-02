@@ -34,6 +34,7 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -233,11 +234,16 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected void loadSystemProperties() {
       parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
-      if (logLevel == null) {
-        String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
-        if (logFilePath != null) {
-          this.logLevel = FirefoxDriverLogLevel.fromString(logFilePath);
+      if (Debug.isDebugAll()) {
+        if (logLevel != null || System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY) != null) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing GeckoDriver log level to"
+                  + " DEBUG and overriding configured log level.");
         }
+        logLevel = FirefoxDriverLogLevel.DEBUG;
+      } else if (logLevel == null) {
+        logLevel =
+            FirefoxDriverLogLevel.fromString(System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY));
       }
       if (logTruncate == null) {
         logTruncate = !Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);

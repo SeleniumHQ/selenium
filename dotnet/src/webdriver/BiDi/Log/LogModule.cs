@@ -17,11 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
@@ -29,22 +30,22 @@ public sealed class LogModule : Module
 {
     private LogJsonSerializerContext _jsonContext = null!;
 
-    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
 
         _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }

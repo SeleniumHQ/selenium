@@ -31,7 +31,7 @@ public class NoSuchElementException : NotFoundException
     /// <summary>
     /// Link to the documentation for this error
     /// </summary>
-    private static string supportUrl = baseSupportUrl + "#nosuchelementexception";
+    private static readonly string supportUrl = baseSupportUrl + "#nosuchelementexception";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NoSuchElementException"/> class.

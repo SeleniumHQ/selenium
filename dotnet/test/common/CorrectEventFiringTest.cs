@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium;
 
@@ -287,9 +287,9 @@ public class CorrectEventFiringTest : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
     public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
     {
-        IWebElement element = null;
-        IWebElement element2 = null;
         IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+        IWebElement element;
+        IWebElement element2;
         try
         {
             // topmost

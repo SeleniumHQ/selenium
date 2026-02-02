@@ -23,7 +23,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
 import org.junit.jupiter.api.Test;

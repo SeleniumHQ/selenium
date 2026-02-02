@@ -55,9 +55,32 @@ module Selenium
         @ignored = Array(ignored)
         @allowed = Array(allowed)
         @first_warning = false
+        @level_forced = false
+        @output_forced = false
+      end
+
+      #
+      # Forces debug level and prevents it from being overridden.
+      #
+      def debug!
+        @level_forced = true
+        @logger.level = :debug
+      end
+
+      #
+      # Forces output to stderr and prevents it from being overridden.
+      #
+      def stderr!
+        @output_forced = true
+        @logger.reopen($stderr)
       end
 
       def level=(level)
+        if @level_forced
+          warn('Logger level is forced; ignoring override', id: :logger)
+          return
+        end
+
         if level == :info && @logger.level == :info
           info(':info is now the default log level, to see additional logging, set log level to :debug')
         end
@@ -71,6 +94,11 @@ module Selenium
       # @param [String] io
       #
       def output=(io)
+        if @output_forced
+          warn('Logger output is forced; ignoring override', id: :logger)
+          return
+        end
+
         @logger.reopen(io)
       end
 
