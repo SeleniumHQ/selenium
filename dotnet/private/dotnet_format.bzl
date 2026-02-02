@@ -91,13 +91,13 @@ set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 cd /d "%DOTNET_DIR%"
 
 echo Running dotnet format %* on all projects...
-for /r "%DOTNET_DIR%\\src" %%%%p in (*.csproj) do (
-    echo   Formatting %%%%p...
-    "%DOTNET%" format %* "%%%%p" || exit /b 1
+for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
+    echo   Formatting %%p...
+    "%DOTNET%" format %* "%%p" || exit /b 1
 )
-for /r "%DOTNET_DIR%\\test" %%%%p in (*.csproj) do (
-    echo   Formatting %%%%p...
-    "%DOTNET%" format %* "%%%%p" || exit /b 1
+for /r "%DOTNET_DIR%\test" %%p in (*.csproj) do (
+    echo   Formatting %%p...
+    "%DOTNET%" format %* "%%p" || exit /b 1
 )
 
 echo Done.

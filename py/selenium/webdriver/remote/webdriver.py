@@ -1462,6 +1462,37 @@ class WebDriver(BaseWebDriver):
 
         self.execute(Command.DELETE_DOWNLOADABLE_FILES)
 
+    def fire_session_event(self, event_type: str, payload: dict | None = None) -> dict:
+        """Fire a custom session event to the remote server event bus.
+
+        This allows test code to trigger server-side utilities that subscribe to
+        the event bus.
+
+        Args:
+            event_type: The type of event (e.g., "test:failed", "log:collect", "marker:add").
+            payload: Optional data to include with the event.
+
+        Returns:
+            A dictionary containing the response data including success status,
+            event type, and timestamp.
+
+        Raises:
+            WebDriverException: If the event cannot be fired.
+
+        Examples:
+            Simple event::
+
+                driver.fire_session_event("test:started")
+
+            Event with payload::
+
+                driver.fire_session_event("test:failed", {"testName": "LoginTest", "error": "Element not found"})
+        """
+        params: dict[str, str | dict] = {"eventType": event_type}
+        if payload:
+            params["payload"] = payload
+        return self.execute(Command.FIRE_SESSION_EVENT, params)["value"]
+
     @property
     def fedcm(self) -> FedCM:
         """Get the Federated Credential Management (FedCM) dialog commands.

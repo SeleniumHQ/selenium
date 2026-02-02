@@ -1,4 +1,3 @@
-// <copyright file="FirefoxRemoteWebDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,19 +14,29 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Firefox;
+package org.openqa.selenium.bidi.browser;
 
-namespace OpenQA.Selenium.Remote;
+import static org.assertj.core.api.Assertions.assertThat;
 
-// This is a simple wrapper class to create a RemoteWebDriver that
-// has no parameters in the constructor.
-public class FirefoxRemoteWebDriver : RemoteWebDriver
-{
-    public FirefoxRemoteWebDriver()
-        : base(RemoteSeleniumServer.ServerUri, new FirefoxOptions())
-    {
-    }
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+
+class ClientWindowInfoTest {
+  @Test
+  void stringRepresentations() {
+    assertThat(
+            ClientWindowInfo.fromJson(
+                Map.of(
+                    "clientWindow", "window-id-1234",
+                    "state", "maximized",
+                    "width", 1024,
+                    "height", 768,
+                    "x", 200,
+                    "y", 100,
+                    "active", true)))
+        .hasToString(
+            "ClientWindowInfo{clientWindow='window-id-1234', state=maximized, width=1024,"
+                + " height=768, x=200, y=100, active=true}");
+  }
 }

@@ -32,3 +32,12 @@ jobs:
       os: windows
       run: |
         bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome
+
+  remote-tests:
+    name: Remote Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Remote Tests
+      os: windows
+      run: |
+        bazel test //dotnet/test/remote:AllTests --flaky_test_attempts=3
