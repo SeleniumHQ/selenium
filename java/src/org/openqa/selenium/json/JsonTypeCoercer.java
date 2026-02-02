@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
 import static org.openqa.selenium.json.Types.narrow;
@@ -33,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
@@ -74,59 +71,53 @@ class JsonTypeCoercer {
     // From java
     builder.add(new BooleanCoercer());
 
-    builder.add(new NumberCoercer<>(Byte.class, Number::byteValue));
-    builder.add(new NumberCoercer<>(Double.class, Number::doubleValue));
-    builder.add(new NumberCoercer<>(Float.class, Number::floatValue));
-    builder.add(new NumberCoercer<>(Integer.class, Number::intValue));
-    builder.add(new NumberCoercer<>(Long.class, Number::longValue));
+    builder.add(new NumberCoercer<>(this, Byte.class, Number::byteValue));
+    builder.add(new NumberCoercer<>(this, Double.class, Number::doubleValue));
+    builder.add(new NumberCoercer<>(this, Float.class, Number::floatValue));
+    builder.add(new NumberCoercer<>(this, Integer.class, Number::intValue));
+    builder.add(new NumberCoercer<>(this, Long.class, Number::longValue));
     builder.add(
         new NumberCoercer<>(
+            this,
             Number.class,
             num -> {
+              if (num instanceof Long) {
+                return num;
+              }
+
               double doubleValue = num.doubleValue();
-              if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
+              if (doubleValue % 1 != 0
+                  || doubleValue < Long.MIN_VALUE
+                  || doubleValue > Long.MAX_VALUE) {
                 return doubleValue;
               }
               return num.longValue();
             }));
-    builder.add(new NumberCoercer<>(Short.class, Number::shortValue));
+    builder.add(new NumberCoercer<>(this, Short.class, Number::shortValue));
     builder.add(new StringCoercer());
     builder.add(new EnumCoercer<>());
     builder.add(new UriCoercer());
     builder.add(new UrlCoercer());
     builder.add(new UuidCoercer());
-    builder.add(new InstantCoercer());
+    builder.add(new InstantCoercer(this));
 
     // From Selenium
     builder.add(
         new MapCoercer<>(
             Capabilities.class,
             this,
-            Collector.of(
-                MutableCapabilities::new,
-                (caps, entry) -> caps.setCapability((String) entry.getKey(), entry.getValue()),
-                MutableCapabilities::merge,
-                UNORDERED)));
+            MutableCapabilities::new,
+            (caps) -> ((k, v) -> caps.setCapability((String) k, v))));
 
     // Container types
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(List.class, this, Collectors.toCollection(ArrayList::new)));
+    builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, (list) -> list::add));
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(Set.class, this, Collectors.toCollection(HashSet::new)));
+    builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, (set) -> set::add));
 
     builder.add(new StaticInitializerCoercer());
 
-    builder.add(
-        new MapCoercer<>(
-            Map.class,
-            this,
-            Collector.of(
-                LinkedHashMap::new,
-                (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-                (l, r) -> {
-                  l.putAll(r);
-                  return l;
-                })));
+    builder.add(new MapCoercer<>(Map.class, this, LinkedHashMap::new, (map) -> map::put));
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
@@ -140,6 +131,12 @@ class JsonTypeCoercer {
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
+
+    if (json.peek() == JsonType.NULL) {
+      @SuppressWarnings("unchecked")
+      T next = (T) json.nextNull();
+      return next;
+    }
 
     // We need to keep null checkers happy, apparently.
     @SuppressWarnings("unchecked")
@@ -159,17 +156,13 @@ class JsonTypeCoercer {
     return coercers.stream()
         .filter(coercer -> coercer.test(narrow(type)))
         .findFirst()
-        .map(coercer -> coercer.apply(type))
         .map(
-            func ->
-                (BiFunction<JsonInput, PropertySetting, Object>)
-                    (jsonInput, setter) -> {
-                      if (jsonInput.peek() == JsonType.NULL) {
-                        return jsonInput.nextNull();
-                      }
-
-                      return func.apply(jsonInput, setter);
-                    })
+            coercer -> {
+              @SuppressWarnings("unchecked")
+              BiFunction<JsonInput, PropertySetting, Object> funct =
+                  (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
+              return funct;
+            })
         .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
   }
 }

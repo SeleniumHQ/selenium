@@ -17,34 +17,26 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Script;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
-    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
+    public Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, ContextAddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
-        AddPreloadScriptOptions addPreloadScriptOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        return await scriptModule.AddPreloadScriptAsync(functionDeclaration, addPreloadScriptOptions).ConfigureAwait(false);
+        return scriptModule.AddPreloadScriptAsync(functionDeclaration, ContextAddPreloadScriptOptions.WithContext(options, context), cancellationToken);
     }
 
-    public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
+    public Task<GetRealmsResult> GetRealmsAsync(ContextGetRealmsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        options ??= new();
-
-        options.Context = context;
-
-        return await scriptModule.GetRealmsAsync(options).ConfigureAwait(false);
+        return scriptModule.GetRealmsAsync(ContextGetRealmsOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
         var contextTarget = new ContextTarget(context);
 
@@ -53,17 +45,17 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
             contextTarget.Sandbox = targetOptions.Sandbox;
         }
 
-        return scriptModule.EvaluateAsync(expression, awaitPromise, contextTarget, options);
+        return scriptModule.EvaluateAsync(expression, awaitPromise, contextTarget, options, cancellationToken);
     }
 
-    public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
-        var result = await EvaluateAsync(expression, awaitPromise, options, targetOptions).ConfigureAwait(false);
+        var result = await EvaluateAsync(expression, awaitPromise, options, targetOptions, cancellationToken).ConfigureAwait(false);
 
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public Task<EvaluateResult> CallFunctionAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public Task<EvaluateResult> CallFunctionAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
         var contextTarget = new ContextTarget(context);
 
@@ -72,12 +64,12 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
             contextTarget.Sandbox = targetOptions.Sandbox;
         }
 
-        return scriptModule.CallFunctionAsync(functionDeclaration, awaitPromise, contextTarget, options);
+        return scriptModule.CallFunctionAsync(functionDeclaration, awaitPromise, contextTarget, options, cancellationToken);
     }
 
-    public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
-        var result = await CallFunctionAsync(functionDeclaration, awaitPromise, options, targetOptions).ConfigureAwait(false);
+        var result = await CallFunctionAsync(functionDeclaration, awaitPromise, options, targetOptions, cancellationToken).ConfigureAwait(false);
 
         return result.AsSuccessResult().ConvertTo<TResult>();
     }

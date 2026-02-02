@@ -17,8 +17,7 @@
 
 package org.openqa.selenium;
 
-import java.util.Arrays;
-import org.jspecify.annotations.NullMarked;
+import java.util.List;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -40,7 +39,6 @@ import org.jspecify.annotations.Nullable;
  * @see <a href="http://www.google.com.au/search?&q=unicode+pua&btnK=Search">Unicode PUA
  *     Overview</a>
  */
-@NullMarked
 public enum Keys implements CharSequence {
   // Basic control characters
   NULL('\uE000'),
@@ -176,7 +174,7 @@ public enum Keys implements CharSequence {
    * @return String representation of the char sequence
    */
   public static String chord(CharSequence... value) {
-    return chord(Arrays.asList(value));
+    return chord(List.of(value));
   }
 
   /**

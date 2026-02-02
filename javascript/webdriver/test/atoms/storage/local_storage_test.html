@@ -1,35 +1,40 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>HTML5 local storage</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.html5');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.atoms.storage.local');
   </script>
 
   <script type="text/javascript">
-    function testClear() {
+    QUnit.test('clear', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        assert.ok(true, 'Local storage not supported');
         return;
       }
 
       webdriver.atoms.storage.local.clear();
-      assertEquals(0, webdriver.atoms.storage.local.size());
+      assert.strictEqual(webdriver.atoms.storage.local.size(), 0);
 
       webdriver.atoms.storage.local.setItem('first', 'one');
       webdriver.atoms.storage.local.setItem('second', 'two');
       webdriver.atoms.storage.local.setItem('third', 'two');
       webdriver.atoms.storage.local.clear();
-      assertEquals(0, webdriver.atoms.storage.local.size());
-      assertNull(webdriver.atoms.storage.local.getItem('first'));
-      assertNull(webdriver.atoms.storage.local.getItem('second'));
-      assertNull(webdriver.atoms.storage.local.getItem('third'));
-    }
+      assert.strictEqual(webdriver.atoms.storage.local.size(), 0);
+      assert.strictEqual(webdriver.atoms.storage.local.getItem('first'), null);
+      assert.strictEqual(webdriver.atoms.storage.local.getItem('second'), null);
+      assert.strictEqual(webdriver.atoms.storage.local.getItem('third'), null);
+    });
 
-    function testSetAndGetSimpleItem() {
+    QUnit.test('setAndGetSimpleItem', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        assert.ok(true, 'Local storage not supported');
         return;
       }
 
@@ -37,30 +42,32 @@
 
       // set-get
       webdriver.atoms.storage.local.setItem('first', 'one');
-      assertEquals('one', webdriver.atoms.storage.local.getItem('first'));
+      assert.strictEqual(webdriver.atoms.storage.local.getItem('first'), 'one');
 
       // resetItem
       webdriver.atoms.storage.local.setItem('first', '1');
-      assertEquals('1', webdriver.atoms.storage.local.getItem('first'));
+      assert.strictEqual(webdriver.atoms.storage.local.getItem('first'), '1');
 
-    }
+    });
 
-    function testRemoveItem() {
+    QUnit.test('removeItem', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        assert.ok(true, 'Local storage not supported');
         return;
       }
 
       webdriver.atoms.storage.local.clear();
 
       webdriver.atoms.storage.local.setItem('first', 'one');
-      assertEquals('one', webdriver.atoms.storage.local.removeItem('first'));
+      assert.strictEqual(webdriver.atoms.storage.local.removeItem('first'), 'one');
 
-      assertEquals(null, webdriver.atoms.storage.local.removeItem('first'));
-      assertEquals(null, webdriver.atoms.storage.local.removeItem('foo'));
-    }
+      assert.strictEqual(webdriver.atoms.storage.local.removeItem('first'), null);
+      assert.strictEqual(webdriver.atoms.storage.local.removeItem('foo'), null);
+    });
 
-    function testSize() {
+    QUnit.test('size', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        assert.ok(true, 'Local storage not supported');
         return;
       }
 
@@ -69,11 +76,12 @@
       webdriver.atoms.storage.local.setItem('first', 'one');
       webdriver.atoms.storage.local.setItem('second', 'two');
       webdriver.atoms.storage.local.setItem('third', 'three');
-      assertEquals(3, webdriver.atoms.storage.local.size());
-    }
+      assert.strictEqual(webdriver.atoms.storage.local.size(), 3);
+    });
 
-    function testKeySet() {
+    QUnit.test('keySet', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        assert.ok(true, 'Local storage not supported');
         return;
       }
 
@@ -86,11 +94,13 @@
       // keySet
       var keys = webdriver.atoms.storage.local.keySet();
       var sortedKeys = keys.sort();
-      assertArrayEquals(['first', 'second', 'third'], sortedKeys);
-    }
+      assert.deepEqual(sortedKeys, ['first', 'second', 'third']);
+    });
   </script>
 
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 </body>
 </html>

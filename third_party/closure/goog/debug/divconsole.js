@@ -1,33 +1,26 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Simple logger that logs a Div Element.
- *
  */
 
 goog.provide('goog.debug.DivConsole');
 
 goog.require('goog.debug.HtmlFormatter');
-goog.require('goog.debug.LogManager');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeStyleSheet');
+goog.require('goog.log');
 goog.require('goog.string.Const');
 goog.require('goog.style');
+goog.requireType('goog.debug.Formatter');
+goog.requireType('goog.log.LogRecord');
 
 
 /**
@@ -36,6 +29,7 @@ goog.require('goog.style');
  * @constructor
  */
 goog.debug.DivConsole = function(element) {
+  'use strict';
   this.publishHandler_ = goog.bind(this.addLogRecord, this);
   this.formatter_ = new goog.debug.HtmlFormatter();
   this.formatter_.showAbsoluteTime = false;
@@ -53,6 +47,7 @@ goog.debug.DivConsole = function(element) {
  * Installs styles for the log messages and its div
  */
 goog.debug.DivConsole.prototype.installStyles = function() {
+  'use strict';
   goog.style.installSafeStyleSheet(
       goog.html.SafeStyleSheet.fromConstant(goog.string.Const.from(
           '.dbg-sev{color:#F00}' +
@@ -76,17 +71,17 @@ goog.debug.DivConsole.prototype.installStyles = function() {
  * @param {boolean} capturing Whether to capture logger output.
  */
 goog.debug.DivConsole.prototype.setCapturing = function(capturing) {
+  'use strict';
   if (capturing == this.isCapturing_) {
     return;
   }
 
   // attach or detach handler from the root logger
-  var rootLogger = goog.debug.LogManager.getRoot();
+  var rootLogger = goog.log.getRootLogger();
   if (capturing) {
-    rootLogger.addHandler(this.publishHandler_);
+    goog.log.addHandler(rootLogger, this.publishHandler_);
   } else {
-    rootLogger.removeHandler(this.publishHandler_);
-    this.logBuffer = '';
+    goog.log.removeHandler(rootLogger, this.publishHandler_);
   }
   this.isCapturing_ = capturing;
 };
@@ -94,9 +89,10 @@ goog.debug.DivConsole.prototype.setCapturing = function(capturing) {
 
 /**
  * Adds a log record.
- * @param {goog.debug.LogRecord} logRecord The log entry.
+ * @param {?goog.log.LogRecord} logRecord The log entry.
  */
 goog.debug.DivConsole.prototype.addLogRecord = function(logRecord) {
+  'use strict';
   if (!logRecord) {
     return;
   }
@@ -122,6 +118,7 @@ goog.debug.DivConsole.prototype.addLogRecord = function(logRecord) {
  * @return {!goog.debug.Formatter} The formatter in use.
  */
 goog.debug.DivConsole.prototype.getFormatter = function() {
+  'use strict';
   return this.formatter_;
 };
 
@@ -131,6 +128,7 @@ goog.debug.DivConsole.prototype.getFormatter = function() {
  * @param {goog.debug.HtmlFormatter} formatter The formatter to use.
  */
 goog.debug.DivConsole.prototype.setFormatter = function(formatter) {
+  'use strict';
   this.formatter_ = formatter;
 };
 
@@ -139,6 +137,7 @@ goog.debug.DivConsole.prototype.setFormatter = function(formatter) {
  * Adds a separator to the debug window.
  */
 goog.debug.DivConsole.prototype.addSeparator = function() {
+  'use strict';
   var div = this.domHelper_.createElement(goog.dom.TagName.DIV);
   div.className = 'logmsg logsep';
   this.element_.appendChild(div);
@@ -149,6 +148,7 @@ goog.debug.DivConsole.prototype.addSeparator = function() {
  * Clears the console.
  */
 goog.debug.DivConsole.prototype.clear = function() {
+  'use strict';
   if (this.element_) {
     goog.dom.safe.setInnerHtml(this.element_, goog.html.SafeHtml.EMPTY);
   }

@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -357,6 +357,48 @@ internal class CallFunctionLocalValueTest : BiDiTestFixture
             (arg) => {
               if (!arg.has('setKey') || arg.size !== 1) {
                 throw new Error("Assert failed: " + arg);
+              }
+            }
+            """, false, new() { Arguments = [arg] });
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
+    }
+
+    [Test]
+    public async Task CanCallFunctionWithSharedReferenceLocalValue()
+    {
+        // Navigate to a page with a known element
+        driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
+
+        var node = (await context.LocateNodesAsync(new BrowsingContext.CssLocator("#consoleLog"))).Nodes[0];
+
+        var arg = new SharedReferenceLocalValue(node.SharedId);
+
+        var result = await context.Script.CallFunctionAsync($$"""
+            (el) => {
+              if (!(el instanceof Element) || el.id !== 'consoleLog') {
+                throw new Error("Assert failed: " + (el && el.id));
+              }
+            }
+            """, false, new() { Arguments = [arg] });
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
+    }
+
+    [Test]
+    public async Task CanCallFunctionWithRemoteObjectReferenceLocalValue()
+    {
+        ObjectRemoteValue objectRemoteValue = await context.Script.CallFunctionAsync<ObjectRemoteValue>(
+            "() => ({ a: 42 })",
+            true,
+            new() { ResultOwnership = ResultOwnership.Root });
+
+        var arg = new RemoteObjectReferenceLocalValue(objectRemoteValue.Handle!);
+
+        var result = await context.Script.CallFunctionAsync($$"""
+            (refObj) => {
+              if (typeof refObj !== 'object' || refObj.a !== 42) {
+                throw new Error("Assert failed: ref a=" + (refObj && refObj.a));
               }
             }
             """, false, new() { Arguments = [arg] });

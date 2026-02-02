@@ -18,8 +18,10 @@
 package org.openqa.selenium.grid.node;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -85,7 +87,7 @@ public class CapabilityResponseEncoder {
 
     @Override
     public byte[] apply(Session session) {
-      return apply(session, ImmutableMap.of());
+      return apply(session, emptyMap());
     }
 
     /** Create a UTF-8 encoded response for a given dialect for use with the New Session command. */
@@ -108,14 +110,13 @@ public class CapabilityResponseEncoder {
 
     private static Map<String, Object> encodeW3C(
         SessionId id, Capabilities capabilities, Map<String, Object> metadata) {
-      return ImmutableMap.<String, Object>builder()
-          .putAll(metadata)
-          .put(
-              "value",
-              ImmutableMap.of(
-                  "sessionId", id,
-                  "capabilities", capabilities))
-          .build();
+      Map<String, Object> result = new HashMap<>(metadata);
+      result.put(
+          "value",
+          Map.of(
+              "sessionId", id,
+              "capabilities", capabilities));
+      return unmodifiableMap(result);
     }
   }
 }

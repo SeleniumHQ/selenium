@@ -37,6 +37,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIRE_SESSION_EVENT;
 import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.GET;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACCOUNTS;
@@ -205,6 +206,8 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
     defineCommand(GET_DOWNLOADED_FILE, get(sessionId + "/se/files/:name"));
     defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
+
+    defineCommand(FIRE_SESSION_EVENT, post(sessionId + "/se/event"));
   }
 
   protected static CommandSpec delete(String path) {

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.DevTools;
 

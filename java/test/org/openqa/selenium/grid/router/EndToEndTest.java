@@ -19,16 +19,12 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -98,7 +94,7 @@ class EndToEndTest {
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
-    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2), Arguments.of(s3));
   }
 
   private Server<?> server;
@@ -230,26 +226,24 @@ class EndToEndTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(
-        asJson(
-            ImmutableMap.of(
-                "capabilities",
-                ImmutableMap.of("alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
+        asJson(Map.of("capabilities", Map.of("alwaysMatch", Map.of("browserName", "cheese")))));
 
     HttpResponse response = client.execute(request);
 
-    assertEquals(200, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(200);
 
     Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
-    // There should not be a numeric status field
-    assertFalse(topLevel.containsKey("status"), string(request));
+    assertThat(topLevel)
+        .as("There should not be a numeric status field")
+        .doesNotContainKey("status");
 
     // And the value should have all the good stuff in it: the session id and the capabilities
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
     assertThat(value.get("sessionId")).isInstanceOf(String.class);
 
     Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
-    assertEquals("cheese", caps.get("browserName"));
+    assertThat(caps.get("browserName")).isEqualTo("cheese");
   }
 
   @ParameterizedTest

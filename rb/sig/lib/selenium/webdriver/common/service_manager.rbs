@@ -53,6 +53,10 @@ module Selenium
 
       def connect_until_stable: () -> untyped?
 
+      def check_connection_error: () -> String?
+
+      def current_time: () -> Float
+
       def cannot_connect_error_text: () -> String
 
       def socket_lock: () -> untyped

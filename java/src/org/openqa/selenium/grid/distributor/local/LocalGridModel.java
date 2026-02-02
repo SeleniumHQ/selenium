@@ -21,7 +21,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableSet;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,6 +83,8 @@ public class LocalGridModel extends GridModel {
   public void add(NodeStatus node) {
     Require.nonNull("Node", node);
 
+    NodeStatus restartedNode = null;
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -116,9 +117,9 @@ public class LocalGridModel extends GridModel {
                   "Re-adding node with id %s and URI %s.",
                   node.getNodeId(), node.getExternalUri()));
 
-          // Send the previous state to allow cleaning up the old node related resources.
+          // Save the previous state to allow cleaning up the old node related resources.
           // Nodes are initially added in the "down" state, so the new state must be ignored.
-          events.fire(new NodeRestartedEvent(next));
+          restartedNode = next;
           iterator.remove();
           break;
         }
@@ -147,6 +148,10 @@ public class LocalGridModel extends GridModel {
       updateHealthCheckCount(refreshed.getNodeId(), refreshed.getAvailability());
     } finally {
       writeLock.unlock();
+    }
+
+    if (restartedNode != null) {
+      events.fire(new NodeRestartedEvent(restartedNode));
     }
   }
 
@@ -223,12 +228,12 @@ public class LocalGridModel extends GridModel {
 
   @Override
   public void purgeDeadNodes() {
+    Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
+    Set<NodeStatus> toRemove = new HashSet<>();
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
-      Set<NodeStatus> toRemove = new HashSet<>();
-
       for (NodeStatus node : nodes) {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
@@ -274,11 +279,12 @@ public class LocalGridModel extends GridModel {
             nodes.remove(node);
             nodePurgeTimes.remove(node.getNodeId());
             nodeHealthCount.remove(node.getNodeId());
-            events.fire(new NodeRemovedEvent(node));
           });
     } finally {
       writeLock.unlock();
     }
+
+    toRemove.forEach(node -> events.fire(new NodeRemovedEvent(node)));
   }
 
   @Override
@@ -338,13 +344,16 @@ public class LocalGridModel extends GridModel {
       }
 
       Optional<Slot> maybeSlot =
-          node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
+          node.getSlots().stream()
+              .filter(slot -> slotId.equals(slot.getId()))
+              .filter(slot -> slot.getSession() == null)
+              .findFirst();
 
-      if (!maybeSlot.isPresent()) {
-        LOG.warning(
+      if (maybeSlot.isEmpty()) {
+        LOG.fine(
             String.format(
-                "Asked to reserve slot on node %s, but no slot with id %s found",
-                node.getNodeId(), slotId));
+                "Asked to reserve slot %s on node %s, but slot not found or already reserved",
+                slotId, node.getNodeId()));
         return false;
       }
 
@@ -360,7 +369,7 @@ public class LocalGridModel extends GridModel {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      return ImmutableSet.copyOf(nodes);
+      return Set.copyOf(nodes);
     } finally {
       readLock.unlock();
     }
@@ -438,7 +447,7 @@ public class LocalGridModel extends GridModel {
       Optional<Slot> maybeSlot =
           node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
 
-      if (!maybeSlot.isPresent()) {
+      if (maybeSlot.isEmpty()) {
         LOG.warning("Grid model and reality have diverged. Unable to find slot " + slotId);
         return;
       }

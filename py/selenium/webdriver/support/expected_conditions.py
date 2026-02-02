@@ -17,7 +17,7 @@
 
 import re
 from collections.abc import Callable, Iterable
-from typing import Any, Literal, TypeVar, Union
+from typing import Any, Literal, TypeVar
 
 from selenium.common.exceptions import (
     NoAlertPresentException,
@@ -37,7 +37,7 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 D = TypeVar("D")
 T = TypeVar("T")
 
-WebDriverOrWebElement = Union[WebDriver, WebElement]
+WebDriverOrWebElement = WebDriver | WebElement
 
 
 def title_is(title: str) -> Callable[[WebDriver], bool]:
@@ -692,19 +692,16 @@ def new_window_is_opened(current_handles: set[str]) -> Callable[[WebDriver], boo
     return _predicate
 
 
-def alert_is_present() -> Callable[[WebDriver], Alert | bool]:
+def alert_is_present() -> Callable[[WebDriver], Alert | Literal[False]]:
     """Check that an alert is present and switch to it.
 
     Returns:
-        The Alert once it is located.
+        The Alert once it is located, or False if no alert is present.
 
     Example:
         from selenium.webdriver.support.ui import WebDriverWait
         from selenium.webdriver.support import expected_conditions as EC
         alert = WebDriverWait(driver, 10).until(EC.alert_is_present())
-
-    Note:
-        If the alert is present it switches the given driver to it.
     """
 
     def _predicate(driver: WebDriver):

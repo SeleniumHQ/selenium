@@ -326,11 +326,6 @@ module Selenium
         end
       end
 
-      def service_url(service)
-        @service_manager = service.launch
-        @service_manager.uri
-      end
-
       def screenshot
         bridge.screenshot
       end

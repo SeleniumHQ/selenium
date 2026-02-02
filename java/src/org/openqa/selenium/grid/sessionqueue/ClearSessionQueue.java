@@ -23,7 +23,7 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -56,14 +56,14 @@ public class ClearSessionQueue implements HttpHandler {
       if (value != 0) {
         response.setContent(
             asJson(
-                ImmutableMap.of(
+                Map.of(
                     "value", value,
                     "message", "Cleared the new session request queue",
                     "cleared_requests", value)));
       } else {
         response.setContent(
             asJson(
-                ImmutableMap.of(
+                Map.of(
                     "value",
                     value,
                     "message",
@@ -81,7 +81,7 @@ public class ClearSessionQueue implements HttpHandler {
               .setStatus((HTTP_INTERNAL_ERROR))
               .setContent(
                   asJson(
-                      ImmutableMap.of(
+                      Map.of(
                           "value",
                           0,
                           "message",

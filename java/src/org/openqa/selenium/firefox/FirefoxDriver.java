@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -91,7 +92,11 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(GeckoDriverService.createDefaultService(), options);
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public FirefoxDriver(FirefoxOptions options, ClientConfig clientConfig) {
+    this(GeckoDriverService.createDefaultService(), options, clientConfig);
   }
 
   /**
@@ -111,7 +116,7 @@ public class FirefoxDriver extends RemoteWebDriver
 
   public FirefoxDriver(
       FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
-    this(generateExecutor(service, options, clientConfig), options);
+    this(generateExecutor(service, options, clientConfig), options, clientConfig);
   }
 
   private static FirefoxDriverCommandExecutor generateExecutor(
@@ -128,13 +133,9 @@ public class FirefoxDriver extends RemoteWebDriver
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
 
-  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
-    this(executor, options, ClientConfig.defaultConfig());
-  }
-
   private FirefoxDriver(
       FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
-    super(executor, checkCapabilitiesAndProxy(options));
+    super(executor, checkCapabilitiesAndProxy(options), clientConfig);
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot =
         new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -156,7 +157,7 @@ public class FirefoxDriver extends RemoteWebDriver
               return null;
             });
 
-    this.biDi = createBiDi(biDiUri);
+    this.biDi = createBiDi(clientConfig, biDiUri);
 
     this.capabilities = new ImmutableCapabilities(capabilities);
   }
@@ -183,6 +184,7 @@ public class FirefoxDriver extends RemoteWebDriver
     return caps;
   }
 
+  @NonNull
   @Override
   public Capabilities getCapabilities() {
     return capabilities;
@@ -240,26 +242,18 @@ public class FirefoxDriver extends RemoteWebDriver
     context.setContext(commandContext);
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
-    if (biDiUri.isEmpty()) {
-      return Optional.empty();
-    }
+  private Optional<BiDi> createBiDi(ClientConfig clientConfig, Optional<URI> biDiUri) {
+    return biDiUri.map(
+        (URI wsUri) -> {
+          HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+          ClientConfig wsConfig = clientConfig.baseUri(wsUri);
+          HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-    URI wsUri =
-        biDiUri.orElseThrow(
-            () ->
-                new BiDiException(
-                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
-                        + " capability is set."));
+          org.openqa.selenium.bidi.Connection biDiConnection =
+              new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    org.openqa.selenium.bidi.Connection biDiConnection =
-        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-    return Optional.of(new BiDi(biDiConnection));
+          return new BiDi(biDiConnection, wsConfig.wsTimeout());
+        });
   }
 
   @Override
@@ -299,6 +293,8 @@ public class FirefoxDriver extends RemoteWebDriver
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
+    /** Use {@link #FirefoxDriverCommandExecutor(DriverService, ClientConfig)} instead */
+    @Deprecated
     public FirefoxDriverCommandExecutor(DriverService service) {
       this(service, ClientConfig.defaultConfig());
     }
@@ -311,7 +307,7 @@ public class FirefoxDriver extends RemoteWebDriver
       return Stream.of(
               new AddHasContext().getAdditionalCommands(),
               new AddHasExtensions().getAdditionalCommands(),
-              new AddHasFullPageScreenshot<>().getAdditionalCommands())
+              new AddHasFullPageScreenshot().getAdditionalCommands())
           .flatMap((m) -> m.entrySet().stream())
           .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }

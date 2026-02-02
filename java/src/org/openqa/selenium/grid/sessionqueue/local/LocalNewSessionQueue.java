@@ -19,11 +19,10 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
@@ -180,7 +179,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                                   sessionRequest.getRequestId().equals(entry.getKey())))
               .filter(entry -> isTimedOut(now, entry.getValue()))
               .map(Map.Entry::getKey)
-              .collect(ImmutableSet.toImmutableSet());
+              .collect(toUnmodifiableSet());
     } finally {
       readLock.unlock();
     }
@@ -258,9 +257,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setStatus(HTTP_INTERNAL_ERROR)
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "error", "session not created",
                             "message", result.left().getMessage(),
                             "stacktrace", result.left().getStackTrace()))));

@@ -19,21 +19,22 @@ package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.json.PropertySetting.BY_FIELD;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import java.io.StringReader;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -65,25 +66,26 @@ class JsonTest {
     assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(42L);
     assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(42);
     assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(42.0);
+    assertThat((Double) new Json().toType("4.2e+1", Double.class)).isEqualTo(42.0);
+    assertThat((Double) new Json().toType("42e+1", Double.class)).isEqualTo(420.0);
+    assertThat((Double) new Json().toType("42e-1", Double.class)).isEqualTo(4.2);
+    assertThat((Double) new Json().toType("4.2e-1", Double.class)).isEqualTo(0.42);
   }
 
   @Test
   void canRoundTripNumbers() {
-    Map<String, Object> original =
-        ImmutableMap.of("options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
+    Map<String, Object> original = Map.of("options", Map.of("args", List.of(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
     Object remade = json.toType(converted, MAP_TYPE);
 
-    assertThat(remade).isEqualTo(original);
+    assertThat(remade).asInstanceOf(MAP).containsExactlyInAnyOrderEntriesOf(original);
   }
 
   @Test
   void roundTripAFirefoxOptions() {
-    Map<String, Object> caps =
-        ImmutableMap.of(
-            "moz:firefoxOptions", ImmutableMap.of("prefs", ImmutableMap.of("foo.bar", 1)));
+    Map<String, Object> caps = Map.of("moz:firefoxOptions", Map.of("prefs", Map.of("foo.bar", 1)));
     String json = new Json().toJson(caps);
     assertThat(json).doesNotContain("1.0");
 
@@ -96,21 +98,21 @@ class JsonTest {
   @Test
   void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
-    List<Capabilities> expected =
-        Arrays.asList(
-            new ImmutableCapabilities("cheese", "brie"), new ImmutableCapabilities("peas", 42L));
+    ImmutableCapabilities capabilities1 = new ImmutableCapabilities("cheese", "brie");
+    ImmutableCapabilities capabilities2 = new ImmutableCapabilities("peas", 42L);
 
     Json json = new Json();
-    String raw = json.toJson(expected);
+    String raw = json.toJson(List.of(capabilities1, capabilities2));
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>() {}.getType());
 
-    assertThat(seen).isEqualTo(expected);
+    assertThat(seen).containsExactly(capabilities1, capabilities2);
     assertThat(seen.get(0)).isInstanceOf(MutableCapabilities.class);
+    assertThat(seen.get(1)).isInstanceOf(MutableCapabilities.class);
   }
 
   @Test
   void shouldUseBeanSettersToPopulateFields() {
-    Map<String, String> map = ImmutableMap.of("name", "fishy");
+    Map<String, String> map = Map.of("name", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -121,22 +123,22 @@ class JsonTest {
 
   @Test
   void shouldAllowUserToPopulateFieldsDirectly() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
-    BeanWithSetter seen = json.toType(raw, BeanWithSetter.class, PropertySetting.BY_FIELD);
+    BeanWithSetter seen = json.toType(raw, BeanWithSetter.class, BY_FIELD);
 
     assertThat(seen.theName).isEqualTo("fishy");
   }
 
   @Test
   void settingFinalFieldsShouldWork() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
-    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, PropertySetting.BY_FIELD);
+    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, BY_FIELD);
 
     assertThat(seen.theName).isEqualTo("fishy");
   }
@@ -204,14 +206,110 @@ class JsonTest {
   }
 
   @Test
+  void canReadNumericValues() {
+    String raw =
+        "{\"id\": 1234567890123456789, \"age\": 1234567890, \"fee\": \"999.888\", \"amount\":"
+            + " \"999888.777666\"}";
+
+    NumericValues bean = new Json().toType(raw, NumericValues.class, BY_FIELD);
+
+    assertThat(bean.id).isEqualTo(1234567890123456789L);
+    assertThat(bean.age).isEqualTo(1234567890);
+    assertThat(bean.fee).isEqualTo(999.888f);
+    assertThat(bean.amount).isEqualTo(999888.777666);
+    assertThat(bean.remainder).isNull();
+  }
+
+  @Test
+  void reportsWhichNumericValueWasInvalid() {
+    String raw = "{\"id\": 123, \"age\": \"df8e0744-b1db-49b2-96df-45bd0d70dcd3\"}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, NumericValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Not a numeric value: \"df8e0744-b1db-49b2-96df-45bd0d70dcd3\"");
+  }
+
+  @Test
+  void reportsTooLargeNumericValue() {
+    String raw = "{\"id\": 123456789012345678901234567890}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, NumericValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse to a number: 123456789012345678901234567890")
+        .cause()
+        .isInstanceOf(NumberFormatException.class)
+        .hasMessage("For input string: \"123456789012345678901234567890\"");
+  }
+
+  @Test
+  void canReadBooleanValues() {
+    String raw = "{\"hero\": true, \"gangster\": false}";
+
+    BooleanValues bean = new Json().toType(raw, BooleanValues.class, BY_FIELD);
+
+    assertThat(bean.hero).isEqualTo(true);
+    assertThat(bean.gangster).isEqualTo(false);
+  }
+
+  @Test
+  void reportsWhichBooleanValueWasInvalid() {
+    String raw = "{\"hero\": true, \"gangster\": \"not sure\"}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, BooleanValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Expected to read a BOOLEAN but instead have: STRING")
+        .hasMessageContaining("to read: \"not sure\"");
+  }
+
+  @Test
   void shouldBeAbleToReadAnInstant() {
-    // We will lose the nanoseconds
-    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
-    String raw = String.valueOf(now.toEpochMilli());
+    Instant now = Instant.now();
 
-    Instant instant = new Json().toType(raw, Instant.class);
+    Dates instant = new Json().toType("{\"birth\": \"" + now + "\"}", Dates.class, BY_FIELD);
 
-    assertThat(instant).isEqualTo(now);
+    assertThat(instant.birth).isEqualTo(now);
+  }
+
+  @Test
+  void shouldBeAbleToReadAnInstantFromTimestamp() {
+    long now = System.currentTimeMillis();
+
+    Dates instant = new Json().toType("{\"birth\": " + now + "}", Dates.class, BY_FIELD);
+
+    assertThat(instant.birth).isEqualTo(Instant.ofEpochMilli(now));
+  }
+
+  @Test
+  void shouldBeAbleToReadAnInstantFromTimestampAsString() {
+    long now = System.currentTimeMillis();
+
+    Dates instant = new Json().toType("{\"birth\": \"" + now + "\"}", Dates.class, BY_FIELD);
+
+    assertThat(instant.birth).isEqualTo(Instant.ofEpochMilli(now));
+  }
+
+  @Test
+  void reportsWhichInstantValueWasInvalid() {
+    String raw = "\"2025-13-32\"";
+
+    assertThatThrownBy(() -> new Json().toType(raw, Instant.class))
+        .isInstanceOf(JsonException.class)
+        .hasMessage("Unable to parse: \"2025-13-32\"")
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("\"2025-13-32\" does not look like an Instant")
+        .cause()
+        .isInstanceOf(java.time.format.DateTimeParseException.class)
+        .hasMessageContaining("Text '2025-13-32' could not be parsed");
   }
 
   @Test
@@ -256,18 +354,24 @@ class JsonTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
-    new Json().toType(json, Response.class);
+    Response parsed = new Json().toType(json, Response.class);
+    assertThat(parsed.getValue()).isEqualTo("false");
+    assertThat(parsed.getSessionId()).isEqualTo("1210083863107");
+    assertThat(parsed.getState()).isNull();
+    assertThat(parsed.getStatus()).isNull();
   }
 
   @Test
   void shouldBeAbleToSetAnObjectToABoolean() {
-    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
+    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"true\"}";
 
     Response response = new Json().toType(json, Response.class);
 
     assertThat(response.getValue()).isEqualTo(true);
+    assertThat(response.getSessionId()).isEqualTo("true");
   }
 
   @Test
@@ -330,8 +434,7 @@ class JsonTest {
   @Test
   void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
-    Command original =
-        new Command(sessionId, DriverCommand.NEW_SESSION, ImmutableMap.of("food", "cheese"));
+    Command original = new Command(sessionId, DriverCommand.NEW_SESSION, Map.of("food", "cheese"));
     String raw = new Json().toJson(original);
     Command converted = new Json().toType(raw, Command.class);
 
@@ -399,7 +502,7 @@ class JsonTest {
   @Test
   void fromJsonMethodNeedNotOnlyAcceptAString() {
     Json json = new Json();
-    String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
+    String raw = json.toJson(Map.of("cheese", "truffled brie"));
     MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
 
     assertThat(res.cheese).isEqualTo("truffled brie");
@@ -476,7 +579,7 @@ class JsonTest {
 
   @Test
   void canCoerceSimpleValuesToStrings() {
-    Map<String, Object> value = ImmutableMap.of("boolean", true, "integer", 42, "float", 3.14);
+    Map<String, Object> value = Map.of("boolean", true, "integer", 42, "float", 3.14);
 
     Json json = new Json();
     String raw = json.toJson(value);
@@ -591,5 +694,24 @@ class JsonTest {
       toReturn.cheese = String.valueOf(args.get("cheese"));
       return toReturn;
     }
+  }
+
+  static class NumericValues {
+    long id;
+    int age;
+    float fee;
+    double amount;
+    @Nullable Double remainder;
+  }
+
+  static class BooleanValues {
+    boolean hero;
+    Boolean gangster;
+  }
+
+  static class Dates {
+    Instant birth;
+    Date wedding;
+    Instant death;
   }
 }

@@ -171,7 +171,7 @@ class FirefoxProfileTest {
         Arrays.stream(sysTemp.list())
             .filter(f -> f.endsWith("webdriver-profile"))
             .collect(Collectors.toSet());
-    assertThat(after).isEqualTo(before);
+    assertThat(after).containsExactlyInAnyOrderElementsOf(before);
   }
 
   @Test
@@ -184,14 +184,16 @@ class FirefoxProfileTest {
 
     File dir = Zip.unzipToTempDir(json, "webdriver", "duplicated");
 
-    File prefs = new File(dir, "user.js");
-    assertThat(prefs).exists();
+    try {
+      File prefs = new File(dir, "user.js");
+      assertThat(prefs).exists();
 
-    try (Stream<String> lines = Files.lines(prefs.toPath())) {
-      assertThat(lines).anyMatch(s -> s.contains("i.like.cheese"));
+      try (Stream<String> lines = Files.lines(prefs.toPath())) {
+        assertThat(lines).anyMatch(s -> s.contains("i.like.cheese"));
+      }
+    } finally {
+      FileHandler.delete(dir);
     }
-
-    FileHandler.delete(dir);
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {

@@ -21,9 +21,9 @@ import static java.util.Collections.list;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +52,7 @@ public class NetworkInterface {
   }
 
   NetworkInterface(String name, InetAddress... inetAddresses) {
-    this(name, Arrays.asList(inetAddresses));
+    this(name, List.of(inetAddresses));
     this.isLoopback = isLoopBackFromINetAddresses(this.inetAddresses);
   }
 

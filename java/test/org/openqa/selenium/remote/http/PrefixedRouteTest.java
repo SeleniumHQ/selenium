@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -116,6 +115,6 @@ class PrefixedRouteTest {
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
     assertThat(path).hasValue("/peas");
-    assertThat(parts).hasValue(asList("/cheese", "/and"));
+    assertThat(parts).hasValue(List.of("/cheese", "/and"));
   }
 }

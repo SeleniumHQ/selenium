@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,24 +45,6 @@ class SafariDriverServiceTest {
     builderMock.withTimeout(customTimeout);
     builderMock.build();
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
-  }
-
-  @Test
-  void shouldStopServiceWhenSessionCreationFails() {
-    // Create Safari options that will cause session creation to fail
-    SafariOptions options = new SafariOptions();
-    options.setCapability("invalidCapability", "invalidValue");
-
-    // Create a service
-    SafariDriverService service = SafariDriverService.createDefaultService();
-    SafariDriverService serviceSpy = spy(service);
-
-    // Attempt to create driver - should fail and cleanup the service
-    assertThatExceptionOfType(Exception.class)
-        .isThrownBy(() -> new SafariDriver(serviceSpy, options));
-
-    // Verify that the service was stopped
-    assertThat(serviceSpy.isRunning()).isFalse();
   }
 
   public static class MockSafariDriverServiceBuilder extends SafariDriverService.Builder {

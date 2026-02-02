@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -90,8 +89,7 @@ class DecoratedOptionsTest {
 
   @Test
   void getCookies() {
-    Set<Cookie> cookies = new HashSet<>();
-    cookies.add(new Cookie("name", "value"));
+    Set<Cookie> cookies = Set.of(new Cookie("name", "value"));
     verifyFunction(WebDriver.Options::getCookies, cookies);
   }
 

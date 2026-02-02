@@ -39,6 +39,10 @@ module Selenium
 
       def ==: (untyped other) -> bool
 
+      def bidi?: -> bool
+
+      def enable_bidi!: -> bool
+
       alias eql? ==
 
       def as_json: (*untyped) -> untyped

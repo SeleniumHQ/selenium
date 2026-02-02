@@ -29,8 +29,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -91,7 +89,7 @@ public class RemoteNode extends Node implements Closeable {
       Collection<Capabilities> capabilities) {
     super(tracer, id, externalUri, registrationSecret, sessionTimeout);
     this.externalUri = Require.nonNull("External URI", externalUri);
-    this.capabilities = ImmutableSet.copyOf(capabilities);
+    this.capabilities = Set.copyOf(capabilities);
 
     ClientConfig clientConfig =
         defaultConfig().readTimeout(this.getSessionTimeout()).baseUrl(fromUri(externalUri));
@@ -236,6 +234,11 @@ public class RemoteNode extends Node implements Closeable {
   }
 
   @Override
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    return client.execute(req);
+  }
+
+  @Override
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
@@ -301,7 +304,7 @@ public class RemoteNode extends Node implements Closeable {
 
   @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
         "id", getId(),
         "uri", externalUri,
         "capabilities", capabilities);

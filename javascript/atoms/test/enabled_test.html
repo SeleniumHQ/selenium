@@ -1,79 +1,83 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Unit tests for bot.dom.isEnabled</title>
+    <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+    <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+    <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
     <script src="test_bootstrap.js"></script>
     <script type="text/javascript">
       goog.require('bot.dom');
       goog.require('bot.userAgent');
       goog.require('goog.dom');
-      goog.require('goog.testing.jsunit');
       goog.require('goog.userAgent');
       goog.require('goog.userAgent.product');
     </script>
     <script type="text/javascript">
-function testElementsThatDoNotSupportTheDisabledAttributeAreAlwaysEnabled() {
-  assertTrue('Body should be enabled', bot.dom.isEnabled(document.body));
-  assertTrue('Form should be enabled', bot.dom.isEnabled(document.forms[0]));
-}
-
-function assertDisabled(id) {
+function assertDisabled(assert, id) {
   var element = goog.dom.$(id);
-  assertNotNullNorUndefined('no such element: ' + id, element);
-  assertFalse(id + ' should be disabled', bot.dom.isEnabled(element));
+  assert.ok(element !== null && element !== undefined, 'no such element: ' + id);
+  assert.notOk(bot.dom.isEnabled(element), id + ' should be disabled');
 }
 
-function assertEnabled(id) {
+function assertEnabled(assert, id) {
   var element = goog.dom.$(id);
-  assertNotNullNorUndefined('no such element: ' + id, element);
-  assertTrue(id + ' should be enabled', bot.dom.isEnabled(element));
+  assert.ok(element !== null && element !== undefined, 'no such element: ' + id);
+  assert.ok(bot.dom.isEnabled(element), id + ' should be enabled');
 }
 
-function testShouldBeEnabledIfDoesNotHaveDisabledAttribute() {
-  assertEnabled('enabled-button-a');
-}
+QUnit.test('elements that do not support the disabled attribute are always enabled', function(assert) {
+  assert.ok(bot.dom.isEnabled(document.body), 'Body should be enabled');
+  assert.ok(bot.dom.isEnabled(document.forms[0]), 'Form should be enabled');
+});
 
-function testShouldBeDisabledIfItHasTheDisabledAttribute() {
-  assertDisabled('disabled-button-b');
-  assertDisabled('disabled-button-c');
-  assertDisabled('disabled-button-d');
-  assertDisabled('disabled-button-e');
-}
+QUnit.test('should be enabled if does not have disabled attribute', function(assert) {
+  assertEnabled(assert, 'enabled-button-a');
+});
 
-function testDisabledShouldBeAnInheritedAttribute() {
-  assertEnabled('enabled-select');
-  assertEnabled('enabled-option');
-  assertDisabled('disabled-optgroup');
-  assertDisabled('inherits-disabled');
+QUnit.test('should be disabled if it has the disabled attribute', function(assert) {
+  assertDisabled(assert, 'disabled-button-b');
+  assertDisabled(assert, 'disabled-button-c');
+  assertDisabled(assert, 'disabled-button-d');
+  assertDisabled(assert, 'disabled-button-e');
+});
 
-  assertDisabled('disabled-select');
-  assertDisabled('inherits-disabled-2');
-}
+QUnit.test('disabled should be an inherited attribute', function(assert) {
+  assertEnabled(assert, 'enabled-select');
+  assertEnabled(assert, 'enabled-option');
+  assertDisabled(assert, 'disabled-optgroup');
+  assertDisabled(assert, 'inherits-disabled');
 
-function testDisabledShouldInheritFromFieldsetUnlessInLegend() {
-  assertEnabled('enabled-legend-button');
-  // Some older browsers do not support the semantics of disabling fieldsets.
+  assertDisabled(assert, 'disabled-select');
+  assertDisabled(assert, 'inherits-disabled-2');
+});
+
+QUnit.test('disabled should inherit from fieldset unless in legend', function(assert) {
+  assertEnabled(assert, 'enabled-legend-button');
   if ((goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(2)) ||
       (goog.userAgent.WEBKIT && !bot.userAgent.isEngineVersion(535)) ||
       (goog.userAgent.product.ANDROID && !bot.userAgent.isProductVersion(5))) {
-    assertEnabled('disabled-legend-button');
-    assertEnabled('disabled-fieldset-button');
+    assertEnabled(assert, 'disabled-legend-button');
+    assertEnabled(assert, 'disabled-fieldset-button');
   } else {
-    assertDisabled('disabled-legend-button');
-    assertDisabled('disabled-fieldset-button');
+    assertDisabled(assert, 'disabled-legend-button');
+    assertDisabled(assert, 'disabled-fieldset-button');
   }
-}
+});
 
-function testEnabledShouldRespondToDisabledProperty() {
+QUnit.test('enabled should respond to disabled property', function(assert) {
   var element = goog.dom.$('enabled-button-a');
   element.disabled = true;
-  assertDisabled('enabled-button-a');
+  assertDisabled(assert, 'enabled-button-a');
   element.disabled = false;
-  assertEnabled('enabled-button-a');
-}
+  assertEnabled(assert, 'enabled-button-a');
+});
     </script>
   </head>
   <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
     <form>
       <button id="enabled-button-a" value="Enabled A"></button>
       <button id="disabled-button-b" value="Enabled B" disabled></button>

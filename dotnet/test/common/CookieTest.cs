@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
-using System;
 
 namespace OpenQA.Selenium;
 

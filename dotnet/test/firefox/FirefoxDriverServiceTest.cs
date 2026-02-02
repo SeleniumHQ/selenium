@@ -19,9 +19,9 @@
 
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Firefox;

@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
 import static org.openqa.selenium.remote.http.Route.post;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
@@ -125,7 +124,7 @@ public abstract class Node implements HasReadyState, Routable {
 
   private static final Logger LOG = Logger.getLogger(Node.class.getName());
   private static final BuildInfo INFO = new BuildInfo();
-  private static final ImmutableMap<String, String> OS_INFO = loadOsInfo();
+  private static final Map<String, String> OS_INFO = loadOsInfo();
   protected final Tracer tracer;
   private final NodeId id;
   private final URI uri;
@@ -180,6 +179,9 @@ public abstract class Node implements HasReadyState, Routable {
             delete("/session/{sessionId}/se/files")
                 .to(params -> new DownloadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.download_file")),
+            post("/session/{sessionId}/se/event")
+                .to(params -> new FireSessionEvent(this, sessionIdFrom(params)))
+                .with(spanDecorator("node.fire_session_event")),
             get("/se/grid/node/owner/{sessionId}")
                 .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.is_session_owner").andThen(requiresSecret)),
@@ -207,8 +209,8 @@ public abstract class Node implements HasReadyState, Routable {
             get("/status").to(() -> new StatusHandler(this)).with(spanDecorator("node.status")));
   }
 
-  private static ImmutableMap<String, String> loadOsInfo() {
-    return ImmutableMap.of(
+  private static Map<String, String> loadOsInfo() {
+    return Map.of(
         "arch", System.getProperty("os.arch"),
         "name", System.getProperty("os.name"),
         "version", System.getProperty("os.version"));
@@ -234,7 +236,7 @@ public abstract class Node implements HasReadyState, Routable {
     return String.format("%s (revision %s)", INFO.getReleaseLabel(), INFO.getBuildRevision());
   }
 
-  public ImmutableMap<String, String> getOsInfo() {
+  public Map<String, String> getOsInfo() {
     return OS_INFO;
   }
 
@@ -256,6 +258,21 @@ public abstract class Node implements HasReadyState, Routable {
   public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
 
   public abstract HttpResponse downloadFile(HttpRequest req, SessionId id);
+
+  /**
+   * Fires a custom session event to the remote server event bus. This allows test code to trigger
+   * server-side utilities that subscribe to the event bus.
+   *
+   * <p>Default implementation throws {@link UnsupportedOperationException}. Subclasses that support
+   * session events should override this method.
+   *
+   * @param req the HTTP request containing the event data
+   * @param id the session ID
+   * @return the HTTP response
+   */
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    throw new UnsupportedOperationException();
+  }
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 

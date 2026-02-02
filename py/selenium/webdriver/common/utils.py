@@ -17,11 +17,11 @@
 
 """Utility functions."""
 
+import json
 import socket
 import urllib.request
 from collections.abc import Iterable
 
-from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
@@ -134,8 +134,8 @@ def is_connectable(port: int, host: str | None = "localhost") -> bool:
 
 def is_url_connectable(
     port: int | str,
-    host: str | None = "127.0.0.1",
-    scheme: str | None = "http",
+    host: str = "localhost",
+    scheme: str = "http",
 ) -> bool:
     """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
@@ -143,15 +143,33 @@ def is_url_connectable(
         port: port number
         host: hostname or IP
         scheme: URL scheme
+
+    Returns:
+        True if the service is ready to accept new sessions, False otherwise.
     """
     try:
-        with urllib.request.urlopen(f"{scheme}://{host}:{port}/status") as res:
-            return res.getcode() == 200
+        # Disable proxy for localhost connections
+        proxy_handler = urllib.request.ProxyHandler({})
+        opener = urllib.request.build_opener(proxy_handler)
+
+        request = urllib.request.Request(f"{scheme}://{host}:{port}/status")
+        with opener.open(request, timeout=1) as res:
+            if res.getcode() != 200:
+                return False
+
+            body = res.read().decode("utf-8")
+            data = json.loads(body)
+
+            # Check top-level and value.ready, some browsers wrap it under 'value', e.g., ChromeDriver
+            ready = data.get("ready")
+            if ready is None:
+                ready = data.get("value", {}).get("ready")
+            return ready is True
     except Exception:
         return False
 
 
-def keys_to_typing(value: Iterable[AnyKey]) -> list[str]:
+def keys_to_typing(value: Iterable[str | int | float]) -> list[str]:
     """Processes the values that will be typed in the element."""
     characters: list[str] = []
     for val in value:

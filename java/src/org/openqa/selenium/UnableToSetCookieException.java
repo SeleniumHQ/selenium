@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -25,7 +24,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
-@NullMarked
 public class UnableToSetCookieException extends WebDriverException {
   public UnableToSetCookieException() {}
 

@@ -31,4 +31,16 @@ public sealed class DeleteCookiesOptions : CommandOptions
     public PartitionDescriptor? Partition { get; set; }
 }
 
+public sealed class ContextDeleteCookiesOptions : CommandOptions
+{
+    public CookieFilter? Filter { get; set; }
+
+    internal static DeleteCookiesOptions WithContext(ContextDeleteCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Partition = new ContextPartitionDescriptor(context),
+        Filter = options?.Filter,
+        Timeout = options?.Timeout
+    };
+}
+
 public sealed record DeleteCookiesResult(PartitionKey PartitionKey) : EmptyResult;

@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.VirtualAuth;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +24,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium;
 
@@ -40,7 +40,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
     private IFileDetector fileDetector = new DefaultFileDetector();
-    private NetworkManager network;
+    private NetworkManager? network;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();

@@ -15,16 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.ie.options import Options
 from selenium.webdriver.ie.service import Service
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
@@ -38,45 +37,24 @@ class WebDriver(RemoteWebDriver):
         Starts the service and then creates new instance of Ie driver.
 
         Args:
-            options: IE Options instance, providing additional IE options
-            service: (Optional) service instance for managing the starting and stopping of the driver.
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else Service()
-        options = options if options else Options()
+        self.options = options if options else Options()
 
-        self.service.path = self.service.env_path() or DriverFinder(self.service, options).get_driver_path()
+        self.service.path = self.service.env_path() or DriverFinder(self.service, self.options).get_driver_path()
         self.service.start()
 
         client_config = ClientConfig(remote_server_addr=self.service.service_url, keep_alive=keep_alive, timeout=120)
         executor = RemoteConnection(
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
             client_config=client_config,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the IEServerDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

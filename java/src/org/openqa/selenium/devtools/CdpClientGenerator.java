@@ -18,7 +18,9 @@
 package org.openqa.selenium.devtools;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -28,7 +30,6 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +41,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -84,7 +87,7 @@ public class CdpClientGenerator {
         JarOutputStream jos = new JarOutputStream(os)) {
       Files.walkFileTree(
           target,
-          new SimpleFileVisitor<Path>() {
+          new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
                 throws IOException {
@@ -162,7 +165,11 @@ public class CdpClientGenerator {
                   .getOrDefault(
                       key,
                       (x, y) -> {
-                        throw new RuntimeException("Parsing domain: unexpected key " + key);
+                        throw new RuntimeException(
+                            String.format(
+                                "Parsing domain: unexpected processor \"%s\", available processors:"
+                                    + " %s",
+                                key, processors.keySet()));
                       })
                   .accept(target, value));
     }
@@ -178,13 +185,13 @@ public class CdpClientGenerator {
   private static class BaseSpecParser<T extends BaseSpec> extends Parser<T> {
     public BaseSpecParser(Map<String, BiConsumer<T, Object>> extraProcessors) {
       super(
-          new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
-              .put("name", (x, value) -> x.name = (String) value)
-              .put("description", (x, value) -> x.description = (String) value)
-              .put("experimental", (x, value) -> x.experimental = (Boolean) value)
-              .put("deprecated", (x, value) -> x.deprecated = (Boolean) value)
-              .putAll(extraProcessors)
-              .build());
+          mergeMaps(
+              Map.of(
+                  "name", (x, value) -> x.name = (String) value,
+                  "description", (x, value) -> x.description = (String) value,
+                  "experimental", (x, value) -> x.experimental = (Boolean) value,
+                  "deprecated", (x, value) -> x.deprecated = (Boolean) value),
+              extraProcessors));
     }
   }
 
@@ -207,7 +214,7 @@ public class CdpClientGenerator {
               : type.toTypeDeclaration().setPublic(true);
 
       if (description != null) {
-        typeDeclaration.setJavadocComment(description);
+        typeDeclaration.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         typeDeclaration.addAnnotation(Beta.class.getCanonicalName());
@@ -224,25 +231,30 @@ public class CdpClientGenerator {
     @SuppressWarnings("unchecked")
     public TypedSpecParser(boolean inline, Map<String, BiConsumer<T, Object>> extraProcessors) {
       super(
-          new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
-              .put("type", (x, value) -> x.type = new SimpleType(x.name, (String) value))
-              .put("$ref", (x, value) -> x.type = new RefType(x.name, x.domain, (String) value))
-              .put(
+          mergeMaps(
+              Map.of(
+                  "type",
+                      (x, value) -> {
+                        x.type = new SimpleType(x.name, (String) value);
+                      },
+                  "$ref",
+                      (x, value) -> {
+                        x.type = new RefType(x.name, x.domain, (String) value);
+                      },
                   "enum",
-                  (x, value) ->
-                      x.type =
-                          inline
-                              ? new InlineEnumType(x, x.name, (List<String>) value)
-                              : new EnumType(x, x.name, (List<String>) value))
-              .put(
+                      (x, value) -> {
+                        x.type =
+                            inline
+                                ? new InlineEnumType(x, x.name, (List<String>) value)
+                                : new EnumType(x, x.name, (List<String>) value);
+                      },
                   "items",
-                  (x, value) -> {
-                    ArrayType array = new ArrayType(x.name);
-                    array.parse(x.domain, (Map<String, Object>) value);
-                    x.type = array;
-                  })
-              .putAll(extraProcessors)
-              .build());
+                      (x, value) -> {
+                        ArrayType array = new ArrayType(x.name);
+                        array.parse(x.domain, (Map<String, Object>) value);
+                        x.type = array;
+                      }),
+              extraProcessors));
     }
   }
 
@@ -294,7 +306,7 @@ public class CdpClientGenerator {
 
       ClassOrInterfaceDeclaration classDecl = unit.addClass(name);
       if (description != null) {
-        classDecl.setJavadocComment(description);
+        classDecl.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         classDecl.addAnnotation(Beta.class);
@@ -342,44 +354,45 @@ public class CdpClientGenerator {
     @SuppressWarnings("unchecked")
     public DomainParser(String basePackage) {
       super(
-          new ImmutableMap.Builder<String, BiConsumer<Domain, Object>>()
-              .put("domain", (domain, value) -> domain.name = (String) value)
-              .put(
-                  "dependencies",
+          Map.of(
+              "domain",
+                  (domain, value) -> {
+                    domain.name = (String) value;
+                  },
+              "dependencies",
                   (domain, value) -> {
                     // TODO: what to do with dependencies?
-                  })
-              .put(
-                  "types",
-                  (domain, value) ->
-                      ((List<Map<String, Object>>) value)
-                          .forEach(
-                              item -> {
-                                TypeSpec type = new TypeSpec(basePackage, domain);
-                                type.parse(item);
-                                domain.types.add(type);
-                              }))
-              .put(
-                  "commands",
-                  (domain, value) ->
-                      ((List<Map<String, Object>>) value)
-                          .forEach(
-                              item -> {
-                                CommandSpec command = new CommandSpec(domain);
-                                command.parse(item);
-                                domain.commands.add(command);
-                              }))
-              .put(
-                  "events",
-                  (domain, value) ->
-                      ((List<Map<String, Object>>) value)
-                          .forEach(
-                              item -> {
-                                EventSpec event = new EventSpec(domain);
-                                event.parse(item);
-                                domain.events.add(event);
-                              }))
-              .build());
+                  },
+              "types",
+                  (domain, value) -> {
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              TypeSpec type = new TypeSpec(basePackage, domain);
+                              type.parse(item);
+                              domain.types.add(type);
+                            });
+                  },
+              "commands",
+                  (domain, value) -> {
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              CommandSpec command = new CommandSpec(domain);
+                              command.parse(item);
+                              domain.commands.add(command);
+                            });
+                  },
+              "events",
+                  (domain, value) -> {
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              EventSpec event = new EventSpec(domain);
+                              event.parse(item);
+                              domain.events.add(event);
+                            });
+                  }));
     }
   }
 
@@ -474,27 +487,28 @@ public class CdpClientGenerator {
     public EventParser() {
       super(
           true,
-          new ImmutableMap.Builder<String, BiConsumer<EventSpec, Object>>()
-              .put(
-                  "parameters",
-                  (event, value) -> {
-                    List<VariableSpec> parameters = new ArrayList<>();
+          Map.of(
+              "parameters",
+              (event, value) -> {
+                List<VariableSpec> parameters =
                     ((List<Map<String, Object>>) value)
-                        .forEach(
-                            item -> {
-                              VariableSpec parameter = new VariableSpec(event.domain);
-                              parameter.parse(item);
-                              parameters.add(parameter);
-                            });
-                    if (parameters.isEmpty()) {
-                      event.type = new VoidType();
-                    } else if (parameters.size() == 1) {
-                      event.type = parameters.get(0).type;
-                    } else {
-                      event.type = new ObjectType(event, event.name, parameters);
-                    }
-                  })
-              .build());
+                        .stream()
+                            .map(
+                                item -> {
+                                  VariableSpec parameter = new VariableSpec(event.domain);
+                                  parameter.parse(item);
+                                  return parameter;
+                                })
+                            .collect(toUnmodifiableList());
+
+                if (parameters.isEmpty()) {
+                  event.type = new VoidType();
+                } else if (parameters.size() == 1) {
+                  event.type = parameters.get(0).type;
+                } else {
+                  event.type = new ObjectType(event, event.name, parameters);
+                }
+              }));
     }
   }
 
@@ -538,10 +552,12 @@ public class CdpClientGenerator {
     public TypeSpecParser() {
       super(
           false,
-          new ImmutableMap.Builder<String, BiConsumer<TypeSpec, Object>>()
-              .put("id", (type, value) -> type.name = capitalize((String) value))
-              .put(
-                  "properties",
+          Map.of(
+              "id",
+                  (type, value) -> {
+                    type.name = capitalize((String) value);
+                  },
+              "properties",
                   (type, value) -> {
                     List<VariableSpec> properties = new ArrayList<>();
                     ((List<Map<String, Object>>) value)
@@ -552,8 +568,7 @@ public class CdpClientGenerator {
                               properties.add(property);
                             });
                     type.type = new ObjectType(type, type.name, properties);
-                  })
-              .build());
+                  }));
     }
   }
 
@@ -591,11 +606,7 @@ public class CdpClientGenerator {
 
   private static class VariableSpecParser extends TypedSpecParser<VariableSpec> {
     public VariableSpecParser() {
-      super(
-          true,
-          new ImmutableMap.Builder<String, BiConsumer<VariableSpec, Object>>()
-              .put("optional", (field, value) -> field.optional = (Boolean) value)
-              .build());
+      super(true, Map.of("optional", (field, value) -> field.optional = (Boolean) value));
     }
   }
 
@@ -619,7 +630,7 @@ public class CdpClientGenerator {
       MethodDeclaration methodDecl =
           new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
       if (description != null) {
-        methodDecl.setJavadocComment(description);
+        methodDecl.setJavadocComment(sanitizeJavadoc(description));
       }
       if (experimental) {
         methodDecl.addAnnotation(Beta.class);
@@ -695,10 +706,12 @@ public class CdpClientGenerator {
     @SuppressWarnings("unchecked")
     public CommandSpecParser() {
       super(
-          new ImmutableMap.Builder<String, BiConsumer<CommandSpec, Object>>()
-              .put("redirect", (command, value) -> command.redirect = (String) value)
-              .put(
-                  "parameters",
+          Map.of(
+              "redirect",
+                  (command, value) -> {
+                    command.redirect = (String) value;
+                  },
+              "parameters",
                   (command, value) -> {
                     List<VariableSpec> parameters = new ArrayList<>();
                     ((List<Map<String, Object>>) value)
@@ -709,9 +722,8 @@ public class CdpClientGenerator {
                               parameters.add(parameter);
                             });
                     command.parameters = parameters;
-                  })
-              .put(
-                  "returns",
+                  },
+              "returns",
                   (command, value) -> {
                     List<VariableSpec> returns = new ArrayList<>();
                     ((List<Map<String, Object>>) value)
@@ -741,8 +753,7 @@ public class CdpClientGenerator {
                               .collect(Collectors.toList());
                       command.type = new ObjectType(command, name, properties);
                     }
-                  })
-              .build());
+                  }));
     }
   }
 
@@ -1152,7 +1163,7 @@ public class CdpClientGenerator {
                 classDecl.addMethod("get" + capitalize(property.name)).setPublic(true);
             getter.setType(property.getJavaType());
             if (property.description != null) {
-              getter.setJavadocComment(property.description);
+              getter.setJavadocComment(sanitizeJavadoc(property.description));
             }
             if (property.experimental) {
               getter.addAnnotation(Beta.class);
@@ -1360,6 +1371,7 @@ public class CdpClientGenerator {
       return "null";
     }
 
+    @Nullable
     public TypeDeclaration<?> toTypeDeclaration() {
       return null;
     }
@@ -1400,5 +1412,19 @@ public class CdpClientGenerator {
 
   private static String toJavaConstant(String text) {
     return text.toUpperCase().replace("-", "_");
+  }
+
+  private static String sanitizeJavadoc(String description) {
+    if (description == null) {
+      return null;
+    }
+    // Escape */ sequences which would prematurely close the JavaDoc comment
+    return description.replace("*/", "*&#47;");
+  }
+
+  private static <K, V> Map<K, V> mergeMaps(Map<K, V> one, Map<K, V> two) {
+    Map<K, V> result = new HashMap<>(one);
+    result.putAll(two);
+    return unmodifiableMap(result);
   }
 }

@@ -18,18 +18,18 @@
 package org.openqa.selenium.grid.node.local;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -55,9 +55,7 @@ class CreateSessionTest {
   @Test
   void shouldAcceptAW3CPayload() throws URISyntaxException {
     String payload =
-        json.toJson(
-            ImmutableMap.of(
-                "capabilities", ImmutableMap.of("alwaysMatch", ImmutableMap.of("cheese", "brie"))));
+        json.toJson(Map.of("capabilities", Map.of("alwaysMatch", Map.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -75,8 +73,7 @@ class CreateSessionTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -111,9 +108,9 @@ class CreateSessionTest {
   void shouldPreferUsingTheW3CProtocol() throws URISyntaxException {
     String payload =
         json.toJson(
-            ImmutableMap.of(
-                "desiredCapabilities", ImmutableMap.of("cheese", "brie"),
-                "capabilities", ImmutableMap.of("alwaysMatch", ImmutableMap.of("cheese", "brie"))));
+            Map.of(
+                "desiredCapabilities", Map.of("cheese", "brie"),
+                "capabilities", Map.of("alwaysMatch", Map.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -131,8 +128,7 @@ class CreateSessionTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();

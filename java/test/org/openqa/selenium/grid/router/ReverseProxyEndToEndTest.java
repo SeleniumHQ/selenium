@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.router;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -94,7 +93,7 @@ class ReverseProxyEndToEndTest {
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
-    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2), Arguments.of(s3));
   }
 
   private Server<?> server;

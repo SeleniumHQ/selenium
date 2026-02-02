@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -54,7 +52,7 @@ public class EnvConfig implements Config {
       value = System.getenv(value.substring(1));
     }
 
-    return Optional.ofNullable(value).map(ImmutableList::of);
+    return Optional.ofNullable(value).map(List::of);
   }
 
   @Override
@@ -64,7 +62,7 @@ public class EnvConfig implements Config {
         .filter(key -> key.split("_").length > 1)
         .map(key -> key.substring(0, key.indexOf('_')))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 
   @Override
@@ -76,6 +74,6 @@ public class EnvConfig implements Config {
         .filter(key -> key.startsWith(prefix))
         .map(key -> key.substring(prefix.length()))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 }

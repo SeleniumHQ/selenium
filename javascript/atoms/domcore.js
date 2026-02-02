@@ -145,7 +145,7 @@ bot.dom.core.getProperty = function (element, propertyName) {
   // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
   if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
     bot.dom.core.isElement(element, goog.dom.TagName.OPTION) &&
-    goog.isNull(bot.dom.core.getAttribute(element, 'value'))) {
+    bot.dom.core.getAttribute(element, 'value') === null) {
     return goog.dom.getRawTextContent(element);
   }
   return element[propertyName];

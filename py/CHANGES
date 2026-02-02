@@ -1,3 +1,21 @@
+Selenium 4.40.0
+* Properly verify Selenium Manager exists (#16711)
+* Remove deprecated FTP proxy support (#16721)
+* Add LocalWebDriver base class (#16730)
+* Add type hints for WebElement.find_element(s) (#16772)
+* Add/fix type hints for find_element/find_elements (#16786)
+* [bidi]: add emulation command `set_network_conditions` (#16702)
+* Add new ruff lint rules, fix violations and type annotations (#16789)
+* Remove deprecated FirefoxBinary class (#16811)
+* Fix type annotations, make docstrings consistent, centralize dev dependencies (#16821)
+* Fix remaining mypy errors and enable CI for type checking (#16837)
+* use SE_DEBUG to enable debugging (#16816)
+* improve how tests are run against the grid server (#16851)
+* Add type annotations to bidi network module (#16875)
+* Add type annotations (#16883)
+* have SE_DEBUG output driver logs as well (#16902)
+* use `is_url_connectable` for driver status check (#16881)
+
 Selenium 4.39.0
 * Add CDP for Chrome 143 and remove 140
 * [bidi]: add emulation command - `set_locale_override` (#16504)

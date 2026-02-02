@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.script.RegExpValue;
 import org.openqa.selenium.bidi.script.RemoteValue;
@@ -321,10 +320,5 @@ class WebScriptExecuteTest extends JupiterTestBase {
     RegExpValue resultValue = (RegExpValue) value.getValue().get();
     assertThat(resultValue.getPattern()).isEqualTo("foo");
     assertThat(resultValue.getFlags()).isEqualTo("g");
-  }
-
-  @AfterEach
-  public void cleanUp() {
-    driver.quit();
   }
 }
