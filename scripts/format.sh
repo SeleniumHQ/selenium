@@ -13,8 +13,14 @@ for arg in "$@"; do
     case "$arg" in
         --lint) run_lint=true ;;
 
-        --pre-commit) mode="pre-commit" ;;
-        --pre-push) mode="pre-push" ;;
+        --pre-commit)
+            [[ "$mode" == "default" ]] || { echo "Cannot use both --pre-commit and --pre-push" >&2; exit 1; }
+            mode="pre-commit"
+            ;;
+        --pre-push)
+            [[ "$mode" == "default" ]] || { echo "Cannot use both --pre-commit and --pre-push" >&2; exit 1; }
+            mode="pre-push"
+            ;;
         *)
             echo "Unknown option: $arg" >&2
             echo "Usage: $0 [--pre-commit] [--pre-push] [--lint]" >&2
@@ -83,11 +89,11 @@ if changed_matches '^java/'; then
     section "Java"
     echo "    google-java-format" >&2
     GOOGLE_JAVA_FORMAT="$(bazel run --run_under=echo //scripts:google-java-format)"
-    find "${WORKSPACE_ROOT}/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
+    find "${WORKSPACE_ROOT}/java" -type f -name '*.java' -exec "$GOOGLE_JAVA_FORMAT" --replace {} +
 fi
 
 if changed_matches '^javascript/selenium-webdriver/'; then
-    section "Javascript"
+    section "JavaScript"
     echo "    prettier" >&2
     NODE_WEBDRIVER="${WORKSPACE_ROOT}/javascript/selenium-webdriver"
     bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc" --log-level=warn
