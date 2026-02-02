@@ -16,9 +16,9 @@
 <!-- Check one. See CONTRIBUTING.md for policy details. -->
 - [ ] No substantial AI assistance used
 - [ ] AI assisted (complete below)
-  - Tool(s):
-  - What was generated:
-  - [ ] I reviewed all AI output and can explain the change
+    - Tool(s):
+    - What was generated:
+    - [ ] I reviewed all AI output and can explain the change
 
 ### 💡 Additional Considerations
 <!--- Are there any decisions that need to be made before accepting this PR? -->
