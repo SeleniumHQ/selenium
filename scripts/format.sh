@@ -1,19 +1,25 @@
 #!/usr/bin/env bash
 # Code formatter - runs targeted formatters based on what changed from trunk.
-# Can be run manually or as a pre-push/pre-commit hook.
-# Usage: format.sh [--lint]
+# Usage: format.sh [--pre-commit] [--pre-push] [--lint]
+#   --pre-commit  Only check staged changes (for pre-commit hooks)
+#   --pre-push    Only check committed changes (for pre-push hooks)
+#   --lint        Also run linters after formatting
+#   (default)     Check all changes: committed + staged + unstaged
 set -eufo pipefail
 
 echo "Note: for more flexibility, use './go format' or './go dotnet:format' or './go format -dotnet', etc" >&2
 echo "" >&2
 
 run_lint=false
+mode="default"
 for arg in "$@"; do
     case "$arg" in
         --lint) run_lint=true ;;
+        --pre-commit) mode="pre-commit" ;;
+        --pre-push) mode="pre-push" ;;
         *)
             echo "Unknown option: $arg" >&2
-            echo "Usage: $0 [--lint]" >&2
+            echo "Usage: $0 [--pre-commit] [--pre-push] [--lint]" >&2
             exit 1
             ;;
     esac
@@ -33,10 +39,20 @@ trunk_ref="$(git rev-parse --verify selenium/trunk 2>/dev/null \
 if [[ -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"
     if [[ -n "$base" ]]; then
-        # Include both committed changes (for pre-push) and staged changes (for pre-commit)
-        committed="$(git diff --name-only "$base" HEAD)"
-        staged="$(git diff --name-only --cached)"
-        changed="$(printf '%s\n%s' "$committed" "$staged" | sort -u)"
+        case "$mode" in
+            pre-commit)
+                changed="$(git diff --name-only --cached)"
+                ;;
+            pre-push)
+                changed="$(git diff --name-only "$base" HEAD)"
+                ;;
+            default)
+                committed="$(git diff --name-only "$base" HEAD)"
+                staged="$(git diff --name-only --cached)"
+                unstaged="$(git diff --name-only)"
+                changed="$(printf '%s\n%s\n%s' "$committed" "$staged" "$unstaged" | sort -u)"
+                ;;
+        esac
     else
         format_all=true
         changed=""
