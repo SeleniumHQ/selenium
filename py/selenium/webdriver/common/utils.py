@@ -21,6 +21,7 @@ import json
 import socket
 import urllib.request
 from collections.abc import Iterable
+from urllib.parse import urlparse
 
 from selenium.webdriver.common.keys import Keys
 
@@ -181,3 +182,26 @@ def keys_to_typing(value: Iterable[str | int | float]) -> list[str]:
         else:
             characters.extend(val)
     return characters
+
+
+def is_valid_url(url: str) -> bool:
+    """Validates that a URL is an absolute URL with a scheme.
+
+    According to the W3C WebDriver specification, a URL must be an absolute URL
+    or an absolute URL with fragment, or a local scheme URL. This function
+    validates that the URL can be parsed and contains a scheme component.
+
+    Args:
+        url: The URL string to validate.
+
+    Returns:
+        True if the URL has a valid scheme, False otherwise.
+    """
+    try:
+        result = urlparse(url)
+        # A valid URL must have a scheme (e.g., http, https, file, data, about, etc.)
+        # We don't validate the netloc because some schemes (like file:, data:, about:)
+        # may not have a network location component
+        return bool(result.scheme)
+    except (AttributeError, ValueError):
+        return False

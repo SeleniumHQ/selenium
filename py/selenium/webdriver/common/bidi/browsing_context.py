@@ -22,8 +22,10 @@ from typing import Any
 
 from typing_extensions import Sentinel
 
+from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
+from selenium.webdriver.common.utils import is_valid_url
 
 UNDEFINED = Sentinel("UNDEFINED")
 
@@ -905,7 +907,13 @@ class BrowsingContext:
 
         Returns:
             A dictionary containing the navigation result.
+
+        Raises:
+            InvalidArgumentException: If the URL is not a valid absolute URL.
         """
+        if not is_valid_url(url):
+            raise InvalidArgumentException(f"Invalid URL: {url}")
+
         params = {"context": context, "url": url}
         if wait is not None:
             params["wait"] = wait

@@ -54,6 +54,7 @@ from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.common.utils import is_valid_url
 from selenium.webdriver.common.virtual_authenticator import (
     Credential,
     VirtualAuthenticatorOptions,
@@ -460,9 +461,14 @@ class WebDriver(BaseWebDriver):
             url: The URL to be opened by the browser. Must include the protocol
                 (e.g., http://, https://).
 
+        Raises:
+            InvalidArgumentException: If the URL is not a valid absolute URL.
+
         Example:
             `driver.get("https://example.com")`
         """
+        if not is_valid_url(url):
+            raise InvalidArgumentException(f"Invalid URL: {url}")
         self.execute(Command.GET, {"url": url})
 
     @property
