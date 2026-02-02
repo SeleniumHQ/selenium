@@ -33,7 +33,7 @@ EXCLUDES = ["**/node_modules/**", "**/.bundle/**", "**/devtools/**"]
 
 def run_check(ruff, exclude_args, dirs, extra_args):
     """Run ruff check (linting)."""
-    cmd = [ruff, "check", "--config=py/pyproject.toml"]
+    cmd = [ruff, "check", "--fix", "--show-fixes", "--exit-non-zero-on-fix", "--config=py/pyproject.toml"]
     return subprocess.run(cmd + exclude_args + dirs + extra_args).returncode
 
 
