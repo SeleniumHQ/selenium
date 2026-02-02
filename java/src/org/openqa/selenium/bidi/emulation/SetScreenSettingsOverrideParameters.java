@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 public class SetScreenSettingsOverrideParameters extends AbstractOverrideParameters {
 
