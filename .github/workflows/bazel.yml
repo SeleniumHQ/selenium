@@ -130,7 +130,7 @@ jobs:
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
-          output-base: ${{ contains(inputs.os, 'windows') && 'D://b' || '' }}
+          output-base: ${{ inputs.os == 'windows-11-arm' && 'C://b' || (startsWith(inputs.os, 'windows') && 'D://b' || '') }}
           cache-version: 2
           disk-cache: false
           external-cache: |
