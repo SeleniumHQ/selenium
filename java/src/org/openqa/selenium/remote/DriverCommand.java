@@ -231,6 +231,8 @@ public interface DriverCommand {
 
   String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
+  String FIRE_SESSION_EVENT = "fireSessionEvent";
+
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
     return NEW_SESSION(singleton(capabilities));
@@ -449,5 +451,15 @@ public interface DriverCommand {
 
   static CommandPayload SET_DELAY_ENABLED(boolean enabled) {
     return new CommandPayload(SET_DELAY_ENABLED, Map.of("enabled", enabled));
+  }
+
+  static CommandPayload FIRE_SESSION_EVENT(
+      String eventType, @Nullable Map<String, Object> payload) {
+    Require.nonNull("Event type", eventType);
+    if (payload == null || payload.isEmpty()) {
+      return new CommandPayload(FIRE_SESSION_EVENT, Map.of("eventType", eventType));
+    }
+    return new CommandPayload(
+        FIRE_SESSION_EVENT, Map.of("eventType", eventType, "payload", payload));
   }
 }

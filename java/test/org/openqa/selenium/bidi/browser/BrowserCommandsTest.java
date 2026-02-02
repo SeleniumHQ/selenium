@@ -17,18 +17,27 @@
 
 package org.openqa.selenium.bidi.browser;
 
+import static java.time.Duration.ofSeconds;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.bidi.browser.DownloadBehavior.allowed;
+import static org.openqa.selenium.bidi.browser.DownloadBehavior.denied;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.detect;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
@@ -42,11 +51,25 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowserCommandsTest extends JupiterTestBase {
 
+  private final Path tmpDir =
+      TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
   private Browser browser;
 
   @BeforeEach
-  public void setUp() {
+  final void setUp() {
     browser = new Browser(driver);
+  }
+
+  @AfterEach
+  final void resetDownloadBehavior() {
+    if (detect() != FIREFOX) {
+      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    }
+  }
+
+  @AfterEach
+  final void deleteTempDir() {
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
   }
 
   @Test
@@ -62,11 +85,13 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   void canGetUserContexts() {
+    List<String> initialUserContexts = browser.getUserContexts();
+
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
 
     List<String> userContexts = browser.getUserContexts();
-    assertThat(userContexts.size()).isGreaterThanOrEqualTo(2);
+    assertThat(userContexts.size()).isEqualTo(initialUserContexts.size() + 2);
 
     browser.removeUserContext(userContext1);
     browser.removeUserContext(userContext2);
@@ -75,28 +100,28 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   void canRemoveUserContext() {
+    List<String> initialUserContexts = browser.getUserContexts();
+
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
-
-    List<String> userContexts = browser.getUserContexts();
-    assertThat(userContexts.size()).isGreaterThanOrEqualTo(2);
+    assertThat(browser.getUserContexts()).hasSize(initialUserContexts.size() + 2);
 
     browser.removeUserContext(userContext2);
 
-    List<String> updatedUserContexts = browser.getUserContexts();
-    assertThat(userContext1).isIn(updatedUserContexts);
-    assertThat(userContext2).isNotIn(updatedUserContexts);
+    assertThat(browser.getUserContexts())
+        .hasSize(initialUserContexts.size() + 1)
+        .contains(userContext1)
+        .doesNotContain(userContext2);
 
     browser.removeUserContext(userContext1);
+    assertThat(browser.getUserContexts()).containsExactlyInAnyOrderElementsOf(initialUserContexts);
   }
 
   @Test
   @NeedsFreshDriver
   void canGetClientWindows() {
     List<ClientWindowInfo> clientWindows = browser.getClientWindows();
-
-    assertThat(clientWindows).isNotNull();
-    assertThat(clientWindows.size()).isGreaterThan(0);
+    assertThat(clientWindows).hasSizeGreaterThan(0);
 
     ClientWindowInfo windowInfo = clientWindows.get(0);
     assertThat(windowInfo.getClientWindow()).isNotNull();
@@ -109,85 +134,42 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
-  void canSetDownloadBehaviorAllowed() throws Exception {
-    Path tmpDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
+  void canSetDownloadBehaviorAllowed() {
+    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(allowed(tmpDir)));
 
-    try {
-      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(true, tmpDir));
+    BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+    String url = appServer.whereIs("downloads/download.html");
+    context.navigate(url, ReadinessState.COMPLETE);
 
-      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
-      String url = appServer.whereIs("downloads/download.html");
-      context.navigate(url, ReadinessState.COMPLETE);
+    driver.findElement(By.id("file-1")).click();
 
-      driver.findElement(By.id("file-1")).click();
-
-      new WebDriverWait(driver, Duration.ofSeconds(5))
-          .until(
-              d -> {
-                try {
-                  return Files.list(tmpDir)
-                      .anyMatch(path -> path.getFileName().toString().equals("file_1.txt"));
-                } catch (Exception e) {
-                  return false;
-                }
-              });
-
-      List<String> fileNames =
-          Files.list(tmpDir)
-              .map(path -> path.getFileName().toString())
-              .collect(Collectors.toList());
-      assertThat(fileNames).contains("file_1.txt");
-    } finally {
-      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null, (Path) null));
-      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
-    }
+    assertFileIsDownloaded("file_1.txt");
   }
 
   @Test
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
-  void canSetDownloadBehaviorDenied() throws Exception {
-    Path tmpDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
+  void canSetDownloadBehaviorDenied() throws InterruptedException {
+    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(denied()));
 
-    try {
-      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(false, (Path) null));
+    BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+    String url = appServer.whereIs("downloads/download.html");
+    context.navigate(url, ReadinessState.COMPLETE);
+    List<String> initialFiles = files(tmpDir);
 
-      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
-      String url = appServer.whereIs("downloads/download.html");
-      context.navigate(url, ReadinessState.COMPLETE);
+    driver.findElement(By.id("file-1")).click();
 
-      driver.findElement(By.id("file-1")).click();
+    Thread.sleep(2000);
 
-      // Try to wait for file to be downloaded - should timeout
-      try {
-        new WebDriverWait(driver, Duration.ofSeconds(3), Duration.ofMillis(200))
-            .until(
-                d -> {
-                  try {
-                    return Files.list(tmpDir).findAny().isPresent();
-                  } catch (Exception e) {
-                    return false;
-                  }
-                });
-
-        List<String> files =
-            Files.list(tmpDir)
-                .map(path -> path.getFileName().toString())
-                .collect(Collectors.toList());
-        throw new AssertionError("A file was downloaded unexpectedly: " + files);
-      } catch (TimeoutException ignored) {
-      }
-    } finally {
-      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null, (Path) null));
-      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
-    }
+    assertThat(files(tmpDir))
+        .as("No new files should be downloaded")
+        .containsExactlyInAnyOrderElementsOf(initialFiles);
   }
 
   @Test
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
-  void canSetDownloadBehaviorWithUserContext() throws Exception {
-    Path tmpDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
+  void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
     try {
@@ -200,66 +182,69 @@ class BrowserCommandsTest extends JupiterTestBase {
         driver.switchTo().window(contextId);
 
         browser.setDownloadBehavior(
-            new SetDownloadBehaviorParameters(true, tmpDir).userContexts(List.of(userContext)));
+            new SetDownloadBehaviorParameters(allowed(tmpDir)).userContexts(List.of(userContext)));
 
         String url = appServer.whereIs("downloads/download.html");
         bc.navigate(url, ReadinessState.COMPLETE);
 
         driver.findElement(By.id("file-1")).click();
 
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-            .until(
-                d -> {
-                  try {
-                    return Files.list(tmpDir)
-                        .anyMatch(path -> path.getFileName().toString().equals("file_1.txt"));
-                  } catch (Exception e) {
-                    return false;
-                  }
-                });
+        assertFileIsDownloaded("file_1.txt");
 
-        List<String> files =
-            Files.list(tmpDir)
-                .map(path -> path.getFileName().toString())
-                .collect(Collectors.toList());
-        assertThat(files).contains("file_1.txt");
-
-        int initialFileCount = files.size();
+        List<String> initialFiles = files(tmpDir);
+        assertThat(initialFiles).contains("file_1.txt");
 
         browser.setDownloadBehavior(
-            new SetDownloadBehaviorParameters(false, (Path) null)
-                .userContexts(List.of(userContext)));
+            new SetDownloadBehaviorParameters(denied()).userContexts(List.of(userContext)));
 
         driver.findElement(By.id("file-2")).click();
+        Thread.sleep(2000);
 
-        try {
-          new WebDriverWait(driver, Duration.ofSeconds(3), Duration.ofMillis(200))
-              .until(
-                  d -> {
-                    try {
-                      long fileCount = Files.list(tmpDir).count();
-                      return fileCount > initialFileCount;
-                    } catch (Exception e) {
-                      return false;
-                    }
-                  });
+        List<String> filesAfter = files(tmpDir);
+        assertThat(filesAfter).containsExactlyInAnyOrderElementsOf(initialFiles);
 
-          List<String> filesAfter =
-              Files.list(tmpDir)
-                  .map(path -> path.getFileName().toString())
-                  .collect(Collectors.toList());
-          throw new AssertionError("A file was downloaded unexpectedly: " + filesAfter);
-        } catch (TimeoutException ignored) {
-        }
       } finally {
-        browser.setDownloadBehavior(
-            new SetDownloadBehaviorParameters(null, (Path) null)
-                .userContexts(List.of(userContext)));
         bc.close();
       }
     } finally {
       browser.removeUserContext(userContext);
-      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
+    }
+  }
+
+  private void assertFileIsDownloaded(String file) {
+    FileIsFound fileIsFound = new FileIsFound(tmpDir, file);
+    new WebDriverWait(driver, ofSeconds(5)).withMessage(fileIsFound).until(fileIsFound);
+  }
+
+  private static final class FileIsFound implements Function<WebDriver, Boolean>, Supplier<String> {
+    private final Path dir;
+    private final String expectedFileName;
+    private List<String> foundFiles;
+
+    private FileIsFound(Path dir, String expectedFileName) {
+      this.dir = dir;
+      this.expectedFileName = expectedFileName;
+    }
+
+    @Override
+    public Boolean apply(WebDriver driver) {
+      foundFiles = files(dir);
+      return foundFiles.contains(expectedFileName);
+    }
+
+    @Override
+    public String get() {
+      return String.format(
+          "Expected to find file \"%s\", but found %s files: %s",
+          expectedFileName, foundFiles.size(), foundFiles);
+    }
+  }
+
+  private static List<String> files(Path dir) {
+    try (Stream<Path> files = Files.list(dir)) {
+      return files.map(path -> path.getFileName().toString()).collect(toList());
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to check files in " + dir, e);
     }
   }
 }

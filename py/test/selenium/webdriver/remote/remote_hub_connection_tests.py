@@ -15,14 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+import urllib3
+
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.common.options import ArgOptions as Options
 
 
-def test_profile_is_used(firefox_options, server):
-    ff_profile = FirefoxProfile()
-    ff_profile.set_preference("browser.startup.page", "1")
-    firefox_options.profile = ff_profile
-    server_addr = server.status_url.removesuffix("/status")
-    with webdriver.Remote(command_executor=server_addr, options=firefox_options) as driver:
-        assert "browser/content/blanktab.html" in driver.current_url
+def test_command_executor_ssl_certificate_is_verified():
+    options = Options()
+    site = "wrong.host.badssl.com"
+    with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
+        webdriver.Remote(command_executor="https://wrong.host.badssl.com/", options=options)
+    assert isinstance(excinfo.value.reason, urllib3.exceptions.SSLError)
+    assert site in str(excinfo.value)
+    assert "certificate is not valid" in str(excinfo.value).lower()

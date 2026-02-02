@@ -246,7 +246,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
     wait.until(presenceOfElementLocated(By.id("ifr")));
     driver.switchTo().frame("ifr");
 
-    WebElement link = driver.findElement(By.id("link"));
+    WebElement link = wait.until(presenceOfElementLocated(By.id("link")));
 
     new Actions(driver).moveToElement(link).click().perform();
 
@@ -297,13 +297,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     assertThat(x).isCloseTo(location.getX() + 20, Offset.offset(5));
     assertThat(y).isCloseTo(location.getY() + 10, Offset.offset(5));
-  }
-
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
-    // Everything within 5 pixels range is OK
-    final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION
-        && Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
@@ -388,7 +381,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
+  public void canClickOnASuckerFishStyleMenu() {
     driver.get(pages.javascriptPage);
     unfocusMenu();
 

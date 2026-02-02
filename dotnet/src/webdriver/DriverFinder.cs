@@ -33,7 +33,7 @@ namespace OpenQA.Selenium;
 public class DriverFinder
 {
     private readonly DriverOptions options;
-    private Dictionary<string, string> paths = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> paths = new Dictionary<string, string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverFinder"/> class.

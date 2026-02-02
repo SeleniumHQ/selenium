@@ -31,7 +31,7 @@ public class NoSuchDriverException : NotFoundException
     /// <summary>
     /// Link to the documentation for this error
     /// </summary>
-    private static string supportUrl = baseSupportUrl + "/driver_location";
+    private static readonly string supportUrl = baseSupportUrl + "/driver_location";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NoSuchDriverException"/> class.

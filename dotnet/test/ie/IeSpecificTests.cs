@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium.IE;
 

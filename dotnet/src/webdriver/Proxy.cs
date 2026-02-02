@@ -79,7 +79,7 @@ public class Proxy
     private string? socksUserName;
     private string? socksPassword;
     private int? socksVersion;
-    private List<string> noProxyAddresses = new List<string>();
+    private readonly List<string> noProxyAddresses = new List<string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -500,7 +500,7 @@ public class Proxy
 
     private object? GetNoProxyAddressList(bool isSpecCompliant)
     {
-        object? addresses = null;
+        object? addresses;
         if (isSpecCompliant)
         {
             List<object> addressList = [.. this.noProxyAddresses];

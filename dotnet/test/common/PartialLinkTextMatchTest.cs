@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Collections.ObjectModel;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium;
 
@@ -74,8 +74,7 @@ public class PartialLinkTextMatchTest : DriverTestFixture
     public void DriverCanGetLinkByLinkTestIgnoringTrailingWhitespace()
     {
         driver.Url = simpleTestPage;
-        IWebElement link = null;
-        link = driver.FindElement(By.LinkText("link with trailing space"));
+        IWebElement link = driver.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));
     }
 
@@ -84,9 +83,7 @@ public class PartialLinkTextMatchTest : DriverTestFixture
     {
         driver.Url = simpleTestPage;
         IWebElement elem = driver.FindElement(By.Id("links"));
-
-        IWebElement link = null;
-        link = elem.FindElement(By.LinkText("link with trailing space"));
+        IWebElement link = elem.FindElement(By.LinkText("link with trailing space"));
         Assert.That(link.GetAttribute("id"), Is.EqualTo("linkWithTrailingSpace"));
     }
 }

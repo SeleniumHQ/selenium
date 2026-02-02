@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V144;
 
 namespace OpenQA.Selenium.DevTools;
-
-using CurrentCdpVersion = V144;
 
 [TestFixture]
 public class DevToolsTargetTest : DevToolsTestFixture

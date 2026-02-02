@@ -24,19 +24,34 @@ import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
+/**
+ * Event fired when a session is closed on a node. This event provides context about the closed
+ * session for sidecar services to consume, enabling functionality such as stopping video recording,
+ * collecting logs, or other session lifecycle management.
+ */
 public class SessionClosedEvent extends Event {
 
   private static final EventName SESSION_CLOSED = new EventName("session-closed");
 
-  // Backward compatible constructor
+  /** Backward compatible constructor using just SessionId. */
   public SessionClosedEvent(SessionId id) {
     this(id, SessionClosedReason.QUIT_COMMAND);
   }
 
+  /** Backward compatible constructor using SessionId and reason. */
   public SessionClosedEvent(SessionId id, SessionClosedReason reason) {
     super(SESSION_CLOSED, new SessionClosedData(id, reason));
     Require.nonNull("Session ID", id);
     Require.nonNull("Reason", reason);
+  }
+
+  /**
+   * Full constructor with rich session context for sidecar services.
+   *
+   * @param data the complete session closed data including node context and timing
+   */
+  public SessionClosedEvent(SessionClosedData data) {
+    super(SESSION_CLOSED, Require.nonNull("Session closed data", data));
   }
 
   // Standard listener method that provides access to both SessionId and reason
