@@ -50,7 +50,14 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Format
-      run: ./scripts/github-actions/check-format.sh
+      run: |
+        # Run format - auto-fixes code style issues
+        ./go format
+        # Fail if there were changes (triggers commit-fixes job)
+        if ! git diff --quiet; then
+          echo "Format made changes"
+          exit 1
+        fi
       artifact-name: format-changes
 
   fork-format-error:
@@ -61,7 +68,7 @@ jobs:
     steps:
       - name: Format instructions
         run: |
-          echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
+          echo "::error::Code needs formatting. Run './go format' locally and push changes."
           exit 1
 
   check-bot-commit:

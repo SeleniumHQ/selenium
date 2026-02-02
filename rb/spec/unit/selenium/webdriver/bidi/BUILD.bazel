@@ -1,0 +1,10 @@
+load("//rb/spec:tests.bzl", "rb_unit_test")
+
+[
+    rb_unit_test(
+        name = file[:-8],
+        srcs = [file],
+        deps = ["//rb/lib/selenium/webdriver:bidi"],
+    )
+    for file in glob(["*_spec.rb"])
+]
