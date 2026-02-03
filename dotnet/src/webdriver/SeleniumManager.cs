@@ -343,7 +343,7 @@ public static partial class SeleniumManager
 
                 if (match.Success)
                 {
-                    var dateTime = DateTimeOffset.Parse(match.Groups[1].Value);
+                    var dateTime = DateTimeOffset.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
                     var logLevel = match.Groups[2].Value;
                     var message = match.Groups[3].Value;
 
