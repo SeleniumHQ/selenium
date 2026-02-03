@@ -101,6 +101,13 @@ public sealed class EmulationModule : Module
         return await ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<SetTouchOverrideResult> SetTouchOverrideAsync(long? maxTouchPoints, SetTouchOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetTouchOverrideParameters(maxTouchPoints, options?.Contexts, options?.UserContexts);
+
+        return await ExecuteCommandAsync(new SetTouchOverrideCommand(@params), options, _jsonContext.SetTouchOverrideCommand, _jsonContext.SetTouchOverrideResult, cancellationToken).ConfigureAwait(false);
+    }
+
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
@@ -126,5 +133,7 @@ public sealed class EmulationModule : Module
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
+[JsonSerializable(typeof(SetTouchOverrideCommand))]
+[JsonSerializable(typeof(SetTouchOverrideResult))]
 
 internal partial class EmulationJsonSerializerContext : JsonSerializerContext;

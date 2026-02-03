@@ -197,4 +197,24 @@ internal class EmulationTest : BiDiTestFixture
         },
         Throws.Nothing);
     }
+
+    [Test]
+    public void CanSetTouchOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetTouchOverrideAsync(5, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetTouchOverrideToDefault()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetTouchOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
 }
