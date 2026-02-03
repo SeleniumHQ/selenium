@@ -17,13 +17,16 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class NavigationResult {
 
-  private final String navigationId;
+  @Nullable private final String navigationId;
   private final String url;
 
+  @Nullable
   public String getNavigationId() {
     return navigationId;
   }
@@ -32,7 +35,7 @@ public class NavigationResult {
     return url;
   }
 
-  public NavigationResult(String navigationId, String url) {
+  public NavigationResult(@Nullable String navigationId, String url) {
     this.navigationId = navigationId;
     this.url = url;
   }
@@ -60,6 +63,6 @@ public class NavigationResult {
 
     input.endObject();
 
-    return new NavigationResult(navigationId, url);
+    return new NavigationResult(navigationId, Require.nonNull("URL", url));
   }
 }

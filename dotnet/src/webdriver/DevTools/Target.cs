@@ -84,10 +84,7 @@ public abstract class Target
     /// <param name="e">An <see cref="TargetDetachedEventArgs"/> that contains the event data.</param>
     protected virtual void OnTargetDetached(TargetDetachedEventArgs e)
     {
-        if (this.TargetDetached != null)
-        {
-            this.TargetDetached(this, e);
-        }
+        this.TargetDetached?.Invoke(this, e);
     }
 
     /// <summary>
@@ -96,9 +93,6 @@ public abstract class Target
     /// <param name="e"></param>
     protected virtual void OnTargetAttached(TargetAttachedEventArgs e)
     {
-        if (this.TargetAttached != null)
-        {
-            this.TargetAttached(this, e);
-        }
+        this.TargetAttached?.Invoke(this, e);
     }
 }

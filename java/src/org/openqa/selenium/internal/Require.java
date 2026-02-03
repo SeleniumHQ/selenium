@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.internal;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -40,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 public final class Require {
 
   private static final String MUST_BE_SET = "%s must be set";
+  private static final String MUST_NOT_BE_SET = "%s must not be set";
   private static final String MUST_EXIST = "%s must exist: %s";
   private static final String MUST_BE_DIR = "%s must be a directory: %s";
   private static final String MUST_BE_FILE = "%s must be a regular file: %s";
@@ -47,6 +50,7 @@ public final class Require {
   private static final String MUST_BE_EXECUTABLE = "%s must be executable: %s";
   private static final String MUST_BE_NON_NEGATIVE = "%s must be 0 or greater";
   private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
+  private static final String MUST_BE_BETWEEN = "%s must be between %s and %s (inclusive)";
 
   private Require() {
     // An utility class
@@ -70,6 +74,12 @@ public final class Require {
       throw new IllegalArgumentException(String.join(" ", argName, String.format(message, args)));
     }
     return arg;
+  }
+
+  public static <T> void isNull(String argName, @Nullable T arg) {
+    if (arg != null) {
+      throw new IllegalArgumentException(String.format(MUST_NOT_BE_SET, argName));
+    }
   }
 
   public static <T> ArgumentChecker<T> argument(String argName, @Nullable T arg) {
@@ -154,6 +164,22 @@ public final class Require {
 
   public static int positive(String argName, @Nullable Integer number) {
     return positive(argName, number, null);
+  }
+
+  public static long positive(String argName, @Nullable Long number) {
+    positive(argName, number == null ? null : number.doubleValue());
+    return requireNonNull(number);
+  }
+
+  public static double inRangeInclusive(
+      String argName, @Nullable Double value, double min, double max) {
+    if (value == null) {
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    }
+    if (value < min || value > max) {
+      throw new IllegalArgumentException(String.format(MUST_BE_BETWEEN, argName, min, max));
+    }
+    return value;
   }
 
   public static IntChecker argument(String argName, @Nullable Integer number) {

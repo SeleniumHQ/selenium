@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -183,6 +184,7 @@ public class FirefoxDriver extends RemoteWebDriver
     return caps;
   }
 
+  @NonNull
   @Override
   public Capabilities getCapabilities() {
     return capabilities;

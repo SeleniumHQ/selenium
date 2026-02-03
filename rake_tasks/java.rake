@@ -53,19 +53,19 @@ def verify_java_release_targets
     current_targets = output.lines.map(&:strip).reject(&:empty?).select { |line| line.start_with?('//') }
   end
 
-  missing_targets = JAVA_RELEASE_TARGETS - current_targets
-  extra_targets = current_targets - JAVA_RELEASE_TARGETS
+  obsolete_targets = JAVA_RELEASE_TARGETS - current_targets
+  unlisted_targets = current_targets - JAVA_RELEASE_TARGETS
 
-  return if missing_targets.empty? && extra_targets.empty?
+  return if obsolete_targets.empty? && unlisted_targets.empty?
 
   error_message = 'Java release targets are out of sync with Bazel query results.'
 
-  unless missing_targets.empty?
-    error_message += "\nObsolete targets (in list but not in Bazel): #{missing_targets.join(', ')}"
+  unless obsolete_targets.empty?
+    error_message += "\nObsolete targets (in list but not in Bazel): #{obsolete_targets.join(', ')}"
   end
 
-  unless extra_targets.empty?
-    error_message += "\nMissing targets (in Bazel but not in list): #{extra_targets.join(', ')}"
+  unless unlisted_targets.empty?
+    error_message += "\nMissing targets (in Bazel but not in list): #{unlisted_targets.join(', ')}"
   end
 
   raise error_message
@@ -300,13 +300,14 @@ task :install do
   end
 end
 
-desc 'Generate Java documentation'
-task docs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do |_task, arguments|
+desc 'Generate and stage Java documentation'
+task :docs do |_task, arguments|
   if java_version.include?('SNAPSHOT') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: snapshot versions should not update docs.')
   end
 
-  puts 'Generating Java documentation'
+  Rake::Task['java:docs_generate'].invoke
+
   FileUtils.rm_rf('build/docs/api/java')
   FileUtils.mkdir_p('build/docs/api/java')
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
@@ -331,6 +332,12 @@ task docs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do |_task, argum
     STYLE
               )
   end
+end
+
+desc 'Generate Java documentation without staging'
+task :docs_generate do
+  puts 'Generating Java documentation'
+  Bazel.execute('build', [], '//java/src/org/openqa/selenium/grid:all-javadocs')
 end
 
 desc 'Update Maven dependencies'
@@ -383,12 +390,18 @@ task :version, [:version] do |_task, arguments|
   File.open(file, 'w') { |f| f.puts text }
 end
 
-desc 'Run Java formatter (google-java-format)'
-task :lint do
+desc 'Format Java code with google-java-format'
+task :format do
   puts '  Running google-java-format...'
-  formatter = nil
-  Bazel.execute('run', ['--run_under=echo'], '//scripts:google-java-format') do |output|
-    formatter = output.lines.last.strip
-  end
-  sh formatter, '--replace', *Dir.glob('java/**/*.java')
+  java_files = Dir.glob(File.join(Dir.pwd, 'java', '**', '*.java'))
+  return if java_files.empty?
+
+  args = ['--', '--replace'] + java_files
+  Bazel.execute('run', args, '//scripts:google-java-format')
+end
+
+# ErrorProne runs at build time, SpotBugs runs as test targets in RBE
+desc 'Run Java linter (docs only, other linting happens during build/test)'
+task :lint do
+  Rake::Task['java:docs_generate'].invoke
 end

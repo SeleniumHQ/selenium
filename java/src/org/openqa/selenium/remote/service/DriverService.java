@@ -485,6 +485,11 @@ public class DriverService implements Closeable {
 
       String defaultLocation = Debug.isDebugAll() ? LOG_STDERR : LOG_NULL;
       String logLocation = System.getProperty(logProperty, defaultLocation);
+      if (Debug.isDebugAll() && System.getProperty(logProperty) == null) {
+        System.err.println(
+            "WARNING: Environment Variable `SE_DEBUG` is set; defaulting driver log output to"
+                + " stderr.");
+      }
       switch (logLocation) {
         case LOG_STDOUT:
           withLogOutput(System.out);

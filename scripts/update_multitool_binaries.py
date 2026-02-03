@@ -51,12 +51,15 @@ def run(lockfile_path):
             hashes = [asset.get("digest").split(":")[1] for asset in assets]
             for binary in data[tool]["binaries"]:
                 new_url = binary["url"].replace(version, new_version)
+                new_file = binary["file"].replace(version, new_version)
                 new_hash = hashes[urls.index(new_url)]
                 binary["url"] = new_url
+                binary["file"] = new_file
                 binary["sha256"] = new_hash
 
     with open(lockfile_path, "w") as f:
         json.dump(data, f, indent=2)
+        f.write("\n")
 
     print(f"\ngenerated new '{lockfile_path}' with updated urls and hashes")
 

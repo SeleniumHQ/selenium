@@ -80,7 +80,13 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
-        @io ||= WebDriver.logger.io if WebDriver.logger.debug?
+        if ENV.key?('SE_DEBUG')
+          if @io && @io != WebDriver.logger.io
+            WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver log output to use stderr',
+                                  id: :se_debug)
+          end
+          @io = WebDriver.logger.io
+        end
         @process.io = @io if @io
 
         @process

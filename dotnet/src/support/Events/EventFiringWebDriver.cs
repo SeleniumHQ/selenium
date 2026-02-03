@@ -603,10 +603,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigating(WebDriverNavigationEventArgs e)
     {
-        if (this.Navigating != null)
-        {
-            this.Navigating(this, e);
-        }
+        this.Navigating?.Invoke(this, e);
     }
 
     /// <summary>
@@ -615,10 +612,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigated(WebDriverNavigationEventArgs e)
     {
-        if (this.Navigated != null)
-        {
-            this.Navigated(this, e);
-        }
+        this.Navigated?.Invoke(this, e);
     }
 
     /// <summary>
@@ -627,10 +621,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatingBack(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatingBack != null)
-        {
-            this.NavigatingBack(this, e);
-        }
+        this.NavigatingBack?.Invoke(this, e);
     }
 
     /// <summary>
@@ -639,10 +630,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatedBack(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatedBack != null)
-        {
-            this.NavigatedBack(this, e);
-        }
+        this.NavigatedBack?.Invoke(this, e);
     }
 
     /// <summary>
@@ -651,10 +639,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatingForward(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatingForward != null)
-        {
-            this.NavigatingForward(this, e);
-        }
+        this.NavigatingForward?.Invoke(this, e);
     }
 
     /// <summary>
@@ -663,10 +648,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverNavigationEventArgs"/> that contains the event data.</param>
     protected virtual void OnNavigatedForward(WebDriverNavigationEventArgs e)
     {
-        if (this.NavigatedForward != null)
-        {
-            this.NavigatedForward(this, e);
-        }
+        this.NavigatedForward?.Invoke(this, e);
     }
 
     /// <summary>
@@ -675,10 +657,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementClicking(WebElementEventArgs e)
     {
-        if (this.ElementClicking != null)
-        {
-            this.ElementClicking(this, e);
-        }
+        this.ElementClicking?.Invoke(this, e);
     }
 
     /// <summary>
@@ -687,10 +666,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementClicked(WebElementEventArgs e)
     {
-        if (this.ElementClicked != null)
-        {
-            this.ElementClicked(this, e);
-        }
+        this.ElementClicked?.Invoke(this, e);
     }
 
     /// <summary>
@@ -699,10 +675,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementValueChanging(WebElementValueEventArgs e)
     {
-        if (this.ElementValueChanging != null)
-        {
-            this.ElementValueChanging(this, e);
-        }
+        this.ElementValueChanging?.Invoke(this, e);
     }
 
     /// <summary>
@@ -711,10 +684,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
     protected virtual void OnElementValueChanged(WebElementValueEventArgs e)
     {
-        if (this.ElementValueChanged != null)
-        {
-            this.ElementValueChanged(this, e);
-        }
+        this.ElementValueChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -723,10 +693,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="FindElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnFindingElement(FindElementEventArgs e)
     {
-        if (this.FindingElement != null)
-        {
-            this.FindingElement(this, e);
-        }
+        this.FindingElement?.Invoke(this, e);
     }
 
     /// <summary>
@@ -735,10 +702,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="FindElementEventArgs"/> that contains the event data.</param>
     protected virtual void OnFindElementCompleted(FindElementEventArgs e)
     {
-        if (this.FindElementCompleted != null)
-        {
-            this.FindElementCompleted(this, e);
-        }
+        this.FindElementCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -747,10 +711,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="GetShadowRootEventArgs"/> that contains the event data.</param>
     protected virtual void OnGettingShadowRoot(GetShadowRootEventArgs e)
     {
-        if (this.GettingShadowRoot != null)
-        {
-            this.GettingShadowRoot(this, e);
-        }
+        this.GettingShadowRoot?.Invoke(this, e);
     }
 
     /// <summary>
@@ -759,10 +720,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="GetShadowRootEventArgs"/> that contains the event data.</param>
     protected virtual void OnGetShadowRootCompleted(GetShadowRootEventArgs e)
     {
-        if (this.GetShadowRootCompleted != null)
-        {
-            this.GetShadowRootCompleted(this, e);
-        }
+        this.GetShadowRootCompleted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -771,10 +729,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverScriptEventArgs"/> that contains the event data.</param>
     protected virtual void OnScriptExecuting(WebDriverScriptEventArgs e)
     {
-        if (this.ScriptExecuting != null)
-        {
-            this.ScriptExecuting(this, e);
-        }
+        this.ScriptExecuting?.Invoke(this, e);
     }
 
     /// <summary>
@@ -783,10 +738,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverScriptEventArgs"/> that contains the event data.</param>
     protected virtual void OnScriptExecuted(WebDriverScriptEventArgs e)
     {
-        if (this.ScriptExecuted != null)
-        {
-            this.ScriptExecuted(this, e);
-        }
+        this.ScriptExecuted?.Invoke(this, e);
     }
 
     /// <summary>
@@ -795,10 +747,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="e">A <see cref="WebDriverExceptionEventArgs"/> that contains the event data.</param>
     protected virtual void OnException(WebDriverExceptionEventArgs e)
     {
-        if (this.ExceptionThrown != null)
-        {
-            this.ExceptionThrown(this, e);
-        }
+        this.ExceptionThrown?.Invoke(this, e);
     }
 
     private static object?[] UnwrapElementArguments(object?[] args)

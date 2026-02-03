@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.internal;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -26,6 +27,7 @@ import java.util.logging.StreamHandler;
 public class Debug {
 
   private static final boolean IS_DEBUG;
+  private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
   private static boolean loggerConfigured = false;
   private static Logger seleniumLogger;
 
@@ -47,7 +49,14 @@ public class Debug {
   }
 
   public static boolean isDebugAll() {
-    return Boolean.parseBoolean(System.getenv("SE_DEBUG"));
+    boolean everything = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
+    if (everything && DEBUG_WARNING_LOGGED.compareAndSet(false, true)) {
+      String warn =
+          "WARNING: Environment Variable `SE_DEBUG` is set; Selenium is forcing verbose logging"
+              + " which may override user-specified settings.";
+      System.err.println(warn);
+    }
+    return everything;
   }
 
   public static void configureLogger() {

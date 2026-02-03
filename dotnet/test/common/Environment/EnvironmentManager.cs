@@ -17,14 +17,14 @@
 // under the License.
 // </copyright>
 
-using Bazel;
-using NUnit.Framework;
-using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Bazel;
+using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Environment;
 
@@ -258,9 +258,6 @@ public class EnvironmentManager
 
     protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
     {
-        if (this.DriverStarting != null)
-        {
-            this.DriverStarting(sender, e);
-        }
+        this.DriverStarting?.Invoke(sender, e);
     }
 }

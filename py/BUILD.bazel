@@ -146,36 +146,42 @@ copy_file(
 
 copy_file(
     name = "webextensions-selenium-example-xpi",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.xpi",
     out = "test/extensions/webextensions-selenium-example.xpi",
 )
 
 copy_file(
     name = "webextensions-selenium-example-zip",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.zip",
     out = "test/extensions/webextensions-selenium-example.zip",
 )
 
 copy_file(
     name = "webextensions-selenium-example-unsigned-zip",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example-unsigned.zip",
     out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
 copy_file(
     name = "webextensions-selenium-example-crx",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example.crx",
     out = "test/extensions/webextensions-selenium-example.crx",
 )
 
 copy_directory(
     name = "webextensions-selenium-example-dir",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example",
     out = "test/extensions/webextensions-selenium-example",
 )
 
 copy_directory(
     name = "webextensions-selenium-example-signed-dir",
+    testonly = True,
     src = "//common/extensions:webextensions-selenium-example-signed",
     out = "test/extensions/webextensions-selenium-example-signed",
 )
@@ -216,35 +222,208 @@ copy_file(
     out = "selenium-%s.dist-info/NOTICE" % SE_VERSION,
 )
 
+# ==============================================================================
+# Module Targets (following Ruby's modular pattern)
+# ==============================================================================
+
+# Exceptions and package init (no deps - foundational)
 py_library(
-    name = "selenium",
+    name = "exceptions",
+    srcs = [
+        "selenium/__init__.py",
+        "selenium/webdriver/__init__.py",
+    ] + glob(["selenium/common/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+)
+
+# Remote/wire protocol (foundational)
+py_library(
+    name = "remote",
+    srcs = glob(["selenium/webdriver/remote/**/*.py"]),
+    data = [
+        ":find-elements",
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exceptions",
+        requirement("certifi"),
+        requirement("urllib3"),
+        requirement("websocket-client"),
+    ],
+)
+
+# BiDi protocol support
+py_library(
+    name = "bidi",
+    srcs = glob(["selenium/webdriver/common/bidi/**/*.py"]),
+    data = [":mutation-listener"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exceptions",
+        ":remote",
+        requirement("trio"),
+        requirement("trio-websocket"),
+        requirement("websocket-client"),
+    ],
+)
+
+# Common utilities (shared by all browsers, includes devtools generated code)
+py_library(
+    name = "common",
     srcs = glob(
-        ["selenium/**/*.py"],
+        ["selenium/webdriver/common/**/*.py"],
         exclude = [
-            "generate.py",
-            "selenium/webdriver/common/devtools/v*/**",
+            "selenium/webdriver/common/bidi/**",
         ],
     ),
     data = [
-        "selenium/py.typed",
-        ":find-elements",
-        ":firefox-driver-prefs",
-        ":get-attribute",
-        ":is-displayed",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
-        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("urllib3"),
-        requirement("trio"),
-        requirement("trio-websocket"),
-        requirement("certifi"),
+        ":bidi",
+        ":exceptions",
+        ":remote",
         requirement("typing_extensions"),
-        requirement("websocket-client"),
+    ],
+)
+
+# Support utilities (wait conditions, event listeners, etc.)
+py_library(
+    name = "support",
+    srcs = glob(["selenium/webdriver/support/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":exceptions",
+        ":remote",
+    ],
+)
+
+# Chromium base (shared by Chrome and Edge)
+py_library(
+    name = "chromium",
+    srcs = glob(["selenium/webdriver/chromium/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# Chrome driver
+py_library(
+    name = "chrome",
+    srcs = glob(["selenium/webdriver/chrome/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":chromium"],
+)
+
+# Edge driver
+py_library(
+    name = "edge",
+    srcs = glob(["selenium/webdriver/edge/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [":chromium"],
+)
+
+# Firefox driver
+py_library(
+    name = "firefox",
+    srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
+    data = [":firefox-driver-prefs"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# Safari driver
+py_library(
+    name = "safari",
+    srcs = glob(["selenium/webdriver/safari/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# IE driver
+py_library(
+    name = "ie",
+    srcs = glob(["selenium/webdriver/ie/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# WebKitGTK driver
+py_library(
+    name = "webkitgtk",
+    srcs = glob(["selenium/webdriver/webkitgtk/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# WPEWebKit driver
+py_library(
+    name = "wpewebkit",
+    srcs = glob(["selenium/webdriver/wpewebkit/**/*.py"]),
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":common",
+        ":remote",
+    ],
+)
+
+# ==============================================================================
+# Aggregate Target (backwards compatible - includes all modules)
+# ==============================================================================
+
+py_library(
+    name = "selenium",
+    srcs = [],
+    data = ["selenium/py.typed"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":bidi",
+        ":chrome",
+        ":chromium",
+        ":common",
+        ":edge",
+        ":exceptions",
+        ":firefox",
+        ":ie",
+        ":remote",
+        ":safari",
+        ":support",
+        ":webkitgtk",
+        ":wpewebkit",
     ],
 )
 
@@ -438,23 +617,49 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
 BROWSER_TESTS = {
     "chrome": {
         "browser_srcs": ["test/selenium/webdriver/chrome/**/*.py"],
+        "deps": [
+            ":chrome",
+            ":common",
+            ":support",
+        ],
         "bidi": True,
     },
     "edge": {
         "browser_srcs": ["test/selenium/webdriver/edge/**/*.py"],
+        "deps": [
+            ":edge",
+            ":common",
+            ":support",
+        ],
+        "bidi": True,
     },
     "firefox": {
         "browser_srcs": [
             "test/selenium/webdriver/firefox/**/*.py",
+        ],
+        "deps": [
+            ":firefox",
+            ":common",
+            ":support",
         ],
         "extra_excludes": ["test/selenium/webdriver/common/devtools_tests.py"],
         "bidi": True,
     },
     "ie": {
         "browser_srcs": ["test/selenium/webdriver/ie/**/*.py"],
+        "deps": [
+            ":ie",
+            ":common",
+            ":support",
+        ],
     },
     "safari": {
         "browser_srcs": ["test/selenium/webdriver/safari/**/*.py"],
+        "deps": [
+            ":safari",
+            ":common",
+            ":support",
+        ],
     },
 }
 
@@ -479,9 +684,8 @@ BROWSER_TESTS = {
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in BROWSER_TESTS.keys()
 ]
@@ -508,9 +712,8 @@ BROWSER_TESTS = {
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in BROWSER_TESTS.keys()
     if BROWSER_TESTS[browser].get("bidi", False)
@@ -550,9 +753,8 @@ BROWSER_TESTS = {
         ],
         deps = [
             ":init-tree",
-            ":selenium",
             ":webserver",
-        ] + TEST_DEPS,
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
     )
     for browser in [
         "chrome",
@@ -588,8 +790,10 @@ py_test_suite(
         "skip-rbe",
     ],
     deps = [
+        ":common",
         ":init-tree",
-        ":selenium",
+        ":support",
+        ":webkitgtk",
         ":webserver",
     ] + TEST_DEPS,
 )
@@ -613,9 +817,11 @@ py_test_suite(
         "skip-rbe",
     ],
     deps = [
+        ":common",
         ":init-tree",
-        ":selenium",
+        ":support",
         ":webserver",
+        ":wpewebkit",
     ] + TEST_DEPS,
 )
 

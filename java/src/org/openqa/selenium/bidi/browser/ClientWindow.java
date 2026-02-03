@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.bidi.browser;
 
+/**
+ * @deprecated Not used. In BiDi spec, type `browser.ClientWindow` is just text (String).
+ */
+@Deprecated
 public class ClientWindow {
   private final String id;
 

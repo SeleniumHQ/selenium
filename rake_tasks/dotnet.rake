@@ -61,12 +61,17 @@ task :verify do
   SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
 end
 
-desc 'Generate .NET documentation'
+desc 'Generate and stage .NET documentation'
 task :docs do |_task, arguments|
   if dotnet_version.include?('nightly') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
+  Rake::Task['dotnet:docs_generate'].invoke
+end
+
+desc 'Generate .NET documentation without staging'
+task :docs_generate do
   puts 'Generating .NET documentation'
   FileUtils.rm_rf('build/docs/api/dotnet/')
   Bazel.execute('run', [], '//dotnet:docs')
@@ -113,16 +118,25 @@ task :pin do
                 '@rules_dotnet//tools/paket2bazel:paket2bazel')
 end
 
-desc 'Run .NET formatter (whitespace only)'
-task :format do |_task, arguments|
-  raise ArgumentError, 'arguments not supported for this task' unless arguments.to_a.empty?
-
+desc 'Format .NET code (whitespace and style)'
+task :format do
+  # style needs to run before whitespace
+  puts '  Running dotnet format style...'
+  Bazel.execute('run', ['--', 'style', '--severity', 'warn'], '//dotnet:format')
   puts '  Running dotnet format whitespace...'
   Bazel.execute('run', ['--', 'whitespace'], '//dotnet:format')
 end
 
-desc 'Run .NET linter (format + style + analyzers)'
-task :lint do |_task, arguments|
-  puts '  Running dotnet format...'
-  Bazel.execute('run', ['--'] + arguments.to_a, '//dotnet:format')
+desc 'Run .NET linter (dotnet format analyzers, docs)'
+task :lint do
+  puts '  Running dotnet format analyzers...'
+  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
+  Rake::Task['dotnet:docs_generate'].invoke
+
+  # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
+  enforced_diagnostics = []
+  next if enforced_diagnostics.empty?
+
+  arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
+  Bazel.execute('run', arguments, '//dotnet:format')
 end

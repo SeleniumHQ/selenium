@@ -220,10 +220,7 @@ public class WebSocketConnection
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnDataReceived(WebSocketConnectionDataReceivedEventArgs e)
     {
-        if (this.DataReceived != null)
-        {
-            this.DataReceived(this, e);
-        }
+        this.DataReceived?.Invoke(this, e);
     }
 
     /// <summary>
@@ -232,10 +229,7 @@ public class WebSocketConnection
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnLogMessage(DevToolsSessionLogMessageEventArgs e)
     {
-        if (this.LogMessage != null)
-        {
-            this.LogMessage(this, e);
-        }
+        this.LogMessage?.Invoke(this, e);
     }
 
     private async Task ReceiveData()

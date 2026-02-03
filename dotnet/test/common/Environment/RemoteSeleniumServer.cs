@@ -22,63 +22,146 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using Bazel;
+using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Environment;
 
 #nullable enable
 
-public class RemoteSeleniumServer(string projectRoot, bool autoStartServer)
+public class RemoteSeleniumServer
 {
     private Process? webserverProcess;
-    private string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
+    private readonly string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
+    private readonly string gridExecutableName = @"java/src/org/openqa/selenium/grid/selenium";
+    private readonly string projectRoot;
+    private readonly bool autoStartServer;
+    private int serverPort;
+
+    public static Uri ServerUri { get; private set; } = new Uri("http://127.0.0.1:6000/wd/hub/");
+
+    public RemoteSeleniumServer(string projectRoot, bool autoStartServer)
+    {
+        this.projectRoot = projectRoot;
+        this.autoStartServer = autoStartServer;
+        serverPort = autoStartServer ? FindAvailablePort() : ServerUri.Port;
+        if (autoStartServer)
+        {
+            UpdateServerUri(serverPort);
+        }
+    }
 
     public async Task StartAsync()
     {
         if (autoStartServer && (webserverProcess == null || webserverProcess.HasExited))
         {
-            serverJarName = serverJarName.Replace('/', Path.DirectorySeparatorChar);
-            if (!File.Exists(Path.Combine(projectRoot, serverJarName)))
+            const int maxAttempts = 5;
+            Exception? lastStartException = null;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                throw new FileNotFoundException(
-                    string.Format(
-                        "Selenium server jar at {0} didn't exist - please build it using something like {1}",
-                        serverJarName,
-                        "go //java/src/org/openqa/grid/selenium:selenium"));
-            }
+                var (executable, arguments) = FindServer(serverPort);
 
-            webserverProcess = new Process();
-            webserverProcess.StartInfo.FileName = "java.exe";
-            webserverProcess.StartInfo.Arguments = " -jar " + serverJarName + " standalone --port 6000 --selenium-manager true --enable-managed-downloads true";
-            webserverProcess.StartInfo.WorkingDirectory = projectRoot;
-            webserverProcess.Start();
-            DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
-            bool isRunning = false;
+                webserverProcess = new Process();
+                webserverProcess.StartInfo.FileName = executable;
+                webserverProcess.StartInfo.Arguments = arguments;
+                webserverProcess.StartInfo.WorkingDirectory = projectRoot;
+                webserverProcess.Start();
+                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
+                bool isRunning = false;
+                // Poll until the webserver is correctly serving pages.
+                using var httpClient = new HttpClient();
 
-            // Poll until the webserver is correctly serving pages.
-            using var httpClient = new HttpClient();
-
-            while (!isRunning && DateTime.Now < timeout)
-            {
-                try
+                while (!isRunning && DateTime.Now < timeout)
                 {
-                    using var response = await httpClient.GetAsync("http://localhost:6000/wd/hub/status");
-
-                    if (response.StatusCode == HttpStatusCode.OK)
+                    try
                     {
-                        isRunning = true;
+                        using var response = await httpClient.GetAsync(StatusUri);
+
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            isRunning = true;
+                        }
+                    }
+                    catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
+                    {
+                        lastStartException = ex;
                     }
                 }
-                catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
+
+                if (isRunning)
                 {
+                    return;
+                }
+
+                TestContext.Progress.WriteLine(
+                    $"Remote Selenium server not ready on {StatusUri} (attempt {attempt}/{maxAttempts}). " +
+                    $"Last error: {lastStartException?.Message ?? "none"}");
+
+                if (webserverProcess != null && !webserverProcess.HasExited)
+                {
+                    webserverProcess.Kill();
+                    webserverProcess = null;
+                }
+
+                if (attempt < maxAttempts)
+                {
+                    serverPort = FindAvailablePort();
+                    UpdateServerUri(serverPort);
                 }
             }
 
-            if (!isRunning)
+            throw new TimeoutException(
+                $"Could not start the remote selenium server in 30 seconds on port {serverPort}. " +
+                $"Last error: {lastStartException?.Message ?? "none"}");
+        }
+    }
+
+    private (string executable, string arguments) FindServer(int port)
+    {
+        string serverArgs =
+            $"standalone --port {port} --selenium-manager true --enable-managed-downloads true";
+
+        // Check Bazel runfiles first (for bazel test)
+        Exception? runfilesException = null;
+        try
+        {
+            var runfiles = Runfiles.Create();
+
+            // Check for grid executable in runfiles (use java -jar for all platforms)
+            string gridPath = runfiles.Rlocation("_main/" + gridExecutableName);
+            if (!string.IsNullOrEmpty(gridPath) && File.Exists(gridPath))
             {
-                throw new TimeoutException("Could not start the remote selenium server in 30 seconds");
+                return ("java", $"-jar \"{gridPath}\" {serverArgs}");
             }
         }
+        catch (Exception ex)
+        {
+            // Runfiles not available (not running under Bazel)
+            runfilesException = ex;
+        }
+
+        // Check bazel-bin path for grid executable
+        string bazelBinGridPath = Path.Combine(projectRoot, "bazel-bin", gridExecutableName.Replace('/', Path.DirectorySeparatorChar));
+        if (File.Exists(bazelBinGridPath))
+        {
+            return ("java", $"-jar \"{bazelBinGridPath}\" {serverArgs}");
+        }
+
+        // Check traditional path for JAR (for non-Bazel runs)
+        string traditionalPath = Path.Combine(projectRoot, serverJarName.Replace('/', Path.DirectorySeparatorChar));
+        if (File.Exists(traditionalPath))
+        {
+            return ("java", $"-jar \"{traditionalPath}\" {serverArgs}");
+        }
+
+        string runfilesDetail = runfilesException == null
+            ? string.Empty
+            : $" Runfiles error: {runfilesException.Message}";
+        throw new FileNotFoundException(
+            $"Selenium server not found - please build it using: bazel build grid.{runfilesDetail}");
     }
 
     public async Task StopAsync()
@@ -87,12 +170,19 @@ public class RemoteSeleniumServer(string projectRoot, bool autoStartServer)
         {
             using (var httpClient = new HttpClient())
             {
+                Exception? shutdownException = null;
                 try
                 {
-                    using var response = await httpClient.GetAsync("http://localhost:6000/selenium-server/driver?cmd=shutDownSeleniumServer");
+                    using var response = await httpClient.GetAsync(ShutdownUri);
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                 {
+                    shutdownException = ex;
+                }
+                if (shutdownException != null)
+                {
+                    TestContext.Progress.WriteLine(
+                        $"Remote Selenium server shutdown request failed at {ShutdownUri}: {shutdownException.Message}");
                 }
             }
 
@@ -105,5 +195,43 @@ public class RemoteSeleniumServer(string projectRoot, bool autoStartServer)
             webserverProcess.Dispose();
             webserverProcess = null;
         }
+    }
+
+    private Uri StatusUri => new Uri($"http://localhost:{serverPort}/wd/hub/status");
+
+    private Uri ShutdownUri =>
+        new Uri($"http://localhost:{serverPort}/selenium-server/driver?cmd=shutDownSeleniumServer");
+
+    private static int FindAvailablePort()
+    {
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            int port = PortUtilities.FindFreePort();
+            if (IsPortAvailable(port))
+            {
+                return port;
+            }
+        }
+
+        return PortUtilities.FindFreePort();
+    }
+
+    private static bool IsPortAvailable(int port)
+    {
+        try
+        {
+            using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket.Bind(new IPEndPoint(IPAddress.Loopback, port));
+            return true;
+        }
+        catch (SocketException)
+        {
+            return false;
+        }
+    }
+
+    private static void UpdateServerUri(int port)
+    {
+        ServerUri = new Uri($"http://127.0.0.1:{port}/wd/hub/");
     }
 }

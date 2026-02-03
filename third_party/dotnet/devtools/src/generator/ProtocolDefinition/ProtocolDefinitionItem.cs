@@ -5,10 +5,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
 {
     public abstract class ProtocolDefinitionItem : IDefinition
     {
-
         [JsonPropertyName("deprecated")]
         public bool Deprecated { get; set; }
 
+        [JsonIgnore]
         public string? Description
         {
             get => InitialDescription?.Replace("<", "&lt;").Replace(">", "&gt;");
@@ -28,6 +28,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
         }
 
         [JsonPropertyName("description")]
+        [JsonInclude]
         protected string? InitialDescription { get; set; }
     }
 }

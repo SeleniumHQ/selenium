@@ -486,6 +486,11 @@ const logManager = new LogManager()
 if (typeof process !== 'undefined' && process.env && (process.env.SE_DEBUG || process.env.SELENIUM_VERBOSE)) {
   logManager.root_.setLevel(Level.ALL)
   logManager.root_.addHandler(consoleHandler)
+  if (process.env.SE_DEBUG) {
+    logManager.root_.warning(
+      'Environment Variable `SE_DEBUG` is set; Selenium is forcing verbose logging which may override user-specified settings.',
+    )
+  }
 }
 
 /**

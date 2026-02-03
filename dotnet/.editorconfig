@@ -1,2 +1,85 @@
 [*.cs]
-csharp_style_namespace_declarations=file_scoped:suggestion
+# See all defaults set in selenium/.editorconfig
+
+# dotnet format whitespace
+
+# New lines and braces (Allman-style)
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+dotnet_style_operator_placement_when_wrapping = end_of_line
+
+# Preserve compact formatting where used
+csharp_preserve_single_line_statements = true
+csharp_preserve_single_line_blocks = true
+
+# Indentation
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+
+# Spacing
+csharp_space_after_cast = false
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_after_keywords_in_control_flow_statements = true
+
+# dotnet format style
+
+# Namespace
+csharp_style_namespace_declarations=file_scoped:warning
+
+# Using directives
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_using_directive_placement = outside_namespace:warning
+
+# Roslyn 
+dotnet_diagnostic.IDE0044.severity = warning  # Make field readonly
+dotnet_diagnostic.IDE0076.severity = warning  # Invalid suppression
+dotnet_diagnostic.IDE1005.severity = warning  # Delegate invocation
+
+# TODO: Additional violations to investigate
+# The following are the number of violations for each diagnostic;
+# They currently fail at info, the goal is to fix and explicitly set to warning above
+# Investigate with `dotnet format style --diagnostics IDEXXXX --severity info`
+# 1183 IDE0090
+# 633 IDE0028
+# 252 IDE0290
+# 169 IDE0077
+# 66 IDE0130
+# 65 IDE0300
+# 57 IDE1005
+# 42 IDE0017
+# 39 IDE0039
+# 36 IDE0063
+# 33 IDE0306
+# 31 IDE0083
+# 30 IDE0016
+# 30 IDE0059
+# 26 IDE0305
+# 18 IDE0031
+# 12 IDE0270
+# 11 IDE0057
+# 11 IDE0054
+# 9 IDE0350
+# 9 IDE0074
+# 7 IDE0060
+# 3 IDE0150
+# 2 IDE0038
+# 1 IDE0056
+# 1 IDE0034
+# 1 IDE0018
+# ? IDE1006

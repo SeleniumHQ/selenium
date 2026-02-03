@@ -83,4 +83,11 @@ public class ClientWindowInfo {
   public boolean isActive() {
     return active;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "ClientWindowInfo{clientWindow='%s', state=%s, width=%s, height=%s, x=%s, y=%s, active=%s}",
+        clientWindow, state, width, height, x, y, active);
+  }
 }
