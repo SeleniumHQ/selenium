@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 # Code formatter - runs targeted formatters based on what changed from trunk.
-# Usage: format.sh [--pre-commit] [--pre-push] [--lint]
+# Usage: format.sh [--all] [--pre-commit] [--pre-push] [--lint]
 #   (default)     Check all changes relative to trunk including uncommitted work
+#   --all         Format everything, skip change detection (previous behavior)
 #   --pre-commit  Only check staged changes
 #   --pre-push    Only check committed changes relative to trunk
 #   --lint        Also run linters before formatting
 set -eufo pipefail
 
 run_lint=false
+format_all=false
 mode="default"
 for arg in "$@"; do
     case "$arg" in
         --lint) run_lint=true ;;
+        --all) format_all=true ;;
 
         --pre-commit|--pre-push)
             [[ "$mode" == "default" ]] || { echo "Cannot use both --pre-commit and --pre-push" >&2; exit 1; }
@@ -19,7 +22,7 @@ for arg in "$@"; do
             ;;
         *)
             echo "Unknown option: $arg" >&2
-            echo "Usage: $0 [--pre-commit] [--pre-push] [--lint]" >&2
+            echo "Usage: $0 [--all] [--pre-commit] [--pre-push] [--lint]" >&2
             exit 1
             ;;
     esac
@@ -29,11 +32,10 @@ section() {
     echo "- $*" >&2
 }
 
-# Find what's changed compared to trunk
-format_all=false
+# Find what's changed compared to trunk (skip if --all)
 trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
 
-if [[ -n "$trunk_ref" ]]; then
+if [[ "$format_all" == "false" && -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"
     if [[ -n "$base" ]]; then
         case "$mode" in
@@ -53,12 +55,10 @@ if [[ -n "$trunk_ref" ]]; then
         esac
     else
         format_all=true
-        changed=""
     fi
-else
+elif [[ "$format_all" == "false" ]]; then
     # No trunk ref found, format everything
     format_all=true
-    changed=""
 fi
 
 # Helper to check if a pattern matches changed files
