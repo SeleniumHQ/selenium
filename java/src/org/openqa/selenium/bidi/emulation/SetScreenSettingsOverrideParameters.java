@@ -14,41 +14,31 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.bidi.browsingcontext;
 
-import java.util.Map;
+package org.openqa.selenium.bidi.emulation;
 
-public abstract class ClipRectangle {
-  enum Type {
-    ELEMENT("element"),
-    BOX("box");
+import java.util.List;
+import org.jspecify.annotations.Nullable;
 
-    private final String value;
+public class SetScreenSettingsOverrideParameters extends AbstractOverrideParameters {
 
-    Type(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return value;
+  public SetScreenSettingsOverrideParameters(@Nullable ScreenArea area) {
+    if (area == null) {
+      map.put("screenArea", null);
+    } else {
+      map.put("screenArea", area.toMap());
     }
   }
-
-  private final Type type;
-
-  ClipRectangle(Type type) {
-    this.type = type;
-  }
-
-  Type getType() {
-    return type;
-  }
-
-  public abstract Map<String, Object> toMap();
 
   @Override
-  public String toString() {
-    return String.format("%s{%s}", getClass().getSimpleName(), toMap());
+  public SetScreenSettingsOverrideParameters contexts(List<String> contexts) {
+    super.contexts(contexts);
+    return this;
+  }
+
+  @Override
+  public SetScreenSettingsOverrideParameters userContexts(List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
   }
 }

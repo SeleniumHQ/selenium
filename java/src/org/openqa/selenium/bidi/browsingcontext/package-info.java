@@ -14,41 +14,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+@NullMarked
 package org.openqa.selenium.bidi.browsingcontext;
 
-import java.util.Map;
-
-public abstract class ClipRectangle {
-  enum Type {
-    ELEMENT("element"),
-    BOX("box");
-
-    private final String value;
-
-    Type(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return value;
-    }
-  }
-
-  private final Type type;
-
-  ClipRectangle(Type type) {
-    this.type = type;
-  }
-
-  Type getType() {
-    return type;
-  }
-
-  public abstract Map<String, Object> toMap();
-
-  @Override
-  public String toString() {
-    return String.format("%s{%s}", getClass().getSimpleName(), toMap());
-  }
-}
+import org.jspecify.annotations.NullMarked;

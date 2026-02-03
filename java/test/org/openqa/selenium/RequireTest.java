@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.internal.Require.nonNull;
 
@@ -184,6 +185,21 @@ class RequireTest {
         .isThrownBy(() -> Require.argument("Timeout", 3).greaterThan(5, "It should be longer"))
         .withMessage("It should be longer");
     assertThat(Require.argument("Timeout", 10).greaterThan(5, "It should be longer")).isEqualTo(10);
+  }
+
+  @Test
+  void canCheckThatDoubleValueIsInRange() {
+    Require.inRangeInclusive("Sin", 0.0, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 0.001, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 0.99999, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 1.0, 0.0, 1.0);
+
+    assertThatThrownBy(() -> Require.inRangeInclusive("Sin", -0.01, 0.0, 1.0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Sin must be between 0.0 and 1.0 (inclusive)");
+    assertThatThrownBy(() -> Require.inRangeInclusive("Sin", 1.0001, 0.0, 1.0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Sin must be between 0.0 and 1.0 (inclusive)");
   }
 
   @Test

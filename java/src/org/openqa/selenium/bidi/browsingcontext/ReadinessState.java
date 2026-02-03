@@ -30,6 +30,6 @@ public enum ReadinessState {
 
   @Override
   public String toString() {
-    return String.valueOf(text);
+    return text;
   }
 }

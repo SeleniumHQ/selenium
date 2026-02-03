@@ -17,35 +17,22 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
-public abstract class ClipRectangle {
-  enum Type {
-    ELEMENT("element"),
-    BOX("box");
+public class ImageFormat {
+  private final String type;
+  private final @Nullable Double quality;
 
-    private final String value;
-
-    Type(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return value;
-    }
+  public ImageFormat(String type, @Nullable Double quality) {
+    this.type = Require.nonNull("Image type", type);
+    this.quality =
+        quality == null ? null : Require.inRangeInclusive("Image quality", quality, 0.0, 1.0);
   }
 
-  private final Type type;
-
-  ClipRectangle(Type type) {
-    this.type = type;
+  public Map<String, @Nullable Object> toMap() {
+    return quality == null ? Map.of("type", type) : Map.of("type", type, "quality", quality);
   }
-
-  Type getType() {
-    return type;
-  }
-
-  public abstract Map<String, Object> toMap();
 
   @Override
   public String toString() {

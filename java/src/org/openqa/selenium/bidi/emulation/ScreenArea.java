@@ -14,41 +14,21 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.bidi.browsingcontext;
+
+package org.openqa.selenium.bidi.emulation;
 
 import java.util.Map;
 
-public abstract class ClipRectangle {
-  enum Type {
-    ELEMENT("element"),
-    BOX("box");
+public class ScreenArea {
+  private final int height;
+  private final int width;
 
-    private final String value;
-
-    Type(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return value;
-    }
+  public ScreenArea(int width, int height) {
+    this.width = width;
+    this.height = height;
   }
 
-  private final Type type;
-
-  ClipRectangle(Type type) {
-    this.type = type;
-  }
-
-  Type getType() {
-    return type;
-  }
-
-  public abstract Map<String, Object> toMap();
-
-  @Override
-  public String toString() {
-    return String.format("%s{%s}", getClass().getSimpleName(), toMap());
+  public Map<String, Integer> toMap() {
+    return Map.of("width", width, "height", height);
   }
 }

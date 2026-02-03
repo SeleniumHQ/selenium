@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.internal;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -48,6 +50,7 @@ public final class Require {
   private static final String MUST_BE_EXECUTABLE = "%s must be executable: %s";
   private static final String MUST_BE_NON_NEGATIVE = "%s must be 0 or greater";
   private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
+  private static final String MUST_BE_BETWEEN = "%s must be between %s and %s (inclusive)";
 
   private Require() {
     // An utility class
@@ -161,6 +164,22 @@ public final class Require {
 
   public static int positive(String argName, @Nullable Integer number) {
     return positive(argName, number, null);
+  }
+
+  public static long positive(String argName, @Nullable Long number) {
+    positive(argName, number == null ? null : number.doubleValue());
+    return requireNonNull(number);
+  }
+
+  public static double inRangeInclusive(
+      String argName, @Nullable Double value, double min, double max) {
+    if (value == null) {
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    }
+    if (value < min || value > max) {
+      throw new IllegalArgumentException(String.format(MUST_BE_BETWEEN, argName, min, max));
+    }
+    return value;
   }
 
   public static IntChecker argument(String argName, @Nullable Integer number) {
