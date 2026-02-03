@@ -35,10 +35,7 @@ section() {
 
 # Find what's changed compared to trunk
 format_all=false
-trunk_ref="$(git rev-parse --verify selenium/trunk 2>/dev/null \
-          || git rev-parse --verify origin/trunk 2>/dev/null \
-          || git rev-parse --verify trunk 2>/dev/null \
-          || echo "")"
+trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
 
 if [[ -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"
