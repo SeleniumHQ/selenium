@@ -191,12 +191,12 @@ public static partial class SeleniumManager
     /// </summary>
     /// <param name="browserName">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
     /// <param name="options">Optional discovery options to control browser and driver resolution.</param>
-    /// <returns>A <see cref="DiscoveryResult"/> containing the paths to the driver and browser executables.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="browserName"/> is null or empty.</exception>
+    /// <returns>A <see cref="BrowserDiscoveryResult"/> containing the paths to the driver and browser executables.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="browserName"/> is null, empty, or whitespace.</exception>
     /// <exception cref="WebDriverException">Thrown when Selenium Manager fails to locate or download the required binaries.</exception>
-    public static DiscoveryResult DiscoverBrowser(string browserName, DiscoveryOptions? options = null)
+    public static BrowserDiscoveryResult DiscoverBrowser(string browserName, BrowserDiscoveryOptions? options = null)
     {
-        if (string.IsNullOrEmpty(browserName))
+        if (string.IsNullOrWhiteSpace(browserName))
         {
             throw new ArgumentException("Browser name must be specified to find the driver using Selenium Manager.", nameof(browserName));
         }
@@ -240,7 +240,7 @@ public static partial class SeleniumManager
             argsBuilder.Append(" --log-level debug");
         }
 
-        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.DiscoveryResult, options?.Timeout);
+        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.BrowserDiscoveryResult, options?.Timeout);
     }
 
     private static TResult RunCommand<TResult>(string arguments, JsonTypeInfo<TResult> jsonResultTypeInfo, TimeSpan? timeout = null)
@@ -375,50 +375,6 @@ public static partial class SeleniumManager
         }
     }
 
-    /// <summary>
-    /// Provides optional configuration for browser and driver discovery.
-    /// </summary>
-    public record DiscoveryOptions
-    {
-        /// <summary>
-        /// Gets or sets the specific browser version to target (e.g., "120.0.6099.109").
-        /// If not specified, the installed browser version is detected automatically.
-        /// </summary>
-        public string? BrowserVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the path to the browser executable.
-        /// When specified, Selenium Manager uses this path instead of detecting the browser location.
-        /// </summary>
-        public string? BrowserPath { get; set; }
-
-        /// <summary>
-        /// Gets or sets the specific driver version to download (e.g., "120.0.6099.109").
-        /// If not specified, the driver version matching the browser version is selected automatically.
-        /// </summary>
-        public string? DriverVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the proxy server URL for downloading browser drivers.
-        /// </summary>
-        public string? Proxy { get; set; }
-
-        /// <summary>
-        /// Gets or sets the timeout for the Selenium Manager process execution.
-        /// If not specified, the process will run without a timeout.
-        /// </summary>
-        public TimeSpan? Timeout { get; set; }
-    }
-
-    /// <summary>
-    /// Contains the paths to the discovered browser driver and browser executable.
-    /// </summary>
-    /// <param name="DriverPath">The absolute path to the browser driver executable.</param>
-    /// <param name="BrowserPath">The absolute path to the browser executable.</param>
-    public record DiscoveryResult(
-        [property: JsonPropertyName("driver_path")] string DriverPath,
-        [property: JsonPropertyName("browser_path")] string BrowserPath);
-
     const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
 
 #if NET8_0_OR_GREATER
@@ -431,7 +387,51 @@ public static partial class SeleniumManager
 #endif
 }
 
-[JsonSerializable(typeof(SeleniumManager.DiscoveryResult))]
+/// <summary>
+/// Provides optional configuration for browser and driver discovery.
+/// </summary>
+public record BrowserDiscoveryOptions
+{
+    /// <summary>
+    /// Gets or sets the specific browser version to target (e.g., "120.0.6099.109").
+    /// If not specified, the installed browser version is detected automatically.
+    /// </summary>
+    public string? BrowserVersion { get; set; }
+
+    /// <summary>
+    /// Gets or sets the path to the browser executable.
+    /// When specified, Selenium Manager uses this path instead of detecting the browser location.
+    /// </summary>
+    public string? BrowserPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the specific driver version to download (e.g., "120.0.6099.109").
+    /// If not specified, the driver version matching the browser version is selected automatically.
+    /// </summary>
+    public string? DriverVersion { get; set; }
+
+    /// <summary>
+    /// Gets or sets the proxy server URL for downloading browser drivers.
+    /// </summary>
+    public string? Proxy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the timeout for the Selenium Manager process execution.
+    /// If not specified, the process will run without a timeout.
+    /// </summary>
+    public TimeSpan? Timeout { get; set; }
+}
+
+/// <summary>
+/// Contains the paths to the discovered browser driver and browser executable.
+/// </summary>
+/// <param name="DriverPath">The absolute path to the browser driver executable.</param>
+/// <param name="BrowserPath">The absolute path to the browser executable.</param>
+public record BrowserDiscoveryResult(
+    [property: JsonPropertyName("driver_path")] string DriverPath,
+    [property: JsonPropertyName("browser_path")] string BrowserPath);
+
+[JsonSerializable(typeof(BrowserDiscoveryResult))]
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 internal sealed partial class SeleniumManagerSerializerContext : JsonSerializerContext;
 

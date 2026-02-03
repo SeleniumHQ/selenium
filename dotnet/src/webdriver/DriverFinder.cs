@@ -115,7 +115,7 @@ public class DriverFinder
             throw new NoSuchDriverException("Browser name must be specified to find the driver using Selenium Manager.");
         }
 
-        SeleniumManager.DiscoveryResult smResult = SeleniumManager.DiscoverBrowser(options.BrowserName, new SeleniumManager.DiscoveryOptions
+        BrowserDiscoveryResult smResult = SeleniumManager.DiscoverBrowser(options.BrowserName, new BrowserDiscoveryOptions
         {
             BrowserVersion = options.BrowserVersion,
             BrowserPath = options.BinaryLocation,
