@@ -4,11 +4,8 @@
 #   (default)     Check all changes relative to trunk including uncommitted work
 #   --pre-commit  Only check staged changes
 #   --pre-push    Only check committed changes relative to trunk
-#   --lint        Also run linters after formatting
-set -ufo pipefail
-
-failed=0
-run() { "$@" || failed=1; }
+#   --lint        Also run linters before formatting
+set -eufo pipefail
 
 run_lint=false
 mode="default"
@@ -77,72 +74,66 @@ baseline="$(git status --porcelain)"
 # Always run buildifier and copyright
 section "Buildifier"
 echo "    buildifier" >&2
-run bazel run //:buildifier
+bazel run //:buildifier
 
 section "Copyright"
 echo "    update_copyright" >&2
-run bazel run //scripts:update_copyright
+bazel run //scripts:update_copyright
 
 # Run language formatters only if those files changed
 if changed_matches '^java/'; then
     section "Java"
     echo "    google-java-format" >&2
-    if GOOGLE_JAVA_FORMAT="$(bazel run --run_under=echo //scripts:google-java-format)"; then
-        run find "${WORKSPACE_ROOT}/java" -type f -name '*.java' -exec "$GOOGLE_JAVA_FORMAT" --replace {} +
-    else
-        failed=1
-    fi
+    GOOGLE_JAVA_FORMAT="$(bazel run --run_under=echo //scripts:google-java-format)"
+    find "${WORKSPACE_ROOT}/java" -type f -name '*.java' -exec "$GOOGLE_JAVA_FORMAT" --replace {} +
 fi
 
 if changed_matches '^javascript/selenium-webdriver/'; then
     section "JavaScript"
     echo "    prettier" >&2
     NODE_WEBDRIVER="${WORKSPACE_ROOT}/javascript/selenium-webdriver"
-    run bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc" --log-level=warn
+    bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc" --log-level=warn
 fi
 
 if changed_matches '^rb/|^rake_tasks/|^Rakefile'; then
     section "Ruby"
     echo "    rubocop -a" >&2
-    run bazel run //rb:rubocop -- -a --fail-level F
     if [[ "$run_lint" == "true" ]]; then
-        echo "    rubocop" >&2
-        run bazel run //rb:rubocop
+        bazel run //rb:rubocop -- -a
+    else
+        bazel run //rb:rubocop -- -a --fail-level F
     fi
 fi
 
 if changed_matches '^rust/'; then
     section "Rust"
     echo "    rustfmt" >&2
-    run bazel run @rules_rust//:rustfmt
+    bazel run @rules_rust//:rustfmt
 fi
 
 if changed_matches '^py/'; then
     section "Python"
-    echo "    ruff format" >&2
-    run bazel run //py:ruff-format
     if [[ "$run_lint" == "true" ]]; then
         echo "    ruff check" >&2
-        run bazel run //py:ruff
+        bazel run //py:ruff-check
     fi
+    echo "    ruff format" >&2
+    bazel run //py:ruff-format
 fi
 
 if changed_matches '^dotnet/'; then
     section ".NET"
     echo "    dotnet format" >&2
-    run bazel run //dotnet:format -- style --severity warn
-    run bazel run //dotnet:format -- whitespace
+    bazel run //dotnet:format -- style --severity warn
+    bazel run //dotnet:format -- whitespace
 fi
 
 # Run shellcheck and actionlint when --lint is passed
 if [[ "$run_lint" == "true" ]]; then
     section "Shell/Actions"
     echo "    actionlint (with shellcheck)" >&2
-    if SHELLCHECK="$(bazel run --run_under=echo @multitool//tools/shellcheck)"; then
-        run bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
-    else
-        failed=1
-    fi
+    SHELLCHECK="$(bazel run --run_under=echo @multitool//tools/shellcheck)"
+    bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
 fi
 
 # Check if formatting introduced new changes (comparing to baseline)
@@ -150,10 +141,6 @@ if [[ "$(git status --porcelain)" != "$baseline" ]]; then
     echo "" >&2
     echo "Formatters modified files:" >&2
     git diff --name-only >&2
-    failed=1
-fi
-
-if [[ "$failed" -eq 1 ]]; then
     exit 1
 fi
 
