@@ -17,83 +17,38 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Objects.requireNonNullElse;
-
-import org.openqa.selenium.json.JsonInput;
+import java.util.Map;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
 public class DownloadCompleted extends NavigationInfo {
 
-  private final String status;
-  private final String filepath;
-
-  private static final String COMPLETE = "complete";
+  @Nullable private final String filepath;
 
   DownloadCompleted(
       String browsingContextId,
-      String navigationId,
+      @Nullable String navigationId,
       long timestamp,
       String url,
-      String status,
-      String filepath) {
+      @Nullable String filepath) {
     super(browsingContextId, navigationId, timestamp, url);
-    this.status = requireNonNullElse(status, COMPLETE);
     this.filepath = filepath;
   }
 
-  public static DownloadCompleted fromJson(JsonInput input) {
-    String browsingContextId = null;
-    String navigationId = null;
-    long timestamp = 0;
-    String url = null;
-    String status = COMPLETE;
-    String filepath = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContextId = input.read(String.class);
-          break;
-
-        case "navigation":
-          navigationId = input.read(String.class);
-          break;
-
-        case "timestamp":
-          timestamp = input.read(Long.class);
-          break;
-
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        case "status":
-          status = input.read(String.class);
-          if (!COMPLETE.equals(status)) {
-            throw new IllegalArgumentException(
-                "Expected status '" + COMPLETE + "' , but got: " + status);
-          }
-          break;
-
-        case "filepath":
-          filepath = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new DownloadCompleted(browsingContextId, navigationId, timestamp, url, status, filepath);
+  static DownloadCompleted fromJson(Map<String, @Nullable Object> json) {
+    return new DownloadCompleted(
+        Require.nonNull("browsingContext", (String) json.get("context")),
+        (String) json.get("navigation"),
+        Require.positive("Timestamp", (Long) json.get("timestamp")),
+        Require.nonNull("URL", (String) json.get("url")),
+        (String) json.get("filepath"));
   }
 
   public String getStatus() {
-    return status;
+    return "complete";
   }
 
+  @Nullable
   public String getFilepath() {
     return filepath;
   }

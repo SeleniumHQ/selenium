@@ -14,3 +14,4 @@
 - Update `remote\ChromeRemoteWebDriver.cs` Uri to your remote server IP and port. i.e. "http://10.100.102.3:4444/wd/hub/".
 - Same goes for the rest of the drivers types you would like to use. (can be found under 'test\remote').
 - Run the tests in NUnit.
+- Run the tests in Bazel `bazel test //dotnet/test/remote:AllTests`

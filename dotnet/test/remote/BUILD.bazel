@@ -1,0 +1,20 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
+
+dotnet_nunit_test_suite(
+    name = "AllTests",
+    size = "large",
+    srcs = glob(["**/*.cs"]),
+    out = "WebDriver.Remote.Tests",
+    browsers = ["remote"],
+    data = [
+        "//dotnet/test/common:test-data",
+    ],
+    flaky = True,
+    target_frameworks = ["net8.0"],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net8.0",
+        "//dotnet/test/common:fixtures",
+        nuget_package("NUnit"),
+        nuget_package("Runfiles"),
+    ],
+)

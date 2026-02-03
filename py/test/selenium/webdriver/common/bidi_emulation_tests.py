@@ -112,6 +112,12 @@ def is_online(driver, context_id):
     return result.result["value"]
 
 
+def get_screen_dimensions(driver, context_id):
+    width_result = driver.script._evaluate("screen.width", {"context": context_id}, await_promise=False)
+    height_result = driver.script._evaluate("screen.height", {"context": context_id}, await_promise=False)
+    return {"width": width_result.result["value"], "height": height_result.result["value"]}
+
+
 def test_emulation_initialized(driver):
     assert driver.emulation is not None
     assert isinstance(driver.emulation, Emulation)
@@ -616,6 +622,61 @@ def test_set_network_conditions_offline_with_user_context(driver, pages):
             assert is_online(driver, context_id) is False
         finally:
             driver.emulation.set_network_conditions(offline=False, user_contexts=[user_context])
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
+def test_set_screen_settings_override_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+    initial_dimensions = get_screen_dimensions(driver, context_id)
+
+    try:
+        # Set custom screen dimensions
+        driver.emulation.set_screen_settings_override(width=1024, height=768, contexts=[context_id])
+
+        # Verify the screen dimensions were set
+        current_dimensions = get_screen_dimensions(driver, context_id)
+        assert current_dimensions["width"] == 1024, f"Expected width 1024, got {current_dimensions['width']}"
+        assert current_dimensions["height"] == 768, f"Expected height 768, got {current_dimensions['height']}"
+
+    finally:
+        # Clear the override
+        driver.emulation.set_screen_settings_override(contexts=[context_id])
+
+        # Verify the screen dimensions were restored
+        restored_dimensions = get_screen_dimensions(driver, context_id)
+        assert restored_dimensions == initial_dimensions, f"Expected dimensions to be restored to {initial_dimensions}"
+
+
+@pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
+def test_set_screen_settings_override_with_user_contexts(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+            initial_dimensions = get_screen_dimensions(driver, context_id)
+
+            driver.emulation.set_screen_settings_override(width=800, height=600, user_contexts=[user_context])
+
+            current_dimensions = get_screen_dimensions(driver, context_id)
+            assert current_dimensions["width"] == 800, f"Expected width 800, got {current_dimensions['width']}"
+            assert current_dimensions["height"] == 600, f"Expected height 600, got {current_dimensions['height']}"
+
+            driver.emulation.set_screen_settings_override(user_contexts=[user_context])
+
+            restored_dimensions = get_screen_dimensions(driver, context_id)
+            assert restored_dimensions == initial_dimensions, (
+                f"Expected dimensions to be restored to {initial_dimensions}"
+            )
+        finally:
             driver.browsing_context.close(context_id)
     finally:
         driver.browser.remove_user_context(user_context)

@@ -271,6 +271,15 @@ class JsonTest {
   }
 
   @Test
+  void shouldBeAbleToReadAnInstant() {
+    Instant now = Instant.now();
+
+    Dates instant = new Json().toType("{\"birth\": \"" + now + "\"}", Dates.class, BY_FIELD);
+
+    assertThat(instant.birth).isEqualTo(now);
+  }
+
+  @Test
   void shouldBeAbleToReadAnInstantFromTimestamp() {
     long now = System.currentTimeMillis();
 

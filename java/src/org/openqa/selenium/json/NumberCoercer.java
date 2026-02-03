@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,10 +39,12 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
             Map.entry(short.class, Short.class));
   }
 
+  private final JsonTypeCoercer typeCoercer;
   private final Class<T> stereotype;
   private final Function<Number, T> mapper;
 
-  NumberCoercer(Class<T> stereotype, Function<Number, T> mapper) {
+  NumberCoercer(JsonTypeCoercer typeCoercer, Class<T> stereotype, Function<Number, T> mapper) {
+    this.typeCoercer = Require.nonNull("TypeCoercer", typeCoercer);
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.mapper = Require.nonNull("Mapper", mapper);
   }
@@ -63,9 +65,13 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
         case STRING:
           String numberAsString = jsonInput.nextString();
-          try {
-            number = new BigDecimal(numberAsString);
-          } catch (NumberFormatException e) {
+          // any PropertySetting is okay here, as we know it won't be used
+          try (JsonInput nestedInput =
+              new JsonInput(new StringReader(numberAsString), typeCoercer, setting)) {
+            number = nestedInput.nextNumber();
+            // ensure the 'numberAsString' string has been read to the end
+            nestedInput.nextEnd();
+          } catch (JsonException e) {
             throw new JsonException(
                 String.format("Not a numeric value: \"%s\"", numberAsString), e);
           }

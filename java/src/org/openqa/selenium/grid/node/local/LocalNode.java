@@ -35,7 +35,6 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -96,6 +95,10 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedReason;
+import org.openqa.selenium.grid.data.SessionCreatedData;
+import org.openqa.selenium.grid.data.SessionCreatedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -325,6 +328,7 @@ public class LocalNode extends Node implements Closeable {
                   stopAllSessions();
                   drain();
                 }));
+
     new JMXHelper().register(this);
   }
 
@@ -368,8 +372,8 @@ public class LocalNode extends Node implements Closeable {
                 String.format("Exception while trying to stop session %s", id), attributeMap);
           }
         }
-        // Attempt to stop the session with the appropriate reason
-        slot.stop(closeReason);
+        // Attempt to stop the session with the appropriate reason and node context
+        slot.stop(closeReason, getId(), externalUri);
         // Decrement the reserved/active session counter
         reservedOrActiveSessionCount.decrementAndGet();
         // Decrement pending sessions if Node is draining
@@ -634,6 +638,20 @@ public class LocalNode extends Node implements Closeable {
             String.format(
                 "%s. Id: %s, Caps: %s",
                 sessionCreatedMessage, sessionId, externalSession.getCapabilities()));
+
+        // Create session data for events and listeners
+        SessionCreatedData createdData =
+            new SessionCreatedData(
+                sessionId,
+                getId(),
+                externalUri,
+                session.getUri(),
+                externalSession.getCapabilities(),
+                slotToUse.getStereotype(),
+                externalSession.getStartTime());
+
+        // Fire session created event for sidecar services
+        bus.fire(new SessionCreatedEvent(createdData));
 
         return Either.right(
             new CreateSessionResponse(
@@ -905,7 +923,7 @@ public class LocalNode extends Node implements Closeable {
 
   private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
       throws IOException {
-    String raw = string(req);
+    String raw = req.contentAsString();
     if (raw.isEmpty()) {
       throw new WebDriverException(
           "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
@@ -1010,7 +1028,7 @@ public class LocalNode extends Node implements Closeable {
       return executeWebDriverCommand(req);
     }
 
-    Map<String, Object> incoming = JSON.toType(string(req), Json.MAP_TYPE);
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
 
     File tempDir;
     try {
@@ -1034,6 +1052,52 @@ public class LocalNode extends Node implements Closeable {
 
     Map<String, Object> result = Map.of("value", allFiles[0].getAbsolutePath());
 
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  @Override
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    Require.nonNull("Session ID", id);
+
+    // Verify session exists
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+
+    // Parse the event data from request
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
+    String eventType = (String) incoming.get("eventType");
+    if (eventType == null || eventType.isEmpty()) {
+      throw new WebDriverException(
+          "Event type is required. Please provide 'eventType' in payload.");
+    }
+
+    Object rawPayload = incoming.get("payload");
+    Map<String, Object> payload =
+        (rawPayload instanceof Map) ? (Map<String, Object>) rawPayload : Map.of();
+
+    // Create event data with node context
+    SessionEventData eventData =
+        SessionEventData.create(id, eventType, payload).withNodeContext(getId(), externalUri);
+
+    // Fire event via EventBus for sidecar services
+    bus.fire(new SessionEvent(eventData));
+
+    LOG.log(
+        Level.FINE,
+        () -> String.format("Session event fired: type=%s, sessionId=%s", eventType, id));
+
+    // Return success response
+    Map<String, Object> responseData =
+        Map.of(
+            "success",
+            true,
+            "eventType",
+            eventType,
+            "timestamp",
+            eventData.getTimestamp().toString());
+    Map<String, Object> result = Map.of("value", responseData);
     return new HttpResponse().setContent(asJson(result));
   }
 

@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium.Remote;
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Remote;
 public class TestInternetExplorerRemoteWebDriver : RemoteWebDriver
 {
     public TestInternetExplorerRemoteWebDriver()
-        : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new InternetExplorerOptions())
+        : base(RemoteSeleniumServer.ServerUri, new InternetExplorerOptions())
     {
         this.FileDetector = new LocalFileDetector();
     }
