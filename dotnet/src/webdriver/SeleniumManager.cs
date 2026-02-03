@@ -421,7 +421,7 @@ public static partial class SeleniumManager
 
     const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
 
-# if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [GeneratedRegex(LogMessageRegexPattern)]
     private static partial Regex GeneratedLogMessageRegex();
 
