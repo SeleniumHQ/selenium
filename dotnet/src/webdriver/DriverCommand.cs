@@ -410,6 +410,11 @@ public static class DriverCommand
     public static readonly string DeleteDownloadableFiles = "deleteDownloadableFiles";
 
     /// <summary>
+    /// Represents the FireSessionEvent command for firing custom session events.
+    /// </summary>
+    public static readonly string FireSessionEvent = "fireSessionEvent";
+
+    /// <summary>
     /// Lists the set of known commands valid for the Selenium library.
     /// </summary>
     public static readonly IList<string> KnownCommands = new List<string>()
@@ -487,6 +492,7 @@ public static class DriverCommand
         SetUserVerified,
         GetDownloadableFiles,
         DownloadFile,
-        DeleteDownloadableFiles
+        DeleteDownloadableFiles,
+        FireSessionEvent
     }.AsReadOnly();
 }

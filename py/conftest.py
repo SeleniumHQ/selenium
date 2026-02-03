@@ -180,6 +180,19 @@ def pytest_generate_tests(metafunc):
 selenium_driver = None
 
 
+def get_extensions_location():
+    """Locate the test extensions directory.
+
+    Use Runfiles to locate it if running with bazel, otherwise find it in the local source tree.
+    """
+    if Runfiles is not None:
+        r = Runfiles.Create()
+        extensions = r.Rlocation("selenium/py/test/extensions")
+    else:
+        extensions = str((Path(__file__).parent.parent / "common" / "extensions").resolve())
+    return extensions
+
+
 class ContainerProtocol:
     def __contains__(self, name):
         if name.lower() in self.__dict__:

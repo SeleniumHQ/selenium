@@ -275,7 +275,7 @@ public class Connection implements Closeable {
           () -> {
             try {
               handle(data);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
               throw new BiDiException("Unable to process BiDi response: " + data, e);
             }
           });

@@ -20,12 +20,18 @@ package org.openqa.selenium.bidi.browsingcontext;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.data.Offset.offset;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import javax.imageio.ImageIO;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -397,14 +403,29 @@ class BrowsingContextTest extends JupiterTestBase {
   // Meanwhile, trusting the browsers to do the right thing.
   @Test
   @NeedsFreshDriver
-  void canCaptureScreenshot() {
+  void canCaptureScreenshot() throws IOException {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
     driver.get(pages.simpleTestPage);
 
     String screenshot = browsingContext.captureScreenshot();
 
-    assertThat(screenshot).isNotEmpty();
+    verifyScreenshot(screenshot);
+  }
+
+  private void verifyScreenshot(String screenshotBase64) throws IOException {
+    byte[] screenshotBytes = Base64.getDecoder().decode(screenshotBase64);
+    BufferedImage screenshot = ImageIO.read(new ByteArrayInputStream(screenshotBytes));
+    Dimension expectedSize = getViewportSize();
+
+    assertLength(screenshot.getWidth(), expectedSize.getWidth());
+    assertLength(screenshot.getHeight(), expectedSize.getHeight());
+  }
+
+  private void assertLength(int length, int expected) {
+    int expectedLength = (int) (expected * getDevicePixelRatio());
+    Offset<Integer> tolerance = offset(20);
+    assertThat(length).isCloseTo(expectedLength, tolerance);
   }
 
   @Test
@@ -574,6 +595,7 @@ class BrowsingContextTest extends JupiterTestBase {
                 "<p id=\"result\"></p>"));
   }
 
+  @SuppressWarnings("unchecked")
   private <T> T executeScript(String js) {
     return (T) ((JavascriptExecutor) driver).executeScript(js);
   }

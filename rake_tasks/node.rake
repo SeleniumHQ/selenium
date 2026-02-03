@@ -111,12 +111,17 @@ end
 desc 'Alias for node:release'
 task deploy: :release
 
-desc 'Generate Node documentation'
+desc 'Generate and stage Node documentation'
 task :docs do |_task, arguments|
   if node_version.include?('nightly') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
+  Rake::Task['node:docs_generate'].invoke
+end
+
+desc 'Generate Node documentation without staging'
+task :docs_generate do
   puts 'Generating Node documentation'
   FileUtils.rm_rf('build/docs/api/javascript/')
   Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
@@ -150,12 +155,17 @@ task :version, [:version] do |_task, arguments|
   end
 end
 
-desc 'Run Node linter (prettier)'
-task :lint do |_task, arguments|
-  args = arguments.to_a
+desc 'Format JavaScript code with prettier'
+task :format do
   node_dir = File.expand_path('javascript/selenium-webdriver')
   prettier_config = File.join(node_dir, '.prettierrc')
   puts '  Running prettier...'
-  Bazel.execute('run', args + ['--', node_dir, '--write', "--config=#{prettier_config}", '--log-level=warn'],
+  Bazel.execute('run', ['--', node_dir, '--write', "--config=#{prettier_config}", '--log-level=warn'],
                 '//javascript:prettier')
+end
+
+desc 'Run JavaScript linter (docs only for now, eslint needs bazel integration work)'
+task :lint do
+  # TODO: Add eslint once bazel target properly resolves workspace modules
+  Rake::Task['node:docs_generate'].invoke
 end

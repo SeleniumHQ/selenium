@@ -578,6 +578,53 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     }
 
     /// <summary>
+    /// Fires a custom session event to the remote server event bus.
+    /// This allows test code to trigger server-side utilities that subscribe to the event bus.
+    /// </summary>
+    /// <param name="eventType">The type of event (e.g., "test:failed", "log:collect", "marker:add").</param>
+    /// <param name="payload">Optional data to include with the event.</param>
+    /// <returns>A dictionary containing the response data including success status, event type, and timestamp.</returns>
+    /// <exception cref="WebDriverException">If the event cannot be fired.</exception>
+    /// <example>
+    /// <code>
+    /// // Fire a simple event
+    /// driver.FireSessionEvent("test:started");
+    ///
+    /// // Fire an event with payload
+    /// driver.FireSessionEvent("test:failed", new Dictionary&lt;string, object&gt;
+    /// {
+    ///     { "testName", "LoginTest" },
+    ///     { "error", "Element not found" }
+    /// });
+    /// </code>
+    /// </example>
+    public IDictionary<string, object?> FireSessionEvent(string eventType, IDictionary<string, object?>? payload = null)
+    {
+        if (string.IsNullOrEmpty(eventType))
+        {
+            throw new ArgumentException("Event type must not be null or empty", nameof(eventType));
+        }
+
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
+        {
+            { "eventType", eventType }
+        };
+
+        if (payload != null && payload.Count > 0)
+        {
+            parameters.Add("payload", payload);
+        }
+
+        Response commandResponse = this.Execute(DriverCommand.FireSessionEvent, parameters);
+        if (commandResponse.Value is not Dictionary<string, object?> value)
+        {
+            throw new WebDriverException("FireSessionEvent returned successfully, but response content was not an object: " + commandResponse.Value);
+        }
+
+        return value;
+    }
+
+    /// <summary>
     /// Closes a DevTools session.
     /// </summary>
     [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]

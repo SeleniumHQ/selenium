@@ -46,6 +46,7 @@ filegroup(
 alias(
     name = "grid",
     actual = "//java/src/org/openqa/selenium/grid:executable-grid",
+    visibility = ["//visibility:public"],
 )
 
 alias(

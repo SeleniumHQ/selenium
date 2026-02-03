@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Targets
-      cache-name: bazel-test-target-index
+      cache-name: bazel-test-file-index
       run: |
         if [ "${{ github.event_name }}" == "schedule" ] || \
         [ "${{ github.event_name }}" == "workflow_call" ] || \
@@ -42,9 +42,9 @@ jobs:
           BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha || 'HEAD' }}"
           if [ -n "$BASE_SHA" ]; then
-            ./go bazel:affected_targets "${BASE_SHA}..${HEAD_SHA}" bazel-test-target-index
+            ./go bazel:affected_targets "${BASE_SHA}..${HEAD_SHA}" bazel-test-file-index
           else
-            ./go bazel:affected_targets bazel-test-target-index
+            ./go bazel:affected_targets bazel-test-file-index
           fi
         fi
       artifact-name: check-targets

@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from conftest import Driver
-
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+
+from conftest import Driver
 
 
 def test_profile_is_used(request, server):

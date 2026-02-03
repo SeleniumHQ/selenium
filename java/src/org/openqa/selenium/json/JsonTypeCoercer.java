@@ -71,28 +71,35 @@ class JsonTypeCoercer {
     // From java
     builder.add(new BooleanCoercer());
 
-    builder.add(new NumberCoercer<>(Byte.class, Number::byteValue));
-    builder.add(new NumberCoercer<>(Double.class, Number::doubleValue));
-    builder.add(new NumberCoercer<>(Float.class, Number::floatValue));
-    builder.add(new NumberCoercer<>(Integer.class, Number::intValue));
-    builder.add(new NumberCoercer<>(Long.class, Number::longValue));
+    builder.add(new NumberCoercer<>(this, Byte.class, Number::byteValue));
+    builder.add(new NumberCoercer<>(this, Double.class, Number::doubleValue));
+    builder.add(new NumberCoercer<>(this, Float.class, Number::floatValue));
+    builder.add(new NumberCoercer<>(this, Integer.class, Number::intValue));
+    builder.add(new NumberCoercer<>(this, Long.class, Number::longValue));
     builder.add(
         new NumberCoercer<>(
+            this,
             Number.class,
             num -> {
+              if (num instanceof Long) {
+                return num;
+              }
+
               double doubleValue = num.doubleValue();
-              if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
+              if (doubleValue % 1 != 0
+                  || doubleValue < Long.MIN_VALUE
+                  || doubleValue > Long.MAX_VALUE) {
                 return doubleValue;
               }
               return num.longValue();
             }));
-    builder.add(new NumberCoercer<>(Short.class, Number::shortValue));
+    builder.add(new NumberCoercer<>(this, Short.class, Number::shortValue));
     builder.add(new StringCoercer());
     builder.add(new EnumCoercer<>());
     builder.add(new UriCoercer());
     builder.add(new UrlCoercer());
     builder.add(new UuidCoercer());
-    builder.add(new InstantCoercer());
+    builder.add(new InstantCoercer(this));
 
     // From Selenium
     builder.add(
