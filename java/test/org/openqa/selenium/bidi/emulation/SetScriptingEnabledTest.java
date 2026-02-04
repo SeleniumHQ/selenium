@@ -18,6 +18,8 @@
 package org.openqa.selenium.bidi.emulation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.bidi.emulation.SetScriptingEnabledParameters.scriptingDisabled;
+import static org.openqa.selenium.bidi.emulation.SetScriptingEnabledParameters.scriptingEnabled;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
@@ -56,16 +58,14 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     Emulation emulation = new Emulation(driver);
     Script script = new Script(driver);
 
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(false).contexts(List.of(contextId)));
+    emulation.setScriptingEnabled(scriptingDisabled().contexts(List.of(contextId)));
 
     context.navigate(
         "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
 
     assertThat(getHello(contextId, script)).isEmpty();
 
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(null).contexts(List.of(contextId)));
+    emulation.setScriptingEnabled(scriptingEnabled().contexts(List.of(contextId)));
 
     context.navigate(
         "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
@@ -87,8 +87,7 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     driver.switchTo().window(contextId);
 
     Emulation emulation = new Emulation(driver);
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(false).userContexts(List.of(userContext)));
+    emulation.setScriptingEnabled(scriptingDisabled().userContexts(List.of(userContext)));
 
     String url = appServer.whereIs("javascriptPage.html");
     context.navigate(url, ReadinessState.COMPLETE);
@@ -108,8 +107,7 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     assertThat(resultValue).isEqualTo(initialValue);
 
     // Clear the scripting override
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(null).userContexts(List.of(userContext)));
+    emulation.setScriptingEnabled(scriptingEnabled().userContexts(List.of(userContext)));
 
     context.navigate(url, ReadinessState.COMPLETE);
 

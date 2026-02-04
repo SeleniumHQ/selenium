@@ -35,7 +35,6 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -593,11 +592,6 @@ class BrowsingContextTest extends JupiterTestBase {
             .withBody(
                 "<button id='alert' onclick='myFunction()'>Try it</button>",
                 "<p id=\"result\"></p>"));
-  }
-
-  @SuppressWarnings("unchecked")
-  private <T> T executeScript(String js) {
-    return (T) ((JavascriptExecutor) driver).executeScript(js);
   }
 
   private boolean isDocumentFocused() {
