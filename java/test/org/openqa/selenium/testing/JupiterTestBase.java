@@ -144,7 +144,7 @@ public abstract class JupiterTestBase {
   }
 
   @SuppressWarnings("unchecked")
-  protected final <T> T executeScript(String js) {
+  protected final <T> T executeJavaScript(String js) {
     return (T) requireNonNull(((JavascriptExecutor) driver).executeScript(js));
   }
 

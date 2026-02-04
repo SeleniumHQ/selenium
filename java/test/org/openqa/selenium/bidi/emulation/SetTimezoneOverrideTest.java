@@ -46,12 +46,12 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
 
   String getTimezoneString(WebDriver driver, String context) {
     driver.switchTo().window(context);
-    return executeScript("return Intl.DateTimeFormat().resolvedOptions().timeZone;");
+    return executeJavaScript("return Intl.DateTimeFormat().resolvedOptions().timeZone;");
   }
 
   Number getTimezoneOffset(WebDriver driver, String context) {
     driver.switchTo().window(context);
-    return executeScript("return new Date().getTimezoneOffset()");
+    return executeJavaScript("return new Date().getTimezoneOffset()");
   }
 
   @Test

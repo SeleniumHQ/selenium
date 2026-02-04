@@ -228,6 +228,6 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
   }
 
   private String getOrigin() {
-    return executeScript("return window.location.origin");
+    return executeJavaScript("return window.location.origin");
   }
 }

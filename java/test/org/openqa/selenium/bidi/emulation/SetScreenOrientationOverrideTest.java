@@ -36,7 +36,8 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
     driver.switchTo().window(context);
 
     Map<String, Object> orientation =
-        executeScript("return { type: screen.orientation.type, angle: screen.orientation.angle };");
+        executeJavaScript(
+            "return { type: screen.orientation.type, angle: screen.orientation.angle };");
 
     return Map.of(
         "type", orientation.get("type"), "angle", ((Number) orientation.get("angle")).intValue());

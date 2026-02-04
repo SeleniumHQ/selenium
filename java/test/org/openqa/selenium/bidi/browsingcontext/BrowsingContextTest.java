@@ -595,15 +595,15 @@ class BrowsingContextTest extends JupiterTestBase {
   }
 
   private boolean isDocumentFocused() {
-    return executeScript("return document.hasFocus();");
+    return executeJavaScript("return document.hasFocus();");
   }
 
   private Dimension getViewportSize() {
-    List<Number> dimensions = executeScript("return [window.innerWidth, window.innerHeight];");
+    List<Number> dimensions = executeJavaScript("return [window.innerWidth, window.innerHeight];");
     return new Dimension(dimensions.get(0).intValue(), dimensions.get(1).intValue());
   }
 
   private double getDevicePixelRatio() {
-    return ((Number) executeScript("return window.devicePixelRatio")).doubleValue();
+    return ((Number) executeJavaScript("return window.devicePixelRatio")).doubleValue();
   }
 }

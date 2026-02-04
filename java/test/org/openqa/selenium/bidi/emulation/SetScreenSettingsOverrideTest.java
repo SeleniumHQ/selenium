@@ -39,7 +39,7 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
     driver.switchTo().window(context);
 
     Map<String, Number> dimensions =
-        executeScript("return { width: screen.width, height: screen.height }");
+        executeJavaScript("return { width: screen.width, height: screen.height }");
 
     return new Dimension(dimensions.get("width").intValue(), dimensions.get("height").intValue());
   }
