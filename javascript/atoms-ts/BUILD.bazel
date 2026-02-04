@@ -1,0 +1,6 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+exports_files(
+    ["tsconfig.json"],
+    visibility = ["//javascript/atoms-ts:__subpackages__"],
+)

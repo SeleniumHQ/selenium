@@ -1,0 +1,277 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+ts_project(
+    name = "error",
+    srcs = ["error.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "bot",
+    srcs = ["bot.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "domcore",
+    srcs = ["domcore.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [":error"],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "color",
+    srcs = ["color.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "json",
+    srcs = ["json.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "response",
+    srcs = ["response.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [":error"],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "userAgent",
+    srcs = ["userAgent.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "frame",
+    srcs = ["frame.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":domcore",
+        ":error",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "inject",
+    srcs = ["inject.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":error",
+        ":json",
+        ":response",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "dom",
+    srcs = ["dom.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":color",
+        ":domcore",
+        ":error",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "events",
+    srcs = ["events.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":error",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "device",
+    srcs = ["device.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":dom",
+        ":error",
+        ":events",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "keyboard",
+    srcs = ["keyboard.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":device",
+        ":dom",
+        ":error",
+        ":events",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "mouse",
+    srcs = ["mouse.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":device",
+        ":dom",
+        ":error",
+        ":events",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "touchscreen",
+    srcs = ["touchscreen.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":device",
+        ":dom",
+        ":error",
+        ":events",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "window",
+    srcs = ["window.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":error",
+        ":events",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)
+
+ts_project(
+    name = "action",
+    srcs = ["action.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":bot",
+        ":device",
+        ":dom",
+        ":error",
+        ":events",
+        ":keyboard",
+        ":mouse",
+        ":touchscreen",
+        ":userAgent",
+    ],
+    visibility = ["//javascript/atoms-ts:__subpackages__",
+        "//javascript/webdriver-atoms-ts/src:__pkg__"],
+)

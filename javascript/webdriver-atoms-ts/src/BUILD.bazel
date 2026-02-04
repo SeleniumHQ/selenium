@@ -1,0 +1,278 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+ts_project(
+    name = "inject",
+    srcs = ["inject.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        "//javascript/atoms-ts/src:inject",
+        "//javascript/atoms-ts/src:json",
+        "//javascript/atoms-ts/src:response",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "local_storage",
+    srcs = ["storage/local_storage.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "session_storage",
+    srcs = ["storage/session_storage.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "appcache",
+    srcs = ["storage/appcache.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "attribute",
+    srcs = ["attribute.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        "//javascript/atoms-ts/src:dom",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "element",
+    srcs = ["element.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":attribute",
+        "//javascript/atoms-ts/src:action",
+        "//javascript/atoms-ts/src:bot",
+        "//javascript/atoms-ts/src:dom",
+        "//javascript/atoms-ts/src:keyboard",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "inputs",
+    srcs = ["inputs.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":element",
+        "//javascript/atoms-ts/src:action",
+        "//javascript/atoms-ts/src:bot",
+        "//javascript/atoms-ts/src:dom",
+        "//javascript/atoms-ts/src:keyboard",
+        "//javascript/atoms-ts/src:mouse",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "execute_script",
+    srcs = ["inject/execute_script.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":inject",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "action",
+    srcs = ["inject/action.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":execute_script",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "dom",
+    srcs = ["inject/dom.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":execute_script",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "find_element",
+    srcs = ["inject/find_element.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":execute_script",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "frame",
+    srcs = ["inject/frame.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":execute_script",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "inject_local_storage",
+    srcs = ["inject/local_storage.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":local_storage",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "inject_session_storage",
+    srcs = ["inject/session_storage.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":session_storage",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "sql_database",
+    srcs = ["inject/sql_database.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "inject_appcache",
+    srcs = ["inject/appcache.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":appcache",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+ts_project(
+    name = "exports",
+    srcs = ["exports/index.ts"],
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":inject",
+        ":local_storage",
+        ":session_storage",
+        ":appcache",
+        ":attribute",
+        ":element",
+        ":inputs",
+        ":execute_script",
+        ":action",
+        ":dom",
+        ":find_element",
+        ":frame",
+        ":inject_local_storage",
+        ":inject_session_storage",
+        ":sql_database",
+        ":inject_appcache",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
+
+# Aggregated targets for Phase 1, Phase 2, Phase 3, Phase 4, and Phase 5
+filegroup(
+    name = "all",
+    srcs = [
+        ":inject",
+        ":local_storage",
+        ":session_storage",
+        ":appcache",
+        ":attribute",
+        ":element",
+        ":inputs",
+        ":execute_script",
+        ":action",
+        ":dom",
+        ":find_element",
+        ":frame",
+        ":inject_local_storage",
+        ":inject_session_storage",
+        ":sql_database",
+        ":inject_appcache",
+        ":exports",
+    ],
+    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+)
