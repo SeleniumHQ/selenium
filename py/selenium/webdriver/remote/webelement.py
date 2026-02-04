@@ -211,7 +211,7 @@ class WebElement(BaseWebElement):
         if getAttribute_js is None:
             _load_js()
         attribute_value = self.parent.execute_script(
-            f"/* getAttribute */return ({getAttribute_js}).apply(null, arguments);", self, name
+            f"{getAttribute_js}; return __getAttribute__.apply(null, arguments);", self, name
         )
         return attribute_value
 
@@ -305,7 +305,7 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+        return self.parent.execute_script(f"{isDisplayed_js}; return __isDisplayed__.apply(null, arguments);", self)
 
     @property
     def location_once_scrolled_into_view(self) -> dict:

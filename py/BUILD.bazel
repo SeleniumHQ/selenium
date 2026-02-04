@@ -114,21 +114,39 @@ copy_file(
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
 )
 
+select_file(
+    name = "attribute-js",
+    srcs = "//javascript/webdriver-atoms-ts/src:get_attribute_bundle",
+    subpath = "get_attribute_bundle.js",
+)
+
 copy_file(
     name = "get-attribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
+    src = ":attribute-js",
     out = "selenium/webdriver/remote/getAttribute.js",
+)
+
+select_file(
+    name = "displayed-js",
+    srcs = "//javascript/webdriver-atoms-ts/src:is_displayed_bundle",
+    subpath = "is_displayed_bundle.js",
 )
 
 copy_file(
     name = "is-displayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
+    src = ":displayed-js",
     out = "selenium/webdriver/remote/isDisplayed.js",
+)
+
+select_file(
+    name = "find-element-js",
+    srcs = "//javascript/webdriver-atoms-ts/src:find_element",
+    subpath = "find_element.js",
 )
 
 copy_file(
     name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
+    src = ":find-element-js",
     out = "selenium/webdriver/remote/findElements.js",
 )
 

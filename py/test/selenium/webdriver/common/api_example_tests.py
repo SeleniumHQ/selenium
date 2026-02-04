@@ -97,10 +97,14 @@ def test_find_element_by_xpath_in_element_context_not_found(driver, pages):
 
 def test_should_be_able_to_enter_data_into_form_fields(driver, pages):
     pages.load("xhtmlTest.html")
-    elem = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
+    elem = driver.find_element(
+        By.XPATH, "//form[@name='someForm']/input[@id='username']"
+    )
     elem.clear()
     elem.send_keys("some text")
-    elem = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
+    elem = driver.find_element(
+        By.XPATH, "//form[@name='someForm']/input[@id='username']"
+    )
     assert "some text" == elem.get_attribute("value")
 
 
@@ -204,7 +208,9 @@ def test_execute_script_and_return_element(driver, pages):
 
 def test_execute_script_with_args(driver, pages):
     pages.load("xhtmlTest.html")
-    result = driver.execute_script("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish")
+    result = driver.execute_script(
+        "return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish"
+    )
     assert "fish" == result
 
 
@@ -218,7 +224,8 @@ def test_execute_script_with_element_args(driver, pages):
     pages.load("javascriptPage.html")
     button = driver.find_element(By.ID, "plainButton")
     result = driver.execute_script(
-        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
+        button,
     )
     assert "plainButton" == result
 
@@ -274,23 +281,47 @@ def test_change_window_size(driver, pages):
     assert size["height"] == new_size[1]
 
 
-@pytest.mark.xfail_ie(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_firefox(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_remote(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_safari(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_webkitgtk(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_wpewebkit(raises=AttributeError, reason="Logging API is no longer available")
+@pytest.mark.xfail_ie(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_firefox(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_remote(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_safari(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_webkitgtk(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_wpewebkit(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
 def test_get_log_types(driver, pages):
     pages.load("blank.html")
     assert isinstance(driver.log_types, list)
 
 
-@pytest.mark.xfail_ie(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_firefox(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_remote(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_safari(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_webkitgtk(raises=AttributeError, reason="Logging API is no longer available")
-@pytest.mark.xfail_wpewebkit()(raises=AttributeError, reason="Logging API is no longer available")
+@pytest.mark.xfail_ie(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_firefox(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_remote(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_safari(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_webkitgtk(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
+@pytest.mark.xfail_wpewebkit()(
+    raises=AttributeError, reason="Logging API is no longer available"
+)
 def test_get_log(driver, pages):
     pages.load("blank.html")
     for log_type in driver.log_types:

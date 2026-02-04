@@ -1,4 +1,5 @@
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
 
 ts_project(
     name = "inject",
@@ -13,7 +14,7 @@ ts_project(
         "//javascript/atoms-ts/src:json",
         "//javascript/atoms-ts/src:response",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -24,7 +25,7 @@ ts_project(
     resolve_json_module = True,
     source_map = True,
     tsconfig = "tsconfig.json",
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -35,7 +36,7 @@ ts_project(
     resolve_json_module = True,
     source_map = True,
     tsconfig = "tsconfig.json",
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -46,7 +47,7 @@ ts_project(
     resolve_json_module = True,
     source_map = True,
     tsconfig = "tsconfig.json",
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -60,7 +61,66 @@ ts_project(
     deps = [
         "//javascript/atoms-ts/src:dom",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = [
+        "//javascript/webdriver-atoms-ts:__subpackages__",
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
+    ],
+)
+
+genrule(
+    name = "attribute_minified",
+    srcs = [":attribute"],
+    outs = ["attribute_minified.js"],
+    cmd = "cat $(SRCS) | grep -v '^import ' | grep -v '^export ' > $@",
+    visibility = ["//visibility:public"],
+)
+
+esbuild(
+    name = "get_attribute_bundle",
+    srcs = glob(["*.ts", "inject/*.ts"]),
+    bundle = True,
+    deps = [
+        "//javascript/atoms-ts/src:dom",
+    ],
+    entry_point = "get-attribute-wrapper.ts",
+    format = "iife",
+    minify = True,
+    platform = "browser",
+    target = "es2020",
+    visibility = ["//visibility:public"],
+)
+
+esbuild(
+    name = "is_displayed_bundle",
+    srcs = glob(["*.ts", "inject/*.ts"]),
+    bundle = True,
+    deps = [
+        "//javascript/atoms-ts/src:dom",
+    ],
+    entry_point = "is-displayed-wrapper.ts",
+    format = "iife",
+    minify = True,
+    platform = "browser",
+    target = "es2020",
+    visibility = ["//visibility:public"],
+)
+
+esbuild(
+    name = "attribute_bundle",
+    srcs = [":attribute"] + glob(["*.ts"]),
+    bundle = True,
+    entry_point = "attribute-wrapper.ts",
+    format = "esm",
+    minify = True,
+    platform = "browser",
+    target = "es2020",
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -78,7 +138,7 @@ ts_project(
         "//javascript/atoms-ts/src:dom",
         "//javascript/atoms-ts/src:keyboard",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -97,7 +157,7 @@ ts_project(
         "//javascript/atoms-ts/src:keyboard",
         "//javascript/atoms-ts/src:mouse",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -111,7 +171,7 @@ ts_project(
     deps = [
         ":inject",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -125,7 +185,7 @@ ts_project(
     deps = [
         ":execute_script",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -139,7 +199,7 @@ ts_project(
     deps = [
         ":execute_script",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -153,7 +213,7 @@ ts_project(
     deps = [
         ":execute_script",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -167,7 +227,7 @@ ts_project(
     deps = [
         ":execute_script",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -181,7 +241,7 @@ ts_project(
     deps = [
         ":local_storage",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -195,7 +255,7 @@ ts_project(
     deps = [
         ":session_storage",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -206,7 +266,7 @@ ts_project(
     resolve_json_module = True,
     source_map = True,
     tsconfig = "tsconfig.json",
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -220,7 +280,7 @@ ts_project(
     deps = [
         ":appcache",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 ts_project(
@@ -249,7 +309,7 @@ ts_project(
         ":sql_database",
         ":inject_appcache",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
 
 # Aggregated targets for Phase 1, Phase 2, Phase 3, Phase 4, and Phase 5
@@ -274,5 +334,5 @@ filegroup(
         ":inject_appcache",
         ":exports",
     ],
-    visibility = ["//javascript/webdriver-atoms-ts:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
