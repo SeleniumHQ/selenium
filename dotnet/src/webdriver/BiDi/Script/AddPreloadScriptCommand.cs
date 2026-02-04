@@ -25,13 +25,15 @@ namespace OpenQA.Selenium.BiDi.Script;
 internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params)
     : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
 
-internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
+internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts, string? Sandbox) : Parameters;
 
 public sealed class AddPreloadScriptOptions : CommandOptions
 {
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 
     public string? Sandbox { get; set; }
 }
