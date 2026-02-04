@@ -108,7 +108,7 @@ public sealed record DownPointer(int Button) : Pointer, IPointerCommonProperties
 
 public sealed record UpPointer(int Button) : Pointer;
 
-public sealed record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
+public sealed record MovePointer(double X, double Y) : Pointer, IPointerCommonProperties
 {
     public int? Duration { get; set; }
 
