@@ -225,6 +225,7 @@ internal class EmulationTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsOffline()
     {
         Assert.That(async () =>
@@ -235,6 +236,7 @@ internal class EmulationTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsToDefault()
     {
         Assert.That(async () =>
