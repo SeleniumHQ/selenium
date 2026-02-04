@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
@@ -25,13 +26,37 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 internal sealed class SetViewportCommand(SetViewportParameters @params)
     : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
 
-internal sealed record SetViewportParameters(BrowsingContext Context, [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport, [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio) : Parameters;
+internal sealed record SetViewportParameters(
+    BrowsingContext? Context,
+    [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport,
+    [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio,
+    IEnumerable<Browser.UserContext>? UserContexts)
+    : Parameters;
 
 public sealed class SetViewportOptions : CommandOptions
+{
+    public BrowsingContext? Context { get; set; }
+
+    public Optional<Viewport?>? Viewport { get; set; }
+
+    public Optional<double?>? DevicePixelRatio { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+}
+
+public sealed class ContextSetViewportOptions : CommandOptions
 {
     public Optional<Viewport?>? Viewport { get; set; }
 
     public Optional<double?>? DevicePixelRatio { get; set; }
+
+    internal static SetViewportOptions WithContext(ContextSetViewportOptions? options, BrowsingContext context) => new()
+    {
+        Context = context,
+        Viewport = options?.Viewport,
+        DevicePixelRatio = options?.DevicePixelRatio,
+        Timeout = options?.Timeout
+    };
 }
 
 public readonly record struct Viewport(long Width, long Height);
