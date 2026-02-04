@@ -129,8 +129,8 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         "3.10.19",
         "3.11.14",
         "3.12.12",
-        "3.13.9",
-        "3.14.0",
+        "3.13.11",
+        "3.14.1",
     ]
 ]
 
