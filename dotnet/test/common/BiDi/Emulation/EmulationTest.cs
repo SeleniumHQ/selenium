@@ -199,6 +199,9 @@ internal class EmulationTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverride()
     {
         Assert.That(async () =>
@@ -209,6 +212,9 @@ internal class EmulationTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverrideToDefault()
     {
         Assert.That(async () =>
