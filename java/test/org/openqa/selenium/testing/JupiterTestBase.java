@@ -33,7 +33,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.Wait;
@@ -66,22 +65,8 @@ public abstract class JupiterTestBase {
             .map(NeedsSecureServer::value)
             .orElse(false);
 
-    environment =
-        GlobalTestEnvironment.getOrCreate(() -> new InProcessTestEnvironment(needsSecureServer));
+    environment = GlobalTestEnvironment.getOrCreate(needsSecureServer);
     appServer = environment.getAppServer();
-
-    if (needsSecureServer) {
-      try {
-        appServer.whereIsSecure("/");
-      } catch (IllegalStateException ex) {
-        // this should not happen with bazel, a new JVM is used for each class
-        // the annotation is on class level, so we should never see this
-        LOG.log(Level.WARNING, "appServer is restarted with secureServer=true", ex);
-        environment.stop();
-        environment = new InProcessTestEnvironment(true);
-        appServer = environment.getAppServer();
-      }
-    }
 
     pages = new Pages(appServer);
 

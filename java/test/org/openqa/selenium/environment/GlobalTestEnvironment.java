@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.environment;
 
-import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** Used to hold a TestEnvironment in a static class-level field. */
 public class GlobalTestEnvironment {
+  private static final Logger LOG = Logger.getLogger(GlobalTestEnvironment.class.getName());
 
   private static TestEnvironment environment;
 
@@ -32,10 +34,14 @@ public class GlobalTestEnvironment {
     return environment;
   }
 
-  public static synchronized TestEnvironment getOrCreate(
-      Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
+  public static synchronized TestEnvironment getOrCreate(boolean needsSecureServer) {
+    if (needsSecureServer && environment != null && !environment.isSecure()) {
+      LOG.log(Level.WARNING, "Restarting appServer with secureServer=true");
+      environment.stop();
+      environment = null;
+    }
     if (environment == null) {
-      environment = startThisIfNothingIsAlreadyRunning.get();
+      environment = new InProcessTestEnvironment(needsSecureServer);
       environment.assertIsValid();
     }
     return environment;
