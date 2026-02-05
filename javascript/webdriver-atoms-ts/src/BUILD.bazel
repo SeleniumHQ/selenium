@@ -112,6 +112,18 @@ esbuild(
 )
 
 esbuild(
+    name = "find_element_bundle",
+    srcs = glob(["*.ts", "inject/*.ts"]),
+    bundle = True,
+    entry_point = "find-element-wrapper.ts",
+    format = "iife",
+    minify = True,
+    platform = "browser",
+    target = "es2020",
+    visibility = ["//visibility:public"],
+)
+
+esbuild(
     name = "attribute_bundle",
     srcs = [":attribute"] + glob(["*.ts"]),
     bundle = True,
