@@ -78,6 +78,7 @@ BROWSER_VERSIONS = [
 ]
 
 TEST_DEPS = [
+    requirement("debugpy"),
     requirement("filetype"),
     requirement("pytest"),
     requirement("pytest-instafail"),
@@ -140,8 +141,8 @@ copy_file(
 
 select_file(
     name = "find-element-js",
-    srcs = "//javascript/webdriver-atoms-ts/src:find_element",
-    subpath = "find_element.js",
+    srcs = "//javascript/webdriver-atoms-ts/src:find_element_bundle",
+    subpath = "find_element_bundle.js",
 )
 
 copy_file(
