@@ -296,6 +296,19 @@ ts_project(
 )
 
 ts_project(
+    name = "locators",
+    srcs = glob([
+        "locators/**/*.ts",
+    ]),
+    declaration = True,
+    declaration_map = True,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
     name = "exports",
     srcs = ["exports/index.ts"],
     declaration = True,
@@ -320,11 +333,12 @@ ts_project(
         ":inject_session_storage",
         ":sql_database",
         ":inject_appcache",
+        ":locators",
     ],
     visibility = ["//visibility:public"],
 )
 
-# Aggregated targets for Phase 1, Phase 2, Phase 3, Phase 4, and Phase 5
+# Aggregated targets for Phase 1, Phase 2, Phase 3, Phase 4, Phase 5, and Phase 6
 filegroup(
     name = "all",
     srcs = [
@@ -344,6 +358,7 @@ filegroup(
         ":inject_session_storage",
         ":sql_database",
         ":inject_appcache",
+        ":locators",
         ":exports",
     ],
     visibility = ["//visibility:public"],

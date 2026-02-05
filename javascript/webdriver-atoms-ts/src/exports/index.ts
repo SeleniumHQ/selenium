@@ -212,3 +212,15 @@ export * as InjectedDOM from '../inject/dom';
  */
 export * as Frames from '../inject/frame';
 
+// ============================================================================
+// Phase 6: Element Locators
+// ============================================================================
+
+export {
+    add as addLocatorStrategy,
+    type LocatorStrategy
+} from '../locators';
+
+/**
+ * Element locator strategies and finder functions. */
+export * as Locators from '../locators';
