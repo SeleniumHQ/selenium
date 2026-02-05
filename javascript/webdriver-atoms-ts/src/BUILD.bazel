@@ -113,7 +113,7 @@ esbuild(
 
 esbuild(
     name = "find_element_bundle",
-    srcs = glob(["*.ts", "inject/*.ts"]),
+    srcs = glob(["*.ts", "inject/*.ts", "locators/*.ts", "locators/**/*.ts"]),
     bundle = True,
     entry_point = "find-element-wrapper.ts",
     format = "iife",

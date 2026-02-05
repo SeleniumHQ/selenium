@@ -78,7 +78,7 @@ BROWSER_VERSIONS = [
 ]
 
 TEST_DEPS = [
-    requirement("debugpy"),
+#    requirement("debugpy"),
     requirement("filetype"),
     requirement("pytest"),
     requirement("pytest-instafail"),

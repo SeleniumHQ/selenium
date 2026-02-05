@@ -27,11 +27,11 @@
  * @returns The first element matching the selector, or null if not found.
  */
 export function single(selector: string, root: Document | Element): Element | null {
-  try {
-    return root.querySelector(selector);
-  } catch (e) {
-    throw new Error(`Invalid CSS selector: ${selector}`);
-  }
+    try {
+        return root.querySelector(selector);
+    } catch (e) {
+        throw new Error(`Invalid CSS selector: ${selector}`);
+    }
 }
 
 /**
@@ -42,9 +42,9 @@ export function single(selector: string, root: Document | Element): Element | nu
  * @returns An array of all elements matching the selector.
  */
 export function many(selector: string, root: Document | Element): Element[] {
-  try {
-    return Array.from(root.querySelectorAll(selector));
-  } catch (e) {
-    throw new Error(`Invalid CSS selector: ${selector}`);
-  }
+    try {
+        return Array.from(root.querySelectorAll(selector));
+    } catch (e) {
+        throw new Error(`Invalid CSS selector: ${selector}`);
+    }
 }

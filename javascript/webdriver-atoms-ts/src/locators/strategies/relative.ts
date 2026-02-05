@@ -34,8 +34,8 @@
  * @returns The first element matching the criteria, or null if not found.
  */
 export function single(criteria: string | Record<string, unknown>, _root: Document | Element): Element | null {
-  const results = many(criteria, _root);
-  return results.length > 0 ? results[0] || null : null;
+    const results = many(criteria, _root);
+    return results.length > 0 ? results[0] || null : null;
 }
 
 /**
@@ -46,22 +46,22 @@ export function single(criteria: string | Record<string, unknown>, _root: Docume
  * @returns An array of elements matching the criteria.
  */
 export function many(
-  criteria: string | Record<string, unknown>,
-  _root: Document | Element
+    criteria: string | Record<string, unknown>,
+    _root: Document | Element
 ): Element[] {
-  if (typeof criteria === 'string') {
-    try {
-      JSON.parse(criteria);
-    } catch (e) {
-      throw new Error(`Invalid relative locator criteria: ${criteria}`);
+    if (typeof criteria === 'string') {
+        try {
+            JSON.parse(criteria);
+        } catch (e) {
+            throw new Error(`Invalid relative locator criteria: ${criteria}`);
+        }
     }
-  }
 
-  // This is a simplified implementation of relative locators
-  // A full implementation would need to handle all the relative locator filters
-  // such as: above, below, left of, right of, near
+    // This is a simplified implementation of relative locators
+    // A full implementation would need to handle all the relative locator filters
+    // such as: above, below, left of, right of, near
 
-  // For now, return an empty array as placeholder
-  // Full implementation would need to parse the filters and apply them
-  return [];
+    // For now, return an empty array as placeholder
+    // Full implementation would need to parse the filters and apply them
+    return [];
 }

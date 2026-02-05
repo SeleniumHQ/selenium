@@ -33,8 +33,8 @@ import * as xpathLocator from './strategies/xpath';
  * Each strategy has a 'single' method to find one element and 'many' to find multiple.
  */
 export interface LocatorStrategy {
-  single: (selector: string, root: Document | Element) => Element | null;
-  many: (selector: string, root: Document | Element) => Element[];
+    single: (selector: string, root: Document | Element) => Element | null;
+    many: (selector: string, root: Document | Element) => Element[];
 }
 
 /**
@@ -42,40 +42,40 @@ export interface LocatorStrategy {
  * @private
  */
 const STRATEGIES_: Record<string, LocatorStrategy> = {
-  'className': classNameLocator as unknown as LocatorStrategy,
-  'class name': classNameLocator as unknown as LocatorStrategy,
+    'className': classNameLocator as unknown as LocatorStrategy,
+    'class name': classNameLocator as unknown as LocatorStrategy,
 
-  'css': cssLocator as unknown as LocatorStrategy,
-  'css selector': cssLocator as unknown as LocatorStrategy,
+    'css': cssLocator as unknown as LocatorStrategy,
+    'css selector': cssLocator as unknown as LocatorStrategy,
 
-  'relative': relativeLocator as unknown as LocatorStrategy,
+    'relative': relativeLocator as unknown as LocatorStrategy,
 
-  'id': idLocator as unknown as LocatorStrategy,
+    'id': idLocator as unknown as LocatorStrategy,
 
-  'linkText': {
-    single: (selector, root) => linkTextLocator.single(selector, root),
-    many: (selector, root) => linkTextLocator.many(selector, root),
-  },
-  'link text': {
-    single: (selector, root) => linkTextLocator.single(selector, root),
-    many: (selector, root) => linkTextLocator.many(selector, root),
-  },
+    'linkText': {
+        single: (selector, root) => linkTextLocator.single(selector, root),
+        many: (selector, root) => linkTextLocator.many(selector, root),
+    },
+    'link text': {
+        single: (selector, root) => linkTextLocator.single(selector, root),
+        many: (selector, root) => linkTextLocator.many(selector, root),
+    },
 
-  'name': nameLocator as unknown as LocatorStrategy,
+    'name': nameLocator as unknown as LocatorStrategy,
 
-  'partialLinkText': {
-    single: (selector, root) => linkTextLocator.singlePartial(selector, root),
-    many: (selector, root) => linkTextLocator.manyPartial(selector, root),
-  },
-  'partial link text': {
-    single: (selector, root) => linkTextLocator.singlePartial(selector, root),
-    many: (selector, root) => linkTextLocator.manyPartial(selector, root),
-  },
+    'partialLinkText': {
+        single: (selector, root) => linkTextLocator.singlePartial(selector, root),
+        many: (selector, root) => linkTextLocator.manyPartial(selector, root),
+    },
+    'partial link text': {
+        single: (selector, root) => linkTextLocator.singlePartial(selector, root),
+        many: (selector, root) => linkTextLocator.manyPartial(selector, root),
+    },
 
-  'tagName': tagNameLocator as unknown as LocatorStrategy,
-  'tag name': tagNameLocator as unknown as LocatorStrategy,
+    'tagName': tagNameLocator as unknown as LocatorStrategy,
+    'tag name': tagNameLocator as unknown as LocatorStrategy,
 
-  'xpath': xpathLocator as unknown as LocatorStrategy,
+    'xpath': xpathLocator as unknown as LocatorStrategy,
 };
 
 /**
@@ -85,7 +85,7 @@ const STRATEGIES_: Record<string, LocatorStrategy> = {
  * @param strategy The strategy to use.
  */
 export function add(name: string, strategy: LocatorStrategy): void {
-  STRATEGIES_[name] = strategy;
+    STRATEGIES_[name] = strategy;
 }
 
 /**
@@ -96,12 +96,12 @@ export function add(name: string, strategy: LocatorStrategy): void {
  * @private
  */
 function getOnlyKey(target: Record<string, unknown>): string | null {
-  for (const k in target) {
-    if (Object.prototype.hasOwnProperty.call(target, k)) {
-      return k;
+    for (const k in target) {
+        if (Object.prototype.hasOwnProperty.call(target, k)) {
+            return k;
+        }
     }
-  }
-  return null;
+    return null;
 }
 
 /**
@@ -116,23 +116,23 @@ function getOnlyKey(target: Record<string, unknown>): string | null {
  * @throws Error if the locator strategy is unsupported.
  */
 export function findElement(
-  target: Record<string, string>,
-  optRoot?: Document | Element
+    target: Record<string, string>,
+    optRoot?: Document | Element
 ): Element | null {
-  const key = getOnlyKey(target);
+    const key = getOnlyKey(target);
 
-  if (key) {
-    const strategy = STRATEGIES_[key];
-    if (strategy && typeof strategy.single === 'function') {
-      const root = optRoot || document;
-      const value = target[key];
-      if (value !== undefined) {
-        return strategy.single(value, root);
-      }
+    if (key) {
+        const strategy = STRATEGIES_[key];
+        if (strategy && typeof strategy.single === 'function') {
+            const root = optRoot || document;
+            const value = target[key];
+            if (value !== undefined) {
+                return strategy.single(value, root);
+            }
+        }
     }
-  }
 
-  throw new Error(`Unsupported locator strategy: ${key}`);
+    throw new Error(`Unsupported locator strategy: ${key}`);
 }
 
 /**
@@ -147,21 +147,21 @@ export function findElement(
  * @throws Error if the locator strategy is unsupported.
  */
 export function findElements(
-  target: Record<string, string>,
-  optRoot?: Document | Element
+    target: Record<string, string>,
+    optRoot?: Document | Element
 ): Element[] {
-  const key = getOnlyKey(target);
+    const key = getOnlyKey(target);
 
-  if (key) {
-    const strategy = STRATEGIES_[key];
-    if (strategy && typeof strategy.many === 'function') {
-      const root = optRoot || document;
-      const value = target[key];
-      if (value !== undefined) {
-        return strategy.many(value, root);
-      }
+    if (key) {
+        const strategy = STRATEGIES_[key];
+        if (strategy && typeof strategy.many === 'function') {
+            const root = optRoot || document;
+            const value = target[key];
+            if (value !== undefined) {
+                return strategy.many(value, root);
+            }
+        }
     }
-  }
 
-  throw new Error(`Unsupported locator strategy: ${key}`);
+    throw new Error(`Unsupported locator strategy: ${key}`);
 }

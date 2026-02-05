@@ -27,9 +27,9 @@
  * @returns The first element with the given name, or null if not found.
  */
 export function single(name: string, root: Document | Element): Element | null {
-  // Use querySelector for name attribute
-  const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
-  return root.querySelector(selector);
+    // Use querySelector for name attribute
+    const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
+    return root.querySelector(selector);
 }
 
 /**
@@ -40,6 +40,6 @@ export function single(name: string, root: Document | Element): Element | null {
  * @returns An array of all elements with the given name attribute.
  */
 export function many(name: string, root: Document | Element): Element[] {
-  const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
-  return Array.from(root.querySelectorAll(selector));
+    const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
+    return Array.from(root.querySelectorAll(selector));
 }

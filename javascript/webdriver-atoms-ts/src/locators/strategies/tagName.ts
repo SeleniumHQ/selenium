@@ -27,8 +27,8 @@
  * @returns The first element with the given tag name, or null if not found.
  */
 export function single(tagName: string, root: Document | Element): Element | null {
-  const elements = root.getElementsByTagName(tagName);
-  return elements.length > 0 ? elements[0] || null : null;
+    const elements = root.getElementsByTagName(tagName);
+    return elements.length > 0 ? elements[0] || null : null;
 }
 
 /**
@@ -39,5 +39,5 @@ export function single(tagName: string, root: Document | Element): Element | nul
  * @returns An array of all elements with the given tag name.
  */
 export function many(tagName: string, root: Document | Element): Element[] {
-  return Array.from(root.getElementsByTagName(tagName));
+    return Array.from(root.getElementsByTagName(tagName));
 }

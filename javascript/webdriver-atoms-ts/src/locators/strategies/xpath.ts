@@ -24,8 +24,8 @@
  * @private
  */
 enum XPathResultType {
-  ORDERED_NODE_SNAPSHOT_TYPE = 7,
-  FIRST_ORDERED_NODE_TYPE = 9,
+    ORDERED_NODE_SNAPSHOT_TYPE = 7,
+    FIRST_ORDERED_NODE_TYPE = 9,
 }
 
 /**
@@ -33,8 +33,8 @@ enum XPathResultType {
  * @private
  */
 function getDefaultResolver(): (prefix: string) => string | null {
-  const namespaces: Record<string, string> = { svg: 'http://www.w3.org/2000/svg' };
-  return (prefix: string) => namespaces[prefix] || null;
+    const namespaces: Record<string, string> = { svg: 'http://www.w3.org/2000/svg' };
+    return (prefix: string) => namespaces[prefix] || null;
 }
 
 /**
@@ -47,25 +47,25 @@ function getDefaultResolver(): (prefix: string) => string | null {
  * @private
  */
 function evaluate(
-  node: Document | Element,
-  path: string,
-  resultType: XPathResultType
+    node: Document | Element,
+    path: string,
+    resultType: XPathResultType
 ): XPathResult | null {
-  const doc = (node.nodeType === Node.DOCUMENT_NODE ? node : node.ownerDocument) as Document;
+    const doc = (node.nodeType === Node.DOCUMENT_NODE ? node : node.ownerDocument) as Document;
 
-  if (!doc || !doc.documentElement) {
-    return null;
-  }
+    if (!doc || !doc.documentElement) {
+        return null;
+    }
 
-  try {
-    const resolver = doc.createNSResolver
-      ? doc.createNSResolver(doc.documentElement)
-      : (getDefaultResolver() as XPathNSResolver);
+    try {
+        const resolver = doc.createNSResolver
+            ? doc.createNSResolver(doc.documentElement)
+            : (getDefaultResolver() as XPathNSResolver);
 
-    return doc.evaluate(path, node, resolver, resultType, null);
-  } catch (e) {
-    throw new Error(`Invalid XPath: ${path}`);
-  }
+        return doc.evaluate(path, node, resolver, resultType, null);
+    } catch (e) {
+        throw new Error(`Invalid XPath: ${path}`);
+    }
 }
 
 /**
@@ -76,15 +76,15 @@ function evaluate(
  * @returns The first element matching the XPath, or null if not found.
  */
 export function single(path: string, root: Document | Element): Element | null {
-  try {
-    const result = evaluate(root, path, XPathResultType.FIRST_ORDERED_NODE_TYPE);
-    if (result && result.singleNodeValue && result.singleNodeValue.nodeType === Node.ELEMENT_NODE) {
-      return result.singleNodeValue as Element;
+    try {
+        const result = evaluate(root, path, XPathResultType.FIRST_ORDERED_NODE_TYPE);
+        if (result && result.singleNodeValue && result.singleNodeValue.nodeType === Node.ELEMENT_NODE) {
+            return result.singleNodeValue as Element;
+        }
+    } catch (e) {
+        // Ignore XPath evaluation errors
     }
-  } catch (e) {
-    // Ignore XPath evaluation errors
-  }
-  return null;
+    return null;
 }
 
 /**
@@ -95,22 +95,22 @@ export function single(path: string, root: Document | Element): Element | null {
  * @returns An array of all elements matching the XPath.
  */
 export function many(path: string, root: Document | Element): Element[] {
-  try {
-    const result = evaluate(root, path, XPathResultType.ORDERED_NODE_SNAPSHOT_TYPE);
-    if (!result) {
-      return [];
-    }
+    try {
+        const result = evaluate(root, path, XPathResultType.ORDERED_NODE_SNAPSHOT_TYPE);
+        if (!result) {
+            return [];
+        }
 
-    const elements: Element[] = [];
-    for (let i = 0; i < result.snapshotLength; i++) {
-      const node = result.snapshotItem(i);
-      if (node && node.nodeType === Node.ELEMENT_NODE) {
-        elements.push(node as Element);
-      }
+        const elements: Element[] = [];
+        for (let i = 0; i < result.snapshotLength; i++) {
+            const node = result.snapshotItem(i);
+            if (node && node.nodeType === Node.ELEMENT_NODE) {
+                elements.push(node as Element);
+            }
+        }
+        return elements;
+    } catch (e) {
+        // Ignore XPath evaluation errors
     }
-    return elements;
-  } catch (e) {
-    // Ignore XPath evaluation errors
-  }
-  return [];
+    return [];
 }

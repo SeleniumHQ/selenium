@@ -27,7 +27,7 @@
  * @returns The first element with the given class, or null if not found.
  */
 export function single(className: string, root: Document | Element): Element | null {
-  return root.querySelector(`.${className.replace(/\./, '\\.')}`);
+    return root.querySelector(`.${className.replace(/\./, '\\.')}`);
 }
 
 /**
@@ -38,5 +38,5 @@ export function single(className: string, root: Document | Element): Element | n
  * @returns An array of all elements with the given class.
  */
 export function many(className: string, root: Document | Element): Element[] {
-  return Array.from(root.querySelectorAll(`.${className.replace(/\./, '\\.')}`));
+    return Array.from(root.querySelectorAll(`.${className.replace(/\./, '\\.')}`));
 }

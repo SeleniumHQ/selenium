@@ -27,11 +27,11 @@
  * @returns The element with the given ID, or null if not found.
  */
 export function single(id: string, root: Document | Element): Element | null {
-  if (root.nodeType === Node.DOCUMENT_NODE && typeof (root as Document).getElementById === 'function') {
-    return (root as Document).getElementById(id);
-  }
-  // Fallback to querySelector if getElementById is not available
-  return root.querySelector(`#${id.replace(/([\\!"#$%&'()*+,./:;?@[\\\]^`{|}~])/g, '\\$1')}`);
+    if (root.nodeType === Node.DOCUMENT_NODE && typeof (root as Document).getElementById === 'function') {
+        return (root as Document).getElementById(id);
+    }
+    // Fallback to querySelector if getElementById is not available
+    return root.querySelector(`#${id.replace(/([\\!"#$%&'()*+,./:;?@[\\\]^`{|}~])/g, '\\$1')}`);
 }
 
 /**
@@ -42,6 +42,6 @@ export function single(id: string, root: Document | Element): Element | null {
  * @returns An array containing the element with the given ID (0 or 1 element).
  */
 export function many(id: string, root: Document | Element): Element[] {
-  const element = single(id, root);
-  return element ? [element] : [];
+    const element = single(id, root);
+    return element ? [element] : [];
 }

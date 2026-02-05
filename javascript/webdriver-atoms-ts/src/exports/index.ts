@@ -222,5 +222,6 @@ export {
 } from '../locators';
 
 /**
- * Element locator strategies and finder functions. */
+ * Element locator strategies and finder functions.
+ */
 export * as Locators from '../locators';

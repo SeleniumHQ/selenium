@@ -28,18 +28,18 @@
  * @returns The first link matching the text, or null if not found.
  */
 function findLinkByText(
-  text: string,
-  root: Document | Element,
-  isPartial: boolean = false
+    text: string,
+    root: Document | Element,
+    isPartial: boolean = false
 ): Element | null {
-  const links = root.querySelectorAll('a');
-  for (const link of links) {
-    const linkText = getTextContent(link);
-    if (isPartial ? linkText.includes(text) : linkText === text) {
-      return link;
+    const links = root.querySelectorAll('a');
+    for (const link of links) {
+        const linkText = getTextContent(link);
+        if (isPartial ? linkText.includes(text) : linkText === text) {
+            return link;
+        }
     }
-  }
-  return null;
+    return null;
 }
 
 /**
@@ -51,19 +51,19 @@ function findLinkByText(
  * @returns An array of all links matching the text.
  */
 function findLinksByText(
-  text: string,
-  root: Document | Element,
-  isPartial: boolean = false
+    text: string,
+    root: Document | Element,
+    isPartial: boolean = false
 ): Element[] {
-  const links = root.querySelectorAll('a');
-  const results: Element[] = [];
-  for (const link of links) {
-    const linkText = getTextContent(link);
-    if (isPartial ? linkText.includes(text) : linkText === text) {
-      results.push(link);
+    const links = root.querySelectorAll('a');
+    const results: Element[] = [];
+    for (const link of links) {
+        const linkText = getTextContent(link);
+        if (isPartial ? linkText.includes(text) : linkText === text) {
+            results.push(link);
+        }
     }
-  }
-  return results;
+    return results;
 }
 
 /**
@@ -74,29 +74,29 @@ function findLinksByText(
  * @private
  */
 function getTextContent(element: Element): string {
-  const text: string[] = [];
-  const walk = (node: Node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const value = node.nodeValue?.trim();
-      if (value) {
-        text.push(value);
-      }
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as Element;
-      // Skip script and style elements
-      if (el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE') {
-        for (let i = 0; i < node.childNodes.length; i++) {
-          const child = node.childNodes[i];
-          if (child) {
-            walk(child);
-          }
+    const text: string[] = [];
+    const walk = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const value = node.nodeValue?.trim();
+            if (value) {
+                text.push(value);
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const el = node as Element;
+            // Skip script and style elements
+            if (el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE') {
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    const child = node.childNodes[i];
+                    if (child) {
+                        walk(child);
+                    }
+                }
+            }
         }
-      }
-    }
-  };
+    };
 
-  walk(element);
-  return text.join(' ').replace(/\s+/g, ' ').trim();
+    walk(element);
+    return text.join(' ').replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -107,7 +107,7 @@ function getTextContent(element: Element): string {
  * @returns The first link with the exact text, or null if not found.
  */
 export function single(text: string, root: Document | Element): Element | null {
-  return findLinkByText(text, root, false);
+    return findLinkByText(text, root, false);
 }
 
 /**
@@ -118,7 +118,7 @@ export function single(text: string, root: Document | Element): Element | null {
  * @returns An array of all links with the exact text.
  */
 export function many(text: string, root: Document | Element): Element[] {
-  return findLinksByText(text, root, false);
+    return findLinksByText(text, root, false);
 }
 
 /**
@@ -129,7 +129,7 @@ export function many(text: string, root: Document | Element): Element[] {
  * @returns The first link containing the text, or null if not found.
  */
 export function singlePartial(text: string, root: Document | Element): Element | null {
-  return findLinkByText(text, root, true);
+    return findLinkByText(text, root, true);
 }
 
 /**
@@ -140,5 +140,5 @@ export function singlePartial(text: string, root: Document | Element): Element |
  * @returns An array of all links containing the text.
  */
 export function manyPartial(text: string, root: Document | Element): Element[] {
-  return findLinksByText(text, root, true);
+    return findLinksByText(text, root, true);
 }
