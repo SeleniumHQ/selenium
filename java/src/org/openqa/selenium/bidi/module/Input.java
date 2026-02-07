@@ -39,6 +39,7 @@ public class Input {
   }
 
   // This will make porting from W3C WebDriver classic to BiDi seamless for Actions
+  @SuppressWarnings("unchecked")
   public void perform(String browsingContext, Collection<Sequence> actions) {
 
     // This step is needed to map the origin if it's an element to the key expected by BiDi

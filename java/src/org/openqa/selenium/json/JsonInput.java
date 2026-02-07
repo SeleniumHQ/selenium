@@ -466,6 +466,11 @@ public class JsonInput implements Closeable {
     return requireNonNull(read(Map.class));
   }
 
+  @SuppressWarnings("unchecked")
+  public <T> T readMapElement(String key) {
+    return (T) Require.nonNull(key, readMap().get(key));
+  }
+
   /**
    * Read an array of elements from the JSON input stream with elements as the specified type.
    *

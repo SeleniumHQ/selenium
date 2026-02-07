@@ -39,6 +39,7 @@ import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -204,11 +205,15 @@ class NetworkCommandsTest extends JupiterTestBase {
   void canContinueWithAuthCredentials() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
-      network.onAuthRequired(
-          responseDetails ->
-              network.continueWithAuth(
-                  responseDetails.getRequest().getRequestId(),
-                  new UsernameAndPassword("test", "test")));
+
+      long callbackId =
+          network.onAuthRequired(
+              responseDetails ->
+                  network.continueWithAuth(
+                      responseDetails.getRequest().getRequestId(),
+                      new UsernameAndPassword("test", "test")));
+
+      assertThat(callbackId).isGreaterThan(0);
 
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -216,6 +221,8 @@ class NetworkCommandsTest extends JupiterTestBase {
       browsingContext.navigate(page, COMPLETE);
 
       assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+
+      ((HasBiDi) driver).getBiDi().removeListener(callbackId);
     }
   }
 

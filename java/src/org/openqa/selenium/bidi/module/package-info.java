@@ -14,27 +14,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.bidi.log;
 
-import org.openqa.selenium.internal.Require;
+@NullMarked
+package org.openqa.selenium.bidi.module;
 
-public class FilterBy {
-
-  private final LogLevel level;
-
-  private FilterBy(LogLevel logLevel) {
-    this.level = Require.nonNull("Log level", logLevel);
-  }
-
-  public static FilterBy logLevel(LogLevel logLevel) {
-    return new FilterBy(logLevel);
-  }
-
-  public LogLevel getLevel() {
-    return level;
-  }
-
-  public boolean matches(BaseLogEntry entry) {
-    return entry.getLevel() == level;
-  }
-}
+import org.jspecify.annotations.NullMarked;

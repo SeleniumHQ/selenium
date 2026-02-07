@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,6 +147,12 @@ public abstract class JupiterTestBase {
   @SuppressWarnings("unchecked")
   protected final <T> T executeJavaScript(String js) {
     return (T) requireNonNull(((JavascriptExecutor) driver).executeScript(js));
+  }
+
+  @Nullable
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeScriptNullable(String js) {
+    return (T) ((JavascriptExecutor) driver).executeScript(js);
   }
 
   @SuppressWarnings("unchecked")

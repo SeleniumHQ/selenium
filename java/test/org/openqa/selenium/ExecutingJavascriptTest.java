@@ -371,14 +371,9 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(pages.javascriptPage);
 
-    String value = (String) executeScript("return '';");
-    assertThat(value).isEmpty();
-
-    value = (String) executeScript("return undefined;");
-    assertThat(value).isNull();
-
-    value = (String) executeScript("return ' '");
-    assertThat(value).isEqualTo(" ");
+    assertThat((String) executeScript("return '';")).isEmpty();
+    assertThat((String) executeScriptNullable("return undefined;")).isNull();
+    assertThat((String) executeScript("return ' '")).isEqualTo(" ");
   }
 
   @Test

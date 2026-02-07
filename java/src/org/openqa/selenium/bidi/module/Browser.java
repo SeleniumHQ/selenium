@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.bidi.module;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -32,44 +32,24 @@ import org.openqa.selenium.json.JsonInput;
 public class Browser {
   private final BiDi bidi;
 
-  private final Function<JsonInput, String> userContextInfoMapper =
-      jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        return (String) response.get("userContext");
+  private static final Function<JsonInput, String> userContextInfoMapper =
+      json -> json.readMapElement("userContext");
+
+  private static final Function<JsonInput, List<String>> userContextsInfoMapper =
+      json -> {
+        List<Map<String, String>> userContexts = json.readMapElement("userContexts");
+
+        return userContexts.stream()
+            .map(map -> map.get("userContext"))
+            .collect(Collectors.toList());
       };
 
-  private final Function<JsonInput, List<String>> userContextsInfoMapper =
-      jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        List<Map<String, String>> userContextsResponse =
-            (List<Map<String, String>>) response.get("userContexts");
-
-        List<String> userContexts = new ArrayList<>();
-        userContextsResponse.forEach(
-            map -> {
-              String userContext = map.get("userContext");
-              userContexts.add(userContext);
-            });
-
-        return userContexts;
-      };
-
-  private final Function<JsonInput, List<ClientWindowInfo>> clientWindowsInfoMapper =
-      jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        List<Map<String, Object>> clientWindowsResponse =
-            (List<Map<String, Object>>) response.get("clientWindows");
-
-        List<ClientWindowInfo> clientWindows = new ArrayList<>();
-        clientWindowsResponse.forEach(map -> clientWindows.add(ClientWindowInfo.fromJson(map)));
-
-        return clientWindows;
-      };
-
-  private final Function<JsonInput, ClientWindowInfo> clientWindowInfoMapper =
-      jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        return ClientWindowInfo.fromJson(response);
+  private static final Function<JsonInput, List<ClientWindowInfo>> clientWindowsInfoMapper =
+      json -> {
+        List<Map<String, Object>> clientWindows = json.readMapElement("clientWindows");
+        return clientWindows.stream()
+            .map(map -> ClientWindowInfo.fromJson(map))
+            .collect(Collectors.toList());
       };
 
   public Browser(WebDriver driver) {

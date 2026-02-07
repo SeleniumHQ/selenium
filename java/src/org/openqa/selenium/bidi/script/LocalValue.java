@@ -29,7 +29,7 @@ import org.openqa.selenium.json.Json;
 
 public abstract class LocalValue {
 
-  private static Json JSON = new Json();
+  private static final Json JSON = new Json();
 
   enum SpecialNumberType {
     NAN("NaN"),
