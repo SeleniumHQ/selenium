@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.testing;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.net.MalformedURLException;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
@@ -137,7 +139,17 @@ public abstract class JupiterTestBase {
     }
   }
 
-  protected WebDriverWait wait(WebDriver driver) {
+  protected final WebDriverWait wait(WebDriver driver) {
     return new WebDriverWait(driver, Duration.ofSeconds(10));
+  }
+
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeJavaScript(String js) {
+    return (T) requireNonNull(((JavascriptExecutor) driver).executeScript(js));
+  }
+
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeAsyncScript(String js) {
+    return (T) requireNonNull(((JavascriptExecutor) driver).executeAsyncScript(js));
   }
 }

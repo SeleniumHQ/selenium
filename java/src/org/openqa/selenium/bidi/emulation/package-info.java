@@ -15,26 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.Map;
-import org.openqa.selenium.internal.Require;
-
-public class ScreenArea {
-  private final int height;
-  private final int width;
-
-  public ScreenArea(int width, int height) {
-    this.width = Require.nonNegative("Width", width);
-    this.height = Require.nonNegative("Height", height);
-  }
-
-  public Map<String, Integer> toMap() {
-    return Map.of("width", width, "height", height);
-  }
-
-  @Override
-  public String toString() {
-    return String.format("ScreenArea{width=%d, height=%d}", width, height);
-  }
-}
+import org.jspecify.annotations.NullMarked;

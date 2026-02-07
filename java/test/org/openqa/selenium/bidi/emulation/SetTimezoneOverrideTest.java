@@ -24,7 +24,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
@@ -37,7 +36,7 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 
 public class SetTimezoneOverrideTest extends JupiterTestBase {
 
-  int getExpectedTimezoneOffset(String timezoneId) {
+  private int getExpectedTimezoneOffset(String timezoneId) {
     ZoneId zone = ZoneId.of(timezoneId);
     ZonedDateTime now = ZonedDateTime.now(zone);
     return now.getOffset().getTotalSeconds()
@@ -46,18 +45,13 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
   }
 
   String getTimezoneString(WebDriver driver, String context) {
-    JavascriptExecutor executor = (JavascriptExecutor) driver;
-
     driver.switchTo().window(context);
-    return (String)
-        executor.executeScript("return Intl.DateTimeFormat().resolvedOptions().timeZone;");
+    return executeJavaScript("return Intl.DateTimeFormat().resolvedOptions().timeZone;");
   }
 
   Number getTimezoneOffset(WebDriver driver, String context) {
-    JavascriptExecutor executor = (JavascriptExecutor) driver;
-
     driver.switchTo().window(context);
-    return (Number) executor.executeScript("return new Date().getTimezoneOffset()");
+    return executeJavaScript("return new Date().getTimezoneOffset()");
   }
 
   @Test
