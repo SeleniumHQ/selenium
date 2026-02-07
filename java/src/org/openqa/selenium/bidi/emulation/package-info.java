@@ -15,26 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.List;
-import org.jspecify.annotations.Nullable;
-
-public class SetTimezoneOverrideParameters extends AbstractOverrideParameters {
-
-  public SetTimezoneOverrideParameters(@Nullable String timezone) {
-    map.put("timezone", timezone);
-  }
-
-  @Override
-  public SetTimezoneOverrideParameters contexts(List<String> contexts) {
-    super.contexts(contexts);
-    return this;
-  }
-
-  @Override
-  public SetTimezoneOverrideParameters userContexts(List<String> userContexts) {
-    super.userContexts(userContexts);
-    return this;
-  }
-}
+import org.jspecify.annotations.NullMarked;

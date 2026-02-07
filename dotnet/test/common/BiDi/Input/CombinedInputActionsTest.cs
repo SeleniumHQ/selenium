@@ -33,23 +33,23 @@ internal class CombinedInputActionsTest : BiDiTestFixture
         await Task.Delay(3000);
 
         await context.Input.PerformActionsAsync([new PointerActions("id0") {
-            new MovePointer(300, 300),
-            new DownPointer(0),
-            new MovePointer(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
-            new UpPointer(0),
+            new PointerMoveAction(300, 300),
+            new PointerDownAction(0),
+            new PointerMoveAction(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
+            new PointerUpAction(0),
         }]);
 
         await context.Input.PerformActionsAsync([new KeyActions("id1") {
-            new DownKey('U'),
-            new UpKey('U'),
-            new Pause { Duration = 3000 }
+            new KeyDownAction('U'),
+            new KeyUpAction('U'),
+            new PauseAction { Duration = 3000 }
         }]);
 
         await context.Input.PerformActionsAsync([new PointerActions("id2") {
-            new MovePointer(300, 300),
-            new DownPointer(0),
-            new MovePointer(400, 400) { Duration = 2000 },
-            new UpPointer(0),
+            new PointerMoveAction(300, 300),
+            new PointerDownAction(0),
+            new PointerMoveAction(400, 400) { Duration = 2000 },
+            new PointerUpAction(0),
         }]);
 
         await Task.Delay(3000);
@@ -65,8 +65,8 @@ internal class CombinedInputActionsTest : BiDiTestFixture
         await context.Input.PerformActionsAsync([
             new PointerActions("id0")
             {
-                new DownPointer(1),
-                new UpPointer(1),
+                new PointerDownAction(1),
+                new PointerUpAction(1),
             }
             ]);
     }

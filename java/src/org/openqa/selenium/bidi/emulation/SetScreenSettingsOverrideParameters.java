@@ -20,31 +20,24 @@ package org.openqa.selenium.bidi.emulation;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
-public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
-  public static SetScriptingEnabledParameters scriptingEnabled() {
-    return new SetScriptingEnabledParameters(null);
-  }
+public class SetScreenSettingsOverrideParameters extends AbstractOverrideParameters {
 
-  public static SetScriptingEnabledParameters scriptingDisabled() {
-    return new SetScriptingEnabledParameters(false);
-  }
-
-  public SetScriptingEnabledParameters(@Nullable Boolean enabled) {
-    if (Boolean.TRUE.equals(enabled)) {
-      throw new IllegalArgumentException(
-          "Only emulation of disabled JavaScript is supported (enabled must be false or null)");
+  public SetScreenSettingsOverrideParameters(@Nullable ScreenArea area) {
+    if (area == null) {
+      map.put("screenArea", null);
+    } else {
+      map.put("screenArea", area.toMap());
     }
-    map.put("enabled", enabled); // null or false
   }
 
   @Override
-  public SetScriptingEnabledParameters contexts(List<String> contexts) {
+  public SetScreenSettingsOverrideParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetScriptingEnabledParameters userContexts(List<String> userContexts) {
+  public SetScreenSettingsOverrideParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

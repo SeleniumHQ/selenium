@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,6 +30,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
@@ -453,6 +456,14 @@ public class JsonInput implements Closeable {
     }
 
     return coercer.coerce(this, type, setter);
+  }
+
+  public <T> T readNonNull(Type type) {
+    return requireNonNull(read(type));
+  }
+
+  public <T> Map<String, T> readMap() {
+    return requireNonNull(read(Map.class));
   }
 
   /**

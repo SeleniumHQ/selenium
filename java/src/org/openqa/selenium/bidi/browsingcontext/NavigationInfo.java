@@ -17,34 +17,32 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class NavigationInfo {
 
   private final String browsingContextId;
 
-  private final String navigationId;
+  @Nullable private final String navigationId;
 
   private final long timestamp;
 
   private final String url;
 
   protected NavigationInfo(
-      String browsingContextId, String navigationId, long timestamp, String url) {
+      String browsingContextId, @Nullable String navigationId, long timestamp, String url) {
     this.browsingContextId = browsingContextId;
     this.navigationId = navigationId;
     this.timestamp = timestamp;
     this.url = url;
   }
 
-  public static NavigationInfo fromJson(JsonInput input) {
+  static NavigationInfo fromJson(JsonInput input) {
     String browsingContextId = null;
     String navigationId = null;
-    long timestamp = 0;
+    Long timestamp = null;
     String url = null;
 
     input.beginObject();
@@ -74,13 +72,18 @@ public class NavigationInfo {
 
     input.endObject();
 
-    return new NavigationInfo(browsingContextId, navigationId, timestamp, url);
+    return new NavigationInfo(
+        Require.nonNull("browsingContext", browsingContextId),
+        navigationId,
+        Require.positive("Timestamp", timestamp),
+        Require.nonNull("URL", url));
   }
 
   public String getBrowsingContextId() {
     return browsingContextId;
   }
 
+  @Nullable
   public String getNavigationId() {
     return navigationId;
   }
@@ -91,16 +94,5 @@ public class NavigationInfo {
 
   public String getUrl() {
     return url;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("browsingContextId", this.getBrowsingContextId());
-    toReturn.put("navigationId", this.getNavigationId());
-    toReturn.put("timestamp", this.getTimestamp());
-    toReturn.put("url", this.getUrl());
-
-    return unmodifiableMap(toReturn);
   }
 }

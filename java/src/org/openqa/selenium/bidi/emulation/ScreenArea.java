@@ -17,34 +17,24 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.List;
-import org.jspecify.annotations.Nullable;
+import java.util.Map;
 import org.openqa.selenium.internal.Require;
 
-public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
+public class ScreenArea {
+  private final int height;
+  private final int width;
 
-  public SetGeolocationOverrideParameters(@Nullable GeolocationCoordinates coordinates) {
-    if (coordinates == null) {
-      map.put("coordinates", null);
-    } else {
-      map.put("coordinates", coordinates.toMap());
-    }
+  public ScreenArea(int width, int height) {
+    this.width = Require.nonNegative("Width", width);
+    this.height = Require.nonNegative("Height", height);
   }
 
-  public SetGeolocationOverrideParameters(GeolocationPositionError error) {
-    Require.nonNull("GeolocationPositionError", error);
-    map.put("error", error.toMap());
-  }
-
-  @Override
-  public SetGeolocationOverrideParameters contexts(List<String> contexts) {
-    super.contexts(contexts);
-    return this;
+  public Map<String, Integer> toMap() {
+    return Map.of("width", width, "height", height);
   }
 
   @Override
-  public SetGeolocationOverrideParameters userContexts(List<String> userContexts) {
-    super.userContexts(userContexts);
-    return this;
+  public String toString() {
+    return String.format("ScreenArea{width=%d, height=%d}", width, height);
   }
 }

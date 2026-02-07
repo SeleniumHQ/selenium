@@ -14,37 +14,28 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.bidi.browsingcontext;
 
-package org.openqa.selenium.bidi.emulation;
-
-import java.util.List;
+import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
+public class ImageFormat {
+  private final String type;
+  private final @Nullable Double quality;
 
-  public SetGeolocationOverrideParameters(@Nullable GeolocationCoordinates coordinates) {
-    if (coordinates == null) {
-      map.put("coordinates", null);
-    } else {
-      map.put("coordinates", coordinates.toMap());
-    }
+  public ImageFormat(String type, @Nullable Double quality) {
+    this.type = Require.nonNull("Image type", type);
+    this.quality =
+        quality == null ? null : Require.inRangeInclusive("Image quality", quality, 0.0, 1.0);
   }
 
-  public SetGeolocationOverrideParameters(GeolocationPositionError error) {
-    Require.nonNull("GeolocationPositionError", error);
-    map.put("error", error.toMap());
-  }
-
-  @Override
-  public SetGeolocationOverrideParameters contexts(List<String> contexts) {
-    super.contexts(contexts);
-    return this;
+  public Map<String, @Nullable Object> toMap() {
+    return quality == null ? Map.of("type", type) : Map.of("type", type, "quality", quality);
   }
 
   @Override
-  public SetGeolocationOverrideParameters userContexts(List<String> userContexts) {
-    super.userContexts(userContexts);
-    return this;
+  public String toString() {
+    return String.format("%s{%s}", getClass().getSimpleName(), toMap());
   }
 }

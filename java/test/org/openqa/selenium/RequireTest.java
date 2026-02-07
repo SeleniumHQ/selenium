@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.internal.Require.nonNull;
 
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.internal.Require;
@@ -76,6 +79,15 @@ class RequireTest {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("x", (Object) null).nonNull("%s cannot be null", "it"))
         .withMessage("it cannot be null");
+  }
+
+  @Test
+  void canCheckArgumentIsNull() {
+    Require.isNull("Error", null);
+
+    assertThatThrownBy(() -> Require.isNull("Error", "Oops"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Error must not be set");
   }
 
   @Test
@@ -129,7 +141,13 @@ class RequireTest {
         .isThrownBy(() -> Require.positive(Duration.ofSeconds(0)))
         .withMessage("Duration must be greater than 0");
     assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive(Duration.ofSeconds(-1)))
+        .withMessage("Duration must be greater than 0");
+    assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.positive("Timeout", Duration.ofSeconds(-5)))
+        .withMessage("Timeout must be greater than 0");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", Duration.ofSeconds(0)))
         .withMessage("Timeout must be greater than 0");
 
     assertThat(Require.nonNegative(Duration.ofSeconds(0))).isEqualTo(Duration.ofSeconds(0));
@@ -168,6 +186,46 @@ class RequireTest {
   }
 
   @Test
+  void canCheckLongArgument() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", (Long) null))
+        .withMessage("Timeout must be set");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", -5L))
+        .withMessage("Timeout must be greater than 0");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", 0L))
+        .withMessage("Timeout must be greater than 0");
+    assertThat(Require.positive("Timeout", 5L)).isEqualTo(5L);
+  }
+
+  @Test
+  void canCheckDoubleArgument() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.nonNegative("Accuracy", (Double) null))
+        .withMessage("Accuracy must be set");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.nonNegative("Speed", -5.5d))
+        .withMessage("Speed must be 0 or greater");
+    assertThat(Require.nonNegative("Timeout", 0.0d)).isZero();
+    assertThat(Require.nonNegative("Timeout", 5.0d)).isEqualTo(5);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Accuracy", (Double) null))
+        .withMessage("Accuracy must be set");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Accuracy", -5.0d))
+        .withMessage("Accuracy must be greater than 0");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Speed", -5.0d, "Don't move back!"))
+        .withMessage("Don't move back!");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Accuracy", 0.0d))
+        .withMessage("Accuracy must be greater than 0");
+    assertThat(Require.positive("Accuracy", 5.0d)).isEqualTo(5.0);
+  }
+
+  @Test
   void canCheckIntegersWithMessages() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.positive("Timeout", 0, "Message should only be this"))
@@ -184,6 +242,21 @@ class RequireTest {
         .isThrownBy(() -> Require.argument("Timeout", 3).greaterThan(5, "It should be longer"))
         .withMessage("It should be longer");
     assertThat(Require.argument("Timeout", 10).greaterThan(5, "It should be longer")).isEqualTo(10);
+  }
+
+  @Test
+  void canCheckThatDoubleValueIsInRange() {
+    Require.inRangeInclusive("Sin", 0.0, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 0.001, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 0.99999, 0.0, 1.0);
+    Require.inRangeInclusive("Sin", 1.0, 0.0, 1.0);
+
+    assertThatThrownBy(() -> Require.inRangeInclusive("Sin", -0.01, 0.0, 1.0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Sin must be between 0.0 and 1.0 (inclusive)");
+    assertThatThrownBy(() -> Require.inRangeInclusive("Sin", 1.0001, 0.0, 1.0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Sin must be between 0.0 and 1.0 (inclusive)");
   }
 
   @Test
@@ -287,19 +360,58 @@ class RequireTest {
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", (Path) null).isDirectory())
         .withMessage("Target must be set");
-    File tempFile = File.createTempFile("example", "tmp");
-    Path tempFilePath = Paths.get(tempFile.toURI());
-    tempFile.deleteOnExit();
+
+    Path tempFilePath = createTemporaryFile();
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", tempFilePath).isDirectory())
         .withMessage("Target must be a directory: %s", tempFilePath);
     Path dirPath = tempFilePath.getParent();
     assertThat(Require.state("Target", dirPath).isDirectory()).isSameAs(dirPath);
-    if (!tempFile.delete()) {
-      fail("Unable to delete temp file");
-    }
+
+    Path path = missingFile();
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", tempFilePath).isDirectory())
-        .withMessage("Target must exist: %s", tempFilePath);
+        .isThrownBy(() -> Require.state("Target", path).isDirectory())
+        .withMessage("Target must exist: %s", path);
+  }
+
+  @Test
+  void canCheckIfPathIsExecutable() throws IOException {
+    assertThatThrownBy(() -> Require.state("Binary", (Path) null).isExecutable())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Binary must be set");
+
+    Path path = missingFile();
+    assertThatThrownBy(() -> Require.state("Binary", path).isExecutable())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Binary must exist: " + path);
+
+    Path tempFile = createTemporaryFile();
+    assertThatThrownBy(() -> Require.state("Binary", tempFile).isExecutable())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Binary must be executable: " + tempFile);
+
+    tempFile.toFile().setExecutable(true);
+    Require.state("Binary", tempFile).isExecutable();
+  }
+
+  @Test
+  void canCheckThatCollectionIsNotEmpty() {
+    Require.nonEmpty("Capabilities", List.of(1, 2, 3));
+    assertThatThrownBy(() -> Require.nonEmpty("Capabilities", null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Capabilities must be set");
+    assertThatThrownBy(() -> Require.nonEmpty("Capabilities", List.of()))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Capabilities must not be empty");
+  }
+
+  private static Path createTemporaryFile() throws IOException {
+    File tempFile = File.createTempFile("selenium-example", "tmp");
+    tempFile.deleteOnExit();
+    return Paths.get(tempFile.toURI());
+  }
+
+  private static Path missingFile() {
+    return Paths.get(UUID.randomUUID().toString());
   }
 }
