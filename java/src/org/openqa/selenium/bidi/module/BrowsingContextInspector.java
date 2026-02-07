@@ -80,7 +80,7 @@ public class BrowsingContextInspector implements AutoCloseable {
         }
       };
 
-  private static final Event<BrowsingContextInfo> browsingContextCreated =
+  private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
   private static final Event<BrowsingContextInfo> browsingContextDestroyed =
