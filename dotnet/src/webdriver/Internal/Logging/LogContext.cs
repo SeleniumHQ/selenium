@@ -130,6 +130,10 @@ internal sealed class LogContext : ILogContext
 
     public ILogContext WithTruncation(int length)
     {
+        if (length < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(length), "Truncation length must be non-negative.");
+        }
         _truncationLength = length;
         return this;
     }
