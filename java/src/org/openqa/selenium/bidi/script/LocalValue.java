@@ -17,21 +17,25 @@
 
 package org.openqa.selenium.bidi.script;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.json.Json;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptlocalvalue">BiDi spec</a>
+ */
 public abstract class LocalValue {
 
   private static final Json JSON = new Json();
 
-  enum SpecialNumberType {
+  public enum SpecialNumberType {
     NAN("NaN"),
     MINUS_ZERO("-0"),
     INFINITY("Infinity"),
@@ -79,16 +83,44 @@ public abstract class LocalValue {
     return new PrimitiveProtocolValue(PrimitiveType.BOOLEAN, value);
   }
 
+  public static LocalValue bigIntValue(BigInteger value) {
+    return bigIntValue(value.toString());
+  }
+
   public static LocalValue bigIntValue(String value) {
     return new PrimitiveProtocolValue(PrimitiveType.BIGINT, value);
+  }
+
+  public static LocalValue listToLocalValues(List<Object> rawValues) {
+    List<LocalValue> values =
+        rawValues.stream().map(value -> getArgument(value)).collect(Collectors.toList());
+
+    return arrayValue(values);
   }
 
   public static LocalValue arrayValue(List<LocalValue> value) {
     return new ArrayLocalValue(value);
   }
 
+  public static LocalValue dateValue(Instant value) {
+    return dateValue(value.toString());
+  }
+
   public static LocalValue dateValue(String value) {
     return new DateLocalValue(value);
+  }
+
+  public static LocalValue mapToLocalValues(Map<Object, Object> rawValues) {
+    Map<Object, LocalValue> map =
+        rawValues.entrySet().stream()
+            .collect(
+                toMap(
+                    entry ->
+                        entry.getKey() instanceof String
+                            ? entry.getKey()
+                            : getArgument(entry.getKey()),
+                    entry -> getArgument(entry.getValue())));
+    return mapValue(map);
   }
 
   public static LocalValue mapValue(Map<Object, LocalValue> value) {
@@ -105,6 +137,13 @@ public abstract class LocalValue {
 
   public static LocalValue regExpValue(String pattern, String flags) {
     return new RegExpValue(pattern, flags);
+  }
+
+  public static LocalValue setToLocalValues(Set<Object> rawValues) {
+    Set<LocalValue> values =
+        rawValues.stream().map(value -> getArgument(value)).collect(Collectors.toSet());
+
+    return setValue(values);
   }
 
   public static LocalValue setValue(Set<LocalValue> value) {
@@ -132,79 +171,68 @@ public abstract class LocalValue {
     return new RemoteReference(type, id);
   }
 
-  public static LocalValue getArgument(Object arg) {
-    LocalValue localValue = null;
-
-    if (arg instanceof String) {
-      switch ((String) arg) {
-        case "undefined":
-          localValue = undefinedValue();
-          break;
-        case "null":
-          localValue = nullValue();
-          break;
-        case "-Infinity":
-          localValue = numberValue(SpecialNumberType.MINUS_INFINITY);
-          break;
-        case "Infinity":
-          localValue = numberValue(SpecialNumberType.INFINITY);
-          break;
-        case "NaN":
-          localValue = numberValue(SpecialNumberType.NAN);
-          break;
-        case "-0":
-          localValue = numberValue(SpecialNumberType.MINUS_ZERO);
-          break;
-        default:
-          localValue = stringValue((String) arg);
-          break;
-      }
-    } else if (arg instanceof Number) {
-      if (arg instanceof Integer || arg instanceof Long) {
-        localValue = numberValue(((Number) arg).longValue());
-      } else if (arg instanceof Double || arg instanceof Float) {
-        localValue = numberValue(((Number) arg).doubleValue());
-      } else if (arg instanceof BigInteger) {
-        localValue = bigIntValue(arg.toString());
-      }
-    } else if (arg instanceof Boolean) {
-      localValue = booleanValue((Boolean) arg);
-    } else if (arg instanceof Instant) {
-      localValue = dateValue(((Instant) arg).toString());
-    } else if (arg instanceof Map) {
-      Map<Object, LocalValue> map = new HashMap<>();
-      for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) arg).entrySet()) {
-        Object key =
-            (entry.getKey() instanceof String) ? entry.getKey() : getArgument(entry.getKey());
-        map.put(key, getArgument(entry.getValue()));
-      }
-      localValue = mapValue(map);
-    } else if (arg instanceof List) {
-      List<LocalValue> values = new ArrayList<>();
-      ((List<Object>) arg).forEach(value -> values.add(getArgument(value)));
-      localValue = arrayValue(values);
-    } else if (arg instanceof Set) {
-      Set<LocalValue> values = new HashSet<>();
-      ((Set<Object>) arg).forEach(value -> values.add(getArgument(value)));
-      localValue = setValue(values);
-    } else if (arg instanceof RegExpValue) {
-      localValue = (RegExpValue) arg;
-    } else {
-      String json = JSON.toJson(arg);
-      Map<Object, Object> objectMap = JSON.toType(json, Map.class);
-
-      Map<Object, LocalValue> map = new HashMap<>();
-
-      for (Map.Entry<Object, Object> entry : objectMap.entrySet()) {
-        Object key =
-            (entry.getKey() instanceof String) ? entry.getKey() : getArgument(entry.getKey());
-        map.put(key, getArgument(entry.getValue()));
-      }
-      localValue = objectValue(map);
-
-      return localValue;
+  public static LocalValue getArgument(@Nullable Object arg) {
+    if (arg == null) {
+      return nullValue();
     }
+    if (arg instanceof String) {
+      return stringToLocalValue((String) arg);
+    } else if (arg instanceof Number) {
+      return numberToLocalValue((Number) arg);
+    } else if (arg instanceof Boolean) {
+      return booleanValue((Boolean) arg);
+    } else if (arg instanceof Instant) {
+      return dateValue((Instant) arg);
+    } else if (arg instanceof Map) {
+      return mapToLocalValues((Map<Object, Object>) arg);
+    } else if (arg instanceof List) {
+      return listToLocalValues((List<Object>) arg);
+    } else if (arg instanceof Set) {
+      return setToLocalValues((Set<Object>) arg);
+    } else if (arg instanceof RegExpValue) {
+      return (RegExpValue) arg;
+    } else {
+      Map<Object, Object> rawValues = JSON.toType(JSON.toJson(arg), Map.class);
 
-    return localValue;
+      Map<Object, LocalValue> map =
+          rawValues.entrySet().stream()
+              .collect(
+                  toMap(
+                      entry ->
+                          entry.getKey() instanceof String
+                              ? entry.getKey()
+                              : getArgument(entry.getKey()),
+                      entry -> getArgument(entry.getValue())));
+      return objectValue(map);
+    }
+  }
+
+  private static LocalValue stringToLocalValue(String arg) {
+    switch (arg) {
+      case "undefined":
+        return undefinedValue();
+      case "null":
+        return nullValue();
+      case "-Infinity":
+        return numberValue(SpecialNumberType.MINUS_INFINITY);
+      case "Infinity":
+        return numberValue(SpecialNumberType.INFINITY);
+      case "NaN":
+        return numberValue(SpecialNumberType.NAN);
+      case "-0":
+        return numberValue(SpecialNumberType.MINUS_ZERO);
+      default:
+        return stringValue(arg);
+    }
+  }
+
+  private static LocalValue numberToLocalValue(Number arg) {
+    if (arg instanceof BigInteger) {
+      return bigIntValue((BigInteger) arg);
+    } else if (arg instanceof Double || arg instanceof Float) {
+      return numberValue((arg).doubleValue());
+    } else {
+      return numberValue((arg).longValue());
+    }
   }
 }
