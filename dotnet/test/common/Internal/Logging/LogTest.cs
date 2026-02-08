@@ -155,7 +155,7 @@ public class LogTest
     [Test]
     public void ShouldCreateContextWithNullLogHandlers()
     {
-        var context = new LogContext(LogEventLevel.Info, null, null, handlers: null);
+        var context = new LogContext(LogEventLevel.Info, null, null, 50, handlers: null);
 
         Assert.That(context.Handlers, Is.Empty);
     }
@@ -245,6 +245,20 @@ public class LogTest
         }
 
         Assert.That(Log.CurrentContext, Is.SameAs(globalContext));
+    }
+
+    [Test]
+    public void ShouldTruncateLongMessage()
+    {
+        var longMessage = new string('a', 150);
+        var expectedMessage = new string('a', 40) + " ...truncated 50... " + new string('a', 40);
+
+        using var context = Log.CreateContext().WithTruncation(100).Handlers.Add(testLogHandler);
+
+        logger.Info(longMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(expectedMessage));
     }
 }
 

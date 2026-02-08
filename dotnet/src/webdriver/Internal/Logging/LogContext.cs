@@ -31,21 +31,18 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// <inheritdoc cref="ILogContext"/>
 internal sealed class LogContext : ILogContext
 {
-    private ConcurrentDictionary<Type, ILogger>? _loggers;
-
     private LogEventLevel _level;
-
     private readonly ILogContext? _parentLogContext;
-
+    private ConcurrentDictionary<Type, ILogger>? _loggers;
+    private int _truncationLength;
     private readonly Lazy<LogHandlerList> _lazyLogHandlerList;
 
-    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, IEnumerable<ILogHandler>? handlers)
+    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, int truncationLength, IEnumerable<ILogHandler>? handlers)
     {
         _level = level;
-
         _parentLogContext = parentLogContext;
-
         _loggers = CloneLoggers(loggers, level);
+        _truncationLength = truncationLength;
 
         if (handlers is not null)
         {
@@ -66,7 +63,7 @@ internal sealed class LogContext : ILogContext
     {
         ConcurrentDictionary<Type, ILogger>? loggers = CloneLoggers(_loggers, minimumLevel);
 
-        var context = new LogContext(minimumLevel, this, loggers, Handlers);
+        var context = new LogContext(minimumLevel, this, loggers, _truncationLength, Handlers);
 
         Log.CurrentContext = context;
 
@@ -99,6 +96,8 @@ internal sealed class LogContext : ILogContext
     {
         if (IsEnabled(logger, level))
         {
+            message = TruncateMessage(message, _truncationLength);
+
             var logEvent = new LogEvent(logger.Issuer, DateTimeOffset.Now, level, message);
 
             foreach (var handler in Handlers)
@@ -126,7 +125,12 @@ internal sealed class LogContext : ILogContext
     public ILogContext SetLevel(Type issuer, LogEventLevel level)
     {
         GetLogger(issuer).Level = level;
+        return this;
+    }
 
+    public ILogContext WithTruncation(int length)
+    {
+        _truncationLength = length;
         return this;
     }
 
@@ -167,5 +171,31 @@ internal sealed class LogContext : ILogContext
         }
 
         return new ConcurrentDictionary<Type, ILogger>(cloned);
+    }
+
+    private static string TruncateMessage(string message, int truncationLength)
+    {
+        if (message.Length <= truncationLength)
+        {
+            return message;
+        }
+
+        // Calculate marker length: " ...truncated N... " (14 chars + digit count)
+        int removedCount = message.Length - truncationLength;
+        int markerLength = 14 + removedCount.ToString().Length + 4; // " ...truncated " + digits + "... "
+
+        if (markerLength >= truncationLength)
+        {
+            // Fallback to simple truncation if marker won't fit
+            return truncationLength >= 3
+                ? message.Substring(0, truncationLength - 3) + "..."
+                : message.Substring(0, truncationLength);
+        }
+
+        int contentLength = truncationLength - markerLength;
+        int prefixLength = contentLength / 2;
+        int suffixLength = contentLength - prefixLength;
+
+        return message.Substring(0, prefixLength) + " ...truncated " + removedCount + "... " + message.Substring(message.Length - suffixLength);
     }
 }
