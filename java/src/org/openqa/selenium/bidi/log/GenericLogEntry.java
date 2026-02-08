@@ -23,10 +23,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.Source;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#cddl-type-loggenericlogentry">BiDi spec</a>
+ */
 public class GenericLogEntry extends BaseLogEntry {
 
   private final String type;
@@ -50,7 +52,7 @@ public class GenericLogEntry extends BaseLogEntry {
     LogLevel level = null;
     Source source = null;
     String text = null;
-    long timestamp = 0;
+    Long timestamp = null;
     String type = null;
     StackTrace stackTrace = null;
 
@@ -89,15 +91,21 @@ public class GenericLogEntry extends BaseLogEntry {
 
     input.endObject();
 
-    return new GenericLogEntry(level, source, text, timestamp, type, stackTrace);
+    return new GenericLogEntry(
+        Require.nonNull("Log level", level),
+        Require.nonNull("Log source", source),
+        Require.nonNull("Log text", text),
+        Require.nonNull("Log timestamp", timestamp),
+        Require.nonNull("Log type", type),
+        stackTrace);
   }
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
     toReturn.put("type", type);
-    toReturn.put("level", super.getLevel());
-    toReturn.put("text", super.getText());
-    toReturn.put("timestamp", super.getTimestamp());
+    toReturn.put("level", getLevel());
+    toReturn.put("text", getText());
+    toReturn.put("timestamp", getTimestamp());
     if (getStackTrace() != null) {
       toReturn.put("stackTrace", getStackTrace());
     }

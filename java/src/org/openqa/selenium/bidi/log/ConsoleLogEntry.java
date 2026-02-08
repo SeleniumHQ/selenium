@@ -25,11 +25,13 @@ import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.Source;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logconsolelogentry">BiDi spec</a>
+ */
 public class ConsoleLogEntry extends GenericLogEntry {
 
   private final String method;
@@ -61,7 +63,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
     LogLevel level = null;
     Source source = null;
     String text = null;
-    long timestamp = 0;
+    Long timestamp = null;
     String type = null;
     String method = null;
     List<RemoteValue> args = null;
@@ -110,20 +112,30 @@ public class ConsoleLogEntry extends GenericLogEntry {
 
     input.endObject();
 
-    return new ConsoleLogEntry(level, source, text, timestamp, type, method, args, stackTrace);
+    return new ConsoleLogEntry(
+        Require.nonNull("Log level", level),
+        Require.nonNull("Log source", source),
+        Require.nonNull("Log text", text),
+        Require.nonNull("Log timestamp", timestamp),
+        Require.nonNull("Log type", type),
+        Require.nonNull("Log method", method),
+        Require.nonNull("Log arguments", args),
+        stackTrace);
   }
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
 
-    toReturn.put("type", super.getType());
-    toReturn.put("source", super.getSource());
-    toReturn.put("level", super.getLevel());
-    toReturn.put("text", super.getText());
-    toReturn.put("timestamp", super.getTimestamp());
+    toReturn.put("type", getType());
+    toReturn.put("source", getSource());
+    toReturn.put("level", getLevel());
+    toReturn.put("text", getText());
+    toReturn.put("timestamp", getTimestamp());
     toReturn.put("method", method);
     toReturn.put("args", args);
-    toReturn.put("stackTrace", super.getStackTrace());
+    if (getStackTrace() != null) {
+      toReturn.put("stackTrace", getStackTrace());
+    }
 
     return unmodifiableMap(toReturn);
   }
