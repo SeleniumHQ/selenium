@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.bidi.log;
 
-import static java.util.Collections.unmodifiableMap;
-
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.Source;
@@ -121,22 +117,5 @@ public class ConsoleLogEntry extends GenericLogEntry {
         Require.nonNull("Log method", method),
         Require.nonNull("Log arguments", args),
         stackTrace);
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("type", getType());
-    toReturn.put("source", getSource());
-    toReturn.put("level", getLevel());
-    toReturn.put("text", getText());
-    toReturn.put("timestamp", getTimestamp());
-    toReturn.put("method", method);
-    toReturn.put("args", args);
-    if (getStackTrace() != null) {
-      toReturn.put("stackTrace", getStackTrace());
-    }
-
-    return unmodifiableMap(toReturn);
   }
 }

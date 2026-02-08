@@ -18,11 +18,8 @@
 package org.openqa.selenium.bidi.log;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableMap;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -56,12 +53,5 @@ public class StackTrace {
     input.endObject();
 
     return new StackTrace(callFrames);
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("callFrames", callFrames);
-
-    return unmodifiableMap(toReturn);
   }
 }

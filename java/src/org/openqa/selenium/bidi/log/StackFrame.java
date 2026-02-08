@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.log;
 
-import java.util.Map;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -92,13 +91,5 @@ public class StackFrame {
         Require.nonNull("Function name", functionName),
         Require.nonNull("Line number", lineNumber),
         Require.nonNull("Column number", columnNumber));
-  }
-
-  private Map<String, Object> toJson() {
-    return Map.of(
-        "url", url,
-        "functionName", functionName,
-        "lineNumber", lineNumber,
-        "columnNumber", columnNumber);
   }
 }
