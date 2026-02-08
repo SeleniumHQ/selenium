@@ -126,6 +126,14 @@ public final class Require {
     return number;
   }
 
+  public static long nonNegative(String argName, @Nullable Long number) {
+    nonNull(argName, number);
+    if (number < 0) {
+      throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
+    }
+    return number;
+  }
+
   public static double nonNegative(String argName, @Nullable Double number) {
     nonNull(argName, number);
     if (number < 0) {
