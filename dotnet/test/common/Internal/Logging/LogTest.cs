@@ -248,6 +248,14 @@ public class LogTest
     }
 
     [Test]
+    public void ShouldThrowIfTruncationLengthIsNegative()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Log.CreateContext().WithTruncation(-1)
+        );
+    }
+
+    [Test]
     public void ShouldTruncateLongMessage()
     {
         var longMessage = new string('a', 150);
