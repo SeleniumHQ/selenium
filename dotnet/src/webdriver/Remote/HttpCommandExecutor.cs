@@ -254,10 +254,7 @@ public class HttpCommandExecutor : ICommandExecutor
 
         HttpMessageHandler handler = httpClientHandler;
 
-        if (_logger.IsEnabled(LogEventLevel.Trace))
-        {
-            handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
-        }
+        handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
 
         var client = new HttpClient(handler);
 
