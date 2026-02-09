@@ -155,8 +155,7 @@ public class LogTest
     [Test]
     public void ShouldCreateContextWithNullLogHandlers()
     {
-        const int truncationLength = 50;
-        var context = new LogContext(LogEventLevel.Info, null, null, truncationLength, handlers: null);
+        var context = new LogContext(LogEventLevel.Info, null, null, null, handlers: null);
 
         Assert.That(context.Handlers, Is.Empty);
     }
