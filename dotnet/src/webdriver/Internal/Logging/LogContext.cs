@@ -42,7 +42,7 @@ internal sealed class LogContext : ILogContext
     {
         if (truncationLength is not null && truncationLength.Value < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length cannot be negative.");
+            throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length must be non-negative.");
         }
         _level = level;
         _parentLogContext = parentLogContext;
