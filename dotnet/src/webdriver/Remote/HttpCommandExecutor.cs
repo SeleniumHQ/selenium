@@ -447,7 +447,7 @@ public class HttpCommandExecutor : ICommandExecutor
                 if (request.Content is not null)
                 {
 #if NET8_0_OR_GREATER
-                var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
                     var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
 #endif
@@ -468,7 +468,7 @@ public class HttpCommandExecutor : ICommandExecutor
                 if (!response.IsSuccessStatusCode && response.Content != null)
                 {
 #if NET8_0_OR_GREATER
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 #endif
