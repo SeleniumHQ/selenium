@@ -17,39 +17,44 @@
 
 package org.openqa.selenium.bidi;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Command<X> {
 
   private final String method;
-  private final Map<String, Object> params;
+  private final Map<String, @Nullable Object> params;
   private final Function<JsonInput, X> mapper;
   private final boolean sendsResponse;
 
-  public Command(String method, Map<String, Object> params) {
+  public Command(String method, Map<String, @Nullable Object> params) {
     this(method, params, Object.class);
   }
 
-  public Command(String method, Map<String, Object> params, Type typeOfX) {
+  public Command(String method, Map<String, @Nullable Object> params, Type typeOfX) {
     this(
         method, params, input -> input.readNonNull(Require.nonNull("Type to convert to", typeOfX)));
   }
 
-  public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
+  public Command(
+      String method, Map<String, @Nullable Object> params, Function<JsonInput, X> mapper) {
     this(method, params, mapper, true);
   }
 
   public Command(
       String method,
-      Map<String, Object> params,
+      Map<String, @Nullable Object> params,
       Function<JsonInput, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
-    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
+    this.params = unmodifiableMap(new HashMap<>(Require.nonNull("Command parameters", params)));
     this.mapper = Require.nonNull("Mapper for result", mapper);
     this.sendsResponse = sendsResponse;
   }
@@ -58,7 +63,7 @@ public class Command<X> {
     return method;
   }
 
-  public Map<String, Object> getParams() {
+  public Map<String, @Nullable Object> getParams() {
     return params;
   }
 
