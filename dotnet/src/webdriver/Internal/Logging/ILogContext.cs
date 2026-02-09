@@ -85,6 +85,13 @@ public interface ILogContext : IDisposable
     ILogContext SetLevel(Type issuer, LogEventLevel level);
 
     /// <summary>
+    /// Sets the truncation length for log messages in the current context.
+    /// </summary>
+    /// <param name="length">The maximum length of log messages before truncation occurs. Pass <see langword="null"/> to disable truncation.</param>
+    /// <returns>The current instance of <see cref="ILogContext"/> with the truncation length set.</returns>
+    ILogContext WithTruncation(int? length);
+
+    /// <summary>
     /// Gets a list of log handlers.
     /// </summary>
     ILogHandlerList Handlers { get; }
