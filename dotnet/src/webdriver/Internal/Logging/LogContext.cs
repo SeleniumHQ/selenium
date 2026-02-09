@@ -184,24 +184,29 @@ internal sealed class LogContext : ILogContext
             return message;
         }
 
-        int length = truncationLength.Value;
+        int maxLength = truncationLength.Value;
+        int removedCharsLength = message.Length - maxLength;
 
-        // Calculate marker length: " ...truncated N... " (14 chars + digit count)
-        int removedCount = message.Length - length;
-        int markerLength = 14 + removedCount.ToString().Length + 4; // " ...truncated " + digits + "... "
+        // Build truncation marker
+        const string markerPrefix = " ...truncated ";
+        const string markerSuffix = "... ";
 
-        if (markerLength >= length)
+        string marker = $"{markerPrefix}{removedCharsLength}{markerSuffix}";
+
+        // If marker won't fit, don't truncate
+        if (marker.Length >= maxLength)
         {
-            // Fallback to simple truncation if marker won't fit
-            return length >= 3
-                ? message.Substring(0, length - 3) + "..."
-                : message.Substring(0, length);
+            return message;
         }
 
-        int contentLength = length - markerLength;
-        int prefixLength = contentLength / 2;
-        int suffixLength = contentLength - prefixLength;
+        // Split content evenly around marker
+        int availableContentLength = maxLength - marker.Length;
+        int prefixLength = availableContentLength / 2;
+        int suffixLength = availableContentLength - prefixLength;
 
-        return message.Substring(0, prefixLength) + " ...truncated " + removedCount + "... " + message.Substring(message.Length - suffixLength);
+        string prefix = message.Substring(0, prefixLength);
+        string suffix = message.Substring(message.Length - suffixLength);
+
+        return prefix + marker + suffix;
     }
 }

@@ -271,7 +271,33 @@ public class LogTest
     }
 
     [Test]
-    public void ShouldNotTruncateWhenNullIsPassed()
+    public void ShouldNotTruncateShortMessage()
+    {
+        var shortMessage = new string('a', 50);
+
+        using var context = Log.CreateContext().WithTruncation(100).Handlers.Add(testLogHandler);
+
+        logger.Info(shortMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(shortMessage));
+    }
+
+    [Test]
+    public void ShouldNotTruncateShortMessageIfMarkerIsLongerThanMaxLength()
+    {
+        var shortMessage = new string('a', 10);
+
+        using var context = Log.CreateContext().WithTruncation(5).Handlers.Add(testLogHandler);
+
+        logger.Info(shortMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(shortMessage));
+    }
+
+    [Test]
+    public void ShouldNotTruncateWhenDisabled()
     {
         var longMessage = new string('a', 5000);
 
