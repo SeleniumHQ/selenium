@@ -47,7 +47,7 @@ public class HistoryUpdated {
           break;
 
         case "timestamp":
-          timestamp = input.read(long.class);
+          timestamp = input.read(Long.class);
           break;
 
         case "url":

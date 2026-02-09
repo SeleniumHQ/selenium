@@ -15,35 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi.script;
 
-public enum RealmType {
-  AUDIO_WORKLET("audio-worklet"),
-  DEDICATED_WORKER("dedicated-worker"),
-  PAINT_WORKLET("paint-worklet"),
-  SERVICE_WORKED("service-worker"),
-  SHARED_WORKED("shared-worker"),
-  WINDOW("window"),
-  WORKER("worker"),
-  WORKLET("worklet");
-
-  private final String type;
-
-  RealmType(String type) {
-    this.type = type;
-  }
-
-  @Override
-  public String toString() {
-    return type;
-  }
-
-  public static RealmType findByName(String name) {
-    for (RealmType type : values()) {
-      if (type.toString().equalsIgnoreCase(name)) {
-        return type;
-      }
-    }
-    throw new IllegalArgumentException("Unsupported realm type: " + name);
-  }
-}
+import org.jspecify.annotations.NullMarked;

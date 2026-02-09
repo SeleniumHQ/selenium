@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,12 +40,12 @@ public class StackTrace {
 
   public static StackTrace fromJson(JsonInput input) {
 
-    List<StackFrame> callFrames = Collections.emptyList();
+    List<StackFrame> callFrames = emptyList();
 
     input.beginObject();
     while (input.hasNext()) {
       if ("callFrames".equals(input.nextName())) {
-        callFrames = input.read(new TypeToken<List<StackFrame>>() {}.getType());
+        callFrames = input.readNonNull(new TypeToken<List<StackFrame>>() {}.getType());
       } else {
         input.skipValue();
       }

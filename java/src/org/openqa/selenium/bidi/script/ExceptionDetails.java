@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class ExceptionDetails {
@@ -55,7 +52,7 @@ public class ExceptionDetails {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "columnNumber":
-          columnNumber = input.read(Long.class);
+          columnNumber = input.readNonNull(Long.class);
           break;
 
         case "exception":
@@ -63,7 +60,7 @@ public class ExceptionDetails {
           break;
 
         case "lineNumber":
-          lineNumber = input.read(Long.class);
+          lineNumber = input.readNonNull(Long.class);
           break;
 
         case "stackTrace":
@@ -82,7 +79,12 @@ public class ExceptionDetails {
 
     input.endObject();
 
-    return new ExceptionDetails(columnNumber, exception, lineNumber, stackTrace, text);
+    return new ExceptionDetails(
+        columnNumber,
+        Require.nonNull("exception", exception),
+        lineNumber,
+        Require.nonNull("stackTrace", stackTrace),
+        Require.nonNull("text", text));
   }
 
   public long getColumnNumber() {
@@ -103,16 +105,5 @@ public class ExceptionDetails {
 
   public String getText() {
     return this.text;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("columnNumber", this.columnNumber);
-    toReturn.put("exception", this.exception);
-    toReturn.put("lineNumber", this.lineNumber);
-    toReturn.put("stacktrace", this.stacktrace);
-    toReturn.put("text", this.text);
-
-    return unmodifiableMap(toReturn);
   }
 }
