@@ -44,7 +44,7 @@ public class FileLogHandlerTests
         {
             using (var fileLogHandler = new FileLogHandler(tempFile))
             {
-                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             Assert.That(File.ReadAllText(tempFile), Does.Contain("test message"));
@@ -64,12 +64,12 @@ public class FileLogHandlerTests
         {
             using (var fileLogHandler = new FileLogHandler(tempFile))
             {
-                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             using (var fileLogHandler2 = new FileLogHandler(tempFile))
             {
-                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
@@ -89,12 +89,12 @@ public class FileLogHandlerTests
         {
             using (var fileLogHandler = new FileLogHandler(tempFilePath))
             {
-                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             using (var fileLogHandler2 = new FileLogHandler(tempFilePath, overwrite: false))
             {
-                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(2));
@@ -114,7 +114,7 @@ public class FileLogHandlerTests
         {
             using (var fileLogHandler = new FileLogHandler(tempFile, overwrite: true))
             {
-                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
@@ -134,7 +134,7 @@ public class FileLogHandlerTests
         {
             using (var fileLogHandler = new FileLogHandler(tempFilePath, overwrite: true))
             {
-                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTests), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
 
             Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(1));
