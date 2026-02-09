@@ -186,12 +186,12 @@ internal sealed class LogContext : ILogContext
         }
 
         int maxLength = truncationLength.Value;
-        int removedCharsLength = message.Length - maxLength;
+        string removedChars = (message.Length - maxLength).ToString();
 
         const string markerPrefix = "...[truncated ";
         const string markerSuffix = " chars]...";
 
-        int markerLength = markerPrefix.Length + removedCharsLength.ToString().Length + markerSuffix.Length;
+        int markerLength = markerPrefix.Length + removedChars.Length + markerSuffix.Length;
 
         // If marker won't fit, don't truncate
         if (markerLength >= maxLength)
@@ -208,7 +208,7 @@ internal sealed class LogContext : ILogContext
         var sb = new StringBuilder(maxLength);
         sb.Append(message, 0, prefixLength);
         sb.Append(markerPrefix);
-        sb.Append(removedCharsLength);
+        sb.Append(removedChars);
         sb.Append(markerSuffix);
         sb.Append(message, message.Length - suffixLength, suffixLength);
 
