@@ -22,7 +22,6 @@ import org.openqa.selenium.json.JsonInput;
 
 public class PartitionKey {
   @Nullable private final String userContext;
-
   @Nullable private final String sourceOrigin;
 
   public PartitionKey(@Nullable String userContext, @Nullable String sourceOrigin) {

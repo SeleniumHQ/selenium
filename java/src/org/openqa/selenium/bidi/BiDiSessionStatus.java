@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.bidi;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#command-session-status">BiDi spec</a>
+ */
 public class BiDiSessionStatus {
 
   private final boolean ready;
@@ -35,7 +34,7 @@ public class BiDiSessionStatus {
   }
 
   public static BiDiSessionStatus fromJson(JsonInput input) {
-    boolean ready = false;
+    Boolean ready = null;
     String message = null;
 
     input.beginObject();
@@ -56,7 +55,8 @@ public class BiDiSessionStatus {
     }
     input.endObject();
 
-    return new BiDiSessionStatus(ready, message);
+    return new BiDiSessionStatus(
+        Require.nonNull("ready", ready), Require.nonNull("message", message));
   }
 
   public boolean isReady() {
@@ -65,13 +65,5 @@ public class BiDiSessionStatus {
 
   public String getMessage() {
     return message;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("ready", ready);
-    toReturn.put("message", message);
-
-    return unmodifiableMap(toReturn);
   }
 }

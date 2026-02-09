@@ -15,24 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi.webextension;
+@NullMarked
+package org.openqa.selenium.bidi.storage;
 
-import java.util.Map;
-
-/**
- * @see <a
- *     href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-webextensionextensionarchivepath">BiDi
- *     spec</a>
- */
-public class ExtensionArchivePath implements ExtensionData {
-  private final String path;
-
-  public ExtensionArchivePath(String path) {
-    this.path = path;
-  }
-
-  @Override
-  public Map<String, Object> toMap() {
-    return Map.of("extensionData", Map.of("type", "archivePath", "path", path));
-  }
-}
+import org.jspecify.annotations.NullMarked;
