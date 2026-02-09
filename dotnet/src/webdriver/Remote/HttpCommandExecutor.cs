@@ -249,12 +249,12 @@ public class HttpCommandExecutor : ICommandExecutor
     /// <returns>An instance of <see cref="HttpClient"/>.</returns>
     protected virtual HttpClient CreateHttpClient()
     {
-        var httpClientHandler = CreateHttpClientHandler()
+        HttpClientHandler httpClientHandler = CreateHttpClientHandler()
             ?? throw new InvalidOperationException($"{nameof(CreateHttpClientHandler)} method returned null");
 
-        HttpMessageHandler handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
+        var diagnosticsHttpHandler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
 
-        var client = new HttpClient(handler);
+        var client = new HttpClient(diagnosticsHttpHandler);
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
         client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
