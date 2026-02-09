@@ -458,7 +458,7 @@ public class HttpCommandExecutor : ICommandExecutor
             }
 
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            
+
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
                 StringBuilder responseLogMessageBuilder = new();
