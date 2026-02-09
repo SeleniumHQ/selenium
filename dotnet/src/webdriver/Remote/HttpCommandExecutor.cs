@@ -252,9 +252,7 @@ public class HttpCommandExecutor : ICommandExecutor
         var httpClientHandler = CreateHttpClientHandler()
             ?? throw new InvalidOperationException($"{nameof(CreateHttpClientHandler)} method returned null");
 
-        HttpMessageHandler handler = httpClientHandler;
-
-        handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
+        HttpMessageHandler handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
 
         var client = new HttpClient(handler);
 
