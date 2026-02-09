@@ -39,7 +39,6 @@ csharp_library(
     srcs = glob(
         ["**/*.cs"],
         exclude = [
-            "**/*Test.cs",
             "**/*Tests.cs",
         ],
     ),
@@ -67,7 +66,6 @@ dotnet_nunit_test_suite(
     name = "AllTests",
     size = "small",
     srcs = glob([
-        "**/*Test.cs",
         "**/*Tests.cs",
     ]) + [
         ":assembly-fixtures",

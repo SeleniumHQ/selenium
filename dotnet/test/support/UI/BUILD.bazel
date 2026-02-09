@@ -28,7 +28,6 @@ dotnet_nunit_test_suite(
     size = "large",
     srcs = glob(
         [
-            "**/*Test.cs",
             "**/*Tests.cs",
         ],
         exclude = SMALL_TESTS,
