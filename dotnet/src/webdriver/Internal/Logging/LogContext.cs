@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 
 namespace OpenQA.Selenium.Internal.Logging;
 
@@ -187,26 +188,30 @@ internal sealed class LogContext : ILogContext
         int maxLength = truncationLength.Value;
         int removedCharsLength = message.Length - maxLength;
 
-        // Build truncation marker
         const string markerPrefix = " ...truncated ";
         const string markerSuffix = "... ";
 
-        string marker = $"{markerPrefix}{removedCharsLength}{markerSuffix}";
+        int markerLength = markerPrefix.Length + removedCharsLength.ToString().Length + markerSuffix.Length;
 
         // If marker won't fit, don't truncate
-        if (marker.Length >= maxLength)
+        if (markerLength >= maxLength)
         {
             return message;
         }
 
         // Split content evenly around marker
-        int availableContentLength = maxLength - marker.Length;
+        int availableContentLength = maxLength - markerLength;
         int prefixLength = availableContentLength / 2;
         int suffixLength = availableContentLength - prefixLength;
 
-        string prefix = message.Substring(0, prefixLength);
-        string suffix = message.Substring(message.Length - suffixLength);
+        // Use StringBuilder for efficient string building
+        var sb = new StringBuilder(maxLength);
+        sb.Append(message, 0, prefixLength);
+        sb.Append(markerPrefix);
+        sb.Append(removedCharsLength);
+        sb.Append(markerSuffix);
+        sb.Append(message, message.Length - suffixLength, suffixLength);
 
-        return prefix + marker + suffix;
+        return sb.ToString();
     }
 }
