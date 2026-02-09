@@ -25,6 +25,7 @@ const { isObject } = require('./util')
 const LEGACY_ELEMENT_ID_KEY = 'ELEMENT'
 const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
 
+const Color = require('./color');
 /**
  * Contains logic about WebElements.
  */
@@ -54,9 +55,21 @@ function extractId(obj) {
   throw new TypeError('object is not a WebElement ID')
 }
 
+/**
+ * Converts a CSS color string to a Color object.
+ * @param {string} cssValue The CSS color string returned by getCssValue.
+ * @return {Color} The Color object.
+ */
+function parseCssColor(cssValue) {
+  return new Color(cssValue);
+}
+
+
+
 // PUBLIC API
 
 module.exports = {
   isId,
   extractId,
+  parseCssColor,
 }
