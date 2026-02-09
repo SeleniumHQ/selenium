@@ -260,7 +260,7 @@ public class LogTest
     public void ShouldTruncateLongMessage()
     {
         var longMessage = new string('a', 150);
-        var expectedMessage = new string('a', 40) + " ...truncated 50... " + new string('a', 40);
+        var expectedMessage = new string('a', 37) + "...[truncated 50 chars]..." + new string('a', 37);
 
         using var context = Log.CreateContext().WithTruncation(100).Handlers.Add(testLogHandler);
 

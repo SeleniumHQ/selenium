@@ -188,8 +188,8 @@ internal sealed class LogContext : ILogContext
         int maxLength = truncationLength.Value;
         int removedCharsLength = message.Length - maxLength;
 
-        const string markerPrefix = " ...truncated ";
-        const string markerSuffix = "... ";
+        const string markerPrefix = "...[truncated ";
+        const string markerSuffix = " chars]...";
 
         int markerLength = markerPrefix.Length + removedCharsLength.ToString().Length + markerSuffix.Length;
 
