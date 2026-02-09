@@ -29,7 +29,7 @@ using OpenQA.Selenium.Support.UI;
 namespace OpenQA.Selenium;
 
 [TestFixture]
-public class DownLoadsTests : DriverTestFixture
+public class DownloadsTests : DriverTestFixture
 {
     private IWebDriver localDriver;
 
