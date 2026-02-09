@@ -269,6 +269,20 @@ public class LogTest
         Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
         Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(expectedMessage));
     }
+
+    [Test]
+    public void ShouldNotTruncateWhenNullIsPassed()
+    {
+        var longMessage = new string('a', 5000);
+
+        using var context = Log.CreateContext()
+            .WithTruncation(length: null).Handlers.Add(testLogHandler);
+
+        logger.Info(longMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(longMessage));
+    }
 }
 
 internal class TestLogHandler : ILogHandler

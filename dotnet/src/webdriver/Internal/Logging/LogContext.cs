@@ -34,10 +34,10 @@ internal sealed class LogContext : ILogContext
     private LogEventLevel _level;
     private readonly ILogContext? _parentLogContext;
     private ConcurrentDictionary<Type, ILogger>? _loggers;
-    private int _truncationLength;
+    private int? _truncationLength;
     private readonly Lazy<LogHandlerList> _lazyLogHandlerList;
 
-    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, int truncationLength, IEnumerable<ILogHandler>? handlers)
+    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, int? truncationLength, IEnumerable<ILogHandler>? handlers)
     {
         _level = level;
         _parentLogContext = parentLogContext;
@@ -128,9 +128,9 @@ internal sealed class LogContext : ILogContext
         return this;
     }
 
-    public ILogContext WithTruncation(int length)
+    public ILogContext WithTruncation(int? length)
     {
-        if (length < 0)
+        if (length.HasValue && length.Value < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(length), "Truncation length must be non-negative.");
         }
@@ -177,26 +177,28 @@ internal sealed class LogContext : ILogContext
         return new ConcurrentDictionary<Type, ILogger>(cloned);
     }
 
-    private static string TruncateMessage(string message, int truncationLength)
+    private static string TruncateMessage(string message, int? truncationLength)
     {
-        if (message.Length <= truncationLength)
+        if (!truncationLength.HasValue || message.Length <= truncationLength.Value)
         {
             return message;
         }
 
+        int length = truncationLength.Value;
+
         // Calculate marker length: " ...truncated N... " (14 chars + digit count)
-        int removedCount = message.Length - truncationLength;
+        int removedCount = message.Length - length;
         int markerLength = 14 + removedCount.ToString().Length + 4; // " ...truncated " + digits + "... "
 
-        if (markerLength >= truncationLength)
+        if (markerLength >= length)
         {
             // Fallback to simple truncation if marker won't fit
-            return truncationLength >= 3
-                ? message.Substring(0, truncationLength - 3) + "..."
-                : message.Substring(0, truncationLength);
+            return length >= 3
+                ? message.Substring(0, length - 3) + "..."
+                : message.Substring(0, length);
         }
 
-        int contentLength = truncationLength - markerLength;
+        int contentLength = length - markerLength;
         int prefixLength = contentLength / 2;
         int suffixLength = contentLength - prefixLength;
 
