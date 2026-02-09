@@ -40,7 +40,7 @@ public class LogTests
         ResetGlobalLog();
 
         testLogHandler = new TestLogHandler();
-        logger = Log.GetLogger<LogTest>();
+        logger = Log.GetLogger<LogTests>();
     }
 
     [TearDown]
@@ -61,7 +61,7 @@ public class LogTests
         var logEvent = testLogHandler.Events[0];
         Assert.That(logEvent.Level, Is.EqualTo(LogEventLevel.Info));
         Assert.That(logEvent.Message, Is.EqualTo("test message"));
-        Assert.That(logEvent.IssuedBy, Is.EqualTo(typeof(LogTest)));
+        Assert.That(logEvent.IssuedBy, Is.EqualTo(typeof(LogTests)));
         Assert.That(logEvent.Timestamp, Is.EqualTo(DateTimeOffset.Now).Within(100).Milliseconds);
     }
 
@@ -113,17 +113,17 @@ public class LogTests
     {
         Log.SetLevel(LogEventLevel.Info);
 
-        var logger = Log.GetLogger<LogTest>();
+        var logger = Log.GetLogger<LogTests>();
 
-        Assert.That(logger.Issuer, Is.EqualTo(typeof(LogTest)));
+        Assert.That(logger.Issuer, Is.EqualTo(typeof(LogTests)));
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
     }
 
     [Test]
     public void ShouldCacheLogger()
     {
-        var logger1 = Log.GetLogger<LogTest>();
-        var logger2 = Log.GetLogger<LogTest>();
+        var logger1 = Log.GetLogger<LogTests>();
+        var logger2 = Log.GetLogger<LogTests>();
 
         Assert.That(logger1, Is.SameAs(logger2));
     }
@@ -135,7 +135,7 @@ public class LogTests
 
         using var context = Log.CreateContext();
 
-        var logger = context.GetLogger<LogTest>();
+        var logger = context.GetLogger<LogTests>();
 
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
     }
@@ -147,7 +147,7 @@ public class LogTests
 
         using var context = Log.CreateContext(LogEventLevel.Warn);
 
-        var logger = context.GetLogger<LogTest>();
+        var logger = context.GetLogger<LogTests>();
 
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Warn));
     }
@@ -169,7 +169,7 @@ public class LogTests
 
         context.SetLevel(LogEventLevel.Warn);
 
-        var logger = context.GetLogger<LogTest>();
+        var logger = context.GetLogger<LogTests>();
 
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Warn));
     }
@@ -191,7 +191,7 @@ public class LogTests
 
         using var context = Log.CreateContext().Handlers.Add(testLogHandler);
 
-        var logger = context.GetLogger<LogTest>();
+        var logger = context.GetLogger<LogTests>();
 
         logger.Info("test message");
 
@@ -211,7 +211,7 @@ public class LogTests
 
         Assert.That(Log.CurrentContext, Is.SameAs(subContext));
 
-        var logger = subContext.GetLogger<LogTest>();
+        var logger = subContext.GetLogger<LogTests>();
 
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
     }
@@ -229,7 +229,7 @@ public class LogTests
 
         Assert.That(Log.CurrentContext, Is.SameAs(subContext));
 
-        var logger = subContext.GetLogger<LogTest>();
+        var logger = subContext.GetLogger<LogTests>();
 
         Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
     }
