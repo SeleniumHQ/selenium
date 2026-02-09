@@ -437,41 +437,47 @@ public class HttpCommandExecutor : ICommandExecutor
         /// <returns>The http response message content.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            StringBuilder requestLogMessageBuilder = new();
-            requestLogMessageBuilder.AppendFormat(">> {0} {1}",
-                request.Method,
-                request.RequestUri?.ToString() ?? "null");
-
-            if (request.Content is not null)
+            if (_logger.IsEnabled(LogEventLevel.Trace))
             {
+                StringBuilder requestLogMessageBuilder = new();
+                requestLogMessageBuilder.AppendFormat(">> {0} {1}",
+                    request.Method,
+                    request.RequestUri?.ToString() ?? "null");
+
+                if (request.Content is not null)
+                {
 #if NET8_0_OR_GREATER
                 var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
-                var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
 #endif
-                requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
+                    requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
+                }
+
+                _logger.Trace(requestLogMessageBuilder.ToString());
             }
 
-            _logger.Trace(requestLogMessageBuilder.ToString());
-
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            StringBuilder responseLogMessageBuilder = new();
-
-            responseLogMessageBuilder.AppendFormat("<< {0} {1}", (int)response.StatusCode, response.ReasonPhrase);
-
-            if (!response.IsSuccessStatusCode && response.Content != null)
+            
+            if (_logger.IsEnabled(LogEventLevel.Trace))
             {
+                StringBuilder responseLogMessageBuilder = new();
+
+                responseLogMessageBuilder.AppendFormat("<< {0} {1}", (int)response.StatusCode, response.ReasonPhrase);
+
+                if (!response.IsSuccessStatusCode && response.Content != null)
+                {
 #if NET8_0_OR_GREATER
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 #endif
 
-                responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
-            }
+                    responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
+                }
 
-            _logger.Trace(responseLogMessageBuilder.ToString());
+                _logger.Trace(responseLogMessageBuilder.ToString());
+            }
 
             return response;
         }
