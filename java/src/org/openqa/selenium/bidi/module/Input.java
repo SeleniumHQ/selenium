@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.module;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,10 +111,10 @@ public class Input {
   }
 
   public void setFiles(String browsingContext, RemoteReference element, String file) {
-    setFiles(browsingContext, element, Collections.singletonList(file));
+    setFiles(browsingContext, element, List.of(file));
   }
 
   public void setFiles(String browsingContext, String elementId, String file) {
-    setFiles(browsingContext, elementId, Collections.singletonList(file));
+    setFiles(browsingContext, elementId, List.of(file));
   }
 }

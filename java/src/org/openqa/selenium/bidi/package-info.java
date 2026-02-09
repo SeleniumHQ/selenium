@@ -15,23 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi;
 
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
-
-public class BiDiException extends WebDriverException {
-
-  public BiDiException(Throwable cause) {
-    this(cause.getMessage(), cause);
-  }
-
-  public BiDiException(String message) {
-    this(message, null);
-  }
-
-  public BiDiException(String message, @Nullable Throwable cause) {
-    super(message, cause);
-    addInfo(WebDriverException.DRIVER_INFO, "BiDi Connection");
-  }
-}
+import org.jspecify.annotations.NullMarked;
