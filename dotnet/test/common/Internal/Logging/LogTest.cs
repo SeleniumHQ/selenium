@@ -155,7 +155,7 @@ public class LogTest
     [Test]
     public void ShouldCreateContextWithNullLogHandlers()
     {
-        var context = new LogContext(LogEventLevel.Info, null, null, handlers: null);
+        var context = new LogContext(LogEventLevel.Info, null, null, null, handlers: null);
 
         Assert.That(context.Handlers, Is.Empty);
     }
@@ -245,6 +245,68 @@ public class LogTest
         }
 
         Assert.That(Log.CurrentContext, Is.SameAs(globalContext));
+    }
+
+    [Test]
+    public void ShouldThrowIfTruncationLengthIsNegative()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Log.CreateContext().WithTruncation(-1)
+        );
+    }
+
+    [Test]
+    public void ShouldTruncateLongMessage()
+    {
+        var longMessage = new string('a', 150);
+        var expectedMessage = new string('a', 37) + "...[truncated 50 chars]..." + new string('a', 37);
+
+        using var context = Log.CreateContext().WithTruncation(100).Handlers.Add(testLogHandler);
+
+        logger.Info(longMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(expectedMessage));
+    }
+
+    [Test]
+    public void ShouldNotTruncateShortMessage()
+    {
+        var shortMessage = new string('a', 50);
+
+        using var context = Log.CreateContext().WithTruncation(100).Handlers.Add(testLogHandler);
+
+        logger.Info(shortMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(shortMessage));
+    }
+
+    [Test]
+    public void ShouldNotTruncateShortMessageIfMarkerIsLongerThanMaxLength()
+    {
+        var shortMessage = new string('a', 10);
+
+        using var context = Log.CreateContext().WithTruncation(5).Handlers.Add(testLogHandler);
+
+        logger.Info(shortMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(shortMessage));
+    }
+
+    [Test]
+    public void ShouldNotTruncateWhenDisabled()
+    {
+        var longMessage = new string('a', 5000);
+
+        using var context = Log.CreateContext()
+            .WithTruncation(length: null).Handlers.Add(testLogHandler);
+
+        logger.Info(longMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(longMessage));
     }
 }
 

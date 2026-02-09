@@ -18,8 +18,6 @@
 package org.openqa.selenium.bidi;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
@@ -37,7 +35,8 @@ public class Command<X> {
   }
 
   public Command(String method, Map<String, Object> params, Type typeOfX) {
-    this(method, params, input -> input.read(Require.nonNull("Type to convert to", typeOfX)));
+    this(
+        method, params, input -> input.readNonNull(Require.nonNull("Type to convert to", typeOfX)));
   }
 
   public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
@@ -50,8 +49,7 @@ public class Command<X> {
       Function<JsonInput, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
-    this.params =
-        Collections.unmodifiableMap(new HashMap<>(Require.nonNull("Command parameters", params)));
+    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
     this.sendsResponse = sendsResponse;
   }

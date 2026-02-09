@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -73,7 +74,7 @@ public class Connection implements Closeable {
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<Long, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
-  private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean();
+  private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean(false);
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
@@ -116,10 +117,10 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> CompletableFuture<X> send(Command<X> command) {
+  public <X> CompletableFuture<@Nullable X> send(Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
-    CompletableFuture<X> result = new CompletableFuture<>();
+    CompletableFuture<@Nullable X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
       methodCallbacks.put(
           id,
