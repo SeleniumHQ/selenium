@@ -15,19 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.bidi.storage;
 
-import java.util.Map;
-
-public class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
-  private final String context;
-
-  public BrowsingContextPartitionDescriptor(String context) {
-    super(Type.CONTEXT);
-    this.context = context;
-  }
-
-  public Map<String, Object> toMap() {
-    return Map.of("type", type.toString(), "context", context);
-  }
-}
+import org.jspecify.annotations.NullMarked;
