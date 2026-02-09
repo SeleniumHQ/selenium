@@ -40,6 +40,10 @@ internal sealed class LogContext : ILogContext
 
     public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, int? truncationLength, IEnumerable<ILogHandler>? handlers)
     {
+        if (truncationLength is not null && truncationLength.Value < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length cannot be negative.");
+        }
         _level = level;
         _parentLogContext = parentLogContext;
         _loggers = CloneLoggers(loggers, level);
