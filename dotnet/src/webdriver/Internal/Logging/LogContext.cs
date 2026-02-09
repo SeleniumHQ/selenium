@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 
 namespace OpenQA.Selenium.Internal.Logging;
 
@@ -31,21 +32,22 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// <inheritdoc cref="ILogContext"/>
 internal sealed class LogContext : ILogContext
 {
-    private ConcurrentDictionary<Type, ILogger>? _loggers;
-
     private LogEventLevel _level;
-
     private readonly ILogContext? _parentLogContext;
-
+    private ConcurrentDictionary<Type, ILogger>? _loggers;
+    private int? _truncationLength;
     private readonly Lazy<LogHandlerList> _lazyLogHandlerList;
 
-    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, IEnumerable<ILogHandler>? handlers)
+    public LogContext(LogEventLevel level, ILogContext? parentLogContext, ConcurrentDictionary<Type, ILogger>? loggers, int? truncationLength, IEnumerable<ILogHandler>? handlers)
     {
+        if (truncationLength is not null && truncationLength.Value < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length must be non-negative.");
+        }
         _level = level;
-
         _parentLogContext = parentLogContext;
-
         _loggers = CloneLoggers(loggers, level);
+        _truncationLength = truncationLength;
 
         if (handlers is not null)
         {
@@ -66,7 +68,7 @@ internal sealed class LogContext : ILogContext
     {
         ConcurrentDictionary<Type, ILogger>? loggers = CloneLoggers(_loggers, minimumLevel);
 
-        var context = new LogContext(minimumLevel, this, loggers, Handlers);
+        var context = new LogContext(minimumLevel, this, loggers, _truncationLength, Handlers);
 
         Log.CurrentContext = context;
 
@@ -99,6 +101,8 @@ internal sealed class LogContext : ILogContext
     {
         if (IsEnabled(logger, level))
         {
+            message = TruncateMessage(message, _truncationLength);
+
             var logEvent = new LogEvent(logger.Issuer, DateTimeOffset.Now, level, message);
 
             foreach (var handler in Handlers)
@@ -126,7 +130,16 @@ internal sealed class LogContext : ILogContext
     public ILogContext SetLevel(Type issuer, LogEventLevel level)
     {
         GetLogger(issuer).Level = level;
+        return this;
+    }
 
+    public ILogContext WithTruncation(int? length)
+    {
+        if (length.HasValue && length.Value < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(length), "Truncation length must be non-negative.");
+        }
+        _truncationLength = length;
         return this;
     }
 
@@ -167,5 +180,42 @@ internal sealed class LogContext : ILogContext
         }
 
         return new ConcurrentDictionary<Type, ILogger>(cloned);
+    }
+
+    private static string TruncateMessage(string message, int? truncationLength)
+    {
+        if (!truncationLength.HasValue || message.Length <= truncationLength.Value)
+        {
+            return message;
+        }
+
+        int maxLength = truncationLength.Value;
+        string removedChars = (message.Length - maxLength).ToString();
+
+        const string markerPrefix = "...[truncated ";
+        const string markerSuffix = " chars]...";
+
+        int markerLength = markerPrefix.Length + removedChars.Length + markerSuffix.Length;
+
+        // If marker won't fit, don't truncate
+        if (markerLength >= maxLength)
+        {
+            return message;
+        }
+
+        // Split content evenly around marker
+        int availableContentLength = maxLength - markerLength;
+        int prefixLength = availableContentLength / 2;
+        int suffixLength = availableContentLength - prefixLength;
+
+        // Use StringBuilder for efficient string building
+        var sb = new StringBuilder(maxLength);
+        sb.Append(message, 0, prefixLength);
+        sb.Append(markerPrefix);
+        sb.Append(removedChars);
+        sb.Append(markerSuffix);
+        sb.Append(message, message.Length - suffixLength, suffixLength);
+
+        return sb.ToString();
     }
 }

@@ -25,6 +25,7 @@ namespace OpenQA.Selenium.Internal.Logging;
 
 internal class LogContextManager
 {
+    internal const int DefaultTruncationLength = 1000;
     private static bool _seDebugWarned;
     private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
 
@@ -42,7 +43,7 @@ internal class LogContextManager
             ? LogEventLevel.Debug
             : LogEventLevel.Warn;
 
-        GlobalContext = new LogContext(level, null, null, [defaultLogHandler]);
+        GlobalContext = new LogContext(level, null, null, DefaultTruncationLength, [defaultLogHandler]);
     }
 
     public ILogContext GlobalContext { get; }
