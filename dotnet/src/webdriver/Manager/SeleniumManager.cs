@@ -372,7 +372,13 @@ public static partial class SeleniumManager
                             _logger.LogMessage(dateTime, LogEventLevel.Debug, message);
                             break;
                         case "TRACE":
+                            _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
+                            break;
                         default:
+                            if (_logger.IsEnabled(LogEventLevel.Warn))
+                            {
+                                _logger.Warn($"Unknown log level '{logLevel}' in Selenium Manager log message. Original message: {e.Data}");
+                            }
                             _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
                             break;
                     }
