@@ -435,10 +435,13 @@ public class HttpCommandExecutor : ICommandExecutor
         /// <returns>The http response message content.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            string requestId = request.GetHashCode().ToString("x8");
+
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
                 StringBuilder requestLogMessageBuilder = new();
-                requestLogMessageBuilder.AppendFormat(">> {0} {1}",
+                requestLogMessageBuilder.AppendFormat(">> [{0}] {1} {2}",
+                    requestId,
                     request.Method,
                     request.RequestUri?.ToString() ?? "null");
 
@@ -455,13 +458,29 @@ public class HttpCommandExecutor : ICommandExecutor
                 _logger.Trace(requestLogMessageBuilder.ToString());
             }
 
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+                    _logger.Trace($"<< [{requestId}] {ex}");
+                }
+
+                throw;
+            }
 
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
                 StringBuilder responseLogMessageBuilder = new();
-
-                responseLogMessageBuilder.AppendFormat("<< {0} {1}", (int)response.StatusCode, response.ReasonPhrase);
+                responseLogMessageBuilder.AppendFormat("<< [{0}] {1} {2}",
+                    requestId,
+                    (int)response.StatusCode,
+                    response.ReasonPhrase);
 
                 if (!response.IsSuccessStatusCode && response.Content != null)
                 {
