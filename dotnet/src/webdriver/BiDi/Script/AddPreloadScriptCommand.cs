@@ -27,22 +27,22 @@ internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params
 
 internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts, string? Sandbox) : Parameters;
 
-public sealed class AddPreloadScriptOptions : CommandOptions
+public sealed record AddPreloadScriptOptions : CommandOptions
 {
-    public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
+    public IEnumerable<ChannelLocalValue>? Arguments { get; init; }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 
-    public string? Sandbox { get; set; }
+    public string? Sandbox { get; init; }
 }
 
-public sealed class ContextAddPreloadScriptOptions : CommandOptions
+public sealed record ContextAddPreloadScriptOptions : CommandOptions
 {
-    public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
+    public IEnumerable<ChannelLocalValue>? Arguments { get; init; }
 
-    public string? Sandbox { get; set; }
+    public string? Sandbox { get; init; }
 
     internal static AddPreloadScriptOptions WithContext(ContextAddPreloadScriptOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

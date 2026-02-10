@@ -24,7 +24,7 @@ internal sealed class NewCommand(NewParameters @params)
 
 internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
 
-public sealed class NewOptions : CommandOptions;
+public sealed record NewOptions : CommandOptions;
 
 public sealed record NewResult(string SessionId, Capabilities Capabilities) : EmptyResult;
 

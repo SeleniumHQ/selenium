@@ -42,12 +42,12 @@ public sealed record PartialCookie(string Name, Network.BytesValue Value, string
     public DateTimeOffset? Expiry { get; init; }
 }
 
-public sealed class SetCookieOptions : CommandOptions
+public sealed record SetCookieOptions : CommandOptions
 {
-    public PartitionDescriptor? Partition { get; set; }
+    public PartitionDescriptor? Partition { get; init; }
 }
 
-public sealed class ContextSetCookieOptions : CommandOptions
+public sealed record ContextSetCookieOptions : CommandOptions
 {
     internal static SetCookieOptions WithContext(ContextSetCookieOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

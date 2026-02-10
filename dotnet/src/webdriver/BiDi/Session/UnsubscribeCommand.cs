@@ -26,6 +26,6 @@ internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
 
 internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 
-public sealed class UnsubscribeByIdOptions : CommandOptions;
+public sealed record UnsubscribeByIdOptions : CommandOptions;
 
 public sealed record UnsubscribeResult : EmptyResult;

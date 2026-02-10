@@ -28,16 +28,16 @@ internal sealed class GetCookiesCommand(GetCookiesParameters @params)
 
 internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public sealed class GetCookiesOptions : CommandOptions
+public sealed record GetCookiesOptions : CommandOptions
 {
-    public CookieFilter? Filter { get; set; }
+    public CookieFilter? Filter { get; init; }
 
-    public PartitionDescriptor? Partition { get; set; }
+    public PartitionDescriptor? Partition { get; init; }
 }
 
-public sealed class ContextGetCookiesOptions : CommandOptions
+public sealed record ContextGetCookiesOptions : CommandOptions
 {
-    public CookieFilter? Filter { get; set; }
+    public CookieFilter? Filter { get; init; }
 
     internal static GetCookiesOptions WithContext(ContextGetCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

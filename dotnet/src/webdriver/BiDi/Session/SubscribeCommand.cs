@@ -26,11 +26,11 @@ internal sealed class SubscribeCommand(SubscribeParameters @params)
 
 internal sealed record SubscribeParameters(IEnumerable<string> Events, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 
-public sealed class SubscribeOptions : CommandOptions
+public sealed record SubscribeOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 internal sealed record SubscribeResult(Subscription Subscription) : EmptyResult;

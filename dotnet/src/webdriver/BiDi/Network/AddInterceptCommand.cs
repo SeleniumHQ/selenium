@@ -28,7 +28,7 @@ internal sealed class AddInterceptCommand(AddInterceptParameters @params)
 
 internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
-public class AddInterceptOptions() : CommandOptions
+public record AddInterceptOptions() : CommandOptions
 {
     internal AddInterceptOptions(ContextAddInterceptOptions? options) : this()
     {
@@ -41,7 +41,7 @@ public class AddInterceptOptions() : CommandOptions
     public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
-public class ContextAddInterceptOptions : CommandOptions
+public record ContextAddInterceptOptions : CommandOptions
 {
     public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }

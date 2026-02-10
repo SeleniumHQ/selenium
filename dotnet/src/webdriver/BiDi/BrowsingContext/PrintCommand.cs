@@ -29,21 +29,21 @@ internal sealed class PrintCommand(PrintParameters @params)
 
 internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
-public sealed class PrintOptions : CommandOptions
+public sealed record PrintOptions : CommandOptions
 {
-    public bool? Background { get; set; }
+    public bool? Background { get; init; }
 
-    public PrintMargin? Margin { get; set; }
+    public PrintMargin? Margin { get; init; }
 
-    public PrintOrientation? Orientation { get; set; }
+    public PrintOrientation? Orientation { get; init; }
 
-    public PrintPage? Page { get; set; }
+    public PrintPage? Page { get; init; }
 
-    public IEnumerable<PrintPageRange>? PageRanges { get; set; }
+    public IEnumerable<PrintPageRange>? PageRanges { get; init; }
 
-    public double? Scale { get; set; }
+    public double? Scale { get; init; }
 
-    public bool? ShrinkToFit { get; set; }
+    public bool? ShrinkToFit { get; init; }
 }
 
 public struct PrintMargin

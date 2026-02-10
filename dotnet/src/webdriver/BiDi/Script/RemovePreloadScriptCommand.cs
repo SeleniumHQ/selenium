@@ -24,6 +24,6 @@ internal sealed class RemovePreloadScriptCommand(RemovePreloadScriptParameters @
 
 internal sealed record RemovePreloadScriptParameters(PreloadScript Script) : Parameters;
 
-public sealed class RemovePreloadScriptOptions : CommandOptions;
+public sealed record RemovePreloadScriptOptions : CommandOptions;
 
 public sealed record RemovePreloadScriptResult : EmptyResult;

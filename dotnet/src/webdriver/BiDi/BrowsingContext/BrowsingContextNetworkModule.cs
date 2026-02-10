@@ -272,8 +272,8 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
     }
 }
 
-public sealed class InterceptRequestOptions : ContextAddInterceptOptions;
+public sealed record InterceptRequestOptions : ContextAddInterceptOptions;
 
-public sealed class InterceptResponseOptions : ContextAddInterceptOptions;
+public sealed record InterceptResponseOptions : ContextAddInterceptOptions;
 
-public sealed class InterceptAuthOptions : ContextAddInterceptOptions;
+public sealed record InterceptAuthOptions : ContextAddInterceptOptions;
