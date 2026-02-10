@@ -35,7 +35,6 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -595,21 +594,16 @@ class BrowsingContextTest extends JupiterTestBase {
                 "<p id=\"result\"></p>"));
   }
 
-  @SuppressWarnings("unchecked")
-  private <T> T executeScript(String js) {
-    return (T) ((JavascriptExecutor) driver).executeScript(js);
-  }
-
   private boolean isDocumentFocused() {
-    return executeScript("return document.hasFocus();");
+    return executeJavaScript("return document.hasFocus();");
   }
 
   private Dimension getViewportSize() {
-    List<Number> dimensions = executeScript("return [window.innerWidth, window.innerHeight];");
+    List<Number> dimensions = executeJavaScript("return [window.innerWidth, window.innerHeight];");
     return new Dimension(dimensions.get(0).intValue(), dimensions.get(1).intValue());
   }
 
   private double getDevicePixelRatio() {
-    return ((Number) executeScript("return window.devicePixelRatio")).doubleValue();
+    return ((Number) executeJavaScript("return window.devicePixelRatio")).doubleValue();
   }
 }

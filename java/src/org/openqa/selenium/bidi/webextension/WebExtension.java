@@ -37,12 +37,20 @@ public class WebExtension {
     this.bidi = ((HasBiDi) driver).getBiDi();
   }
 
+  /**
+   * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-webextensioninstall">BiDi
+   *     spec</a>
+   */
   public Map<String, Object> install(InstallExtensionParameters parameters) {
     Require.nonNull("Install parameters", parameters);
     return bidi.send(
         new Command<>("webExtension.install", parameters.getExtensionData().toMap(), Map.class));
   }
 
+  /**
+   * @see <a href="https://www.w3.org/TR/webdriver-bidi/#command-webExtension-uninstall">BiDi
+   *     spec</a>
+   */
   public Map<String, Object> uninstall(UninstallExtensionParameters parameters) {
     Require.nonNull("Uninstall parameters", parameters);
     return bidi.send(new Command<>("webExtension.uninstall", parameters.extension, Map.class));

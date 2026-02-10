@@ -189,6 +189,10 @@ public class NettyAppServer implements AppServer {
     return createUrl(secure, "https", getHostName(), relativeUrl);
   }
 
+  public boolean isSecure() {
+    return secure != null;
+  }
+
   @Override
   public String whereIsWithCredentials(String relativeUrl, String user, String password) {
     return String.format(
