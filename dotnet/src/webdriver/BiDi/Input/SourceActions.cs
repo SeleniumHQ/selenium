@@ -32,7 +32,7 @@ public interface ISourceAction;
 
 public abstract record SourceActions<T>(string Id) : SourceActions(Id), IEnumerable<ISourceAction> where T : ISourceAction
 {
-    public IList<ISourceAction> Actions { get; set; } = [];
+    public IList<ISourceAction> Actions { get; init; } = [];
 
     public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
 
@@ -70,7 +70,7 @@ public interface IPointerSourceAction : ISourceAction;
 
 public sealed record PointerActions(string Id) : SourceActions<IPointerSourceAction>(Id)
 {
-    public PointerParameters? Options { get; set; }
+    public PointerParameters? Options { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
