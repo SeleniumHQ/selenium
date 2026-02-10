@@ -321,7 +321,8 @@ public static partial class SeleniumManager
 
         try
         {
-            result = JsonSerializer.Deserialize(output, jsonResultTypeInfo)!;
+            result = JsonSerializer.Deserialize(output, jsonResultTypeInfo)
+                ?? throw new JsonException($"Selenium Manager returned empty json output: {output}");
         }
         catch (Exception ex)
         {
