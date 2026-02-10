@@ -23,6 +23,7 @@ java/build/production
 java/client/build
 java/server/build
 javascript/atoms/node_modules
+javascript/atoms-ts/test/node_modules
 javascript/grid-ui/node_modules
 javascript/private/node_modules
 javascript/selenium-webdriver/node_modules

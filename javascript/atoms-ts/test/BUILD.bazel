@@ -1,0 +1,83 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("//javascript:defs.bzl", "mocha_test")
+load("//javascript/private:browsers.bzl", "BROWSERS")
+
+npm_link_all_packages(name = "node_modules")
+
+# Compile TypeScript tests to JavaScript
+ts_project(
+    name = "test_js",
+    srcs = glob(["src/**/*.ts"]),
+    declaration = False,
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        ":node_modules/@bazel/runfiles",
+        ":node_modules/@types/chai",
+        ":node_modules/@types/mocha",
+        ":node_modules/@types/node",
+        ":node_modules/chai",
+        ":node_modules/selenium-webdriver",
+        ":node_modules/typescript",
+        "//javascript/atoms-ts/src:dom",
+        "//javascript/atoms-ts/src:action",
+        "//javascript/atoms-ts/src:keyboard",
+        "//javascript/atoms-ts/src:events",
+    ],
+    out_dir = "dist",
+)
+
+# Test targets for each browser
+[
+    mocha_test(
+        name = "atoms_ts_test-%s" % browser,
+        args = [
+            "./dist/src/**/*.test.js",
+        ],
+        chdir = package_name(),
+        data = [
+            ":test_js",
+            ":tsconfig.json",
+            "//javascript/atoms-ts/src:dom",
+            "//javascript/atoms-ts/src:action",
+            "//javascript/atoms-ts/src:keyboard",
+            "//javascript/atoms-ts/src:events",
+        ] + BROWSERS[browser]["data"],
+        env = {
+            "SELENIUM_BROWSER": browser,
+        } | BROWSERS[browser]["env"],
+        size = "large",
+        tags = [
+            browser,
+            "browser-test",
+        ],
+    )
+    for browser in BROWSERS.keys()
+]
+
+# Default test target (chrome)
+mocha_test(
+    name = "atoms_ts_test",
+    args = [
+        "./dist/src/**/*.test.js",
+    ],
+    chdir = package_name(),
+    data = [
+        ":test_js",
+        ":tsconfig.json",
+        "//javascript/atoms-ts/src:dom",
+        "//javascript/atoms-ts/src:action",
+        "//javascript/atoms-ts/src:keyboard",
+        "//javascript/atoms-ts/src:events",
+    ] + BROWSERS["chrome"]["data"],
+    env = {
+        "SELENIUM_BROWSER": "chrome",
+    } | BROWSERS["chrome"]["env"],
+    size = "large",
+    tags = [
+        "chrome",
+        "browser-test",
+    ],
+)

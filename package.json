@@ -2,6 +2,7 @@
   "name": "selenium",
   "packageManager": "pnpm@9.15.4",
   "workspaces": [
+    "javascript/atoms-ts/test",
     "javascript/grid-ui",
     "javascript/selenium-webdriver"
   ],

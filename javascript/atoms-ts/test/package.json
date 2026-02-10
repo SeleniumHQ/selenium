@@ -1,0 +1,20 @@
+{
+    "name": "@selenium/atoms-ts-tests",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test": "mocha",
+        "test:watch": "mocha --watch"
+    },
+    "devDependencies": {
+        "@bazel/runfiles": "^6.5.0",
+        "@types/chai": "^4.3.0",
+        "@types/mocha": "^10.0.0",
+        "@types/node": "^20.0.0",
+        "chai": "^4.3.0",
+        "mocha": "^10.0.0",
+        "selenium-webdriver": "^4.0.0",
+        "ts-node": "^10.0.0",
+        "typescript": "^5.0.0"
+    }
+}
