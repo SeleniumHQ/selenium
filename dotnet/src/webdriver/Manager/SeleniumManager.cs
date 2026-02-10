@@ -33,7 +33,7 @@ using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal.Logging;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Manager;
 
 /// <summary>
 /// Manages automatic discovery and configuration of browser drivers.

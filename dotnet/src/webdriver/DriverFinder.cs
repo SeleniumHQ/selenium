@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;
 
