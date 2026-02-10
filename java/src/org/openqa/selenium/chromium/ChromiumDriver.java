@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
+import static java.util.Collections.emptyList;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
@@ -32,7 +33,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
@@ -69,7 +69,6 @@ import org.openqa.selenium.remote.http.HttpClient;
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
-@NullMarked
 public class ChromiumDriver extends RemoteWebDriver
     implements HasAuthentication,
         HasBiDi,
@@ -250,8 +249,9 @@ public class ChromiumDriver extends RemoteWebDriver
             "Page.removeScriptToEvaluateOnNewDocument", Map.of("identifier", key.getIdentifier())));
   }
 
+  @Nullable
   @Override
-  public Object executeScript(ScriptKey key, Object... args) {
+  public Object executeScript(ScriptKey key, @Nullable Object... args) {
     int hashCode = getScriptId(key);
 
     String scriptToUse =
@@ -342,7 +342,7 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public List<Map<String, String>> getCastSinks() {
     if (this.casting == null) {
-      return List.of();
+      return emptyList();
     }
 
     return casting.getCastSinks();
@@ -414,10 +414,5 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public void deleteNetworkConditions() {
     networkConditions.deleteNetworkConditions();
-  }
-
-  @Override
-  public void quit() {
-    super.quit();
   }
 }
