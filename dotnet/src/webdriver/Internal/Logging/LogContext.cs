@@ -104,7 +104,7 @@ internal sealed class LogContext : ILogContext
             string truncatedMessage = TruncateMessage(message, _truncationLength);
 
             var logEvent = new LogEvent(logger.Issuer, timestamp, level, truncatedMessage);
-            
+
             foreach (var handler in Handlers)
             {
                 handler.Handle(logEvent);
