@@ -111,7 +111,7 @@ public class DriverFinder
             return paths;
         }
 
-        if (options.BrowserName is null)
+        if (string.IsNullOrWhiteSpace(options.BrowserName))
         {
             throw new NoSuchDriverException("Browser name must be specified to find the driver using Selenium Manager.");
         }
