@@ -391,7 +391,8 @@ public static partial class SeleniumManager
         }
     }
 
-    const string LogMessageRegexPattern = @"^\[(.*) (INFO|WARN|ERROR|DEBUG|TRACE)\t?\] (.*)$";
+    // Example log message: [2026-02-10T19:33:13.886Z ERROR] You need to specify a browser or driver
+    const string LogMessageRegexPattern = @"^\[(.*) ([A-Z]+)\t?\] (.*)$";
 
 #if NET8_0_OR_GREATER
     [GeneratedRegex(LogMessageRegexPattern)]
