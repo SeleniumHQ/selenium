@@ -12,9 +12,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
         public string? Description
         {
             get => InitialDescription?
+                .Replace("&", "&amp;")
                 .Replace("<", "&lt;")
-                .Replace(">", "&gt;")
-                .Replace("&", "&amp;");
+                .Replace(">", "&gt;");
             set => InitialDescription = value;
         }
 
