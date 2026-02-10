@@ -435,13 +435,14 @@ public class HttpCommandExecutor : ICommandExecutor
         /// <returns>The http response message content.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            string requestId = request.GetHashCode().ToString("x8");
+            bool isTracingEnabled = _logger.IsEnabled(LogEventLevel.Trace);
+            string? correlationId = isTracingEnabled ? request.GetHashCode().ToString("x8") : null;
 
-            if (_logger.IsEnabled(LogEventLevel.Trace))
+            if (isTracingEnabled)
             {
                 StringBuilder requestLogMessageBuilder = new();
                 requestLogMessageBuilder.AppendFormat(">> [{0}] {1} {2}",
-                    requestId,
+                    correlationId,
                     request.Method,
                     request.RequestUri?.ToString() ?? "null");
 
@@ -466,19 +467,19 @@ public class HttpCommandExecutor : ICommandExecutor
             }
             catch (Exception ex)
             {
-                if (_logger.IsEnabled(LogEventLevel.Trace))
+                if (isTracingEnabled)
                 {
-                    _logger.Trace($"<< [{requestId}] {ex}");
+                    _logger.Trace($"<< [{correlationId}] {ex}");
                 }
 
                 throw;
             }
 
-            if (_logger.IsEnabled(LogEventLevel.Trace))
+            if (isTracingEnabled)
             {
                 StringBuilder responseLogMessageBuilder = new();
                 responseLogMessageBuilder.AppendFormat("<< [{0}] {1} {2}",
-                    requestId,
+                    correlationId,
                     (int)response.StatusCode,
                     response.ReasonPhrase);
 
