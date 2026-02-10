@@ -26,9 +26,9 @@ internal sealed record GetDataParameters(DataType DataType, Request Request, Col
 
 public sealed class GetDataOptions : CommandOptions
 {
-    public Collector? Collector { get; set; }
+    public Collector? Collector { get; init; }
 
-    public bool? Disown { get; set; }
+    public bool? Disown { get; init; }
 }
 
 public sealed record GetDataResult(BytesValue Bytes) : EmptyResult;

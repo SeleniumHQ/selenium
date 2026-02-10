@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.BiDi.Log;
 public abstract record LogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
     : EventArgs
 {
-    public Script.StackTrace? StackTrace { get; set; }
+    public Script.StackTrace? StackTrace { get; init; }
 }
 
 public sealed record GenericLogEntry(string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)

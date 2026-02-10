@@ -30,18 +30,18 @@ internal sealed record AddDataCollectorParameters(IEnumerable<DataType> DataType
 
 public sealed class AddDataCollectorOptions : CommandOptions
 {
-    public CollectorType? CollectorType { get; set; }
+    public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed class ContextAddDataCollectorOptions : CommandOptions
 {
-    public CollectorType? CollectorType { get; set; }
+    public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 
     internal static AddDataCollectorOptions WithContext(ContextAddDataCollectorOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

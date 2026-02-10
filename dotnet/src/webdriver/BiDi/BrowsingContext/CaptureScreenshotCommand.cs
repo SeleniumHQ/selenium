@@ -46,7 +46,7 @@ public enum ScreenshotOrigin
 
 public record struct ImageFormat(string Type)
 {
-    public double? Quality { get; set; }
+    public double? Quality { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]

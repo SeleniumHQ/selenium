@@ -28,15 +28,15 @@ internal sealed record ContinueRequestParameters(Request Request, BytesValue? Bo
 
 public sealed class ContinueRequestOptions : CommandOptions
 {
-    public BytesValue? Body { get; set; }
+    public BytesValue? Body { get; init; }
 
-    public IEnumerable<CookieHeader>? Cookies { get; set; }
+    public IEnumerable<CookieHeader>? Cookies { get; init; }
 
-    public IEnumerable<Header>? Headers { get; set; }
+    public IEnumerable<Header>? Headers { get; init; }
 
-    public string? Method { get; set; }
+    public string? Method { get; init; }
 
-    public string? Url { get; set; }
+    public string? Url { get; init; }
 }
 
 public sealed record ContinueRequestResult : EmptyResult;

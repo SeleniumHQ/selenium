@@ -30,7 +30,7 @@ internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, I
 
 public sealed class SetCacheBehaviorOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 }
 
 public sealed class ContextSetCacheBehaviorOptions : CommandOptions

@@ -30,9 +30,9 @@ public sealed record NewResult(string SessionId, Capabilities Capabilities) : Em
 
 public sealed record Capabilities(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    public ProxyConfiguration? Proxy { get; init; }
 
-    public UserPromptHandler? UnhandledPromptBehavior { get; set; }
+    public UserPromptHandler? UnhandledPromptBehavior { get; init; }
 
-    public string? WebSocketUrl { get; set; }
+    public string? WebSocketUrl { get; init; }
 }

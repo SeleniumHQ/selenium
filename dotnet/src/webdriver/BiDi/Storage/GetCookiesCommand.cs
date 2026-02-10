@@ -51,23 +51,23 @@ public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, Par
 
 public sealed record CookieFilter
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public Network.BytesValue? Value { get; set; }
+    public Network.BytesValue? Value { get; init; }
 
-    public string? Domain { get; set; }
+    public string? Domain { get; init; }
 
-    public string? Path { get; set; }
+    public string? Path { get; init; }
 
-    public long? Size { get; set; }
+    public long? Size { get; init; }
 
-    public bool? HttpOnly { get; set; }
+    public bool? HttpOnly { get; init; }
 
-    public bool? Secure { get; set; }
+    public bool? Secure { get; init; }
 
-    public Network.SameSite? SameSite { get; set; }
+    public Network.SameSite? SameSite { get; init; }
 
-    public DateTimeOffset? Expiry { get; set; }
+    public DateTimeOffset? Expiry { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -79,7 +79,7 @@ public sealed record ContextPartitionDescriptor(BrowsingContext.BrowsingContext 
 
 public sealed record StorageKeyPartitionDescriptor : PartitionDescriptor
 {
-    public string? UserContext { get; set; }
+    public string? UserContext { get; init; }
 
-    public string? SourceOrigin { get; set; }
+    public string? SourceOrigin { get; init; }
 }

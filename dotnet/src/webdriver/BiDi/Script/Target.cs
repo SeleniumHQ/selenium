@@ -29,7 +29,7 @@ public sealed record RealmTarget(Realm Realm) : Target;
 
 public sealed record ContextTarget(BrowsingContext.BrowsingContext Context) : Target
 {
-    public string? Sandbox { get; set; }
+    public string? Sandbox { get; init; }
 }
 
 public sealed class ContextTargetOptions

@@ -35,20 +35,20 @@ internal sealed record SetViewportParameters(
 
 public sealed class SetViewportOptions : CommandOptions
 {
-    public BrowsingContext? Context { get; set; }
+    public BrowsingContext? Context { get; init; }
 
-    public Optional<Viewport?>? Viewport { get; set; }
+    public Optional<Viewport?>? Viewport { get; init; }
 
-    public Optional<double?>? DevicePixelRatio { get; set; }
+    public Optional<double?>? DevicePixelRatio { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed class ContextSetViewportOptions : CommandOptions
 {
-    public Optional<Viewport?>? Viewport { get; set; }
+    public Optional<Viewport?>? Viewport { get; init; }
 
-    public Optional<double?>? DevicePixelRatio { get; set; }
+    public Optional<double?>? DevicePixelRatio { get; init; }
 
     internal static SetViewportOptions WithContext(ContextSetViewportOptions? options, BrowsingContext context) => new()
     {

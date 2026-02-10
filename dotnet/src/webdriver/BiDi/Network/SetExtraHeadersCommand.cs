@@ -28,9 +28,9 @@ internal sealed record SetExtraHeadersParameters(IEnumerable<Header> Headers, IE
 
 public sealed class SetExtraHeadersOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetExtraHeadersResult : EmptyResult;

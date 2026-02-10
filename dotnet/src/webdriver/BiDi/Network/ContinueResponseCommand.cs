@@ -28,15 +28,15 @@ internal sealed record ContinueResponseParameters(Request Request, IEnumerable<S
 
 public sealed class ContinueResponseOptions : CommandOptions
 {
-    public IEnumerable<SetCookieHeader>? Cookies { get; set; }
+    public IEnumerable<SetCookieHeader>? Cookies { get; init; }
 
-    public IEnumerable<AuthCredentials>? Credentials { get; set; }
+    public IEnumerable<AuthCredentials>? Credentials { get; init; }
 
-    public IEnumerable<Header>? Headers { get; set; }
+    public IEnumerable<Header>? Headers { get; init; }
 
-    public string? ReasonPhrase { get; set; }
+    public string? ReasonPhrase { get; init; }
 
-    public long? StatusCode { get; set; }
+    public long? StatusCode { get; init; }
 }
 
 public sealed record ContinueResponseResult : EmptyResult;

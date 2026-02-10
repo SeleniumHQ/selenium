@@ -36,14 +36,14 @@ public class AddInterceptOptions() : CommandOptions
         Timeout = options?.Timeout;
     }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public class ContextAddInterceptOptions : CommandOptions
 {
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;

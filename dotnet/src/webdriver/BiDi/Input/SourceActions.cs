@@ -96,51 +96,51 @@ public abstract record PointerSourceAction : IPointerSourceAction;
 
 public sealed record PointerDownAction(int Button) : PointerSourceAction, IPointerCommonProperties
 {
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public int? Width { get; init; }
+    public int? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public int? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
 public sealed record PointerUpAction(int Button) : PointerSourceAction;
 
 public sealed record PointerMoveAction(double X, double Y) : PointerSourceAction, IPointerCommonProperties
 {
-    public int? Duration { get; set; }
+    public int? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public int? Width { get; init; }
+    public int? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public int? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
 public abstract record WheelSourceAction : IWheelSourceAction;
 
 public sealed record WheelScrollAction(int X, int Y, int DeltaX, int DeltaY) : WheelSourceAction
 {
-    public int? Duration { get; set; }
+    public int? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 }
 
 public abstract record NoneSourceAction : INoneSourceAction;
 
 public sealed record PauseAction : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
 {
-    public long? Duration { get; set; }
+    public long? Duration { get; init; }
 }
 
 public sealed record PointerParameters
 {
-    public PointerType? PointerType { get; set; }
+    public PointerType? PointerType { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<PointerType>))]
@@ -153,17 +153,17 @@ public enum PointerType
 
 public interface IPointerCommonProperties
 {
-    public int? Width { get; set; }
+    public int? Width { get; init; }
 
-    public int? Height { get; set; }
+    public int? Height { get; init; }
 
-    public double? Pressure { get; set; }
+    public double? Pressure { get; init; }
 
-    public double? TangentialPressure { get; set; }
+    public double? TangentialPressure { get; init; }
 
-    public int? Twist { get; set; }
+    public int? Twist { get; init; }
 
-    public double? AltitudeAngle { get; set; }
+    public double? AltitudeAngle { get; init; }
 
-    public double? AzimuthAngle { get; set; }
+    public double? AzimuthAngle { get; init; }
 }
