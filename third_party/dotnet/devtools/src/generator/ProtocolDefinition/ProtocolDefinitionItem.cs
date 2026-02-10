@@ -11,7 +11,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
         [JsonIgnore]
         public string? Description
         {
-            get => InitialDescription?.Replace("<", "&lt;").Replace(">", "&gt;");
+            get => InitialDescription?
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("&", "&amp;");
             set => InitialDescription = value;
         }
 
