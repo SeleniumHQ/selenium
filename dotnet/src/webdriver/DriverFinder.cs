@@ -20,9 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
-using System.Text;
 using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;
@@ -33,8 +31,8 @@ namespace OpenQA.Selenium;
 /// </summary>
 public class DriverFinder
 {
-    internal const string DriverPathKey = "driver_path";
-    internal const string BrowserPathKey = "browser_path";
+    private const string DriverPathKey = "driver_path";
+    private const string BrowserPathKey = "browser_path";
 
     private readonly DriverOptions options;
     private readonly Dictionary<string, string> paths = new Dictionary<string, string>();
