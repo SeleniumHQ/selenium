@@ -469,7 +469,7 @@ public class HttpCommandExecutor : ICommandExecutor
             {
                 if (isTracingEnabled)
                 {
-                    _logger.Trace($"<< [{correlationId}] {ex}");
+                    _logger.Trace($"!! [{correlationId}] {ex}");
                 }
 
                 throw;
