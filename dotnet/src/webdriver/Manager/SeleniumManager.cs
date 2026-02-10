@@ -343,7 +343,16 @@ public static partial class SeleniumManager
 
                 if (match.Success)
                 {
-                    var dateTime = DateTimeOffset.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                    if (!DateTimeOffset.TryParse(match.Groups[1].Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dateTime))
+                    {
+                        if (_logger.IsEnabled(LogEventLevel.Warn))
+                        {
+                            _logger.Warn($"Unable to parse log message timestamp from Selenium Manager: '{match.Groups[1].Value}'. Defaulting to current time.");
+                        }
+
+                        dateTime = DateTimeOffset.UtcNow;
+                    }
+
                     var logLevel = match.Groups[2].Value;
                     var message = match.Groups[3].Value;
 
