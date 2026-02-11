@@ -533,7 +533,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
             throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
         {
             { "name", fileName }
         };

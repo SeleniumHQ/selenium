@@ -106,7 +106,7 @@ internal sealed class Navigator : INavigation
             throw new ArgumentNullException(nameof(url), "URL cannot be null.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
         {
             { "url", url }
         };

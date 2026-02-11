@@ -34,7 +34,7 @@ public interface ICustomDriverCommandExecutor
     /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
     /// <returns>An object that contains the value returned by the command, if any.</returns>
     /// <exception cref="WebDriverException">The command returned an exceptional value.</exception>
-    object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object> parameters);
+    object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object?> parameters);
 
     /// <summary>
     /// Registers a set of commands to be executed with this driver instance.

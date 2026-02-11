@@ -49,7 +49,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>A WebDriver instance that is currently in use</returns>
     public IWebDriver Frame(int frameIndex)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", frameIndex);
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
@@ -112,7 +112,7 @@ internal sealed class TargetLocator : ITargetLocator
 
         Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", elementDictionary);
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
@@ -124,7 +124,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
     public IWebDriver ParentFrame()
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         this.driver.Execute(DriverCommand.SwitchToParentFrame, parameters);
         return this.driver;
     }
@@ -142,7 +142,7 @@ internal sealed class TargetLocator : ITargetLocator
             throw new ArgumentNullException(nameof(windowHandleOrName));
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("handle", windowHandleOrName);
         try
         {
@@ -190,7 +190,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
     public IWebDriver NewWindow(WindowType typeHint)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("type", typeHint.ToString().ToLowerInvariant());
 
         Response response = this.driver.Execute(DriverCommand.NewWindow, parameters);
