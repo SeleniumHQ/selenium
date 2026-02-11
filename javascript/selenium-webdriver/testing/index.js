@@ -343,6 +343,16 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
+      // Necessary to connect the driver to Chrome browser from within Bazel.
+      if (browser.name === Browser.CHROME && process.env.BAZEL_TEST) {
+        let options = builder.getChromeOptions()
+        if (!options) {
+          options = new chrome.Options()
+        }
+        options.addArguments('--headless=new')
+        builder.setChromeOptions(options)
+      }
+
       // Enable BiDi for supporting browsers.
       if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
         builder.setCapability('webSocketUrl', true)
