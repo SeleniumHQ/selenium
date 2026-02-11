@@ -205,7 +205,7 @@ public class Response
 
 [JsonSerializable(typeof(object))]
 #pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
- // This is not a part of a public API, so we can ignore the warning
+ // This is not part of the public API, so we can ignore this warning
 [JsonSourceGenerationOptions(Converters = [typeof(ResponseValueJsonConverter)])] // we still need it to make `Object` as `Dictionary`
 #pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal sealed partial class ResponseJsonSerializerContext : JsonSerializerContext;
