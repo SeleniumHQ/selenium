@@ -34,7 +34,7 @@ public class RemoteSessionEventTests : DriverTestFixture
         {
             remoteDriver.Url = simpleTestPage;
 
-            var payload = new Dictionary<string, object?>
+            var payload = new Dictionary<string, object>
             {
                 { "testName", "LoginTest" },
                 { "error", "Element not found" }
