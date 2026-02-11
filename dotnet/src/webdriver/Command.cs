@@ -168,5 +168,8 @@ public class Command
 [JsonSerializable(typeof(Dictionary<string, short>))]
 [JsonSerializable(typeof(Dictionary<string, ushort>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
+#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
+// This is not a part of a public API, so we can ignore the warning
 [JsonSourceGenerationOptions(Converters = [typeof(ResponseValueJsonConverter)])]
+#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal partial class CommandJsonSerializerContext : JsonSerializerContext;
