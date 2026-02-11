@@ -40,17 +40,6 @@ ts_project(
 )
 
 ts_project(
-    name = "appcache",
-    srcs = ["storage/appcache.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
     name = "attribute",
     srcs = ["attribute.ts"],
     declaration = True,
@@ -271,31 +260,6 @@ ts_project(
 )
 
 ts_project(
-    name = "sql_database",
-    srcs = ["inject/sql_database.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
-    name = "inject_appcache",
-    srcs = ["inject/appcache.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    deps = [
-        ":appcache",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
     name = "locators",
     srcs = glob([
         "locators/**/*.ts",
@@ -320,7 +284,6 @@ ts_project(
         ":inject",
         ":local_storage",
         ":session_storage",
-        ":appcache",
         ":attribute",
         ":element",
         ":inputs",
@@ -331,8 +294,6 @@ ts_project(
         ":frame",
         ":inject_local_storage",
         ":inject_session_storage",
-        ":sql_database",
-        ":inject_appcache",
         ":locators",
     ],
     visibility = ["//visibility:public"],
@@ -345,7 +306,6 @@ filegroup(
         ":inject",
         ":local_storage",
         ":session_storage",
-        ":appcache",
         ":attribute",
         ":element",
         ":inputs",
@@ -356,8 +316,6 @@ filegroup(
         ":frame",
         ":inject_local_storage",
         ":inject_session_storage",
-        ":sql_database",
-        ":inject_appcache",
         ":locators",
         ":exports",
     ],

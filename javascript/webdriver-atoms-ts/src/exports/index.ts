@@ -56,12 +56,6 @@ export {
     keySet as sessionStorageKeySet
 } from '../storage/session_storage';
 
-// AppCache (deprecated)
-export {
-    getStatus as appCacheGetStatus,
-    getManifest as appCacheGetManifest
-} from '../storage/appcache';
-
 // ============================================================================
 // Phase 3: Element Manipulation
 // ============================================================================
@@ -165,18 +159,6 @@ export {
     clear as injectedSessionClear
 } from '../inject/session_storage';
 
-// Web SQL (deprecated)
-export {
-    executeSql,
-    type SqlErrorCode
-} from '../inject/sql_database';
-
-// AppCache via injection (deprecated)
-export {
-    getStatus as injectedAppCacheGetStatus,
-    getManifest as injectedAppCacheGetManifest
-} from '../inject/appcache';
-
 // ============================================================================
 // Export namespace for convenience
 // ============================================================================
@@ -190,12 +172,6 @@ export * as LocalStorage from '../storage/local_storage';
  * Session Storage operations.
  */
 export * as SessionStorage from '../storage/session_storage';
-
-/**
- * AppCache operations.
- * @deprecated Use Service Workers instead.
- */
-export * as AppCache from '../storage/appcache';
 
 /**
  * Injected element operations.
