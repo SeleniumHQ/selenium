@@ -27,11 +27,11 @@ internal sealed class SetTouchOverrideCommand(SetTouchOverrideParameters @params
 
 internal sealed record SetTouchOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] long? MaxTouchPoints, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public sealed class SetTouchOverrideOptions : CommandOptions
+public sealed record SetTouchOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetTouchOverrideResult : EmptyResult;

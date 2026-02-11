@@ -24,11 +24,11 @@ internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params
 
 internal sealed record HandleUserPromptParameters(BrowsingContext Context, bool? Accept, string? UserText) : Parameters;
 
-public sealed class HandleUserPromptOptions : CommandOptions
+public sealed record HandleUserPromptOptions : CommandOptions
 {
-    public bool? Accept { get; set; }
+    public bool? Accept { get; init; }
 
-    public string? UserText { get; set; }
+    public string? UserText { get; init; }
 }
 
 public sealed record HandleUserPromptResult : EmptyResult;

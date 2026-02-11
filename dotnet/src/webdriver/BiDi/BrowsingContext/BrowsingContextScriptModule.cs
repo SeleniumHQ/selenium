@@ -38,12 +38,10 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
 
     public Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
-        var contextTarget = new ContextTarget(context);
-
-        if (targetOptions is not null)
+        var contextTarget = new ContextTarget(context)
         {
-            contextTarget.Sandbox = targetOptions.Sandbox;
-        }
+            Sandbox = targetOptions?.Sandbox
+        };
 
         return scriptModule.EvaluateAsync(expression, awaitPromise, contextTarget, options, cancellationToken);
     }
@@ -57,12 +55,10 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
 
     public Task<EvaluateResult> CallFunctionAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null, CancellationToken cancellationToken = default)
     {
-        var contextTarget = new ContextTarget(context);
-
-        if (targetOptions is not null)
+        var contextTarget = new ContextTarget(context)
         {
-            contextTarget.Sandbox = targetOptions.Sandbox;
-        }
+            Sandbox = targetOptions?.Sandbox
+        };
 
         return scriptModule.CallFunctionAsync(functionDeclaration, awaitPromise, contextTarget, options, cancellationToken);
     }

@@ -28,15 +28,15 @@ internal sealed class CallFunctionCommand(CallFunctionParameters @params)
 
 internal sealed record CallFunctionParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 
-public sealed class CallFunctionOptions : CommandOptions
+public sealed record CallFunctionOptions : CommandOptions
 {
-    public IEnumerable<LocalValue>? Arguments { get; set; }
+    public IEnumerable<LocalValue>? Arguments { get; init; }
 
-    public ResultOwnership? ResultOwnership { get; set; }
+    public ResultOwnership? ResultOwnership { get; init; }
 
-    public SerializationOptions? SerializationOptions { get; set; }
+    public SerializationOptions? SerializationOptions { get; init; }
 
-    public LocalValue? This { get; set; }
+    public LocalValue? This { get; init; }
 
-    public bool? UserActivation { get; set; }
+    public bool? UserActivation { get; init; }
 }

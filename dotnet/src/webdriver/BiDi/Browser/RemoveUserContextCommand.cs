@@ -24,6 +24,6 @@ internal sealed class RemoveUserContextCommand(RemoveUserContextParameters @para
 
 internal sealed record RemoveUserContextParameters(UserContext UserContext) : Parameters;
 
-public sealed class RemoveUserContextOptions : CommandOptions;
+public sealed record RemoveUserContextOptions : CommandOptions;
 
 public sealed record RemoveUserContextResult : EmptyResult;

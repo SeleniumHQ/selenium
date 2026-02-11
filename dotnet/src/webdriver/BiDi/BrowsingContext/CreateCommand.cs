@@ -27,13 +27,13 @@ internal sealed class CreateCommand(CreateParameters @params)
 
 internal sealed record CreateParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : Parameters;
 
-public sealed class CreateOptions : CommandOptions
+public sealed record CreateOptions : CommandOptions
 {
-    public BrowsingContext? ReferenceContext { get; set; }
+    public BrowsingContext? ReferenceContext { get; init; }
 
-    public bool? Background { get; set; }
+    public bool? Background { get; init; }
 
-    public Browser.UserContext? UserContext { get; set; }
+    public Browser.UserContext? UserContext { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ContextType>))]

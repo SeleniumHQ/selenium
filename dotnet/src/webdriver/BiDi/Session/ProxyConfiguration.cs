@@ -36,15 +36,15 @@ public sealed record DirectProxyConfiguration : ProxyConfiguration;
 
 public sealed record ManualProxyConfiguration : ProxyConfiguration, ISocksProxyConfiguration
 {
-    public string? HttpProxy { get; set; }
+    public string? HttpProxy { get; init; }
 
-    public string? SslProxy { get; set; }
+    public string? SslProxy { get; init; }
 
-    public string? SocksProxy { get; set; }
+    public string? SocksProxy { get; init; }
 
-    public int? SocksVersion { get; set; }
+    public int? SocksVersion { get; init; }
 
-    public IEnumerable<string>? NoProxy { get; set; }
+    public IEnumerable<string>? NoProxy { get; init; }
 }
 
 public sealed record PacProxyConfiguration(string ProxyAutoConfigUrl) : ProxyConfiguration;
@@ -53,7 +53,7 @@ public sealed record SystemProxyConfiguration : ProxyConfiguration;
 
 public interface ISocksProxyConfiguration
 {
-    public string? SocksProxy { get; set; }
+    public string? SocksProxy { get; init; }
 
-    public int? SocksVersion { get; set; } // 0..255
+    public int? SocksVersion { get; init; } // 0..255
 }

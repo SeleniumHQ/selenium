@@ -41,22 +41,22 @@ internal sealed record GeolocationPositionError
     internal string Type { get; } = "positionUnavailable";
 }
 
-public class SetGeolocationOverrideOptions : CommandOptions
+public record SetGeolocationOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
-public sealed class SetGeolocationCoordinatesOverrideOptions : SetGeolocationOverrideOptions
+public sealed record SetGeolocationCoordinatesOverrideOptions : SetGeolocationOverrideOptions
 {
-    public double? Accuracy { get; set; }
-    public double? Altitude { get; set; }
-    public double? AltitudeAccuracy { get; set; }
-    public double? Heading { get; set; }
-    public double? Speed { get; set; }
+    public double? Accuracy { get; init; }
+    public double? Altitude { get; init; }
+    public double? AltitudeAccuracy { get; init; }
+    public double? Heading { get; init; }
+    public double? Speed { get; init; }
 }
 
-public sealed class SetGeolocationPositionErrorOverrideOptions : SetGeolocationOverrideOptions;
+public sealed record SetGeolocationPositionErrorOverrideOptions : SetGeolocationOverrideOptions;
 
 public sealed record SetGeolocationOverrideResult : EmptyResult;

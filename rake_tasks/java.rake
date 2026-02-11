@@ -396,8 +396,13 @@ task :format do
   java_files = Dir.glob(File.join(Dir.pwd, 'java', '**', '*.java'))
   return if java_files.empty?
 
-  args = ['--', '--replace'] + java_files
-  Bazel.execute('run', args, '//scripts:google-java-format')
+  Tempfile.create('google-java-format-files') do |f|
+    java_files.each { |file| f.puts(file) }
+    f.flush
+
+    args = ['--', '--replace', "@#{f.path}"]
+    Bazel.execute('run', args, '//scripts:google-java-format')
+  end
 end
 
 # ErrorProne runs at build time, SpotBugs runs as test targets in RBE

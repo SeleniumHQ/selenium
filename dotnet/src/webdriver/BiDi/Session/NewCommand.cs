@@ -24,15 +24,15 @@ internal sealed class NewCommand(NewParameters @params)
 
 internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
 
-public sealed class NewOptions : CommandOptions;
+public sealed record NewOptions : CommandOptions;
 
 public sealed record NewResult(string SessionId, Capabilities Capabilities) : EmptyResult;
 
 public sealed record Capabilities(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    public ProxyConfiguration? Proxy { get; init; }
 
-    public UserPromptHandler? UnhandledPromptBehavior { get; set; }
+    public UserPromptHandler? UnhandledPromptBehavior { get; init; }
 
-    public string? WebSocketUrl { get; set; }
+    public string? WebSocketUrl { get; init; }
 }

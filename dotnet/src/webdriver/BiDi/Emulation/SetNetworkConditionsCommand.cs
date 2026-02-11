@@ -33,11 +33,11 @@ public abstract record NetworkConditions;
 
 public sealed record NetworkConditionsOffline : NetworkConditions;
 
-public sealed class SetNetworkConditionsOptions : CommandOptions
+public sealed record SetNetworkConditionsOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetNetworkConditionsResult : EmptyResult;

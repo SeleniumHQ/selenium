@@ -24,11 +24,11 @@ internal sealed class GetDataCommand(GetDataParameters @params)
 
 internal sealed record GetDataParameters(DataType DataType, Request Request, Collector? Collector, bool? Disown) : Parameters;
 
-public sealed class GetDataOptions : CommandOptions
+public sealed record GetDataOptions : CommandOptions
 {
-    public Collector? Collector { get; set; }
+    public Collector? Collector { get; init; }
 
-    public bool? Disown { get; set; }
+    public bool? Disown { get; init; }
 }
 
 public sealed record GetDataResult(BytesValue Bytes) : EmptyResult;

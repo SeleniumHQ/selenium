@@ -61,11 +61,11 @@ public partial class NetworkModule
     }
 }
 
-public sealed class InterceptRequestOptions : AddInterceptOptions;
+public sealed record InterceptRequestOptions : AddInterceptOptions;
 
-public sealed class InterceptResponseOptions : AddInterceptOptions;
+public sealed record InterceptResponseOptions : AddInterceptOptions;
 
-public sealed class InterceptAuthOptions : AddInterceptOptions;
+public sealed record InterceptAuthOptions : AddInterceptOptions;
 
 public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 {

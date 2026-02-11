@@ -28,11 +28,11 @@ internal sealed class SetForcedColorsModeThemeOverrideCommand(SetForcedColorsMod
 
 internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public sealed class SetForcedColorsModeThemeOverrideOptions : CommandOptions
+public sealed record SetForcedColorsModeThemeOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ForcedColorsModeTheme>))]

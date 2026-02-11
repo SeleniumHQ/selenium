@@ -30,24 +30,24 @@ internal sealed record SetCookieParameters(PartialCookie Cookie, PartitionDescri
 
 public sealed record PartialCookie(string Name, Network.BytesValue Value, string Domain)
 {
-    public string? Path { get; set; }
+    public string? Path { get; init; }
 
-    public bool? HttpOnly { get; set; }
+    public bool? HttpOnly { get; init; }
 
-    public bool? Secure { get; set; }
+    public bool? Secure { get; init; }
 
-    public Network.SameSite? SameSite { get; set; }
+    public Network.SameSite? SameSite { get; init; }
 
     [JsonConverter(typeof(DateTimeOffsetSecondsConverter))]
-    public DateTimeOffset? Expiry { get; set; }
+    public DateTimeOffset? Expiry { get; init; }
 }
 
-public sealed class SetCookieOptions : CommandOptions
+public sealed record SetCookieOptions : CommandOptions
 {
-    public PartitionDescriptor? Partition { get; set; }
+    public PartitionDescriptor? Partition { get; init; }
 }
 
-public sealed class ContextSetCookieOptions : CommandOptions
+public sealed record ContextSetCookieOptions : CommandOptions
 {
     internal static SetCookieOptions WithContext(ContextSetCookieOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

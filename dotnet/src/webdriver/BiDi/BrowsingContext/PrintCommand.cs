@@ -29,32 +29,32 @@ internal sealed class PrintCommand(PrintParameters @params)
 
 internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
-public sealed class PrintOptions : CommandOptions
+public sealed record PrintOptions : CommandOptions
 {
-    public bool? Background { get; set; }
+    public bool? Background { get; init; }
 
-    public PrintMargin? Margin { get; set; }
+    public PrintMargin? Margin { get; init; }
 
-    public PrintOrientation? Orientation { get; set; }
+    public PrintOrientation? Orientation { get; init; }
 
-    public PrintPage? Page { get; set; }
+    public PrintPage? Page { get; init; }
 
-    public IEnumerable<PrintPageRange>? PageRanges { get; set; }
+    public IEnumerable<PrintPageRange>? PageRanges { get; init; }
 
-    public double? Scale { get; set; }
+    public double? Scale { get; init; }
 
-    public bool? ShrinkToFit { get; set; }
+    public bool? ShrinkToFit { get; init; }
 }
 
 public struct PrintMargin
 {
-    public double? Bottom { get; set; }
+    public double? Bottom { get; init; }
 
-    public double? Left { get; set; }
+    public double? Left { get; init; }
 
-    public double? Right { get; set; }
+    public double? Right { get; init; }
 
-    public double? Top { get; set; }
+    public double? Top { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<PrintOrientation>))]
@@ -66,9 +66,9 @@ public enum PrintOrientation
 
 public struct PrintPage
 {
-    public double? Height { get; set; }
+    public double? Height { get; init; }
 
-    public double? Width { get; set; }
+    public double? Width { get; init; }
 }
 
 [JsonConverter(typeof(PrintPageRangeConverter))]
