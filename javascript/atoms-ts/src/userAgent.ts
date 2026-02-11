@@ -164,17 +164,6 @@ export const ANDROID_VERSION = detectAndroidVersion();
  */
 export const IS_MOBILE = IS_IOS || IS_ANDROID;
 
-/**
- * Whether the current platform is Windows Phone.
- * Windows Phone is no longer supported, but kept for reference.
- */
-export const IS_WINDOWS_PHONE = /IEMobile|Windows Phone/.test(navigator.userAgent);
-
-/**
- * Whether the current browser is Android pre-icecreamsandwich (version < 4).
- */
-export const IS_ANDROID_PRE_ICECREAMSANDWICH = IS_ANDROID && parseInt(ANDROID_VERSION, 10) < 4;
-
 // Environment Detection
 
 /**

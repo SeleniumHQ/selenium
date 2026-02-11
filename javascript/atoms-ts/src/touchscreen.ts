@@ -196,12 +196,9 @@ export class Touchscreen extends Device {
             this.fireMouseEvent(events.EventType.MOUSEUP, new Coordinate(this.clientXY_.x, this.clientXY_.y), 0);
 
             // Special click logic to follow links and to perform form actions.
-            if (!(userAgent.IS_WINDOWS_PHONE &&
-                this.getElement().tagName?.toLowerCase() === 'option')) {
-                this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
+            this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
           /* button */ 0,
           /* opt_force */ elementInteractableBeforeMouseup);
-            }
         }
     }
 
@@ -266,13 +263,10 @@ export class Touchscreen extends Device {
         // Fire a click.
         if (this.fireMouseEventsOnRelease_) {
             this.maybeToggleOption();
-            if (!(userAgent.IS_WINDOWS_PHONE &&
-                element.tagName?.toLowerCase() === 'option')) {
-                this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
+            this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
           /* button */ 0,
           /* opt_force */ elementInteractableBeforeMouseup,
                     id);
-            }
         }
 
         if (dom.isSelectable(element)) {

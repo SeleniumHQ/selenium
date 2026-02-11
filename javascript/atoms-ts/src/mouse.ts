@@ -239,12 +239,9 @@ export class Mouse extends Device {
             // Middle button can also trigger click.
             if (this.buttonPressed_ === Button.LEFT &&
                 this.getElement() === this.elementPressed_) {
-                if (!(userAgent.IS_WINDOWS_PHONE &&
-                    this.elementPressed_.tagName?.toLowerCase() === 'option')) {
-                    this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
-                        this.getButtonValue_(events.EventType.CLICK),
+                this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
+                    this.getButtonValue_(events.EventType.CLICK),
             /* opt_force */ elementInteractableBeforeMouseup);
-                }
                 this.maybeDoubleClickElement_();
                 if (userAgent.IS_IE && userAgent.isEngineVersion(10) &&
                     this.buttonPressed_ === Button.LEFT &&

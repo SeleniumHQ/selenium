@@ -187,21 +187,7 @@ function getFrame_(win: Window): Element | null {
 export function getSize(opt_win?: Window): Size {
     const win = opt_win || window;
     const frame = getFrame_(win);
-    if (userAgent.IS_ANDROID_PRE_ICECREAMSANDWICH) {
-        if (frame) {
-            // Early Android browsers do not account for border width.
-            const style = win.getComputedStyle(frame);
-            const borderLeft = parseFloat(style.borderLeftWidth) || 0;
-            const borderRight = parseFloat(style.borderRightWidth) || 0;
-            return {
-                width: frame.clientWidth - borderLeft - borderRight,
-                height: frame.clientHeight
-            };
-        } else {
-            // A fixed popup size.
-            return { width: 320, height: 240 };
-        }
-    } else if (frame) {
+    if (frame) {
         return { width: frame.clientWidth, height: frame.clientHeight };
     } else {
         const docElem = win.document.documentElement;
