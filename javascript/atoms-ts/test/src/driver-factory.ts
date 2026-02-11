@@ -1,8 +1,6 @@
 // @ts-ignore
 import { Builder, WebDriver, Browser } from 'selenium-webdriver';
 // @ts-ignore
-import { Environment } from 'selenium-webdriver/testing';
-// @ts-ignore
 import { runfiles } from '@bazel/runfiles';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';

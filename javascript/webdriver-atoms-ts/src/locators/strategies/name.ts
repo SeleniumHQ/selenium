@@ -20,6 +20,14 @@
  */
 
 /**
+ * Escape a name attribute value for safe use in a CSS attribute selector.
+ * Escapes backslashes first, then double quotes inside a double-quoted selector value.
+ */
+function escapeNameForSelector(name: string): string {
+    return name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+/**
  * Find a single element by its name attribute.
  *
  * @param name The name attribute value to search for.
@@ -28,7 +36,7 @@
  */
 export function single(name: string, root: Document | Element): Element | null {
     // Use querySelector for name attribute
-    const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
+    const selector = `[name="${escapeNameForSelector(name)}"]`;
     return root.querySelector(selector);
 }
 
@@ -40,6 +48,6 @@ export function single(name: string, root: Document | Element): Element | null {
  * @returns An array of all elements with the given name attribute.
  */
 export function many(name: string, root: Document | Element): Element[] {
-    const selector = `[name="${name.replace(/"/g, '\\"')}"]`;
+    const selector = `[name="${escapeNameForSelector(name)}"]`;
     return Array.from(root.querySelectorAll(selector));
 }

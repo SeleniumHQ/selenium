@@ -25,7 +25,6 @@ import { WebDriverError, ErrorCode } from './error';
 import * as dom from './dom';
 import * as events from './events';
 import * as userAgent from './userAgent';
-import * as bot from './bot';
 
 /**
  * A TouchScreen that provides atomic touch actions. The metaphor
@@ -266,7 +265,7 @@ export class Touchscreen extends Device {
             this.clickElement(new Coordinate(this.clientXY_.x, this.clientXY_.y),
           /* button */ 0,
           /* opt_force */ elementInteractableBeforeMouseup,
-                    id);
+                id);
         }
 
         if (dom.isSelectable(element)) {

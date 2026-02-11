@@ -44,6 +44,7 @@ export function single(criteria: string | Record<string, unknown>, _root: Docume
  * @param criteria The relative locator criteria (JSON string or object).
  * @param _root The document or element to search within.
  * @returns An array of elements matching the criteria.
+ * @throws Error if a full implementation is not available.
  */
 export function many(
     criteria: string | Record<string, unknown>,
@@ -57,11 +58,10 @@ export function many(
         }
     }
 
-    // This is a simplified implementation of relative locators
-    // A full implementation would need to handle all the relative locator filters
-    // such as: above, below, left of, right of, near
-
-    // For now, return an empty array as placeholder
-    // Full implementation would need to parse the filters and apply them
-    return [];
+    // Relative locators require a full implementation to parse criteria and apply filters
+    // This functionality is not yet available in this build
+    throw new Error(
+        'Relative locator strategies are not implemented in this build. ' +
+        'This feature requires implementation of filters: above, below, left of, right of, near'
+    );
 }

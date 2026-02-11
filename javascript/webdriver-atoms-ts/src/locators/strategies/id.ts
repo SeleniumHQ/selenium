@@ -31,7 +31,7 @@ export function single(id: string, root: Document | Element): Element | null {
         return (root as Document).getElementById(id);
     }
     // Fallback to querySelector if getElementById is not available
-    return root.querySelector(`#${id.replace(/([\\!"#$%&'()*+,./:;?@[\\\]^`{|}~])/g, '\\$1')}`);
+    return root.querySelector(`#${id.replace(/([\\!"#$%&'()*+,./:;?@\[\]^`{|}~])/g, '\\$1')}`);
 }
 
 /**

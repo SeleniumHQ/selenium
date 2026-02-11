@@ -21,7 +21,6 @@
 
 import { WebDriverError, ErrorCode } from './error';
 import * as userAgent from './userAgent';
-import * as bot from './bot';
 
 /**
  * Whether the browser supports the construction of touch events.

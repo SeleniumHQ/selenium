@@ -319,7 +319,7 @@ def test_get_log_types(driver, pages):
 @pytest.mark.xfail_webkitgtk(
     raises=AttributeError, reason="Logging API is no longer available"
 )
-@pytest.mark.xfail_wpewebkit()(
+@pytest.mark.xfail_wpewebkit(
     raises=AttributeError, reason="Logging API is no longer available"
 )
 def test_get_log(driver, pages):

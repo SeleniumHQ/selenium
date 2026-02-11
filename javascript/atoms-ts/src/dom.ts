@@ -23,7 +23,6 @@ import { WebDriverError } from './error';
 import { getAttribute, getProperty, isElement as domCoreIsElement } from './domcore';
 import { standardizeColor } from './color';
 import * as userAgent from './userAgent';
-import * as bot from './bot';
 
 /**
  * Whether Shadow DOM operations are supported by the browser.
@@ -62,15 +61,6 @@ const INLINE_DISPLAY_BOXES = [
     'table-column',
     'table-column-group'
 ];
-
-/**
- * A regular expression to match the CSS transform matrix syntax.
- */
-const CSS_TRANSFORM_MATRIX_REGEX = new RegExp(
-    'matrix\\(([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
-    '([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
-    '([\\d\\.\\-]+)(?:px)?, ([\\d\\.\\-]+)(?:px)?\\)'
-);
 
 /**
  * The kind of overflow area in which an element may be located.

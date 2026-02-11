@@ -19,7 +19,6 @@
  * Atoms for simulating user actions against the browser window.
  */
 
-import * as bot from './bot';
 import { WebDriverError, ErrorCode } from './error';
 import * as events from './events';
 import * as userAgent from './userAgent';

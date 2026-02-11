@@ -135,6 +135,22 @@ function locateMultipleElements(
 }
 
 /**
+ * Escape a value for safe use in a CSS ID selector (#id).
+ * Escapes backslashes and special characters that have meaning in CSS selectors.
+ */
+function escapeIdForSelector(id: string): string {
+    return id.replace(/\\/g, '\\\\').replace(/([!"#$%&'()*+,./:;?@\[\]^`{|}~])/g, '\\$1');
+}
+
+/**
+ * Escape a value for safe use in a CSS attribute selector ([name="value"]).
+ * Escapes backslashes first, then double quotes inside a double-quoted attribute value.
+ */
+function escapeAttributeForSelector(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+/**
  * Locates elements using the given strategy and locator string.
  * Maps WebDriver locator strategies to DOM APIs.
  *
@@ -155,12 +171,12 @@ function locateElements(
         case 'id':
             return root instanceof Document
                 ? root.getElementById(using) || null
-                : (root.querySelector(`#${CSS.escape(using)}`) || null);
+                : (root.querySelector(`#${escapeIdForSelector(using)}`) || null);
 
         case 'name': {
             const nameElements = root instanceof Document
                 ? root.getElementsByName(using)
-                : (root as Element).querySelectorAll(`[name="${CSS.escape(using)}"]`);
+                : (root as Element).querySelectorAll(`[name="${escapeAttributeForSelector(using)}"]`);
             return Array.from(nameElements);
         }
 

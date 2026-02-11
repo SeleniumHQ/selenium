@@ -62,12 +62,6 @@ describe('type', () => {
     `);
     }
 
-    async function focusElement(elemId: string): Promise<void> {
-        await driver.executeScript(`
-      document.getElementById('${elemId}').focus();
-    `);
-    }
-
     async function typeInElement(elemId: string, text: string): Promise<void> {
         const elem = await driver.findElement({ id: elemId });
         await elem.click();

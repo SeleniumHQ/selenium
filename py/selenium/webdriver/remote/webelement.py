@@ -135,7 +135,9 @@ class WebElement(BaseWebElement):
         try:
             self._parent.execute_script(script, self)
         except JavascriptException as exc:
-            raise WebDriverException("To submit an element, it must be nested inside a form element") from exc
+            raise WebDriverException(
+                "To submit an element, it must be nested inside a form element"
+            ) from exc
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element.
@@ -162,7 +164,9 @@ class WebElement(BaseWebElement):
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
         except WebDriverException:
             # if we hit an end point that doesn't understand getElementProperty lets fake it
-            return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
+            return self.parent.execute_script(
+                "return arguments[0][arguments[1]]", self, name
+            )
 
     def get_dom_attribute(self, name) -> str:
         """Get the HTML attribute value (not reflected properties) of the element.
@@ -211,7 +215,9 @@ class WebElement(BaseWebElement):
         if getAttribute_js is None:
             _load_js()
         attribute_value = self.parent.execute_script(
-            f"{getAttribute_js}; return __getAttribute__.apply(null, arguments);", self, name
+            f"{getAttribute_js}; return __getAttribute__.apply(null, arguments);",
+            self,
+            name,
         )
         return attribute_value
 
@@ -263,7 +269,9 @@ class WebElement(BaseWebElement):
         if self.parent._is_remote:
             local_files = list(
                 map(
-                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
+                    lambda keys_to_send: self.parent.file_detector.is_local_file(
+                        str(keys_to_send)
+                    ),
                     "".join(map(str, value)).split("\n"),
                 )
             )
@@ -274,7 +282,8 @@ class WebElement(BaseWebElement):
                 value = tuple("\n".join(remote_files))
 
         self._execute(
-            Command.SEND_KEYS_TO_ELEMENT, {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)}
+            Command.SEND_KEYS_TO_ELEMENT,
+            {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)},
         )
 
     @property
@@ -305,7 +314,10 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script(f"{isDisplayed_js}; return __isDisplayed__.apply(null, arguments);", self)
+        return self.parent.execute_script(
+            f"{isDisplayed_js}; return globalThis.__isDisplayed__.apply(null, arguments);",
+            self,
+        )
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
@@ -356,7 +368,9 @@ class WebElement(BaseWebElement):
         Example:
             value = element.value_of_css_property("color")
         """
-        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {"propertyName": property_name})["value"]
+        return self._execute(
+            Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {"propertyName": property_name}
+        )["value"]
 
     @property
     def location(self) -> dict:
@@ -529,9 +543,13 @@ class WebElement(BaseWebElement):
             element = driver.find_element(By.ID, "foo")
         """
         by, value = self._parent.locator_converter.convert(by, value)
-        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
+        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})[
+            "value"
+        ]
 
-    def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(
+        self, by: str = By.ID, value: str | None = None
+    ) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -553,7 +571,9 @@ class WebElement(BaseWebElement):
             element = driver.find_elements(By.ID, "foo")
         """
         by, value = self._parent.locator_converter.convert(by, value)
-        return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
+        return self._execute(
+            Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value}
+        )["value"]
 
     def __hash__(self) -> int:
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
