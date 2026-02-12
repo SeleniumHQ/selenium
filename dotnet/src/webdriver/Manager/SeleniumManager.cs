@@ -304,7 +304,7 @@ public static partial class SeleniumManager
             }
 #else
             var processExitTask = Task.Run(() => process.WaitForExit(), CancellationToken.None);
-            
+
             using (cancellationToken.Register(() =>
             {
                 try
@@ -319,7 +319,7 @@ public static partial class SeleniumManager
             {
                 await processExitTask.ConfigureAwait(false);
             }
-            
+
             cancellationToken.ThrowIfCancellationRequested();
 #endif
 
