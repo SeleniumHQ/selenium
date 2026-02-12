@@ -31,6 +31,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Manager;
@@ -191,10 +193,14 @@ public static partial class SeleniumManager
     /// </summary>
     /// <param name="browserName">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
     /// <param name="options">Optional discovery options to control browser and driver resolution.</param>
-    /// <returns>A <see cref="BrowserDiscoveryResult"/> containing the paths to the driver and browser executables.</returns>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+    /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation, containing a <see cref="BrowserDiscoveryResult"/> with the paths to the driver and browser executables.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="browserName"/> is null, empty, or whitespace.</exception>
     /// <exception cref="WebDriverException">Thrown when Selenium Manager fails to locate or download the required binaries.</exception>
-    public static BrowserDiscoveryResult DiscoverBrowser(string browserName, BrowserDiscoveryOptions? options = null)
+    public static async Task<BrowserDiscoveryResult> DiscoverBrowserAsync(
+        string browserName,
+        BrowserDiscoveryOptions? options = null,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(browserName))
         {
@@ -240,10 +246,13 @@ public static partial class SeleniumManager
             argsBuilder.Append(" --log-level debug");
         }
 
-        return RunCommand(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.BrowserDiscoveryResult, options?.Timeout);
+        return await RunCommandAsync(argsBuilder.ToString(), SeleniumManagerSerializerContext.Default.BrowserDiscoveryResult, cancellationToken).ConfigureAwait(false);
     }
 
-    private static TResult RunCommand<TResult>(string arguments, JsonTypeInfo<TResult> jsonResultTypeInfo, TimeSpan? timeout = null)
+    private static async Task<TResult> RunCommandAsync<TResult>(
+        string arguments,
+         JsonTypeInfo<TResult> jsonResultTypeInfo,
+          CancellationToken cancellationToken = default)
     {
         string smBinaryPath = _lazyBinaryFullPath.Value;
 
@@ -275,12 +284,44 @@ public static partial class SeleniumManager
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
-            if (!process.WaitForExit(timeout is null ? -1 : (int)timeout.Value.TotalMilliseconds))
+#if NET8_0_OR_GREATER
+            try
             {
-                process.Kill();
-
-                throw new WebDriverException($"Selenium Manager process timed out after {(timeout ?? TimeSpan.FromMilliseconds(-1)).TotalMilliseconds} ms");
+                await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException)
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch
+                {
+                    // Process may have already exited
+                }
+
+                throw new WebDriverException("Selenium Manager process was cancelled.");
+            }
+#else
+            var processExitTask = Task.Run(() => process.WaitForExit(), CancellationToken.None);
+            
+            using (cancellationToken.Register(() =>
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch
+                {
+                    // Process may have already exited
+                }
+            }))
+            {
+                await processExitTask.ConfigureAwait(false);
+            }
+            
+            cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (process.ExitCode != 0)
             {
@@ -431,12 +472,6 @@ public record BrowserDiscoveryOptions
     /// Gets or sets the proxy server URL for downloading browser drivers.
     /// </summary>
     public string? Proxy { get; set; }
-
-    /// <summary>
-    /// Gets or sets the timeout for the Selenium Manager process execution.
-    /// If not specified, the process will run without a timeout.
-    /// </summary>
-    public TimeSpan? Timeout { get; set; }
 }
 
 /// <summary>
