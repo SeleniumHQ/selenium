@@ -19,6 +19,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE;
@@ -152,14 +153,14 @@ public class InternetExplorerDriver : WebDriver
     {
     }
 
-    /// <summary>
-    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="commandTimeout"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
+        return Task.Run(async () =>
+            await GenerateDriverServiceCommandExecutorAsync(service, options, commandTimeout).ConfigureAwait(false))
+            .GetAwaiter().GetResult();
+    }
+
+    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
         if (service is null)
         {
@@ -174,10 +175,11 @@ public class InternetExplorerDriver : WebDriver
         if (service.DriverServicePath == null)
         {
             DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = finder.GetDriverPath();
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
         }
+
         return new DriverServiceCommandExecutor(service, commandTimeout);
     }
 

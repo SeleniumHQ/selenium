@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;
@@ -29,119 +30,63 @@ namespace OpenQA.Selenium;
 /// Finds a driver, checks if the provided path exists, if not, Selenium Manager is used.
 /// This implementation is still in beta and may change.
 /// </summary>
-public class DriverFinder
+/// <remarks>
+/// Initializes a new instance of the <see cref="DriverFinder"/> class.
+/// </remarks>
+/// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+internal class DriverFinder(DriverOptions options)
 {
-    private const string DriverPathKey = "driver_path";
-    private const string BrowserPathKey = "browser_path";
+    private string? _driverPath;
+    private string? _browserPath;
+    private readonly DriverOptions options = options ?? throw new ArgumentNullException(nameof(options));
 
-    private readonly DriverOptions options;
-    private readonly Dictionary<string, string> paths = new Dictionary<string, string>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DriverFinder"/> class.
-    /// </summary>
-    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-    public DriverFinder(DriverOptions options)
+    public async ValueTask<string> GetBrowserPathAsync()
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-    }
-
-    /// <summary>
-    /// Gets the browser path retrieved by Selenium Manager
-    /// </summary>
-    /// <returns>
-    /// The full browser path
-    /// </returns>
-    public string GetBrowserPath()
-    {
-        return BinaryPaths()[BrowserPathKey];
-    }
-
-    /// <summary>
-    /// Gets the driver path retrieved by Selenium Manager
-    /// </summary>
-    /// <returns>
-    /// The full driver path
-    /// </returns>
-    public string GetDriverPath()
-    {
-        return BinaryPaths()[DriverPathKey];
-    }
-
-    /// <summary>
-    /// Gets whether there is a browser path for the given browser on this platform.
-    /// </summary>
-    /// <returns><see langword="true"/> if a browser path exists; otherwise, <see langword="false"/>.</returns>
-    public bool HasBrowserPath()
-    {
-        return !string.IsNullOrWhiteSpace(GetBrowserPath());
-    }
-
-    /// <summary>
-    /// Tries to get the browser path, as retrieved by Selenium Manager.
-    /// </summary>
-    /// <param name="browserPath">If the method returns <see langword="true"/>, the full browser path.</param>
-    /// <returns><see langword="true"/> if a browser path exists; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetBrowserPath([NotNullWhen(true)] out string? browserPath)
-    {
-        string? path = GetBrowserPath();
-        if (!string.IsNullOrWhiteSpace(path))
+        if (!string.IsNullOrWhiteSpace(_browserPath))
         {
-            browserPath = path;
-            return true;
+            return _browserPath!;
         }
 
-        browserPath = null;
-        return false;
+        await DiscoverBinaryPathsAsync().ConfigureAwait(false);
+
+        return _browserPath!;
     }
 
-    /// <summary>
-    /// Invokes Selenium Manager to get the binaries paths and validates if they exist.
-    /// </summary>
-    /// <returns>
-    /// A Dictionary with the validated browser and driver path.
-    /// </returns>
-    /// <exception cref="NoSuchDriverException">If one of the paths does not exist.</exception>
-    private Dictionary<string, string> BinaryPaths()
+    public async ValueTask<string> GetDriverPathAsync()
     {
-        if (paths.TryGetValue(DriverPathKey, out string? cachedDriverPath) && !string.IsNullOrWhiteSpace(cachedDriverPath))
+        if (!string.IsNullOrWhiteSpace(_driverPath))
         {
-            return paths;
+            return _driverPath!;
         }
 
-        if (string.IsNullOrWhiteSpace(options.BrowserName))
-        {
-            throw new NoSuchDriverException("Browser name must be specified to find the driver using Selenium Manager.");
-        }
+        await DiscoverBinaryPathsAsync().ConfigureAwait(false);
 
-        BrowserDiscoveryResult smResult = SeleniumManager.DiscoverBrowser(options.BrowserName, new BrowserDiscoveryOptions
+        return _driverPath!;
+    }
+
+    private async ValueTask DiscoverBinaryPathsAsync()
+    {
+        BrowserDiscoveryResult smResult = await SeleniumManager.DiscoverBrowserAsync(options.BrowserName!, new BrowserDiscoveryOptions
         {
             BrowserVersion = options.BrowserVersion,
             BrowserPath = options.BinaryLocation,
             Proxy = options.Proxy?.SslProxy ?? options.Proxy?.HttpProxy
-        });
+        }).ConfigureAwait(false);
 
         string driverPath = smResult.DriverPath;
         string browserPath = smResult.BrowserPath;
 
-        if (File.Exists(driverPath))
+        if (!File.Exists(driverPath))
         {
-            paths.Add(DriverPathKey, driverPath);
-        }
-        else
-        {
-            throw new NoSuchDriverException($"The driver path is not a valid file: {driverPath}");
+            throw new FileNotFoundException("Driver not found", driverPath);
         }
 
-        if (File.Exists(browserPath))
+        if (!File.Exists(browserPath))
         {
-            paths.Add(BrowserPathKey, browserPath);
-        }
-        else
-        {
-            throw new NoSuchDriverException($"The browser path is not a valid file: {browserPath}");
+            throw new FileNotFoundException("Browser not found", browserPath);
         }
 
-        return paths;
+        _driverPath = driverPath;
+        _browserPath = browserPath;
     }
 }
