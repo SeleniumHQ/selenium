@@ -37,7 +37,7 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ITransport _transport;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
-    private readonly Channel<(string Method, EventArgs Params)> _pendingEvents = Channel.CreateUnbounded<(string Method, EventArgs Params)>(new()
+    private readonly Channel<EventInfo> _pendingEvents = Channel.CreateUnbounded<EventInfo>(new()
     {
         SingleReader = true,
         SingleWriter = true
@@ -152,7 +152,7 @@ internal sealed class Broker : IAsyncDisposable
         cts.CancelAfter(timeout);
 
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
-        var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
+        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
         var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
 
@@ -294,8 +294,7 @@ internal sealed class Broker : IAsyncDisposable
 
                     eventArgs.BiDi = _bidi;
 
-                    var messageEvent = (method, eventArgs);
-                    _pendingEvents.Writer.TryWrite(messageEvent);
+                    _pendingEvents.Writer.TryWrite(new EventInfo(method, eventArgs));
                 }
                 else
                 {
@@ -321,12 +320,7 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    class CommandInfo(long id, TaskCompletionSource<EmptyResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
-    {
-        public long Id { get; } = id;
+    private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
 
-        public TaskCompletionSource<EmptyResult> TaskCompletionSource { get; } = taskCompletionSource;
-
-        public JsonTypeInfo JsonResultTypeInfo { get; } = jsonResultTypeInfo;
-    };
+    private readonly record struct EventInfo(string Method, EventArgs Params);
 }

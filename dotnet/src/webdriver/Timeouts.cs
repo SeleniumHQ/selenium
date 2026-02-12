@@ -139,7 +139,7 @@ internal class Timeouts : ITimeouts
             }
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
 
         this.driver.Execute(DriverCommand.SetTimeouts, parameters);

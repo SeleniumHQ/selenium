@@ -276,7 +276,7 @@ public class FirefoxDriver : WebDriver
     public void SetContext(FirefoxCommandContext context)
     {
         string contextValue = context.ToString().ToLowerInvariant();
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["context"] = contextValue;
         this.Execute(SetContextCommand, parameters);
     }
@@ -354,7 +354,7 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>()
         {
             ["addon"] = base64EncodedAddOn,
             ["temporary"] = temporary
@@ -376,7 +376,7 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(addOnId), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["id"] = addOnId;
         this.Execute(UninstallAddOnCommand, parameters);
     }

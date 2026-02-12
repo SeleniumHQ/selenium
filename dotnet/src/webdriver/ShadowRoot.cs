@@ -91,7 +91,7 @@ public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReferenc
             throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", this.shadowRootId);
         parameters.Add("using", by.Mechanism);
         parameters.Add("value", by.Criteria);
@@ -115,7 +115,7 @@ public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReferenc
             throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", this.shadowRootId);
         parameters.Add("using", by.Mechanism);
         parameters.Add("value", by.Criteria);

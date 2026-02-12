@@ -214,7 +214,7 @@ public class SafariDriver : WebDriver
 
         Dictionary<string, object> permissions = new Dictionary<string, object>();
         permissions[permissionName] = permissionValue;
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["permissions"] = permissions;
         this.Execute(SetPermissionsCommand, parameters);
     }

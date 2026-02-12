@@ -221,7 +221,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
                 throw new ArgumentNullException(nameof(value), "value must not be null");
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters["network_conditions"] = value;
 
             this.Execute(SetNetworkConditionsCommand, parameters);
@@ -240,7 +240,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(id), "id must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["id"] = id;
 
         this.Execute(LaunchAppCommand, parameters);
@@ -264,9 +264,9 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
         }
 
-        Dictionary<string, object> nameParameter = new Dictionary<string, object>();
+        Dictionary<string, object?> nameParameter = new Dictionary<string, object?>();
         nameParameter["name"] = permissionName;
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["descriptor"] = nameParameter;
         parameters["state"] = permissionValue;
         this.Execute(SetPermissionCommand, parameters);
@@ -279,14 +279,14 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// <param name="commandParameters">Parameters of the command to execute.</param>
     /// <returns>An object representing the result of the command, if applicable.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
-    public object? ExecuteCdpCommand(string commandName, Dictionary<string, object> commandParameters)
+    public object? ExecuteCdpCommand(string commandName, Dictionary<string, object?> commandParameters)
     {
         if (commandName == null)
         {
             throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["cmd"] = commandName;
         parameters["params"] = commandParameters;
         Response response = this.Execute(ExecuteCdp, parameters);
@@ -404,7 +404,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(SelectCastSinkCommand, parameters);
     }
@@ -420,7 +420,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StartCastTabMirroringCommand, parameters);
     }
@@ -436,7 +436,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StartCastDesktopMirroringCommand, parameters);
     }
@@ -462,7 +462,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StopCastingCommand, parameters);
     }
