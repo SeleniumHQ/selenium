@@ -191,25 +191,25 @@ public static partial class SeleniumManager
     /// <summary>
     /// Discovers the browser and driver paths for the specified browser.
     /// </summary>
-    /// <param name="browserName">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
+    /// <param name="name">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
     /// <param name="options">Optional discovery options to control browser and driver resolution.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation, containing a <see cref="BrowserDiscoveryResult"/> with the paths to the driver and browser executables.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="browserName"/> is null, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="name"/> is null, empty, or whitespace.</exception>
     /// <exception cref="WebDriverException">Thrown when Selenium Manager fails to locate or download the required binaries.</exception>
     public static async Task<BrowserDiscoveryResult> DiscoverBrowserAsync(
-        string browserName,
+        string name,
         BrowserDiscoveryOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(browserName))
+        if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException("Browser name must be specified to find the driver using Selenium Manager.", nameof(browserName));
+            throw new ArgumentException("Browser name must be specified to find the driver using Selenium Manager.", nameof(name));
         }
 
         StringBuilder argsBuilder = new();
 
-        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", browserName);
+        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", name);
 
         if (options is not null)
         {
