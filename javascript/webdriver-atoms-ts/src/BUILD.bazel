@@ -18,28 +18,6 @@ ts_project(
 )
 
 ts_project(
-    name = "local_storage",
-    srcs = ["storage/local_storage.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
-    name = "session_storage",
-    srcs = ["storage/session_storage.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
     name = "attribute",
     srcs = ["attribute.ts"],
     declaration = True,
@@ -232,34 +210,6 @@ ts_project(
 )
 
 ts_project(
-    name = "inject_local_storage",
-    srcs = ["inject/local_storage.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    deps = [
-        ":local_storage",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
-    name = "inject_session_storage",
-    srcs = ["inject/session_storage.ts"],
-    declaration = True,
-    declaration_map = True,
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    deps = [
-        ":session_storage",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-ts_project(
     name = "locators",
     srcs = glob([
         "locators/**/*.ts",
@@ -282,8 +232,6 @@ ts_project(
     tsconfig = "tsconfig.json",
     deps = [
         ":inject",
-        ":local_storage",
-        ":session_storage",
         ":attribute",
         ":element",
         ":inputs",
@@ -292,8 +240,6 @@ ts_project(
         ":dom",
         ":find_element",
         ":frame",
-        ":inject_local_storage",
-        ":inject_session_storage",
         ":locators",
     ],
     visibility = ["//visibility:public"],
@@ -304,8 +250,6 @@ filegroup(
     name = "all",
     srcs = [
         ":inject",
-        ":local_storage",
-        ":session_storage",
         ":attribute",
         ":element",
         ":inputs",
@@ -314,8 +258,6 @@ filegroup(
         ":dom",
         ":find_element",
         ":frame",
-        ":inject_local_storage",
-        ":inject_session_storage",
         ":locators",
         ":exports",
     ],

@@ -19,8 +19,7 @@
  * Public API for WebDriver Atoms TypeScript library.
  *
  * This module provides the complete public API for WebDriver atoms,
- * combining script execution, element manipulation, and storage access
- * into a unified interface.
+ * combining script execution and element manipulation into a unified interface.
  */
 
 // ============================================================================
@@ -31,33 +30,7 @@ export { executeScript, executeAsyncScript, getWindow } from '../inject';
 export type { JsonWindow } from '../inject';
 
 // ============================================================================
-// Phase 2: Storage Access
-// ============================================================================
-
-// Local Storage
-export {
-    setItem as localStorageSetItem,
-    getItem as localStorageGetItem,
-    removeItem as localStorageRemoveItem,
-    clear as localStorageClear,
-    size as localStorageSize,
-    key as localStorageKey,
-    keySet as localStorageKeySet
-} from '../storage/local_storage';
-
-// Session Storage
-export {
-    setItem as sessionStorageSetItem,
-    getItem as sessionStorageGetItem,
-    removeItem as sessionStorageRemoveItem,
-    clear as sessionStorageClear,
-    size as sessionStorageSize,
-    key as sessionStorageKey,
-    keySet as sessionStorageKeySet
-} from '../storage/session_storage';
-
-// ============================================================================
-// Phase 3: Element Manipulation
+// Phase 2: Element Manipulation
 // ============================================================================
 
 // Element properties and manipulation
@@ -142,36 +115,9 @@ export {
     findFrameByIndex
 } from '../inject/frame';
 
-// Storage access via injection
-export {
-    setItem as injectedSetItem,
-    getItem as injectedGetItem,
-    keySet as injectedKeySet,
-    removeItem as injectedRemoveItem,
-    clear as injectedClear_local
-} from '../inject/local_storage';
-
-export {
-    setItem as injectedSessionSetItem,
-    getItem as injectedSessionGetItem,
-    keySet as injectedSessionKeySet,
-    removeItem as injectedSessionRemoveItem,
-    clear as injectedSessionClear
-} from '../inject/session_storage';
-
 // ============================================================================
 // Export namespace for convenience
 // ============================================================================
-
-/**
- * Local Storage operations.
- */
-export * as LocalStorage from '../storage/local_storage';
-
-/**
- * Session Storage operations.
- */
-export * as SessionStorage from '../storage/session_storage';
 
 /**
  * Injected element operations.
