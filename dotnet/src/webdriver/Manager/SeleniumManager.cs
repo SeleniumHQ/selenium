@@ -251,8 +251,8 @@ public static partial class SeleniumManager
 
     private static async Task<TResult> RunCommandAsync<TResult>(
         string arguments,
-         JsonTypeInfo<TResult> jsonResultTypeInfo,
-          CancellationToken cancellationToken = default)
+        JsonTypeInfo<TResult> jsonResultTypeInfo,
+        CancellationToken cancellationToken = default)
     {
         string smBinaryPath = _lazyBinaryFullPath.Value;
 
