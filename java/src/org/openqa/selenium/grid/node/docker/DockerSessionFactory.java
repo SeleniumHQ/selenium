@@ -51,6 +51,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
@@ -186,6 +187,7 @@ public class DockerSessionFactory implements SessionFactory {
       URL remoteAddress = getUrl(port, containerIp);
       ClientConfig clientConfig =
           ClientConfig.defaultConfig().baseUrl(remoteAddress).readTimeout(sessionTimeout);
+      clientConfig = applyBasicAuth(clientConfig);
       HttpClient client = clientFactory.createClient(clientConfig);
 
       attributeMap.put("docker.browser.image", browserImage.toString());
@@ -520,8 +522,26 @@ public class DockerSessionFactory implements SessionFactory {
         obj -> {
           HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
           LOG.fine(string(response));
+          if (401 == response.getStatus()) {
+            LOG.warning(
+                "Server requires basic authentication. "
+                    + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
+                    + "to provide credentials.");
+          }
           return 200 == response.getStatus();
         });
+  }
+
+  private ClientConfig applyBasicAuth(ClientConfig clientConfig) {
+    String routerUsername = System.getenv("SE_ROUTER_USERNAME");
+    String routerPassword = System.getenv("SE_ROUTER_PASSWORD");
+    if (routerUsername != null
+        && !routerUsername.isEmpty()
+        && routerPassword != null
+        && !routerPassword.isEmpty()) {
+      return clientConfig.authenticateAs(new UsernameAndPassword(routerUsername, routerPassword));
+    }
+    return clientConfig;
   }
 
   private URL getUrl(int port, String containerIp) {

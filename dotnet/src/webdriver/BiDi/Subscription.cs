@@ -50,18 +50,18 @@ public class Subscription : IAsyncDisposable
     }
 }
 
-public class SubscriptionOptions
+public sealed record SubscriptionOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 
-    public TimeSpan? Timeout { get; set; }
+    public TimeSpan? Timeout { get; init; }
 }
 
-public class ContextSubscriptionOptions
+public sealed record ContextSubscriptionOptions
 {
-    public TimeSpan? Timeout { get; set; }
+    public TimeSpan? Timeout { get; init; }
 
     internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

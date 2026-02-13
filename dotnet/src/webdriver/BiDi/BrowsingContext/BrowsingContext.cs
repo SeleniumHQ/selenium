@@ -106,9 +106,9 @@ public sealed record BrowsingContext
         return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options, cancellationToken);
     }
 
-    public Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<SetViewportResult> SetViewportAsync(ContextSetViewportOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.BrowsingContext.SetViewportAsync(this, options, cancellationToken);
+        return BiDi.BrowsingContext.SetViewportAsync(ContextSetViewportOptions.WithContext(options, this), cancellationToken);
     }
 
     public Task<PrintResult> PrintAsync(PrintOptions? options = null, CancellationToken cancellationToken = default)

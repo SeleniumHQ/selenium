@@ -21,15 +21,15 @@ namespace OpenQA.Selenium.BiDi.Session;
 
 public sealed record CapabilityRequest
 {
-    public bool? AcceptInsecureCerts { get; set; }
+    public bool? AcceptInsecureCerts { get; init; }
 
-    public string? BrowserName { get; set; }
+    public string? BrowserName { get; init; }
 
-    public string? BrowserVersion { get; set; }
+    public string? BrowserVersion { get; init; }
 
-    public string? PlatformName { get; set; }
+    public string? PlatformName { get; init; }
 
-    public ProxyConfiguration? ProxyConfiguration { get; set; }
+    public ProxyConfiguration? ProxyConfiguration { get; init; }
 
-    public UserPromptHandler? UnhandledPromptBehavior { get; set; }
+    public UserPromptHandler? UnhandledPromptBehavior { get; init; }
 }

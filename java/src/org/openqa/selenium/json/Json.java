@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 /**
  * The <b>Json</b> class is the entrypoint for the JSON processing features of the Selenium API.
@@ -198,9 +199,7 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(Reader source, Type typeOfT, PropertySetting setter) {
-    if (setter == null) {
-      throw new JsonException("Mechanism for setting properties must be set");
-    }
+    Require.nonNull("Mechanism for setting properties", setter);
 
     try (JsonInput json = newInput(source)) {
       return fromJson.coerce(json, typeOfT, setter);

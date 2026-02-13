@@ -24,6 +24,6 @@ internal sealed class FailRequestCommand(FailRequestParameters @params)
 
 internal sealed record FailRequestParameters(Request Request) : Parameters;
 
-public sealed class FailRequestOptions : CommandOptions;
+public sealed record FailRequestOptions : CommandOptions;
 
 public sealed record FailRequestResult : EmptyResult;

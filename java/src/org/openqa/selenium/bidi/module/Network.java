@@ -45,19 +45,19 @@ public class Network implements AutoCloseable {
 
   private final BiDi bidi;
 
-  private final Event<BeforeRequestSent> beforeRequestSentEvent =
+  private static final Event<BeforeRequestSent> beforeRequestSentEvent =
       new Event<>("network.beforeRequestSent", BeforeRequestSent::fromJsonMap);
 
-  private final Event<FetchError> fetchErrorEvent =
+  private static final Event<FetchError> fetchErrorEvent =
       new Event<>("network.fetchError", FetchError::fromJsonMap);
 
-  private final Event<ResponseDetails> responseStarted =
+  private static final Event<ResponseDetails> responseStarted =
       new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
 
-  private final Event<ResponseDetails> responseCompleted =
+  private static final Event<ResponseDetails> responseCompleted =
       new Event<>("network.responseCompleted", ResponseDetails::fromJsonMap);
 
-  private final Event<ResponseDetails> authRequired =
+  private static final Event<ResponseDetails> authRequired =
       new Event<>("network.authRequired", ResponseDetails::fromJsonMap);
 
   public Network(WebDriver driver) {
@@ -85,10 +85,7 @@ public class Network implements AutoCloseable {
         new Command<>(
             "network.addIntercept",
             parameters.toMap(),
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("intercept");
-            }));
+            jsonInput -> jsonInput.readMapElement("intercept")));
   }
 
   public void removeIntercept(String interceptId) {

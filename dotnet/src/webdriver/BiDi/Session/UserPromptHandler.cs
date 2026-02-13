@@ -24,17 +24,17 @@ namespace OpenQA.Selenium.BiDi.Session;
 
 public sealed record UserPromptHandler
 {
-    public UserPromptHandlerType? Alert { get; set; }
+    public UserPromptHandlerType? Alert { get; init; }
 
-    public UserPromptHandlerType? BeforeUnload { get; set; }
+    public UserPromptHandlerType? BeforeUnload { get; init; }
 
-    public UserPromptHandlerType? Confirm { get; set; }
+    public UserPromptHandlerType? Confirm { get; init; }
 
-    public UserPromptHandlerType? Default { get; set; }
+    public UserPromptHandlerType? Default { get; init; }
 
-    public UserPromptHandlerType? File { get; set; }
+    public UserPromptHandlerType? File { get; init; }
 
-    public UserPromptHandlerType? Prompt { get; set; }
+    public UserPromptHandlerType? Prompt { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<UserPromptHandlerType>))]

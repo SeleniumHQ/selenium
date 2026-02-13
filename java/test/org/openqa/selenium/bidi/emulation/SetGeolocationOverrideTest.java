@@ -24,7 +24,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
@@ -40,36 +39,35 @@ import org.openqa.selenium.testing.NeedsSecureServer;
 
 @NeedsSecureServer
 class SetGeolocationOverrideTest extends JupiterTestBase {
+
   private Map<String, Object> getBrowserGeolocation(
       WebDriver driver, String userContext, String origin) {
-    JavascriptExecutor executor = (JavascriptExecutor) driver;
     Permission permission = new Permission(driver);
 
     permission.setPermission(
         Map.of("name", "geolocation"), PermissionState.GRANTED, origin, userContext);
 
-    return (Map<String, Object>)
-        executor.executeAsyncScript(
-            "const callback = arguments[arguments.length - 1];\n"
-                + "        navigator.geolocation.getCurrentPosition(\n"
-                + "            position => {\n"
-                + "                const coords = position.coords;\n"
-                + "                callback({\n"
-                + "                    latitude: coords.latitude,\n"
-                + "                    longitude: coords.longitude,\n"
-                + "                    accuracy: coords.accuracy,\n"
-                + "                    altitude: coords.altitude,\n"
-                + "                    altitudeAccuracy: coords.altitudeAccuracy,\n"
-                + "                    heading: coords.heading,\n"
-                + "                    speed: coords.speed,\n"
-                + "                    timestamp: position.timestamp\n"
-                + "                });\n"
-                + "            },\n"
-                + "            error => {\n"
-                + "                callback({ error: error.message });\n"
-                + "            },\n"
-                + "            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }\n"
-                + "        );");
+    return executeAsyncScript(
+        "const callback = arguments[arguments.length - 1];\n"
+            + "        navigator.geolocation.getCurrentPosition(\n"
+            + "            position => {\n"
+            + "                const coords = position.coords;\n"
+            + "                callback({\n"
+            + "                    latitude: coords.latitude,\n"
+            + "                    longitude: coords.longitude,\n"
+            + "                    accuracy: coords.accuracy,\n"
+            + "                    altitude: coords.altitude,\n"
+            + "                    altitudeAccuracy: coords.altitudeAccuracy,\n"
+            + "                    heading: coords.heading,\n"
+            + "                    speed: coords.speed,\n"
+            + "                    timestamp: position.timestamp\n"
+            + "                });\n"
+            + "            },\n"
+            + "            error => {\n"
+            + "                callback({ error: error.message });\n"
+            + "            },\n"
+            + "            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }\n"
+            + "        );");
   }
 
   @Test
@@ -82,16 +80,14 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     context.navigate(url, ReadinessState.COMPLETE);
     driver.switchTo().window(context.getId());
 
-    String origin =
-        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+    String origin = getOrigin();
 
     Emulation emul = new Emulation(driver);
     GeolocationCoordinates coords = new GeolocationCoordinates(37.7749, -122.4194);
     emul.setGeolocationOverride(
         new SetGeolocationOverrideParameters(coords).contexts(List.of(contextId)));
 
-    Object result = getBrowserGeolocation(driver, null, origin);
-    Map<String, Object> r = ((Map<String, Object>) result);
+    Map<String, Object> r = getBrowserGeolocation(driver, null, origin);
 
     assertThat(r.containsKey("error")).isFalse();
 
@@ -128,11 +124,9 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     String url1 = appServer.whereIsSecure("blank.html");
     context1.navigate(url1, ReadinessState.COMPLETE);
 
-    String origin1 =
-        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+    String origin1 = getOrigin();
 
-    Map<String, Object> r =
-        (Map<String, Object>) getBrowserGeolocation(driver, userContext1, origin1);
+    Map<String, Object> r = getBrowserGeolocation(driver, userContext1, origin1);
 
     assertThat(r.containsKey("error")).isFalse();
 
@@ -148,11 +142,9 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     String url2 = appServer.whereIsSecure("blank.html");
     context2.navigate(url2, ReadinessState.COMPLETE);
 
-    String origin2 =
-        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+    String origin2 = getOrigin();
 
-    Map<String, Object> r2 =
-        (Map<String, Object>) getBrowserGeolocation(driver, userContext2, origin2);
+    Map<String, Object> r2 = getBrowserGeolocation(driver, userContext2, origin2);
 
     assertThat(r2.containsKey("error")).isFalse();
 
@@ -182,8 +174,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     context.navigate(url, ReadinessState.COMPLETE);
     driver.switchTo().window(contextId);
 
-    String origin =
-        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+    String origin = getOrigin();
 
     GeolocationPositionError error = new GeolocationPositionError();
     Emulation emul = new Emulation(driver);
@@ -206,8 +197,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     context.navigate(url, ReadinessState.COMPLETE);
     driver.switchTo().window(context.getId());
 
-    String origin =
-        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+    String origin = getOrigin();
 
     Emulation emul = new Emulation(driver);
 
@@ -215,8 +205,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     emul.setGeolocationOverride(
         new SetGeolocationOverrideParameters(coords).contexts(List.of(contextId)));
 
-    Object firstResult = getBrowserGeolocation(driver, null, origin);
-    Map<String, Object> r1 = ((Map<String, Object>) firstResult);
+    Map<String, Object> r1 = getBrowserGeolocation(driver, null, origin);
 
     assertThat(r1).doesNotContainKey("error");
     double latitude1 = ((Number) r1.get("latitude")).doubleValue();
@@ -229,13 +218,16 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
         new SetGeolocationOverrideParameters((GeolocationCoordinates) null)
             .contexts(List.of(contextId)));
 
-    Object secondResult = getBrowserGeolocation(driver, null, origin);
-    Map<String, Object> r2 = ((Map<String, Object>) secondResult);
+    Map<String, Object> r2 = getBrowserGeolocation(driver, null, origin);
 
     assertThat(r2)
         .as("We expected an error because there's no real geolocation available")
         .containsKey("error");
 
     context.close();
+  }
+
+  private String getOrigin() {
+    return executeJavaScript("return window.location.origin");
   }
 }

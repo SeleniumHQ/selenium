@@ -20,6 +20,7 @@ package org.openqa.selenium.internal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -48,6 +49,8 @@ public final class Require {
   private static final String MUST_BE_EXECUTABLE = "%s must be executable: %s";
   private static final String MUST_BE_NON_NEGATIVE = "%s must be 0 or greater";
   private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
+  private static final String MUST_BE_BETWEEN = "%s must be between %s and %s (inclusive)";
+  private static final String MUST_NOT_BE_EMPTY = "%s must not be empty";
 
   private Require() {
     // An utility class
@@ -84,9 +87,7 @@ public final class Require {
   }
 
   public static Duration nonNegative(String argName, @Nullable Duration arg) {
-    if (arg == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-    }
+    nonNull(argName, arg);
     if (arg.isNegative()) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
     }
@@ -94,9 +95,7 @@ public final class Require {
   }
 
   public static Duration nonNegative(@Nullable Duration arg) {
-    if (arg == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, "Duration"));
-    }
+    nonNull("Duration", arg);
     if (arg.isNegative()) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, "Duration"));
     }
@@ -104,9 +103,7 @@ public final class Require {
   }
 
   public static Duration positive(String argName, @Nullable Duration arg) {
-    if (arg == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-    }
+    nonNull(argName, arg);
     if (arg.isNegative() || arg.isZero()) {
       throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
     }
@@ -114,9 +111,7 @@ public final class Require {
   }
 
   public static Duration positive(@Nullable Duration arg) {
-    if (arg == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, "Duration"));
-    }
+    nonNull("Duration", arg);
     if (arg.isNegative() || arg.isZero()) {
       throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, "Duration"));
     }
@@ -124,9 +119,23 @@ public final class Require {
   }
 
   public static int nonNegative(String argName, @Nullable Integer number) {
-    if (number == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    nonNull(argName, number);
+    if (number < 0) {
+      throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
     }
+    return number;
+  }
+
+  public static long nonNegative(String argName, @Nullable Long number) {
+    nonNull(argName, number);
+    if (number < 0) {
+      throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
+    }
+    return number;
+  }
+
+  public static double nonNegative(String argName, @Nullable Double number) {
+    nonNull(argName, number);
     if (number < 0) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
     }
@@ -134,9 +143,7 @@ public final class Require {
   }
 
   public static int positive(String argName, @Nullable Integer number, @Nullable String message) {
-    if (number == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-    }
+    nonNull(argName, number);
     if (number <= 0) {
       throw new IllegalArgumentException(
           Objects.requireNonNullElseGet(message, () -> String.format(MUST_BE_POSITIVE, argName)));
@@ -145,9 +152,7 @@ public final class Require {
   }
 
   public static double positive(String argName, @Nullable Double number, @Nullable String message) {
-    if (number == null) {
-      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-    }
+    nonNull(argName, number);
     if (number <= 0) {
       throw new IllegalArgumentException(
           Objects.requireNonNullElseGet(message, () -> String.format(MUST_BE_POSITIVE, argName)));
@@ -163,12 +168,38 @@ public final class Require {
     return positive(argName, number, null);
   }
 
+  public static long positive(String argName, @Nullable Long number) {
+    nonNull(argName, number);
+    if (number <= 0) {
+      throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
+    }
+
+    return number;
+  }
+
+  public static double inRangeInclusive(
+      String argName, @Nullable Double value, double min, double max) {
+    nonNull(argName, value);
+    if (value < min || value > max) {
+      throw new IllegalArgumentException(String.format(MUST_BE_BETWEEN, argName, min, max));
+    }
+    return value;
+  }
+
   public static IntChecker argument(String argName, @Nullable Integer number) {
     return new IntChecker(argName, number);
   }
 
   public static PathChecker argument(String argName, @Nullable Path path) {
     return new PathChecker(argName, path);
+  }
+
+  public static <T> Collection<T> nonEmpty(String argName, @Nullable Collection<T> arg) {
+    nonNull(argName, arg);
+    if (arg.isEmpty()) {
+      throw new IllegalArgumentException(String.format(MUST_NOT_BE_EMPTY, argName));
+    }
+    return arg;
   }
 
   public static void stateCondition(boolean state, String message, Object... args) {
@@ -241,9 +272,7 @@ public final class Require {
     }
 
     public int greaterThan(int max, String message) {
-      if (number == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-      }
+      nonNull(argName, number);
       if (number <= max) {
         throw new IllegalArgumentException(message);
       }
@@ -262,9 +291,7 @@ public final class Require {
     }
 
     public Path isFile() {
-      if (path == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-      }
+      nonNull(argName, path);
       if (!Files.exists(path)) {
         throw new IllegalArgumentException(
             String.format(MUST_EXIST, argName, path.toAbsolutePath()));
@@ -277,9 +304,7 @@ public final class Require {
     }
 
     public Path isDirectory() {
-      if (path == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-      }
+      nonNull(argName, path);
       if (!Files.exists(path)) {
         throw new IllegalArgumentException(
             String.format(MUST_EXIST, argName, path.toAbsolutePath()));

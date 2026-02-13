@@ -19,8 +19,8 @@ package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class RegExpValue extends LocalValue {
@@ -61,20 +61,15 @@ public class RegExpValue extends LocalValue {
 
     input.endObject();
 
-    return new RegExpValue(pattern, flags);
+    return new RegExpValue(Require.nonNull("pattern", pattern), flags);
   }
 
   @Override
   public Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
+    Map<String, Object> value =
+        flags == null ? Map.of("pattern", pattern) : Map.of("pattern", pattern, "flags", flags);
 
-    toReturn.put("pattern", this.pattern);
-
-    if (flags != null) {
-      toReturn.put("flags", this.flags);
-    }
-
-    return Map.of("type", "regexp", "value", toReturn);
+    return Map.of("type", "regexp", "value", value);
   }
 
   public String getPattern() {

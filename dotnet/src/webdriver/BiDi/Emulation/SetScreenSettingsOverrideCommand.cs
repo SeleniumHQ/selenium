@@ -27,11 +27,11 @@ internal sealed class SetScreenSettingsOverrideCommand(SetScreenSettingsOverride
 
 internal sealed record SetScreenSettingsOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScreenArea? ScreenArea, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public sealed class SetScreenSettingsOverrideOptions : CommandOptions
+public sealed record SetScreenSettingsOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record ScreenArea(long Width, long Height);

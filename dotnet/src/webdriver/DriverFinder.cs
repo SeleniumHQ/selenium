@@ -20,9 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
-using System.Text;
+using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;
 
@@ -32,6 +31,9 @@ namespace OpenQA.Selenium;
 /// </summary>
 public class DriverFinder
 {
+    private const string DriverPathKey = "driver_path";
+    private const string BrowserPathKey = "browser_path";
+
     private readonly DriverOptions options;
     private readonly Dictionary<string, string> paths = new Dictionary<string, string>();
 
@@ -52,7 +54,7 @@ public class DriverFinder
     /// </returns>
     public string GetBrowserPath()
     {
-        return BinaryPaths()[SeleniumManager.BrowserPathKey];
+        return BinaryPaths()[BrowserPathKey];
     }
 
     /// <summary>
@@ -63,7 +65,7 @@ public class DriverFinder
     /// </returns>
     public string GetDriverPath()
     {
-        return BinaryPaths()[SeleniumManager.DriverPathKey];
+        return BinaryPaths()[DriverPathKey];
     }
 
     /// <summary>
@@ -102,18 +104,29 @@ public class DriverFinder
     /// <exception cref="NoSuchDriverException">If one of the paths does not exist.</exception>
     private Dictionary<string, string> BinaryPaths()
     {
-        if (paths.ContainsKey(SeleniumManager.DriverPathKey) && !string.IsNullOrWhiteSpace(paths[SeleniumManager.DriverPathKey]))
+        if (paths.TryGetValue(DriverPathKey, out string? cachedDriverPath) && !string.IsNullOrWhiteSpace(cachedDriverPath))
         {
             return paths;
         }
 
-        Dictionary<string, string> binaryPaths = SeleniumManager.BinaryPaths(CreateArguments());
-        string driverPath = binaryPaths[SeleniumManager.DriverPathKey];
-        string browserPath = binaryPaths[SeleniumManager.BrowserPathKey];
+        if (string.IsNullOrWhiteSpace(options.BrowserName))
+        {
+            throw new NoSuchDriverException("Browser name must be specified to find the driver using Selenium Manager.");
+        }
+
+        BrowserDiscoveryResult smResult = SeleniumManager.DiscoverBrowser(options.BrowserName, new BrowserDiscoveryOptions
+        {
+            BrowserVersion = options.BrowserVersion,
+            BrowserPath = options.BinaryLocation,
+            Proxy = options.Proxy?.SslProxy ?? options.Proxy?.HttpProxy
+        });
+
+        string driverPath = smResult.DriverPath;
+        string browserPath = smResult.BrowserPath;
 
         if (File.Exists(driverPath))
         {
-            paths.Add(SeleniumManager.DriverPathKey, driverPath);
+            paths.Add(DriverPathKey, driverPath);
         }
         else
         {
@@ -122,7 +135,7 @@ public class DriverFinder
 
         if (File.Exists(browserPath))
         {
-            paths.Add(SeleniumManager.BrowserPathKey, browserPath);
+            paths.Add(BrowserPathKey, browserPath);
         }
         else
         {
@@ -131,43 +144,4 @@ public class DriverFinder
 
         return paths;
     }
-
-    /// <summary>
-    /// Create arguments to invoke Selenium Manager
-    /// </summary>
-    /// <returns>
-    /// A string with all arguments to invoke Selenium Manager
-    /// </returns>
-    /// <exception cref="NoSuchDriverException"></exception>
-    private string CreateArguments()
-    {
-        StringBuilder argsBuilder = new StringBuilder();
-        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
-
-        if (!string.IsNullOrEmpty(options.BrowserVersion))
-        {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
-        }
-
-        string? browserBinary = options.BinaryLocation;
-        if (!string.IsNullOrEmpty(browserBinary))
-        {
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
-        }
-
-        if (options.Proxy != null)
-        {
-            if (options.Proxy.SslProxy != null)
-            {
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
-            }
-            else if (options.Proxy.HttpProxy != null)
-            {
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
-            }
-        }
-
-        return argsBuilder.ToString();
-    }
-
 }

@@ -17,68 +17,25 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Objects.requireNonNullElse;
-
-import org.openqa.selenium.json.JsonInput;
+import java.util.Map;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
 public class DownloadCanceled extends NavigationInfo {
-
-  private final String status;
-
-  private static final String CANCELED = "canceled";
-
   DownloadCanceled(
-      String browsingContextId, String navigationId, long timestamp, String url, String status) {
+      String browsingContextId, @Nullable String navigationId, long timestamp, String url) {
     super(browsingContextId, navigationId, timestamp, url);
-    this.status = requireNonNullElse(status, CANCELED);
   }
 
-  public static DownloadCanceled fromJson(JsonInput input) {
-    String browsingContextId = null;
-    String navigationId = null;
-    long timestamp = 0;
-    String url = null;
-    String status = CANCELED;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContextId = input.read(String.class);
-          break;
-
-        case "navigation":
-          navigationId = input.read(String.class);
-          break;
-
-        case "timestamp":
-          timestamp = input.read(Long.class);
-          break;
-
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        case "status":
-          status = input.read(String.class);
-          if (!CANCELED.equals(status)) {
-            throw new IllegalArgumentException(
-                "Expected status '" + CANCELED + "' , but got: " + status);
-          }
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new DownloadCanceled(browsingContextId, navigationId, timestamp, url, status);
+  static DownloadCanceled fromJson(Map<String, @Nullable Object> json) {
+    return new DownloadCanceled(
+        Require.nonNull("browsingContext", (String) json.get("context")),
+        (String) json.get("navigation"),
+        Require.positive("Timestamp", (Long) json.get("timestamp")),
+        Require.nonNull("URL", (String) json.get("url")));
   }
 
   public String getStatus() {
-    return status;
+    return "canceled";
   }
 }

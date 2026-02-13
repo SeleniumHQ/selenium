@@ -32,7 +32,7 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
     {
         get
         {
-            Response response = driver.Execute(DriverCommand.GetAllCookies, new Dictionary<string, object>());
+            Response response = driver.Execute(DriverCommand.GetAllCookies, new Dictionary<string, object?>());
 
             List<Cookie> toReturn = new List<Cookie>();
             if (response.Value is object?[] cookies)
@@ -63,7 +63,7 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
             throw new ArgumentNullException(nameof(cookie));
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("cookie", cookie);
         driver.Execute(DriverCommand.AddCookie, parameters);
     }
@@ -80,7 +80,7 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
             throw new ArgumentException("Cookie name cannot be null or empty", nameof(name));
         }
 
-        Dictionary<string, object> parameters = new() { { "name", name } };
+        Dictionary<string, object?> parameters = new() { { "name", name } };
 
         driver.Execute(DriverCommand.DeleteCookie, parameters);
     }

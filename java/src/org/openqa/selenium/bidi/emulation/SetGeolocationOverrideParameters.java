@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
+
 public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
 
-  // Constructor for coordinates - must specify either contexts or userContexts later
-  public SetGeolocationOverrideParameters(GeolocationCoordinates coordinates) {
+  public SetGeolocationOverrideParameters(@Nullable GeolocationCoordinates coordinates) {
     if (coordinates == null) {
       map.put("coordinates", null);
     } else {
@@ -28,22 +31,19 @@ public class SetGeolocationOverrideParameters extends AbstractOverrideParameters
     }
   }
 
-  // Constructor for error - must specify either contexts or userContexts later
   public SetGeolocationOverrideParameters(GeolocationPositionError error) {
-    if (error == null) {
-      throw new IllegalArgumentException("GeolocationPositionError cannot be null");
-    }
+    Require.nonNull("GeolocationPositionError", error);
     map.put("error", error.toMap());
   }
 
   @Override
-  public SetGeolocationOverrideParameters contexts(java.util.List<String> contexts) {
+  public SetGeolocationOverrideParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetGeolocationOverrideParameters userContexts(java.util.List<String> userContexts) {
+  public SetGeolocationOverrideParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

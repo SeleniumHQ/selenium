@@ -26,16 +26,16 @@ internal sealed class GetRealmsCommand(GetRealmsParameters @params)
 
 internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 
-public sealed class GetRealmsOptions : CommandOptions
+public sealed record GetRealmsOptions : CommandOptions
 {
-    public BrowsingContext.BrowsingContext? Context { get; set; }
+    public BrowsingContext.BrowsingContext? Context { get; init; }
 
-    public RealmType? Type { get; set; }
+    public RealmType? Type { get; init; }
 }
 
-public sealed class ContextGetRealmsOptions : CommandOptions
+public sealed record ContextGetRealmsOptions : CommandOptions
 {
-    public RealmType? Type { get; set; }
+    public RealmType? Type { get; init; }
 
     internal static GetRealmsOptions WithContext(ContextGetRealmsOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

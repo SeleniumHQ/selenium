@@ -38,19 +38,19 @@ public sealed record ContextLocator(ContextValue Value) : Locator;
 
 public sealed record InnerTextLocator(string Value) : Locator
 {
-    public bool? IgnoreCase { get; set; }
+    public bool? IgnoreCase { get; init; }
 
-    public MatchType? MatchType { get; set; }
+    public MatchType? MatchType { get; init; }
 
-    public long? MaxDepth { get; set; }
+    public long? MaxDepth { get; init; }
 }
 
 public sealed record XPathLocator(string Value) : Locator;
 
 public sealed record AccessibilityValue
 {
-    public string? Name { get; set; }
-    public string? Role { get; set; }
+    public string? Name { get; init; }
+    public string? Role { get; init; }
 }
 
 public sealed record ContextValue(BrowsingContext Context);

@@ -290,14 +290,14 @@ public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
 
 public sealed record SharedReferenceLocalValue(string SharedId) : RemoteReferenceLocalValue, ISharedReference
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
     internal override string Type { get; } = null!;
 }
 
 public sealed record RemoteObjectReferenceLocalValue(Handle Handle) : RemoteReferenceLocalValue, IRemoteObjectReference
 {
-    public string? SharedId { get; set; }
+    public string? SharedId { get; init; }
 
     internal override string Type { get; } = null!;
 }
