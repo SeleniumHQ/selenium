@@ -44,11 +44,11 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.14.10",
+    "ruff==0.15.0",
 ]
 validate = [
-    "validate-pyproject==0.24.1",
-    "packaging==25.0",
+    "validate-pyproject==0.25",
+    "packaging==26.0",
 ]
 
 [tool.setuptools]
@@ -171,6 +171,8 @@ docstring-code-line-length = 120
 
 [tool.ruff.lint.isort]
 known-first-party = ["selenium", "test"]
+known-third-party = []
+known-local-folder = ["conftest"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -28,7 +28,7 @@ internal sealed class AddInterceptCommand(AddInterceptParameters @params)
 
 internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
-public class AddInterceptOptions() : CommandOptions
+public record AddInterceptOptions() : CommandOptions
 {
     internal AddInterceptOptions(ContextAddInterceptOptions? options) : this()
     {
@@ -36,14 +36,14 @@ public class AddInterceptOptions() : CommandOptions
         Timeout = options?.Timeout;
     }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
-public class ContextAddInterceptOptions : CommandOptions
+public record ContextAddInterceptOptions : CommandOptions
 {
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;

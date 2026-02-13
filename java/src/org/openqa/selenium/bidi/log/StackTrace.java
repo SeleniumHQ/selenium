@@ -17,20 +17,18 @@
 
 package org.openqa.selenium.bidi.log;
 
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.emptyList;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-script-StackTrace">https://w3c.github.io/webdriver-bidi/#types-script-StackTrace</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#type-script-StackTrace">BiDi spec</a>
+ */
 public class StackTrace {
 
-  List<StackFrame> callFrames;
+  private final List<StackFrame> callFrames;
 
   public StackTrace(List<StackFrame> callFrames) {
     this.callFrames = callFrames;
@@ -41,13 +39,12 @@ public class StackTrace {
   }
 
   public static StackTrace fromJson(JsonInput input) {
-
-    List<StackFrame> callFrames = Collections.emptyList();
+    List<StackFrame> callFrames = emptyList();
 
     input.beginObject();
     while (input.hasNext()) {
       if ("callFrames".equals(input.nextName())) {
-        callFrames = input.read(new TypeToken<List<StackFrame>>() {}.getType());
+        callFrames = input.readNonNull(new TypeToken<List<StackFrame>>() {}.getType());
       } else {
         input.skipValue();
       }
@@ -56,12 +53,5 @@ public class StackTrace {
     input.endObject();
 
     return new StackTrace(callFrames);
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("callFrames", callFrames);
-
-    return unmodifiableMap(toReturn);
   }
 }

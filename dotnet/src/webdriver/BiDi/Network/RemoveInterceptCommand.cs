@@ -24,6 +24,6 @@ internal sealed class RemoveInterceptCommand(RemoveInterceptParameters @params)
 
 internal sealed record RemoveInterceptParameters(Intercept Intercept) : Parameters;
 
-public class RemoveInterceptOptions : CommandOptions;
+public record RemoveInterceptOptions : CommandOptions;
 
 public sealed record RemoveInterceptResult : EmptyResult;

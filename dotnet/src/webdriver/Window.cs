@@ -29,7 +29,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 internal sealed class Window : IWindow
 {
-    private WebDriver driver;
+    private readonly WebDriver driver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Window"/> class.
@@ -59,7 +59,7 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters.Add("x", value.X);
             parameters.Add("y", value.Y);
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);
@@ -85,7 +85,7 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters.Add("width", value.Width);
             parameters.Add("height", value.Height);
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);

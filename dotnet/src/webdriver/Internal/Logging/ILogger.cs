@@ -57,6 +57,14 @@ internal interface ILogger
     void Error(string message);
 
     /// <summary>
+    /// Writes a log message with a specific timestamp and log level.
+    /// </summary>
+    /// <param name="timestamp">The timestamp of the log event.</param>
+    /// <param name="level">The severity level of the log message.</param>
+    /// <param name="message">The log message.</param>
+    void LogMessage(DateTimeOffset timestamp, LogEventLevel level, string message);
+
+    /// <summary>
     /// Gets or sets the log event level.
     /// </summary>
     LogEventLevel Level { get; set; }

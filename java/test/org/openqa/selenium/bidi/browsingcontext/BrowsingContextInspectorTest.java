@@ -24,7 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -65,19 +67,23 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canListenToBrowsingContextDestroyedEvent()
-      throws ExecutionException, InterruptedException, TimeoutException {
-    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
+  void canListenToBrowsingContextDestroyedEvent() {
+    Map<String, BrowsingContextInfo> closedWindows = new HashMap<>();
 
-      inspector.onBrowsingContextDestroyed(future::complete);
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      inspector.onBrowsingContextDestroyed(
+          context -> {
+            // here may arrive events from the previous tests
+            closedWindows.put(context.getId(), context);
+          });
 
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
       driver.close();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
+      wait.until(d -> closedWindows.containsKey(windowHandle));
 
+      BrowsingContextInfo browsingContextInfo = closedWindows.get(windowHandle);
       assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
       assertThat(browsingContextInfo.getChildren()).isIn(null, List.of());

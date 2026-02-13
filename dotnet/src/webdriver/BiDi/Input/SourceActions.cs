@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Json.Converters.Enumerable;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Enumerable;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
@@ -33,7 +32,7 @@ public interface ISourceAction;
 
 public abstract record SourceActions<T>(string Id) : SourceActions(Id), IEnumerable<ISourceAction> where T : ISourceAction
 {
-    public IList<ISourceAction> Actions { get; set; } = [];
+    public IList<ISourceAction> Actions { get; init; } = [];
 
     public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
 
@@ -43,9 +42,9 @@ public abstract record SourceActions<T>(string Id) : SourceActions(Id), IEnumera
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(DownKey), "keyDown")]
-[JsonDerivedType(typeof(UpKey), "keyUp")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(KeyDownAction), "keyDown")]
+[JsonDerivedType(typeof(KeyUpAction), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
 public sealed record KeyActions(string Id) : SourceActions<IKeySourceAction>(Id)
@@ -54,8 +53,8 @@ public sealed record KeyActions(string Id) : SourceActions<IKeySourceAction>(Id)
     {
         foreach (var character in text)
         {
-            Add(new DownKey(character));
-            Add(new UpKey(character));
+            Add(new KeyDownAction(character));
+            Add(new KeyUpAction(character));
         }
 
         return this;
@@ -63,85 +62,85 @@ public sealed record KeyActions(string Id) : SourceActions<IKeySourceAction>(Id)
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(DownPointer), "pointerDown")]
-[JsonDerivedType(typeof(UpPointer), "pointerUp")]
-[JsonDerivedType(typeof(MovePointer), "pointerMove")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(PointerDownAction), "pointerDown")]
+[JsonDerivedType(typeof(PointerUpAction), "pointerUp")]
+[JsonDerivedType(typeof(PointerMoveAction), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
 public sealed record PointerActions(string Id) : SourceActions<IPointerSourceAction>(Id)
 {
-    public PointerParameters? Options { get; set; }
+    public PointerParameters? Options { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(ScrollWheel), "scroll")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(WheelScrollAction), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
 public sealed record WheelActions(string Id) : SourceActions<IWheelSourceAction>(Id);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
 public sealed record NoneActions(string Id) : SourceActions<INoneSourceAction>(Id);
 
-public abstract record Key : IKeySourceAction;
+public abstract record KeySourceAction : IKeySourceAction;
 
-public sealed record DownKey(char Value) : Key;
+public sealed record KeyDownAction(char Value) : KeySourceAction;
 
-public sealed record UpKey(char Value) : Key;
+public sealed record KeyUpAction(char Value) : KeySourceAction;
 
-public abstract record Pointer : IPointerSourceAction;
+public abstract record PointerSourceAction : IPointerSourceAction;
 
-public sealed record DownPointer(int Button) : Pointer, IPointerCommonProperties
+public sealed record PointerDownAction(int Button) : PointerSourceAction, IPointerCommonProperties
 {
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public int? Width { get; init; }
+    public int? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public int? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
-public sealed record UpPointer(int Button) : Pointer;
+public sealed record PointerUpAction(int Button) : PointerSourceAction;
 
-public sealed record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
+public sealed record PointerMoveAction(double X, double Y) : PointerSourceAction, IPointerCommonProperties
 {
-    public int? Duration { get; set; }
+    public int? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public int? Width { get; init; }
+    public int? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public int? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
-public abstract record Wheel : IWheelSourceAction;
+public abstract record WheelSourceAction : IWheelSourceAction;
 
-public sealed record ScrollWheel(int X, int Y, int DeltaX, int DeltaY) : Wheel
+public sealed record WheelScrollAction(int X, int Y, int DeltaX, int DeltaY) : WheelSourceAction
 {
-    public int? Duration { get; set; }
+    public int? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 }
 
-public abstract record None : INoneSourceAction;
+public abstract record NoneSourceAction : INoneSourceAction;
 
-public sealed record Pause : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
+public sealed record PauseAction : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
 {
-    public long? Duration { get; set; }
+    public long? Duration { get; init; }
 }
 
 public sealed record PointerParameters
 {
-    public PointerType? PointerType { get; set; }
+    public PointerType? PointerType { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<PointerType>))]
@@ -154,17 +153,17 @@ public enum PointerType
 
 public interface IPointerCommonProperties
 {
-    public int? Width { get; set; }
+    public int? Width { get; init; }
 
-    public int? Height { get; set; }
+    public int? Height { get; init; }
 
-    public double? Pressure { get; set; }
+    public double? Pressure { get; init; }
 
-    public double? TangentialPressure { get; set; }
+    public double? TangentialPressure { get; init; }
 
-    public int? Twist { get; set; }
+    public int? Twist { get; init; }
 
-    public double? AltitudeAngle { get; set; }
+    public double? AltitudeAngle { get; init; }
 
-    public double? AzimuthAngle { get; set; }
+    public double? AzimuthAngle { get; init; }
 }

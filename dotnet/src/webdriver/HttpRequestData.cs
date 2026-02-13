@@ -56,5 +56,5 @@ public class HttpRequestData
     /// <summary>
     /// Gets the ID of the HTTP request.
     /// </summary>
-    public string? RequestId { get; internal set; }
+    public string RequestId { get; internal set; } = null!;
 }

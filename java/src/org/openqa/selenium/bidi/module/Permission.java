@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.module;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -49,17 +50,15 @@ public class Permission {
       Map<String, String> permissionDescriptor,
       PermissionState state,
       String origin,
-      String userContext) {
+      @Nullable String userContext) {
     Require.nonNull("Permission descriptor", permissionDescriptor);
     Require.nonNull("Permission state", state);
     Require.nonNull("Origin", origin);
 
-    Map<String, Object> params =
-        new HashMap<>(
-            Map.of(
-                "descriptor", permissionDescriptor,
-                "state", state.toString(),
-                "origin", origin));
+    Map<String, Object> params = new HashMap<>(4);
+    params.put("descriptor", permissionDescriptor);
+    params.put("state", state.toString());
+    params.put("origin", origin);
 
     if (userContext != null) {
       params.put("userContext", userContext);

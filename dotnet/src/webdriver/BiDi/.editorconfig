@@ -1,0 +1,5 @@
+[*.cs]
+# Temporarily disable CS1591: XML comment warnings
+# BiDi is under development; avoid noise from missing XML comments
+# Remove when stable: https://github.com/SeleniumHQ/selenium/issues/16095
+dotnet_diagnostic.CS1591.severity = none

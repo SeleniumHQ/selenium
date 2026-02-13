@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V142.Target;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V142.Target;
 
 namespace OpenQA.Selenium.DevTools.V142;
 

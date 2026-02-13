@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -168,5 +168,8 @@ public class Command
 [JsonSerializable(typeof(Dictionary<string, short>))]
 [JsonSerializable(typeof(Dictionary<string, ushort>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
+#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
+// This is not part of the public API, so we can ignore this warning
 [JsonSourceGenerationOptions(Converters = [typeof(ResponseValueJsonConverter)])]
+#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal partial class CommandJsonSerializerContext : JsonSerializerContext;

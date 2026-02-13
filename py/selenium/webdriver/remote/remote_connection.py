@@ -125,6 +125,7 @@ remote_commands = {
     Command.GET_DOWNLOADABLE_FILES: ("GET", "/session/$sessionId/se/files"),
     Command.DOWNLOAD_FILE: ("POST", "/session/$sessionId/se/files"),
     Command.DELETE_DOWNLOADABLE_FILES: ("DELETE", "/session/$sessionId/se/files"),
+    Command.FIRE_SESSION_EVENT: ("POST", "/session/$sessionId/se/event"),
     # Federated Credential Management (FedCM)
     Command.GET_FEDCM_TITLE: ("GET", "/session/$sessionId/fedcm/gettitle"),
     Command.GET_FEDCM_DIALOG_TYPE: ("GET", "/session/$sessionId/fedcm/getdialogtype"),

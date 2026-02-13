@@ -22,33 +22,34 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class SetDownloadBehaviorParameters {
-  private final Map<String, Object> map = new HashMap<>();
+  private final Map<String, @Nullable Object> map = new HashMap<>();
 
-  public SetDownloadBehaviorParameters(Boolean allowed, String destinationFolder) {
+  /**
+   * Recommended to use BiDi-compliant constructor {@link
+   * #SetDownloadBehaviorParameters(DownloadBehavior)} instead
+   */
+  public SetDownloadBehaviorParameters(
+      @Nullable Boolean allowed, @Nullable String destinationFolder) {
     this(allowed, destinationFolder != null ? Paths.get(destinationFolder) : null);
   }
 
-  public SetDownloadBehaviorParameters(Boolean allowed, Path destinationFolder) {
-    if (allowed == null) {
+  /**
+   * Recommended to use BiDi-compliant constructor {@link
+   * #SetDownloadBehaviorParameters(DownloadBehavior)} instead
+   */
+  public SetDownloadBehaviorParameters(
+      @Nullable Boolean allowed, @Nullable Path destinationFolder) {
+    this(allowed == null ? null : new DownloadBehavior(allowed, destinationFolder));
+  }
+
+  public SetDownloadBehaviorParameters(@Nullable DownloadBehavior downloadBehavior) {
+    if (downloadBehavior == null) {
       map.put("downloadBehavior", null);
-    } else if (allowed) {
-      if (destinationFolder == null) {
-        throw new IllegalArgumentException("destinationFolder is required when allowed is true");
-      }
-      Map<String, String> behavior = new HashMap<>();
-      behavior.put("type", "allowed");
-      behavior.put("destinationFolder", destinationFolder.toAbsolutePath().toString());
-      map.put("downloadBehavior", behavior);
     } else {
-      if (destinationFolder != null) {
-        throw new IllegalArgumentException(
-            "destinationFolder should not be provided when allowed is false");
-      }
-      Map<String, String> behavior = new HashMap<>();
-      behavior.put("type", "denied");
-      map.put("downloadBehavior", behavior);
+      map.put("downloadBehavior", downloadBehavior.toMap());
     }
   }
 
@@ -57,7 +58,12 @@ public class SetDownloadBehaviorParameters {
     return this;
   }
 
-  public Map<String, Object> toMap() {
+  public Map<String, @Nullable Object> toMap() {
     return map;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("SetDownloadBehaviorParameters{%s}", map);
   }
 }

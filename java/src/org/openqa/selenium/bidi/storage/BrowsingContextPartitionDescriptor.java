@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.storage;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
@@ -29,10 +28,6 @@ public class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("type", super.type.toString());
-    map.put("context", this.context);
-
-    return Map.copyOf(map);
+    return Map.of("type", type.toString(), "context", context);
   }
 }

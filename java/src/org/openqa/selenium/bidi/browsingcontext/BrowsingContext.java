@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import java.io.StringReader;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+
 import java.lang.reflect.Type;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
@@ -39,43 +39,37 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.print.PrintOptions;
 
-@NullMarked
 public class BrowsingContext {
 
   private static final Json JSON = new Json();
 
   private final String id;
   private final BiDi bidi;
-  private final WebDriver driver;
   private static final String CONTEXT = "context";
   private static final String RELOAD = "browsingContext.reload";
   private static final String HANDLE_USER_PROMPT = "browsingContext.handleUserPrompt";
 
-  protected static final Type LIST_OF_BROWSING_CONTEXT_INFO =
-      new TypeToken<List<BrowsingContextInfo>>() {}.getType();
-
-  private final Function<JsonInput, String> browsingContextIdMapper =
-      jsonInput -> {
-        Map<String, Object> result = jsonInput.read(Map.class);
-        return result.getOrDefault(CONTEXT, "").toString();
+  private static final Function<JsonInput, String> browsingContextIdMapper =
+      json -> {
+        return json.readMap().getOrDefault(CONTEXT, "").toString();
       };
 
-  private final Function<JsonInput, NavigationResult> navigationInfoMapper =
-      jsonInput -> (NavigationResult) jsonInput.read(NavigationResult.class);
+  private static final Function<JsonInput, NavigationResult> navigationInfoMapper =
+      json -> (NavigationResult) json.readNonNull(NavigationResult.class);
 
-  private final Function<JsonInput, List<BrowsingContextInfo>> browsingContextInfoListMapper =
-      jsonInput -> {
-        Map<String, Object> result = jsonInput.read(Map.class);
-        List<Object> contexts = (List<Object>) result.getOrDefault("contexts", new ArrayList<>());
+  private static final Function<JsonInput, List<BrowsingContextInfo>>
+      browsingContextInfoListMapper =
+          json -> {
+            Type type = new TypeToken<Map<String, List<BrowsingContextInfo>>>() {}.getType();
+            Map<String, List<BrowsingContextInfo>> result = json.readNonNull(type);
+            return result.getOrDefault("contexts", emptyList());
+          };
 
-        if (contexts.isEmpty()) {
-          return new ArrayList<>();
-        }
-
-        Json json = new Json();
-        String dtr = json.toJson(contexts);
-
-        return json.toType(dtr, LIST_OF_BROWSING_CONTEXT_INFO);
+  private static final Function<JsonInput, List<RemoteValue>> nodesMapper =
+      json -> {
+        Type type = new TypeToken<Map<String, List<RemoteValue>>>() {}.getType();
+        Map<String, List<RemoteValue>> result = json.readNonNull(type);
+        return result.get("nodes");
       };
 
   public BrowsingContext(WebDriver driver, String id) {
@@ -88,7 +82,6 @@ public class BrowsingContext {
 
     Require.precondition(!id.isEmpty(), "Browsing Context id cannot be empty");
 
-    this.driver = driver;
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.id = id;
   }
@@ -101,7 +94,6 @@ public class BrowsingContext {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
 
-    this.driver = driver;
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.id = this.create(type);
   }
@@ -114,7 +106,6 @@ public class BrowsingContext {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
 
-    this.driver = driver;
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.id = this.create(parameters);
   }
@@ -242,8 +233,7 @@ public class BrowsingContext {
             "browsingContext.captureScreenshot",
             Map.of(CONTEXT, id),
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -257,8 +247,7 @@ public class BrowsingContext {
             "browsingContext.captureScreenshot",
             params,
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -277,8 +266,7 @@ public class BrowsingContext {
                     "width", width,
                     "height", height)),
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -292,8 +280,7 @@ public class BrowsingContext {
                 "clip",
                 Map.of("type", "element", "element", Map.of("sharedId", elementId))),
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -308,8 +295,7 @@ public class BrowsingContext {
                 Map.of(
                     "type", "element", "element", Map.of("sharedId", elementId, "handle", handle))),
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -333,9 +319,11 @@ public class BrowsingContext {
   public void setViewport(@Nullable Double width, @Nullable Double height) {
     validate(width, height);
 
-    Map<String, Object> params = new HashMap<>();
+    Map<String, @Nullable Object> params = new HashMap<>();
     params.put(CONTEXT, id);
-    params.put("viewport", width == null ? null : Map.of("width", width, "height", height));
+    params.put(
+        "viewport",
+        width == null ? null : Map.of("width", width, "height", requireNonNull(height)));
     this.bidi.send(new Command<>("browsingContext.setViewport", params));
   }
 
@@ -357,9 +345,11 @@ public class BrowsingContext {
     validate(width, height);
     validate(devicePixelRatio);
 
-    Map<String, Object> params = new HashMap<>();
+    Map<String, @Nullable Object> params = new HashMap<>();
     params.put(CONTEXT, id);
-    params.put("viewport", width == null ? null : Map.of("width", width, "height", height));
+    params.put(
+        "viewport",
+        width == null ? null : Map.of("width", width, "height", requireNonNull(height)));
     params.put("devicePixelRatio", devicePixelRatio);
     this.bidi.send(new Command<>("browsingContext.setViewport", params));
   }
@@ -390,8 +380,7 @@ public class BrowsingContext {
             "browsingContext.print",
             printOptionsParams,
             jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return (String) result.get("data");
+              return (String) jsonInput.readMap().get("data");
             }));
   }
 
@@ -411,17 +400,7 @@ public class BrowsingContext {
   public List<RemoteValue> locateNodes(LocateNodeParameters parameters) {
     Map<String, Object> params = new HashMap<>(parameters.toMap());
     params.put("context", id);
-    return this.bidi.send(
-        new Command<>(
-            "browsingContext.locateNodes",
-            params,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                  JsonInput input = JSON.newInput(reader)) {
-                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-              }
-            }));
+    return this.bidi.send(new Command<>("browsingContext.locateNodes", params, nodesMapper));
   }
 
   public List<RemoteValue> locateNodes(Locator locator) {
@@ -429,13 +408,7 @@ public class BrowsingContext {
         new Command<>(
             "browsingContext.locateNodes",
             Map.of("context", id, "locator", locator.toMap()),
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                  JsonInput input = JSON.newInput(reader)) {
-                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-              }
-            }));
+            nodesMapper));
   }
 
   public RemoteValue locateNode(Locator locator) {
@@ -444,13 +417,7 @@ public class BrowsingContext {
             new Command<>(
                 "browsingContext.locateNodes",
                 Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
-                jsonInput -> {
-                  Map<String, Object> result = jsonInput.read(Map.class);
-                  try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                      JsonInput input = JSON.newInput(reader)) {
-                    return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-                  }
-                }));
+                nodesMapper));
 
     return remoteValues.get(0);
   }

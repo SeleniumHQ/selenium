@@ -24,6 +24,6 @@ internal sealed class RemoveDataCollectorCommand(RemoveDataCollectorParameters @
 
 internal sealed record RemoveDataCollectorParameters(Collector Collector) : Parameters;
 
-public class RemoveDataCollectorOptions : CommandOptions;
+public record RemoveDataCollectorOptions : CommandOptions;
 
 public sealed record RemoveDataCollectorResult : EmptyResult;

@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +24,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -290,14 +290,14 @@ public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
 
 public sealed record SharedReferenceLocalValue(string SharedId) : RemoteReferenceLocalValue, ISharedReference
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
     internal override string Type { get; } = null!;
 }
 
 public sealed record RemoteObjectReferenceLocalValue(Handle Handle) : RemoteReferenceLocalValue, IRemoteObjectReference
 {
-    public string? SharedId { get; set; }
+    public string? SharedId { get; init; }
 
     internal override string Type { get; } = null!;
 }

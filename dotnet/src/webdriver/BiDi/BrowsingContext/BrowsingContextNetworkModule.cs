@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Network;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -272,8 +272,8 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
     }
 }
 
-public sealed class InterceptRequestOptions : ContextAddInterceptOptions;
+public sealed record InterceptRequestOptions : ContextAddInterceptOptions;
 
-public sealed class InterceptResponseOptions : ContextAddInterceptOptions;
+public sealed record InterceptResponseOptions : ContextAddInterceptOptions;
 
-public sealed class InterceptAuthOptions : ContextAddInterceptOptions;
+public sealed record InterceptAuthOptions : ContextAddInterceptOptions;

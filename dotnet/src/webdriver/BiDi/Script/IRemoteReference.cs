@@ -25,17 +25,17 @@ public interface ISharedReference : IRemoteReference
 {
     public string SharedId { get; }
 
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 }
 
 public sealed record SharedReference(string SharedId) : ISharedReference
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 }
 
 public interface IRemoteObjectReference : IRemoteReference
 {
     public Handle Handle { get; }
 
-    public string? SharedId { get; set; }
+    public string? SharedId { get; init; }
 }

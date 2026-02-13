@@ -16,39 +16,12 @@ jobs:
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
-  docs:
-    name: Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install tox
-      - name: Generate docs
-        run: |
-          tox -c py/tox.ini
-        env:
-          TOXENV: docs
-
-  typing:
-    name: Type Checker
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Type Checker
-      run: bazel run //py:mypy
-
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel run //py:ruff-check
+      run: ./go py:lint
 
   unit-tests:
     name: Unit Tests

@@ -26,17 +26,17 @@ internal sealed class ProvideResponseCommand(ProvideResponseParameters @params)
 
 internal sealed record ProvideResponseParameters(Request Request, BytesValue? Body, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
-public sealed class ProvideResponseOptions : CommandOptions
+public sealed record ProvideResponseOptions : CommandOptions
 {
-    public BytesValue? Body { get; set; }
+    public BytesValue? Body { get; init; }
 
-    public IEnumerable<SetCookieHeader>? Cookies { get; set; }
+    public IEnumerable<SetCookieHeader>? Cookies { get; init; }
 
-    public IEnumerable<Header>? Headers { get; set; }
+    public IEnumerable<Header>? Headers { get; init; }
 
-    public string? ReasonPhrase { get; set; }
+    public string? ReasonPhrase { get; init; }
 
-    public long? StatusCode { get; set; }
+    public long? StatusCode { get; init; }
 }
 
 public sealed record ProvideResponseResult : EmptyResult;

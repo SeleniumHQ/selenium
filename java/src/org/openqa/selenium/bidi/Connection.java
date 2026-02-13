@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -67,28 +68,20 @@ public class Connection implements Closeable {
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final AtomicLong EVENT_CALLBACK_ID = new AtomicLong(1);
-  private WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<Long, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
-  private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean();
+  private final WebSocket socket;
+  private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean(false);
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
 
     this.client = client;
-    // If WebDriver close() is called, it closes the session if it is the last browsing context.
-    // It also closes the WebSocket from the remote end.
-    // If WebDriver quit() is called, it also tries to close an already closed websocket and that
-    // causes errors.
-    // Ideally, such errors should not prevent freeing up resources.
-    // This measure is needed until "session.end" from BiDi is implemented by the browsers.
-    if (!underlyingSocketClosed.get()) {
-      socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
-    }
+    this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -116,10 +109,10 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> CompletableFuture<X> send(Command<X> command) {
+  public <X> CompletableFuture<@Nullable X> send(Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
-    CompletableFuture<X> result = new CompletableFuture<>();
+    CompletableFuture<@Nullable X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
       methodCallbacks.put(
           id,
@@ -275,7 +268,7 @@ public class Connection implements Closeable {
           () -> {
             try {
               handle(data);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
               throw new BiDiException("Unable to process BiDi response: " + data, e);
             }
           });

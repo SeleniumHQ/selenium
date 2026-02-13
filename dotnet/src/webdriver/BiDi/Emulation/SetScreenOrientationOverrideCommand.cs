@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
@@ -28,11 +28,11 @@ internal sealed class SetScreenOrientationOverrideCommand(SetScreenOrientationOv
 
 internal sealed record SetScreenOrientationOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScreenOrientation? ScreenOrientation, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public sealed class SetScreenOrientationOverrideOptions : CommandOptions
+public sealed record SetScreenOrientationOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ScreenOrientationNatural>))]

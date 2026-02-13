@@ -17,19 +17,14 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class UserPromptClosed {
 
   private final String browsingContextId;
-
   private final boolean accepted;
-
   private final Optional<String> userText;
 
   private UserPromptClosed(String browsingContextId, boolean accepted, Optional<String> userText) {
@@ -40,7 +35,7 @@ public class UserPromptClosed {
 
   public static UserPromptClosed fromJson(JsonInput input) {
     String browsingContextId = null;
-    boolean accepted = false;
+    Boolean accepted = null;
     Optional<String> userText = Optional.empty();
 
     input.beginObject();
@@ -66,7 +61,10 @@ public class UserPromptClosed {
 
     input.endObject();
 
-    return new UserPromptClosed(browsingContextId, accepted, userText);
+    return new UserPromptClosed(
+        Require.nonNull("browsingContext", browsingContextId),
+        Require.nonNull("accepted", accepted),
+        userText);
   }
 
   public String getBrowsingContextId() {
@@ -79,15 +77,5 @@ public class UserPromptClosed {
 
   public Optional<String> getUserText() {
     return userText;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("browsingContextId", this.getBrowsingContextId());
-    toReturn.put("accepted", this.getAccepted());
-    toReturn.put("userText", this.getUserText());
-
-    return unmodifiableMap(toReturn);
   }
 }

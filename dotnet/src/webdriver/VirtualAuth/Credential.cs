@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.VirtualAuth;
 
@@ -122,9 +122,9 @@ public sealed class Credential
     /// Serializes this Credential instance to a dictionary.
     /// </summary>
     /// <returns>The dictionary containing the values for this Credential.</returns>
-    public Dictionary<string, object> ToDictionary()
+    public Dictionary<string, object?> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new Dictionary<string, object>();
+        Dictionary<string, object?> toReturn = new Dictionary<string, object?>();
 
         toReturn["credentialId"] = Base64UrlEncoder.Encode(this.id);
         toReturn["isResidentCredential"] = this.IsResidentCredential;
