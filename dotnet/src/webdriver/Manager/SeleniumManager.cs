@@ -300,7 +300,7 @@ public static partial class SeleniumManager
                     // Process may have already exited
                 }
 
-                throw new WebDriverException("Selenium Manager process was cancelled.");
+                throw;
             }
 #else
             var processExitTask = Task.Run(() => process.WaitForExit(), CancellationToken.None);
