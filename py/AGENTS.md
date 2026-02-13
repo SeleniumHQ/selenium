@@ -51,24 +51,25 @@ def method(param: str | None) -> int | None:
     pass
 
 # Avoid
-from typing import Optional
 def method(param: Optional[str]) -> Optional[int]:
     pass
 ```
 
 ### Python version
 
-Code must work with Python 3.10 or later. Use modern syntax features available in 3.10+.
+Code must work with Python 3.10 or later. Use modern syntax features available in 3.10+:
 
-See the **Type hints** section for guidance on preferred type annotation syntax (including unions).
+- Use `|` for union types instead of `Union[]`
+- Use `X | None` instead of `Optional[X]`
 
-For testing: use `bazel test //py/...` which employs a hermetic Python 3.10+ toolchain (see `/AGENTS.md`).
-
-For ad-hoc scripts, check your Python version locally before running:
+When running tests or code in the terminal, explicitly use `python3.10` or later:
 
 ```bash
-python --version
-# Ensure you have 3.10+; on macOS/Linux use python3.10+ or on Windows py -3.10
+# Use explicitly
+python3.10 -c "..."
+python3.11 -c "..."
+
+# Avoid relying on `python3` as it may be 3.9 or earlier
 ```
 
 ### Documentation

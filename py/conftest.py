@@ -119,6 +119,14 @@ def pytest_addoption(parser):
         help="Driver to run tests against ({})".format(", ".join(drivers)),
     )
     parser.addoption(
+        "--browser",
+        action="append",
+        choices=drivers,
+        dest="drivers",
+        metavar="BROWSER",
+        help="Browser to run tests against (alias for --driver)",
+    )
+    parser.addoption(
         "--browser-binary",
         action="store",
         dest="binary",
