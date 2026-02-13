@@ -20,9 +20,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, Optional, Union
 
-from selenium.webdriver.common.bidi.common import command_builder
+from .common import command_builder
 
 _VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}
 
@@ -63,10 +63,10 @@ class Permissions:
 
     def set_permission(
         self,
-        descriptor: PermissionDescriptor | str,
-        state: PermissionState | str,
-        origin: str | None = None,
-        user_context: str | None = None,
+        descriptor: Union[PermissionDescriptor, str],
+        state: Union[PermissionState, str],
+        origin: Optional[str] = None,
+        user_context: Optional[str] = None,
     ) -> None:
         """Set a permission for a given origin.
 
@@ -82,7 +82,8 @@ class Permissions:
         state_value = state.value if isinstance(state, PermissionState) else state
         if state_value not in _VALID_PERMISSION_STATES:
             raise ValueError(
-                f"Invalid permission state: {state_value!r}. Must be one of {sorted(_VALID_PERMISSION_STATES)}"
+                f"Invalid permission state: {state_value!r}. "
+                f"Must be one of {sorted(_VALID_PERMISSION_STATES)}"
             )
 
         if isinstance(descriptor, str):

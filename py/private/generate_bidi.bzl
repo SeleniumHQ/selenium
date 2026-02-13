@@ -53,6 +53,7 @@ def _generate_bidi_impl(ctx):
     args = [
         cddl_file.path,
         output_base,
+        "--version",
         spec_version,
     ]
 
@@ -71,6 +72,7 @@ def _generate_bidi_impl(ctx):
     )
 
     return [DefaultInfo(files = depset(outputs))]
+
 
 generate_bidi = rule(
     implementation = _generate_bidi_impl,

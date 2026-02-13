@@ -1,21 +1,3 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
-
 """
 Enhancement manifest for BiDi code generation.
 
@@ -99,42 +81,11 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
                 "result_param": "download_behavior",
             },
         },
-        # Replace the auto-generated ClientWindowNamedState so we can add the
-        # convenience NORMAL constant.  In the BiDi spec "normal" is the state
-        # represented by ClientWindowRectState, but exposing it here keeps the
-        # Python API consistent with the old ClientWindowState enum.
-        "exclude_types": ["ClientWindowNamedState", "SetClientWindowStateParameters"],
-        "extra_dataclasses": [
-            '''class ClientWindowNamedState:
-    """Named states for a browser client window."""
-
-    FULLSCREEN = "fullscreen"
-    MAXIMIZED = "maximized"
-    MINIMIZED = "minimized"
-    NORMAL = "normal"''',
-            '''@dataclass
-class SetClientWindowStateParameters:
-    """SetClientWindowStateParameters.
-
-    The ``state`` field is required and must be either a named-state string
-    (e.g. ``ClientWindowNamedState.MAXIMIZED``) or a
-    :class:`ClientWindowRectState` instance.  ``client_window`` is the ID of
-    the window to affect.
-    """
-
-    client_window: Any | None = None
-    state: Any | None = None''',
-        ],
         # Override the generator-produced set_download_behavior so that
         # downloadBehavior is never stripped by the generic None filter.
         # The BiDi spec marks it as required (can be null, but must be present).
         "extra_methods": [
-            '''    def set_download_behavior(
-        self,
-        allowed: bool | None = None,
-        destination_folder: str | None = None,
-        user_contexts: list[Any] | None = None,
-    ):
+            '''    def set_download_behavior(self, allowed: bool | None = None, destination_folder: str | None = None, user_contexts: List[Any] | None = None):
         """Set the download behavior for the browser.
 
         Args:
@@ -161,48 +112,10 @@ class SetClientWindowStateParameters:
             params["userContexts"] = user_contexts
         cmd = command_builder("browser.setDownloadBehavior", params)
         return self._conn.execute(cmd)''',
-            '''    def set_client_window_state(
-        self,
-        client_window: Any | None = None,
-        state: Any | None = None,
-    ):
-        """Set the client window state.
-
-        Args:
-            client_window: The client window ID to apply the state to.
-            state: The window state to set. Can be one of:
-                - A string: "fullscreen", "maximized", "minimized", "normal"
-                - A ClientWindowRectState object with width, height, x, y
-                - A dict representing the state
-
-        Raises:
-            ValueError: If client_window is not provided or state is invalid.
-        """
-        if client_window is None:
-            raise ValueError("client_window is required")
-        if state is None:
-            raise ValueError("state is required")
-
-        # Serialize ClientWindowRectState if needed
-        state_param = state
-        if hasattr(state, '__dataclass_fields__'):
-            # It's a dataclass, convert to dict
-            state_param = {
-                k: v for k, v in state.__dict__.items()
-                if v is not None
-            }
-
-        params = {
-            "clientWindow": client_window,
-            "state": state_param,
-        }
-        cmd = command_builder("browser.setClientWindowState", params)
-        return self._conn.execute(cmd)''',
         ],
     },
     "browsingContext": {
         # Method enhancements
-        "exclude_methods": ["set_viewport"],
         "create": {
             "extract_field": "context",
         },
@@ -242,33 +155,6 @@ class SetClientWindowStateParameters:
                 "devicePixelRatio": "float",
             },
         },
-        "extra_methods": [
-            '''    def set_viewport(
-        self,
-        context: str | None = None,
-        viewport: Any = ...,
-        user_contexts: Any | None = None,
-        device_pixel_ratio: Any = ...,
-    ):
-        """Execute browsingContext.setViewport.
-
-        Uses sentinel defaults so explicit None is serialized for viewport/devicePixelRatio,
-        while omitted arguments are not sent.
-        """
-        params = {}
-        if context is not None:
-            params["context"] = context
-        if user_contexts is not None:
-            params["userContexts"] = user_contexts
-        if viewport is not ...:
-            params["viewport"] = viewport
-        if device_pixel_ratio is not ...:
-            params["devicePixelRatio"] = device_pixel_ratio
-
-        cmd = command_builder("browsingContext.setViewport", params)
-        result = self._conn.execute(cmd)
-        return result''',
-        ],
         # Non-CDDL download event dataclasses (Chromium-specific)
         "extra_dataclasses": [
             '''@dataclass
@@ -295,10 +181,10 @@ class DownloadParams:
 class DownloadEndParams:
     """DownloadEndParams - params for browsingContext.downloadEnd event."""
 
-    download_params: DownloadParams | None = None
+    download_params: "DownloadParams | None" = None
 
     @classmethod
-    def from_json(cls, params: dict) -> DownloadEndParams:
+    def from_json(cls, params: dict) -> "DownloadEndParams":
         """Deserialize from BiDi wire-level params dict."""
         dp = DownloadParams(
             status=params.get("status"),
@@ -310,7 +196,19 @@ class DownloadEndParams:
         )
         return cls(download_params=dp)''',
         ],
-        # Download events are now in the CDDL spec, so no extra_events needed
+        # Non-CDDL download events (Chromium-specific, not in the BiDi spec)
+        "extra_events": [
+            {
+                "event_key": "download_will_begin",
+                "bidi_event": "browsingContext.downloadWillBegin",
+                "event_class": "DownloadWillBeginParams",
+            },
+            {
+                "event_key": "download_end",
+                "bidi_event": "browsingContext.downloadEnd",
+                "event_class": "DownloadEndParams",
+            },
+        ],
     },
     "log": {
         # Make LogLevel an alias for Level so existing code using LogLevel works
@@ -332,7 +230,7 @@ class ConsoleLogEntry:
     stack_trace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> ConsoleLogEntry:
+    def from_json(cls, params: dict) -> "ConsoleLogEntry":
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),
@@ -356,7 +254,7 @@ class JavascriptLogEntry:
     stacktrace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> JavascriptLogEntry:
+    def from_json(cls, params: dict) -> "JavascriptLogEntry":
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),
@@ -367,36 +265,15 @@ class JavascriptLogEntry:
             stacktrace=params.get("stackTrace"),
         )''',
         ],
-        # Define Entry union type for log.entryAdded event deserialization
-        "extra_type_aliases": [
-            "Entry = GenericLogEntry | ConsoleLogEntry | JavascriptLogEntry",
-        ],
-        "event_type_aliases": {
-            "entry_added": "Entry",
-        },
     },
     "emulation": {
-        "exclude_types": ["setNetworkConditionsParameters"],
-        "extra_dataclasses": [
-            '''@dataclass
-class SetNetworkConditionsParameters:
-    """SetNetworkConditionsParameters."""
-
-    network_conditions: Any | None = None
-    contexts: list[Any] = field(default_factory=list)
-    user_contexts: list[Any] = field(default_factory=list)
-
-
-# Backward-compatible alias for existing imports
-setNetworkConditionsParameters = SetNetworkConditionsParameters''',
-        ],
         "extra_methods": [
             '''    def set_geolocation_override(
         self,
         coordinates=None,
         error=None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setGeolocationOverride.
 
@@ -410,7 +287,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params: dict[str, Any] = {}
+        params = {}
         if coordinates is not None:
             if isinstance(coordinates, dict):
                 coords_dict = coordinates
@@ -448,8 +325,8 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def set_timezone_override(
         self,
         timezone=None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setTimezoneOverride.
 
@@ -462,7 +339,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params: dict[str, Any] = {"timezone": timezone}
+        params = {"timezone": timezone}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -472,8 +349,8 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def set_scripting_enabled(
         self,
         enabled=None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setScriptingEnabled.
 
@@ -486,7 +363,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params: dict[str, Any] = {"enabled": enabled}
+        params = {"enabled": enabled}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -496,8 +373,8 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def set_user_agent_override(
         self,
         user_agent=None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setUserAgentOverride.
 
@@ -509,7 +386,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params: dict[str, Any] = {"userAgent": user_agent}
+        params = {"userAgent": user_agent}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -519,8 +396,8 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def set_screen_orientation_override(
         self,
         screen_orientation=None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setScreenOrientationOverride.
 
@@ -545,7 +422,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
                 "natural": natural.lower() if isinstance(natural, str) else natural,
                 "type": orientation_type.lower() if isinstance(orientation_type, str) else orientation_type,
             }
-        params: dict[str, Any] = {"screenOrientation": so_value}
+        params = {"screenOrientation": so_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -556,8 +433,8 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         self,
         network_conditions=None,
         offline: bool | None = None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
     ):
         """Execute emulation.setNetworkConditions.
 
@@ -578,44 +455,12 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             nc_value = {"type": "offline"} if offline else None
         else:
             nc_value = network_conditions
-        params: dict[str, Any] = {"networkConditions": nc_value}
+        params = {"networkConditions": nc_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setNetworkConditions", params)
-        return self._conn.execute(cmd)''',
-            '''    def set_screen_settings_override(
-        self,
-        width: int | None = None,
-        height: int | None = None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
-    ):
-        """Execute emulation.setScreenSettingsOverride.
-
-        Sets or clears the screen settings override for specified browsing or user
-        contexts.
-
-        Args:
-            width: The screen width in pixels, or ``None`` to clear the override.
-            height: The screen height in pixels, or ``None`` to clear the override.
-            contexts: List of browsing context IDs to target.
-            user_contexts: List of user context IDs to target.
-        """
-        screen_area = None
-        if width is not None or height is not None:
-            screen_area = {}
-            if width is not None:
-                screen_area["width"] = width
-            if height is not None:
-                screen_area["height"] = height
-        params: dict[str, Any] = {"screenArea": screen_area}
-        if contexts is not None:
-            params["contexts"] = contexts
-        if user_contexts is not None:
-            params["userContexts"] = user_contexts
-        cmd = command_builder("emulation.setScreenSettingsOverride", params)
         return self._conn.execute(cmd)''',
         ],
     },
@@ -689,14 +534,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             if raw.get("type") == "success":
                 return raw.get("result")
         return raw''',
-            '''    def _add_preload_script(
-        self,
-        function_declaration,
-        arguments=None,
-        contexts=None,
-        user_contexts=None,
-        sandbox=None,
-    ):
+            '''    def _add_preload_script(self, function_declaration, arguments=None, contexts=None, user_contexts=None, sandbox=None):
         """Add a preload script with validation.
 
         Args:
@@ -748,15 +586,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             script_id: The ID returned by pin().
         """
         return self._remove_preload_script(script_id=script_id)''',
-            '''    def _evaluate(
-        self,
-        expression,
-        target,
-        await_promise,
-        result_ownership=None,
-        serialization_options=None,
-        user_activation=None,
-    ):
+            '''    def _evaluate(self, expression, target, await_promise, result_ownership=None, serialization_options=None, user_activation=None):
         """Evaluate a script expression and return a structured result.
 
         Args:
@@ -791,17 +621,7 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
                 return _EvalResult(realm=realm, result=None, exception_details=exc)
             return _EvalResult(realm=realm, result=raw.get("result"), exception_details=None)
         return _EvalResult(realm=None, result=raw, exception_details=None)''',
-            '''    def _call_function(
-        self,
-        function_declaration,
-        await_promise,
-        target,
-        arguments=None,
-        result_ownership=None,
-        this=None,
-        user_activation=None,
-        serialization_options=None,
-    ):
+            '''    def _call_function(self, function_declaration, await_promise, target, arguments=None, result_ownership=None, this=None, user_activation=None, serialization_options=None):
         """Call a function and return a structured result.
 
         Args:
@@ -995,25 +815,10 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         ],
     },
     "network": {
-        "exclude_types": ["disownDataParameters"],
-        # Initialize intercepts tracking list and per-handler intercept map
-        "extra_init_code": [
-            "self.intercepts: list[Any] = []",
-            "self._handler_intercepts: dict[str, Any] = {}",
-        ],
+        # Initialize intercepts tracking list in __init__
+        "extra_init_code": ["self.intercepts = []"],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
-            '''@dataclass
-class DisownDataParameters:
-    """DisownDataParameters."""
-
-    data_type: Any | None = None
-    collector: Any | None = None
-    request: Any | None = None
-
-
-# Backward-compatible alias for existing imports
-disownDataParameters = DisownDataParameters''',
             '''class BytesValue:
     """A string or base64-encoded bytes value used in cookie operations.
 
@@ -1024,7 +829,7 @@ disownDataParameters = DisownDataParameters''',
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: Any | None, value: Any | None) -> None:
+    def __init__(self, type: str, value: str) -> None:
         self.type = type
         self.value = value
 
@@ -1105,8 +910,7 @@ disownDataParameters = DisownDataParameters''',
             "auth_required": "authRequired",
         }
         phase = phase_map.get(event, "beforeRequestSent")
-        intercept_result = self._add_intercept(phases=[phase], url_patterns=url_patterns)
-        intercept_id = intercept_result.get("intercept") if intercept_result else None
+        self._add_intercept(phases=[phase], url_patterns=url_patterns)
 
         def _request_callback(params):
             raw = (
@@ -1117,21 +921,15 @@ disownDataParameters = DisownDataParameters''',
             request = Request(self._conn, raw)
             callback(request)
 
-        callback_id = self.add_event_handler(event, _request_callback)
-        if intercept_id:
-            self._handler_intercepts[callback_id] = intercept_id
-        return callback_id''',
+        return self.add_event_handler(event, _request_callback)''',
             '''    def remove_request_handler(self, event, callback_id):
-        """Remove a network request handler and its associated network intercept.
+        """Remove a network request handler.
 
         Args:
             event: The event name used when adding the handler.
             callback_id: The int returned by add_request_handler.
         """
-        self.remove_event_handler(event, callback_id)
-        intercept_id = self._handler_intercepts.pop(callback_id, None)
-        if intercept_id:
-            self._remove_intercept(intercept_id)''',
+        self.remove_event_handler(event, callback_id)''',
             '''    def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts."""
         self.clear_event_handlers()
@@ -1148,10 +946,6 @@ disownDataParameters = DisownDataParameters''',
             callback_id int for later removal via remove_auth_handler.
         """
         from selenium.webdriver.common.bidi.common import command_builder as _cb
-
-        # Set up network intercept for authRequired phase
-        intercept_result = self._add_intercept(phases=["authRequired"])
-        intercept_id = intercept_result.get("intercept") if intercept_result else None
 
         def _auth_callback(params):
             raw = (
@@ -1180,20 +974,10 @@ disownDataParameters = DisownDataParameters''',
                     )
                 )
 
-        callback_id = self.add_event_handler("auth_required", _auth_callback)
-        if intercept_id:
-            self._handler_intercepts[callback_id] = intercept_id
-        return callback_id''',
+        return self.add_event_handler("auth_required", _auth_callback)''',
             '''    def remove_auth_handler(self, callback_id):
-        """Remove an auth handler by callback ID and its associated network intercept.
-
-        Args:
-            callback_id: The handler ID returned by add_auth_handler.
-        """
-        self.remove_event_handler("auth_required", callback_id)
-        intercept_id = self._handler_intercepts.pop(callback_id, None)
-        if intercept_id:
-            self._remove_intercept(intercept_id)''',
+        """Remove an auth handler by callback ID."""
+        self.remove_event_handler("auth_required", callback_id)''',
         ],
     },
     "storage": {
@@ -1219,16 +1003,12 @@ disownDataParameters = DisownDataParameters''',
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: Any | None, value: Any | None) -> None:
+    def __init__(self, type: str, value: str) -> None:
         self.type = type
         self.value = value
 
     def to_bidi_dict(self) -> dict:
-        return {"type": self.type, "value": self.value}
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return {"type": self.type, "value": self.value}''',
             '''class SameSite:
     """SameSite cookie attribute values."""
 
@@ -1252,11 +1032,11 @@ class StorageCookie:
     expiry: Any | None = None
 
     @classmethod
-    def from_bidi_dict(cls, raw: dict) -> StorageCookie:
+    def from_bidi_dict(cls, raw: dict) -> "StorageCookie":
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
-            value: Any = BytesValue(value_raw.get("type"), value_raw.get("value"))
+            value = BytesValue(value_raw.get("type"), value_raw.get("value"))
         else:
             value = value_raw
         return cls(
@@ -1306,11 +1086,7 @@ class CookieFilter:
             result["sameSite"] = self.same_site
         if self.expiry is not None:
             result["expiry"] = self.expiry
-        return result
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return result''',
             # Custom PartialCookie with camelCase serialization
             '''@dataclass
 class PartialCookie:
@@ -1344,11 +1120,7 @@ class PartialCookie:
             result["sameSite"] = self.same_site
         if self.expiry is not None:
             result["expiry"] = self.expiry
-        return result
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return result''',
             # BrowsingContextPartitionDescriptor: first positional arg is *context*
             # (the auto-generated dataclass had `type` first, breaking positional
             # usage like BrowsingContextPartitionDescriptor(driver.current_window_handle))
@@ -1365,11 +1137,7 @@ class PartialCookie:
         self.type = type
 
     def to_bidi_dict(self) -> dict:
-        return {"type": "context", "context": self.context}
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return {"type": "context", "context": self.context}''',
             # StorageKeyPartitionDescriptor with camelCase serialization
             '''@dataclass
 class StorageKeyPartitionDescriptor:
@@ -1386,11 +1154,7 @@ class StorageKeyPartitionDescriptor:
             result["userContext"] = self.user_context
         if self.source_origin is not None:
             result["sourceOrigin"] = self.source_origin
-        return result
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return result''',
         ],
         # Override the generated Storage class methods (Python's last-definition-
         # wins semantics means these extra_methods shadow the generated ones).
@@ -1438,17 +1202,6 @@ class StorageKeyPartitionDescriptor:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.setCookie", params)
         result = self._conn.execute(cmd)
-        if isinstance(result, dict):
-            pk_raw = result.get("partitionKey")
-            pk = (
-                PartitionKey(
-                    user_context=pk_raw.get("userContext"),
-                    source_origin=pk_raw.get("sourceOrigin"),
-                )
-                if isinstance(pk_raw, dict)
-                else None
-            )
-            return SetCookieResult(partition_key=pk)
         return result''',
             '''    def delete_cookies(self, filter=None, partition=None):
         """Execute storage.deleteCookies."""
@@ -1463,17 +1216,6 @@ class StorageKeyPartitionDescriptor:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.deleteCookies", params)
         result = self._conn.execute(cmd)
-        if isinstance(result, dict):
-            pk_raw = result.get("partitionKey")
-            pk = (
-                PartitionKey(
-                    user_context=pk_raw.get("userContext"),
-                    source_origin=pk_raw.get("sourceOrigin"),
-                )
-                if isinstance(pk_raw, dict)
-                else None
-            )
-            return DeleteCookiesResult(partition_key=pk)
         return result''',
         ],
     },
@@ -1507,23 +1249,14 @@ class UserPromptHandler:
             result["file"] = self.file
         if self.prompt is not None:
             result["prompt"] = self.prompt
-        return result
-
-    def to_dict(self) -> dict:
-        """Backward-compatible alias for to_bidi_dict()."""
-        return self.to_bidi_dict()''',
+        return result''',
         ],
     },
     "webExtension": {
         # Suppress the raw generated stubs; hand-written versions follow below
         "exclude_methods": ["install", "uninstall"],
         "extra_methods": [
-            '''    def install(
-        self,
-        path: str | None = None,
-        archive_path: str | None = None,
-        base64_value: str | None = None,
-    ):
+            '''    def install(self, path: str | None = None, archive_path: str | None = None, base64_value: str | None = None):
         """Install a web extension.
 
         Exactly one of the three keyword arguments must be provided.
@@ -1541,11 +1274,7 @@ class UserPromptHandler:
         Raises:
             ValueError: If more than one, or none, of the arguments is provided.
         """
-        provided = [
-            k for k, v in {
-                "path": path, "archive_path": archive_path, "base64_value": base64_value,
-            }.items() if v is not None
-        ]
+        provided = [k for k, v in {"path": path, "archive_path": archive_path, "base64_value": base64_value}.items() if v is not None]
         if len(provided) != 1:
             raise ValueError(
                 f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}"
@@ -1555,41 +1284,22 @@ class UserPromptHandler:
         elif archive_path is not None:
             extension_data = {"type": "archivePath", "path": archive_path}
         else:
-            assert base64_value is not None
             extension_data = {"type": "base64", "value": base64_value}
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
-        try:
-            return self._conn.execute(cmd)
-        except Exception as e:
-            if "Method not available" in str(e):
-                raise RuntimeError(
-                    "webExtension.install failed with 'Method not available'. "
-                    "This likely means that web extension support is disabled. "
-                    "Enable unsafe extension debugging and/or set options.enable_webextensions "
-                    "in your WebDriver configuration."
-                ) from e
-            raise''',
-            '''    def uninstall(self, extension: str | dict):
+        return self._conn.execute(cmd)''',
+            '''    def uninstall(self, extension: Any | None = None):
         """Uninstall a web extension.
 
         Args:
             extension: Either the extension ID string returned by ``install``,
                 or the full result dict returned by ``install`` (the
                 ``"extension"`` value is extracted automatically).
-
-        Raises:
-            ValueError: If extension is not provided or is None.
         """
         if isinstance(extension, dict):
-            extension_id: Any = extension.get("extension")
-        else:
-            extension_id = extension
-
-        if extension_id is None:
-            raise ValueError("extension parameter is required")
-
-        params = {"extension": extension_id}
+            extension = extension.get("extension")
+        params = {"extension": extension}
+        params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("webExtension.uninstall", params)
         return self._conn.execute(cmd)''',
         ],
@@ -1607,7 +1317,7 @@ class FileDialogInfo:
     multiple: bool | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> FileDialogInfo:
+    def from_json(cls, params: dict) -> "FileDialogInfo":
         """Deserialize event params into FileDialogInfo."""
         return cls(
             context=params.get("context"),
@@ -1717,7 +1427,9 @@ def transform_download_params(
             "type": "allowed",
             # Convert pathlib.Path (or any path-like) to str so the BiDi
             # protocol always receives a plain JSON string.
-            "destinationFolder": (str(destination_folder) if destination_folder is not None else None),
+            "destinationFolder": (
+                str(destination_folder) if destination_folder is not None else None
+            ),
         }
     elif allowed is False:
         return {"type": "denied"}
@@ -1790,7 +1502,6 @@ def _add_event_handler(
     - 'history_updated'
 
     Args:
-        self: The module instance this handler is bound to.
         event_name: The name of the event to subscribe to
         callback: Callback function to invoke when event occurs
         contexts: Optional list of context IDs to limit event subscription
@@ -1827,7 +1538,6 @@ def _remove_event_handler(
     """Remove an event handler by its callback ID.
 
     Args:
-        self: The module instance this handler is bound to.
         callback_id: The callback ID returned from add_event_handler
     """
     if not hasattr(self, "_event_handlers"):

@@ -1,21 +1,4 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
-
+#!/usr/bin/env python3
 """
 Generate Python WebDriver BiDi command modules from CDDL specification.
 
@@ -35,11 +18,12 @@ import importlib.util
 import logging
 import re
 import sys
+from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from textwrap import indent as tw_indent
-from typing import Any
+from textwrap import dedent, indent as tw_indent
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 __version__ = "1.0.0"
 
@@ -59,6 +43,8 @@ MODULE_HEADER = f"""{SHARED_HEADER}
 # WebDriver BiDi module: {{}}
 from __future__ import annotations
 
+from typing import Any, Dict, List, Optional, Union
+from .common import command_builder
 """
 
 
@@ -67,7 +53,7 @@ def indent(s: str, n: int) -> str:
     return tw_indent(s, n * " ")
 
 
-def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
+def load_enhancements_manifest(manifest_path: Optional[str]) -> Dict[str, Any]:
     """Load enhancement manifest from a Python file.
 
     Args:
@@ -85,7 +71,9 @@ def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
         return {}
 
     try:
-        spec = importlib.util.spec_from_file_location("bidi_enhancements", manifest_file)
+        spec = importlib.util.spec_from_file_location(
+            "bidi_enhancements", manifest_file
+        )
         if spec is None or spec.loader is None:
             logger.warning(f"Could not load manifest: {manifest_path}")
             return {}
@@ -136,10 +124,10 @@ class CddlType(Enum):
         if cddl_type.startswith("["):  # Array
             inner = cddl_type.strip("[]+ ")
             inner_type = cls.get_annotation(inner)
-            return f"list[{inner_type}]"
+            return f"List[{inner_type}]"
 
         if cddl_type.startswith("{"):  # Map/Dict
-            return "dict[str, Any]"
+            return "Dict[str, Any]"
 
         # Default to Any for unknown types
         return "Any"
@@ -151,12 +139,11 @@ class CddlCommand:
 
     module: str
     name: str
-    params: dict[str, str] = field(default_factory=dict)
-    required_params: set[str] = field(default_factory=set)
-    result: str | None = None
+    params: Dict[str, str] = field(default_factory=dict)
+    result: Optional[str] = None
     description: str = ""
 
-    def to_python_method(self, enhancements: dict[str, Any] | None = None) -> str:
+    def to_python_method(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
         """Generate Python method code for this command.
 
         Args:
@@ -183,38 +170,15 @@ class CddlCommand:
             param_strs.append(f"{snake_param}: {python_type} | None = None")
 
         if param_strs:
-            # Check if full signature would exceed line length limit (120 chars)
-            single_line_signature = f"    def {method_name}(self, {', '.join(param_strs)}):"
-            if len(single_line_signature) > 120:
-                # Format parameters on multiple lines
-                body = f"    def {method_name}(\n"
-                body += "        self,\n"
-                for i, param_str in enumerate(param_strs):
-                    if i < len(param_strs) - 1:
-                        body += f"        {param_str},\n"
-                    else:
-                        body += f"        {param_str},\n"
-                body += "    ):\n"
-            else:
-                param_list = "self, " + ", ".join(param_strs)
-                body = f"    def {method_name}({param_list}):\n"
+            param_list = "self, " + ", ".join(param_strs)
         else:
-            body = f"    def {method_name}(self):\n"
+            param_list = "self"
+
+        # Build method body
+        body = f"    def {method_name}({param_list}):\n"
         body += f'        """{self.description or "Execute " + self.module + "." + self.name}."""\n'
 
-        # Add automatic validation for required parameters
-        # (This is used unless there's no required_params, in which case all params are optional)
-        if self.required_params:
-            method_snake = self._camel_to_snake(self.name)
-            for param_name, snake_param in param_names:
-                if param_name in self.required_params:
-                    body += f"        if {snake_param} is None:\n"
-                    msg = f"{method_snake}() missing required argument:"
-                    error_message = f"{msg} {snake_param!r}"
-                    body += f"            raise TypeError({error_message!r})\n"
-            body += "\n"
-
-        # Add validation if specified in enhancements (for additional business logic validation)
+        # Add validation if specified
         if "validate" in enhancements:
             validate_func = enhancements["validate"]
             # Build parameter list for validation function
@@ -231,7 +195,9 @@ class CddlCommand:
                 transform_func = transform_spec.get("func")
                 result_param = transform_spec.get("result_param", "params")
                 input_params = [
-                    transform_spec.get(k) for k in ["allowed", "destination_folder"] if transform_spec.get(k)
+                    transform_spec.get(k)
+                    for k in ["allowed", "destination_folder"]
+                    if transform_spec.get(k)
                 ]
 
                 if transform_func and result_param:
@@ -254,7 +220,9 @@ class CddlCommand:
                 snake_param = self._camel_to_snake(param_name)
                 if preprocess_type == "check_serialize_method":
                     body += f"        if {snake_param} and hasattr({snake_param}, 'to_bidi_dict'):\n"
-                    body += f"            {snake_param} = {snake_param}.to_bidi_dict()\n"
+                    body += (
+                        f"            {snake_param} = {snake_param}.to_bidi_dict()\n"
+                    )
                     body += "\n"
 
         # Build params dict
@@ -269,6 +237,7 @@ class CddlCommand:
             if result_param == "download_behavior":
                 body += '            "downloadBehavior": download_behavior,\n'
                 # Add remaining parameters that weren't part of the transform
+                override_params = enhancements.get("params_override", {})
                 for cddl_param_name in self.params:
                     if cddl_param_name not in ["downloadBehavior"]:
                         snake_name = self._camel_to_snake(cddl_param_name)
@@ -295,45 +264,45 @@ class CddlCommand:
                 # Extract property from list items
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += "            return [\n"
+                body += f"            return [\n"
                 body += f'                item.get("{extract_property}")\n'
-                body += "                for item in items\n"
-                body += "                if isinstance(item, dict)\n"
-                body += "            ]\n"
-                body += "        return []\n"
+                body += f"                for item in items\n"
+                body += f"                if isinstance(item, dict)\n"
+                body += f"            ]\n"
+                body += f"        return []\n"
             elif extract_field in deserialize_rules:
                 # Extract field and deserialize to typed objects
                 type_name = deserialize_rules[extract_field]
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += "            return [\n"
+                body += f"            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(extract_field, type_name)
-                body += "                )\n"
-                body += "                for item in items\n"
-                body += "                if isinstance(item, dict)\n"
-                body += "            ]\n"
-                body += "        return []\n"
+                body += f"                )\n"
+                body += f"                for item in items\n"
+                body += f"                if isinstance(item, dict)\n"
+                body += f"            ]\n"
+                body += f"        return []\n"
             else:
                 # Simple field extraction (return the value directly, not wrapped in result dict)
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            extracted = result.get("{extract_field}")\n'
-                body += "            return extracted\n"
-                body += "        return result\n"
+                body += f"            return extracted\n"
+                body += f"        return result\n"
         elif "deserialize" in enhancements:
             # Deserialize response to typed objects (legacy, without extract_field)
             deserialize_rules = enhancements["deserialize"]
             for response_field, type_name in deserialize_rules.items():
                 body += f'        if result and "{response_field}" in result:\n'
                 body += f'            items = result.get("{response_field}", [])\n'
-                body += "            return [\n"
+                body += f"            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(response_field, type_name)
-                body += "                )\n"
-                body += "                for item in items\n"
-                body += "                if isinstance(item, dict)\n"
-                body += "            ]\n"
-                body += "        return []\n"
+                body += f"                )\n"
+                body += f"                for item in items\n"
+                body += f"                if isinstance(item, dict)\n"
+                body += f"            ]\n"
+                body += f"        return []\n"
         else:
             # No special response handling, just return the result
             body += "        return result\n"
@@ -382,10 +351,10 @@ class CddlTypeDefinition:
 
     module: str
     name: str
-    fields: dict[str, str] = field(default_factory=dict)
+    fields: Dict[str, str] = field(default_factory=dict)
     description: str = ""
 
-    def to_python_dataclass(self, enhancements: dict[str, Any] | None = None) -> str:
+    def to_python_dataclass(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
         """Generate Python dataclass code for this type.
 
         Args:
@@ -397,7 +366,7 @@ class CddlTypeDefinition:
 
         # Generate class name from type name (keep it as-is, don't split on underscores)
         class_name = self.name
-        code = "@dataclass\n"
+        code = f"@dataclass\n"
         code += f"class {class_name}:\n"
         code += f'    """{self.description or self.name}."""\n\n'
 
@@ -416,16 +385,9 @@ class CddlTypeDefinition:
                 if literal_match:
                     literal_value = literal_match.group(1)
                     code += f'    {snake_name}: str = field(default="{literal_value}", init=False)\n'
-                # Check if this field is a list type (using lowercase 'list[' from Python 3.10+ syntax)
-                elif python_type.startswith("list["):
-                    # Remove the trailing ' | None' from list types since default_factory=list ensures non-None
-                    type_annotation = python_type.replace(" | None", "")
-                    code += f"    {snake_name}: {type_annotation} = field(default_factory=list)\n"
-                # Check if this field is a dict type (using lowercase 'dict[' from Python 3.10+ syntax)
-                elif python_type.startswith("dict["):
-                    # Remove the trailing ' | None' from dict types since default_factory=dict ensures non-None
-                    type_annotation = python_type.replace(" | None", "")
-                    code += f"    {snake_name}: {type_annotation} = field(default_factory=dict)\n"
+                # Check if this field is a list type
+                elif "List[" in python_type:
+                    code += f"    {snake_name}: {python_type} = field(default_factory=list)\n"
                 else:
                     code += f"    {snake_name}: {python_type} = None\n"
 
@@ -491,7 +453,7 @@ class CddlEnum:
 
     module: str
     name: str
-    values: list[str] = field(default_factory=list)
+    values: List[str] = field(default_factory=list)
     description: str = ""
 
     def to_python_class(self) -> str:
@@ -545,7 +507,11 @@ class CddlEvent:
 
         # Extract the type name from params_type (e.g., "browsingContext.Info" -> "Info")
         # The params_type comes from the CDDL and includes module prefix
-        type_name = self.params_type.split(".")[-1] if "." in self.params_type else self.params_type
+        type_name = (
+            self.params_type.split(".")[-1]
+            if "." in self.params_type
+            else self.params_type
+        )
 
         # Special case: if the type is BaseNavigationInfo, use BaseNavigationInfo directly
         # (NavigationInfo will be created as an alias to it)
@@ -564,10 +530,10 @@ class CddlModule:
     """Represents a CDDL module (e.g., script, network, browsing_context)."""
 
     name: str
-    commands: list[CddlCommand] = field(default_factory=list)
-    types: list[CddlTypeDefinition] = field(default_factory=list)
-    enums: list[CddlEnum] = field(default_factory=list)
-    events: list[CddlEvent] = field(default_factory=list)
+    commands: List[CddlCommand] = field(default_factory=list)
+    types: List[CddlTypeDefinition] = field(default_factory=list)
+    enums: List[CddlEnum] = field(default_factory=list)
+    events: List[CddlEvent] = field(default_factory=list)
 
     @staticmethod
     def _convert_method_to_event_name(method_suffix: str) -> str:
@@ -582,7 +548,7 @@ class CddlModule:
         s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", method_suffix)
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
-    def generate_code(self, enhancements: dict[str, Any] | None = None) -> str:
+    def generate_code(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
         """Generate Python code for this module.
 
         Args:
@@ -591,33 +557,21 @@ class CddlModule:
         enhancements = enhancements or {}
         code = MODULE_HEADER.format(self.name)
 
-        # Collect needed imports to avoid duplicates
-        needs_command_builder = bool(self.commands)
-        needs_dataclass = self.commands or self.types or self.events
-        needs_callable = self.events
+        # Add imports if needed
+        if self.types:
+            code += "from dataclasses import field\n"
+        if self.commands or self.types:
+            code += "from typing import Generator\n"
+            code += "from dataclasses import dataclass\n"
 
-        stdlib_imports = []
-        local_imports = []
-
-        # Add imports (field import will be added conditionally after code generation)
-        if needs_callable:
-            stdlib_imports.append("from collections.abc import Callable")
-        if needs_dataclass:
-            stdlib_imports.append("from dataclasses import dataclass")
-        stdlib_imports.append("from typing import Any")
-
-        if needs_command_builder:
-            local_imports.append("from selenium.webdriver.common.bidi.common import command_builder")
+        # Add imports for event handling if needed
         if self.events:
-            local_imports.append(
-                "from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager"
-            )
+            code += "import threading\n"
+            code += "from collections.abc import Callable\n"
+            code += "from dataclasses import dataclass\n"
+            code += "from selenium.webdriver.common.bidi.session import Session\n"
 
-        code += "\n".join(stdlib_imports) + "\n"
-        if local_imports:
-            code += "\n" + "\n".join(local_imports) + "\n"
-
-        code += "\n"
+        code += "\n\n"
 
         # Add helper function definitions from enhancements
         # Collect all referenced helper functions (validate, transform)
@@ -627,7 +581,9 @@ class CddlModule:
             method_enhancements = enhancements.get(method_name_snake, {})
             if "validate" in method_enhancements:
                 helper_funcs_to_add.add(("validate", method_enhancements["validate"]))
-            if "transform" in method_enhancements and isinstance(method_enhancements["transform"], dict):
+            if "transform" in method_enhancements and isinstance(
+                method_enhancements["transform"], dict
+            ):
                 transform_spec = method_enhancements["transform"]
                 if "func" in transform_spec:
                     helper_funcs_to_add.add(("transform", transform_spec["func"]))
@@ -635,7 +591,10 @@ class CddlModule:
         # Generate helper functions if needed
         if helper_funcs_to_add:
             for func_type, func_name in sorted(helper_funcs_to_add):
-                if func_type == "validate" and func_name == "validate_download_behavior":
+                if (
+                    func_type == "validate"
+                    and func_name == "validate_download_behavior"
+                ):
                     code += """def validate_download_behavior(
     allowed: bool | None,
     destination_folder: str | None,
@@ -658,7 +617,10 @@ class CddlModule:
 
 
 """
-                elif func_type == "transform" and func_name == "transform_download_params":
+                elif (
+                    func_type == "transform"
+                    and func_name == "transform_download_params"
+                ):
                     code += """def transform_download_params(
     allowed: bool | None,
     destination_folder: str | None,
@@ -688,20 +650,8 @@ class CddlModule:
 
 """
 
-        # Generate enums first (excluding those in exclude_types)
-        exclude_types = set(enhancements.get("exclude_types", []))
-
-        # Also exclude any types that have extra_dataclasses overrides
-        # Extract class names from extra_dataclasses strings
-        for extra_cls in enhancements.get("extra_dataclasses", []):
-            # Match "class ClassName:" pattern
-            match = re.search(r"class\s+(\w+)\s*:", extra_cls)
-            if match:
-                exclude_types.add(match.group(1))
-
+        # Generate enums first
         for enum_def in self.enums:
-            if enum_def.name in exclude_types:
-                continue
             code += enum_def.to_python_class()
             code += "\n\n"
 
@@ -710,6 +660,7 @@ class CddlModule:
             code += f"{alias} = {target}\n\n"
 
         # Generate type dataclasses, skipping any overridden by extra_dataclasses
+        exclude_types = set(enhancements.get("exclude_types", []))
         for type_def in self.types:
             if type_def.name in exclude_types:
                 continue
@@ -719,11 +670,6 @@ class CddlModule:
         # Emit extra dataclasses from enhancement manifest (non-CDDL additions)
         for extra_cls in enhancements.get("extra_dataclasses", []):
             code += extra_cls
-            code += "\n\n"
-
-        # Emit extra type aliases from enhancement manifest (e.g., union types for events)
-        for extra_alias in enhancements.get("extra_type_aliases", []):
-            code += extra_alias
             code += "\n\n"
 
         # NOTE: Don't generate event type aliases here - they reference types that may not be defined yet
@@ -743,7 +689,9 @@ class CddlModule:
                     code += f'    "{event_name}": "{event_def.method}",\n'
             # Extra events not in the CDDL spec (e.g. Chromium-specific events)
             for extra_evt in enhancements.get("extra_events", []):
-                code += f'    "{extra_evt["event_key"]}": "{extra_evt["bidi_event"]}",\n'
+                code += (
+                    f'    "{extra_evt["event_key"]}": "{extra_evt["bidi_event"]}",\n'
+                )
             code += "}\n\n"
 
         # Add custom method function definitions before the class (for browsingContext)
@@ -784,11 +732,165 @@ class CddlModule:
 """
             code += "\n\n"
 
-        # EventConfig, _EventWrapper, and _EventManager are imported from
-        # selenium.webdriver.common.bidi._event_manager (see import section above)
-        # rather than being duplicated inline in every generated module.
-        if False:  # placeholder to preserve indentation structure
-            pass
+        # Generate EventConfig and _EventManager for modules with events
+        if self.events:
+            # Generate EventConfig dataclass
+            code += """@dataclass
+class EventConfig:
+    \"\"\"Configuration for a BiDi event.\"\"\"
+    event_key: str
+    bidi_event: str
+    event_class: type
+
+
+"""
+
+            # Generate _EventManager class
+            code += """class _EventWrapper:
+    \"\"\"Wrapper to provide event_class attribute for WebSocketConnection callbacks.\"\"\"
+    def __init__(self, bidi_event: str, event_class: type):
+        self.event_class = bidi_event  # WebSocket expects the BiDi event name as event_class
+        self._python_class = event_class  # Keep reference to Python dataclass for deserialization
+
+    def from_json(self, params: dict) -> Any:
+        \"\"\"Deserialize event params into the wrapped Python dataclass.
+
+        Args:
+            params: Raw BiDi event params with camelCase keys.
+
+        Returns:
+            An instance of the dataclass, or the raw dict on failure.
+        \"\"\"
+        if self._python_class is None or self._python_class is dict:
+            return params
+        try:
+            # Delegate to a classmethod from_json if the class defines one
+            if hasattr(self._python_class, \"from_json\") and callable(
+                self._python_class.from_json
+            ):
+                return self._python_class.from_json(params)
+            import dataclasses as dc
+
+            snake_params = {self._camel_to_snake(k): v for k, v in params.items()}
+            if dc.is_dataclass(self._python_class):
+                valid_fields = {f.name for f in dc.fields(self._python_class)}
+                filtered = {k: v for k, v in snake_params.items() if k in valid_fields}
+                return self._python_class(**filtered)
+            return self._python_class(**snake_params)
+        except Exception:
+            return params
+
+    @staticmethod
+    def _camel_to_snake(name: str) -> str:
+        result = [name[0].lower()]
+        for char in name[1:]:
+            if char.isupper():
+                result.extend([\"_\", char.lower()])
+            else:
+                result.append(char)
+        return \"\".join(result)
+
+
+class _EventManager:
+    \"\"\"Manages event subscriptions and callbacks.\"\"\"
+
+    def __init__(self, conn, event_configs: dict[str, EventConfig]):
+        self.conn = conn
+        self.event_configs = event_configs
+        self.subscriptions: dict = {}
+        self._event_wrappers = {}  # Cache of _EventWrapper objects
+        self._bidi_to_class = {config.bidi_event: config.event_class for config in event_configs.values()}
+        self._available_events = ", ".join(sorted(event_configs.keys()))
+        self._subscription_lock = threading.Lock()
+
+        # Create event wrappers for each event
+        for config in event_configs.values():
+            wrapper = _EventWrapper(config.bidi_event, config.event_class)
+            self._event_wrappers[config.bidi_event] = wrapper
+
+    def validate_event(self, event: str) -> EventConfig:
+        event_config = self.event_configs.get(event)
+        if not event_config:
+            raise ValueError(f"Event '{event}' not found. Available events: {self._available_events}")
+        return event_config
+
+    def subscribe_to_event(self, bidi_event: str, contexts: list[str] | None = None) -> None:
+        \"\"\"Subscribe to a BiDi event if not already subscribed.\"\"\"
+        with self._subscription_lock:
+            if bidi_event not in self.subscriptions:
+                session = Session(self.conn)
+                result = session.subscribe([bidi_event], contexts=contexts)
+                sub_id = (
+                    result.get(\"subscription\") if isinstance(result, dict) else None
+                )
+                self.subscriptions[bidi_event] = {
+                    \"callbacks\": [],
+                    \"subscription_id\": sub_id,
+                }
+
+    def unsubscribe_from_event(self, bidi_event: str) -> None:
+        \"\"\"Unsubscribe from a BiDi event if no more callbacks exist.\"\"\"
+        with self._subscription_lock:
+            entry = self.subscriptions.get(bidi_event)
+            if entry is not None and not entry[\"callbacks\"]:
+                session = Session(self.conn)
+                sub_id = entry.get(\"subscription_id\")
+                if sub_id:
+                    session.unsubscribe(subscriptions=[sub_id])
+                else:
+                    session.unsubscribe(events=[bidi_event])
+                del self.subscriptions[bidi_event]
+
+    def add_callback_to_tracking(self, bidi_event: str, callback_id: int) -> None:
+        with self._subscription_lock:
+            self.subscriptions[bidi_event][\"callbacks\"].append(callback_id)
+
+    def remove_callback_from_tracking(self, bidi_event: str, callback_id: int) -> None:
+        with self._subscription_lock:
+            entry = self.subscriptions.get(bidi_event)
+            if entry and callback_id in entry[\"callbacks\"]:
+                entry[\"callbacks\"].remove(callback_id)
+
+    def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
+        event_config = self.validate_event(event)
+        # Use the event wrapper for add_callback
+        event_wrapper = self._event_wrappers.get(event_config.bidi_event)
+        callback_id = self.conn.add_callback(event_wrapper, callback)
+        self.subscribe_to_event(event_config.bidi_event, contexts)
+        self.add_callback_to_tracking(event_config.bidi_event, callback_id)
+        return callback_id
+
+    def remove_event_handler(self, event: str, callback_id: int) -> None:
+        event_config = self.validate_event(event)
+        event_wrapper = self._event_wrappers.get(event_config.bidi_event)
+        self.conn.remove_callback(event_wrapper, callback_id)
+        self.remove_callback_from_tracking(event_config.bidi_event, callback_id)
+        self.unsubscribe_from_event(event_config.bidi_event)
+
+    def clear_event_handlers(self) -> None:
+        \"\"\"Clear all event handlers.\"\"\"
+        with self._subscription_lock:
+            if not self.subscriptions:
+                return
+            session = Session(self.conn)
+            for bidi_event, entry in list(self.subscriptions.items()):
+                event_wrapper = self._event_wrappers.get(bidi_event)
+                callbacks = entry[\"callbacks\"] if isinstance(entry, dict) else entry
+                if event_wrapper:
+                    for callback_id in callbacks:
+                        self.conn.remove_callback(event_wrapper, callback_id)
+                sub_id = (
+                    entry.get(\"subscription_id\") if isinstance(entry, dict) else None
+                )
+                if sub_id:
+                    session.unsubscribe(subscriptions=[sub_id])
+                else:
+                    session.unsubscribe(events=[bidi_event])
+            self.subscriptions.clear()
+
+
+"""
+            code += "\n\n"
 
         # Generate class
         # Convert module name (camelCase or snake_case) to proper class name (PascalCase)
@@ -798,7 +900,9 @@ class CddlModule:
 
         # Add EVENT_CONFIGS dict if there are events
         if self.events:
-            code += "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
+            code += (
+                "    EVENT_CONFIGS = {}\n"  # Will be populated after types are defined
+            )
 
         if self.name == "script":
             code += "    def __init__(self, conn, driver=None) -> None:\n"
@@ -820,16 +924,6 @@ class CddlModule:
 
         # Generate command methods
         exclude_methods = enhancements.get("exclude_methods", [])
-
-        # Automatically exclude methods that are defined in extra_methods
-        # to prevent generating duplicates
-        if "extra_methods" in enhancements:
-            for extra_method in enhancements["extra_methods"]:
-                # Extract method name from "def method_name("
-                match = re.search(r"def\s+(\w+)\s*\(", extra_method)
-                if match:
-                    exclude_methods = list(exclude_methods) + [match.group(1)]
-
         if self.commands:
             for command in self.commands:
                 # Get method-specific enhancements
@@ -840,7 +934,7 @@ class CddlModule:
                 method_enhancements = enhancements.get(method_name_snake, {})
                 code += command.to_python_method(method_enhancements)
                 code += "\n"
-        elif not self.events and not enhancements.get("extra_methods", []):
+        else:
             code += "    pass\n"
 
         # Emit extra methods from enhancement manifest
@@ -882,53 +976,23 @@ class CddlModule:
         # This ensures all types are available when we create the aliases
         if self.events:
             code += "\n# Event Info Type Aliases\n"
-            # Check for explicit event_type_aliases in the enhancement manifest
-            event_type_aliases = enhancements.get("event_type_aliases", {})
             for event_def in self.events:
-                # Convert method name to user-friendly event name
-                method_parts = event_def.method.split(".")
-                if len(method_parts) == 2:
-                    event_name = self._convert_method_to_event_name(method_parts[1])
-                    # Check if there's an explicit alias defined in the enhancement manifest
-                    if event_name in event_type_aliases:
-                        # Use the alias directly
-                        type_name = event_type_aliases[event_name]
-                        code += f"# Event: {event_def.method}\n"
-                        code += f"{event_def.name} = {type_name}\n"
-                    else:
-                        # Fall back to the original behavior
-                        code += event_def.to_python_dataclass()
+                code += event_def.to_python_dataclass()
                 code += "\n"
 
             # Now populate EVENT_CONFIGS after the aliases are defined
-            code += "\n# Populate EVENT_CONFIGS with event configuration mappings\n"
+            code += f"\n# Populate EVENT_CONFIGS with event configuration mappings\n"
             # Use globals() to look up types dynamically to handle missing types gracefully
-            code += "_globals = globals()\n"
+            code += f"_globals = globals()\n"
             code += f"{class_name}.EVENT_CONFIGS = {{\n"
             for event_def in self.events:
                 # Convert method name to user-friendly event name
                 method_parts = event_def.method.split(".")
                 if len(method_parts) == 2:
                     event_name = self._convert_method_to_event_name(method_parts[1])
-                    # Try to get event class from globals, default to dict if not found
-                    getter = f'_globals.get("{event_def.name}", dict)'
-                    condition = f'_globals.get("{event_def.name}")'
-                    event_class = f"{getter} if {condition} else dict"
-
-                    # Build the entry line and check if it exceeds 120 chars
-                    single_line = (
-                        f'    "{event_name}": EventConfig("{event_name}", "{event_def.method}", {event_class}),'
-                    )
-
-                    if len(single_line) > 120:
-                        # Break into multiple lines
-                        code += f'    "{event_name}": EventConfig(\n'
-                        code += f'        "{event_name}",\n'
-                        code += f'        "{event_def.method}",\n'
-                        code += f"        {event_class},\n"
-                        code += "    ),\n"
-                    else:
-                        code += single_line + "\n"
+                    # The event class is the event name (e.g., ContextCreated)
+                    # Try to get it from globals, default to dict if not found
+                    code += f'    "{event_name}": (EventConfig("{event_name}", "{event_def.method}", _globals.get("{event_def.name}", dict)) if _globals.get("{event_def.name}") else EventConfig("{event_name}", "{event_def.method}", dict)),\n'
             # Extra events not in the CDDL spec
             for extra_evt in enhancements.get("extra_events", []):
                 ek = extra_evt["event_key"]
@@ -936,26 +1000,6 @@ class CddlModule:
                 ec = extra_evt["event_class"]
                 code += f'    "{ek}": EventConfig("{ek}", "{be}", _globals.get("{ec}", dict)),\n'
             code += "}\n"
-
-        # Check if field() is actually used in the generated code
-        # If so, add the field import after the dataclass import
-        if "field(" in code:
-            # Find where to insert the field import
-            # It should go after "from dataclasses import dataclass" line
-            dataclass_import_pattern = r"from dataclasses import dataclass\n"
-            if re.search(dataclass_import_pattern, code):
-                code = re.sub(
-                    dataclass_import_pattern,
-                    "from dataclasses import dataclass, field\n",
-                    code,
-                    count=1,
-                )
-            elif "from dataclasses import" not in code:
-                # If there's no dataclasses import yet, add field import after typing
-                code = code.replace(
-                    "from typing import Any\n",
-                    "from dataclasses import field\nfrom typing import Any\n",
-                )
 
         return code
 
@@ -967,9 +1011,9 @@ class CddlParser:
         """Initialize parser with CDDL file path."""
         self.cddl_path = Path(cddl_path)
         self.content = ""
-        self.modules: dict[str, CddlModule] = {}
-        self.definitions: dict[str, str] = {}
-        self.event_names: set[str] = set()  # Names of definitions that are events
+        self.modules: Dict[str, CddlModule] = {}
+        self.definitions: Dict[str, str] = {}
+        self.event_names: Set[str] = set()  # Names of definitions that are events
         self._read_file()
 
     def _read_file(self) -> None:
@@ -977,12 +1021,12 @@ class CddlParser:
         if not self.cddl_path.exists():
             raise FileNotFoundError(f"CDDL file not found: {self.cddl_path}")
 
-        with open(self.cddl_path, encoding="utf-8") as f:
+        with open(self.cddl_path, "r", encoding="utf-8") as f:
             self.content = f.read()
 
         logger.info(f"Loaded CDDL file: {self.cddl_path}")
 
-    def parse(self) -> dict[str, CddlModule]:
+    def parse(self) -> Dict[str, CddlModule]:
         """Parse CDDL content and return modules."""
         # Remove comments
         content = self._remove_comments(self.content)
@@ -1046,6 +1090,9 @@ class CddlParser:
               ...
             )
         """
+        # Look for definitions like "BrowsingContextEvent", "SessionEvent", etc.
+        event_union_pattern = re.compile(r"(\w+\.)?(\w+)Event")
+
         for def_name, def_content in self.definitions.items():
             # Check if this looks like an event union (name ends with "Event") and
             # contains a module-qualified reference like "module.EventName".
@@ -1093,7 +1140,9 @@ class CddlParser:
                             description=f"{type_name}",
                         )
                         self.modules[module_name].enums.append(enum_def)
-                        logger.debug(f"Found enum: {def_name} with {len(values)} values")
+                        logger.debug(
+                            f"Found enum: {def_name} with {len(values)} values"
+                        )
                 else:
                     # Extract fields from type definition
                     fields = self._extract_type_fields(def_content)
@@ -1106,7 +1155,9 @@ class CddlParser:
                             description=f"{type_name}",
                         )
                         self.modules[module_name].types.append(type_def)
-                        logger.debug(f"Found type: {def_name} with {len(fields)} fields")
+                        logger.debug(
+                            f"Found type: {def_name} with {len(fields)} fields"
+                        )
 
     def _is_enum_definition(self, definition: str) -> bool:
         """Check if a definition is an enum (string union with /).
@@ -1124,7 +1175,7 @@ class CddlParser:
         # Pattern: "something" / "something_else"
         return " / " in clean_def and '"' in clean_def
 
-    def _extract_enum_values(self, enum_definition: str) -> list[str]:
+    def _extract_enum_values(self, enum_definition: str) -> List[str]:
         """Extract individual values from an enum definition.
 
         Enums are defined as: "value1" / "value2" / "value3"
@@ -1174,7 +1225,7 @@ class CddlParser:
         result = re.sub(r"-?\d+(?:\.\d+)?\.{2,3}-?\d+(?:\.\d+)?", "float", result)
         return result.strip()
 
-    def _extract_type_fields(self, type_definition: str) -> dict[str, str]:
+    def _extract_type_fields(self, type_definition: str) -> Dict[str, str]:
         """Extract fields from a type definition block."""
         fields = {}
 
@@ -1219,7 +1270,9 @@ class CddlParser:
         Event pattern: module.EventName = (method: "module.eventName", params: module.ParamType)
         """
         # Find definitions that are in the event_names set
-        event_pattern = re.compile(r"method:\s*['\"]([^'\"]+)['\"],\s*params:\s*(\w+(?:\.\w+)*)")
+        event_pattern = re.compile(
+            r"method:\s*['\"]([^'\"]+)['\"],\s*params:\s*(\w+(?:\.\w+)*)"
+        )
 
         for def_name, def_content in self.definitions.items():
             # Skip if not identified as an event
@@ -1253,12 +1306,16 @@ class CddlParser:
                     )
 
                     self.modules[module_name].events.append(event)
-                    logger.debug(f"Found event: {def_name} (method={method}, params={params_type})")
+                    logger.debug(
+                        f"Found event: {def_name} (method={method}, params={params_type})"
+                    )
 
     def _extract_commands(self) -> None:
         """Extract command definitions from parsed definitions."""
         # Find command definitions that follow pattern: module.Command = (method: "...", params: ...)
-        command_pattern = re.compile(r"method:\s*['\"]([^'\"]+)['\"],\s*params:\s*(\w+(?:\.\w+)*)")
+        command_pattern = re.compile(
+            r"method:\s*['\"]([^'\"]+)['\"],\s*params:\s*(\w+(?:\.\w+)*)"
+        )
 
         for def_name, def_content in self.definitions.items():
             # Skip definitions that are events (they share the same pattern)
@@ -1278,50 +1335,41 @@ class CddlParser:
                         if module_name not in self.modules:
                             self.modules[module_name] = CddlModule(name=module_name)
 
-                        # Extract parameters and required parameters
-                        params, required_params = self._extract_parameters_and_required(params_type)
+                        # Extract parameters
+                        params = self._extract_parameters(params_type)
 
                         # Create command
                         cmd = CddlCommand(
                             module=module_name,
                             name=command_name,
                             params=params,
-                            required_params=required_params,
                             description=f"Execute {method}",
                         )
 
                         self.modules[module_name].commands.append(cmd)
-                        logger.debug(f"Found command: {method} with params {params_type}")
+                        logger.debug(
+                            f"Found command: {method} with params {params_type}"
+                        )
 
-    def _extract_parameters(self, params_type: str, _seen: set[str] | None = None) -> dict[str, str]:
+    def _extract_parameters(
+        self, params_type: str, _seen: Optional[Set[str]] = None
+    ) -> Dict[str, str]:
         """Extract parameters from a parameter type definition.
 
         Handles both struct types ({...}) and top-level union types (TypeA / TypeB),
         merging all fields from each alternative as optional parameters.
         """
-        params, _ = self._extract_parameters_and_required(params_type, _seen)
-        return params
-
-    def _extract_parameters_and_required(
-        self, params_type: str, _seen: set[str] | None = None
-    ) -> tuple[dict[str, str], set[str]]:
-        """Extract parameters and track which are required from a parameter type definition.
-
-        Returns:
-            Tuple of (params dict, required_params set)
-        """
         params = {}
-        required = set()
 
         if _seen is None:
             _seen = set()
         if params_type in _seen:
-            return params, required
+            return params
         _seen.add(params_type)
 
         if params_type not in self.definitions:
             logger.debug(f"Parameter type not found: {params_type}")
-            return params, required
+            return params
 
         definition = self.definitions[params_type]
 
@@ -1335,13 +1383,10 @@ class CddlParser:
             alternatives = [a.strip() for a in stripped.split("/") if a.strip()]
             all_named = all(re.match(r"^[\w.]+$", a) for a in alternatives)
             if all_named:
-                # For union types, collect parameters from all alternatives
-                # but treat them as optional since the caller only needs to pass one alternative
                 for alt_type in alternatives:
-                    alt_params, _ = self._extract_parameters_and_required(alt_type, _seen)
+                    alt_params = self._extract_parameters(alt_type, _seen)
                     params.update(alt_params)
-                    # Note: We intentionally DON'T add to required, since these are union alternatives
-                return params, required
+                return params
 
         # Remove the outer curly braces and split by comma
         # Then parse each line for key: type patterns
@@ -1358,9 +1403,6 @@ class CddlParser:
                 continue
 
             # Match pattern: [?] name: type
-            # Check if parameter has optional marker (?)
-            is_optional = line.startswith("?")
-
             # Using a simple pattern that handles optional prefix
             match = re.match(r"\?\s*(\w+)\s*:\s*(.+?)(?:,\s*)?$", line)
             if not match:
@@ -1375,14 +1417,11 @@ class CddlParser:
                 # Skip lines that are part of nested definitions
                 if "{" not in normalized_type and "(" not in normalized_type:
                     params[param_name] = normalized_type
-                    if not is_optional:
-                        required.add(param_name)
                     logger.debug(
-                        f"Extracted param {param_name}: {normalized_type} "
-                        f"(required={not is_optional}) from {params_type}"
+                        f"Extracted param {param_name}: {normalized_type} from {params_type}"
                     )
 
-        return params, required
+        return params
 
 
 def module_name_to_class_name(module_name: str) -> str:
@@ -1427,7 +1466,7 @@ def module_name_to_filename(module_name: str) -> str:
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
-def generate_init_file(output_path: Path, modules: dict[str, CddlModule]) -> None:
+def generate_init_file(output_path: Path, modules: Dict[str, CddlModule]) -> None:
     """Generate __init__.py file for the module."""
     init_path = output_path / "__init__.py"
 
@@ -1440,9 +1479,9 @@ from __future__ import annotations
     for module_name in sorted(modules.keys()):
         class_name = module_name_to_class_name(module_name)
         filename = module_name_to_filename(module_name)
-        code += f"from selenium.webdriver.common.bidi.{filename} import {class_name}\n"
+        code += f"from .{filename} import {class_name}\n"
 
-    code += "\n__all__ = [\n"
+    code += f"\n__all__ = [\n"
     for module_name in sorted(modules.keys()):
         class_name = module_name_to_class_name(module_name)
         code += f'    "{class_name}",\n'
@@ -1478,21 +1517,17 @@ def generate_common_file(output_path: Path) -> None:
         "\n"
         '"""Common utilities for BiDi command construction."""\n'
         "\n"
-        "from __future__ import annotations\n"
-        "\n"
-        "from collections.abc import Generator\n"
-        "from typing import Any\n"
+        "from typing import Any, Dict, Generator\n"
         "\n"
         "\n"
         "def command_builder(\n"
-        "    method: str, params: dict[str, Any] | None = None\n"
-        ") -> Generator[dict[str, Any], Any, Any]:\n"
+        "    method: str, params: Dict[str, Any]\n"
+        ") -> Generator[Dict[str, Any], Any, Any]:\n"
         '    """Build a BiDi command generator.\n'
         "\n"
         "    Args:\n"
         '        method: The BiDi method name (e.g., "session.status", "browser.close")\n'
-        "        params: The parameters for the command. If omitted, an empty\n"
-        "            dictionary is sent.\n"
+        "        params: The parameters for the command\n"
         "\n"
         "    Yields:\n"
         "        A dictionary representing the BiDi command\n"
@@ -1500,8 +1535,6 @@ def generate_common_file(output_path: Path) -> None:
         "    Returns:\n"
         "        The result from the BiDi command execution\n"
         '    """\n'
-        "    if params is None:\n"
-        "        params = {}\n"
         '    result = yield {"method": method, "params": params}\n'
         "    return result\n"
     )
@@ -1576,9 +1609,9 @@ def generate_permissions_file(output_path: Path) -> None:
         "from __future__ import annotations\n"
         "\n"
         "from enum import Enum\n"
-        "from typing import Any\n"
+        "from typing import Any, Optional, Union\n"
         "\n"
-        "from selenium.webdriver.common.bidi.common import command_builder\n"
+        "from .common import command_builder\n"
         "\n"
         '_VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}\n'
         "\n"
@@ -1619,10 +1652,10 @@ def generate_permissions_file(output_path: Path) -> None:
         "\n"
         "    def set_permission(\n"
         "        self,\n"
-        "        descriptor: PermissionDescriptor | str,\n"
-        "        state: PermissionState | str,\n"
-        "        origin: str | None = None,\n"
-        "        user_context: str | None = None,\n"
+        "        descriptor: Union[PermissionDescriptor, str],\n"
+        "        state: Union[PermissionState, str],\n"
+        "        origin: Optional[str] = None,\n"
+        "        user_context: Optional[str] = None,\n"
         "    ) -> None:\n"
         '        """Set a permission for a given origin.\n'
         "\n"
@@ -1670,7 +1703,7 @@ def main(
     cddl_file: str,
     output_dir: str,
     spec_version: str = "1.0",
-    enhancements_manifest: str | None = None,
+    enhancements_manifest: Optional[str] = None,
 ) -> None:
     """Main entry point.
 
@@ -1745,7 +1778,9 @@ def main(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate Python WebDriver BiDi modules from CDDL specification")
+    parser = argparse.ArgumentParser(
+        description="Generate Python WebDriver BiDi modules from CDDL specification"
+    )
     parser.add_argument(
         "cddl_file",
         help="Path to CDDL specification file",
@@ -1755,8 +1790,7 @@ if __name__ == "__main__":
         help="Output directory for generated Python modules",
     )
     parser.add_argument(
-        "spec_version",
-        nargs="?",
+        "--version",
         default="1.0",
         help="BiDi spec version (default: 1.0)",
     )
@@ -1781,7 +1815,7 @@ if __name__ == "__main__":
         main(
             args.cddl_file,
             args.output_dir,
-            args.spec_version,
+            args.version,
             args.enhancements_manifest,
         )
         sys.exit(0)

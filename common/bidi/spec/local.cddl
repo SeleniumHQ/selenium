@@ -251,7 +251,6 @@ BrowsingContextResult = (
   browsingContext.NavigateResult /
   browsingContext.PrintResult /
   browsingContext.ReloadResult /
-  browsingContext.SetBypassCSPResult /
   browsingContext.SetViewportResult /
   browsingContext.TraverseHistoryResult
 )
@@ -335,7 +334,6 @@ browsingContext.BaseNavigationInfo = (
   navigation: browsingContext.Navigation / null,
   timestamp: js-uint,
   url: text,
-  ? userContext: browser.UserContext,
 )
 
 browsingContext.NavigationInfo = {
@@ -353,8 +351,7 @@ browsingContext.CaptureScreenshotResult = {
 browsingContext.CloseResult = EmptyResult
 
 browsingContext.CreateResult = {
-  context: browsingContext.BrowsingContext,
-  ? userContext: browser.UserContext
+  context: browsingContext.BrowsingContext
 }
 
 browsingContext.GetTreeResult = {
@@ -377,8 +374,6 @@ browsingContext.PrintResult = {
 }
 
 browsingContext.ReloadResult = browsingContext.NavigateResult
-
-browsingContext.SetBypassCSPResult = EmptyResult
 
 browsingContext.SetViewportResult = EmptyResult
 
@@ -412,8 +407,7 @@ browsingContext.HistoryUpdated = (
 browsingContext.HistoryUpdatedParameters = {
   context: browsingContext.BrowsingContext,
   timestamp: js-uint,
-  url: text,
-  ? userContext: browser.UserContext
+  url: text
 }
 
 browsingContext.DomContentLoaded = (
@@ -483,7 +477,6 @@ browsingContext.UserPromptClosedParameters = {
   context: browsingContext.BrowsingContext,
   accepted: bool,
   type: browsingContext.UserPromptType,
-  ? userContext: browser.UserContext,
   ? userText: text
 }
 
@@ -497,7 +490,6 @@ browsingContext.UserPromptOpenedParameters = {
   handler: session.UserPromptHandlerType,
   message: text,
   type: browsingContext.UserPromptType,
-  ? userContext: browser.UserContext,
   ? defaultValue: text
 }
 
@@ -510,7 +502,8 @@ EmulationResult = (
   emulation.SetScrollbarTypeOverrideResult /
   emulation.SetTimezoneOverrideResult /
   emulation.SetTouchOverrideResult /
-  emulation.SetUserAgentOverrideResult
+  emulation.SetUserAgentOverrideResult /
+  emulation.SetViewportMetaOverrideResult
 )
 
 emulation.SetForcedColorsModeThemeOverrideResult = EmptyResult
@@ -526,6 +519,8 @@ emulation.SetScreenSettingsOverrideResult = EmptyResult
 emulation.SetScreenOrientationOverrideResult = EmptyResult
 
 emulation.SetUserAgentOverrideResult = EmptyResult
+
+emulation.SetViewportMetaOverrideResult = EmptyResult
 
 emulation.SetScriptingEnabledResult = EmptyResult
 
@@ -573,7 +568,6 @@ network.BaseParameters = (
     redirectCount: js-uint,
     request: network.RequestData,
     timestamp: js-uint,
-    ? userContext: browser.UserContext / null,
     ? intercepts: [+network.Intercept]
 )
 
@@ -932,7 +926,6 @@ script.WindowRealmInfo = {
   script.BaseRealmInfo,
   type: "window",
   context: browsingContext.BrowsingContext,
-  ? userContext: browser.UserContext,
   ? sandbox: text
 }
 
@@ -1192,8 +1185,7 @@ script.StackTrace = {
 
 script.Source = {
   realm: script.Realm,
-  ? context: browsingContext.BrowsingContext,
-  ? userContext: browser.UserContext
+  ? context: browsingContext.BrowsingContext
 }
 
 script.AddPreloadScriptResult = {
@@ -1303,12 +1295,6 @@ log.EntryAdded = (
  params: log.Entry,
 )
 
-InputResult = (
-  input.PerformActionsResult /
-  input.ReleaseActionsResult /
-  input.SetFilesResult
-)
-
 
 InputEvent = (
   input.FileDialogOpened
@@ -1327,7 +1313,6 @@ input.FileDialogOpened = (
 
 input.FileDialogInfo = {
    context: browsingContext.BrowsingContext,
-   ? userContext: browser.UserContext,
    ? element: script.SharedReference,
    multiple: bool,
 }

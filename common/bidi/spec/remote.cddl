@@ -273,7 +273,6 @@ BrowsingContextCommand = (
   browsingContext.Navigate //
   browsingContext.Print //
   browsingContext.Reload //
-  browsingContext.SetBypassCSP //
   browsingContext.SetViewport //
   browsingContext.TraverseHistory
 )
@@ -481,17 +480,6 @@ browsingContext.ReloadParameters = {
   ? wait: browsingContext.ReadinessState,
 }
 
-browsingContext.SetBypassCSP = (
-  method: "browsingContext.setBypassCSP",
-  params: browsingContext.SetBypassCSPParameters
-)
-
-browsingContext.SetBypassCSPParameters = {
-  bypass: true / null,
-  ? contexts: [+browsingContext.BrowsingContext],
-  ? userContexts: [+browser.UserContext],
-}
-
 browsingContext.SetViewport = (
   method: "browsingContext.setViewport",
   params: browsingContext.SetViewportParameters
@@ -530,7 +518,8 @@ EmulationCommand = (
   emulation.SetScrollbarTypeOverride //
   emulation.SetTimezoneOverride //
   emulation.SetTouchOverride //
-  emulation.SetUserAgentOverride
+  emulation.SetUserAgentOverride //
+  emulation.SetViewportMetaOverride
 )
 
 
@@ -588,10 +577,10 @@ emulation.SetLocaleOverrideParameters = {
 
 emulation.SetNetworkConditions = (
   method: "emulation.setNetworkConditions",
-  params: emulation.SetNetworkConditionsParameters
+  params: emulation.setNetworkConditionsParameters
 )
 
-emulation.SetNetworkConditionsParameters = {
+emulation.setNetworkConditionsParameters = {
   networkConditions: emulation.NetworkConditions / null,
   ? contexts: [+browsingContext.BrowsingContext],
   ? userContexts: [+browser.UserContext],
@@ -645,6 +634,17 @@ emulation.SetUserAgentOverride = (
 
 emulation.SetUserAgentOverrideParameters = {
   userAgent: text / null,
+  ? contexts: [+browsingContext.BrowsingContext],
+  ? userContexts: [+browser.UserContext],
+}
+
+emulation.SetViewportMetaOverride = (
+  method: "emulation.setViewportMetaOverride",
+  params: emulation.SetViewportMetaOverrideParameters
+)
+
+emulation.SetViewportMetaOverrideParameters = {
+  viewportMeta: true / null,
   ? contexts: [+browsingContext.BrowsingContext],
   ? userContexts: [+browser.UserContext],
 }
@@ -876,10 +876,10 @@ network.ContinueWithAuthNoCredentials = (
 
 network.DisownData = (
   method: "network.disownData",
-  params: network.DisownDataParameters
+  params: network.disownDataParameters
 )
 
-network.DisownDataParameters = {
+network.disownDataParameters = {
   dataType: network.DataType,
   collector: network.Collector,
   request: network.Request,
@@ -1500,6 +1500,12 @@ InputCommand = (
   input.SetFiles
 )
 
+InputResult = (
+  input.PerformActionsResult /
+  input.ReleaseActionsResult /
+  input.SetFilesResult
+)
+
 input.ElementOrigin = {
   type: "element",
   element: script.SharedReference
@@ -1619,15 +1625,15 @@ input.WheelScrollAction = {
 }
 
 input.PointerCommonProperties = (
-  ? width: js-uint,
-  ? height: js-uint,
-  ? pressure: (0.0..1.0),
-  ? tangentialPressure: (-1.0..1.0),
-  ? twist: (0..359),
+  ? width: js-uint .default 1,
+  ? height: js-uint .default 1,
+  ? pressure: float .default 0.0,
+  ? tangentialPressure: float .default 0.0,
+  ? twist: (0..359) .default 0,
   ; 0 .. Math.PI / 2
-  ? altitudeAngle: (0.0..1.5707963267948966),
+  ? altitudeAngle: (0.0..1.5707963267948966) .default 0.0,
   ; 0 .. 2 * Math.PI
-  ? azimuthAngle: (0.0..6.283185307179586),
+  ? azimuthAngle: (0.0..6.283185307179586) .default 0.0,
 )
 
 input.Origin = "viewport" / "pointer" / input.ElementOrigin
@@ -1650,6 +1656,17 @@ input.SetFilesParameters = {
   context: browsingContext.BrowsingContext,
   element: script.SharedReference,
   files: [*text]
+}
+
+input.FileDialogOpened = (
+   method: "input.fileDialogOpened",
+   params: input.FileDialogInfo
+)
+
+input.FileDialogInfo = {
+   context: browsingContext.BrowsingContext,
+   ? element: script.SharedReference,
+   multiple: bool,
 }
 
 WebExtensionCommand = (

@@ -122,7 +122,9 @@ class StaleElementReferenceException(WebDriverException):
         screen: str | None = None,
         stacktrace: Sequence[str] | None = None,
     ) -> None:
-        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#staleelementreferenceexception"
+        with_support = (
+            f"{msg}; {SUPPORT_MSG} {ERROR_URL}#staleelementreferenceexception"
+        )
 
         super().__init__(with_support, screen, stacktrace)
 
@@ -189,7 +191,9 @@ class ElementNotInteractableException(InvalidElementStateException):
         screen: str | None = None,
         stacktrace: Sequence[str] | None = None,
     ) -> None:
-        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotinteractableexception"
+        with_support = (
+            f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotinteractableexception"
+        )
 
         super().__init__(with_support, screen, stacktrace)
 
@@ -275,7 +279,9 @@ class ElementClickInterceptedException(WebDriverException):
         screen: str | None = None,
         stacktrace: Sequence[str] | None = None,
     ) -> None:
-        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementclickinterceptedexception"
+        with_support = (
+            f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementclickinterceptedexception"
+        )
 
         super().__init__(with_support, screen, stacktrace)
 

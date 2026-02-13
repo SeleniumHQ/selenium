@@ -1,20 +1,26 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# The MIT License(MIT)
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# Copyright(c) 2018 Hyperion Gray
 #
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files(the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# This code comes from https://github.com/HyperionGray/trio-chrome-devtools-protocol/tree/master/trio_cdp
 
 import contextvars
 import importlib
@@ -54,11 +60,7 @@ def import_devtools(ver):
         # because cdp has been updated but selenium python has not been released yet.
         devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
         versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
-        available_versions = tuple(x for x in versions if x == "latest" or (x.startswith("v") and x[1:].isdigit()))
-        numeric_versions = tuple(x[1:] for x in available_versions if x.startswith("v"))
-        if not numeric_versions:
-            raise
-        latest = max(numeric_versions, key=int)
+        latest = max(int(x[1:]) for x in versions)
         selenium_logger = logging.getLogger(__name__)
         selenium_logger.debug("Falling back to loading `devtools`: v%s", latest)
         devtools = importlib.import_module(f"{base}{latest}")
