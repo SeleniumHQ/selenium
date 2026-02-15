@@ -300,6 +300,9 @@ public static partial class SeleniumManager
                     // Process may have already exited
                 }
 
+                // Await output tasks to prevent unobserved exceptions when process is killed
+                await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
+
                 throw;
             }
 #else
@@ -318,6 +321,12 @@ public static partial class SeleniumManager
             }))
             {
                 await processExitTask.ConfigureAwait(false);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                // Await output tasks to prevent unobserved exceptions when process is killed
+                await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -436,6 +445,18 @@ public static partial class SeleniumManager
                     // Collect non-structured error output for exception reporting
                     errOutputBuilder.AppendLine(line);
                 }
+            }
+        }
+
+        static async Task AwaitAndSuppressExceptionsAsync(params Task[] tasks)
+        {
+            try
+            {
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
+            catch
+            {
+                // Suppress exceptions
             }
         }
     }
