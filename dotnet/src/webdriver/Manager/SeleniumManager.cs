@@ -375,11 +375,8 @@ public static partial class SeleniumManager
         async Task ReadStandardOutputAsync()
         {
             string? line;
-#if NET8_0_OR_GREATER
-            while ((line = await process.StandardOutput.ReadLineAsync(cancellationToken).ConfigureAwait(false)) is not null)
-#else
+
             while ((line = await process.StandardOutput.ReadLineAsync().ConfigureAwait(false)) is not null)
-#endif
             {
                 stdOutputBuilder.AppendLine(line);
             }
@@ -388,11 +385,8 @@ public static partial class SeleniumManager
         async Task ReadErrorOutputAsync()
         {
             string? line;
-#if NET8_0_OR_GREATER
-            while ((line = await process.StandardError.ReadLineAsync(cancellationToken).ConfigureAwait(false)) is not null)
-#else
+
             while ((line = await process.StandardError.ReadLineAsync().ConfigureAwait(false)) is not null)
-#endif
             {
                 var match = LogMessageRegex.Match(line);
 
