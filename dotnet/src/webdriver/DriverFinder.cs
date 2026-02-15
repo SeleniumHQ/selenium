@@ -76,12 +76,12 @@ internal class DriverFinder(DriverOptions options)
 
         if (!File.Exists(driverPath))
         {
-            throw new FileNotFoundException("Driver not found", driverPath);
+            throw new NoSuchDriverException($"Driver not found: {driverPath}");
         }
 
         if (!File.Exists(browserPath))
         {
-            throw new FileNotFoundException("Browser not found", browserPath);
+            throw new NoSuchDriverException($"Browser not found: {browserPath}");
         }
 
         _driverPath = driverPath;
