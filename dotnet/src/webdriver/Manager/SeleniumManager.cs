@@ -61,9 +61,9 @@ public static partial class SeleniumManager
 {
     private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
 
-    // This logic to find Selenium Manager binary is complex and strange.
-    // As soon as Selenium Manager will be real native library (dll ,so, dynlib),
-    // we will be able to use it directly from the .NET bindings, and this logic will be removed.
+    // This logic to find the Selenium Manager binary is complex due to supporting multiple deployment scenarios.
+    // Once Selenium Manager becomes a true native library (dll, so, dylib),
+    // we will be able to reference it directly from the .NET bindings, and this logic will be removed.
     private static readonly Lazy<string> _lazyBinaryFullPath = new(() =>
     {
         if (_logger.IsEnabled(LogEventLevel.Debug))
@@ -371,6 +371,7 @@ public static partial class SeleniumManager
 
         return result;
 
+        // Local functions to read process output streams concurrently
         async Task ReadStandardOutputAsync()
         {
             string? line;
@@ -438,13 +439,17 @@ public static partial class SeleniumManager
                 }
                 else
                 {
+                    // Collect non-structured error output for exception reporting
                     errOutputBuilder.AppendLine(line);
                 }
             }
         }
     }
 
-    // Example log message: [2026-02-10T19:33:13.886Z ERROR] You need to specify a browser or driver
+    // Regex pattern to parse structured log messages from Selenium Manager.
+    // Example: "[2026-02-10T19:33:13.886Z ERROR] You need to specify a browser or driver"
+    // Groups: (1) timestamp, (2) log level, (3) message
+    // The optional tab (\t?) handles formatting variations between log levels.
     const string LogMessageRegexPattern = @"^\[(.*) ([A-Z]+)\t?\] (.*)$";
 
 #if NET8_0_OR_GREATER
