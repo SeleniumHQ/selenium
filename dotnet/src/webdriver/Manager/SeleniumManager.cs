@@ -277,15 +277,12 @@ public static partial class SeleniumManager
         StringBuilder stdOutputBuilder = new();
         StringBuilder errOutputBuilder = new();
 
-        process.OutputDataReceived += HandleStandardOutput;
-        process.ErrorDataReceived += HandleErrorOutput;
-
         try
         {
             process.Start();
 
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            var stdOutputTask = ReadStandardOutputAsync();
+            var errOutputTask = ReadErrorOutputAsync();
 
 #if NET8_0_OR_GREATER
             try
@@ -326,6 +323,9 @@ public static partial class SeleniumManager
             cancellationToken.ThrowIfCancellationRequested();
 #endif
 
+            // Ensure output streams are fully drained before parsing.
+            await Task.WhenAll(stdOutputTask, errOutputTask).ConfigureAwait(false);
+
             if (process.ExitCode != 0)
             {
                 var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {process.StartInfo.FileName} {arguments}");
@@ -353,11 +353,6 @@ public static partial class SeleniumManager
         {
             throw new WebDriverException($"Error starting process: {process.StartInfo.FileName} {arguments}", ex);
         }
-        finally
-        {
-            process.OutputDataReceived -= HandleStandardOutput;
-            process.ErrorDataReceived -= HandleErrorOutput;
-        }
 
         string output = stdOutputBuilder.ToString().Trim();
 
@@ -375,16 +370,21 @@ public static partial class SeleniumManager
 
         return result;
 
-        void HandleStandardOutput(object sender, DataReceivedEventArgs e)
+        async Task ReadStandardOutputAsync()
         {
-            stdOutputBuilder.AppendLine(e.Data);
+            string? line;
+            while ((line = await process.StandardOutput.ReadLineAsync().ConfigureAwait(false)) is not null)
+            {
+                stdOutputBuilder.AppendLine(line);
+            }
         }
 
-        void HandleErrorOutput(object sender, DataReceivedEventArgs e)
+        async Task ReadErrorOutputAsync()
         {
-            if (e.Data is not null)
+            string? line;
+            while ((line = await process.StandardError.ReadLineAsync().ConfigureAwait(false)) is not null)
             {
-                var match = LogMessageRegex.Match(e.Data);
+                var match = LogMessageRegex.Match(line);
 
                 if (match.Success)
                 {
@@ -421,7 +421,7 @@ public static partial class SeleniumManager
                         default:
                             if (_logger.IsEnabled(LogEventLevel.Warn))
                             {
-                                _logger.Warn($"Unknown log level '{logLevel}' in Selenium Manager log message. Original message: {e.Data}");
+                                _logger.Warn($"Unknown log level '{logLevel}' in Selenium Manager log message. Original message: {line}");
                             }
                             _logger.LogMessage(dateTime, LogEventLevel.Trace, message);
                             break;
@@ -429,7 +429,7 @@ public static partial class SeleniumManager
                 }
                 else
                 {
-                    errOutputBuilder.AppendLine(e.Data);
+                    errOutputBuilder.AppendLine(line);
                 }
             }
         }
