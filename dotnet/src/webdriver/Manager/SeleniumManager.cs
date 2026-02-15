@@ -350,7 +350,7 @@ public static partial class SeleniumManager
                 throw new WebDriverException(exceptionMessageBuilder.ToString());
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             throw new WebDriverException($"Error starting process: {process.StartInfo.FileName} {arguments}", ex);
         }
