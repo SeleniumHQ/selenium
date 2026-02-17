@@ -41,9 +41,9 @@ namespace OpenQA.Selenium.Manager;
 /// Manages automatic discovery and configuration of browser drivers.
 /// </summary>
 /// <remarks>
+/// <para>
 /// <b>Warning: This is an experimental API that is subject to change in future versions.</b>
-/// </remarks>
-/// <remarks>
+/// </para>
 /// Selenium Manager automatically locates or downloads the appropriate browser driver
 /// for the specified browser. It eliminates the need for manual driver management by:
 /// <list type="bullet">
@@ -320,7 +320,7 @@ public static partial class SeleniumManager
                 }
             }))
             {
-                await processExitTask.ConfigureAwait(false);
+                await Task.WhenAny(processExitTask, Task.Delay(-1, cancellationToken)).ConfigureAwait(false);
             }
 
             if (cancellationToken.IsCancellationRequested)
