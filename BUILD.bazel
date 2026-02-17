@@ -1,11 +1,11 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_link_package")
 load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@package_metadata//licenses/rules:license.bzl", "license")
+load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
 load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
 load("//java:defs.bzl", "artifact", "java_binary")
-load("@package_metadata//licenses/rules:license.bzl", "license")
-load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
 
 exports_files([
     "package.json",
