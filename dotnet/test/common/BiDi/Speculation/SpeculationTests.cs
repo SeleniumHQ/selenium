@@ -28,6 +28,7 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 internal class SpeculationTests : BiDiTestFixture
 {
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenToPrefetchStatusUpdatedEvent()
     {
         var tcs = new TaskCompletionSource<PrefetchStatusUpdatedEventArgs>();
