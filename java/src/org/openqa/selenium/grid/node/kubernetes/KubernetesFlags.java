@@ -101,6 +101,16 @@ public class KubernetesFlags implements HasRoles {
   private Integer serverStartTimeout;
 
   @Parameter(
+      names = {"--kubernetes-termination-grace-period"},
+      description =
+          "Seconds to wait for containers to shut down gracefully before force-killing them")
+  @ConfigValue(
+      section = KubernetesOptions.K8S_SECTION,
+      name = "termination-grace-period",
+      example = "30")
+  private Integer terminationGracePeriod;
+
+  @Parameter(
       names = {"--kubernetes-resource-requests"},
       description =
           "Override resource requests for browser containers (example: cpu=500m,memory=512Mi). "

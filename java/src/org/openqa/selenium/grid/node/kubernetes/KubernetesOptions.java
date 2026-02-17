@@ -31,10 +31,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.utils.Serialization;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,16 +57,12 @@ public class KubernetesOptions {
   static final String DEFAULT_ASSETS_PATH = "/opt/selenium/assets";
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final String DEFAULT_IMAGE_PULL_POLICY = "IfNotPresent";
-  static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   static final int DEFAULT_SERVER_START_TIMEOUT = 120;
+  static final int DEFAULT_TERMINATION_GRACE_PERIOD = 30;
   static final String DEFAULT_LABEL_INHERIT_PREFIX = "se/";
   static final String CONFIGMAP_PREFIX = "configmap:";
   static final String TEMPLATE_KEY = "template";
 
-  private static final String NAMESPACE_FILE_PATH =
-      "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
-  private static final String TOKEN_FILE_PATH =
-      "/var/run/secrets/kubernetes.io/serviceaccount/token";
   private static final Logger LOG = Logger.getLogger(KubernetesOptions.class.getName());
   private static final Json JSON = new Json();
   private final org.openqa.selenium.grid.config.Config config;
@@ -93,6 +85,7 @@ public class KubernetesOptions {
 
     String namespace = getNamespace(kubeClient);
     Duration serverStartTimeout = getServerStartTimeout();
+    long terminationGracePeriod = getTerminationGracePeriod();
     String videoImage = getVideoImage();
     String assetsPath = getAssetsPath();
     String labelInheritPrefix = getLabelInheritPrefix();
@@ -142,10 +135,7 @@ public class KubernetesOptions {
 
     int configsCount = allConfigs.size();
 
-    int maxSessions =
-        Math.min(
-            config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
-            DEFAULT_MAX_SESSIONS);
+    int maxSessions = options.getMaxSessions();
 
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     for (int i = 0; i < configsCount; i++) {
@@ -171,13 +161,15 @@ public class KubernetesOptions {
                   clientFactory,
                   options.getSessionTimeout(),
                   serverStartTimeout,
-                  kubeClient,
+                  this::buildKubernetesClient,
                   namespace,
                   templateBrowserImage,
                   caps,
                   jobTemplate,
                   videoImage,
                   assetsPath,
+                  inheritedPodSpec,
+                  terminationGracePeriod,
                   usePortForwarding,
                   capabilities -> options.getSlotMatcher().matches(caps, capabilities)));
         }
@@ -195,7 +187,7 @@ public class KubernetesOptions {
                   clientFactory,
                   options.getSessionTimeout(),
                   serverStartTimeout,
-                  kubeClient,
+                  this::buildKubernetesClient,
                   namespace,
                   configKey,
                   caps,
@@ -207,6 +199,7 @@ public class KubernetesOptions {
                   videoImage,
                   assetsPath,
                   inheritedPodSpec,
+                  terminationGracePeriod,
                   usePortForwarding,
                   capabilities -> options.getSlotMatcher().matches(caps, capabilities)));
         }
@@ -328,34 +321,22 @@ public class KubernetesOptions {
   }
 
   String getNamespace(KubernetesClient kubeClient) {
-    // Priority: config → client config namespace → in-cluster namespace file → "default"
+    // Priority: config → client auto-detected namespace → "default"
+    // The fabric8 KubernetesClient.getNamespace() already reads from kubeconfig,
+    // in-cluster service account namespace file, and KUBERNETES_NAMESPACE env var.
     return config
         .get(K8S_SECTION, "namespace")
         .orElseGet(
             () -> {
-              String clientNamespace = null;
               if (kubeClient != null) {
                 try {
-                  clientNamespace = kubeClient.getNamespace();
+                  String clientNamespace = kubeClient.getNamespace();
+                  if (clientNamespace != null && !clientNamespace.isEmpty()) {
+                    LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
+                    return clientNamespace;
+                  }
                 } catch (RuntimeException e) {
                   LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
-                }
-              }
-              if (clientNamespace != null && !clientNamespace.isEmpty()) {
-                LOG.info("Auto-detected K8s namespace from client config: " + clientNamespace);
-                return clientNamespace;
-              }
-
-              Path namespacePath = Paths.get(NAMESPACE_FILE_PATH);
-              if (Files.exists(namespacePath)) {
-                try {
-                  String ns = Files.readString(namespacePath).trim();
-                  if (!ns.isEmpty()) {
-                    LOG.info("Auto-detected K8s namespace from ServiceAccount: " + ns);
-                    return ns;
-                  }
-                } catch (IOException e) {
-                  LOG.warning("Failed to read namespace file: " + e.getMessage());
                 }
               }
               return "default";
@@ -365,6 +346,12 @@ public class KubernetesOptions {
   private Duration getServerStartTimeout() {
     return Duration.ofSeconds(
         config.getInt(K8S_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
+  }
+
+  private long getTerminationGracePeriod() {
+    return config
+        .getInt(K8S_SECTION, "termination-grace-period")
+        .orElse(DEFAULT_TERMINATION_GRACE_PERIOD);
   }
 
   Map<String, Quantity> getResourceRequests() {
@@ -396,7 +383,8 @@ public class KubernetesOptions {
   }
 
   boolean isRunningInKubernetes() {
-    return Files.exists(Paths.get(TOKEN_FILE_PATH));
+    String serviceHost = System.getenv("KUBERNETES_SERVICE_HOST");
+    return serviceHost != null && !serviceHost.isEmpty();
   }
 
   InheritedPodSpec inspectNodePod(
@@ -428,6 +416,11 @@ public class KubernetesOptions {
           pod.getMetadata() != null ? pod.getMetadata().getLabels() : null;
       Map<String, String> podAnnotations =
           pod.getMetadata() != null ? pod.getMetadata().getAnnotations() : null;
+      String nodePodName =
+          pod.getMetadata() != null && pod.getMetadata().getName() != null
+              ? pod.getMetadata().getName()
+              : podName;
+      String nodePodUid = pod.getMetadata() != null ? pod.getMetadata().getUid() : null;
 
       // Extract container-level fields from the first container
       String containerImagePullPolicy = null;
@@ -488,7 +481,9 @@ public class KubernetesOptions {
               containerImagePullPolicy,
               containerResourceRequests,
               containerResourceLimits,
-              assetsClaimName);
+              assetsClaimName,
+              nodePodName,
+              nodePodUid);
 
       LOG.info(String.format("Inspected Node Pod '%s' for inheritable spec fields", podName));
       return inherited;

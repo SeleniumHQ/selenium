@@ -44,6 +44,8 @@ public class InheritedPodSpec {
   private final Map<String, Quantity> resourceRequests;
   private final Map<String, Quantity> resourceLimits;
   private final String assetsClaimName;
+  private final String nodePodName;
+  private final String nodePodUid;
 
   public InheritedPodSpec(
       List<Toleration> tolerations,
@@ -61,6 +63,44 @@ public class InheritedPodSpec {
       Map<String, Quantity> resourceRequests,
       Map<String, Quantity> resourceLimits,
       String assetsClaimName) {
+    this(
+        tolerations,
+        affinity,
+        imagePullSecrets,
+        dnsPolicy,
+        dnsConfig,
+        securityContext,
+        priorityClassName,
+        nodeSelector,
+        serviceAccountName,
+        labels,
+        annotations,
+        imagePullPolicy,
+        resourceRequests,
+        resourceLimits,
+        assetsClaimName,
+        null,
+        null);
+  }
+
+  public InheritedPodSpec(
+      List<Toleration> tolerations,
+      Affinity affinity,
+      List<LocalObjectReference> imagePullSecrets,
+      String dnsPolicy,
+      PodDNSConfig dnsConfig,
+      PodSecurityContext securityContext,
+      String priorityClassName,
+      Map<String, String> nodeSelector,
+      String serviceAccountName,
+      Map<String, String> labels,
+      Map<String, String> annotations,
+      String imagePullPolicy,
+      Map<String, Quantity> resourceRequests,
+      Map<String, Quantity> resourceLimits,
+      String assetsClaimName,
+      String nodePodName,
+      String nodePodUid) {
     this.tolerations = tolerations != null ? List.copyOf(tolerations) : List.of();
     this.affinity = affinity;
     this.imagePullSecrets = imagePullSecrets != null ? List.copyOf(imagePullSecrets) : List.of();
@@ -78,6 +118,8 @@ public class InheritedPodSpec {
     this.resourceLimits =
         resourceLimits != null ? Collections.unmodifiableMap(resourceLimits) : Map.of();
     this.assetsClaimName = assetsClaimName;
+    this.nodePodName = nodePodName;
+    this.nodePodUid = nodePodUid;
   }
 
   public static InheritedPodSpec empty() {
@@ -100,7 +142,8 @@ public class InheritedPodSpec {
         || imagePullPolicy != null
         || !resourceRequests.isEmpty()
         || !resourceLimits.isEmpty()
-        || assetsClaimName != null;
+        || assetsClaimName != null
+        || hasNodePodOwnerReference();
   }
 
   public List<Toleration> getTolerations() {
@@ -161,5 +204,20 @@ public class InheritedPodSpec {
 
   public String getAssetsClaimName() {
     return assetsClaimName;
+  }
+
+  public boolean hasNodePodOwnerReference() {
+    return nodePodName != null
+        && !nodePodName.isEmpty()
+        && nodePodUid != null
+        && !nodePodUid.isEmpty();
+  }
+
+  public String getNodePodName() {
+    return nodePodName;
+  }
+
+  public String getNodePodUid() {
+    return nodePodUid;
   }
 }

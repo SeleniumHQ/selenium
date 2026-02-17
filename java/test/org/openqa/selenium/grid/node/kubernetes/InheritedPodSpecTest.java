@@ -56,6 +56,9 @@ class InheritedPodSpecTest {
     assertThat(spec.getResourceRequests()).isEmpty();
     assertThat(spec.getResourceLimits()).isEmpty();
     assertThat(spec.getAssetsClaimName()).isNull();
+    assertThat(spec.getNodePodName()).isNull();
+    assertThat(spec.getNodePodUid()).isNull();
+    assertThat(spec.hasNodePodOwnerReference()).isFalse();
   }
 
   @Test
@@ -374,5 +377,32 @@ class InheritedPodSpecTest {
             "my-pvc");
     assertThat(spec.hasInheritedFields()).isTrue();
     assertThat(spec.getAssetsClaimName()).isEqualTo("my-pvc");
+  }
+
+  @Test
+  void specWithNodePodOwnerReferenceHasInheritedFields() {
+    InheritedPodSpec spec =
+        new InheritedPodSpec(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "node-pod-abc",
+            "12345-uid");
+    assertThat(spec.hasInheritedFields()).isTrue();
+    assertThat(spec.hasNodePodOwnerReference()).isTrue();
+    assertThat(spec.getNodePodName()).isEqualTo("node-pod-abc");
+    assertThat(spec.getNodePodUid()).isEqualTo("12345-uid");
   }
 }

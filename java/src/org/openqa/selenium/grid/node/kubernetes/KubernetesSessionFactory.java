@@ -31,6 +31,8 @@ import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReference;
+import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodCondition;
@@ -74,8 +76,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -124,7 +129,8 @@ public class KubernetesSessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Duration sessionTimeout;
   private final Duration serverStartTimeout;
-  private final KubernetesClient kubeClient;
+  private final Supplier<KubernetesClient> kubeClientSupplier;
+  private volatile KubernetesClient kubeClient;
   private final String namespace;
   private final String browserImage;
   private final Capabilities stereotype;
@@ -137,15 +143,17 @@ public class KubernetesSessionFactory implements SessionFactory {
   private final String assetsPath;
   private final InheritedPodSpec inheritedPodSpec;
   private final Job jobTemplate;
+  private final long terminationGracePeriodSeconds;
   private final boolean usePortForwarding;
   private final Predicate<Capabilities> predicate;
+  private final OwnerReference nodePodOwnerReference;
 
   public KubernetesSessionFactory(
       Tracer tracer,
       HttpClient.Factory clientFactory,
       Duration sessionTimeout,
       Duration serverStartTimeout,
-      KubernetesClient kubeClient,
+      Supplier<KubernetesClient> kubeClientSupplier,
       String namespace,
       String browserImage,
       Capabilities stereotype,
@@ -157,13 +165,15 @@ public class KubernetesSessionFactory implements SessionFactory {
       String videoImage,
       String assetsPath,
       InheritedPodSpec inheritedPodSpec,
+      long terminationGracePeriodSeconds,
       boolean usePortForwarding,
       Predicate<Capabilities> predicate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.serverStartTimeout = Require.nonNull("Server start timeout", serverStartTimeout);
-    this.kubeClient = Require.nonNull("KubernetesClient", kubeClient);
+    this.kubeClientSupplier = Require.nonNull("KubernetesClient supplier", kubeClientSupplier);
+    this.kubeClient = kubeClientSupplier.get();
     this.namespace = Require.nonNull("Namespace", namespace);
     this.browserImage = Require.nonNull("Browser image", browserImage);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -175,9 +185,11 @@ public class KubernetesSessionFactory implements SessionFactory {
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.inheritedPodSpec = Require.nonNull("Inherited pod spec", inheritedPodSpec);
+    this.terminationGracePeriodSeconds = terminationGracePeriodSeconds;
     this.jobTemplate = null;
     this.usePortForwarding = usePortForwarding;
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.nodePodOwnerReference = createNodePodOwnerReference(this.inheritedPodSpec);
   }
 
   public KubernetesSessionFactory(
@@ -185,20 +197,56 @@ public class KubernetesSessionFactory implements SessionFactory {
       HttpClient.Factory clientFactory,
       Duration sessionTimeout,
       Duration serverStartTimeout,
-      KubernetesClient kubeClient,
+      Supplier<KubernetesClient> kubeClientSupplier,
       String namespace,
       String browserImage,
       Capabilities stereotype,
       Job jobTemplate,
       String videoImage,
       String assetsPath,
+      long terminationGracePeriodSeconds,
+      boolean usePortForwarding,
+      Predicate<Capabilities> predicate) {
+    this(
+        tracer,
+        clientFactory,
+        sessionTimeout,
+        serverStartTimeout,
+        kubeClientSupplier,
+        namespace,
+        browserImage,
+        stereotype,
+        jobTemplate,
+        videoImage,
+        assetsPath,
+        InheritedPodSpec.empty(),
+        terminationGracePeriodSeconds,
+        usePortForwarding,
+        predicate);
+  }
+
+  public KubernetesSessionFactory(
+      Tracer tracer,
+      HttpClient.Factory clientFactory,
+      Duration sessionTimeout,
+      Duration serverStartTimeout,
+      Supplier<KubernetesClient> kubeClientSupplier,
+      String namespace,
+      String browserImage,
+      Capabilities stereotype,
+      Job jobTemplate,
+      String videoImage,
+      String assetsPath,
+      InheritedPodSpec inheritedPodSpec,
+      long terminationGracePeriodSeconds,
       boolean usePortForwarding,
       Predicate<Capabilities> predicate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.serverStartTimeout = Require.nonNull("Server start timeout", serverStartTimeout);
-    this.kubeClient = Require.nonNull("KubernetesClient", kubeClient);
+    this.kubeClientSupplier = Require.nonNull("KubernetesClient supplier", kubeClientSupplier);
+    this.kubeClient = kubeClientSupplier.get();
     this.namespace = Require.nonNull("Namespace", namespace);
     this.browserImage = Require.nonNull("Browser image", browserImage);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -210,9 +258,11 @@ public class KubernetesSessionFactory implements SessionFactory {
     this.nodeSelector = Map.of();
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
-    this.inheritedPodSpec = InheritedPodSpec.empty();
+    this.inheritedPodSpec = Require.nonNull("Inherited pod spec", inheritedPodSpec);
+    this.terminationGracePeriodSeconds = terminationGracePeriodSeconds;
     this.usePortForwarding = usePortForwarding;
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.nodePodOwnerReference = createNodePodOwnerReference(this.inheritedPodSpec);
   }
 
   @Override
@@ -223,6 +273,45 @@ public class KubernetesSessionFactory implements SessionFactory {
   @Override
   public boolean test(Capabilities capabilities) {
     return predicate.test(capabilities);
+  }
+
+  /**
+   * Executes a K8s API call with automatic connection refresh on stale connection errors. If the
+   * call fails due to a closed connection (e.g. idle timeout from Vert.x/Netty), the client is
+   * rebuilt from the supplier and the call is retried once.
+   */
+  private <T> T withK8sRetry(Supplier<T> action) {
+    try {
+      return action.get();
+    } catch (KubernetesClientException e) {
+      if (isConnectionError(e)) {
+        LOG.info("K8s API connection lost, refreshing client and retrying: " + e.getMessage());
+        refreshClient();
+        return action.get();
+      }
+      throw e;
+    }
+  }
+
+  private synchronized void refreshClient() {
+    try {
+      kubeClient.close();
+    } catch (Exception e) {
+      LOG.log(Level.FINE, "Error closing stale K8s client", e);
+    }
+    kubeClient = kubeClientSupplier.get();
+  }
+
+  static boolean isConnectionError(Throwable e) {
+    Throwable t = e;
+    while (t != null) {
+      String msg = t.getMessage();
+      if (msg != null && msg.contains("Connection was closed")) {
+        return true;
+      }
+      t = t.getCause();
+    }
+    return false;
   }
 
   @Override
@@ -251,11 +340,12 @@ public class KubernetesSessionFactory implements SessionFactory {
               : buildJobSpec(jobName, sessionRequest.getDesiredCapabilities());
 
       try {
-        kubeClient.batch().v1().jobs().inNamespace(namespace).resource(job).create();
+        withK8sRetry(
+            () -> kubeClient.batch().v1().jobs().inNamespace(namespace).resource(job).create());
       } catch (KubernetesClientException e) {
         String message = String.format("Failed to create K8s Job %s: %s", jobName, e.getMessage());
         LOG.warning(message);
-        return Either.left(new SessionNotCreatedException(message));
+        return Either.left(new RetrySessionRequestException(message));
       }
 
       attributeMap.put("k8s.job.name", jobName);
@@ -290,13 +380,25 @@ public class KubernetesSessionFactory implements SessionFactory {
       String connectHost;
       int connectPort;
       if (usePortForwarding) {
-        portForward =
-            kubeClient.pods().inNamespace(namespace).withName(podName).portForward(BROWSER_PORT);
-        connectHost = "localhost";
-        connectPort = portForward.getLocalPort();
-        LOG.info(
-            String.format(
-                "Port-forwarding %s:%d → localhost:%d", podName, BROWSER_PORT, connectPort));
+        try {
+          portForward =
+              withK8sRetry(
+                  () ->
+                      kubeClient
+                          .pods()
+                          .inNamespace(namespace)
+                          .withName(podName)
+                          .portForward(BROWSER_PORT));
+          connectHost = "localhost";
+          connectPort = portForward.getLocalPort();
+          LOG.info(
+              String.format(
+                  "Port-forwarding %s:%d → localhost:%d", podName, BROWSER_PORT, connectPort));
+        } catch (KubernetesClientException e) {
+          deleteJob(jobName);
+          return Either.left(
+              new RetrySessionRequestException("Failed to set up port-forward: " + e.getMessage()));
+        }
       } else {
         connectHost = podIp;
         connectPort = BROWSER_PORT;
@@ -385,6 +487,12 @@ public class KubernetesSessionFactory implements SessionFactory {
       span.addEvent("Kubernetes driver service created session", attributeMap);
       LOG.fine(
           String.format("Created session: %s - %s (job: %s)", id, mergedCapabilities, jobName));
+      String videoFileName = null;
+      if (recordVideoForSession(sessionRequest.getDesiredCapabilities())
+          && !isVideoFileNameAuto()) {
+        videoFileName =
+            resolveVideoFileName(jobName, sessionRequest.getDesiredCapabilities(), id) + ".mp4";
+      }
       return Either.right(
           new KubernetesSession(
               jobName,
@@ -392,6 +500,8 @@ public class KubernetesSessionFactory implements SessionFactory {
               kubeClient,
               podName,
               assetsPath,
+              videoFileName,
+              terminationGracePeriodSeconds,
               portForward,
               tracer,
               client,
@@ -429,7 +539,29 @@ public class KubernetesSessionFactory implements SessionFactory {
     return name;
   }
 
-  private Job buildJobSpec(String jobName, Capabilities sessionCapabilities) {
+  private static OwnerReference createNodePodOwnerReference(InheritedPodSpec inheritedPodSpec) {
+    if (inheritedPodSpec == null || !inheritedPodSpec.hasNodePodOwnerReference()) {
+      return null;
+    }
+
+    return new OwnerReferenceBuilder()
+        .withApiVersion("v1")
+        .withKind("Pod")
+        .withName(inheritedPodSpec.getNodePodName())
+        .withUid(inheritedPodSpec.getNodePodUid())
+        .build();
+  }
+
+  private ObjectMetaBuilder buildJobMetadata(String jobName, Map<String, String> labels) {
+    ObjectMetaBuilder metadataBuilder =
+        new ObjectMetaBuilder().withName(jobName).withNamespace(namespace).withLabels(labels);
+    if (nodePodOwnerReference != null) {
+      metadataBuilder.withOwnerReferences(nodePodOwnerReference);
+    }
+    return metadataBuilder;
+  }
+
+  Job buildJobSpec(String jobName, Capabilities sessionCapabilities) {
     Map<String, String> labels = new HashMap<>();
     // Inherited labels first (lowest precedence)
     if (!inheritedPodSpec.getLabels().isEmpty()) {
@@ -449,7 +581,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
 
     List<Container> containers = new ArrayList<>();
-    containers.add(buildBrowserContainer(sessionCapabilities));
+    containers.add(buildBrowserContainer(jobName, sessionCapabilities));
 
     if (videoImage != null
         && !videoImage.equalsIgnoreCase("false")
@@ -499,7 +631,7 @@ public class KubernetesSessionFactory implements SessionFactory {
             .withRestartPolicy("Never")
             .withContainers(containers)
             .withVolumes(volumes)
-            .withTerminationGracePeriodSeconds(30L);
+            .withTerminationGracePeriodSeconds(terminationGracePeriodSeconds);
 
     // serviceAccountName (already resolved: CLI → inherited → omit)
     if (serviceAccount != null && !serviceAccount.isEmpty()) {
@@ -542,12 +674,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
 
     return new JobBuilder()
-        .withMetadata(
-            new ObjectMetaBuilder()
-                .withName(jobName)
-                .withNamespace(namespace)
-                .withLabels(labels)
-                .build())
+        .withMetadata(buildJobMetadata(jobName, labels).build())
         .withSpec(
             new JobSpecBuilder()
                 .withBackoffLimit(0)
@@ -562,10 +689,8 @@ public class KubernetesSessionFactory implements SessionFactory {
         .build();
   }
 
-  private List<EnvVar> buildSessionEnvVars(Capabilities sessionCapabilities) {
-    List<EnvVar> envVars = new ArrayList<>();
-
-    // Forward SE_* env vars from the current process
+  private void setEnvVarsToContainer(List<EnvVar> envVars) {
+    // Forward SE_* and LANGUAGE env vars from the current process
     System.getenv().entrySet().stream()
         .filter(
             entry ->
@@ -577,7 +702,9 @@ public class KubernetesSessionFactory implements SessionFactory {
                         .withName(entry.getKey())
                         .withValue(entry.getValue())
                         .build()));
+  }
 
+  private void setCapsToEnvVars(Capabilities sessionCapabilities, List<EnvVar> envVars) {
     // Screen resolution from capabilities
     Optional<Dimension> screenResolution = ofNullable(getScreenResolution(sessionCapabilities));
     screenResolution.ifPresent(
@@ -598,29 +725,75 @@ public class KubernetesSessionFactory implements SessionFactory {
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionCapabilities));
     timeZone.ifPresent(
         zone -> envVars.add(new EnvVarBuilder().withName("TZ").withValue(zone.getID()).build()));
+  }
 
-    // Inline video recording when no external video sidecar
-    if (videoImage == null && recordVideoForSession(sessionCapabilities)) {
-      envVars.add(new EnvVarBuilder().withName("SE_RECORD_VIDEO").withValue("true").build());
-      envVars.add(new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue("auto").build());
-      envVars.add(
-          new EnvVarBuilder().withName("SE_VIDEO_RECORD_STANDALONE").withValue("true").build());
+  private List<EnvVar> buildSessionEnvVars(String jobName, Capabilities sessionCapabilities) {
+    List<EnvVar> envVars = new ArrayList<>();
+    // Passing env vars set to the child container
+    setEnvVarsToContainer(envVars);
+    // Capabilities set to env vars with higher precedence
+    setCapsToEnvVars(sessionCapabilities, envVars);
+
+    // Video recording env vars (inline and external use the same naming).
+    // If SE_VIDEO_FILE_NAME is already "auto" from the environment, respect it and let the
+    // recorder handle naming. Otherwise, set it to jobName because sessionId is not yet available.
+    if (recordVideoForSession(sessionCapabilities)) {
+      if (!isVideoFileNameAuto()) {
+        envVars.add(
+            new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
+      }
+
+      // Inline video recording: browser container records directly (no sidecar)
+      if (isNoVideoSidecar()) {
+        envVars.add(new EnvVarBuilder().withName("SE_RECORD_VIDEO").withValue("true").build());
+        envVars.add(
+            new EnvVarBuilder().withName("SE_VIDEO_RECORD_STANDALONE").withValue("true").build());
+      }
     }
 
     return envVars;
   }
 
-  private Container buildBrowserContainer(Capabilities sessionCapabilities) {
-    List<EnvVar> envVars = buildSessionEnvVars(sessionCapabilities);
+  private String resolveVideoFileName(String jobName, Capabilities sessionCapabilities) {
+    return ofNullable(getVideoFileName(sessionCapabilities, "se:videoName"))
+        .or(() -> ofNullable(getVideoFileName(sessionCapabilities, "se:name")))
+        .orElse(jobName);
+  }
+
+  private String resolveVideoFileName(
+      String jobName, Capabilities sessionCapabilities, SessionId sessionId) {
+    String baseName = resolveVideoFileName(jobName, sessionCapabilities);
+    // Append sessionId suffix when the video name came from caps (se:videoName or se:name)
+    // and SE_VIDEO_FILE_NAME_SUFFIX is not explicitly disabled (default: true).
+    boolean nameFromCaps = !baseName.equals(jobName);
+    String suffixEnv = System.getenv("SE_VIDEO_FILE_NAME_SUFFIX");
+    boolean appendSuffix = suffixEnv == null || !suffixEnv.equalsIgnoreCase("false");
+    if (nameFromCaps && appendSuffix) {
+      return baseName + "_" + sessionId;
+    }
+    return baseName;
+  }
+
+  private Container buildBrowserContainer(String jobName, Capabilities sessionCapabilities) {
+    List<EnvVar> envVars = buildSessionEnvVars(jobName, sessionCapabilities);
 
     List<VolumeMount> volumeMounts = new ArrayList<>();
     volumeMounts.add(
         new VolumeMountBuilder().withName(SHM_VOLUME_NAME).withMountPath("/dev/shm").build());
 
-    // Mount assets volume for session artifacts (capabilities, logs, inline video)
+    // Mount assets volume for session artifacts (capabilities, logs, video)
     if (assetsPath != null) {
       volumeMounts.add(
           new VolumeMountBuilder().withName(ASSETS_VOLUME_NAME).withMountPath(assetsPath).build());
+
+      // Inline video recording: mount /videos on browser container (same as external sidecar)
+      if (isNoVideoSidecar() && recordVideoForSession(sessionCapabilities)) {
+        volumeMounts.add(
+            new VolumeMountBuilder()
+                .withName(ASSETS_VOLUME_NAME)
+                .withMountPath(VIDEO_MOUNT_PATH)
+                .build());
+      }
     }
 
     ContainerBuilder containerBuilder =
@@ -651,25 +824,23 @@ public class KubernetesSessionFactory implements SessionFactory {
     return containerBuilder.build();
   }
 
-  private Container buildVideoContainer(String jobName, Capabilities sessionCapabilities) {
+  private List<EnvVar> buildVideoEnvVars(String jobName, Capabilities sessionCapabilities) {
     List<EnvVar> envVars = new ArrayList<>();
+    setEnvVarsToContainer(envVars);
+    setCapsToEnvVars(sessionCapabilities, envVars);
     envVars.add(
         new EnvVarBuilder().withName("DISPLAY_CONTAINER_NAME").withValue("localhost").build());
-
-    Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionCapabilities));
-    timeZone.ifPresent(
-        zone -> envVars.add(new EnvVarBuilder().withName("TZ").withValue(zone.getID()).build()));
-
-    // Unique video file name: user-specified → jobName fallback
-    String videoFileName =
-        ofNullable(getVideoFileName(sessionCapabilities, "se:videoName"))
-            .or(() -> ofNullable(getVideoFileName(sessionCapabilities, "se:name")))
-            .orElse(jobName);
     envVars.add(
-        new EnvVarBuilder()
-            .withName("SE_VIDEO_FILE_NAME")
-            .withValue(videoFileName + ".mp4")
-            .build());
+        new EnvVarBuilder().withName("SE_VIDEO_RECORD_STANDALONE").withValue("true").build());
+    if (!isVideoFileNameAuto()) {
+      envVars.add(
+          new EnvVarBuilder().withName("SE_VIDEO_FILE_NAME").withValue(jobName + ".mp4").build());
+    }
+    return envVars;
+  }
+
+  private Container buildVideoContainer(String jobName, Capabilities sessionCapabilities) {
+    List<EnvVar> envVars = buildVideoEnvVars(jobName, sessionCapabilities);
 
     List<VolumeMount> volumeMounts = new ArrayList<>();
     // Mount assets volume at /videos for video sidecar output
@@ -691,12 +862,13 @@ public class KubernetesSessionFactory implements SessionFactory {
   }
 
   private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
+    String trimRegex = getVideoFileNameTrimRegex();
     Optional<Object> testName =
         ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
     if (testName.isPresent()) {
       String name = testName.get().toString();
       if (!name.isEmpty()) {
-        name = name.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "");
+        name = name.replaceAll(" ", "_").replaceAll(trimRegex, "");
         if (name.length() > 251) {
           name = name.substring(0, 251);
         }
@@ -704,6 +876,32 @@ public class KubernetesSessionFactory implements SessionFactory {
       }
     }
     return null;
+  }
+
+  private String getVideoFileNameTrimRegex() {
+    String defaultRegex = "[^a-zA-Z0-9-_]";
+    String envRegex = System.getenv("SE_VIDEO_FILE_NAME_TRIM_REGEX");
+    if (envRegex == null || envRegex.isEmpty()) {
+      return defaultRegex;
+    }
+    try {
+      Pattern.compile(envRegex);
+      return envRegex;
+    } catch (PatternSyntaxException e) {
+      LOG.warning(
+          String.format(
+              "Invalid SE_VIDEO_FILE_NAME_TRIM_REGEX '%s': %s. Using default: %s",
+              envRegex, e.getMessage(), defaultRegex));
+      return defaultRegex;
+    }
+  }
+
+  private boolean isNoVideoSidecar() {
+    return videoImage == null || videoImage.equalsIgnoreCase("false");
+  }
+
+  private boolean isVideoFileNameAuto() {
+    return "auto".equalsIgnoreCase(System.getenv("SE_VIDEO_FILE_NAME"));
   }
 
   Job buildJobSpecFromTemplate(String jobName, Capabilities sessionCapabilities) {
@@ -722,12 +920,7 @@ public class KubernetesSessionFactory implements SessionFactory {
       labels.put("se/browser", browser.toLowerCase());
     }
 
-    job.setMetadata(
-        new ObjectMetaBuilder()
-            .withName(jobName)
-            .withNamespace(namespace)
-            .withLabels(labels)
-            .build());
+    job.setMetadata(buildJobMetadata(jobName, labels).build());
 
     // Override Job spec fields
     long sessionTimeoutSeconds = sessionTimeout.getSeconds();
@@ -747,14 +940,18 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
     job.getSpec().getTemplate().getMetadata().setLabels(podLabels);
 
-    // Override restartPolicy
+    // Override restartPolicy and termination grace period
     job.getSpec().getTemplate().getSpec().setRestartPolicy("Never");
+    job.getSpec()
+        .getTemplate()
+        .getSpec()
+        .setTerminationGracePeriodSeconds(terminationGracePeriodSeconds);
 
     // Merge browser container
     Container browserContainer =
         findContainerByName(job.getSpec().getTemplate().getSpec().getContainers(), "browser");
     if (browserContainer != null) {
-      mergeBrowserContainer(browserContainer, sessionCapabilities);
+      mergeBrowserContainer(browserContainer, jobName, sessionCapabilities);
     }
 
     // Ensure /dev/shm volume exists
@@ -764,9 +961,14 @@ public class KubernetesSessionFactory implements SessionFactory {
     if (assetsPath != null) {
       ensureAssetsVolume(job);
       ensureVolumeMount(browserContainer, ASSETS_VOLUME_NAME, assetsPath);
+
+      // Inline video recording: mount /videos on browser container (same as external sidecar)
+      if (isNoVideoSidecar() && recordVideoForSession(sessionCapabilities)) {
+        ensureVolumeMount(browserContainer, ASSETS_VOLUME_NAME, VIDEO_MOUNT_PATH);
+      }
     }
 
-    // Handle video container
+    // Handle external video sidecar container
     if (videoImage != null
         && !videoImage.equalsIgnoreCase("false")
         && recordVideoForSession(sessionCapabilities)) {
@@ -795,9 +997,10 @@ public class KubernetesSessionFactory implements SessionFactory {
     return containers.stream().filter(c -> name.equals(c.getName())).findFirst().orElse(null);
   }
 
-  private void mergeBrowserContainer(Container container, Capabilities sessionCapabilities) {
+  private void mergeBrowserContainer(
+      Container container, String jobName, Capabilities sessionCapabilities) {
     // Merge session env vars — session vars win on name conflict
-    List<EnvVar> sessionEnvVars = buildSessionEnvVars(sessionCapabilities);
+    List<EnvVar> sessionEnvVars = buildSessionEnvVars(jobName, sessionCapabilities);
     mergeEnvVars(container, sessionEnvVars);
 
     // Ensure port 4444
@@ -805,29 +1008,16 @@ public class KubernetesSessionFactory implements SessionFactory {
 
     // Ensure /dev/shm mount
     ensureVolumeMount(container, SHM_VOLUME_NAME, "/dev/shm");
+
+    // Inline video recording: mount /videos on browser container (same as external sidecar)
+    if (assetsPath != null && isNoVideoSidecar() && recordVideoForSession(sessionCapabilities)) {
+      ensureVolumeMount(container, ASSETS_VOLUME_NAME, VIDEO_MOUNT_PATH);
+    }
   }
 
   private void mergeVideoContainerEnv(
       Container videoContainer, String jobName, Capabilities sessionCapabilities) {
-    List<EnvVar> envVars = new ArrayList<>();
-    envVars.add(
-        new EnvVarBuilder().withName("DISPLAY_CONTAINER_NAME").withValue("localhost").build());
-
-    Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionCapabilities));
-    timeZone.ifPresent(
-        zone -> envVars.add(new EnvVarBuilder().withName("TZ").withValue(zone.getID()).build()));
-
-    String videoFileName =
-        ofNullable(getVideoFileName(sessionCapabilities, "se:videoName"))
-            .or(() -> ofNullable(getVideoFileName(sessionCapabilities, "se:name")))
-            .orElse(jobName);
-    envVars.add(
-        new EnvVarBuilder()
-            .withName("SE_VIDEO_FILE_NAME")
-            .withValue(videoFileName + ".mp4")
-            .build());
-
-    mergeEnvVars(videoContainer, envVars);
+    mergeEnvVars(videoContainer, buildVideoEnvVars(jobName, sessionCapabilities));
 
     // Ensure video mount path
     if (assetsPath != null) {
@@ -933,6 +1123,22 @@ public class KubernetesSessionFactory implements SessionFactory {
   }
 
   private String[] waitForPodRunning(String jobName) {
+    try {
+      return doWaitForPodRunning(jobName);
+    } catch (KubernetesClientException | SessionNotCreatedException e) {
+      if (isConnectionError(e)) {
+        LOG.info(
+            String.format(
+                "K8s connection lost while waiting for pod (job: %s), refreshing and retrying",
+                jobName));
+        refreshClient();
+        return doWaitForPodRunning(jobName);
+      }
+      throw e;
+    }
+  }
+
+  private String[] doWaitForPodRunning(String jobName) {
     CompletableFuture<String[]> future = new CompletableFuture<>();
 
     try (Watch ignored =

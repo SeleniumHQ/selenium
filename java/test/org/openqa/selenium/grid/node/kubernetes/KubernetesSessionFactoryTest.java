@@ -78,24 +78,65 @@ class KubernetesSessionFactoryTest {
 
   private static KubernetesSessionFactory createTemplateFactory(
       Job template, String videoImage, String assetsPath) {
+    return createTemplateFactory(template, videoImage, assetsPath, InheritedPodSpec.empty());
+  }
+
+  private static KubernetesSessionFactory createTemplateFactory(
+      Job template, String videoImage, String assetsPath, InheritedPodSpec inheritedPodSpec) {
     Tracer tracer = Mockito.mock(Tracer.class);
     HttpClient.Factory clientFactory = Mockito.mock(HttpClient.Factory.class);
-    KubernetesClient kubeClient = Mockito.mock(KubernetesClient.class);
 
     return new KubernetesSessionFactory(
         tracer,
         clientFactory,
         Duration.ofMinutes(5),
         Duration.ofSeconds(120),
-        kubeClient,
+        () -> Mockito.mock(KubernetesClient.class),
         "selenium",
         "selenium/standalone-chrome:latest",
         new ImmutableCapabilities("browserName", "chrome"),
         template,
         videoImage,
         assetsPath,
+        inheritedPodSpec,
+        30L,
         false,
         caps -> true);
+  }
+
+  private static KubernetesSessionFactory createImageFactory(String videoImage, String assetsPath) {
+    return createImageFactory(videoImage, assetsPath, InheritedPodSpec.empty());
+  }
+
+  private static KubernetesSessionFactory createImageFactory(
+      String videoImage, String assetsPath, InheritedPodSpec inheritedPodSpec) {
+    Tracer tracer = Mockito.mock(Tracer.class);
+    HttpClient.Factory clientFactory = Mockito.mock(HttpClient.Factory.class);
+
+    return new KubernetesSessionFactory(
+        tracer,
+        clientFactory,
+        Duration.ofMinutes(5),
+        Duration.ofSeconds(120),
+        () -> Mockito.mock(KubernetesClient.class),
+        "selenium",
+        "selenium/standalone-chrome:latest",
+        new ImmutableCapabilities("browserName", "chrome"),
+        "IfNotPresent",
+        null,
+        Map.of(),
+        Map.of(),
+        Map.of(),
+        videoImage,
+        assetsPath,
+        inheritedPodSpec,
+        30L,
+        false,
+        caps -> true);
+  }
+
+  private static EnvVar findEnvVar(List<EnvVar> envVars, String name) {
+    return envVars.stream().filter(e -> name.equals(e.getName())).findFirst().orElse(null);
   }
 
   @Test
@@ -109,6 +150,74 @@ class KubernetesSessionFactoryTest {
 
     assertThat(job.getMetadata().getName()).isEqualTo("selenium-session-chrome-123");
     assertThat(job.getMetadata().getNamespace()).isEqualTo("selenium");
+  }
+
+  @Test
+  void nodePodOwnerReferenceSetOnTemplateJobMetadata() {
+    Job template = createMinimalJobTemplate();
+    InheritedPodSpec inheritedPodSpec =
+        new InheritedPodSpec(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "node-pod-abc",
+            "pod-uid-123");
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, null, null, inheritedPodSpec);
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "selenium-session-chrome-123", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getMetadata().getOwnerReferences()).hasSize(1);
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getApiVersion()).isEqualTo("v1");
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getKind()).isEqualTo("Pod");
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getName()).isEqualTo("node-pod-abc");
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getUid()).isEqualTo("pod-uid-123");
+  }
+
+  @Test
+  void nodePodOwnerReferenceNotSetWhenUidMissing() {
+    Job template = createMinimalJobTemplate();
+    InheritedPodSpec inheritedPodSpec =
+        new InheritedPodSpec(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "node-pod-abc",
+            null);
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, null, null, inheritedPodSpec);
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "selenium-session-chrome-123", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getMetadata().getOwnerReferences()).isNullOrEmpty();
   }
 
   @Test
@@ -498,5 +607,502 @@ class KubernetesSessionFactoryTest {
     assertThat(KubernetesSessionFactory.findContainerByName(List.of(c1, c2), "video")).isSameAs(c2);
     assertThat(KubernetesSessionFactory.findContainerByName(List.of(c1, c2), "missing")).isNull();
     assertThat(KubernetesSessionFactory.findContainerByName(null, "browser")).isNull();
+  }
+
+  // ---- Image mode: buildJobSpec ----
+
+  @Test
+  void imageModeBrowserContainerHasCorrectImage() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser).isNotNull();
+    assertThat(browser.getImage()).isEqualTo("selenium/standalone-chrome:latest");
+  }
+
+  @Test
+  void imageModeBrowserContainerHasShmMount() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getVolumeMounts())
+        .anyMatch(m -> "dshm".equals(m.getName()) && "/dev/shm".equals(m.getMountPath()));
+  }
+
+  @Test
+  void imageModeHasShmVolume() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    List<Volume> volumes = job.getSpec().getTemplate().getSpec().getVolumes();
+    assertThat(volumes).anyMatch(v -> "dshm".equals(v.getName()));
+  }
+
+  @Test
+  void imageModeJobMetadataCorrect() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getMetadata().getName()).isEqualTo("test-job");
+    assertThat(job.getMetadata().getNamespace()).isEqualTo("selenium");
+    assertThat(job.getMetadata().getLabels()).containsEntry("app", "selenium-session");
+    assertThat(job.getMetadata().getLabels()).containsEntry("se/job-name", "test-job");
+    assertThat(job.getMetadata().getLabels()).containsEntry("se/browser", "chrome");
+  }
+
+  @Test
+  void imageModeOwnerReferenceSetWhenPodIdentityPresent() {
+    InheritedPodSpec podSpec =
+        new InheritedPodSpec(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "node-pod-abc",
+            "pod-uid-123");
+    KubernetesSessionFactory factory = createImageFactory(null, null, podSpec);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getMetadata().getOwnerReferences()).hasSize(1);
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getName()).isEqualTo("node-pod-abc");
+    assertThat(job.getMetadata().getOwnerReferences().get(0).getUid()).isEqualTo("pod-uid-123");
+  }
+
+  // ---- Browser container env vars ----
+
+  @Test
+  void browserContainerHasVideoFileNameEnvVar() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    EnvVar videoFileName = findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME");
+    assertThat(videoFileName).isNotNull();
+    assertThat(videoFileName.getValue()).isEqualTo("test-job.mp4");
+  }
+
+  @Test
+  void browserContainerInlineVideoEnvVarsWhenNoVideoImage() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+  }
+
+  @Test
+  void browserContainerInlineVideoEnvVarsWhenVideoImageFalse() {
+    KubernetesSessionFactory factory = createImageFactory("false", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    // No video sidecar container should be added
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNull();
+  }
+
+  @Test
+  void browserContainerNoInlineVideoEnvVarsWhenVideoImagePresent() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO")).isNull();
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_RECORD_STANDALONE")).isNull();
+  }
+
+  @Test
+  void browserContainerNoVideoEnvVarsWhenNotRecording() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME")).isNull();
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO")).isNull();
+  }
+
+  @Test
+  void browserContainerScreenResolutionFromCaps() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job",
+            new ImmutableCapabilities("browserName", "chrome", "se:screenResolution", "1920x1080"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_WIDTH"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("1920");
+    assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_HEIGHT"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("1080");
+  }
+
+  @Test
+  void browserContainerTimezoneFromCaps() {
+    KubernetesSessionFactory factory = createImageFactory(null, null);
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job",
+            new ImmutableCapabilities("browserName", "chrome", "se:timeZone", "US/Pacific"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "TZ"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("US/Pacific");
+  }
+
+  // ---- Inline video volume mount ----
+
+  @Test
+  void imageModeInlineVideoMountsVideosVolume() {
+    KubernetesSessionFactory factory = createImageFactory(null, "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getVolumeMounts())
+        .anyMatch(m -> "session-assets".equals(m.getName()) && "/videos".equals(m.getMountPath()));
+  }
+
+  @Test
+  void imageModeNoVideosMountWhenNotRecording() {
+    KubernetesSessionFactory factory = createImageFactory(null, "/opt/selenium/assets");
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getVolumeMounts()).noneMatch(m -> "/videos".equals(m.getMountPath()));
+  }
+
+  // ---- Video sidecar container (image mode) ----
+
+  @Test
+  void imageModeVideoSidecarCreatedWhenVideoImagePresent() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(video.getImage()).isEqualTo("selenium/video:latest");
+  }
+
+  @Test
+  void imageModeVideoSidecarHasCorrectEnvVars() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(findEnvVar(video.getEnv(), "DISPLAY_CONTAINER_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("localhost");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+  }
+
+  @Test
+  void imageModeVideoSidecarHasVideosMountPath() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video.getVolumeMounts())
+        .anyMatch(m -> "session-assets".equals(m.getName()) && "/videos".equals(m.getMountPath()));
+  }
+
+  @Test
+  void imageModeVideoSidecarScreenResolutionFromCaps() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpec(
+            "test-job",
+            new ImmutableCapabilities(
+                "browserName", "chrome",
+                "se:recordVideo", true,
+                "se:screenResolution", "1920x1080"));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(findEnvVar(video.getEnv(), "SE_SCREEN_WIDTH"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("1920");
+    assertThat(findEnvVar(video.getEnv(), "SE_SCREEN_HEIGHT"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("1080");
+  }
+
+  @Test
+  void imageModeNoVideoSidecarWhenNotRecording() {
+    KubernetesSessionFactory factory =
+        createImageFactory("selenium/video:latest", "/opt/selenium/assets");
+
+    Job job = factory.buildJobSpec("test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNull();
+  }
+
+  // ---- Template mode: video sidecar ----
+
+  @Test
+  void templateModeVideoContainerEnvVarsMerged() {
+    Job template = createMinimalJobTemplate();
+    // Add a video container to the template
+    template
+        .getSpec()
+        .getTemplate()
+        .getSpec()
+        .getContainers()
+        .add(new ContainerBuilder().withName("video").withImage("selenium/video:latest").build());
+
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, "selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNotNull();
+    assertThat(findEnvVar(video.getEnv(), "DISPLAY_CONTAINER_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("localhost");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(video.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+  }
+
+  @Test
+  void templateModeVideoContainerHasVideosMountPath() {
+    Job template = createMinimalJobTemplate();
+    template
+        .getSpec()
+        .getTemplate()
+        .getSpec()
+        .getContainers()
+        .add(new ContainerBuilder().withName("video").withImage("selenium/video:latest").build());
+
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, "selenium/video:latest", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video.getVolumeMounts())
+        .anyMatch(m -> "session-assets".equals(m.getName()) && "/videos".equals(m.getMountPath()));
+  }
+
+  @Test
+  void templateModeInlineVideoMountsOnBrowserContainer() {
+    Job template = createMinimalJobTemplate();
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, null, "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(browser.getVolumeMounts())
+        .anyMatch(m -> "session-assets".equals(m.getName()) && "/videos".equals(m.getMountPath()));
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+  }
+
+  @Test
+  void templateModeInlineVideoEnvVarsWhenVideoImageFalse() {
+    Job template = createMinimalJobTemplate();
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, "false", "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome", "se:recordVideo", true));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_RECORD_VIDEO"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_RECORD_STANDALONE"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("true");
+    // /videos mount should be on browser container for inline recording
+    assertThat(browser.getVolumeMounts())
+        .anyMatch(m -> "session-assets".equals(m.getName()) && "/videos".equals(m.getMountPath()));
+    // No video sidecar container
+    Container video =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "video");
+    assertThat(video).isNull();
+  }
+
+  @Test
+  void templateModeBrowserContainerEnvVarsMerged() {
+    Job template = createMinimalJobTemplate();
+    KubernetesSessionFactory factory =
+        createTemplateFactory(template, null, "/opt/selenium/assets");
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job",
+            new ImmutableCapabilities(
+                "browserName", "chrome",
+                "se:recordVideo", true,
+                "se:screenResolution", "1280x720",
+                "se:timeZone", "Europe/Berlin"));
+
+    Container browser =
+        KubernetesSessionFactory.findContainerByName(
+            job.getSpec().getTemplate().getSpec().getContainers(), "browser");
+    assertThat(findEnvVar(browser.getEnv(), "SE_VIDEO_FILE_NAME"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("test-job.mp4");
+    assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_WIDTH"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("1280");
+    assertThat(findEnvVar(browser.getEnv(), "SE_SCREEN_HEIGHT"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("720");
+    assertThat(findEnvVar(browser.getEnv(), "TZ"))
+        .isNotNull()
+        .extracting(EnvVar::getValue)
+        .isEqualTo("Europe/Berlin");
   }
 }
