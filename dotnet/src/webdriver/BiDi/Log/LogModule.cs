@@ -43,6 +43,7 @@ public sealed class LogModule : Module
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
         jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
         jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));

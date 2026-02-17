@@ -38,6 +38,8 @@ public abstract record RealmInfo(Realm Realm, string Origin) : EventArgs;
 
 public sealed record WindowRealmInfo(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(Realm, Origin)
 {
+    public Browser.UserContext? UserContext { get; init; }
+    
     public string? Sandbox { get; init; }
 }
 

@@ -65,6 +65,7 @@ public sealed class InputModule : Module
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
 
         _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);

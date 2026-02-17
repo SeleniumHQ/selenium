@@ -21,5 +21,5 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record NavigationInfo(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+public sealed record NavigationInfo(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
     : EventArgs, IBaseNavigationInfo;
