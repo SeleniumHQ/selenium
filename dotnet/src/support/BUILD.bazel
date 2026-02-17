@@ -28,11 +28,7 @@ generated_assembly_info(
 csharp_library(
     name = "support",
     srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "Properties/*.cs",
-        "UI/*.cs",
+        "**/*.cs",
     ]) + [
         ":assembly-info",
         "//dotnet:source_files_support_needs_from_core",
@@ -71,11 +67,7 @@ nuget_pack(
 csharp_library(
     name = "support-strongnamed",
     srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "Properties/*.cs",
-        "UI/*.cs",
+        "**/*.cs",
     ]) + [
         ":assembly-info",
         "//dotnet:source_files_support_needs_from_core",
