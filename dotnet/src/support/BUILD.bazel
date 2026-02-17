@@ -74,6 +74,7 @@ csharp_library(
         "*.cs",
         "Events/*.cs",
         "Extensions/*.cs",
+        "Properties/*.cs"
         "UI/*.cs",
     ]) + [
         ":assembly-info",
