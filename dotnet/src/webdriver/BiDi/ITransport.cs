@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi;
 
 interface ITransport : IDisposable

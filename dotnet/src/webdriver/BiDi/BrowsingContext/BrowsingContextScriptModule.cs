@@ -18,8 +18,6 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;

@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;

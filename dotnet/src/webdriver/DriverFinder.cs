@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;

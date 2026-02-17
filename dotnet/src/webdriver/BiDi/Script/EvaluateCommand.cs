@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.BiDi.Script;
 

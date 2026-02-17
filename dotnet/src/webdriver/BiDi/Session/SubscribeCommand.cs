@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SubscribeCommand(SubscribeParameters @params)

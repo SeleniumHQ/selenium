@@ -17,12 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 #if !NET8_0_OR_GREATER
 using System.Runtime.InteropServices;
 #endif

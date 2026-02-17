@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed record HistoryUpdatedEventArgs(BrowsingContext Context, DateTimeOffset Timestamp, string Url)

@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools;
 

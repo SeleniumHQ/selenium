@@ -17,13 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events;
 

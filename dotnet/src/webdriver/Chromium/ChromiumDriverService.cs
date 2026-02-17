@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Globalization;
 using System.Text;
 

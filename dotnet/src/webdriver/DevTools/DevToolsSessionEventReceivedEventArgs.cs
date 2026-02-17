@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace OpenQA.Selenium.DevTools;
 

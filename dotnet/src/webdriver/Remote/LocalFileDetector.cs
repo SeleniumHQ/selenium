@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace OpenQA.Selenium.Remote;
 

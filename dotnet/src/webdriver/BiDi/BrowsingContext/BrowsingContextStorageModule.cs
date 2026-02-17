@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Storage;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
