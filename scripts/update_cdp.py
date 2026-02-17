@@ -206,8 +206,6 @@ def update_ruby(chrome_milestone):
         True,
     )
 
-    subprocess.run(["bundle", "install"], cwd=root_dir / "rb", check=True)
-
 
 def update_python(chrome_milestone):
     file = root_dir / "py/BUILD.bazel"

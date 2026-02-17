@@ -55,7 +55,7 @@ jobs:
     uses: ./.github/workflows/get-approval.yml
     with:
       title: Release approval required
-      message: Approval is needed to publish ${{ needs.parse-tag.outputs.tag }}.
+      message: "Approval is required to publish ${{ needs.parse-tag.outputs.tag }}."
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -168,7 +168,9 @@ jobs:
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
-    secrets: inherit
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   reset-version:
     name: Generate Nightly Versions

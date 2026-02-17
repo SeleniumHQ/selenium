@@ -25,7 +25,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ":key:"
+          SLACK_ICON_EMOJI: ':raised_hand:'
           SLACK_COLOR: warning
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
