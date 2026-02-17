@@ -41,9 +41,9 @@ namespace OpenQA.Selenium.Manager;
 /// Manages automatic discovery and configuration of browser drivers.
 /// </summary>
 /// <remarks>
-/// <para>
-/// <b>This implementation is still in beta and may change.</b>
-/// </para>
+/// <b>Warning: This is an experimental API that is subject to change in future versions.</b>
+/// </remarks>
+/// <remarks>
 /// Selenium Manager automatically locates or downloads the appropriate browser driver
 /// for the specified browser. It eliminates the need for manual driver management by:
 /// <list type="bullet">

@@ -31,7 +31,7 @@ namespace OpenQA.Selenium;
 /// <param name="options">The driver options specifying browser configuration.</param>
 /// <exception cref="ArgumentNullException">When <paramref name="options"/> is null.</exception>
 /// <remarks>
-/// Warning: This is an experimental API that is subject to change in future versions.
+/// <b>Warning: This is an experimental API that is subject to change in future versions.</b>
 /// </remarks>
 public class DriverFinder(DriverOptions options)
 {
