@@ -69,6 +69,6 @@ internal class SpeculationTests : BiDiTestFixture
         Assert.That(args, Is.Not.Null);
         Assert.That(args.Status, Is.EqualTo(PreloadingStatus.Pending));
         Assert.That(args.Url, Does.Contain("formPage.html"));
-        Assert.That(args.Context, Is.EqualTo(context.Id));
+        Assert.That(args.Context, Is.EqualTo(context));
     }
 }

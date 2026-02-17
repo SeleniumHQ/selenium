@@ -22,6 +22,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
@@ -41,6 +42,8 @@ public sealed class SpeculationModule : Module
 
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        
         _jsonContext = new SpeculationJsonSerializerContext(jsonSerializerOptions);
     }
 }
