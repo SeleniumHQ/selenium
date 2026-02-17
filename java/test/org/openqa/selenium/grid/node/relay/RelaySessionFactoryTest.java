@@ -160,7 +160,7 @@ public class RelaySessionFactoryTest {
   }
 
   @Test
-  void stereotypeSePrefixedCapsAreNotOverriddenByRemoteResponse() {
+  void remoteResponseOverridesStereotypeSePrefixedCaps() {
     String fakeSessionId = UUID.randomUUID().toString();
 
     // Remote returns its own se:downloadsEnabled value
