@@ -7,6 +7,7 @@ java_test_suite(
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/relay",
         "//java/src/org/openqa/selenium/grid/server",
