@@ -52,7 +52,7 @@ internal class SpeculationTests : BiDiTestFixture
             link.id = 'prefetch-link';
             link.textContent = 'Prefetch Target';
             document.body.appendChild(link);
-            
+
             const script = document.createElement('script');
             script.type = 'speculationrules';
             script.textContent = JSON.stringify({
