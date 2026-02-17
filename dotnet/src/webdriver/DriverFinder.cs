@@ -24,12 +24,27 @@ using OpenQA.Selenium.Manager;
 
 namespace OpenQA.Selenium;
 
-internal class DriverFinder(DriverOptions options)
+/// <summary>
+/// Discovers and manages paths to browser drivers and browser binaries.
+/// Uses Selenium Manager to automatically locate compatible driver and browser versions.
+/// </summary>
+/// <param name="options">The driver options specifying browser configuration.</param>
+/// <exception cref="ArgumentNullException">When <paramref name="options"/> is null.</exception>
+/// <remarks>
+/// This API is still in beta and might be changed at any time.
+/// </remarks>
+public class DriverFinder(DriverOptions options)
 {
     private string _driverPath = null!;
     private string _browserPath = null!;
     private readonly DriverOptions options = options ?? throw new ArgumentNullException(nameof(options));
 
+    /// <summary>
+    /// Gets the path to the browser driver executable.
+    /// Discovers the driver path on first call using Selenium Manager.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the full path to the driver executable.</returns>
+    /// <exception cref="NoSuchDriverException">When browser name is not specified or driver/browser cannot be found.</exception>
     public async ValueTask<string> GetDriverPathAsync()
     {
         if (_driverPath is null)
@@ -40,6 +55,12 @@ internal class DriverFinder(DriverOptions options)
         return _driverPath!;
     }
 
+    /// <summary>
+    /// Gets the path to the browser binary.
+    /// Discovers the browser path on first call using Selenium Manager.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the full path to the browser binary.</returns>
+    /// <exception cref="NoSuchDriverException">When browser name is not specified or driver/browser cannot be found.</exception>
     public async ValueTask<string> GetBrowserPathAsync()
     {
         if (_browserPath is null)
