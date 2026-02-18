@@ -20,6 +20,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium;
 
@@ -28,6 +29,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 public abstract class DriverService : IDisposable
 {
+    private static readonly ILogger _logger = Log.GetLogger<DriverService>();
     private bool isDisposed;
     private Process? driverServiceProcess;
 
@@ -371,10 +373,10 @@ public abstract class DriverService : IDisposable
     {
         using var timeoutCts = new CancellationTokenSource(this.InitializationTimeout);
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
-        
+
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.ConnectionClose = true;
-        
+
         Uri serviceHealthUri = new(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
 
         try
@@ -386,21 +388,25 @@ public abstract class DriverService : IDisposable
                 // If the driver service process has exited, we can exit early.
                 if (!this.IsRunning)
                 {
-                    throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
+                    throw new WebDriverException($"Driver service process exited unexpectedly before initialization completed. Service URL: {this.ServiceUrl}");
                 }
 
                 try
                 {
                     using var response = await httpClient.GetAsync(serviceHealthUri, linkedCts.Token).ConfigureAwait(false);
-                    
+
                     // TODO: Consider checking the content of the response to ensure that the service is fully initialized
                     // and ready to accept commands, rather than just checking for a successful status code.
                     if (response.IsSuccessStatusCode)
                     {
+                        if (_logger.IsEnabled(LogEventLevel.Debug))
+                        {
+                            _logger.Debug($"Driver service initialized successfully and ready to accept commands at {this.ServiceUrl}");
+                        }
                         return;
                     }
                 }
-                catch (Exception ex) when (ex is HttpRequestException)
+                catch (HttpRequestException)
                 {
                     // The exception is expected, meaning driver service is not yet initialized.
                 }
@@ -411,7 +417,7 @@ public abstract class DriverService : IDisposable
         }
         catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
         {
-            throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
+            throw new WebDriverException($"Timed out waiting for driver service to initialize after {this.InitializationTimeout.TotalSeconds} seconds. Service URL: {this.ServiceUrl}");
         }
     }
 }
