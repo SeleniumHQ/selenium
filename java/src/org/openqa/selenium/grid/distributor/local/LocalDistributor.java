@@ -199,14 +199,14 @@ public class LocalDistributor extends Distributor implements Closeable {
             newSessionThreadPoolSize,
             0L,
             TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(newSessionThreadPoolSize),
+            new LinkedBlockingQueue<>(),
             r -> {
               Thread thread = new Thread(r);
               thread.setName("Local Distributor - Session Creation");
               thread.setDaemon(true);
               return thread;
             },
-            new ThreadPoolExecutor.CallerRunsPolicy());
+            new ThreadPoolExecutor.AbortPolicy());
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
 
