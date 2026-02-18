@@ -21,20 +21,16 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
-using OpenQA.Selenium.Internal.Logging;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium;
 
 /// <summary>
 /// Exposes the service provided by a native WebDriver server executable.
 /// </summary>
-public abstract class DriverService : ICommandServer
+public abstract class DriverService : IDisposable
 {
     private bool isDisposed;
     private Process? driverServiceProcess;
-
-    private static readonly ILogger _logger = Log.GetLogger(typeof(DriverService));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverService"/> class.
