@@ -374,9 +374,8 @@ public abstract class DriverService : IDisposable
         
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.ConnectionClose = true;
-        httpClient.Timeout = TimeSpan.FromSeconds(5);
         
-        Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+        Uri serviceHealthUri = new(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
 
         try
         {
@@ -394,18 +393,20 @@ public abstract class DriverService : IDisposable
                 {
                     using var response = await httpClient.GetAsync(serviceHealthUri, linkedCts.Token).ConfigureAwait(false);
                     
+                    // TODO: Consider checking the content of the response to ensure that the service is fully initialized
+                    // and ready to accept commands, rather than just checking for a successful status code.
                     if (response.IsSuccessStatusCode)
                     {
                         return;
                     }
                 }
-                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
+                catch (Exception ex) when (ex is HttpRequestException)
                 {
                     // The exception is expected, meaning driver service is not yet initialized.
                 }
 
                 // Avoid busy-waiting by introducing a small delay between polling attempts.
-                await Task.Delay(100, linkedCts.Token).ConfigureAwait(false);
+                await Task.Delay(50, linkedCts.Token).ConfigureAwait(false);
             }
         }
         catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
