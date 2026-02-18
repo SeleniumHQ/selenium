@@ -40,13 +40,14 @@ public class DriverFinder(DriverOptions options)
     /// Gets the path to the browser driver executable.
     /// Discovers the driver path on first call using Selenium Manager.
     /// </summary>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the full path to the driver executable.</returns>
     /// <exception cref="NoSuchDriverException">When browser name is not specified or driver/browser cannot be found.</exception>
-    public async ValueTask<string> GetDriverPathAsync()
+    public async ValueTask<string> GetDriverPathAsync(CancellationToken cancellationToken = default)
     {
         if (_driverPath is null)
         {
-            await DiscoverBinaryPathsAsync().ConfigureAwait(false);
+            await DiscoverBinaryPathsAsync(cancellationToken).ConfigureAwait(false);
         }
 
         return _driverPath!;
@@ -56,19 +57,20 @@ public class DriverFinder(DriverOptions options)
     /// Gets the path to the browser binary.
     /// Discovers the browser path on first call using Selenium Manager.
     /// </summary>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the full path to the browser binary.</returns>
     /// <exception cref="NoSuchDriverException">When browser name is not specified or driver/browser cannot be found.</exception>
-    public async ValueTask<string> GetBrowserPathAsync()
+    public async ValueTask<string> GetBrowserPathAsync(CancellationToken cancellationToken = default)
     {
         if (_browserPath is null)
         {
-            await DiscoverBinaryPathsAsync().ConfigureAwait(false);
+            await DiscoverBinaryPathsAsync(cancellationToken).ConfigureAwait(false);
         }
 
         return _browserPath!;
     }
 
-    private async ValueTask DiscoverBinaryPathsAsync()
+    private async ValueTask DiscoverBinaryPathsAsync(CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(options.BrowserName))
         {
@@ -80,7 +82,7 @@ public class DriverFinder(DriverOptions options)
             BrowserVersion = options.BrowserVersion,
             BrowserPath = options.BinaryLocation,
             Proxy = options.Proxy?.SslProxy ?? options.Proxy?.HttpProxy
-        }).ConfigureAwait(false);
+        }, cancellationToken).ConfigureAwait(false);
 
         string driverPath = smResult.DriverPath;
         string browserPath = smResult.BrowserPath;

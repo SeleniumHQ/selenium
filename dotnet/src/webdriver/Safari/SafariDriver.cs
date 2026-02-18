@@ -184,7 +184,7 @@ public class SafariDriver : WebDriver
 
         try
         {
-            service.Start();
+            await service.StartAsync().ConfigureAwait(false);
             return new DriverServiceCommandExecutor(service, commandTimeout);
         }
         catch
