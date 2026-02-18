@@ -449,6 +449,14 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
                 _logger.Debug($"Shutdown request was cancelled: {ex.Message}");
             }
         }
+        catch (Exception ex)
+        {
+            // Catch any unexpected exceptions to prevent unobserved task exceptions
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Unexpected error during shutdown signal: {ex.Message}");
+            }
+        }
     }
 
     private void TryKillProcess(Process process)
