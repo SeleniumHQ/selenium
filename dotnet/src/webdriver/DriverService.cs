@@ -172,42 +172,6 @@ public abstract class DriverService : IDisposable
         Environment.GetEnvironmentVariable("SE_DEBUG") is not null;
 
     /// <summary>
-    /// Gets a value indicating whether the service is responding to HTTP requests.
-    /// </summary>
-    protected virtual bool IsInitialized
-    {
-        get
-        {
-            bool isInitialized = false;
-
-            try
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-                    httpClient.Timeout = TimeSpan.FromSeconds(5);
-
-                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-                    using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
-                    {
-                        // Checking the response from the 'status' end point. Note that we are simply checking
-                        // that the HTTP status returned is a 200 status, and that the response has the correct
-                        // Content-Type header. A more sophisticated check would parse the JSON response and
-                        // validate its values. At the moment we do not do this more sophisticated check.
-                        isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType is { MediaType: string mediaType } && mediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            }
-            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                // Do nothing. The exception is expected, meaning driver service is not initialized.
-            }
-
-            return isInitialized;
-        }
-    }
-
-    /// <summary>
     /// Releases all resources associated with this <see cref="DriverService"/>.
     /// </summary>
     public void Dispose()
@@ -267,7 +231,7 @@ public abstract class DriverService : IDisposable
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
-        bool serviceAvailable = this.WaitForServiceInitialization();
+        bool serviceAvailable = this.WaitForServiceInitializationAsync().GetAwaiter().GetResult();
 
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
@@ -404,26 +368,44 @@ public abstract class DriverService : IDisposable
     }
 
     /// <summary>
-    /// Waits until a the service is initialized, or the timeout set
+    /// Waits until the service is initialized, or the timeout set
     /// by the <see cref="InitializationTimeout"/> property is reached.
     /// </summary>
     /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
     /// otherwise; <see langword="false"/>.</returns>
-    private bool WaitForServiceInitialization()
+    private async Task<bool> WaitForServiceInitializationAsync()
     {
-        bool isInitialized = false;
         DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
-        while (!isInitialized && DateTime.Now < timeout)
+        
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+        httpClient.Timeout = TimeSpan.FromSeconds(5);
+        
+        Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+        
+        while (DateTime.Now < timeout)
         {
             // If the driver service process has exited, we can exit early.
             if (!this.IsRunning)
             {
-                break;
+                return false;
             }
 
-            isInitialized = this.IsInitialized;
+            try
+            {
+                using var response = await httpClient.GetAsync(serviceHealthUri).ConfigureAwait(false);
+                
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
+            {
+                // The exception is expected, meaning driver service is not yet initialized.
+            }
+
+            // Avoid busy-waiting by introducing a small delay between polling attempts.
+            await Task.Delay(100).ConfigureAwait(false);
         }
 
-        return isInitialized;
+        return false;
     }
 }
