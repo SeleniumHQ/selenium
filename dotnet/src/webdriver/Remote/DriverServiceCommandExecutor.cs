@@ -110,6 +110,8 @@ public class DriverServiceCommandExecutor : ICommandExecutor
             throw new ArgumentNullException(nameof(commandToExecute), "Command to execute cannot be null");
         }
 
+        return await this.HttpExecutor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
+
         Response toReturn;
         if (commandToExecute.Name == DriverCommand.NewSession)
         {

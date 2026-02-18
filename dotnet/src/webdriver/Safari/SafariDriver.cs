@@ -182,6 +182,8 @@ public class SafariDriver : WebDriver
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
         }
 
+        service.Start();
+
         return new DriverServiceCommandExecutor(service, commandTimeout);
     }
 
