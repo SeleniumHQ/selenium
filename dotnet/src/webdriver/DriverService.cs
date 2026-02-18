@@ -27,7 +27,7 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Exposes the service provided by a native WebDriver server executable.
 /// </summary>
-public abstract class DriverService : IDisposable
+public abstract class DriverService : IDisposable, IAsyncDisposable
 {
     private static readonly ILogger _logger = Log.GetLogger<DriverService>();
     private bool isDisposed;
@@ -182,6 +182,16 @@ public abstract class DriverService : IDisposable
     }
 
     /// <summary>
+    /// Asynchronously releases all resources associated with this <see cref="DriverService"/>.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsync(true).ConfigureAwait(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Starts the driver service if it is not already running.
     /// </summary>
     /// <exception cref="InvalidOperationException">If the driver service path is specified but the driver service executable name is not.</exception>
@@ -271,6 +281,30 @@ public abstract class DriverService : IDisposable
             if (disposing)
             {
                 this.StopAsync().GetAwaiter().GetResult();
+
+                if (EnableProcessRedirection && this.driverServiceProcess is not null)
+                {
+                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                }
+            }
+
+            this.isDisposed = true;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously releases all resources associated with this <see cref="DriverService"/>.
+    /// </summary>
+    /// <param name="disposing"><see langword="true"/> if the DisposeAsync method was explicitly called; otherwise, <see langword="false"/>.</param>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsync(bool disposing)
+    {
+        if (!this.isDisposed)
+        {
+            if (disposing)
+            {
+                await this.StopAsync().ConfigureAwait(false);
 
                 if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
