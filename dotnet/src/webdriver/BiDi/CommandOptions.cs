@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.BiDi;
 
 public abstract record CommandOptions

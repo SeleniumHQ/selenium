@@ -17,12 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
 public partial class NetworkModule

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.BiDi.Speculation;
 
 public static class SpeculationBiDiExtensions

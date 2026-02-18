@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.IO;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
 

@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V142.Fetch;
 using OpenQA.Selenium.DevTools.V142.Network;
 

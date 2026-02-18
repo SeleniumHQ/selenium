@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.DevTools.V142;
 
 /// <summary>

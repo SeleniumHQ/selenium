@@ -17,11 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
@@ -43,6 +40,7 @@ public sealed class LogModule : Module
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
         jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
         jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
