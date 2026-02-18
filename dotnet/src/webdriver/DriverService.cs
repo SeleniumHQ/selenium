@@ -360,102 +360,111 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
 
     private async ValueTask StopAsync()
     {
-        if (this.IsRunning)
+        if (!this.IsRunning)
         {
-            var process = this.driverServiceProcess; // Capture reference to avoid race condition
+            return;
+        }
+
+        var process = this.driverServiceProcess;
+        using var timeoutCts = new CancellationTokenSource(this.TerminationTimeout);
+
+        try
+        {
+            // Send graceful shutdown signal
+            _ = SendShutdownSignalAsync(process, timeoutCts.Token);
+
+            // Wait for process to exit
+            await WaitForProcessExitAsync(process, timeoutCts.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Timeout occurred, force kill
+            if (_logger.IsEnabled(LogEventLevel.Warn))
+            {
+                _logger.Warn($"Driver service did not exit within {this.TerminationTimeout.TotalSeconds} seconds. Forcing termination.");
+            }
+
+            TryKillProcess(process);
+        }
+        finally
+        {
+            process.Dispose();
+            this.driverServiceProcess = null;
+        }
+    }
+
+    private static async Task WaitForProcessExitAsync(Process process, CancellationToken cancellationToken)
+    {
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        void OnProcessExited(object? sender, EventArgs e) => tcs.TrySetResult(true);
+
+        try
+        {
             process.EnableRaisingEvents = true;
+            process.Exited += OnProcessExited;
 
-            TaskCompletionSource<bool> stopCompletionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            process.Exited += ProcessExitedHandler;
-
-            void ProcessExitedHandler(object? sender, EventArgs e)
+            if (process.HasExited)
             {
-                stopCompletionSource.TrySetResult(true);
+                return;
             }
 
-            try
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
             {
-                // Fire and forget the shutdown signal
-                _ = ShutdownSignalAsync(process);
-
-                // Wait for process to exit or timeout
-                Task delayTask = Task.Delay(this.TerminationTimeout);
-                var completedTask = await Task.WhenAny(
-                    stopCompletionSource.Task,
-                    delayTask
-                ).ConfigureAwait(false);
-
-                if (completedTask == delayTask)
-                {
-                    // Timeout occurred, force kill the process if it's still running
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Driver service did not exit within {this.TerminationTimeout.TotalSeconds} seconds. Forcing termination.");
-                    }
-
-                    if (!process.HasExited)
-                    {
-                        try
-                        {
-                            process.Kill();
-                            // Wait a short time for the process to exit after kill
-                            await Task.WhenAny(
-                                stopCompletionSource.Task,
-                                Task.Delay(TimeSpan.FromSeconds(1))
-                            ).ConfigureAwait(false);
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            // Process may have already exited
-                        }
-                    }
-                }
+                await tcs.Task.ConfigureAwait(false);
             }
-            finally
-            {
-                process.Exited -= ProcessExitedHandler;
+        }
+        finally
+        {
+            process.Exited -= OnProcessExited;
+        }
+    }
 
-                process.Dispose();
-                this.driverServiceProcess = null;
+    private async Task SendShutdownSignalAsync(Process process, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (HasShutdown)
+            {
+                Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
+                using var httpClient = new HttpClient();
+                using var _ = await httpClient.GetAsync(shutdownUrl, cancellationToken).ConfigureAwait(false);
             }
-
-            async Task ShutdownSignalAsync(Process targetProcess)
+            else
             {
-                try
-                {
-                    if (HasShutdown)
-                    {
-                        Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
-                        using var httpClient = new HttpClient()
-                        {
-                            Timeout = this.TerminationTimeout
-                        };
-                        using var _ = await httpClient.GetAsync(shutdownUrl).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        targetProcess.Kill();
-                    }
-                }
-                catch (HttpRequestException ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Debug))
-                    {
-                        _logger.Debug($"Failed to send shutdown signal to driver service: {ex.Message}");
-                    }
-                }
-                catch (OperationCanceledException ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Debug))
-                    {
-                        _logger.Debug($"Shutdown request to driver service timed out: {ex.Message}");
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    // Process may have already exited when trying to kill
-                }
+                TryKillProcess(process);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Failed to send shutdown signal: {ex.Message}");
+            }
+        }
+        catch (OperationCanceledException ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Shutdown request was cancelled: {ex.Message}");
+            }
+        }
+    }
+
+    private void TryKillProcess(Process process)
+    {
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill();
+            }
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Failed to kill process: {ex.Message}");
             }
         }
     }
