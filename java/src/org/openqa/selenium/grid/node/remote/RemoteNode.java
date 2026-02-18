@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.RetrySessionRequestException;
@@ -151,6 +152,24 @@ public class RemoteNode extends Node implements Closeable {
       // timeout, the SessionRequest is marked as canceled and the session is either not added to
       // the queue or disposed as soon as the node started it.
       return Either.left(new RetrySessionRequestException("Timeout while starting the session", e));
+    } catch (UncheckedIOException e) {
+      // Walk the cause chain: if a RejectedExecutionException is present the JDK HTTP client's
+      // internal executor received a shutdown signal while this request was in flight (the node
+      // is restarting or draining). Signal the distributor to retry on a different node.
+      // Other UncheckedIOExceptions (connection refused, reset, etc.) are re-thrown unchanged.
+      Throwable cause = e;
+      while (cause != null) {
+        if (cause instanceof RejectedExecutionException) {
+          return Either.left(
+              new RetrySessionRequestException(
+                  "Node "
+                      + externalUri
+                      + " rejected the execution (possibly restarting or shutting down)",
+                  e));
+        }
+        cause = cause.getCause();
+      }
+      throw e;
     }
 
     Optional<Map<String, Object>> maybeResponse =
