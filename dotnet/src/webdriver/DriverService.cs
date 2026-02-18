@@ -328,45 +328,99 @@ public abstract class DriverService : IDisposable
     {
         if (this.IsRunning)
         {
-            this.driverServiceProcess.EnableRaisingEvents = true;
+            var process = this.driverServiceProcess; // Capture reference to avoid race condition
+            process.EnableRaisingEvents = true;
 
             TaskCompletionSource<bool> stopCompletionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-            this.driverServiceProcess.Exited += ProcessExitedHandler;
+            process.Exited += ProcessExitedHandler;
 
             void ProcessExitedHandler(object? sender, EventArgs e)
             {
                 stopCompletionSource.TrySetResult(true);
             }
 
-            _ = ShutdownSignalAsync();
-
             try
             {
-                await stopCompletionSource.Task.ConfigureAwait(false);
+                // Fire and forget the shutdown signal
+                _ = ShutdownSignalAsync(process);
+
+                // Wait for process to exit or timeout
+                Task delayTask = Task.Delay(this.TerminationTimeout);
+                var completedTask = await Task.WhenAny(
+                    stopCompletionSource.Task,
+                    delayTask
+                ).ConfigureAwait(false);
+
+                if (completedTask == delayTask)
+                {
+                    // Timeout occurred, force kill the process if it's still running
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"Driver service did not exit within {this.TerminationTimeout.TotalSeconds} seconds. Forcing termination.");
+                    }
+
+                    if (!process.HasExited)
+                    {
+                        try
+                        {
+                            process.Kill();
+                            // Wait a short time for the process to exit after kill
+                            await Task.WhenAny(
+                                stopCompletionSource.Task,
+                                Task.Delay(TimeSpan.FromSeconds(1))
+                            ).ConfigureAwait(false);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Process may have already exited
+                        }
+                    }
+                }
             }
             finally
             {
-                this.driverServiceProcess.Exited -= ProcessExitedHandler;
+                process.Exited -= ProcessExitedHandler;
 
-                this.driverServiceProcess.Dispose();
+                process.Dispose();
                 this.driverServiceProcess = null;
             }
 
-            async Task ShutdownSignalAsync()
+            async Task ShutdownSignalAsync(Process targetProcess)
             {
-                if (HasShutdown)
+                try
                 {
-                    Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
-                    using var httpClient = new HttpClient()
+                    if (HasShutdown)
                     {
-                        Timeout = this.TerminationTimeout
-                    };
-                    using var response = await httpClient.GetAsync(shutdownUrl);
+                        Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
+                        using var httpClient = new HttpClient()
+                        {
+                            Timeout = this.TerminationTimeout
+                        };
+                        using var _ = await httpClient.GetAsync(shutdownUrl).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        targetProcess.Kill();
+                    }
                 }
-                else
+                catch (HttpRequestException ex)
                 {
-                    this.driverServiceProcess.Kill();
+                    if (_logger.IsEnabled(LogEventLevel.Debug))
+                    {
+                        _logger.Debug($"Failed to send shutdown signal to driver service: {ex.Message}");
+                    }
+                }
+                catch (OperationCanceledException ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Debug))
+                    {
+                        _logger.Debug($"Shutdown request to driver service timed out: {ex.Message}");
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // Process may have already exited when trying to kill
                 }
             }
         }
