@@ -220,9 +220,16 @@ public class FirefoxDriver : WebDriver
             options.BrowserVersion = null;
         }
 
-        service.Start();
-
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+        try
+        {
+            service.Start();
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            service.Dispose();
+            throw;
+        }
     }
 
     /// <summary>
