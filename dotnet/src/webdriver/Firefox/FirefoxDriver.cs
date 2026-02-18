@@ -229,7 +229,7 @@ public class FirefoxDriver : WebDriver
         {
             try
             {
-                service.Dispose();
+                await service.DisposeAsync().ConfigureAwait(false);
             }
             catch
             {

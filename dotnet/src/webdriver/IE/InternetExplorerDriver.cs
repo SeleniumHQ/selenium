@@ -186,7 +186,7 @@ public class InternetExplorerDriver : WebDriver
         {
             try
             {
-                service.Dispose();
+                await service.DisposeAsync().ConfigureAwait(false);
             }
             catch
             {

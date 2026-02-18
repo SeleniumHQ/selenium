@@ -176,7 +176,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
         {
             try
             {
-                service.Dispose();
+                await service.DisposeAsync().ConfigureAwait(false);
             }
             catch
             {

@@ -191,7 +191,7 @@ public class SafariDriver : WebDriver
         {
             try
             {
-                service.Dispose();
+                await service.DisposeAsync().ConfigureAwait(false);
             }
             catch
             {
