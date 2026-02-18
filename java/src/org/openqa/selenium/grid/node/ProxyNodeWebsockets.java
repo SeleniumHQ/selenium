@@ -223,7 +223,7 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     String vncLocalAddress = (String) caps.getCapability("se:vncLocalAddress");
-    if (vncLocalAddress == null) {
+    if (vncLocalAddress == null || vncLocalAddress.trim().isEmpty()) {
       LOG.warning("No VNC endpoint address in capabilities");
       return Optional.empty();
     }
