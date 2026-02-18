@@ -279,6 +279,10 @@ public static partial class SeleniumManager
 
         try
         {
+#if !NET8_0_OR_GREATER
+            process.EnableRaisingEvents = true;
+#endif
+
             process.Start();
 
             var stdOutputTask = ReadStandardOutputAsync();
@@ -306,30 +310,47 @@ public static partial class SeleniumManager
                 throw;
             }
 #else
-            var processExitTask = Task.Run(() => process.WaitForExit(), CancellationToken.None);
+            var tcs = new TaskCompletionSource<bool>();
 
-            using (cancellationToken.Register(() =>
+            EventHandler exitedHandler = (sender, args) => tcs.TrySetResult(true);
+            process.Exited += exitedHandler;
+
+            try
             {
-                try
+                // Handle race condition where process exits before we subscribe
+                if (process.HasExited)
                 {
-                    process.Kill();
+                    tcs.TrySetResult(true);
                 }
-                catch
+
+                using (cancellationToken.Register(() =>
                 {
-                    // Process may have already exited
+                    tcs.TrySetCanceled(cancellationToken);
+                    try
+                    {
+                        process.Kill();
+                    }
+                    catch
+                    {
+                        // Process may have already exited
+                    }
+                }))
+                {
+                    await tcs.Task.ConfigureAwait(false);
                 }
-            }))
-            {
-                await Task.WhenAny(processExitTask, Task.Delay(-1, cancellationToken)).ConfigureAwait(false);
-            }
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                // Await output tasks to prevent unobserved exceptions when process is killed
-                await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
-            }
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    // Await output tasks to prevent unobserved exceptions when process is killed
+                    await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
+                }
 
-            cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            finally
+            {
+                process.Exited -= exitedHandler;
+            }
 #endif
 
             // Ensure output streams are fully drained before parsing.
@@ -364,7 +385,7 @@ public static partial class SeleniumManager
             throw new WebDriverException($"Error starting process: {process.StartInfo.FileName} {arguments}", ex);
         }
 
-        string output = stdOutputBuilder.ToString().Trim();
+        string output = stdOutputBuilder.ToString();
 
         TResult result;
 
