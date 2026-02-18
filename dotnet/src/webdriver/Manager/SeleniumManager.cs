@@ -190,10 +190,11 @@ public static partial class SeleniumManager
     /// </summary>
     /// <param name="name">The name of the browser (e.g., "chrome", "firefox", "edge").</param>
     /// <param name="options">Optional discovery options to control browser and driver resolution.</param>
-    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation. When cancellation is requested, the Selenium Manager process is terminated.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation, containing a <see cref="BrowserDiscoveryResult"/> with the paths to the driver and browser executables.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name"/> is null, empty, or whitespace.</exception>
     /// <exception cref="WebDriverException">Thrown when Selenium Manager fails to locate or download the required binaries.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via <paramref name="cancellationToken"/>.</exception>
     public static async Task<BrowserDiscoveryResult> DiscoverBrowserAsync(
         string name,
         BrowserDiscoveryOptions? options = null,
@@ -330,15 +331,30 @@ public static partial class SeleniumManager
                     }
                 }))
                 {
-                    await tcs.Task.ConfigureAwait(false);
+                    try
+                    {
+                        await tcs.Task.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        try
+                        {
+                            process.Kill();
+                        }
+                        catch
+                        {
+                            // Process may have already exited
+                        }
+
+                        // Await output tasks to prevent unobserved exceptions when process is killed
+                        await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
+
+                        throw;
+                    }
                 }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    // Await output tasks to prevent unobserved exceptions when process is killed
-                    await AwaitAndSuppressExceptionsAsync(stdOutputTask, errOutputTask).ConfigureAwait(false);
-                }
-
+                // Handle race condition where cancellation was requested after process exit
+                // but before we checked the TaskCompletionSource result.
                 cancellationToken.ThrowIfCancellationRequested();
             }
             finally
@@ -376,7 +392,7 @@ public static partial class SeleniumManager
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not WebDriverException)
         {
-            throw new WebDriverException($"Error starting process: {process.StartInfo.FileName} {arguments}", ex);
+            throw new WebDriverException($"Error running Selenium Manager process: {process.StartInfo.FileName} {arguments}", ex);
         }
 
         string output = stdOutputBuilder.ToString();
