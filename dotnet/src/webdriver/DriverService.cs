@@ -280,13 +280,13 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         {
             if (disposing)
             {
-                this.StopAsync().GetAwaiter().GetResult();
-
                 if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
                     this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
                     this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
                 }
+
+                this.StopAsync().GetAwaiter().GetResult();
             }
 
             this.isDisposed = true;
@@ -304,13 +304,13 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         {
             if (disposing)
             {
-                await this.StopAsync().ConfigureAwait(false);
-
                 if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
                     this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
                     this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
                 }
+
+                await this.StopAsync().ConfigureAwait(false);
             }
 
             this.isDisposed = true;
