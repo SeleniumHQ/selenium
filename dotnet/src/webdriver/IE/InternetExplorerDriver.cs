@@ -177,9 +177,16 @@ public class InternetExplorerDriver : WebDriver
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
         }
 
-        service.Start();
-
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+        try
+        {
+            service.Start();
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            service.Dispose();
+            throw;
+        }
     }
 
     /// <summary>
