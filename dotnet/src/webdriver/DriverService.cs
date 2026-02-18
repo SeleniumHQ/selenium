@@ -386,6 +386,10 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
 
             TryKillProcess(process);
         }
+        catch (InvalidOperationException)
+        {
+            // Process already exited or is in an invalid state, which is acceptable during shutdown
+        }
         finally
         {
             process.Dispose();
@@ -395,6 +399,12 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
 
     private static async Task WaitForProcessExitAsync(Process process, CancellationToken cancellationToken)
     {
+        // Early exit if process already exited
+        if (process.HasExited)
+        {
+            return;
+        }
+
         var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         void OnProcessExited(object? sender, EventArgs e) => tcs.TrySetResult(true);
@@ -404,6 +414,7 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
             process.EnableRaisingEvents = true;
             process.Exited += OnProcessExited;
 
+            // Check again after attaching handler to avoid race condition
             if (process.HasExited)
             {
                 return;
