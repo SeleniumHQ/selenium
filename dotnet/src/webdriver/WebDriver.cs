@@ -48,6 +48,17 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
+        : this(executor, capabilities, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebDriver"/> class.
+    /// </summary>
+    /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
+    /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
+    /// <param name="autoStartSession">Whether to automatically start the driver session.</param>
+    protected WebDriver(ICommandExecutor executor, ICapabilities capabilities, bool autoStartSession)
     {
         this.CommandExecutor = executor;
         this.elementFactory = new WebElementFactory(this);
@@ -61,22 +72,25 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
         }
 
-        try
-        {
-            this.StartSession(capabilities);
-        }
-        catch (Exception)
+        if (autoStartSession)
         {
             try
             {
-                // Failed to start driver session, disposing of driver
-                this.Dispose();
+                this.StartSession(capabilities);
             }
-            catch
+            catch (Exception)
             {
-                // Ignore the clean-up exception. We'll propagate the original failure.
+                try
+                {
+                    // Failed to start driver session, disposing of driver
+                    this.Dispose();
+                }
+                catch
+                {
+                    // Ignore the clean-up exception. We'll propagate the original failure.
+                }
+                throw;
             }
-            throw;
         }
     }
 
