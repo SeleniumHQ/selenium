@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Globalization;
-using System.Threading;
 
 namespace OpenQA.Selenium.Support.UI;
 

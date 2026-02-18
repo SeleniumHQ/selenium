@@ -17,11 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 

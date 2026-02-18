@@ -17,14 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 using OpenQA.Selenium.Remote;
 

@@ -257,7 +257,7 @@ jobs:
           limit-access-to-actor: false
       - name: Save git diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
-        run: git diff --binary > changes.patch
+        run: git add -A && git diff --binary --staged > changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
         uses: actions/upload-artifact@v5

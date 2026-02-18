@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V143.Page;
 using OpenQA.Selenium.DevTools.V143.Runtime;
 

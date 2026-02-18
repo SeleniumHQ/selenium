@@ -5,7 +5,6 @@ import json
 import os
 import re
 import shutil
-import subprocess
 from pathlib import Path
 
 import urllib3
@@ -126,8 +125,6 @@ def add_pdls(chrome_milestone):
             file.write(script_replace)
             file.truncate()
 
-        subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
-
 
 def create_new_chrome_files(src_base, chrome_milestone):
     """Create new Chrome devtools files for a language binding.
@@ -151,8 +148,6 @@ def create_new_chrome_files(src_base, chrome_milestone):
             replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
             new_filename = file.name.replace(previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
             file.rename(target_dir / new_filename)
-
-    subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
 
 
 def replace_in_file(file_path, old_string, new_string, is_regex=False):

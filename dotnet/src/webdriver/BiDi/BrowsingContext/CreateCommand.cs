@@ -43,4 +43,4 @@ public enum ContextType
     Window
 }
 
-public sealed record CreateResult(BrowsingContext Context) : EmptyResult;
+public sealed record CreateResult(BrowsingContext Context, Browser.UserContext? UserContext) : EmptyResult;
