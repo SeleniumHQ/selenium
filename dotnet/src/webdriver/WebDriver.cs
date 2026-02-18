@@ -43,7 +43,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private readonly List<string> registeredCommands = new List<string>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebDriver"/> class.
+    /// Initializes a new instance of the <see cref="WebDriver"/> class and automatically starts the driver session.
     /// </summary>
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
@@ -53,11 +53,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebDriver"/> class.
+    /// Initializes a new instance of the <see cref="WebDriver"/> class with optional automatic session initialization.
     /// </summary>
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
-    /// <param name="autoStartSession">Whether to automatically start the driver session.</param>
+    /// <param name="autoStartSession">Whether to automatically start the driver session. When <see langword="true"/>, the session is started immediately; when <see langword="false"/>, the session must be started manually.</param>
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities, bool autoStartSession)
     {
         this.CommandExecutor = executor;
