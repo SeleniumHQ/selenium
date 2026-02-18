@@ -76,8 +76,8 @@ public class RemoteNode extends Node implements Closeable {
   // Health checks only need /status to respond quickly; no need for the full session timeout.
   static final Duration HEALTH_CHECK_CONNECTION_TIMEOUT = Duration.ofSeconds(5);
   static final Duration HEALTH_CHECK_READ_TIMEOUT = Duration.ofSeconds(30);
-  private final HttpHandler client;
-  private final HttpHandler healthCheckClient;
+  private final HttpClient client;
+  private final HttpClient healthCheckClient;
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
@@ -327,8 +327,8 @@ public class RemoteNode extends Node implements Closeable {
 
   @Override
   public void close() {
-    ((HttpClient) this.client).close();
-    ((HttpClient) this.healthCheckClient).close();
+    this.client.close();
+    this.healthCheckClient.close();
   }
 
   private class RemoteCheck implements HealthCheck {
