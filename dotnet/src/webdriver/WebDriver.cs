@@ -50,6 +50,16 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
     {
         this.CommandExecutor = executor;
+        this.elementFactory = new WebElementFactory(this);
+        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
+
+        if (this is ISupportsLogs)
+        {
+            // Only add the legacy log commands if the driver supports
+            // retrieving the logs via the extension end points.
+            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
+        }
 
         try
         {
@@ -60,24 +70,13 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             try
             {
                 // Failed to start driver session, disposing of driver
-                this.Quit();
+                this.Dispose();
             }
             catch
             {
                 // Ignore the clean-up exception. We'll propagate the original failure.
             }
             throw;
-        }
-
-        this.elementFactory = new WebElementFactory(this);
-        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
-
-        if (this is ISupportsLogs)
-        {
-            // Only add the legacy log commands if the driver supports
-            // retrieving the logs via the extension end points.
-            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
-            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
         }
     }
 
