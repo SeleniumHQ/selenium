@@ -232,10 +232,10 @@ public abstract class DriverService : IDisposable
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
+        this.WaitForServiceInitializationAsync().GetAwaiter().GetResult();
+
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
-
-        this.WaitForServiceInitializationAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>
