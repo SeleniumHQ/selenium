@@ -27,8 +27,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Manager;

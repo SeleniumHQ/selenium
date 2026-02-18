@@ -20,7 +20,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO.Compression;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox;
