@@ -20,7 +20,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Net;
 
 namespace OpenQA.Selenium;
 
@@ -231,15 +230,10 @@ public abstract class DriverService : IDisposable
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
-        bool serviceAvailable = this.WaitForServiceInitializationAsync().GetAwaiter().GetResult();
-
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
 
-        if (!serviceAvailable)
-        {
-            throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
-        }
+        this.WaitForServiceInitializationAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -371,41 +365,52 @@ public abstract class DriverService : IDisposable
     /// Waits until the service is initialized, or the timeout set
     /// by the <see cref="InitializationTimeout"/> property is reached.
     /// </summary>
-    /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
-    /// otherwise; <see langword="false"/>.</returns>
-    private async Task<bool> WaitForServiceInitializationAsync()
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the service to initialize.</param>
+    /// <exception cref="WebDriverException">If the service fails to start within the timeout period.</exception>
+    private async Task WaitForServiceInitializationAsync(CancellationToken cancellationToken = default)
     {
-        DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
+        using var timeoutCts = new CancellationTokenSource(this.InitializationTimeout);
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
         
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.ConnectionClose = true;
         httpClient.Timeout = TimeSpan.FromSeconds(5);
         
         Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-        
-        while (DateTime.Now < timeout)
+
+        try
         {
-            // If the driver service process has exited, we can exit early.
-            if (!this.IsRunning)
+            while (true)
             {
-                return false;
-            }
+                linkedCts.Token.ThrowIfCancellationRequested();
 
-            try
-            {
-                using var response = await httpClient.GetAsync(serviceHealthUri).ConfigureAwait(false);
-                
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                // The exception is expected, meaning driver service is not yet initialized.
-            }
+                // If the driver service process has exited, we can exit early.
+                if (!this.IsRunning)
+                {
+                    throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
+                }
 
-            // Avoid busy-waiting by introducing a small delay between polling attempts.
-            await Task.Delay(100).ConfigureAwait(false);
+                try
+                {
+                    using var response = await httpClient.GetAsync(serviceHealthUri, linkedCts.Token).ConfigureAwait(false);
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
+                {
+                    // The exception is expected, meaning driver service is not yet initialized.
+                }
+
+                // Avoid busy-waiting by introducing a small delay between polling attempts.
+                await Task.Delay(100, linkedCts.Token).ConfigureAwait(false);
+            }
         }
-
-        return false;
+        catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
+        {
+            throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
+        }
     }
 }
