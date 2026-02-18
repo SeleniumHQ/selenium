@@ -13,6 +13,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/devtools/v142:v142.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
+  //java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
   //java/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
   //java/src/org/openqa/selenium/grid:bom-dependencies.publish
