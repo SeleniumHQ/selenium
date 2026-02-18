@@ -270,7 +270,7 @@ public abstract class DriverService : IDisposable
         {
             if (disposing)
             {
-                this.Stop();
+                this.StopAsync().GetAwaiter().GetResult();
 
                 if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
@@ -324,58 +324,51 @@ public abstract class DriverService : IDisposable
         }
     }
 
-    /// <summary>
-    /// Stops the DriverService.
-    /// </summary>
-    private void Stop()
+    private async ValueTask StopAsync()
     {
         if (this.IsRunning)
         {
-            if (this.HasShutdown)
+            this.driverServiceProcess.EnableRaisingEvents = true;
+
+            TaskCompletionSource<bool> stopCompletionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            this.driverServiceProcess.Exited += ProcessExitedHandler;
+
+            void ProcessExitedHandler(object? sender, EventArgs e)
             {
-                Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-
-                    while (this.IsRunning && DateTime.Now < timeout)
-                    {
-                        try
-                        {
-                            // Issue the shutdown HTTP request, then wait a short while for
-                            // the process to have exited. If the process hasn't yet exited,
-                            // we'll retry. We wait for exit here, since catching the exception
-                            // for a failed HTTP request due to a closed socket is particularly
-                            // expensive.
-                            using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl)).GetAwaiter().GetResult())
-                            {
-
-                            }
-
-                            this.driverServiceProcess.WaitForExit(3000);
-                        }
-                        catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
-                        {
-                        }
-                    }
-                }
+                stopCompletionSource.TrySetResult(true);
             }
 
-            // If at this point, the process still hasn't exited, wait for one
-            // last-ditch time, then, if it still hasn't exited, kill it. Note
-            // that falling into this branch of code should be exceedingly rare.
-            if (this.IsRunning)
+            _ = ShutdownSignalAsync();
+
+            try
             {
-                this.driverServiceProcess.WaitForExit(Convert.ToInt32(this.TerminationTimeout.TotalMilliseconds));
-                if (!this.driverServiceProcess.HasExited)
+                await stopCompletionSource.Task.ConfigureAwait(false);
+            }
+            finally
+            {
+                this.driverServiceProcess.Exited -= ProcessExitedHandler;
+
+                this.driverServiceProcess.Dispose();
+                this.driverServiceProcess = null;
+            }
+
+            async Task ShutdownSignalAsync()
+            {
+                if (HasShutdown)
+                {
+                    Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
+                    using var httpClient = new HttpClient()
+                    {
+                        Timeout = this.TerminationTimeout
+                    };
+                    using var response = await httpClient.GetAsync(shutdownUrl);
+                }
+                else
                 {
                     this.driverServiceProcess.Kill();
                 }
             }
-
-            this.driverServiceProcess.Dispose();
-            this.driverServiceProcess = null;
         }
     }
 
