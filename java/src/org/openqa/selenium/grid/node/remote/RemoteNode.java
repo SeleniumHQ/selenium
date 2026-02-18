@@ -157,8 +157,7 @@ public class RemoteNode extends Node implements Closeable {
       // internal executor received a shutdown signal while this request was in flight (the node
       // is restarting or draining). Signal the distributor to retry on a different node.
       // Other UncheckedIOExceptions (connection refused, reset, etc.) are re-thrown unchanged.
-      Throwable cause = e;
-      while (cause != null) {
+      for (Throwable cause = e; cause != null; cause = cause.getCause()) {
         if (cause instanceof RejectedExecutionException) {
           return Either.left(
               new RetrySessionRequestException(
@@ -167,7 +166,6 @@ public class RemoteNode extends Node implements Closeable {
                       + " rejected the execution (possibly restarting or shutting down)",
                   e));
         }
-        cause = cause.getCause();
       }
       throw e;
     }
