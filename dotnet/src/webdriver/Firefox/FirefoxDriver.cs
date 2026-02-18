@@ -227,7 +227,15 @@ public class FirefoxDriver : WebDriver
         }
         catch
         {
-            service.Dispose();
+            try
+            {
+                service.Dispose();
+            }
+            catch
+            {
+                // Ignore exceptions thrown while disposing the service to preserve the original exception.
+            }
+
             throw;
         }
     }
