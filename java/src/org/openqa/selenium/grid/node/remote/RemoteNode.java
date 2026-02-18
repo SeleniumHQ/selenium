@@ -73,7 +73,11 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class RemoteNode extends Node implements Closeable {
 
   public static final Json JSON = new Json();
+  // Health checks only need /status to respond quickly; no need for the full session timeout.
+  static final Duration HEALTH_CHECK_CONNECTION_TIMEOUT = Duration.ofSeconds(5);
+  static final Duration HEALTH_CHECK_READ_TIMEOUT = Duration.ofSeconds(30);
   private final HttpHandler client;
+  private final HttpHandler healthCheckClient;
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
@@ -93,7 +97,14 @@ public class RemoteNode extends Node implements Closeable {
 
     ClientConfig clientConfig =
         defaultConfig().readTimeout(this.getSessionTimeout()).baseUrl(fromUri(externalUri));
-    this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(clientConfig);
+    HttpClient.Factory factory = Require.nonNull("HTTP client factory", clientFactory);
+    this.client = factory.createClient(clientConfig);
+
+    this.healthCheckClient =
+        factory.createClient(
+            clientConfig
+                .connectionTimeout(HEALTH_CHECK_CONNECTION_TIMEOUT)
+                .readTimeout(HEALTH_CHECK_READ_TIMEOUT));
 
     this.healthCheck = new RemoteCheck();
 
@@ -251,10 +262,14 @@ public class RemoteNode extends Node implements Closeable {
 
   @Override
   public NodeStatus getStatus() {
+    return getStatus(client);
+  }
+
+  private NodeStatus getStatus(HttpHandler handler) {
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = handler.execute(req);
 
     try (Reader reader = reader(res);
         JsonInput in = JSON.newInput(reader)) {
@@ -312,14 +327,15 @@ public class RemoteNode extends Node implements Closeable {
 
   @Override
   public void close() {
-    ((HttpClient) (this.client)).close();
+    ((HttpClient) this.client).close();
+    ((HttpClient) this.healthCheckClient).close();
   }
 
   private class RemoteCheck implements HealthCheck {
     @Override
     public Result check() {
       try {
-        NodeStatus status = getStatus();
+        NodeStatus status = getStatus(healthCheckClient);
 
         if (status.getNodeId() != null && !Objects.equals(getId(), status.getNodeId())) {
           // ensure the original RemoteNode stays DOWN when it has been restarted and registered
