@@ -33,6 +33,31 @@ warnings.warn(
 ### Type hints
 Type hints are used throughout; add type annotations to new code
 
+Use union notation (`|`) instead of `Optional`:
+```python
+# Preferred
+def method(param: str | None) -> int | None:
+    pass
+
+# Avoid
+def method(param: Optional[str]) -> Optional[int]:
+    pass
+```
+
+### Python version
+Code must work with Python 3.10 or later. Use modern syntax features available in 3.10+:
+- Use `|` for union types instead of `Union[]`
+- Use `X | None` instead of `Optional[X]`
+
+When running tests or code in the terminal, explicitly use `python3.10` or later:
+```bash
+# Use explicitly
+python3.10 -c "..."
+python3.11 -c "..."
+
+# Avoid relying on `python3` as it may be 3.9 or earlier
+```
+
 ### Documentation
 Use Google-style docstrings:
 ```python
