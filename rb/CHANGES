@@ -1,3 +1,7 @@
+4.41.0 (2026-02-19)
+=========================
+* Support CDP versions: v143, v144, v145
+
 4.40.0 (2026-01-18)
 =========================
 * add synchronization and error handling for socket interactions (#16487)

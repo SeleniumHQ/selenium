@@ -1,3 +1,7 @@
+## 4.41.0
+
+- Support CDP versions: v143, v144, v145
+
 ## 4.40.0
 
 - fix JS tests on RBE (#16777)

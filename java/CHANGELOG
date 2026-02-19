@@ -1,3 +1,7 @@
+v4.41.0
+======
+* Support CDP versions: v143, v144, v145
+
 v4.40.0
 ======
 * [BiDi] implement `emulation.setScreenOrientationOverride` (#16705)

@@ -1,3 +1,6 @@
+Selenium 4.41.0
+* Support CDP versions: v143, v144, v145
+
 Selenium 4.40.0
 * Properly verify Selenium Manager exists (#16711)
 * Remove deprecated FTP proxy support (#16721)
