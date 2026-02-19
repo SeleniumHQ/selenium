@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.41.0-nightly202601181916",
+  "version": "4.41.0",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
