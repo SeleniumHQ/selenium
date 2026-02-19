@@ -7,7 +7,7 @@ SUPPORTED_NET_STANDARD_VERSIONS = ["netstandard2.0"]
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v143",
     "v144",
-    "v142",
+    "v145",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"

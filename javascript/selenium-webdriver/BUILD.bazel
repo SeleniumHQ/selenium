@@ -18,7 +18,7 @@ VERSION = "4.41.0"
 BROWSER_VERSIONS = [
     "v143",
     "v144",
-    "v142",
+    "v145",
 ]
 
 js_library(
