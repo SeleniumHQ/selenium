@@ -143,8 +143,8 @@ js_library(
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_145.0.3800.58-1_amd64.deb",
-        sha256 = "4665dee70ed44002e38c43dfac7de5e67ca2d14e7cc793a536bb5f588638f14d",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_144.0.3719.115-1_amd64.deb",
+        sha256 = "1e85760f9d73c5ec05c30bbdd9e7c40e0a21bb5c897f55328de90edd8599a8f7",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -165,8 +165,8 @@ js_library(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.microsoft.com/145.0.3800.58/edgedriver_linux64.zip",
-        sha256 = "22cba7ab7751edb79b00b06956ac3abca29352e8416fdd106e3770e89364c369",
+        url = "https://msedgedriver.microsoft.com/144.0.3719.115/edgedriver_linux64.zip",
+        sha256 = "86e3fe7508e2b568073c25750f8b7344417b45d1cdceb05fefa9956dc957fc64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
