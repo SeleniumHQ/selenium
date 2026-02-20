@@ -506,7 +506,7 @@ class WebDriver(BaseWebDriver):
         """
         return list(self.pinned_scripts)
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> dict[str, Any]:
         """Synchronously Executes JavaScript in the current window/frame.
 
         Args:
