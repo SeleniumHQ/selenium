@@ -1,3 +1,34 @@
+v4.41.0
+======
+* Support CDP versions: v143, v144, v145
+* Improve error message for died grid (#16938)
+* fix JSON parsing of numbers with exponent (#16961)
+* SE_DEBUG warns only when overriding user settings (#17009)
+* mark `wait.until` as non-nullable (#17007)
+* restore BiDi constructor without timeout parameter (#17014)
+* [grid] Preventing potential deadlock in Distributor (#17022)
+* Report exactly which JSON value was incorrect (#17003)
+* [Java] JSpecify annotations for `LoadableComponent` , `SlowLoadableComponent` (#16798)
+* parse all JSON numbers the same way (#17038)
+* [grid] Add session event API for server-side event bus integration (#17015)
+* specify nullability in package `org.openqa.selenium.bidi.browser` (#17036)
+* [BiDi] implement `emulation.setScreenSettingsOverride` (#17028)
+* specify nullability in package `org.openqa.selenium.bidi.browsingcontext` (#17040)
+* Nullability annotations in package `org.openqa.selenium.bidi.emulation` (#17055)
+* specify nullability in package `org.openqa.selenium.bidi.module` (#17058)
+* specify nullability in package `org.openqa.selenium.bidi.log` (#17059)
+* [grid] Revert default standalone config (#17060)
+* specify nullability in package `org.openqa.selenium.bidi.network` (#17061)
+* specify nullability in package `org.openqa.selenium.bidi.script` (#17062)
+* Nullability in all BiDi packages (#17064)
+* Remove unneeded protection from BiDi Connection constructor (#17067)
+* [grid] Dynamic Grid standalone support passing basic auth credential (#17072)
+* [grid] Restore stereotype capabilities merging in RelaySessionFactory (#17097)
+* [grid] Support Dynamic Grid in Kubernetes cluster (#17092)
+* [grid] Fix Distributor thread exhaustion in node health-check cycle (#17104)
+* [grid] Fix WebSocket connection counter leaks in ProxyNodeWebsockets (#17106)
+* [grid] Distributor retry session when RemoteNode executor shutting down (#17109)
+
 v4.40.0
 ======
 * [BiDi] implement `emulation.setScreenOrientationOverride` (#16705)
