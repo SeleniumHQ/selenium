@@ -13,7 +13,6 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License.
 
 package org.openqa.selenium;
 
@@ -82,16 +81,25 @@ public interface OutputType<T> {
           return save(data);
         }
 
-        private File save(byte[] data) {
-          try {
-            Path tmpFilePath = Files.createTempFile("screenshot", ".png");
-            File tmpFile = tmpFilePath.toFile();
-            tmpFile.deleteOnExit();
-            Files.write(tmpFilePath, data);
-            return tmpFile;
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
+       private File save(byte[] data) {
+         Path tmpFilePath = null;
+         try {
+          tmpFilePath = Files.createTempFile("screenshot", ".png");
+          Files.write(tmpFilePath, data);
+            } catch (IOException e) {
+             String pathInfo = (tmpFilePath != null)
+              ? tmpFilePath.toAbsolutePath().toString()
+              : "temporary file could not be created";
+
+            throw new WebDriverException(
+         "Failed to create or write screenshot to temporary file: " + pathInfo,
+         e);
+           }
+
+         File tmpFile = tmpFilePath.toFile();
+         tmpFile.deleteOnExit();
+         return tmpFile;
+
         }
 
         public String toString() {
