@@ -406,6 +406,17 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     }
 
     /// <summary>
+    /// Asynchronously disposes this instance.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsyncCore().ConfigureAwait(false);
+        this.Dispose(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Executes JavaScript in the context of the currently selected frame or window.
     /// </summary>
     /// <param name="script">The JavaScript code to execute.</param>
@@ -588,6 +599,22 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
+        {
+            this.WrappedDriver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously performs the core dispose logic.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (this.WrappedDriver is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+        }
+        else
         {
             this.WrappedDriver.Dispose();
         }
