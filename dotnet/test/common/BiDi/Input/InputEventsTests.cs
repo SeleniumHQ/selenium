@@ -29,7 +29,7 @@ internal class InputEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenToFileDialogOpenedEvent()
     {
-        TaskCompletionSource<FileDialogInfo> tcs = new();
+        TaskCompletionSource<FileDialogEventArgs> tcs = new();
 
         await using var subscription = await context.Input.OnFileDialogOpenedAsync(tcs.SetResult);
 
