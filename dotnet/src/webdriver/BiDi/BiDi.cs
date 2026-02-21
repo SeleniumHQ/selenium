@@ -47,7 +47,7 @@ public sealed class BiDi : IBiDi
 
     private Broker Broker { get; }
 
-    internal ISessionModule SessionModule => AsModule<SessionModule>();
+    internal ISessionModule Session => AsModule<SessionModule>();
 
     public IBrowsingContextModule BrowsingContext => AsModule<BrowsingContextModule>();
 
@@ -78,17 +78,17 @@ public sealed class BiDi : IBiDi
 
     public Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.StatusAsync(options, cancellationToken);
+        return Session.StatusAsync(options, cancellationToken);
     }
 
     public Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.NewAsync(capabilities, options, cancellationToken);
+        return Session.NewAsync(capabilities, options, cancellationToken);
     }
 
     public Task EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.EndAsync(options, cancellationToken);
+        return Session.EndAsync(options, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()
