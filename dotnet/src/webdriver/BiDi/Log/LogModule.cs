@@ -27,14 +27,14 @@ public sealed class LogModule : Module
 {
     private LogJsonSerializerContext _jsonContext = null!;
 
-    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
@@ -78,12 +78,12 @@ public sealed class LogModule : Module
 [JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
 #endregion
 
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(GenericLogEntry))]
-[JsonSerializable(typeof(ConsoleLogEntry))]
-[JsonSerializable(typeof(JavascriptLogEntry))]
-#endregion
+[JsonSerializable(typeof(LogEntryEventArgs))]
 
-[JsonSerializable(typeof(LogEntry))]
+#region https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntryEventArgs))]
+[JsonSerializable(typeof(ConsoleLogEntryEventArgs))]
+[JsonSerializable(typeof(JavascriptLogEntryEventArgs))]
+#endregion
 
 internal partial class LogJsonSerializerContext : JsonSerializerContext;
