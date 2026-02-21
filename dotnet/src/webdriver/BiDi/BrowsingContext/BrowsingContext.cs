@@ -123,7 +123,7 @@ public sealed record BrowsingContext
         return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this), cancellationToken);
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -132,7 +132,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -141,7 +141,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -150,7 +150,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -177,7 +177,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -186,7 +186,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -195,7 +195,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnLoadAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -204,7 +204,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnLoadAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -249,7 +249,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -258,7 +258,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -267,7 +267,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -276,7 +276,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -285,7 +285,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -294,7 +294,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -303,7 +303,7 @@ public sealed record BrowsingContext
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    private async Task HandleNavigationStartedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleNavigationStartedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -311,7 +311,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleNavigationStarted(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleNavigationStarted(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -319,7 +319,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleFragmentNavigatedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleFragmentNavigatedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -327,7 +327,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleFragmentNavigated(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleFragmentNavigated(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -351,7 +351,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleDomContentLoadedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleDomContentLoadedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -359,7 +359,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleDomContentLoaded(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleDomContentLoaded(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -367,7 +367,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleLoad(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleLoad(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -375,7 +375,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleLoadAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleLoadAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -415,7 +415,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleNavigationAborted(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleNavigationAborted(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -423,7 +423,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleNavigationAbortedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleNavigationAbortedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -431,7 +431,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleNavigationFailed(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleNavigationFailed(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -439,7 +439,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleNavigationFailedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleNavigationFailedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
@@ -447,7 +447,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private void HandleNavigationCommitted(NavigationInfo e, Action<NavigationInfo> handler)
+    private void HandleNavigationCommitted(NavigationEventArgs e, Action<NavigationEventArgs> handler)
     {
         if (Equals(e.Context))
         {
@@ -455,7 +455,7 @@ public sealed record BrowsingContext
         }
     }
 
-    private async Task HandleNavigationCommittedAsync(NavigationInfo e, Func<NavigationInfo, Task> handler)
+    private async Task HandleNavigationCommittedAsync(NavigationEventArgs e, Func<NavigationEventArgs, Task> handler)
     {
         if (Equals(e.Context))
         {
