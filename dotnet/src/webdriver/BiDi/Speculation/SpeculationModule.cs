@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
-public sealed class SpeculationModule : Module
+public sealed class SpeculationModule : Module, ISpeculationModule
 {
     private SpeculationJsonSerializerContext _jsonContext = null!;
 

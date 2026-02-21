@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule : Module
+public sealed class EmulationModule : Module, IEmulationModule
 {
     private EmulationJsonSerializerContext _jsonContext = null!;
 

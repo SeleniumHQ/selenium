@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public sealed class LogModule : Module
+public sealed class LogModule : Module, ILogModule
 {
     private LogJsonSerializerContext _jsonContext = null!;
 

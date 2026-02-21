@@ -21,7 +21,7 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 
 public static class SpeculationBiDiExtensions
 {
-    public static SpeculationModule AsSpeculation(this BiDi bidi)
+    public static ISpeculationModule AsSpeculation(this IBiDi bidi)
     {
         if (bidi is null)
         {

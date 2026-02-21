@@ -20,11 +20,21 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Browser;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Emulation;
+using OpenQA.Selenium.BiDi.Input;
 using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Log;
+using OpenQA.Selenium.BiDi.Network;
+using OpenQA.Selenium.BiDi.Script;
+using OpenQA.Selenium.BiDi.Session;
+using OpenQA.Selenium.BiDi.Storage;
+using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class BiDi : IAsyncDisposable
+public sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
@@ -37,27 +47,27 @@ public sealed class BiDi : IAsyncDisposable
 
     private Broker Broker { get; }
 
-    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
+    internal ISessionModule SessionModule => AsModule<SessionModule>();
 
-    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
+    public IBrowsingContextModule BrowsingContext => AsModule<BrowsingContextModule>();
 
-    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
+    public IBrowserModule Browser => AsModule<BrowserModule>();
 
-    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
+    public INetworkModule Network => AsModule<NetworkModule>();
 
-    public Input.InputModule Input => AsModule<Input.InputModule>();
+    public IInputModule Input => AsModule<InputModule>();
 
-    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
+    public IScriptModule Script => AsModule<ScriptModule>();
 
-    public Log.LogModule Log => AsModule<Log.LogModule>();
+    public ILogModule Log => AsModule<LogModule>();
 
-    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
+    public IStorageModule Storage => AsModule<StorageModule>();
 
-    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
+    public IWebExtensionModule WebExtension => AsModule<WebExtensionModule>();
 
-    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
+    public IEmulationModule Emulation => AsModule<EmulationModule>();
 
-    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
+    public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         var bidi = new BiDi(url);
 
@@ -66,17 +76,17 @@ public sealed class BiDi : IAsyncDisposable
         return bidi;
     }
 
-    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
         return SessionModule.StatusAsync(options, cancellationToken);
     }
 
-    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
         return SessionModule.NewAsync(capabilities, options, cancellationToken);
     }
 
-    public Task EndAsync(Session.EndOptions? options = null, CancellationToken cancellationToken = default)
+    public Task EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
         return SessionModule.EndAsync(options, cancellationToken);
     }

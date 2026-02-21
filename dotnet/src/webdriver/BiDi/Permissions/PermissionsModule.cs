@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-public sealed class PermissionsModule : Module
+public sealed class PermissionsModule : Module, IPermissionsModule
 {
     private PermissionsJsonSerializerContext _jsonContext = null!;
 

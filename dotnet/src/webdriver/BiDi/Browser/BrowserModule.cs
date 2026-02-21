@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class BrowserModule : Module
+public sealed class BrowserModule : Module, IBrowserModule
 {
     private BrowserJsonSerializerContext _jsonContext = null!;
 

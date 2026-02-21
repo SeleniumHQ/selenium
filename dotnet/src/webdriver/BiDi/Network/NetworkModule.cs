@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed partial class NetworkModule : Module
+public sealed partial class NetworkModule : Module, INetworkModule
 {
     private NetworkJsonSerializerContext _jsonContext = null!;
 

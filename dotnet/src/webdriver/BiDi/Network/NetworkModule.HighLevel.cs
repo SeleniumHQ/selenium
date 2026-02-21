@@ -123,7 +123,7 @@ public sealed record InterceptedAuth : AuthRequiredEventArgs
     }
 }
 
-public sealed record Interception(NetworkModule Network, Intercept Intercept) : IAsyncDisposable
+public sealed record Interception(INetworkModule Network, Intercept Intercept) : IAsyncDisposable
 {
     IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
     IList<Subscription> OnResponseStartedSubscriptions { get; } = [];

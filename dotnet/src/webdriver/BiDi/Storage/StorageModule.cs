@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule : Module
+public sealed class StorageModule : Module, IStorageModule
 {
     private StorageJsonSerializerContext _jsonContext = null!;
 

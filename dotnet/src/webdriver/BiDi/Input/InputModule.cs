@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule : Module
+public sealed class InputModule : Module, IInputModule
 {
     private InputJsonSerializerContext _jsonContext = null!;
 

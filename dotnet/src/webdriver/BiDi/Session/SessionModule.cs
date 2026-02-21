@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule : Module
+internal sealed class SessionModule : Module, ISessionModule
 {
     private SessionJsonSerializerContext _jsonContext = null!;
 

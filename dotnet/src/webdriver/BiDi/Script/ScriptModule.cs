@@ -24,7 +24,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class ScriptModule : Module
+public sealed class ScriptModule : Module, IScriptModule
 {
     private ScriptJsonSerializerContext _jsonContext = null!;
 

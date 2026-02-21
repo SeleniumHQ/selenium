@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule : Module
+public sealed class WebExtensionModule : Module, IWebExtensionModule
 {
     private WebExtensionJsonSerializerContext _jsonContext = null!;
 
