@@ -75,7 +75,7 @@ internal sealed class Broker : IAsyncDisposable
 
                 try
                 {
-                    ProcessReceivedMessage(data);
+                    ProcessReceivedMessage(data.Span);
                 }
                 catch (Exception ex)
                 {
@@ -196,7 +196,7 @@ internal sealed class Broker : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void ProcessReceivedMessage(byte[]? data)
+    private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
         long? id = default;
         string? type = default;
@@ -206,7 +206,7 @@ internal sealed class Broker : IAsyncDisposable
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
 
-        Utf8JsonReader reader = new(new ReadOnlySpan<byte>(data));
+        Utf8JsonReader reader = new(data);
         reader.Read();
 
         reader.Read(); // "{"

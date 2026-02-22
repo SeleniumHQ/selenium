@@ -37,7 +37,7 @@ sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         await _webSocket.ConnectAsync(_uri, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<byte[]> ReceiveAsync(CancellationToken cancellationToken)
+    public async Task<ReadOnlyMemory<byte>> ReceiveAsync(CancellationToken cancellationToken)
     {
         var receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
 
@@ -57,11 +57,11 @@ sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
             }
             while (!result.EndOfMessage);
 
-            byte[] data = _sharedMemoryStream.ToArray();
+            var data = new ReadOnlyMemory<byte>(_sharedMemoryStream.GetBuffer(), 0, (int)_sharedMemoryStream.Length);
 
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                _logger.Trace($"BiDi RCV <-- {Encoding.UTF8.GetString(data)}");
+                _logger.Trace($"BiDi RCV <-- {Encoding.UTF8.GetString(_sharedMemoryStream.GetBuffer(), 0, (int)_sharedMemoryStream.Length)}");
             }
 
             return data;
