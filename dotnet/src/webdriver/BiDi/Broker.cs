@@ -83,7 +83,15 @@ internal sealed class Broker : IAsyncDisposable
             _pendingCommands.TryRemove(command.Id, out _);
         });
 
-        await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
+        try
+        {
+            await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
+        }
+        catch
+        {
+            _pendingCommands.TryRemove(command.Id, out _);
+            throw;
+        }
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
