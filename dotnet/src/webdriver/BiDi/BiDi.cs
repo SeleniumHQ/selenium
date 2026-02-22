@@ -54,9 +54,7 @@ public sealed class BiDi : IBiDi
 
     public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var transport = new WebSocketTransport(new Uri(url));
-
-        await transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        var transport = await WebSocketTransport.ConnectAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
 
         BiDi bidi = new();
 
