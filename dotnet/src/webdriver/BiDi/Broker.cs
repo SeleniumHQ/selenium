@@ -147,14 +147,15 @@ internal sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
         cts.CancelAfter(timeout);
 
+        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
+        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+        _pendingCommands[command.Id] = commandInfo;
+
         using var ctsRegistration = cts.Token.Register(() =>
         {
             tcs.TrySetCanceled(cts.Token);
             _pendingCommands.TryRemove(command.Id, out _);
         });
-        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
-        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
 
         await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
 
