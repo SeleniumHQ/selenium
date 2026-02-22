@@ -47,9 +47,9 @@ public abstract class Module
         return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected abstract void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions);
+    protected abstract void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions);
 
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()

@@ -21,7 +21,7 @@ namespace OpenQA.Selenium.BiDi;
 
 public static class WebDriverExtensions
 {
-    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null, CancellationToken cancellationToken = default)
+    public static async Task<IBiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (webDriver is null) throw new ArgumentNullException(nameof(webDriver));
 

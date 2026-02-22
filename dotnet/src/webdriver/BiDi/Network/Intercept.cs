@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record Intercept
 {
-    public Intercept(BiDi bidi, string id)
+    public Intercept(IBiDi bidi, string id)
         : this(id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
@@ -38,10 +38,10 @@ public sealed record Intercept
 
     internal string Id { get; }
 
-    private BiDi? _bidi;
+    private IBiDi? _bidi;
 
     [JsonIgnore]
-    public BiDi BiDi
+    public IBiDi BiDi
     {
         get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;

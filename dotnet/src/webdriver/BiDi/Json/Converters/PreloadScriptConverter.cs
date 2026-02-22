@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class PreloadScriptConverter(BiDi bidi) : JsonConverter<PreloadScript>
+internal class PreloadScriptConverter(IBiDi bidi) : JsonConverter<PreloadScript>
 {
     public override PreloadScript? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

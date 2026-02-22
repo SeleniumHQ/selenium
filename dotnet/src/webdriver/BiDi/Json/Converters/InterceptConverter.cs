@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InterceptConverter(BiDi bidi) : JsonConverter<Intercept>
+internal class InterceptConverter(IBiDi bidi) : JsonConverter<Intercept>
 {
     public override Intercept? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

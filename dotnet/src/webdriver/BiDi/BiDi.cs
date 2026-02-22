@@ -20,65 +20,62 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Session;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class BiDi : IAsyncDisposable
+public sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
-    private BiDi(string url)
+    private Broker Broker { get; set; } = null!;
+
+    internal ISessionModule Session => AsModule<SessionModule>();
+
+    private BiDi() { }
+
+    public BrowsingContext.IBrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
+
+    public Browser.IBrowserModule Browser => AsModule<Browser.BrowserModule>();
+
+    public Network.INetworkModule Network => AsModule<Network.NetworkModule>();
+
+    public Input.IInputModule Input => AsModule<Input.InputModule>();
+
+    public Script.IScriptModule Script => AsModule<Script.ScriptModule>();
+
+    public Log.ILogModule Log => AsModule<Log.LogModule>();
+
+    public Storage.IStorageModule Storage => AsModule<Storage.StorageModule>();
+
+    public WebExtension.IWebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
+
+    public Emulation.IEmulationModule Emulation => AsModule<Emulation.EmulationModule>();
+
+    public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var uri = new Uri(url);
+        var transport = await WebSocketTransport.ConnectAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
 
-        Broker = new Broker(this, uri);
-    }
+        BiDi bidi = new();
 
-    private Broker Broker { get; }
-
-    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
-
-    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
-
-    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
-
-    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
-
-    public Input.InputModule Input => AsModule<Input.InputModule>();
-
-    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
-
-    public Log.LogModule Log => AsModule<Log.LogModule>();
-
-    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
-
-    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
-
-    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
-
-    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var bidi = new BiDi(url);
-
-        await bidi.Broker.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        bidi.Broker = new Broker(transport, bidi, () => bidi.Session);
 
         return bidi;
     }
 
-    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.StatusAsync(options, cancellationToken);
+        return Session.StatusAsync(options, cancellationToken);
     }
 
-    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.NewAsync(capabilities, options, cancellationToken);
+        return Session.NewAsync(capabilities, options, cancellationToken);
     }
 
-    public Task EndAsync(Session.EndOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return SessionModule.EndAsync(options, cancellationToken);
+        return Session.EndAsync(options, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()
@@ -101,7 +98,7 @@ public sealed class BiDi : IAsyncDisposable
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Converters =
             {
-                new DateTimeOffsetConverter(),
+                new Json.Converters.DateTimeOffsetConverter(),
             }
         };
     }

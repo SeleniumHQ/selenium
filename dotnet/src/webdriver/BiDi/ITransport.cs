@@ -21,8 +21,6 @@ namespace OpenQA.Selenium.BiDi;
 
 interface ITransport : IDisposable
 {
-    Task ConnectAsync(CancellationToken cancellationToken);
-
     Task<byte[]> ReceiveAsync(CancellationToken cancellationToken);
 
     Task SendAsync(byte[] data, CancellationToken cancellationToken);

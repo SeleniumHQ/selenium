@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed partial class NetworkModule : Module
+public sealed partial class NetworkModule : Module, INetworkModule
 {
     private NetworkJsonSerializerContext _jsonContext = null!;
 
@@ -171,7 +171,7 @@ public sealed partial class NetworkModule : Module
         return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new CollectorConverter(bidi));
