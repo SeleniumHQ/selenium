@@ -113,7 +113,6 @@ internal sealed class Broker : IAsyncDisposable
         string? error = default;
         string? message = default;
         Utf8JsonReader resultReader = default;
-        Utf8JsonReader paramsReader = default;
         long paramsStartIndex = 0;
         long paramsEndIndex = 0;
 
@@ -146,7 +145,6 @@ internal sealed class Broker : IAsyncDisposable
                     break;
 
                 case "params":
-                    paramsReader = reader; // snapshot
                     paramsStartIndex = reader.TokenStartIndex;
                     break;
 
