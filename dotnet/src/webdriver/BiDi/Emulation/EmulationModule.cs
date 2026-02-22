@@ -113,7 +113,7 @@ public sealed class EmulationModule : Module, IEmulationModule
         return await ExecuteCommandAsync(new SetNetworkConditionsCommand(@params), options, _jsonContext.SetNetworkConditionsCommand, _jsonContext.SetNetworkConditionsResult, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));

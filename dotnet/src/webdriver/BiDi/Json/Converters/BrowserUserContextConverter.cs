@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Browser;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class BrowserUserContextConverter(BiDi bidi) : JsonConverter<UserContext>
+internal class BrowserUserContextConverter(IBiDi bidi) : JsonConverter<UserContext>
 {
     public override UserContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

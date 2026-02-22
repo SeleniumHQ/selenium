@@ -114,7 +114,7 @@ public sealed class ScriptModule : Module, IScriptModule
         return await SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));

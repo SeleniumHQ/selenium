@@ -37,7 +37,7 @@ public sealed class LogModule : Module, ILogModule
         return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));

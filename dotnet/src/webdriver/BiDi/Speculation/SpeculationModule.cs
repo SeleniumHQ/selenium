@@ -37,7 +37,7 @@ public sealed class SpeculationModule : Module, ISpeculationModule
         return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
 

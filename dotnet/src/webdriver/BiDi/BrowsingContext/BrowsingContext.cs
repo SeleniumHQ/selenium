@@ -44,10 +44,10 @@ public sealed record BrowsingContext
 
     internal string Id { get; }
 
-    private BiDi? _bidi;
+    private IBiDi? _bidi;
 
     [JsonIgnore]
-    public BiDi BiDi
+    public IBiDi BiDi
     {
         get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;

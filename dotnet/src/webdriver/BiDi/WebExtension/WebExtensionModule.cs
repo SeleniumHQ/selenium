@@ -41,7 +41,7 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
         return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
 

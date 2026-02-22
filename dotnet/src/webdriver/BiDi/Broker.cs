@@ -49,52 +49,22 @@ internal sealed class Broker : IAsyncDisposable
         _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
     }
 
+    public static async Task<Broker> CreateAsync(Uri url, EventDispatcher eventDispatcher, CancellationToken cancellationToken)
+    {
+        var transport = new WebSocketTransport(url);
+
+        await transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
+
+        return new Broker(transport, eventDispatcher);
+    }
+
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         return _eventDispatcher.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
-    public static async Task<Broker> CreateAsync(Uri url, EventDispatcher eventDispatcher, CancellationToken cancellationToken)
-    {
-        var transport = new WebSocketTransport(url);
-        
-        await transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
-        return new Broker(transport, eventDispatcher);
-    }
-
-    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
-
-                try
-                {
-                    ProcessReceivedMessage(data);
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
-                    }
-                }
-            }
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
-            {
-                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
-            }
-
-            throw;
-        }
-    }
 
 
 
@@ -122,8 +92,6 @@ internal sealed class Broker : IAsyncDisposable
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
-
-
 
     public async ValueTask DisposeAsync()
     {
@@ -252,6 +220,38 @@ internal sealed class Broker : IAsyncDisposable
                 }
 
                 break;
+        }
+    }
+
+    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    ProcessReceivedMessage(data);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
+            }
+
+            throw;
         }
     }
 
