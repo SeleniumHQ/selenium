@@ -32,6 +32,8 @@ public sealed class BiDi : IBiDi
 
     internal ISessionModule Session => AsModule<SessionModule>();
 
+    private BiDi() { }
+
     public BrowsingContext.IBrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
 
     public Browser.IBrowserModule Browser => AsModule<Browser.BrowserModule>();
