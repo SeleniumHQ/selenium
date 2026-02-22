@@ -1,4 +1,4 @@
-// <copyright file="HandleConverter.cs" company="Selenium Committers">
+// <copyright file="ILogModule.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,23 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.Log;
 
-namespace OpenQA.Selenium.BiDi.Json.Converters;
-
-internal class HandleConverter(IBiDi bidi) : JsonConverter<Handle>
+public interface ILogModule
 {
-    public override Handle? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        var id = reader.GetString();
-
-        return new Handle(id!) { BiDi = bidi };
-    }
-
-    public override void Write(Utf8JsonWriter writer, Handle value, JsonSerializerOptions options)
-    {
-        writer.WriteStringValue(value.Id);
-    }
+    Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
 }

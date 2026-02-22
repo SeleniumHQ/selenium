@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
-public sealed class SpeculationModule : Module
+public sealed class SpeculationModule : Module, ISpeculationModule
 {
     private SpeculationJsonSerializerContext _jsonContext = null!;
 
@@ -37,7 +37,7 @@ public sealed class SpeculationModule : Module
         return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
 

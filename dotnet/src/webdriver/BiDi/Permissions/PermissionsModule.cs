@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-public sealed class PermissionsModule : Module
+public sealed class PermissionsModule : Module, IPermissionsModule
 {
     private PermissionsJsonSerializerContext _jsonContext = null!;
 
@@ -34,7 +34,7 @@ public sealed class PermissionsModule : Module
         return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
 
