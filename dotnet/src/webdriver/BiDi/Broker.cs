@@ -86,7 +86,6 @@ internal sealed class Broker : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _receiveMessagesCancellationTokenSource.Cancel();
-        _receiveMessagesCancellationTokenSource.Dispose();
 
         await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
 
@@ -98,6 +97,8 @@ internal sealed class Broker : IAsyncDisposable
         {
             // Expected when cancellation is requested, ignore.
         }
+
+        _receiveMessagesCancellationTokenSource.Dispose();
 
         _transport.Dispose();
 
