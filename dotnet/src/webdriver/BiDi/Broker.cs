@@ -73,10 +73,15 @@ internal sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
         cts.CancelAfter(timeout);
 
-        cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
+        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
         var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
-        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
+
+        using var ctsRegistration = cts.Token.Register(() =>
+        {
+            tcs.TrySetCanceled(cts.Token);
+            _pendingCommands.TryRemove(command.Id, out _);
+        });
 
         await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
 
@@ -194,7 +199,10 @@ internal sealed class Broker : IAsyncDisposable
                 }
                 else
                 {
-                    throw new BiDiException($"The remote end responded with 'success' message type, but no pending command with id {id} was found.");
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"The remote end responded with 'success' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                    }
                 }
 
                 break;
@@ -215,7 +223,10 @@ internal sealed class Broker : IAsyncDisposable
                 }
                 else
                 {
-                    throw new BiDiException($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                    }
                 }
 
                 break;
