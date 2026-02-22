@@ -106,6 +106,8 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        long paramsStartIndex = 0;
+        long paramsEndIndex = 0;
 
         Utf8JsonReader reader = new(new ReadOnlySpan<byte>(data));
         reader.Read();
@@ -137,6 +139,7 @@ internal sealed class Broker : IAsyncDisposable
 
                 case "params":
                     paramsReader = reader; // snapshot
+                    paramsStartIndex = reader.TokenStartIndex;
                     break;
 
                 case "error":
@@ -148,7 +151,15 @@ internal sealed class Broker : IAsyncDisposable
                     break;
             }
 
-            reader.Skip();
+            if (propertyName == "params")
+            {
+                reader.Skip();
+                paramsEndIndex = reader.BytesConsumed;
+            }
+            else
+            {
+                reader.Skip();
+            }
             reader.Read();
         }
 
@@ -184,7 +195,8 @@ internal sealed class Broker : IAsyncDisposable
 
             case "event":
                 if (method is null) throw new BiDiException("The remote end responded with 'event' message type, but missed required 'method' property.");
-                _eventDispatcher.EnqueueEvent(method, ref paramsReader, _bidi);
+                var paramsJsonData = new ReadOnlyMemory<byte>(data, (int)paramsStartIndex, (int)(paramsEndIndex - paramsStartIndex));
+                _eventDispatcher.EnqueueEvent(method, paramsJsonData, _bidi);
                 break;
 
             case "error":

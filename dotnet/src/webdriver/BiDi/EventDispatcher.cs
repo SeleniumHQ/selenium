@@ -32,10 +32,9 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Func<ISessionModule> _sessionProvider;
 
-    private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
-    private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
+    private readonly ConcurrentDictionary<string, EventRegistration> _events = new();
 
-    private readonly Channel<EventInfo> _pendingEvents = Channel.CreateUnbounded<EventInfo>(new()
+    private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
     {
         SingleReader = true,
         SingleWriter = true
@@ -54,35 +53,29 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        _eventTypesMap[eventName] = jsonTypeInfo;
-
-        var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
+        var registration = _events.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
 
         var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
-        handlers.Add(eventHandler);
+        registration.Handlers.Add(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        if (_eventHandlers.TryGetValue(subscription.EventHandler.EventName, out var eventHandlers))
+        if (_events.TryGetValue(subscription.EventHandler.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            eventHandlers.Remove(subscription.EventHandler);
+            registration.Handlers.Remove(subscription.EventHandler);
         }
     }
 
-    public void EnqueueEvent(string method, ref Utf8JsonReader paramsReader, IBiDi bidi)
+    public void EnqueueEvent(string method, ReadOnlyMemory<byte> jsonUtf8Bytes, IBiDi bidi)
     {
-        if (_eventTypesMap.TryGetValue(method, out var eventInfo) && eventInfo is not null)
+        if (_events.TryGetValue(method, out var registration) && registration.TypeInfo is not null)
         {
-            var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
-
-            eventArgs.BiDi = bidi;
-
-            _pendingEvents.Writer.TryWrite(new EventInfo(method, eventArgs));
+            _pendingEvents.Writer.TryWrite(new PendingEvent(method, jsonUtf8Bytes, bidi, registration.TypeInfo));
         }
         else
         {
@@ -102,16 +95,15 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 try
                 {
-                    if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
+                    if (_events.TryGetValue(result.Method, out var registration))
                     {
-                        if (eventHandlers is not null)
-                        {
-                            foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
-                            {
-                                var args = result.Params;
+                        // Deserialize on background thread instead of network thread (single parse)
+                        var eventArgs = (EventArgs)JsonSerializer.Deserialize(result.JsonUtf8Bytes.Span, result.TypeInfo)!;
+                        eventArgs.BiDi = result.BiDi;
 
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
+                        foreach (var handler in registration.Handlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                        {
+                            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
                         }
                     }
                 }
@@ -135,5 +127,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private readonly record struct EventInfo(string Method, EventArgs Params);
+    private readonly record struct PendingEvent(string Method, ReadOnlyMemory<byte> JsonUtf8Bytes, IBiDi BiDi, JsonTypeInfo TypeInfo);
+
+    private sealed class EventRegistration(JsonTypeInfo typeInfo)
+    {
+        public JsonTypeInfo TypeInfo { get; } = typeInfo;
+        public List<EventHandler> Handlers { get; } = [];
+    }
 }
