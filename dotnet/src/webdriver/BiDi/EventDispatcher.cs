@@ -75,11 +75,6 @@ internal sealed class EventDispatcher : IAsyncDisposable
         await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
-    internal bool TryGetEventTypeInfo(string method, out JsonTypeInfo? jsonTypeInfo)
-    {
-        return _eventTypesMap.TryGetValue(method, out jsonTypeInfo);
-    }
-
     public void EnqueueEvent(string method, ref Utf8JsonReader paramsReader, IBiDi bidi)
     {
         if (_eventTypesMap.TryGetValue(method, out var eventInfo) && eventInfo is not null)
