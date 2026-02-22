@@ -94,7 +94,7 @@ internal sealed class Broker : IAsyncDisposable
         {
             await _receivingMessageTask.ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
         {
             // Expected when cancellation is requested, ignore.
         }
