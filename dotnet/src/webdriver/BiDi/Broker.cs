@@ -184,18 +184,7 @@ internal sealed class Broker : IAsyncDisposable
 
             case "event":
                 if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
-
-                if (_eventDispatcher.TryGetEventTypeInfo(method, out var eventInfo) && eventInfo is not null)
-                {
-                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
-
-                    _eventDispatcher.EnqueueEvent(method, eventArgs, _bidi);
-                }
-                else
-                {
-                    throw new BiDiException($"The remote end responded with 'event' message type, but no event type mapping for method '{method}' was found.");
-                }
-
+                _eventDispatcher.EnqueueEvent(method, ref paramsReader, _bidi);
                 break;
 
             case "error":

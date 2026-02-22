@@ -42,6 +42,7 @@ public class Subscription : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await UnsubscribeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }
 

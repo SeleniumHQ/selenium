@@ -18,6 +18,7 @@
 // </copyright>
 
 using System.Collections.Concurrent;
+using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.BiDi.Session;
@@ -66,23 +67,36 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
-
-        eventHandlers.Remove(subscription.EventHandler);
+        if (_eventHandlers.TryGetValue(subscription.EventHandler.EventName, out var eventHandlers))
+        {
+            eventHandlers.Remove(subscription.EventHandler);
+        }
 
         await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-    }
-
-    internal void EnqueueEvent(string method, EventArgs eventArgs, IBiDi bidi)
-    {
-        eventArgs.BiDi = bidi;
-
-        _pendingEvents.Writer.TryWrite(new EventInfo(method, eventArgs));
     }
 
     internal bool TryGetEventTypeInfo(string method, out JsonTypeInfo? jsonTypeInfo)
     {
         return _eventTypesMap.TryGetValue(method, out jsonTypeInfo);
+    }
+
+    public void EnqueueEvent(string method, ref Utf8JsonReader paramsReader, IBiDi bidi)
+    {
+        if (_eventTypesMap.TryGetValue(method, out var eventInfo) && eventInfo is not null)
+        {
+            var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
+
+            eventArgs.BiDi = bidi;
+
+            _pendingEvents.Writer.TryWrite(new EventInfo(method, eventArgs));
+        }
+        else
+        {
+            if (_logger.IsEnabled(LogEventLevel.Warn))
+            {
+                _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored.");
+            }
+        }
     }
 
     private async Task ProcessEventsAwaiterAsync()
