@@ -155,14 +155,14 @@ internal sealed class Broker : IAsyncDisposable
         switch (type)
         {
             case "success":
-                if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
+                if (id is null) throw new BiDiException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var command))
                 {
                     try
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
-                            ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
+                            ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
 
                         command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
                     }
@@ -183,12 +183,12 @@ internal sealed class Broker : IAsyncDisposable
                 break;
 
             case "event":
-                if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
+                if (method is null) throw new BiDiException("The remote end responded with 'event' message type, but missed required 'method' property.");
                 _eventDispatcher.EnqueueEvent(method, ref paramsReader, _bidi);
                 break;
 
             case "error":
-                if (id is null) throw new JsonException("The remote end responded with 'error' message type, but missed required 'id' property.");
+                if (id is null) throw new BiDiException("The remote end responded with 'error' message type, but missed required 'id' property.");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
                 {
