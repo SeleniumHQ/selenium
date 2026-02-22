@@ -90,7 +90,14 @@ internal sealed class Broker : IAsyncDisposable
 
         await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
 
-        await _receivingMessageTask.ConfigureAwait(false);
+        try
+        {
+            await _receivingMessageTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when cancellation is requested, ignore.
+        }
 
         _transport.Dispose();
 
