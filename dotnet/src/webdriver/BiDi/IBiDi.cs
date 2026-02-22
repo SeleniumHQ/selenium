@@ -18,6 +18,7 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
 using OpenQA.Selenium.BiDi.Browser;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Emulation;
@@ -57,5 +58,6 @@ public interface IBiDi : IAsyncDisposable
 
     Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default);
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     T AsModule<T>() where T : Module, new();
 }
