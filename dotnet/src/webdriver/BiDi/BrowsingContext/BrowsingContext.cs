@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed record BrowsingContext
 {
-    public BrowsingContext(BiDi bidi, string id)
+    public BrowsingContext(IBiDi bidi, string id)
         : this(id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
@@ -36,11 +36,11 @@ public sealed record BrowsingContext
         Id = id;
     }
 
-    private BrowsingContextLogModule? _logModule;
-    private BrowsingContextNetworkModule? _networkModule;
-    private BrowsingContextScriptModule? _scriptModule;
-    private BrowsingContextStorageModule? _storageModule;
-    private BrowsingContextInputModule? _inputModule;
+    private IBrowsingContextLogModule? _logModule;
+    private IBrowsingContextNetworkModule? _networkModule;
+    private IBrowsingContextScriptModule? _scriptModule;
+    private IBrowsingContextStorageModule? _storageModule;
+    private IBrowsingContextInputModule? _inputModule;
 
     internal string Id { get; }
 
@@ -54,19 +54,19 @@ public sealed record BrowsingContext
     }
 
     [JsonIgnore]
-    public BrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;
+    public IBrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;
 
     [JsonIgnore]
-    public BrowsingContextNetworkModule Network => _networkModule ?? Interlocked.CompareExchange(ref _networkModule, new BrowsingContextNetworkModule(this, BiDi.Network), null) ?? _networkModule;
+    public IBrowsingContextNetworkModule Network => _networkModule ?? Interlocked.CompareExchange(ref _networkModule, new BrowsingContextNetworkModule(this, BiDi.Network), null) ?? _networkModule;
 
     [JsonIgnore]
-    public BrowsingContextScriptModule Script => _scriptModule ?? Interlocked.CompareExchange(ref _scriptModule, new BrowsingContextScriptModule(this, BiDi.Script), null) ?? _scriptModule;
+    public IBrowsingContextScriptModule Script => _scriptModule ?? Interlocked.CompareExchange(ref _scriptModule, new BrowsingContextScriptModule(this, BiDi.Script), null) ?? _scriptModule;
 
     [JsonIgnore]
-    public BrowsingContextStorageModule Storage => _storageModule ?? Interlocked.CompareExchange(ref _storageModule, new BrowsingContextStorageModule(this, BiDi.Storage), null) ?? _storageModule;
+    public IBrowsingContextStorageModule Storage => _storageModule ?? Interlocked.CompareExchange(ref _storageModule, new BrowsingContextStorageModule(this, BiDi.Storage), null) ?? _storageModule;
 
     [JsonIgnore]
-    public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.Input), null) ?? _inputModule;
+    public IBrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.Input), null) ?? _inputModule;
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null, CancellationToken cancellationToken = default)
     {
