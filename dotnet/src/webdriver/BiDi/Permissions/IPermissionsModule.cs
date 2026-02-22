@@ -1,4 +1,4 @@
-// <copyright file="IBrowsingContextStorageModule.cs" company="Selenium Committers">
+// <copyright file="IPermissionsModule.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,13 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Storage;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
-
-public interface IBrowsingContextStorageModule
+public interface IPermissionsModule
 {
-    Task<DeleteCookiesResult> DeleteCookiesAsync(ContextDeleteCookiesOptions? options = null, CancellationToken cancellationToken = default);
-    Task<GetCookiesResult> GetCookiesAsync(ContextGetCookiesOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, ContextSetCookieOptions? options = null, CancellationToken cancellationToken = default);
+    Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default);
 }
