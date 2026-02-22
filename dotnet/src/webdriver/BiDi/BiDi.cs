@@ -34,14 +34,9 @@ using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class BiDi : IBiDi
+internal sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
-
-    private BiDi(string url)
-    {
-        var uri = new Uri(url);
-    }
 
     private Broker Broker { get; set; } = null!;
 
@@ -69,11 +64,11 @@ public sealed class BiDi : IBiDi
 
     public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var bidi = new BiDi(url);
+        BiDi bidi = new();
 
-        var eventDispatcher = new EventDispatcher(bidi.Session, () => bidi);
+        EventDispatcher eventDispatcher = new(bidi.Session, () => bidi);
 
-        var broker = await Broker.CreateAsync(new Uri(url), eventDispatcher, cancellationToken).ConfigureAwait(false);
+        Broker broker = await Broker.CreateAsync(new Uri(url), eventDispatcher, cancellationToken).ConfigureAwait(false);
 
         bidi.Broker = broker;
         bidi.EventDispatcher = eventDispatcher;
