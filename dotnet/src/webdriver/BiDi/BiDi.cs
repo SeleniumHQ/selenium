@@ -41,11 +41,11 @@ public sealed class BiDi : IBiDi
     private BiDi(string url)
     {
         var uri = new Uri(url);
-
-        Broker = new Broker(this, uri);
     }
 
-    private Broker Broker { get; }
+    private Broker Broker { get; set; } = null!;
+
+    private EventDispatcher EventDispatcher { get; set; } = null!;
 
     internal ISessionModule Session => AsModule<SessionModule>();
 
@@ -71,7 +71,12 @@ public sealed class BiDi : IBiDi
     {
         var bidi = new BiDi(url);
 
-        await bidi.Broker.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        var eventDispatcher = new EventDispatcher(bidi.Session, () => bidi);
+
+        var broker = await Broker.CreateAsync(new Uri(url), eventDispatcher, cancellationToken).ConfigureAwait(false);
+
+        bidi.Broker = broker;
+        bidi.EventDispatcher = eventDispatcher;
 
         return bidi;
     }
@@ -93,6 +98,7 @@ public sealed class BiDi : IBiDi
 
     public async ValueTask DisposeAsync()
     {
+        await EventDispatcher.DisposeAsync().ConfigureAwait(false);
         await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }

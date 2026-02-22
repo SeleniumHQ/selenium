@@ -21,12 +21,12 @@ namespace OpenQA.Selenium.BiDi;
 
 public class Subscription : IAsyncDisposable
 {
-    private readonly Broker _broker;
+    private readonly EventDispatcher _eventDispatcher;
 
-    internal Subscription(Session.Subscription subscription, Broker broker, EventHandler eventHandler)
+    internal Subscription(Session.Subscription subscription, EventDispatcher eventDispatcher, EventHandler eventHandler)
     {
         SubscriptionId = subscription;
-        _broker = broker;
+        _eventDispatcher = eventDispatcher;
         EventHandler = eventHandler;
     }
 
@@ -36,7 +36,7 @@ public class Subscription : IAsyncDisposable
 
     public async Task UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
+        await _eventDispatcher.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
