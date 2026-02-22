@@ -55,7 +55,7 @@ public interface IBiDi : IAsyncDisposable
 
     Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default);
 
-    Task EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default);
+    Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default);
 
     T AsModule<T>() where T : Module, new();
 }

@@ -83,7 +83,7 @@ public sealed class BiDi : IBiDi
         return Session.NewAsync(capabilities, options, cancellationToken);
     }
 
-    public Task EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
         return Session.EndAsync(options, cancellationToken);
     }
