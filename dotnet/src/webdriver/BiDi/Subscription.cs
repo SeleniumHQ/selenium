@@ -34,7 +34,7 @@ public class Subscription : IAsyncDisposable
 
     internal EventHandler EventHandler { get; }
 
-    public async Task UnsubscribeAsync(CancellationToken cancellationToken = default)
+    public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
         await _eventDispatcher.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }

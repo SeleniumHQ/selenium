@@ -65,14 +65,13 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
-    public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
+    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         if (_eventHandlers.TryGetValue(subscription.EventHandler.EventName, out var eventHandlers))
         {
+            await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
             eventHandlers.Remove(subscription.EventHandler);
         }
-
-        await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
     public void EnqueueEvent(string method, ref Utf8JsonReader paramsReader, IBiDi bidi)
