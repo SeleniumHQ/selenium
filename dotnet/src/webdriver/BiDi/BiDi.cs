@@ -34,7 +34,7 @@ using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi;
 
-internal sealed class BiDi : IBiDi
+public sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
