@@ -40,8 +40,6 @@ public sealed class BiDi : IBiDi
 
     private Broker Broker { get; set; } = null!;
 
-    private EventDispatcher EventDispatcher { get; set; } = null!;
-
     internal ISessionModule Session => AsModule<SessionModule>();
 
     public IBrowsingContextModule BrowsingContext => AsModule<BrowsingContextModule>();
@@ -64,14 +62,13 @@ public sealed class BiDi : IBiDi
 
     public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
+        var transport = new WebSocketTransport(new Uri(url));
+
+        await transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
+
         BiDi bidi = new();
 
-        EventDispatcher eventDispatcher = new(bidi.Session, () => bidi);
-
-        Broker broker = await Broker.CreateAsync(new Uri(url), eventDispatcher, cancellationToken).ConfigureAwait(false);
-
-        bidi.Broker = broker;
-        bidi.EventDispatcher = eventDispatcher;
+        bidi.Broker = new Broker(transport, bidi, () => bidi.Session);
 
         return bidi;
     }
@@ -93,7 +90,6 @@ public sealed class BiDi : IBiDi
 
     public async ValueTask DisposeAsync()
     {
-        await EventDispatcher.DisposeAsync().ConfigureAwait(false);
         await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }

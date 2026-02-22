@@ -20,6 +20,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
@@ -30,6 +31,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly ITransport _transport;
     private readonly EventDispatcher _eventDispatcher;
+    private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -40,22 +42,14 @@ internal sealed class Broker : IAsyncDisposable
     private readonly Task _receivingMessageTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
-    private Broker(ITransport transport, EventDispatcher eventDispatcher)
+    public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
     {
         _transport = transport;
-        _eventDispatcher = eventDispatcher;
+        _bidi = bidi;
+        _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
-    }
-
-    public static async Task<Broker> CreateAsync(Uri url, EventDispatcher eventDispatcher, CancellationToken cancellationToken)
-    {
-        var transport = new WebSocketTransport(url);
-
-        await transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
-
-        return new Broker(transport, eventDispatcher);
     }
 
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -63,10 +57,6 @@ internal sealed class Broker : IAsyncDisposable
     {
         return _eventDispatcher.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
-
-
-
-
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
         where TCommand : Command
@@ -97,6 +87,8 @@ internal sealed class Broker : IAsyncDisposable
     {
         _receiveMessagesCancellationTokenSource.Cancel();
         _receiveMessagesCancellationTokenSource.Dispose();
+
+        await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
 
         await _receivingMessageTask.ConfigureAwait(false);
 
@@ -197,7 +189,7 @@ internal sealed class Broker : IAsyncDisposable
                 {
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
 
-                    _eventDispatcher.EnqueueEvent(method, eventArgs);
+                    _eventDispatcher.EnqueueEvent(method, eventArgs, _bidi);
                 }
                 else
                 {

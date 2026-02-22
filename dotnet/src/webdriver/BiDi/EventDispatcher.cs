@@ -29,8 +29,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly ISessionModule _session;
-    private readonly Func<IBiDi> _bidiProvider;
+    private readonly Func<ISessionModule> _sessionProvider;
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
@@ -45,11 +44,9 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
 
-    public EventDispatcher(ISessionModule session, Func<IBiDi> bidiProvider)
+    public EventDispatcher(Func<ISessionModule> sessionProvider)
     {
-        _session = session;
-        _bidiProvider = bidiProvider;
-
+        _sessionProvider = sessionProvider;
         _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
     }
 
@@ -60,7 +57,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        var subscribeResult = await _session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
+        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
         handlers.Add(eventHandler);
 
@@ -73,12 +70,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
         eventHandlers.Remove(subscription.EventHandler);
 
-        await _session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
+        await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
     }
 
-    internal void EnqueueEvent(string method, EventArgs eventArgs)
+    internal void EnqueueEvent(string method, EventArgs eventArgs, IBiDi bidi)
     {
-        eventArgs.BiDi = _bidiProvider();
+        eventArgs.BiDi = bidi;
 
         _pendingEvents.Writer.TryWrite(new EventInfo(method, eventArgs));
     }
