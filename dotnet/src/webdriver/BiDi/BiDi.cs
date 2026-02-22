@@ -20,17 +20,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Browser;
-using OpenQA.Selenium.BiDi.BrowsingContext;
-using OpenQA.Selenium.BiDi.Emulation;
-using OpenQA.Selenium.BiDi.Input;
-using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Log;
-using OpenQA.Selenium.BiDi.Network;
-using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.BiDi.Session;
-using OpenQA.Selenium.BiDi.Storage;
-using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -42,23 +32,23 @@ public sealed class BiDi : IBiDi
 
     internal ISessionModule Session => AsModule<SessionModule>();
 
-    public IBrowsingContextModule BrowsingContext => AsModule<BrowsingContextModule>();
+    public BrowsingContext.IBrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
 
-    public IBrowserModule Browser => AsModule<BrowserModule>();
+    public Browser.IBrowserModule Browser => AsModule<Browser.BrowserModule>();
 
-    public INetworkModule Network => AsModule<NetworkModule>();
+    public Network.INetworkModule Network => AsModule<Network.NetworkModule>();
 
-    public IInputModule Input => AsModule<InputModule>();
+    public Input.IInputModule Input => AsModule<Input.InputModule>();
 
-    public IScriptModule Script => AsModule<ScriptModule>();
+    public Script.IScriptModule Script => AsModule<Script.ScriptModule>();
 
-    public ILogModule Log => AsModule<LogModule>();
+    public Log.ILogModule Log => AsModule<Log.LogModule>();
 
-    public IStorageModule Storage => AsModule<StorageModule>();
+    public Storage.IStorageModule Storage => AsModule<Storage.StorageModule>();
 
-    public IWebExtensionModule WebExtension => AsModule<WebExtensionModule>();
+    public WebExtension.IWebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
 
-    public IEmulationModule Emulation => AsModule<EmulationModule>();
+    public Emulation.IEmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
     public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -108,7 +98,7 @@ public sealed class BiDi : IBiDi
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Converters =
             {
-                new DateTimeOffsetConverter(),
+                new Json.Converters.DateTimeOffsetConverter(),
             }
         };
     }
