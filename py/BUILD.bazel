@@ -291,8 +291,8 @@ py_library(
     deps = [
         ":bidi",
         ":exceptions",
-        ":remote",
         ":latest",
+        ":remote",
         requirement("typing_extensions"),
     ],
 )

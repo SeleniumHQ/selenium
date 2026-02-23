@@ -58,7 +58,7 @@ def _generate_latest_impl(ctx):
         content = "from ..%s import *\n" % latest,
     )
     return [DefaultInfo(
-        files   = depset([output_file]),
+        files = depset([output_file]),
         runfiles = ctx.runfiles(files = [output_file]),
     )]
 
