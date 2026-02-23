@@ -24,7 +24,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDisposable
+sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
@@ -115,26 +115,31 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDispos
 
     private bool _disposed;
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        if (_disposed) return;
 
-    private void Dispose(bool disposing)
-    {
-        if (_disposed)
+        if (_webSocket.State == WebSocketState.Open)
         {
-            return;
+            try
+            {
+                await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"Error closing WebSocket gracefully: {ex.Message}");
+                }
+            }
         }
 
-        if (disposing)
-        {
-            _webSocket.Dispose();
-            _sharedMemoryStream.Dispose();
-            _socketSendSemaphoreSlim.Dispose();
-        }
+        _webSocket.Dispose();
+        _sharedMemoryStream.Dispose();
+        _socketSendSemaphoreSlim.Dispose();
 
         _disposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }

@@ -113,7 +113,7 @@ internal sealed class Broker : IAsyncDisposable
 
         _receiveMessagesCancellationTokenSource.Dispose();
 
-        _transport.Dispose();
+        await _transport.DisposeAsync().ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
     }
