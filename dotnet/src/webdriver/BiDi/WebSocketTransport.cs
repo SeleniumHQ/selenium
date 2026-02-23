@@ -69,7 +69,7 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken).ConfigureAwait(false);
+                    await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
 
                     throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
                         $"The remote end closed the WebSocket connection. Status: {_webSocket.CloseStatus}, Description: {_webSocket.CloseStatusDescription}");
