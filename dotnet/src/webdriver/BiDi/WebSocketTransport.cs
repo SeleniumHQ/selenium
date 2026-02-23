@@ -67,6 +67,14 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDispos
             {
                 result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
 
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken).ConfigureAwait(false);
+
+                    throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
+                        $"The remote end closed the WebSocket connection. Status: {_webSocket.CloseStatus}, Description: {_webSocket.CloseStatusDescription}");
+                }
+
                 _sharedMemoryStream.Write(receiveBuffer, 0, result.Count);
             }
             while (!result.EndOfMessage);
