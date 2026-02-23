@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextModule : Module
+public sealed class BrowsingContextModule : Module, IBrowsingContextModule
 {
     private BrowsingContextJsonSerializerContext _jsonContext = null!;
 
@@ -251,7 +251,7 @@ public sealed class BrowsingContextModule : Module
         return await SubscribeAsync("browsingContext.userPromptClosed", handler, options, _jsonContext.UserPromptClosedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));

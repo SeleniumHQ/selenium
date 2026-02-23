@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.BiDi;
 public class BiDiTestFixture
 {
     protected IWebDriver driver;
-    protected BiDi bidi;
+    protected IBiDi bidi;
     protected BrowsingContext.BrowsingContext context;
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;

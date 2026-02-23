@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule : Module
+public sealed class InputModule : Module, IInputModule
 {
     private InputJsonSerializerContext _jsonContext = null!;
 
@@ -58,7 +58,7 @@ public sealed class InputModule : Module
         return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));

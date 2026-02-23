@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule : Module
+public sealed class WebExtensionModule : Module, IWebExtensionModule
 {
     private WebExtensionJsonSerializerContext _jsonContext = null!;
 
@@ -41,7 +41,7 @@ public sealed class WebExtensionModule : Module
         return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
 
