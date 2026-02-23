@@ -118,7 +118,7 @@ internal sealed class Broker : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void ProcessReceivedMessage(byte[]? data)
+    private void ProcessReceivedMessage(byte[] data)
     {
         long? id = default;
         string? type = default;
@@ -216,13 +216,13 @@ internal sealed class Broker : IAsyncDisposable
                 break;
 
             case "event":
-                if (method is null) throw new BiDiException("The remote end responded with 'event' message type, but missed required 'method' property.");
+                if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
                 var paramsJsonData = new ReadOnlyMemory<byte>(data, (int)paramsStartIndex, (int)(paramsEndIndex - paramsStartIndex));
                 _eventDispatcher.EnqueueEvent(method, paramsJsonData, _bidi);
                 break;
 
             case "error":
-                if (id is null) throw new BiDiException("The remote end responded with 'error' message type, but missed required 'id' property.");
+                if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
                 {
@@ -233,7 +233,7 @@ internal sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
-                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
                     }
                 }
 
