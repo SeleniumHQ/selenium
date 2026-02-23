@@ -57,7 +57,10 @@ def _generate_latest_impl(ctx):
         output = output_file,
         content = "from ..%s import *\n" % latest,
     )
-    return [DefaultInfo(files = depset([output_file]))]
+    return [DefaultInfo(
+        files   = depset([output_file]),
+        runfiles = ctx.runfiles(files = [output_file]),
+    )]
 
 generate_devtools_latest = rule(
     implementation = _generate_latest_impl,

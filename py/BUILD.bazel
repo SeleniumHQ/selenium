@@ -280,7 +280,7 @@ py_library(
         exclude = [
             "selenium/webdriver/common/bidi/**",
         ],
-    ) + [":latest"],
+    ),
     data = [
         ":manager-linux",
         ":manager-macos",
@@ -292,6 +292,7 @@ py_library(
         ":bidi",
         ":exceptions",
         ":remote",
+        ":latest",
         requirement("typing_extensions"),
     ],
 )
