@@ -172,7 +172,8 @@ class SpeculationInspectorTest extends JupiterTestBase {
     // Navigate to the prefetched page by clicking the link
     script.callFunctionInBrowsingContext(
         driver.getWindowHandle(),
-        "() => { const link = document.getElementById('prefetch-page'); if (link) { link.click(); } }",
+        "() => { const link = document.getElementById('prefetch-page'); if (link) { link.click(); }"
+            + " }",
         false,
         Optional.empty(),
         Optional.empty(),
