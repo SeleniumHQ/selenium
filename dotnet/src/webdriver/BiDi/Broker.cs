@@ -270,12 +270,13 @@ internal sealed class Broker : IAsyncDisposable
             }
 
             // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
-            foreach (var pendingCommand in _pendingCommands.Values)
+            foreach (var id in _pendingCommands.Keys)
             {
-                pendingCommand.TaskCompletionSource.TrySetException(ex);
+                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                {
+                    pendingCommand.TaskCompletionSource.TrySetException(ex);
+                }
             }
-
-            _pendingCommands.Clear();
 
             throw;
         }
