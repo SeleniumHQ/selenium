@@ -269,6 +269,14 @@ internal sealed class Broker : IAsyncDisposable
                 _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
+            // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
+            foreach (var pendingCommand in _pendingCommands.Values)
+            {
+                pendingCommand.TaskCompletionSource.TrySetException(ex);
+            }
+
+            _pendingCommands.Clear();
+
             throw;
         }
     }
