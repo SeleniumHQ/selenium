@@ -96,7 +96,7 @@ task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
-  sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
+  sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS ; cat AUTHORS) | sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS"
 end
 
 # Example: `./go release_updates selenium-4.31.0 early-stable`

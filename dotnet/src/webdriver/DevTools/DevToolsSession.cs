@@ -17,15 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.DevTools;

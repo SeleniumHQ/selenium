@@ -17,21 +17,16 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi;
 
 public class Subscription : IAsyncDisposable
 {
-    private readonly Broker _broker;
+    private readonly EventDispatcher _eventDispatcher;
 
-    internal Subscription(Session.Subscription subscription, Broker broker, EventHandler eventHandler)
+    internal Subscription(Session.Subscription subscription, EventDispatcher eventDispatcher, EventHandler eventHandler)
     {
         SubscriptionId = subscription;
-        _broker = broker;
+        _eventDispatcher = eventDispatcher;
         EventHandler = eventHandler;
     }
 
@@ -39,14 +34,15 @@ public class Subscription : IAsyncDisposable
 
     internal EventHandler EventHandler { get; }
 
-    public async Task UnsubscribeAsync(CancellationToken cancellationToken = default)
+    public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
+        await _eventDispatcher.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
     {
         await UnsubscribeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }
 

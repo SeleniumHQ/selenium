@@ -17,12 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
 public partial class NetworkModule
@@ -69,7 +63,7 @@ public sealed record InterceptAuthOptions : AddInterceptOptions;
 
 public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 {
-    internal InterceptedRequest(BiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, Initiator initiator, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedRequest(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, Initiator initiator, IReadOnlyList<Intercept>? intercepts)
         : base(context, isBlocked, navigation, redirectCount, request, timestamp, initiator, intercepts)
     {
         BiDi = bidi;
@@ -93,7 +87,7 @@ public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 
 public sealed record InterceptedResponse : ResponseStartedEventArgs
 {
-    internal InterceptedResponse(BiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedResponse(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
         : base(context, isBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
     {
         BiDi = bidi;
@@ -107,7 +101,7 @@ public sealed record InterceptedResponse : ResponseStartedEventArgs
 
 public sealed record InterceptedAuth : AuthRequiredEventArgs
 {
-    internal InterceptedAuth(BiDi bidi, BrowsingContext.BrowsingContext? context, bool IsBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedAuth(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool IsBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
         : base(context, IsBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
     {
         BiDi = bidi;
@@ -129,7 +123,7 @@ public sealed record InterceptedAuth : AuthRequiredEventArgs
     }
 }
 
-public sealed record Interception(NetworkModule Network, Intercept Intercept) : IAsyncDisposable
+public sealed record Interception(INetworkModule Network, Intercept Intercept) : IAsyncDisposable
 {
     IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
     IList<Subscription> OnResponseStartedSubscriptions { get; } = [];

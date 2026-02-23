@@ -17,28 +17,38 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Buffers;
-using System.IO;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDisposable
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
-    private readonly ClientWebSocket _webSocket = new();
+    private readonly ClientWebSocket _webSocket = webSocket;
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
 
-    public async Task ConnectAsync(CancellationToken cancellationToken)
+    public static async Task<WebSocketTransport> ConnectAsync(Uri uri, CancellationToken cancellationToken)
     {
-        await _webSocket.ConnectAsync(_uri, cancellationToken).ConfigureAwait(false);
+        ClientWebSocket webSocket = new();
+
+        try
+        {
+            await webSocket.ConnectAsync(uri, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            webSocket.Dispose();
+            throw;
+        }
+
+        WebSocketTransport webSocketTransport = new(webSocket);
+
+        return webSocketTransport;
     }
 
     public async Task<byte[]> ReceiveAsync(CancellationToken cancellationToken)

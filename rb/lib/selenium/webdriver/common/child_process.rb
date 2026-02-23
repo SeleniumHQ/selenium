@@ -24,7 +24,8 @@ module Selenium
     #
 
     class ChildProcess
-      TimeoutError = Class.new(StandardError)
+      class TimeoutError < StandardError
+      end
 
       SIGTERM = 'TERM'
       SIGKILL = 'KILL'

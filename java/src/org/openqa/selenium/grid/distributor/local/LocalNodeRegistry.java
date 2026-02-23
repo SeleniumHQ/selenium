@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static java.util.stream.Collectors.toUnmodifiableSet;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -34,8 +35,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -88,12 +92,11 @@ public class LocalNodeRegistry implements NodeRegistry {
   private final ExecutorService nodeHealthCheckExecutor;
   private final Duration purgeNodesInterval;
   private final ScheduledExecutorService purgeDeadNodesService;
-  private final int newSessionThreadPoolSize;
+  private final AtomicBoolean healthChecksInProgress = new AtomicBoolean(false);
 
   public LocalNodeRegistry(
       Tracer tracer,
       EventBus bus,
-      int newSessionThreadPoolSize,
       HttpClient.Factory clientFactory,
       Secret registrationSecret,
       Duration healthcheckInterval,
@@ -109,7 +112,6 @@ public class LocalNodeRegistry implements NodeRegistry {
         Require.nonNull("Node health check service", nodeHealthCheckService);
     this.purgeNodesInterval = Require.nonNull("Purge nodes interval", purgeNodesInterval);
     this.purgeDeadNodesService = Require.nonNull("Purge dead nodes service", purgeDeadNodesService);
-    this.newSessionThreadPoolSize = newSessionThreadPoolSize;
 
     this.model = new LocalGridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
@@ -138,9 +140,10 @@ public class LocalNodeRegistry implements NodeRegistry {
         healthcheckInterval.toMillis(),
         TimeUnit.MILLISECONDS);
 
+    // Health checks are I/O-bound; a cached pool spawns one thread per active check and
+    // reuses idle threads, giving each cycle a single concurrent pass over all nodes.
     this.nodeHealthCheckExecutor =
-        Executors.newFixedThreadPool(
-            this.newSessionThreadPoolSize,
+        Executors.newCachedThreadPool(
             r -> {
               Thread t = new Thread(r);
               t.setName("node-health-check-" + t.getId());
@@ -305,6 +308,11 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public void runHealthChecks() {
+    if (!healthChecksInProgress.compareAndSet(false, true)) {
+      LOG.log(getDebugLogLevel(), "Skipping health checks because previous cycle is still running");
+      return;
+    }
+
     Map<NodeId, Runnable> nodeHealthChecks;
     Lock readLock = this.lock.readLock();
     readLock.lock();
@@ -314,18 +322,40 @@ public class LocalNodeRegistry implements NodeRegistry {
       readLock.unlock();
     }
 
-    if (nodeHealthChecks.isEmpty()) {
-      return;
+    try {
+      if (nodeHealthChecks.isEmpty()) {
+        return;
+      }
+
+      List<Future<?>> futures = new ArrayList<>(nodeHealthChecks.size());
+      nodeHealthChecks.forEach(
+          (nodeId, check) -> {
+            try {
+              futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
+            } catch (RejectedExecutionException e) {
+              LOG.log(
+                  getDebugLogLevel(),
+                  String.format(
+                      "Unable to schedule health check for node %s, running in caller thread",
+                      nodeId),
+                  e);
+              runHealthCheck(nodeId, check);
+            }
+          });
+
+      for (Future<?> future : futures) {
+        try {
+          future.get();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        } catch (Exception e) {
+          LOG.log(getDebugLogLevel(), "Error waiting for health check execution", e);
+        }
+      }
+    } finally {
+      healthChecksInProgress.set(false);
     }
-
-    List<Runnable> checks = new ArrayList<>(nodeHealthChecks.values());
-    int total = checks.size();
-
-    // Large deployments: process in parallel batches with controlled concurrency
-    int batchSize = Math.max(10, total / 10);
-
-    List<List<Runnable>> batches = partition(checks, batchSize);
-    processBatchesInParallel(batches);
   }
 
   @Override
@@ -417,40 +447,12 @@ public class LocalNodeRegistry implements NodeRegistry {
     }
   }
 
-  private void processBatchesInParallel(List<List<Runnable>> batches) {
-    if (batches.isEmpty()) {
-      return;
+  private void runHealthCheck(NodeId nodeId, Runnable check) {
+    try {
+      check.run();
+    } catch (Throwable t) {
+      LOG.log(getDebugLogLevel(), "Health check execution failed for node " + nodeId, t);
     }
-
-    // Process all batches with controlled parallelism
-    batches.forEach(
-        batch ->
-            nodeHealthCheckExecutor.submit(
-                () ->
-                    batch.parallelStream()
-                        .forEach(
-                            r -> {
-                              try {
-                                r.run();
-                              } catch (Throwable t) {
-                                LOG.log(
-                                    getDebugLogLevel(),
-                                    "Health check execution failed in batch",
-                                    t);
-                              }
-                            })));
-  }
-
-  private static List<List<Runnable>> partition(List<Runnable> list, int size) {
-    List<List<Runnable>> batches = new ArrayList<>();
-    if (list.isEmpty() || size <= 0) {
-      return batches;
-    }
-    for (int i = 0; i < list.size(); i += size) {
-      int end = Math.min(i + size, list.size());
-      batches.add(new ArrayList<>(list.subList(i, end)));
-    }
-    return batches;
   }
 
   private Runnable asRunnableHealthCheck(Node node) {
@@ -581,6 +583,7 @@ public class LocalNodeRegistry implements NodeRegistry {
   @Override
   public void close() {
     LOG.info("Shutting down LocalNodeRegistry");
+    shutdownGracefully("Local Distributor - Node Health Check Worker", nodeHealthCheckExecutor);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {

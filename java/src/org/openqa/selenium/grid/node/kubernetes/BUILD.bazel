@@ -1,0 +1,59 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_binary", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "kubernetes",
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-node-kubernetes:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        "//java/src/org/openqa/selenium/grid",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/jmx",
+        "//java/src/org/openqa/selenium/grid/log",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/grid/node/config",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("io.fabric8:kubernetes-client"),
+        artifact("io.fabric8:kubernetes-client-api"),
+        artifact("io.fabric8:kubernetes-model-batch"),
+        artifact("io.fabric8:kubernetes-model-core"),
+    ],
+)
+
+java_binary(
+    name = "kubernetes-ext",
+    main_class = "no.main",
+    visibility = [
+        "//deploys/docker:__pkg__",
+    ],
+    runtime_deps = [
+        ":kubernetes",
+    ],
+)
+
+copy_file(
+    name = "ext-jar",
+    src = ":kubernetes-ext_deploy.jar",
+    out = "selenium-node-kubernetes",
+)

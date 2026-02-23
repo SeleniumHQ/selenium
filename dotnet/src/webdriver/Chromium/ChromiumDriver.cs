@@ -17,12 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -141,14 +137,14 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// </summary>
     protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands => new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands);
 
-    /// <summary>
-    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="commandTimeout"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
+        return Task.Run(async () =>
+            await GenerateDriverServiceCommandExecutorAsync(service, options, commandTimeout).ConfigureAwait(false))
+            .GetAwaiter().GetResult();
+    }
+
+    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
         if (service is null)
         {
@@ -163,16 +159,32 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
         if (service.DriverServicePath == null)
         {
             DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = finder.GetDriverPath();
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-            if (finder.TryGetBrowserPath(out string? browserPath))
-            {
-                options.BinaryLocation = browserPath;
-                options.BrowserVersion = null;
-            }
+            string fullBrowserPath = await finder.GetBrowserPathAsync().ConfigureAwait(false);
+            options.BinaryLocation = fullBrowserPath;
+            options.BrowserVersion = null;
         }
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+
+        try
+        {
+            await service.StartAsync().ConfigureAwait(false);
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            try
+            {
+                await service.DisposeAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // Ignore exceptions thrown while disposing the service to preserve the original exception.
+            }
+
+            throw;
+        }
     }
 
     /// <summary>

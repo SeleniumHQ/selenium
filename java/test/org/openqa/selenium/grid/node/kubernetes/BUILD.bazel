@@ -1,0 +1,23 @@
+load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        TOOLS_JAVA_VERSION,
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/node/kubernetes",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("io.fabric8:kubernetes-client-api"),
+        artifact("io.fabric8:kubernetes-model-batch"),
+        artifact("io.fabric8:kubernetes-model-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

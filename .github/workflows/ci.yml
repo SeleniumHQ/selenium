@@ -79,7 +79,7 @@ jobs:
             fi
           }
           check_binding "//java/" "java"
-          check_binding "//py:" "py"
+          check_binding "//py" "py"
           check_binding "//rb/" "rb"
           check_binding "//dotnet/" "dotnet"
           check_binding "//rust/" "rust"

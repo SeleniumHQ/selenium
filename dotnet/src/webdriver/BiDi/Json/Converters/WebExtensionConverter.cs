@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class WebExtensionConverter(BiDi bidi) : JsonConverter<Extension>
+internal class WebExtensionConverter(IBiDi bidi) : JsonConverter<Extension>
 {
     public override Extension? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
