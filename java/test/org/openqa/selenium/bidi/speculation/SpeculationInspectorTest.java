@@ -60,9 +60,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
   }
 
   void addSpeculationRulesAndLink(String rules, String href, String linkText, String linkId) {
-    String expression =
+    String functionDeclaration =
         String.format(
-            "const script = document.createElement('script');"
+            "() => {"
+                + "const script = document.createElement('script');"
                 + "script.type = 'speculationrules';"
                 + "script.textContent = `%s`;"
                 + "document.head.appendChild(script);"
@@ -70,12 +71,13 @@ class SpeculationInspectorTest extends JupiterTestBase {
                 + "link.href = '%s';"
                 + "link.textContent = '%s';"
                 + "link.id = '%s';"
-                + "document.body.appendChild(link);",
+                + "document.body.appendChild(link);"
+                + "}",
             rules, href, linkText, linkId);
 
     script.callFunctionInBrowsingContext(
         driver.getWindowHandle(),
-        expression,
+        functionDeclaration,
         false,
         Optional.empty(),
         Optional.empty(),
@@ -171,7 +173,8 @@ class SpeculationInspectorTest extends JupiterTestBase {
     // Navigate to the prefetched page by clicking the link
     script.callFunctionInBrowsingContext(
         driver.getWindowHandle(),
-        "const link = document.getElementById('prefetch-page'); if (link) { link.click(); }",
+        "() => { const link = document.getElementById('prefetch-page'); if (link) { link.click(); }"
+            + " }",
         false,
         Optional.empty(),
         Optional.empty(),
