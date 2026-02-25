@@ -354,7 +354,7 @@ module Selenium
         def rlocation(path)
           return path if path.nil? || File.exist?(path)
 
-          runfiles_dir = ENV['RUNFILES_DIR']
+          runfiles_dir = ENV.fetch('RUNFILES_DIR', nil)
           return path unless runfiles_dir
 
           rlocation_path = path.sub(%r{^external/}, '')
