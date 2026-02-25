@@ -16,7 +16,6 @@ common --legacy_external_runfiles
 # Ensure Windows support is accurate.
 startup --windows_enable_symlinks
 build --enable_runfiles
-build:windows --noexperimental_inprocess_symlink_creation
 
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
