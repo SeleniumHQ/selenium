@@ -35,5 +35,9 @@ def test_devtools_import_latest():
     """This test verifies the `latest` devtools module can be imported and it contains submodules."""
     latest_module = importlib.import_module("selenium.webdriver.common.devtools.latest")
     assert isinstance(latest_module, types.ModuleType)
-    submodules = [attr for attr in dir(latest_module) if isinstance(attr, types.ModuleType)]
-    assert len(submodules) > 1
+    devtools_submodules = [
+        getattr(latest_module, name)
+        for name in dir(latest_module)
+        if isinstance(getattr(latest_module, name), types.ModuleType)
+    ]
+    assert len(devtools_submodules) > 1
