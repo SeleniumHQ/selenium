@@ -52,11 +52,7 @@ public class DumpHttpExchangeFilter implements Filter {
     message.forEachHeader(
         (name, value) -> builder.append("  ").append(name).append(": ").append(value).append("\n"));
     builder.append("\n");
-    try {
-      builder.append(message.contentAsString());
-    } catch (UnsupportedOperationException e) {
-      builder.append("[Unable to log content: ").append(e.getMessage()).append("]");
-    }
+    builder.append(message);
   }
 
   /** visible for testing only */
