@@ -10,6 +10,9 @@ try-import %workspace%/.bazelrc.windows.local
 
 common --lockfile_mode=off
 
+# Bazel 8 compatibility flags. We should find ways to avoid needing these
+common --legacy_external_runfiles
+
 # Ensure Windows support is accurate.
 startup --windows_enable_symlinks
 build --enable_runfiles
