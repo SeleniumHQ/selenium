@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 
 public class DumpHttpExchangeFilter implements Filter {
@@ -52,7 +54,12 @@ public class DumpHttpExchangeFilter implements Filter {
     message.forEachHeader(
         (name, value) -> builder.append("  ").append(name).append(": ").append(value).append("\n"));
     builder.append("\n");
-    builder.append(Contents.string(message));
+    try {
+      builder.append(message.contentAsString());
+    }
+    catch(UnsupportedOperationException e){
+      builder.append("[Unable to log content: ").append(e.getMessage()).append("]");
+    }
   }
 
   /** visible for testing only */
