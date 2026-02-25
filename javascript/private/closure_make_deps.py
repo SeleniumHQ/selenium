@@ -43,7 +43,7 @@ def strip_comments(content):
 
 def parse_js_file(path):
     """Extract goog.provide, goog.module, and goog.require namespaces from a JS file."""
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         content = f.read()
 
     cleaned = strip_comments(content)
@@ -70,7 +70,7 @@ def main():
     output_path = sys.argv[2]
     closure_path = sys.argv[3]
 
-    with open(files_list_path, "r", encoding="utf-8") as f:
+    with open(files_list_path, encoding="utf-8") as f:
         files = [line.strip() for line in f if line.strip()]
 
     lines = []
@@ -81,21 +81,13 @@ def main():
         # deps.js is consumed in the browser, so always use forward slashes
         rel_path = rel_path.replace(os.sep, "/")
 
-        provides_str = ", ".join("'%s'" % p for p in provides)
-        requires_str = ", ".join("'%s'" % r for r in requires)
+        provides_str = ", ".join(f"'{p}'" for p in provides)
+        requires_str = ", ".join(f"'{r}'" for r in requires)
 
         if is_module:
-            line = "goog.addDependency('%s', [%s], [%s], {'module': 'goog'});" % (
-                rel_path,
-                provides_str,
-                requires_str,
-            )
+            line = f"goog.addDependency('{rel_path}', [{provides_str}], [{requires_str}], {{'module': 'goog'}});"
         else:
-            line = "goog.addDependency('%s', [%s], [%s]);" % (
-                rel_path,
-                provides_str,
-                requires_str,
-            )
+            line = f"goog.addDependency('{rel_path}', [{provides_str}], [{requires_str}]);"
 
         lines.append((rel_path, line))
 
