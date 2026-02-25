@@ -19,8 +19,8 @@ load(
     "feature",
     "tool_path",
 )
-# cc_common and CcToolchainConfigInfo are Bazel 8 builtins - loading them
-# from @rules_cc causes provider identity mismatches via cc_compatibility_proxy.
+load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+load("@rules_cc//cc/private/toolchain_config:cc_toolchain_config_info.bzl", "CcToolchainConfigInfo")
 
 def _impl(ctx):
     toolchain_identifier = "stub_armeabi-v7a"
