@@ -206,10 +206,7 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
       case BUILDER ->
           new Augmenter()
               .augment(
-                  RemoteWebDriver.builder()
-                      .oneOf(capabilities)
-                      .address(server.getUrl())
-                      .build());
+                  RemoteWebDriver.builder().oneOf(capabilities).address(server.getUrl()).build());
     };
   }
 
