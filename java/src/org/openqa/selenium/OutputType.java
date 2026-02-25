@@ -83,23 +83,30 @@ public interface OutputType<T> {
         }
 
         private File save(byte[] data) {
-          Path tmpFilePath = null;
+          Path tmpFilePath = createScreenshotFile();
           try {
-            tmpFilePath = Files.createTempFile("screenshot", ".png");
             Files.write(tmpFilePath, data);
           } catch (IOException e) {
-            String pathInfo =
-                (tmpFilePath != null)
-                    ? tmpFilePath.toAbsolutePath().toString()
-                    : "temporary file could not be created";
-
             throw new WebDriverException(
-                "Failed to create or write screenshot to temporary file: " + pathInfo, e);
+                "Failed to create or write screenshot to temporary file: "
+                    + tmpFilePath.toAbsolutePath().toString(),
+                e);
           }
 
           File tmpFile = tmpFilePath.toFile();
           tmpFile.deleteOnExit();
           return tmpFile;
+        }
+
+        private Path createScreenshotFile() {
+          try {
+            return Files.createTempFile("screenshot", ".png");
+          } catch (IOException e) {
+            throw new WebDriverException(
+                "Failed to create or write screenshot to temporary file: "
+                    + "temporary file could not be created",
+                e);
+          }
         }
 
         public String toString() {
