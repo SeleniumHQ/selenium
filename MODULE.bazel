@@ -3,9 +3,9 @@ module(name = "selenium")
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.25.0")
-bazel_dep(name = "aspect_rules_jest", version = "0.24.3")
-bazel_dep(name = "aspect_rules_js", version = "2.9.2")
-bazel_dep(name = "aspect_rules_ts", version = "3.8.4")
+bazel_dep(name = "aspect_rules_jest", version = "0.25.1")
+bazel_dep(name = "aspect_rules_js", version = "3.0.0-rc5")
+bazel_dep(name = "aspect_rules_ts", version = "3.8.5")
 bazel_dep(name = "bazel_features", version = "1.41.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.2.1.2")
@@ -40,6 +40,18 @@ single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
     patches = ["//third_party/bazel:rules_jvm_external_javadoc.patch"],
+)
+
+# aspect_rules_jest 0.25.1 is incompatible with aspect_rules_js 3.x:
+# 1. It does not declare bazel_lib 3.x as a dep (aspect_bazel_lib → bazel_lib rename)
+# 2. It reads process.env.RUNFILES which was replaced by JS_BINARY__RUNFILES
+single_version_override(
+    module_name = "aspect_rules_jest",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:aspect_rules_jest_bazel_lib.patch",
+        "//third_party/bazel:aspect_rules_jest_runfiles.patch",
+    ],
 )
 
 multitool = use_extension("@rules_multitool//multitool:extension.bzl", "multitool")
