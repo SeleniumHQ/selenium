@@ -399,7 +399,7 @@ public class ExpectedConditions {
 
     return new ExpectedCondition<>() {
       private @Nullable String elementText;
-      private @Nullable StaleElementReferenceException error;
+      private @Nullable WebDriverException error;
 
       @Override
       public Boolean apply(WebDriver driver) {
@@ -408,7 +408,7 @@ public class ExpectedConditions {
         try {
           elementText = element.getText();
           return elementText.contains(text);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           error = e;
           return false;
         }
@@ -481,7 +481,7 @@ public class ExpectedConditions {
 
     return new ExpectedCondition<>() {
       private @Nullable String actualValue;
-      private @Nullable StaleElementReferenceException error;
+      private @Nullable WebDriverException error;
 
       @Override
       public Boolean apply(WebDriver driver) {
@@ -490,7 +490,7 @@ public class ExpectedConditions {
         try {
           actualValue = element.getAttribute("value");
           return actualValue != null && actualValue.contains(expectedValue);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           error = e;
           return false;
         }
@@ -825,7 +825,7 @@ public class ExpectedConditions {
           // Calling any method forces a staleness check
           element.isEnabled();
           return false;
-        } catch (StaleElementReferenceException expected) {
+        } catch (StaleElementReferenceException | NoSuchElementException expected) {
           return true;
         }
       }
@@ -855,7 +855,7 @@ public class ExpectedConditions {
       public @Nullable T apply(WebDriver driver) {
         try {
           return condition.apply(driver);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           return null;
         }
       }
@@ -1677,15 +1677,21 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> or(final ExpectedCondition<?>... conditions) {
     return new ExpectedCondition<>() {
+      @Nullable final Object[] results = new Object[conditions.length];
+
       @Override
       public Boolean apply(WebDriver driver) {
-        for (ExpectedCondition<?> condition : conditions) {
+        for (int i = 0; i != conditions.length; ++i) {
+          ExpectedCondition<?> condition = conditions[i];
+          results[i] = null;
           try {
             Object result = condition.apply(driver);
             if (Boolean.TRUE.equals(result) || result != null && !(result instanceof Boolean)) {
               return true;
             }
-          } catch (StaleElementReferenceException ignore) {
+            results[i] = result;
+          } catch (RuntimeException e) {
+            results[i] = e;
           }
         }
         return false;
@@ -1696,9 +1702,22 @@ public class ExpectedConditions {
         StringBuilder message =
             new StringBuilder("at least one condition to be valid:").append(lineSeparator());
         for (int i = 0; i < conditions.length; i++) {
-          message.append(i + 1).append(". ").append(conditions[i]).append(lineSeparator());
+          message
+              .append(i + 1)
+              .append(". ")
+              .append(conditions[i])
+              .append(resultAsString(results[i]))
+              .append(lineSeparator());
         }
         return message.toString();
+      }
+
+      private Object resultAsString(@Nullable Object result) {
+        return Boolean.FALSE.equals(result)
+            ? ""
+            : result instanceof WebDriverException
+                ? " (caused by: " + shortDescription((WebDriverException) result) + ")"
+                : " (actual: " + result + ")";
       }
     };
   }
