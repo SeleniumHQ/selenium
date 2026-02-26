@@ -40,12 +40,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
         SingleWriter = true
     });
 
-    private readonly Task _eventEmitterTask;
+    private readonly Task _processEventsTask;
 
     public EventDispatcher(Func<ISessionModule> sessionProvider)
     {
         _sessionProvider = sessionProvider;
-        _eventEmitterTask = Task.Run(ProcessEventsAsync);
+        _processEventsTask = Task.Run(ProcessEventsAsync);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -144,7 +144,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         _pendingEvents.Writer.Complete();
 
-        await _eventEmitterTask.ConfigureAwait(false);
+        await _processEventsTask.ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
     }
