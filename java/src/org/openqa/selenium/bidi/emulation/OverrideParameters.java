@@ -19,11 +19,12 @@ package org.openqa.selenium.bidi.emulation;
 
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public interface OverrideParameters {
   OverrideParameters contexts(List<String> contexts);
 
   OverrideParameters userContexts(List<String> userContexts);
 
-  Map<String, Object> toMap();
+  Map<String, @Nullable Object> toMap();
 }

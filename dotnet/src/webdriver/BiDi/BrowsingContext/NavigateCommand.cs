@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -27,9 +27,9 @@ internal sealed class NavigateCommand(NavigateParameters @params)
 
 internal sealed record NavigateParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : Parameters;
 
-public sealed class NavigateOptions : CommandOptions
+public sealed record NavigateOptions : CommandOptions
 {
-    public ReadinessState? Wait { get; set; }
+    public ReadinessState? Wait { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ReadinessState>))]

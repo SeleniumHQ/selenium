@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.bidi.script;
 
-import static java.util.Collections.unmodifiableMap;
-
 import java.util.Map;
-import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class PrimitiveProtocolValue extends LocalValue {
 
   private final PrimitiveType type;
-  private Object value;
+  private final @Nullable Object value;
 
   PrimitiveProtocolValue(PrimitiveType type, Object value) {
     this.type = type;
@@ -34,23 +32,24 @@ public class PrimitiveProtocolValue extends LocalValue {
   }
 
   PrimitiveProtocolValue(PrimitiveType type) {
-    Require.precondition(
-        type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL),
-        "Only null and defined do not require values. "
-            + "Rest all type require a corresponding value.");
     this.type = type;
+    this.value = null;
+
+    Require.precondition(
+        nullsAllowed(),
+        "Only null and defined do not require values. "
+            + "Other types require a corresponding value.");
+  }
+
+  private boolean nullsAllowed() {
+    return type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL);
   }
 
   @Override
   public Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("type", this.type.toString());
-
-    if (!(this.type.equals(PrimitiveType.NULL) || this.type.equals(PrimitiveType.UNDEFINED))) {
-      toReturn.put("value", this.value);
-    }
-
-    return unmodifiableMap(toReturn);
+    return value == null
+        ? Map.of("type", type.toString())
+        : Map.of("type", type.toString(), "value", value);
   }
 
   @Override

@@ -18,8 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
-using System;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 

@@ -17,12 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Text;
 using OpenQA.Selenium.DevTools.V144.Fetch;
 using OpenQA.Selenium.DevTools.V144.Network;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools.V144;
 
@@ -31,8 +28,8 @@ namespace OpenQA.Selenium.DevTools.V144;
 /// </summary>
 public class V144Network : DevTools.Network
 {
-    private FetchAdapter fetch;
-    private NetworkAdapter network;
+    private readonly FetchAdapter fetch;
+    private readonly NetworkAdapter network;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="V144Network"/> class.

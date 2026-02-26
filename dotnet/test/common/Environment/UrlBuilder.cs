@@ -18,7 +18,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -61,24 +60,21 @@ public class UrlBuilder
 
     public string LocalWhereIs(string page)
     {
-        string location = string.Empty;
-        location = "http://localhost:" + port + "/" + Path + "/" + page;
+        string location = "http://localhost:" + port + "/" + Path + "/" + page;
 
         return location;
     }
 
     public string WhereIs(string page)
     {
-        string location = string.Empty;
-        location = "http://" + HostName + ":" + port + "/" + Path + "/" + page;
+        string location = "http://" + HostName + ":" + port + "/" + Path + "/" + page;
 
         return location;
     }
 
     public string WhereElseIs(string page)
     {
-        string location = string.Empty;
-        location = "http://" + AlternateHostName + ":" + port + "/" + Path + "/" + page;
+        string location = "http://" + AlternateHostName + ":" + port + "/" + Path + "/" + page;
 
         return location;
     }
@@ -95,17 +91,14 @@ public class UrlBuilder
                 break;
             }
         }
-
-        string location = string.Empty;
-        location = "http://" + hostNameAsIPAddress + ":" + port + "/" + Path + "/" + page;
+        string location = "http://" + hostNameAsIPAddress + ":" + port + "/" + Path + "/" + page;
 
         return location;
     }
 
     public string WhereIsSecure(string page)
     {
-        string location = string.Empty;
-        location = "https://" + HostName + ":" + securePort + "/" + Path + "/" + page;
+        string location = "https://" + HostName + ":" + securePort + "/" + Path + "/" + page;
 
         return location;
     }

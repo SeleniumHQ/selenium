@@ -21,19 +21,17 @@ import shutil
 import tempfile
 
 import pytest
-from python.runfiles import Runfiles
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
+from conftest import get_extensions_location
+
+EXTENSIONS = get_extensions_location()
 EXTENSION_ID = "webextensions-selenium-example-v3@example.com"
 EXTENSION_PATH = "webextensions-selenium-example-signed"
 EXTENSION_ARCHIVE_PATH = "webextensions-selenium-example.xpi"
-
-# Use bazel Runfiles to locate the test extension directory
-r = Runfiles.Create()
-extensions = r.Rlocation("selenium/py/test/extensions")
 
 
 def install_extension(driver, **kwargs):
@@ -70,21 +68,21 @@ class TestFirefoxWebExtension:
 
     def test_install_extension_path(self, driver, pages):
         """Test installing an extension from a directory path."""
-        path = os.path.join(extensions, EXTENSION_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_PATH)
         ext_info = install_extension(driver, path=path)
         verify_extension_injection(driver, pages)
         uninstall_extension_and_verify_extension_uninstalled(driver, ext_info)
 
     def test_install_archive_extension_path(self, driver, pages):
         """Test installing an extension from an archive path."""
-        path = os.path.join(extensions, EXTENSION_ARCHIVE_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_ARCHIVE_PATH)
         ext_info = install_extension(driver, archive_path=path)
         verify_extension_injection(driver, pages)
         uninstall_extension_and_verify_extension_uninstalled(driver, ext_info)
 
     def test_install_base64_extension_path(self, driver, pages):
         """Test installing an extension from a base64 encoded string."""
-        path = os.path.join(extensions, EXTENSION_ARCHIVE_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_ARCHIVE_PATH)
         with open(path, "rb") as file:
             base64_encoded = base64.b64encode(file.read()).decode("utf-8")
         ext_info = install_extension(driver, base64_value=base64_encoded)
@@ -94,14 +92,14 @@ class TestFirefoxWebExtension:
 
     def test_install_unsigned_extension(self, driver, pages):
         """Test installing an unsigned extension."""
-        path = os.path.join(extensions, "webextensions-selenium-example")
+        path = os.path.join(EXTENSIONS, "webextensions-selenium-example")
         ext_info = install_extension(driver, path=path)
         verify_extension_injection(driver, pages)
         uninstall_extension_and_verify_extension_uninstalled(driver, ext_info)
 
     def test_install_with_extension_id_uninstall(self, driver, pages):
         """Test uninstalling an extension using just the extension ID."""
-        path = os.path.join(extensions, EXTENSION_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_PATH)
         ext_info = install_extension(driver, path=path)
         extension_id = ext_info.get("extension")
         # Uninstall using the extension ID
@@ -161,7 +159,7 @@ class TestChromiumWebExtension:
 
     def test_install_extension_path(self, chromium_driver, pages_chromium):
         """Test installing an extension from a directory path."""
-        path = os.path.join(extensions, EXTENSION_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_PATH)
         ext_info = chromium_driver.webextension.install(path=path)
 
         verify_extension_injection(chromium_driver, pages_chromium)
@@ -169,7 +167,7 @@ class TestChromiumWebExtension:
 
     def test_install_unsigned_extension(self, chromium_driver, pages_chromium):
         """Test installing an unsigned extension."""
-        path = os.path.join(extensions, "webextensions-selenium-example")
+        path = os.path.join(EXTENSIONS, "webextensions-selenium-example")
         ext_info = chromium_driver.webextension.install(path=path)
 
         verify_extension_injection(chromium_driver, pages_chromium)
@@ -177,7 +175,7 @@ class TestChromiumWebExtension:
 
     def test_install_with_extension_id_uninstall(self, chromium_driver):
         """Test uninstalling an extension using just the extension ID."""
-        path = os.path.join(extensions, EXTENSION_PATH)
+        path = os.path.join(EXTENSIONS, EXTENSION_PATH)
         ext_info = chromium_driver.webextension.install(path=path)
         extension_id = ext_info.get("extension")
         # Uninstall using the extension ID

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
@@ -26,6 +24,6 @@ internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
 
 internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 
-public sealed class UnsubscribeByIdOptions : CommandOptions;
+public sealed record UnsubscribeByIdOptions : CommandOptions;
 
 public sealed record UnsubscribeResult : EmptyResult;

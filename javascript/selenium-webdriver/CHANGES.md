@@ -1,3 +1,13 @@
+## 4.41.0
+
+- Support CDP versions: v143, v144, v145
+- Canonical approach to supporting AI agent directions (#16735)
+- [build] Fix Bazel JSDocs implementation (#16949)
+- create task to update dependencies (#16942)
+- Add eslint binary target for selenium-webdriver (#16992)
+- SE_DEBUG warns only when overriding user settings (#17009)
+- [grid] Add session event API for server-side event bus integration (#17015)
+
 ## 4.40.0
 
 - fix JS tests on RBE (#16777)

@@ -17,43 +17,43 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
 public abstract class AbstractOverrideParameters implements OverrideParameters {
-  protected final Map<String, Object> map = new HashMap<>();
+  private static final String CONTEXTS = "contexts";
+  private static final String USER_CONTEXTS = "userContexts";
+
+  protected final Map<String, @Nullable Object> map = new HashMap<>();
 
   @Override
   public OverrideParameters contexts(List<String> contexts) {
-    if (contexts == null || contexts.isEmpty()) {
-      throw new IllegalArgumentException("Contexts cannot be null or empty");
-    }
-    if (map.containsKey("userContexts")) {
-      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
-    }
-    map.put("contexts", contexts);
+    map.put(CONTEXTS, Require.nonEmpty("Contexts", contexts));
     return this;
   }
 
   @Override
   public OverrideParameters userContexts(List<String> userContexts) {
-    if (userContexts == null || userContexts.isEmpty()) {
-      throw new IllegalArgumentException("User contexts cannot be null or empty");
-    }
-    if (map.containsKey("contexts")) {
-      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
-    }
-    map.put("userContexts", userContexts);
+    map.put(USER_CONTEXTS, Require.nonEmpty("User contexts", userContexts));
     return this;
   }
 
   @Override
-  public Map<String, Object> toMap() {
-    // Validate that either contexts or userContexts is set
-    if (!map.containsKey("contexts") && !map.containsKey("userContexts")) {
-      throw new IllegalStateException("Must specify either contexts or userContexts");
+  public final Map<String, @Nullable Object> toMap() {
+    if (map.containsKey(CONTEXTS) == map.containsKey(USER_CONTEXTS)) {
+      throw new IllegalStateException(
+          String.format("Must specify either %s or %s", CONTEXTS, USER_CONTEXTS));
     }
-    return new HashMap<>(map);
+    return unmodifiableMap(map);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s%s", getClass().getSimpleName(), toMap());
   }
 }

@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Message {
@@ -57,7 +58,10 @@ public class Message {
 
     input.endObject();
 
-    return new Message(channel, data, source);
+    return new Message(
+        Require.nonNull("channel", channel),
+        Require.nonNull("data", data),
+        Require.nonNull("source", source));
   }
 
   public String getChannel() {

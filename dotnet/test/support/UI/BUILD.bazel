@@ -1,12 +1,12 @@
 load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 
 SMALL_TESTS = [
-    "DefaultWaitTest.cs",
+    "DefaultWaitTests.cs",
     "HandCrankClock.cs",
     "LoadableComponentTests.cs",
     "SelectTests.cs",
-    "SlowLoadableComponentTest.cs",
-    "WebDriverWaitTest.cs",
+    "SlowLoadableComponentTests.cs",
+    "WebDriverWaitTests.cs",
 ]
 
 dotnet_nunit_test_suite(
@@ -28,7 +28,6 @@ dotnet_nunit_test_suite(
     size = "large",
     srcs = glob(
         [
-            "**/*Test.cs",
             "**/*Tests.cs",
         ],
         exclude = SMALL_TESTS,

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.network;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,11 +59,11 @@ public class AddInterceptParameters {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("phases", phases);
+    Map<String, Object> map = new HashMap<>(2);
+    map.put("phases", List.copyOf(phases));
     if (!urlPatterns.isEmpty()) {
-      map.put("urlPatterns", urlPatterns);
+      map.put("urlPatterns", List.copyOf(urlPatterns));
     }
-    return Map.copyOf(map);
+    return unmodifiableMap(map);
   }
 }

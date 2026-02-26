@@ -18,32 +18,44 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Log;
-using System;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
+public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return logModule.OnEntryAddedAsync(async args =>
-        {
-            if (context.Equals(args.Source.Context))
-            {
-                await handler(args).ConfigureAwait(false);
-            }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAddedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return logModule.OnEntryAddedAsync(args =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAdded(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    private async Task HandleEntryAddedAsync(LogEntryEventArgs e, Func<LogEntryEventArgs, Task> handler)
+    {
+        if (context.Equals(e.Source.Context))
         {
-            if (context.Equals(args.Source.Context))
-            {
-                handler(args);
-            }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleEntryAdded(LogEntryEventArgs e, Action<LogEntryEventArgs> handler)
+    {
+        if (context.Equals(e.Source.Context))
+        {
+            handler(e);
+        }
     }
 }

@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -193,39 +190,54 @@ public class FirefoxDriver : WebDriver
         this.AddCustomFirefoxCommands();
     }
 
-    /// <summary>
-    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="commandTimeout"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        return Task.Run(async () =>
+            await GenerateDriverServiceCommandExecutorAsync(service, options, commandTimeout).ConfigureAwait(false))
+            .GetAwaiter().GetResult();
+    }
 
+    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
         if (service is null)
         {
             throw new ArgumentNullException(nameof(service));
         }
 
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
         if (service.DriverServicePath == null)
         {
             DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = finder.GetDriverPath();
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-            if (finder.TryGetBrowserPath(out string? browserPath))
-            {
-                options.BinaryLocation = browserPath;
-                options.BrowserVersion = null;
-            }
+            string fullBrowserPath = await finder.GetBrowserPathAsync().ConfigureAwait(false);
+            options.BinaryLocation = fullBrowserPath;
+            options.BrowserVersion = null;
         }
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+
+        try
+        {
+            await service.StartAsync().ConfigureAwait(false);
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            try
+            {
+                await service.DisposeAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // Ignore exceptions thrown while disposing the service to preserve the original exception.
+            }
+
+            throw;
+        }
     }
 
     /// <summary>
@@ -276,7 +288,7 @@ public class FirefoxDriver : WebDriver
     public void SetContext(FirefoxCommandContext context)
     {
         string contextValue = context.ToString().ToLowerInvariant();
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["context"] = contextValue;
         this.Execute(SetContextCommand, parameters);
     }
@@ -354,7 +366,7 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>()
         {
             ["addon"] = base64EncodedAddOn,
             ["temporary"] = temporary
@@ -376,7 +388,7 @@ public class FirefoxDriver : WebDriver
             throw new ArgumentNullException(nameof(addOnId), "Base64 encoded add-on must not be null or the empty string");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["id"] = addOnId;
         this.Execute(UninstallAddOnCommand, parameters);
     }
@@ -400,17 +412,6 @@ public class FirefoxDriver : WebDriver
     protected virtual void PrepareEnvironment()
     {
         // Does nothing, but provides a hook for subclasses to do "stuff"
-    }
-
-    /// <summary>
-    /// Disposes of the FirefoxDriver and frees all resources.
-    /// </summary>
-    /// <param name="disposing">A value indicating whether the user initiated the
-    /// disposal of the object. Pass <see langword="true"/> if the user is actively
-    /// disposing the object; otherwise <see langword="false"/>.</param>
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
     }
 
     private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)

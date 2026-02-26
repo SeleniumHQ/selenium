@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record UserPromptOpenedEventArgs(BrowsingContext Context, Session.UserPromptHandlerType Handler, UserPromptType Type, string Message, string? DefaultValue)
+public sealed record UserPromptOpenedEventArgs(BrowsingContext Context, Session.UserPromptHandlerType Handler, string Message, UserPromptType Type, Browser.UserContext? UserContext, string? DefaultValue)
     : EventArgs;
 
 [JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]

@@ -35,14 +35,18 @@ def _docfx_impl(ctx):
 _UNIX_TEMPLATE = """#!/usr/bin/env bash
 set -euo pipefail
 cd "$BUILD_WORKSPACE_DIRECTORY"
-exec "$BUILD_WORKSPACE_DIRECTORY/bazel-selenium/{dotnet}" exec \
-     "$BUILD_WORKSPACE_DIRECTORY/bazel-selenium/{docfx}" {config} "$@"
+EXEC_ROOT=$(bazel info execution_root)
+exec "$EXEC_ROOT/{dotnet}" exec \
+     "$EXEC_ROOT/{docfx}" {config} "$@"
 """
 
 _WINDOWS_TEMPLATE = """@echo off
+setlocal
 cd /d "%BUILD_WORKSPACE_DIRECTORY%"
-"%BUILD_WORKSPACE_DIRECTORY%\\bazel-selenium\\{dotnet}" exec ^
-    "%BUILD_WORKSPACE_DIRECTORY%\\bazel-selenium\\{docfx}" {config} %*
+for /f "tokens=*" %%i in ('bazel info execution_root') do set "EXEC_ROOT=%%i"
+"%EXEC_ROOT%\\{dotnet}" exec ^
+    "%EXEC_ROOT%\\{docfx}" {config} %*
+endlocal
 """
 
 docfx = rule(

@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>

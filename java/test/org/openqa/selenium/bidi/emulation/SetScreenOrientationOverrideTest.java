@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
@@ -35,12 +34,10 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
 
   private Map<String, Object> getScreenOrientation(String context) {
     driver.switchTo().window(context);
-    JavascriptExecutor executor = (JavascriptExecutor) driver;
 
     Map<String, Object> orientation =
-        (Map<String, Object>)
-            executor.executeScript(
-                "return { type: screen.orientation.type, angle: screen.orientation.angle };");
+        executeJavaScript(
+            "return { type: screen.orientation.type, angle: screen.orientation.angle };");
 
     return Map.of(
         "type", orientation.get("type"), "angle", ((Number) orientation.get("angle")).intValue());

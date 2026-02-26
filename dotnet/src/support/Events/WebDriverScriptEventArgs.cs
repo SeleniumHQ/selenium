@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events;
 

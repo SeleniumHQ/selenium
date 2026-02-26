@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium.Environment;
-using System;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium;
 

@@ -17,14 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Extensions.Permissions;
-using System;
-
 namespace OpenQA.Selenium.BiDi.Permissions;
 
 public static class PermissionsBiDiExtensions
 {
-    public static PermissionsModule AsPermissions(this BiDi bidi)
+    public static IPermissionsModule AsPermissions(this IBiDi bidi)
     {
         if (bidi is null)
         {

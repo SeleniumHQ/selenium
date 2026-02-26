@@ -19,8 +19,9 @@ package org.openqa.selenium.bidi.log;
 
 import java.util.Optional;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">BiDi spec</a>
+ */
 public class LogEntry {
 
   private final Optional<GenericLogEntry> genericLogEntry;

@@ -233,10 +233,11 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
       Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
 
       if (consumer != null) {
+        CloseMessage channelGotInactive = new CloseMessage(1001, "channel got inactive");
         try {
-          consumer.accept(new CloseMessage(1001, "channel got inactive"));
-        } catch (Exception ex) {
-          LOG.log(Level.FINE, "failed to send the close message, code: 1001", ex);
+          consumer.accept(channelGotInactive);
+        } catch (RuntimeException ex) {
+          LOG.log(Level.FINE, ex, () -> "failed to send " + channelGotInactive);
         }
       }
     }

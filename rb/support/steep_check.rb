@@ -46,6 +46,10 @@ Dir.chdir(root)
 
 ruby = RbConfig.ruby
 
+# Clear GIT_DIR to prevent it from interfering with RBS collection git operations
+# (e.g., when running via git pre-push hook which sets GIT_DIR)
+ENV.delete('GIT_DIR')
+
 # Install RBS collection from lockfile (--frozen skips Gemfile.lock validation)
 system(ruby, "-S", "rbs", "collection", "install", "--frozen") || exit(1)
 

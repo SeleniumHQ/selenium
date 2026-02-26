@@ -235,6 +235,11 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected void loadSystemProperties() {
       parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
       if (Debug.isDebugAll()) {
+        if (logLevel != null || System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY) != null) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing GeckoDriver log level to"
+                  + " DEBUG and overriding configured log level.");
+        }
         logLevel = FirefoxDriverLogLevel.DEBUG;
       } else if (logLevel == null) {
         logLevel =

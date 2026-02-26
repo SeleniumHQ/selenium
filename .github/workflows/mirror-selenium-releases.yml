@@ -1,8 +1,6 @@
 name: mirror-selenium-releases
 
 on:
-  schedule:
-    - cron:  '0 */12 * * *'
   workflow_dispatch:
   workflow_call:
 
@@ -17,7 +15,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
-        fetch-depth: 0
     - name: Read api.github.com and filter response
       run: |
         set -euo pipefail

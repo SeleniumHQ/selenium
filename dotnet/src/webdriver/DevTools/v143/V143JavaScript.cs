@@ -19,9 +19,6 @@
 
 using OpenQA.Selenium.DevTools.V143.Page;
 using OpenQA.Selenium.DevTools.V143.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools.V143;
 

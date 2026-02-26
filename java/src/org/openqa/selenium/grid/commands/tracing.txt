@@ -13,13 +13,13 @@ As a worked example, using Jaeger as the tracing library and running
 on macOS:
 
 ```
-  java -Dotel.traces.exporter=jaeger \
-       -Dotel.exporter.jaeger.endpoint=http://localhost:14250 \
+  java -Dotel.traces.exporter=otlp \
+       -Dotel.exporter.otlp.endpoint=http://localhost:14250 \
        -Dotel.resource.attributes=service.name=selenium-standalone \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporter-jaeger:1.30.1 \
-          io.grpc:grpc-netty:1.58.0) \
+          io.opentelemetry:opentelemetry-exporter-otlp:latest.release \
+          io.grpc:grpc-netty:latest.release) \
        standalone
 ```
 

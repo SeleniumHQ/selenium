@@ -19,11 +19,12 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.Optional;
 import org.openqa.selenium.bidi.log.StackTrace;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Initiator {
 
-  enum Type {
+  public enum Type {
     PARSER("parser"),
     SCRIPT("script"),
     PREFLIGHT("preflight"),
@@ -41,14 +42,12 @@ public class Initiator {
     }
 
     public static Type findByName(String name) {
-      Type result = null;
       for (Type type : values()) {
         if (type.toString().equalsIgnoreCase(name)) {
-          result = type;
-          break;
+          return type;
         }
       }
-      return result;
+      throw new IllegalArgumentException("Unsupported initiator type: " + name);
     }
   }
 
@@ -82,20 +81,20 @@ public class Initiator {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          String initiatorType = input.read(String.class);
+          String initiatorType = input.readNonNull(String.class);
           type = Type.findByName(initiatorType);
           break;
         case "columnNumber":
-          columnNumber = Optional.of(input.read(Long.class));
+          columnNumber = Optional.of(input.readNonNull(Long.class));
           break;
         case "lineNumber":
-          lineNumber = Optional.of(input.read(Long.class));
+          lineNumber = Optional.of(input.readNonNull(Long.class));
           break;
         case "stackTrace":
-          stackTrace = Optional.of(input.read(StackTrace.class));
+          stackTrace = Optional.of(input.readNonNull(StackTrace.class));
           break;
         case "requestId":
-          requestId = Optional.of(input.read(String.class));
+          requestId = Optional.of(input.readNonNull(String.class));
           break;
         default:
           input.skipValue();
@@ -104,7 +103,8 @@ public class Initiator {
 
     input.endObject();
 
-    return new Initiator(type, columnNumber, lineNumber, stackTrace, requestId);
+    return new Initiator(
+        Require.nonNull("type", type), columnNumber, lineNumber, stackTrace, requestId);
   }
 
   public Type getType() {

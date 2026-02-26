@@ -17,21 +17,45 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class SetViewportCommand(SetViewportParameters @params)
     : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
 
-internal sealed record SetViewportParameters(BrowsingContext Context, [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport, [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio) : Parameters;
+internal sealed record SetViewportParameters(
+    BrowsingContext? Context,
+    [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport,
+    [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio,
+    IEnumerable<Browser.UserContext>? UserContexts)
+    : Parameters;
 
-public sealed class SetViewportOptions : CommandOptions
+public sealed record SetViewportOptions : CommandOptions
 {
-    public Optional<Viewport?>? Viewport { get; set; }
+    public BrowsingContext? Context { get; init; }
 
-    public Optional<double?>? DevicePixelRatio { get; set; }
+    public Optional<Viewport?>? Viewport { get; init; }
+
+    public Optional<double?>? DevicePixelRatio { get; init; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+}
+
+public sealed record ContextSetViewportOptions : CommandOptions
+{
+    public Optional<Viewport?>? Viewport { get; init; }
+
+    public Optional<double?>? DevicePixelRatio { get; init; }
+
+    internal static SetViewportOptions WithContext(ContextSetViewportOptions? options, BrowsingContext context) => new()
+    {
+        Context = context,
+        Viewport = options?.Viewport,
+        DevicePixelRatio = options?.DevicePixelRatio,
+        Timeout = options?.Timeout
+    };
 }
 
 public readonly record struct Viewport(long Width, long Height);

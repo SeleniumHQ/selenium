@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.bidi.script;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class RealmInfo {
@@ -40,7 +37,6 @@ public class RealmInfo {
     String realmId = null;
     String origin = null;
     RealmType realmType = null;
-
     String browsingContext = null;
     String sandbox = null;
 
@@ -48,7 +44,7 @@ public class RealmInfo {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          String typeString = input.read(String.class);
+          String typeString = input.readNonNull(String.class);
           realmType = RealmType.findByName(typeString);
           break;
 
@@ -76,12 +72,20 @@ public class RealmInfo {
 
     input.endObject();
 
-    if (realmType != null && realmType.equals(RealmType.WINDOW)) {
+    if (realmType == RealmType.WINDOW) {
+      // TODO fix the circular dependency: parent class should not reference its child class
       return new WindowRealmInfo(
-          realmId, origin, realmType, browsingContext, Optional.ofNullable(sandbox));
+          Require.nonNull("realmId", realmId),
+          Require.nonNull("origin", origin),
+          Require.nonNull("realmType", realmType),
+          Require.nonNull("browsingContext", browsingContext),
+          Optional.ofNullable(sandbox));
     }
 
-    return new RealmInfo(realmId, origin, realmType);
+    return new RealmInfo(
+        Require.nonNull("realmId", realmId),
+        Require.nonNull("origin", origin),
+        Require.nonNull("realmType", realmType));
   }
 
   public String getRealmId() {
@@ -94,15 +98,5 @@ public class RealmInfo {
 
   public RealmType getRealmType() {
     return realmType;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("type", this.getRealmType().toString());
-    toReturn.put("realm", this.getRealmId());
-    toReturn.put("origin", this.getOrigin());
-
-    return unmodifiableMap(toReturn);
   }
 }

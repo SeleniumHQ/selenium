@@ -13,12 +13,12 @@ load("//javascript/private:jsdoc.bzl", "jsdoc")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.41.0-nightly202601181916"
+VERSION = "4.42.0-nightly202602192150"
 
 BROWSER_VERSIONS = [
     "v143",
     "v144",
-    "v142",
+    "v145",
 ]
 
 js_library(
@@ -285,6 +285,30 @@ copy_to_bin(
 copy_to_bin(
     name = "prettier-ignore",
     srcs = [".prettierignore"],
+)
+
+_ESLINT_DATA = [
+    ":eslint-config",
+    ":large-test-srcs",
+    ":node_modules/@eslint/js",
+    ":node_modules/eslint-plugin-mocha",
+    ":node_modules/eslint-plugin-n",
+    ":node_modules/eslint-plugin-no-only-tests",
+    ":node_modules/eslint-plugin-prettier",
+    ":node_modules/globals",
+    ":node_modules/jszip",
+    ":node_modules/tmp",
+    ":node_modules/ws",
+    ":package-json",
+    ":prod-src-files",
+    ":small-test-srcs",
+]
+
+# Eslint binary with auto-fix support: bazel run //javascript/selenium-webdriver:eslint -- --fix .
+eslint_bin.eslint_binary(
+    name = "eslint",
+    chdir = package_name(),
+    data = _ESLINT_DATA,
 )
 
 # Internal jsdoc binary from npm - used by the docs rule

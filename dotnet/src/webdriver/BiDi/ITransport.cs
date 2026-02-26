@@ -17,16 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using System.Threading;
-using System;
-
 namespace OpenQA.Selenium.BiDi;
 
-interface ITransport : IDisposable
+interface ITransport : IAsyncDisposable
 {
-    Task ConnectAsync(CancellationToken cancellationToken);
-
     Task<byte[]> ReceiveAsync(CancellationToken cancellationToken);
 
     Task SendAsync(byte[] data, CancellationToken cancellationToken);

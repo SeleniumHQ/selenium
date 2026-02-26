@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,6 +30,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
@@ -220,33 +223,49 @@ public class JsonInput implements Closeable {
    */
   public Number nextNumber() {
     expect(JsonType.NUMBER);
+    boolean mightBeDecimal = false;
     StringBuilder builder = new StringBuilder();
     // We know it's safe to use a do/while loop since the first character was a number
-    boolean fractionalPart = false;
+    boolean read = true;
     do {
-      char read = input.peek();
-      if (Character.isDigit(read)
-          || read == '+'
-          || read == '-'
-          || read == 'e'
-          || read == 'E'
-          || read == '.') {
-        builder.append(input.read());
-      } else {
-        break;
+      switch (input.peek()) {
+        case '-':
+        case '+':
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          builder.append(input.read());
+          break;
+        case '.':
+        case 'e':
+        case 'E':
+          mightBeDecimal = true;
+          builder.append(input.read());
+          break;
+        default:
+          read = false;
       }
-
-      fractionalPart |= (read == '.');
-    } while (true);
+    } while (read);
 
     try {
-      Number number = new BigDecimal(builder.toString());
-      if (fractionalPart) {
-        return number.doubleValue();
+      // The JSON Schema does state the decimal point should not be used distinguish between
+      // integers and floating point values.
+      // Therefore, using a Long is only a fast path here, but we should not rely on the `double`
+      // value below is a real floating point.
+      if (!mightBeDecimal) {
+        return Long.valueOf(builder.toString());
       }
-      return number.longValue();
+
+      return new BigDecimal(builder.toString()).doubleValue();
     } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
+      throw new JsonException("Unable to parse to a number: " + builder + ". " + input, e);
     }
   }
 
@@ -265,13 +284,24 @@ public class JsonInput implements Closeable {
   /**
    * Read the next element of the JSON input stream as an instant.
    *
+   * @deprecated Instant is not a basic JSON type, use the {@link InstantCoercer} instead.
    * @return {@link Instant} object
    * @throws JsonException if the next element isn't a {@code Long}
    * @throws UncheckedIOException if an I/O exception is encountered
    */
+  @Deprecated(forRemoval = true)
   public @Nullable Instant nextInstant() {
     Long time = read(Long.class);
     return (null != time) ? Instant.ofEpochSecond(time) : null;
+  }
+
+  /**
+   * Read the next element of the JSON input stream and expect the end of the input.
+   *
+   * @throws JsonException if the next element isn't the end of the input
+   */
+  public void nextEnd() {
+    expect(JsonType.END);
   }
 
   /**
@@ -426,6 +456,19 @@ public class JsonInput implements Closeable {
     }
 
     return coercer.coerce(this, type, setter);
+  }
+
+  public <T> T readNonNull(Type type) {
+    return requireNonNull(read(type));
+  }
+
+  public <T> Map<String, T> readMap() {
+    return requireNonNull(read(Map.class));
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T readMapElement(String key) {
+    return (T) Require.nonNull(key, readMap().get(key));
   }
 
   /**

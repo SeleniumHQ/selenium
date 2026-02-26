@@ -128,11 +128,7 @@ rust/target
 rust/.idea
 
 # Bazel stuff
-bazel-bin
-bazel-genfiles
-bazel-out
-bazel-selenium
-bazel-testlogs
+/bazel-*
 MODULE.bazel.lock
 
 /.vscode/
@@ -156,18 +152,18 @@ dotnet-bin
 .env.local
 
 # AI agent local state (most common)
-.claude/
-.cursor/
-.continue/
-.cline/
-.windsurf/
-.zencoder/
+/.claude
+/.cursor
+/.continue
+/.cline
+/.windsurf
+/.zencoder
 
 # Common per-tool config/rules files people accidentally add
-.cursorignore
-.cursorrules
-.windsurfrules
-.continuerc.json
+/.cursorignore
+/.cursorrules
+/.windsurfrules
+/.continuerc.json
 
 # Common generated transcripts
 *_cline_transcript.json

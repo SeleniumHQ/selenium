@@ -26,11 +26,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Logger;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeSessionFactoryProvider;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
@@ -45,6 +47,8 @@ import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 public class LocalNodeFactory {
+
+  private static final Logger LOG = Logger.getLogger(LocalNodeFactory.class.getName());
 
   public static Node create(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
@@ -95,6 +99,25 @@ public class LocalNodeFactory {
           .getDockerSessionFactories(tracer, clientFactory, nodeOptions)
           .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
+
+    ServiceLoader.load(NodeSessionFactoryProvider.class)
+        .forEach(
+            provider -> {
+              String providerName = provider.getClass().getName();
+              if (provider.isEnabled(config)) {
+                LOG.info(String.format("Loading session factories from %s", providerName));
+                provider
+                    .loadFactories(config, tracer, clientFactory)
+                    .forEach(
+                        (caps, factories) ->
+                            factories.forEach(factory -> builder.add(caps, factory)));
+              } else {
+                LOG.fine(
+                    String.format(
+                        "Extension %s is on the classpath but not enabled by configuration",
+                        providerName));
+              }
+            });
 
     if (config.getAll("relay", "configs").isPresent()) {
       new RelayOptions(config)

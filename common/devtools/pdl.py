@@ -2,11 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-from __future__ import print_function
-from collections import OrderedDict
 import json
 import re
 import sys
+from collections import OrderedDict
 from typing import Any
 
 description = ""
@@ -24,9 +23,7 @@ primitiveTypes = [
 ]
 
 
-def assignType(
-    item: dict, type: str, is_array: bool = False, map_binary_to_string: bool = False
-) -> None:
+def assignType(item: dict, type: str, is_array: bool = False, map_binary_to_string: bool = False) -> None:
     if is_array:
         item["type"] = "array"
         item["items"] = OrderedDict()
@@ -59,9 +56,7 @@ def createItem(
     return result
 
 
-def parse(
-    data: str, file_name: str, map_binary_to_string: bool = False
-) -> OrderedDict[str, Any]:
+def parse(data: str, file_name: str, map_binary_to_string: bool = False) -> OrderedDict[str, Any]:
     protocol = OrderedDict()
     protocol["version"] = OrderedDict()
     protocol["domains"] = []
@@ -91,9 +86,7 @@ def parse(
 
         match = re.compile(r"^(experimental )?(deprecated )?domain (.*)").match(line)
         if match:
-            domain = createItem(
-                {"domain": match.group(3)}, match.group(1), match.group(2)
-            )
+            domain = createItem({"domain": match.group(3)}, match.group(1), match.group(2))
             protocol["domains"].append(domain)
             continue
 
@@ -116,9 +109,7 @@ def parse(
             domain["types"].append(item)
             continue
 
-        match = re.compile(
-            r"^  (experimental )?(deprecated )?(command|event) (.*)"
-        ).match(line)
+        match = re.compile(r"^  (experimental )?(deprecated )?(command|event) (.*)").match(line)
         if match:
             list = []
             if match.group(3) == "command":
@@ -185,14 +176,12 @@ def parse(
             enumliterals.append(trimLine)
             continue
 
-        print("Error in %s:%s, illegal token: \t%s" % (file_name, i, line))
+        print(f"Error in {file_name}:{i}, illegal token: \t{line}")
         sys.exit(1)
     return protocol
 
 
-def loads(
-    data: str, file_name: str, map_binary_to_string: bool = False
-) -> OrderedDict[str, Any] | Any:
+def loads(data: str, file_name: str, map_binary_to_string: bool = False) -> OrderedDict[str, Any] | Any:
     if file_name.endswith(".pdl"):
         return parse(data, file_name, map_binary_to_string)
     return json.loads(data)

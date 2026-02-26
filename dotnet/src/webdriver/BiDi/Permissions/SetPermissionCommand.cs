@@ -26,11 +26,11 @@ internal class SetPermissionCommand(SetPermissionCommandParameters @params)
 
 internal record SetPermissionCommandParameters(PermissionDescriptor Descriptor, PermissionState State, string Origin, string? EmbeddedOrigin, UserContext? UserContext) : Parameters;
 
-public class SetPermissionOptions : CommandOptions
+public record SetPermissionOptions : CommandOptions
 {
-    public string? EmbeddedOrigin { get; set; }
+    public string? EmbeddedOrigin { get; init; }
 
-    public UserContext? UserContext { get; set; }
+    public UserContext? UserContext { get; init; }
 }
 
 public sealed record SetPermissionResult : EmptyResult;
