@@ -55,11 +55,19 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         var registration = _events.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
 
-        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
         registration.AddHandler(eventHandler);
 
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
+        try
+        {
+            var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
+
+            return new Subscription(subscribeResult.Subscription, this, eventHandler);
+        }
+        catch
+        {
+            registration.RemoveHandler(eventHandler);
+            throw;
+        }
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
