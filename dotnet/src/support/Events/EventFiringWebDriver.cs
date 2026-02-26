@@ -401,7 +401,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// </summary>
     public void Dispose()
     {
-        this.Dispose(true);
+        WrappedDriver.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -411,8 +411,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <returns>A task representing the asynchronous dispose operation.</returns>
     public async ValueTask DisposeAsync()
     {
-        await this.DisposeAsyncCore().ConfigureAwait(false);
-        this.Dispose(false);
+        await WrappedDriver.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }
 
@@ -589,35 +588,6 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         }
 
         return screenshotDriver.GetScreenshot();
-    }
-
-    /// <summary>
-    /// Frees all managed and, optionally, unmanaged resources used by this instance.
-    /// </summary>
-    /// <param name="disposing"><see langword="true"/> to dispose of only managed resources;
-    /// <see langword="false"/> to dispose of managed and unmanaged resources.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            this.WrappedDriver.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// Asynchronously performs the core dispose logic.
-    /// </summary>
-    /// <returns>A task representing the asynchronous dispose operation.</returns>
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
-        if (this.WrappedDriver is IAsyncDisposable asyncDisposable)
-        {
-            await asyncDisposable.DisposeAsync().ConfigureAwait(false);
-        }
-        else
-        {
-            this.WrappedDriver.Dispose();
-        }
     }
 
     /// <summary>
