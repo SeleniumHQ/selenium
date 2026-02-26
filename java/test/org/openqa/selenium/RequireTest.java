@@ -200,8 +200,8 @@ class RequireTest {
         .withMessage("Timeout must be greater than 0");
     assertThat(Require.positive("Timeout", 5L)).isEqualTo(5L);
 
-    assertThat(Require.nonNegative("Redirect count", 0L));
-    assertThat(Require.nonNegative("Redirect count", 1L));
+    assertThat(Require.nonNegative("Redirect count", 0L)).isEqualTo(0L);
+    assertThat(Require.nonNegative("Redirect count", 1L)).isEqualTo(1L);
     assertThatThrownBy(() -> Require.nonNegative("Redirect count", -1L))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Redirect count must be 0 or greater");
