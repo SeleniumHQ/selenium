@@ -85,7 +85,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public void EnqueueEvent(string method, ReadOnlyMemory<byte> jsonUtf8Bytes, IBiDi bidi)
     {
-        if (_events.TryGetValue(method, out var registration) && registration.TypeInfo is not null)
+        if (_events.TryGetValue(method, out var registration))
         {
             registration.IncrementEnqueued();
             _pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration));
