@@ -590,7 +590,7 @@ def edge_service():
 
 @pytest.fixture
 def driver_executable(request):
-    return request.config.option.executable
+    return _resolve_bazel_path(request.config.option.executable)
 
 
 @pytest.fixture
