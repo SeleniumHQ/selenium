@@ -75,9 +75,14 @@ internal sealed class EventDispatcher : IAsyncDisposable
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
 
             // Wait until all pending events for this method are dispatched
-            await registration.DrainAsync(cancellationToken).ConfigureAwait(false);
-
-            registration.RemoveHandler(subscription.EventHandler);
+            try
+            {
+                await registration.DrainAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                registration.RemoveHandler(subscription.EventHandler);
+            }
         }
     }
 
