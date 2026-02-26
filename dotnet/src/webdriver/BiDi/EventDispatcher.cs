@@ -79,7 +79,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         if (_events.TryGetValue(method, out var registration) && registration.TypeInfo is not null)
         {
-            registration.IncrementPending();
+            registration.IncrementEnqueued();
             _pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration));
         }
         else
@@ -101,25 +101,34 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 try
                 {
-                    // Deserialize on background thread instead of network thread (single parse)
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(evt.JsonUtf8Bytes.Span, evt.Registration.TypeInfo)!;
                     eventArgs.BiDi = evt.BiDi;
 
                     foreach (var handler in evt.Registration.GetHandlersSnapshot())
                     {
-                        await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+                        try
+                        {
+                            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (_logger.IsEnabled(LogEventLevel.Error))
+                            {
+                                _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     if (_logger.IsEnabled(LogEventLevel.Error))
                     {
-                        _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                        _logger.Error($"Unhandled error deserializing BiDi event: {ex}");
                     }
                 }
                 finally
                 {
-                    evt.Registration.DecrementPending();
+                    evt.Registration.IncrementProcessed();
                 }
             }
         }
@@ -138,10 +147,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
-        private int _pendingCount;
+        private long _enqueueSeq;
+        private long _processedSeq;
         private readonly object _drainLock = new();
-        private TaskCompletionSource<bool>? _drainTcs;
         private readonly List<EventHandler> _handlers = [];
+        private List<(long TargetSeq, TaskCompletionSource<bool> Tcs)>? _drainWaiters;
 
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
 
@@ -160,37 +170,49 @@ internal sealed class EventDispatcher : IAsyncDisposable
             lock (_drainLock) return [.. _handlers];
         }
 
-        public void IncrementPending() => Interlocked.Increment(ref _pendingCount);
+        public void IncrementEnqueued() => Interlocked.Increment(ref _enqueueSeq);
 
-        public void DecrementPending()
+        public void IncrementProcessed()
         {
-            if (Interlocked.Decrement(ref _pendingCount) == 0)
+            var processed = Interlocked.Increment(ref _processedSeq);
+
+            lock (_drainLock)
             {
-                lock (_drainLock)
+                if (_drainWaiters is null) return;
+
+                for (var i = _drainWaiters.Count - 1; i >= 0; i--)
                 {
-                    _drainTcs?.TrySetResult(true);
-                    _drainTcs = null;
+                    if (_drainWaiters[i].TargetSeq <= processed)
+                    {
+                        _drainWaiters[i].Tcs.TrySetResult(true);
+                        _drainWaiters.RemoveAt(i);
+                    }
                 }
+
+                if (_drainWaiters.Count == 0) _drainWaiters = null;
             }
         }
 
-        public ValueTask DrainAsync()
+        public Task DrainAsync()
         {
             lock (_drainLock)
             {
-                if (Volatile.Read(ref _pendingCount) == 0) return default;
+                var target = Volatile.Read(ref _enqueueSeq);
+                if (Volatile.Read(ref _processedSeq) >= target) return Task.CompletedTask;
 
-                _drainTcs ??= new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                _drainWaiters ??= [];
+                _drainWaiters.Add((target, tcs));
 
-                // Double-check: count could have reached 0 between the check and setting TCS
-                if (Volatile.Read(ref _pendingCount) == 0)
+                // Double-check: processing may have caught up between the read and adding the waiter
+                if (Volatile.Read(ref _processedSeq) >= target)
                 {
-                    _drainTcs.TrySetResult(true);
-                    _drainTcs = null;
-                    return default;
+                    _drainWaiters.Remove((target, tcs));
+                    if (_drainWaiters.Count == 0) _drainWaiters = null;
+                    return Task.CompletedTask;
                 }
 
-                return new ValueTask(_drainTcs.Task);
+                return tcs.Task;
             }
         }
     }
