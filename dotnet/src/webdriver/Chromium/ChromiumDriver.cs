@@ -480,9 +480,9 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     }
 
     /// <summary>
-    /// Stops the driver from running
+    /// Disposes of the resources used by the <see cref="ChromiumDriver"/> instance, including any active DevTools session.
     /// </summary>
-    /// <param name="disposing">if its in the process of disposing</param>
+    /// <param name="disposing">Indicates whether the method is being called from a Dispose method (true) or from a finalizer (false).</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -495,6 +495,21 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
         }
 
         base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Asynchronously disposes of the resources used by the <see cref="ChromiumDriver"/> instance, including any active DevTools session.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (this.devToolsSession != null)
+        {
+            this.devToolsSession.Dispose();
+            this.devToolsSession = null;
+        }
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
     }
 
     private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)

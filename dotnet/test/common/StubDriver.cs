@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium;
 
@@ -96,6 +97,15 @@ public class StubDriver : IWebDriver
     #region IDisposable Members
 
     public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region IAsyncDisposable Members
+
+    public ValueTask DisposeAsync()
     {
         throw new NotImplementedException();
     }
