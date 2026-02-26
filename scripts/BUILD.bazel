@@ -1,5 +1,4 @@
 load("@py_dev_requirements//:requirements.bzl", "requirement")
-load("@rules_java//java:java_binary.bzl", "java_binary")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("//java:defs.bzl", "artifact", "java_binary")
 
