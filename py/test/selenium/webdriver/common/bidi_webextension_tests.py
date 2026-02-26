@@ -26,8 +26,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from conftest import _resolve_bazel_path
-from conftest import get_extensions_location
+from conftest import _resolve_bazel_path, get_extensions_location
 
 EXTENSIONS = get_extensions_location()
 EXTENSION_ID = "webextensions-selenium-example-v3@example.com"
