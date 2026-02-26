@@ -506,7 +506,7 @@ class WebDriver(BaseWebDriver):
         """
         return list(self.pinned_scripts)
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> Any:
         """Synchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -531,7 +531,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(command, {"script": script, "args": converted_args})["value"]
 
-    def execute_async_script(self, script: str, *args) -> dict:
+    def execute_async_script(self, script: str, *args) -> Any:
         """Asynchronously Executes JavaScript in the current window/frame.
 
         Args:

@@ -1,4 +1,4 @@
-// <copyright file="LogEntryConverter.cs" company="Selenium Committers">
+// <copyright file="LogEntryEventArgsConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -24,19 +24,19 @@ using OpenQA.Selenium.BiDi.Log;
 namespace OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 // https://github.com/dotnet/runtime/issues/72604
-internal class LogEntryConverter : JsonConverter<Log.LogEntry>
+internal class LogEntryEventArgsConverter : JsonConverter<LogEntryEventArgs>
 {
-    public override Log.LogEntry? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override LogEntryEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetDiscriminator("type") switch
         {
-            "console" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ConsoleLogEntry>()),
-            "javascript" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<JavascriptLogEntry>()),
-            _ => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GenericLogEntry>()),
+            "console" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ConsoleLogEntryEventArgs>()),
+            "javascript" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<JavascriptLogEntryEventArgs>()),
+            _ => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GenericLogEntryEventArgs>()),
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, Log.LogEntry value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, LogEntryEventArgs value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

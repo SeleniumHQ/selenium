@@ -205,13 +205,13 @@ jobs:
     with:
       name: Update changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:changelogs' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   release-updates:
     name: Update ${{ matrix.name }}
-    needs: [parse-tag, commit-devtools, selenium-manager]
+    needs: [parse-tag, commit-devtools, selenium-manager, calculate-changelog-depth]
     strategy:
       fail-fast: false
       matrix:
@@ -228,12 +228,16 @@ jobs:
           - task: authors
             name: Authors
             run: ./go authors
+          - task: rust-changelogs
+            name: Rust Changelogs
+            run: ./go rust:changelogs
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update ${{ matrix.name }}
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ${{ matrix.run }}${{ matrix.task == 'browsers' && format(' {0}', inputs.chrome_channel) || '' }}
       artifact-name: patch-${{ matrix.task }}
+      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   create-pr:
     name: Create Pull Request
@@ -277,6 +281,7 @@ jobs:
           apply_patch devtools "update devtools versions"
           apply_patch dep-updates "update dependencies"
           apply_patch changelogs "changelogs updated"
+          apply_patch rust-changelogs "rust changelogs updated"
           apply_patch browsers "update pinned browser versions"
           apply_patch manager "update selenium manager versions"
           apply_patch multitool "update multitool binaries"
@@ -307,6 +312,7 @@ jobs:
             | CDP version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Binding Dependencies | ${{ steps.apply.outputs.dep-updates == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Changelogs | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Pinned Browsers | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Selenium Manager | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Multitool binaries | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |

@@ -1,4 +1,4 @@
-// <copyright file="LogEntry.cs" company="Selenium Committers">
+// <copyright file="LogEntryEventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -25,24 +25,24 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 // https://github.com/dotnet/runtime/issues/72604
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(GenericLogEntry))]
-//[JsonDerivedType(typeof(ConsoleLogEntry), "console")]
-//[JsonDerivedType(typeof(JavascriptLogEntry), "javascript")]
-[JsonConverter(typeof(LogEntryConverter))]
-public abstract record LogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+//[JsonDerivedType(typeof(GenericLogEntryEventArgs))]
+//[JsonDerivedType(typeof(ConsoleLogEntryEventArgs), "console")]
+//[JsonDerivedType(typeof(JavascriptLogEntryEventArgs), "javascript")]
+[JsonConverter(typeof(LogEntryEventArgsConverter))]
+public abstract record LogEntryEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
     : EventArgs
 {
     public Script.StackTrace? StackTrace { get; init; }
 }
 
-public sealed record GenericLogEntry(string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : LogEntry(Level, Source, Text, Timestamp);
+public sealed record GenericLogEntryEventArgs(string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : LogEntryEventArgs(Level, Source, Text, Timestamp);
 
-public sealed record ConsoleLogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
-    : LogEntry(Level, Source, Text, Timestamp);
+public sealed record ConsoleLogEntryEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
+    : LogEntryEventArgs(Level, Source, Text, Timestamp);
 
-public sealed record JavascriptLogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : LogEntry(Level, Source, Text, Timestamp);
+public sealed record JavascriptLogEntryEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : LogEntryEventArgs(Level, Source, Text, Timestamp);
 
 [JsonConverter(typeof(CamelCaseEnumConverter<Level>))]
 public enum Level

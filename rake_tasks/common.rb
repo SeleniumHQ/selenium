@@ -86,6 +86,7 @@ module SeleniumRake
 
     command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
     log = `#{command}`
+    raise "Failed to generate changelog: #{command}" unless $CHILD_STATUS.success?
 
     entries = log.lines
                  .map(&:strip)

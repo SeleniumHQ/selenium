@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule : Module
+public sealed class InputModule : Module, IInputModule
 {
     private InputJsonSerializerContext _jsonContext = null!;
 
@@ -48,17 +48,17 @@ public sealed class InputModule : Module
         return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
@@ -74,7 +74,7 @@ public sealed class InputModule : Module
 [JsonSerializable(typeof(ReleaseActionsResult))]
 [JsonSerializable(typeof(SetFilesCommand))]
 [JsonSerializable(typeof(SetFilesResult))]
-[JsonSerializable(typeof(FileDialogInfo))]
+[JsonSerializable(typeof(FileDialogEventArgs))]
 [JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
 [JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
 [JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]

@@ -19,5 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record BrowsingContextInfo(IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent)
-    : EventArgs;
+public sealed record BrowsingContextInfo(IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent);

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'base64'
-require 'json'
 require 'net/http'
 
 # use #java_release_targets to access this list
@@ -72,17 +71,6 @@ def verify_java_release_targets
   raise error_message
 end
 
-def sonatype_api_post(url, token)
-  uri = URI(url)
-  req = Net::HTTP::Post.new(uri)
-  req['Authorization'] = "Basic #{token}"
-
-  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
-  raise "Sonatype API error (#{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
-
-  res.body.to_s.empty? ? {} : JSON.parse(res.body)
-end
-
 def read_m2_user_pass
   settings_path = File.join(Dir.home, '.m2', 'settings.xml')
   unless File.exist?(settings_path)
@@ -110,9 +98,9 @@ def sonatype_auth_token
   Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
 end
 
-def trigger_sonatype_validation(token)
-  puts 'Triggering Sonatype validation...'
-  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
+def trigger_sonatype_publish(token)
+  puts 'Triggering Sonatype upload with automatic publishing...'
+  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq?publishing_type=automatic')
 
   req = Net::HTTP::Post.new(uri)
   req['Authorization'] = "Basic #{token}"
@@ -126,60 +114,19 @@ def trigger_sonatype_validation(token)
     end
   rescue Net::ReadTimeout, Net::OpenTimeout => e
     warn <<~MSG
-      Request timed out waiting for deployment ID.
+      Request timed out.
       The deployment may still have been created on the server.
-      Check https://central.sonatype.com/publishing/deployments for pending deployments,
-      then run: ./go java:release <deployment_id>
+      Check https://central.sonatype.com/publishing/deployments for status.
     MSG
     raise e
   end
 
   unless res.is_a?(Net::HTTPSuccess)
-    warn "Failed to get deployment ID (HTTP #{res.code}): #{res.body}"
+    warn "Failed to trigger upload (HTTP #{res.code}): #{res.body}"
     exit(1)
   end
 
-  res.body.strip
-end
-
-def poll_and_publish_deployment(deployment_id, token)
-  encoded_id = URI.encode_www_form_component(deployment_id.strip)
-  status = {}
-  max_attempts = 60
-  delay = 5
-
-  max_attempts.times do |attempt|
-    status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{encoded_id}", token)
-    state = status['deploymentState']
-    puts "Deployment state: #{state}"
-
-    case state
-    when 'VALIDATED', 'PUBLISHED' then break
-    when 'FAILED' then raise "Deployment failed: #{status['errors']}"
-    end
-    sleep(delay) unless attempt == max_attempts - 1
-  rescue StandardError => e
-    raise if e.message.start_with?('Deployment failed')
-
-    warn "API error (attempt #{attempt + 1}/#{max_attempts}): #{e.message}"
-    sleep(delay) unless attempt == max_attempts - 1
-  end
-
-  state = status['deploymentState']
-  return if state == 'PUBLISHED'
-
-  raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation" unless state == 'VALIDATED'
-
-  expected = java_release_targets.size
-  actual = status['purls']&.size || 0
-  if actual != expected
-    raise "Expected #{expected} packages but found #{actual}. " \
-          'Drop the deployment at https://central.sonatype.com/publishing/deployments and redeploy.'
-  end
-
-  puts 'Publishing deployed packages...'
-  sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{encoded_id}", token)
-  puts "Published! Deployment ID: #{deployment_id}"
+  puts 'Upload triggered — Sonatype will automatically validate and publish.'
 end
 
 desc 'Build Java Client Jars'
@@ -236,24 +183,16 @@ task :check_credentials do |_task, arguments|
   raise 'Missing GPG: gpg command not found (required for signing releases)' unless has_gpg
 end
 
-desc 'Deploy all jars to Maven (pass deployment_id to retry a failed publish)'
+desc 'Deploy all jars to Maven'
 task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
-  deployment_id = args.first
 
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
   ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
   ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
   token = sonatype_auth_token
-
-  # Retry mode: just poll and publish an existing deployment
-  if deployment_id
-    puts "Retrying deployment: #{deployment_id}"
-    poll_and_publish_deployment(deployment_id, token)
-    next
-  end
 
   repo_domain = 'central.sonatype.com'
   repo = if nightly
@@ -278,9 +217,7 @@ task :release do |_task, arguments|
 
   next if nightly
 
-  deployment_id = trigger_sonatype_validation(token)
-  puts "Got deployment ID: #{deployment_id}"
-  poll_and_publish_deployment(deployment_id, token)
+  trigger_sonatype_publish(token)
 end
 
 desc 'Verify Java packages are published on Maven Central'

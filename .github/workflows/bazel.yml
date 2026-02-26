@@ -113,6 +113,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
+          fetch-tags: ${{ inputs.fetch-depth != '' }}
       - name: Fetch base ref for PR comparison
         if: github.event.pull_request.base.sha
         run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
