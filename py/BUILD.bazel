@@ -278,7 +278,10 @@ py_library(
     name = "common",
     srcs = glob(
         ["selenium/webdriver/common/**/*.py"],
-        exclude = ["selenium/webdriver/common/bidi/**"],
+        exclude = [
+            "selenium/webdriver/common/bidi/**",
+            "selenium/webdriver/common/devtools/**",
+        ],
     ),
     data = [
         ":manager-linux",
