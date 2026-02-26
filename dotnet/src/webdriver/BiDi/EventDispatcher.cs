@@ -85,8 +85,17 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         if (_events.TryGetValue(method, out var registration))
         {
-            registration.IncrementEnqueued();
-            _pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration));
+            if (_pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration)))
+            {
+                registration.IncrementEnqueued();
+            }
+            else
+            {
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"Failed to enqueue BiDi event with method '{method}' for processing. Event will be ignored.");
+                }
+            }
         }
         else
         {
