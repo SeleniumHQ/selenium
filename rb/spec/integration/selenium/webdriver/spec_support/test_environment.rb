@@ -124,7 +124,8 @@ module Selenium
         def bazel_java
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
-          File.expand_path(File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp)
+          java_path = File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp
+          rlocation(java_path)
         end
 
         def rbe?
