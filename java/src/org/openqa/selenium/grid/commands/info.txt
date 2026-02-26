@@ -5,6 +5,7 @@ the "info" command followed by:
 * tracing - Help on how distributed tracing works with selenium
 * security - Help on how how to secure communications to and within selenium
 * sessionmap - Help on different types of sessionmap and how to start them.
+* kubernetes - Help on running browser sessions as Kubernetes Jobs.
 
 Each topic will give you enough information to help you get started, and
 contains some pointers on our site to provide more complete information.

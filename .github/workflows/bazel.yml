@@ -113,6 +113,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
+          fetch-tags: ${{ inputs.fetch-depth != '' }}
       - name: Fetch base ref for PR comparison
         if: github.event.pull_request.base.sha
         run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
@@ -257,7 +258,7 @@ jobs:
           limit-access-to-actor: false
       - name: Save git diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
-        run: git diff --binary > changes.patch
+        run: git add -A && git diff --binary --staged > changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
         uses: actions/upload-artifact@v5

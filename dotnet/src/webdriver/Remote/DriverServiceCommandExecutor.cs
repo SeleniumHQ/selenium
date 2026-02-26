@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -112,27 +110,7 @@ public class DriverServiceCommandExecutor : ICommandExecutor
             throw new ArgumentNullException(nameof(commandToExecute), "Command to execute cannot be null");
         }
 
-        Response toReturn;
-        if (commandToExecute.Name == DriverCommand.NewSession)
-        {
-            this.service.Start();
-        }
-
-        // Use a try-catch block to catch exceptions for the Quit
-        // command, so that we can get the finally block.
-        try
-        {
-            toReturn = await this.HttpExecutor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
-        }
-        finally
-        {
-            if (commandToExecute.Name == DriverCommand.Quit)
-            {
-                this.Dispose();
-            }
-        }
-
-        return toReturn;
+        return await this.HttpExecutor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
     }
 
     /// <summary>

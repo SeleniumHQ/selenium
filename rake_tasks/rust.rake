@@ -15,8 +15,7 @@ end
 desc 'Update the rust lock files'
 task :update do
   puts 'pinning cargo versions'
-  ENV['CARGO_BAZEL_REPIN'] = 'true'
-  Bazel.execute('fetch', [], '@crates//:all')
+  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
 end
 
 desc 'Pin Rust dependencies'

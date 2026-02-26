@@ -102,34 +102,44 @@ public class ProxyNodeWebsockets
       return Optional.empty();
     }
 
-    Session session = node.getSession(id);
-    Capabilities caps = session.getCapabilities();
-    LOG.fine("Scanning for endpoint: " + caps);
+    try {
+      Session session = node.getSession(id);
+      Capabilities caps = session.getCapabilities();
+      LOG.fine("Scanning for endpoint: " + caps);
 
-    // Used by the ForwardingListener to notify the node that the session is still active
-    Consumer<SessionId> sessionConsumer = node::isSessionOwner;
+      // Used by the ForwardingListener to notify the node that the session is still active
+      Consumer<SessionId> sessionConsumer = node::isSessionOwner;
 
-    if (bidiMatch != null) {
-      return findBiDiEndpoint(downstream, caps, sessionConsumer, id);
-    }
+      Optional<Consumer<Message>> endpoint;
+      if (bidiMatch != null) {
+        endpoint = findBiDiEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (vncMatch != null) {
+        // Passing a fake consumer to the ForwardingListener to avoid sending a session notification
+        // when VNC is used.
+        sessionConsumer = fakeConsumer -> {};
+        endpoint = findVncEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (fwdMatch != null) {
+        // This match happens when a user wants to do CDP over Dynamic Grid
+        LOG.info("Matched endpoint where CDP connection is being forwarded");
+        endpoint = findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (caps.getCapabilityNames().contains("se:forwardCdp")) {
+        LOG.info("Found endpoint where CDP connection needs to be forwarded");
+        endpoint = findForwardCdpEndpoint(downstream, caps, sessionConsumer, id);
+      } else {
+        endpoint = findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      }
 
-    if (vncMatch != null) {
-      // Passing a fake consumer to the ForwardingListener to avoid sending a session notification
-      // when VNC is used.
-      sessionConsumer = fakeConsumer -> {};
-      return findVncEndpoint(downstream, caps, sessionConsumer, id);
-    }
+      // If no endpoint could be established the connection slot must be released;
+      if (endpoint.isEmpty()) {
+        node.releaseConnection(id);
+      }
 
-    // This match happens when a user wants to do CDP over Dynamic Grid
-    if (fwdMatch != null) {
-      LOG.info("Matched endpoint where CDP connection is being forwarded");
-      return findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      return endpoint;
+    } catch (Exception e) {
+      node.releaseConnection(id);
+      LOG.log(Level.WARNING, "Failed to establish WebSocket endpoint for session " + id, e);
+      return Optional.empty();
     }
-    if (caps.getCapabilityNames().contains("se:forwardCdp")) {
-      LOG.info("Found endpoint where CDP connection needs to be forwarded");
-      return findForwardCdpEndpoint(downstream, caps, sessionConsumer, id);
-    }
-    return findCdpEndpoint(downstream, caps, sessionConsumer, id);
   }
 
   private Optional<Consumer<Message>> findCdpEndpoint(
@@ -213,6 +223,10 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     String vncLocalAddress = (String) caps.getCapability("se:vncLocalAddress");
+    if (vncLocalAddress == null || vncLocalAddress.trim().isEmpty()) {
+      LOG.warning("No VNC endpoint address in capabilities");
+      return Optional.empty();
+    }
     Optional<URI> vncUri;
     try {
       vncUri = Optional.of(new URI(vncLocalAddress));
@@ -264,7 +278,6 @@ public class ProxyNodeWebsockets
       };
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Connecting to upstream websocket failed", e);
-      node.releaseConnection(sessionId);
       client.close();
       throw e;
     }
@@ -313,6 +326,9 @@ public class ProxyNodeWebsockets
     @Override
     public void onError(Throwable cause) {
       LOG.log(Level.WARNING, "Error proxying websocket command", cause);
+      if (connectionReleased.compareAndSet(false, true)) {
+        node.releaseConnection(sessionId);
+      }
     }
   }
 }

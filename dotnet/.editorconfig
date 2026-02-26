@@ -46,7 +46,8 @@ dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
 csharp_using_directive_placement = outside_namespace:warning
 
-# Roslyn 
+# Roslyn
+dotnet_diagnostic.IDE0005.severity = warning  # Remove unnecessary using directives
 dotnet_diagnostic.IDE0044.severity = warning  # Make field readonly
 dotnet_diagnostic.IDE0076.severity = warning  # Invalid suppression
 dotnet_diagnostic.IDE1005.severity = warning  # Delegate invocation
