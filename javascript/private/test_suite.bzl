@@ -1,3 +1,4 @@
+load("@rules_java//java:java_binary.bzl", "java_binary")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "selenium_test")
 
@@ -28,8 +29,7 @@ def closure_test_suite(name, data = [], browsers = None):
         kwargs["browsers"] = browsers
 
     selenium_test(**kwargs)
-
-    native.java_binary(
+    java_binary(
         name = name + "_debug_server",
         main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
         data = data,

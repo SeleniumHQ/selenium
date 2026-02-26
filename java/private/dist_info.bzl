@@ -1,3 +1,4 @@
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "read_coordinates")
 load("//java/private:module.bzl", "JavaModuleInfo")
 
