@@ -216,11 +216,11 @@ public class Actions {
   }
 
   /**
-   * If the element is outside the viewport, scrolls the bottom of the element to the bottom of the
-   * viewport.
+   * Scrolls to the given element.
    *
-   * @param element Which element to scroll into the viewport.
+   * @param element Which element to scroll to.
    * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException If the element is outside the viewport.
    */
   public Actions scrollToElement(WebElement element) {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(element);
