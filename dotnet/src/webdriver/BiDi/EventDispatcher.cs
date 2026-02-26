@@ -75,7 +75,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
 
             // Wait until all pending events for this method are dispatched
-            await registration.DrainAsync().ConfigureAwait(false);
+            await registration.DrainAsync(cancellationToken).ConfigureAwait(false);
 
             registration.RemoveHandler(subscription.EventHandler);
         }
@@ -199,7 +199,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             }
         }
 
-        public Task DrainAsync()
+        public Task DrainAsync(CancellationToken cancellationToken)
         {
             lock (_drainLock)
             {
@@ -218,7 +218,13 @@ internal sealed class EventDispatcher : IAsyncDisposable
                     return Task.CompletedTask;
                 }
 
-                return tcs.Task;
+                if (!cancellationToken.CanBeCanceled) return tcs.Task;
+
+                return tcs.Task.ContinueWith(
+                    static _ => { },
+                    cancellationToken,
+                    TaskContinuationOptions.None,
+                    TaskScheduler.Default);
             }
         }
     }
