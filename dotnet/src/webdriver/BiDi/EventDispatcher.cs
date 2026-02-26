@@ -45,7 +45,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public EventDispatcher(Func<ISessionModule> sessionProvider)
     {
         _sessionProvider = sessionProvider;
-        _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
+        _eventEmitterTask = Task.Run(ProcessEventsAsync);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -97,7 +97,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    private async Task ProcessEventsAwaiterAsync()
+    private async Task ProcessEventsAsync()
     {
         var reader = _pendingEvents.Reader;
 
