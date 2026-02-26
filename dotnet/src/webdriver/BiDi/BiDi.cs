@@ -57,7 +57,7 @@ public sealed class BiDi : IBiDi
         BiDiOptionsBuilder builder = new();
         configure?.Invoke(builder);
 
-        var transport = await WebSocketTransport.ConnectAsync(new Uri(url), builder.WebSocketConfigure, cancellationToken).ConfigureAwait(false);
+        var transport = await builder.TransportFactory(new Uri(url), cancellationToken).ConfigureAwait(false);
 
         BiDi bidi = new();
 
