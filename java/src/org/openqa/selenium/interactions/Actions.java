@@ -216,9 +216,9 @@ public class Actions {
   }
 
   /**
-   * Scrolls to the given element.
+   * Scrolls at the location of an element.
    *
-   * @param element Which element to scroll to.
+   * @param element Which element to scroll.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException if the element is outside the viewport.
    */
