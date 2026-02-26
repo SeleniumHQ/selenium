@@ -17,8 +17,17 @@
 // under the License.
 // </copyright>
 
+using System.Net.WebSockets;
+
 namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDiOptionsBuilder
 {
+    internal Action<ClientWebSocketOptions>? WebSocketConfigure { get; private set; }
+
+    public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions> configure)
+    {
+        WebSocketConfigure = configure;
+        return this;
+    }
 }
