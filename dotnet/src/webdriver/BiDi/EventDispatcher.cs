@@ -34,7 +34,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly ConcurrentDictionary<string, EventRegistration> _events = new();
 
-    private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
+    private readonly Channel<EventItem> _pendingEvents = Channel.CreateUnbounded<EventItem>(new()
     {
         SingleReader = true,
         SingleWriter = true
@@ -57,7 +57,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
         var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
-        registration.Handlers.Add(eventHandler);
+        registration.AddHandler(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
@@ -67,7 +67,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         if (_events.TryGetValue(subscription.EventHandler.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.Handlers.Remove(subscription.EventHandler);
+
+            // Wait until all pending events for this method are dispatched
+            await registration.DrainAsync().ConfigureAwait(false);
+
+            registration.RemoveHandler(subscription.EventHandler);
         }
     }
 
@@ -75,7 +79,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         if (_events.TryGetValue(method, out var registration) && registration.TypeInfo is not null)
         {
-            _pendingEvents.Writer.TryWrite(new PendingEvent(method, jsonUtf8Bytes, bidi, registration.TypeInfo));
+            registration.IncrementPending();
+            _pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration));
         }
         else
         {
@@ -89,22 +94,20 @@ internal sealed class EventDispatcher : IAsyncDisposable
     private async Task ProcessEventsAwaiterAsync()
     {
         var reader = _pendingEvents.Reader;
+
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            while (reader.TryRead(out var result))
+            while (reader.TryRead(out var evt))
             {
                 try
                 {
-                    if (_events.TryGetValue(result.Method, out var registration))
-                    {
-                        // Deserialize on background thread instead of network thread (single parse)
-                        var eventArgs = (EventArgs)JsonSerializer.Deserialize(result.JsonUtf8Bytes.Span, result.TypeInfo)!;
-                        eventArgs.BiDi = result.BiDi;
+                    // Deserialize on background thread instead of network thread (single parse)
+                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(evt.JsonUtf8Bytes.Span, evt.Registration.TypeInfo)!;
+                    eventArgs.BiDi = evt.BiDi;
 
-                        foreach (var handler in registration.Handlers.ToArray()) // copy handlers avoiding modified collection while iterating
-                        {
-                            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
-                        }
+                    foreach (var handler in evt.Registration.GetHandlersSnapshot())
+                    {
+                        await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
                     }
                 }
                 catch (Exception ex)
@@ -113,6 +116,10 @@ internal sealed class EventDispatcher : IAsyncDisposable
                     {
                         _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
                     }
+                }
+                finally
+                {
+                    evt.Registration.DecrementPending();
                 }
             }
         }
@@ -127,11 +134,64 @@ internal sealed class EventDispatcher : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private readonly record struct PendingEvent(string Method, ReadOnlyMemory<byte> JsonUtf8Bytes, IBiDi BiDi, JsonTypeInfo TypeInfo);
+    private sealed record EventItem(ReadOnlyMemory<byte> JsonUtf8Bytes, IBiDi BiDi, EventRegistration Registration);
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
+        private int _pendingCount;
+        private readonly object _drainLock = new();
+        private TaskCompletionSource<bool>? _drainTcs;
+        private readonly List<EventHandler> _handlers = [];
+
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
-        public List<EventHandler> Handlers { get; } = [];
+
+        public void AddHandler(EventHandler handler)
+        {
+            lock (_drainLock) _handlers.Add(handler);
+        }
+
+        public void RemoveHandler(EventHandler handler)
+        {
+            lock (_drainLock) _handlers.Remove(handler);
+        }
+
+        public EventHandler[] GetHandlersSnapshot()
+        {
+            lock (_drainLock) return [.. _handlers];
+        }
+
+        public void IncrementPending() => Interlocked.Increment(ref _pendingCount);
+
+        public void DecrementPending()
+        {
+            if (Interlocked.Decrement(ref _pendingCount) == 0)
+            {
+                lock (_drainLock)
+                {
+                    _drainTcs?.TrySetResult(true);
+                    _drainTcs = null;
+                }
+            }
+        }
+
+        public ValueTask DrainAsync()
+        {
+            lock (_drainLock)
+            {
+                if (Volatile.Read(ref _pendingCount) == 0) return default;
+
+                _drainTcs ??= new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+                // Double-check: count could have reached 0 between the check and setting TCS
+                if (Volatile.Read(ref _pendingCount) == 0)
+                {
+                    _drainTcs.TrySetResult(true);
+                    _drainTcs = null;
+                    return default;
+                }
+
+                return new ValueTask(_drainTcs.Task);
+            }
+        }
     }
 }
