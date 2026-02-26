@@ -42,12 +42,10 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Task _eventEmitterTask;
 
-    private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
-
     public EventDispatcher(Func<ISessionModule> sessionProvider)
     {
         _sessionProvider = sessionProvider;
-        _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
+        _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
