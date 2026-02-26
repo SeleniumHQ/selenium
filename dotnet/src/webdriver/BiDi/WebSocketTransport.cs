@@ -36,10 +36,10 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
     {
         ClientWebSocket webSocket = new();
 
-        configure?.Invoke(webSocket.Options);
-
         try
         {
+            configure?.Invoke(webSocket.Options);
+
             await webSocket.ConnectAsync(uri, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
