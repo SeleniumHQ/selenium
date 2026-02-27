@@ -6,15 +6,14 @@
 # WebDriver BiDi module: script
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class SpecialNumber:
@@ -216,7 +215,7 @@ class DedicatedWorkerRealmInfo:
     """DedicatedWorkerRealmInfo."""
 
     type: str = field(default="dedicated-worker", init=False)
-    owners: list[Any | None] | None = None
+    owners: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -460,7 +459,7 @@ class NodeProperties:
 
     node_type: Any | None = None
     child_node_count: Any | None = None
-    children: list[Any | None] | None = None
+    children: list[Any | None] | None = field(default_factory=list)
     local_name: str | None = None
     mode: Any | None = None
     namespace_uri: str | None = None
@@ -499,7 +498,7 @@ class StackFrame:
 class StackTrace:
     """StackTrace."""
 
-    call_frames: list[Any | None] | None = None
+    call_frames: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -530,9 +529,9 @@ class AddPreloadScriptParameters:
     """AddPreloadScriptParameters."""
 
     function_declaration: str | None = None
-    arguments: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    arguments: list[Any | None] | None = field(default_factory=list)
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
     sandbox: str | None = None
 
 
@@ -547,7 +546,7 @@ class AddPreloadScriptResult:
 class DisownParameters:
     """DisownParameters."""
 
-    handles: list[Any | None] | None = None
+    handles: list[Any | None] | None = field(default_factory=list)
     target: Any | None = None
 
 
@@ -558,7 +557,7 @@ class CallFunctionParameters:
     function_declaration: str | None = None
     await_promise: bool | None = None
     target: Any | None = None
-    arguments: list[Any | None] | None = None
+    arguments: list[Any | None] | None = field(default_factory=list)
     result_ownership: Any | None = None
     serialization_options: Any | None = None
     this: Any | None = None
@@ -589,7 +588,7 @@ class GetRealmsParameters:
 class GetRealmsResult:
     """GetRealmsResult."""
 
-    realms: list[Any | None] | None = None
+    realms: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -783,7 +782,14 @@ class Script:
         self._driver = driver
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    def add_preload_script(self, function_declaration: Any | None = None, arguments: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None, sandbox: Any | None = None):
+    def add_preload_script(
+        self,
+        function_declaration: Any | None = None,
+        arguments: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+        sandbox: Any | None = None,
+    ):
         """Execute script.addPreloadScript."""
         params = {
             "functionDeclaration": function_declaration,
@@ -797,7 +803,7 @@ class Script:
         result = self._conn.execute(cmd)
         return result
 
-    def disown(self, handles: List[Any] | None = None, target: Any | None = None):
+    def disown(self, handles: list[Any] | None = None, target: Any | None = None):
         """Execute script.disown."""
         params = {
             "handles": handles,
@@ -808,7 +814,17 @@ class Script:
         result = self._conn.execute(cmd)
         return result
 
-    def call_function(self, function_declaration: Any | None = None, await_promise: bool | None = None, target: Any | None = None, arguments: List[Any] | None = None, result_ownership: Any | None = None, serialization_options: Any | None = None, this: Any | None = None, user_activation: bool | None = None):
+    def call_function(
+        self,
+        function_declaration: Any | None = None,
+        await_promise: bool | None = None,
+        target: Any | None = None,
+        arguments: list[Any] | None = None,
+        result_ownership: Any | None = None,
+        serialization_options: Any | None = None,
+        this: Any | None = None,
+        user_activation: bool | None = None,
+    ):
         """Execute script.callFunction."""
         params = {
             "functionDeclaration": function_declaration,
@@ -825,7 +841,15 @@ class Script:
         result = self._conn.execute(cmd)
         return result
 
-    def evaluate(self, expression: Any | None = None, target: Any | None = None, await_promise: bool | None = None, result_ownership: Any | None = None, serialization_options: Any | None = None, user_activation: bool | None = None):
+    def evaluate(
+        self,
+        expression: Any | None = None,
+        target: Any | None = None,
+        await_promise: bool | None = None,
+        result_ownership: Any | None = None,
+        serialization_options: Any | None = None,
+        user_activation: bool | None = None,
+    ):
         """Execute script.evaluate."""
         params = {
             "expression": expression,
@@ -889,8 +913,9 @@ class Script:
         Returns:
             The inner RemoteValue result dict, or raises WebDriverException on exception.
         """
-        import math as _math
         import datetime as _datetime
+        import math as _math
+
         from selenium.common.exceptions import WebDriverException as _WebDriverException
 
         def _serialize_arg(value):
@@ -941,7 +966,14 @@ class Script:
             if raw.get("type") == "success":
                 return raw.get("result")
         return raw
-    def _add_preload_script(self, function_declaration, arguments=None, contexts=None, user_contexts=None, sandbox=None):
+    def _add_preload_script(
+        self,
+        function_declaration,
+        arguments=None,
+        contexts=None,
+        user_contexts=None,
+        sandbox=None,
+    ):
         """Add a preload script with validation.
 
         Args:
@@ -993,7 +1025,15 @@ class Script:
             script_id: The ID returned by pin().
         """
         return self._remove_preload_script(script_id=script_id)
-    def _evaluate(self, expression, target, await_promise, result_ownership=None, serialization_options=None, user_activation=None):
+    def _evaluate(
+        self,
+        expression,
+        target,
+        await_promise,
+        result_ownership=None,
+        serialization_options=None,
+        user_activation=None,
+    ):
         """Evaluate a script expression and return a structured result.
 
         Args:
@@ -1028,7 +1068,17 @@ class Script:
                 return _EvalResult(realm=realm, result=None, exception_details=exc)
             return _EvalResult(realm=realm, result=raw.get("result"), exception_details=None)
         return _EvalResult(realm=None, result=raw, exception_details=None)
-    def _call_function(self, function_declaration, await_promise, target, arguments=None, result_ownership=None, this=None, user_activation=None, serialization_options=None):
+    def _call_function(
+        self,
+        function_declaration,
+        await_promise,
+        target,
+        arguments=None,
+        result_ownership=None,
+        this=None,
+        user_activation=None,
+        serialization_options=None,
+    ):
         """Call a function and return a structured result.
 
         Args:
@@ -1106,8 +1156,9 @@ class Script:
     def _subscribe_log_entry(self, callback, entry_type_filter=None):
         """Subscribe to log.entryAdded BiDi events with optional type filtering."""
         import threading as _threading
-        from selenium.webdriver.common.bidi.session import Session as _Session
+
         from selenium.webdriver.common.bidi import log as _log_mod
+        from selenium.webdriver.common.bidi.session import Session as _Session
 
         bidi_event = "log.entryAdded"
 
@@ -1257,6 +1308,16 @@ RealmDestroyed = globals().get('RealmDestroyedParameters', dict)  # Fallback to 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Script.EVENT_CONFIGS = {
-    "realm_created": (EventConfig("realm_created", "script.realmCreated", _globals.get("RealmCreated", dict)) if _globals.get("RealmCreated") else EventConfig("realm_created", "script.realmCreated", dict)),
-    "realm_destroyed": (EventConfig("realm_destroyed", "script.realmDestroyed", _globals.get("RealmDestroyed", dict)) if _globals.get("RealmDestroyed") else EventConfig("realm_destroyed", "script.realmDestroyed", dict)),
+    "realm_created": (
+        EventConfig("realm_created", "script.realmCreated",
+                    _globals.get("RealmCreated", dict))
+        if _globals.get("RealmCreated")
+        else EventConfig("realm_created", "script.realmCreated", dict)
+    ),
+    "realm_destroyed": (
+        EventConfig("realm_destroyed", "script.realmDestroyed",
+                    _globals.get("RealmDestroyed", dict))
+        if _globals.get("RealmDestroyed")
+        else EventConfig("realm_destroyed", "script.realmDestroyed", dict)
+    ),
 }

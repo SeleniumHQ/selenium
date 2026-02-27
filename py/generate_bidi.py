@@ -18,12 +18,11 @@ import importlib.util
 import logging
 import re
 import sys
-from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from textwrap import dedent, indent as tw_indent
-from typing import Any, Dict, List, Optional, Set, Tuple
+from textwrap import indent as tw_indent
+from typing import Any
 
 __version__ = "1.0.0"
 
@@ -43,8 +42,7 @@ MODULE_HEADER = f"""{SHARED_HEADER}
 # WebDriver BiDi module: {{}}
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
+from typing import Any
 """
 
 
@@ -53,7 +51,7 @@ def indent(s: str, n: int) -> str:
     return tw_indent(s, n * " ")
 
 
-def load_enhancements_manifest(manifest_path: Optional[str]) -> Dict[str, Any]:
+def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
     """Load enhancement manifest from a Python file.
 
     Args:
@@ -124,10 +122,10 @@ class CddlType(Enum):
         if cddl_type.startswith("["):  # Array
             inner = cddl_type.strip("[]+ ")
             inner_type = cls.get_annotation(inner)
-            return f"List[{inner_type}]"
+            return f"list[{inner_type}]"
 
         if cddl_type.startswith("{"):  # Map/Dict
-            return "Dict[str, Any]"
+            return "dict[str, Any]"
 
         # Default to Any for unknown types
         return "Any"
@@ -139,11 +137,11 @@ class CddlCommand:
 
     module: str
     name: str
-    params: Dict[str, str] = field(default_factory=dict)
-    result: Optional[str] = None
+    params: dict[str, str] = field(default_factory=dict)
+    result: str | None = None
     description: str = ""
 
-    def to_python_method(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def to_python_method(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python method code for this command.
 
         Args:
@@ -174,8 +172,15 @@ class CddlCommand:
         else:
             param_list = "self"
 
-        # Build method body
-        body = f"    def {method_name}({param_list}):\n"
+        # Build method body - wrap long signatures over multiple lines if needed
+        sig_line = f"    def {method_name}({param_list}):"
+        if len(sig_line) > 120 and param_strs:
+            body = f"    def {method_name}(\n        self,\n"
+            for p in param_strs:
+                body += f"        {p},\n"
+            body += "    ):\n"
+        else:
+            body = sig_line + "\n"
         body += f'        """{self.description or "Execute " + self.module + "." + self.name}."""\n'
 
         # Add validation if specified
@@ -237,7 +242,6 @@ class CddlCommand:
             if result_param == "download_behavior":
                 body += '            "downloadBehavior": download_behavior,\n'
                 # Add remaining parameters that weren't part of the transform
-                override_params = enhancements.get("params_override", {})
                 for cddl_param_name in self.params:
                     if cddl_param_name not in ["downloadBehavior"]:
                         snake_name = self._camel_to_snake(cddl_param_name)
@@ -264,45 +268,45 @@ class CddlCommand:
                 # Extract property from list items
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f'                item.get("{extract_property}")\n'
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
             elif extract_field in deserialize_rules:
                 # Extract field and deserialize to typed objects
                 type_name = deserialize_rules[extract_field]
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(extract_field, type_name)
-                body += f"                )\n"
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                )\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
             else:
                 # Simple field extraction (return the value directly, not wrapped in result dict)
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            extracted = result.get("{extract_field}")\n'
-                body += f"            return extracted\n"
-                body += f"        return result\n"
+                body += "            return extracted\n"
+                body += "        return result\n"
         elif "deserialize" in enhancements:
             # Deserialize response to typed objects (legacy, without extract_field)
             deserialize_rules = enhancements["deserialize"]
             for response_field, type_name in deserialize_rules.items():
                 body += f'        if result and "{response_field}" in result:\n'
                 body += f'            items = result.get("{response_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(response_field, type_name)
-                body += f"                )\n"
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                )\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
         else:
             # No special response handling, just return the result
             body += "        return result\n"
@@ -351,10 +355,10 @@ class CddlTypeDefinition:
 
     module: str
     name: str
-    fields: Dict[str, str] = field(default_factory=dict)
+    fields: dict[str, str] = field(default_factory=dict)
     description: str = ""
 
-    def to_python_dataclass(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def to_python_dataclass(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python dataclass code for this type.
 
         Args:
@@ -366,7 +370,7 @@ class CddlTypeDefinition:
 
         # Generate class name from type name (keep it as-is, don't split on underscores)
         class_name = self.name
-        code = f"@dataclass\n"
+        code = "@dataclass\n"
         code += f"class {class_name}:\n"
         code += f'    """{self.description or self.name}."""\n\n'
 
@@ -386,7 +390,7 @@ class CddlTypeDefinition:
                     literal_value = literal_match.group(1)
                     code += f'    {snake_name}: str = field(default="{literal_value}", init=False)\n'
                 # Check if this field is a list type
-                elif "List[" in python_type:
+                elif "list[" in python_type:
                     code += f"    {snake_name}: {python_type} = field(default_factory=list)\n"
                 else:
                     code += f"    {snake_name}: {python_type} = None\n"
@@ -453,7 +457,7 @@ class CddlEnum:
 
     module: str
     name: str
-    values: List[str] = field(default_factory=list)
+    values: list[str] = field(default_factory=list)
     description: str = ""
 
     def to_python_class(self) -> str:
@@ -530,10 +534,10 @@ class CddlModule:
     """Represents a CDDL module (e.g., script, network, browsing_context)."""
 
     name: str
-    commands: List[CddlCommand] = field(default_factory=list)
-    types: List[CddlTypeDefinition] = field(default_factory=list)
-    enums: List[CddlEnum] = field(default_factory=list)
-    events: List[CddlEvent] = field(default_factory=list)
+    commands: list[CddlCommand] = field(default_factory=list)
+    types: list[CddlTypeDefinition] = field(default_factory=list)
+    enums: list[CddlEnum] = field(default_factory=list)
+    events: list[CddlEvent] = field(default_factory=list)
 
     @staticmethod
     def _convert_method_to_event_name(method_suffix: str) -> str:
@@ -548,7 +552,33 @@ class CddlModule:
         s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", method_suffix)
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
-    def generate_code(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def _needs_field_import(self, enhancements: dict[str, Any] | None = None) -> bool:
+        """Check if any type definition in this module requires the 'field' import.
+
+        Respects the same type exclusions applied during code generation.
+        """
+        enhancements = enhancements or {}
+        extra_cls_names: set[str] = set()
+        for extra_cls in enhancements.get("extra_dataclasses", []):
+            m = re.search(r"^class\s+(\w+)", extra_cls, re.MULTILINE)
+            if m:
+                extra_cls_names.add(m.group(1))
+        exclude_types = set(enhancements.get("exclude_types", [])) | extra_cls_names
+
+        for type_def in self.types:
+            if type_def.name in exclude_types:
+                continue
+            for field_type in type_def.fields.values():
+                # Literal string discriminants use field(default=..., init=False)
+                if re.match(r'^"', field_type.strip()):
+                    return True
+                # List-typed fields use field(default_factory=list)
+                python_type = CddlTypeDefinition._get_python_type(field_type)
+                if python_type.startswith("list["):
+                    return True
+        return False
+
+    def generate_code(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python code for this module.
 
         Args:
@@ -558,17 +588,21 @@ class CddlModule:
         code = MODULE_HEADER.format(self.name)
 
         # Add imports if needed
-        if self.types:
-            code += "from dataclasses import field\n"
+        if self.commands:
+            code += "from .common import command_builder\n"
+        dataclass_imported = False
         if self.commands or self.types:
-            code += "from typing import Generator\n"
             code += "from dataclasses import dataclass\n"
+            dataclass_imported = True
+        if self.types and self._needs_field_import(enhancements):
+            code += "from dataclasses import field\n"
 
         # Add imports for event handling if needed
         if self.events:
             code += "import threading\n"
             code += "from collections.abc import Callable\n"
-            code += "from dataclasses import dataclass\n"
+            if not dataclass_imported:
+                code += "from dataclasses import dataclass\n"
             code += "from selenium.webdriver.common.bidi.session import Session\n"
 
         code += "\n\n"
@@ -660,7 +694,13 @@ class CddlModule:
             code += f"{alias} = {target}\n\n"
 
         # Generate type dataclasses, skipping any overridden by extra_dataclasses
-        exclude_types = set(enhancements.get("exclude_types", []))
+        # Also auto-exclude types whose names appear in extra_dataclasses
+        extra_cls_names = set()
+        for extra_cls in enhancements.get("extra_dataclasses", []):
+            m = re.search(r"^class\s+(\w+)", extra_cls, re.MULTILINE)
+            if m:
+                extra_cls_names.add(m.group(1))
+        exclude_types = set(enhancements.get("exclude_types", [])) | extra_cls_names
         for type_def in self.types:
             if type_def.name in exclude_types:
                 continue
@@ -680,13 +720,16 @@ class CddlModule:
             # Generate EVENT_NAME_MAPPING for the module
             code += "# BiDi Event Name to Parameter Type Mapping\n"
             code += "EVENT_NAME_MAPPING = {\n"
+            # Collect event keys from extra_events so we skip CDDL duplicates
+            extra_event_keys = {evt["event_key"] for evt in enhancements.get("extra_events", [])}
             for event_def in self.events:
                 # Convert method name to user-friendly event name
                 # e.g., "browsingContext.contextCreated" -> "context_created"
                 method_parts = event_def.method.split(".")
                 if len(method_parts) == 2:
                     event_name = self._convert_method_to_event_name(method_parts[1])
-                    code += f'    "{event_name}": "{event_def.method}",\n'
+                    if event_name not in extra_event_keys:
+                        code += f'    "{event_name}": "{event_def.method}",\n'
             # Extra events not in the CDDL spec (e.g. Chromium-specific events)
             for extra_evt in enhancements.get("extra_events", []):
                 code += (
@@ -923,7 +966,13 @@ class _EventManager:
         code += "\n"
 
         # Generate command methods
-        exclude_methods = enhancements.get("exclude_methods", [])
+        # Auto-exclude methods whose names appear in extra_methods to prevent duplicates
+        extra_method_names = set()
+        for extra_meth in enhancements.get("extra_methods", []):
+            m = re.search(r"def\s+(\w+)\s*\(", extra_meth)
+            if m:
+                extra_method_names.add(m.group(1))
+        exclude_methods = set(enhancements.get("exclude_methods", [])) | extra_method_names
         if self.commands:
             for command in self.commands:
                 # Get method-specific enhancements
@@ -981,24 +1030,44 @@ class _EventManager:
                 code += "\n"
 
             # Now populate EVENT_CONFIGS after the aliases are defined
-            code += f"\n# Populate EVENT_CONFIGS with event configuration mappings\n"
+            code += "\n# Populate EVENT_CONFIGS with event configuration mappings\n"
             # Use globals() to look up types dynamically to handle missing types gracefully
-            code += f"_globals = globals()\n"
+            code += "_globals = globals()\n"
             code += f"{class_name}.EVENT_CONFIGS = {{\n"
+            # Collect extra event keys to skip CDDL duplicates
+            extra_event_keys_cfg = {evt["event_key"] for evt in enhancements.get("extra_events", [])}
             for event_def in self.events:
                 # Convert method name to user-friendly event name
                 method_parts = event_def.method.split(".")
                 if len(method_parts) == 2:
                     event_name = self._convert_method_to_event_name(method_parts[1])
+                    if event_name in extra_event_keys_cfg:
+                        continue
                     # The event class is the event name (e.g., ContextCreated)
                     # Try to get it from globals, default to dict if not found
-                    code += f'    "{event_name}": (EventConfig("{event_name}", "{event_def.method}", _globals.get("{event_def.name}", dict)) if _globals.get("{event_def.name}") else EventConfig("{event_name}", "{event_def.method}", dict)),\n'
+                    code += (
+                        f'    "{event_name}": (\n'
+                        f'        EventConfig("{event_name}", "{event_def.method}",\n'
+                        f'                    _globals.get("{event_def.name}", dict))\n'
+                        f'        if _globals.get("{event_def.name}")\n'
+                        f'        else EventConfig("{event_name}", "{event_def.method}", dict)\n'
+                        f'    ),\n'
+                    )
             # Extra events not in the CDDL spec
             for extra_evt in enhancements.get("extra_events", []):
                 ek = extra_evt["event_key"]
                 be = extra_evt["bidi_event"]
                 ec = extra_evt["event_class"]
-                code += f'    "{ek}": EventConfig("{ek}", "{be}", _globals.get("{ec}", dict)),\n'
+                single = f'    "{ek}": EventConfig("{ek}", "{be}", _globals.get("{ec}", dict)),'
+                if len(single) > 120:
+                    code += (
+                        f'    "{ek}": EventConfig(\n'
+                        f'        "{ek}", "{be}",\n'
+                        f'        _globals.get("{ec}", dict),\n'
+                        f'    ),\n'
+                    )
+                else:
+                    code += single + "\n"
             code += "}\n"
 
         return code
@@ -1011,9 +1080,9 @@ class CddlParser:
         """Initialize parser with CDDL file path."""
         self.cddl_path = Path(cddl_path)
         self.content = ""
-        self.modules: Dict[str, CddlModule] = {}
-        self.definitions: Dict[str, str] = {}
-        self.event_names: Set[str] = set()  # Names of definitions that are events
+        self.modules: dict[str, CddlModule] = {}
+        self.definitions: dict[str, str] = {}
+        self.event_names: set[str] = set()  # Names of definitions that are events
         self._read_file()
 
     def _read_file(self) -> None:
@@ -1021,12 +1090,12 @@ class CddlParser:
         if not self.cddl_path.exists():
             raise FileNotFoundError(f"CDDL file not found: {self.cddl_path}")
 
-        with open(self.cddl_path, "r", encoding="utf-8") as f:
+        with open(self.cddl_path, encoding="utf-8") as f:
             self.content = f.read()
 
         logger.info(f"Loaded CDDL file: {self.cddl_path}")
 
-    def parse(self) -> Dict[str, CddlModule]:
+    def parse(self) -> dict[str, CddlModule]:
         """Parse CDDL content and return modules."""
         # Remove comments
         content = self._remove_comments(self.content)
@@ -1090,9 +1159,6 @@ class CddlParser:
               ...
             )
         """
-        # Look for definitions like "BrowsingContextEvent", "SessionEvent", etc.
-        event_union_pattern = re.compile(r"(\w+\.)?(\w+)Event")
-
         for def_name, def_content in self.definitions.items():
             # Check if this looks like an event union (name ends with "Event") and
             # contains a module-qualified reference like "module.EventName".
@@ -1175,7 +1241,7 @@ class CddlParser:
         # Pattern: "something" / "something_else"
         return " / " in clean_def and '"' in clean_def
 
-    def _extract_enum_values(self, enum_definition: str) -> List[str]:
+    def _extract_enum_values(self, enum_definition: str) -> list[str]:
         """Extract individual values from an enum definition.
 
         Enums are defined as: "value1" / "value2" / "value3"
@@ -1225,7 +1291,7 @@ class CddlParser:
         result = re.sub(r"-?\d+(?:\.\d+)?\.{2,3}-?\d+(?:\.\d+)?", "float", result)
         return result.strip()
 
-    def _extract_type_fields(self, type_definition: str) -> Dict[str, str]:
+    def _extract_type_fields(self, type_definition: str) -> dict[str, str]:
         """Extract fields from a type definition block."""
         fields = {}
 
@@ -1352,8 +1418,8 @@ class CddlParser:
                         )
 
     def _extract_parameters(
-        self, params_type: str, _seen: Optional[Set[str]] = None
-    ) -> Dict[str, str]:
+        self, params_type: str, _seen: set[str] | None = None
+    ) -> dict[str, str]:
         """Extract parameters from a parameter type definition.
 
         Handles both struct types ({...}) and top-level union types (TypeA / TypeB),
@@ -1466,7 +1532,7 @@ def module_name_to_filename(module_name: str) -> str:
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
-def generate_init_file(output_path: Path, modules: Dict[str, CddlModule]) -> None:
+def generate_init_file(output_path: Path, modules: dict[str, CddlModule]) -> None:
     """Generate __init__.py file for the module."""
     init_path = output_path / "__init__.py"
 
@@ -1481,7 +1547,7 @@ from __future__ import annotations
         filename = module_name_to_filename(module_name)
         code += f"from .{filename} import {class_name}\n"
 
-    code += f"\n__all__ = [\n"
+    code += "\n__all__ = [\n"
     for module_name in sorted(modules.keys()):
         class_name = module_name_to_class_name(module_name)
         code += f'    "{class_name}",\n'
@@ -1703,7 +1769,7 @@ def main(
     cddl_file: str,
     output_dir: str,
     spec_version: str = "1.0",
-    enhancements_manifest: Optional[str] = None,
+    enhancements_manifest: str | None = None,
 ) -> None:
     """Main entry point.
 

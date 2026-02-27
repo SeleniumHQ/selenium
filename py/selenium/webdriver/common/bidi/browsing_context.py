@@ -6,15 +6,14 @@
 # WebDriver BiDi module: browsingContext
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class ReadinessState:
@@ -220,14 +219,14 @@ class LocateNodesParameters:
     context: Any | None = None
     locator: Any | None = None
     serialization_options: Any | None = None
-    start_nodes: list[Any | None] | None = None
+    start_nodes: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class LocateNodesResult:
     """LocateNodesResult."""
 
-    nodes: list[Any | None] | None = None
+    nodes: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -300,7 +299,7 @@ class SetViewportParameters:
     context: Any | None = None
     viewport: Any | None = None
     device_pixel_ratio: Any | None = None
-    user_contexts: list[Any | None] | None = None
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -326,20 +325,6 @@ class HistoryUpdatedParameters:
     context: Any | None = None
     timestamp: Any | None = None
     url: str | None = None
-
-
-@dataclass
-class DownloadWillBeginParams:
-    """DownloadWillBeginParams."""
-
-    suggested_filename: str | None = None
-
-
-@dataclass
-class DownloadCanceledParams:
-    """DownloadCanceledParams."""
-
-    status: str = field(default="canceled", init=False)
 
 
 @dataclass
@@ -390,10 +375,10 @@ class DownloadParams:
 class DownloadEndParams:
     """DownloadEndParams - params for browsingContext.downloadEnd event."""
 
-    download_params: "DownloadParams | None" = None
+    download_params: DownloadParams | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "DownloadEndParams":
+    def from_json(cls, params: dict) -> DownloadEndParams:
         """Deserialize from BiDi wire-level params dict."""
         dp = DownloadParams(
             status=params.get("status"),
@@ -414,8 +399,6 @@ EVENT_NAME_MAPPING = {
     "history_updated": "browsingContext.historyUpdated",
     "dom_content_loaded": "browsingContext.domContentLoaded",
     "load": "browsingContext.load",
-    "download_will_begin": "browsingContext.downloadWillBegin",
-    "download_end": "browsingContext.downloadEnd",
     "navigation_aborted": "browsingContext.navigationAborted",
     "navigation_committed": "browsingContext.navigationCommitted",
     "navigation_failed": "browsingContext.navigationFailed",
@@ -630,7 +613,13 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def capture_screenshot(self, context: str | None = None, format: Any | None = None, clip: Any | None = None, origin: str | None = None):
+    def capture_screenshot(
+        self,
+        context: str | None = None,
+        format: Any | None = None,
+        clip: Any | None = None,
+        origin: str | None = None,
+    ):
         """Execute browsingContext.captureScreenshot."""
         params = {
             "context": context,
@@ -657,7 +646,13 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def create(self, type: Any | None = None, reference_context: Any | None = None, background: bool | None = None, user_context: Any | None = None):
+    def create(
+        self,
+        type: Any | None = None,
+        reference_context: Any | None = None,
+        background: bool | None = None,
+        user_context: Any | None = None,
+    ):
         """Execute browsingContext.create."""
         params = {
             "type": type,
@@ -711,7 +706,14 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def locate_nodes(self, context: str | None = None, locator: Any | None = None, serialization_options: Any | None = None, start_nodes: Any | None = None, max_node_count: int | None = None):
+    def locate_nodes(
+        self,
+        context: str | None = None,
+        locator: Any | None = None,
+        serialization_options: Any | None = None,
+        start_nodes: Any | None = None,
+        max_node_count: int | None = None,
+    ):
         """Execute browsingContext.locateNodes."""
         params = {
             "context": context,
@@ -740,7 +742,15 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def print(self, context: Any | None = None, background: bool | None = None, margin: Any | None = None, page: Any | None = None, scale: Any | None = None, shrink_to_fit: bool | None = None):
+    def print(
+        self,
+        context: Any | None = None,
+        background: bool | None = None,
+        margin: Any | None = None,
+        page: Any | None = None,
+        scale: Any | None = None,
+        shrink_to_fit: bool | None = None,
+    ):
         """Execute browsingContext.print."""
         params = {
             "context": context,
@@ -770,7 +780,13 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def set_viewport(self, context: str | None = None, viewport: Any | None = None, user_contexts: Any | None = None, device_pixel_ratio: Any | None = None):
+    def set_viewport(
+        self,
+        context: str | None = None,
+        viewport: Any | None = None,
+        user_contexts: Any | None = None,
+        device_pixel_ratio: Any | None = None,
+    ):
         """Execute browsingContext.setViewport."""
         params = {
             "context": context,
@@ -868,20 +884,81 @@ UserPromptOpened = globals().get('UserPromptOpenedParameters', dict)  # Fallback
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 BrowsingContext.EVENT_CONFIGS = {
-    "context_created": (EventConfig("context_created", "browsingContext.contextCreated", _globals.get("ContextCreated", dict)) if _globals.get("ContextCreated") else EventConfig("context_created", "browsingContext.contextCreated", dict)),
-    "context_destroyed": (EventConfig("context_destroyed", "browsingContext.contextDestroyed", _globals.get("ContextDestroyed", dict)) if _globals.get("ContextDestroyed") else EventConfig("context_destroyed", "browsingContext.contextDestroyed", dict)),
-    "navigation_started": (EventConfig("navigation_started", "browsingContext.navigationStarted", _globals.get("NavigationStarted", dict)) if _globals.get("NavigationStarted") else EventConfig("navigation_started", "browsingContext.navigationStarted", dict)),
-    "fragment_navigated": (EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", _globals.get("FragmentNavigated", dict)) if _globals.get("FragmentNavigated") else EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", dict)),
-    "history_updated": (EventConfig("history_updated", "browsingContext.historyUpdated", _globals.get("HistoryUpdated", dict)) if _globals.get("HistoryUpdated") else EventConfig("history_updated", "browsingContext.historyUpdated", dict)),
-    "dom_content_loaded": (EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", _globals.get("DomContentLoaded", dict)) if _globals.get("DomContentLoaded") else EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", dict)),
-    "load": (EventConfig("load", "browsingContext.load", _globals.get("Load", dict)) if _globals.get("Load") else EventConfig("load", "browsingContext.load", dict)),
-    "download_will_begin": (EventConfig("download_will_begin", "browsingContext.downloadWillBegin", _globals.get("DownloadWillBegin", dict)) if _globals.get("DownloadWillBegin") else EventConfig("download_will_begin", "browsingContext.downloadWillBegin", dict)),
-    "download_end": (EventConfig("download_end", "browsingContext.downloadEnd", _globals.get("DownloadEnd", dict)) if _globals.get("DownloadEnd") else EventConfig("download_end", "browsingContext.downloadEnd", dict)),
-    "navigation_aborted": (EventConfig("navigation_aborted", "browsingContext.navigationAborted", _globals.get("NavigationAborted", dict)) if _globals.get("NavigationAborted") else EventConfig("navigation_aborted", "browsingContext.navigationAborted", dict)),
-    "navigation_committed": (EventConfig("navigation_committed", "browsingContext.navigationCommitted", _globals.get("NavigationCommitted", dict)) if _globals.get("NavigationCommitted") else EventConfig("navigation_committed", "browsingContext.navigationCommitted", dict)),
-    "navigation_failed": (EventConfig("navigation_failed", "browsingContext.navigationFailed", _globals.get("NavigationFailed", dict)) if _globals.get("NavigationFailed") else EventConfig("navigation_failed", "browsingContext.navigationFailed", dict)),
-    "user_prompt_closed": (EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", _globals.get("UserPromptClosed", dict)) if _globals.get("UserPromptClosed") else EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", dict)),
-    "user_prompt_opened": (EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", _globals.get("UserPromptOpened", dict)) if _globals.get("UserPromptOpened") else EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", dict)),
-    "download_will_begin": EventConfig("download_will_begin", "browsingContext.downloadWillBegin", _globals.get("DownloadWillBeginParams", dict)),
+    "context_created": (
+        EventConfig("context_created", "browsingContext.contextCreated",
+                    _globals.get("ContextCreated", dict))
+        if _globals.get("ContextCreated")
+        else EventConfig("context_created", "browsingContext.contextCreated", dict)
+    ),
+    "context_destroyed": (
+        EventConfig("context_destroyed", "browsingContext.contextDestroyed",
+                    _globals.get("ContextDestroyed", dict))
+        if _globals.get("ContextDestroyed")
+        else EventConfig("context_destroyed", "browsingContext.contextDestroyed", dict)
+    ),
+    "navigation_started": (
+        EventConfig("navigation_started", "browsingContext.navigationStarted",
+                    _globals.get("NavigationStarted", dict))
+        if _globals.get("NavigationStarted")
+        else EventConfig("navigation_started", "browsingContext.navigationStarted", dict)
+    ),
+    "fragment_navigated": (
+        EventConfig("fragment_navigated", "browsingContext.fragmentNavigated",
+                    _globals.get("FragmentNavigated", dict))
+        if _globals.get("FragmentNavigated")
+        else EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", dict)
+    ),
+    "history_updated": (
+        EventConfig("history_updated", "browsingContext.historyUpdated",
+                    _globals.get("HistoryUpdated", dict))
+        if _globals.get("HistoryUpdated")
+        else EventConfig("history_updated", "browsingContext.historyUpdated", dict)
+    ),
+    "dom_content_loaded": (
+        EventConfig("dom_content_loaded", "browsingContext.domContentLoaded",
+                    _globals.get("DomContentLoaded", dict))
+        if _globals.get("DomContentLoaded")
+        else EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", dict)
+    ),
+    "load": (
+        EventConfig("load", "browsingContext.load",
+                    _globals.get("Load", dict))
+        if _globals.get("Load")
+        else EventConfig("load", "browsingContext.load", dict)
+    ),
+    "navigation_aborted": (
+        EventConfig("navigation_aborted", "browsingContext.navigationAborted",
+                    _globals.get("NavigationAborted", dict))
+        if _globals.get("NavigationAborted")
+        else EventConfig("navigation_aborted", "browsingContext.navigationAborted", dict)
+    ),
+    "navigation_committed": (
+        EventConfig("navigation_committed", "browsingContext.navigationCommitted",
+                    _globals.get("NavigationCommitted", dict))
+        if _globals.get("NavigationCommitted")
+        else EventConfig("navigation_committed", "browsingContext.navigationCommitted", dict)
+    ),
+    "navigation_failed": (
+        EventConfig("navigation_failed", "browsingContext.navigationFailed",
+                    _globals.get("NavigationFailed", dict))
+        if _globals.get("NavigationFailed")
+        else EventConfig("navigation_failed", "browsingContext.navigationFailed", dict)
+    ),
+    "user_prompt_closed": (
+        EventConfig("user_prompt_closed", "browsingContext.userPromptClosed",
+                    _globals.get("UserPromptClosed", dict))
+        if _globals.get("UserPromptClosed")
+        else EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", dict)
+    ),
+    "user_prompt_opened": (
+        EventConfig("user_prompt_opened", "browsingContext.userPromptOpened",
+                    _globals.get("UserPromptOpened", dict))
+        if _globals.get("UserPromptOpened")
+        else EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", dict)
+    ),
+    "download_will_begin": EventConfig(
+        "download_will_begin", "browsingContext.downloadWillBegin",
+        _globals.get("DownloadWillBeginParams", dict),
+    ),
     "download_end": EventConfig("download_end", "browsingContext.downloadEnd", _globals.get("DownloadEndParams", dict)),
 }

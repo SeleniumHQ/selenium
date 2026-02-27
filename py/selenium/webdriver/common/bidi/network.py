@@ -6,15 +6,14 @@
 # WebDriver BiDi module: network
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class SameSite:
@@ -75,7 +74,7 @@ class BaseParameters:
     redirect_count: Any | None = None
     request: Any | None = None
     timestamp: Any | None = None
-    intercepts: list[Any | None] | None = None
+    intercepts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -171,13 +170,13 @@ class ResponseData:
     status: Any | None = None
     status_text: str | None = None
     from_cache: bool | None = None
-    headers: list[Any | None] | None = None
+    headers: list[Any | None] | None = field(default_factory=list)
     mime_type: str | None = None
     bytes_received: Any | None = None
     headers_size: Any | None = None
     body_size: Any | None = None
     content: Any | None = None
-    auth_challenges: list[Any | None] | None = None
+    auth_challenges: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -219,11 +218,11 @@ class UrlPatternString:
 class AddDataCollectorParameters:
     """AddDataCollectorParameters."""
 
-    data_types: list[Any | None] | None = None
+    data_types: list[Any | None] | None = field(default_factory=list)
     max_encoded_data_size: Any | None = None
     collector_type: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -237,9 +236,9 @@ class AddDataCollectorResult:
 class AddInterceptParameters:
     """AddInterceptParameters."""
 
-    phases: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    url_patterns: list[Any | None] | None = None
+    phases: list[Any | None] | None = field(default_factory=list)
+    contexts: list[Any | None] | None = field(default_factory=list)
+    url_patterns: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -254,9 +253,9 @@ class ContinueResponseParameters:
     """ContinueResponseParameters."""
 
     request: Any | None = None
-    cookies: list[Any | None] | None = None
+    cookies: list[Any | None] | None = field(default_factory=list)
     credentials: Any | None = None
-    headers: list[Any | None] | None = None
+    headers: list[Any | None] | None = field(default_factory=list)
     reason_phrase: str | None = None
     status_code: Any | None = None
 
@@ -315,8 +314,8 @@ class ProvideResponseParameters:
 
     request: Any | None = None
     body: Any | None = None
-    cookies: list[Any | None] | None = None
-    headers: list[Any | None] | None = None
+    cookies: list[Any | None] | None = field(default_factory=list)
+    headers: list[Any | None] | None = field(default_factory=list)
     reason_phrase: str | None = None
     status_code: Any | None = None
 
@@ -340,16 +339,16 @@ class SetCacheBehaviorParameters:
     """SetCacheBehaviorParameters."""
 
     cache_behavior: Any | None = None
-    contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class SetExtraHeadersParameters:
     """SetExtraHeadersParameters."""
 
-    headers: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    headers: list[Any | None] | None = field(default_factory=list)
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -562,7 +561,14 @@ class Network:
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
         self.intercepts = []
 
-    def add_data_collector(self, data_types: List[Any] | None = None, max_encoded_data_size: Any | None = None, collector_type: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def add_data_collector(
+        self,
+        data_types: list[Any] | None = None,
+        max_encoded_data_size: Any | None = None,
+        collector_type: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute network.addDataCollector."""
         params = {
             "dataTypes": data_types,
@@ -576,7 +582,12 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def add_intercept(self, phases: List[Any] | None = None, contexts: List[Any] | None = None, url_patterns: List[Any] | None = None):
+    def add_intercept(
+        self,
+        phases: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        url_patterns: list[Any] | None = None,
+    ):
         """Execute network.addIntercept."""
         params = {
             "phases": phases,
@@ -588,7 +599,15 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def continue_request(self, request: Any | None = None, body: Any | None = None, cookies: List[Any] | None = None, headers: List[Any] | None = None, method: Any | None = None, url: Any | None = None):
+    def continue_request(
+        self,
+        request: Any | None = None,
+        body: Any | None = None,
+        cookies: list[Any] | None = None,
+        headers: list[Any] | None = None,
+        method: Any | None = None,
+        url: Any | None = None,
+    ):
         """Execute network.continueRequest."""
         params = {
             "request": request,
@@ -603,7 +622,15 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def continue_response(self, request: Any | None = None, cookies: List[Any] | None = None, credentials: Any | None = None, headers: List[Any] | None = None, reason_phrase: Any | None = None, status_code: Any | None = None):
+    def continue_response(
+        self,
+        request: Any | None = None,
+        cookies: list[Any] | None = None,
+        credentials: Any | None = None,
+        headers: list[Any] | None = None,
+        reason_phrase: Any | None = None,
+        status_code: Any | None = None,
+    ):
         """Execute network.continueResponse."""
         params = {
             "request": request,
@@ -650,7 +677,13 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def get_data(self, data_type: Any | None = None, collector: Any | None = None, disown: bool | None = None, request: Any | None = None):
+    def get_data(
+        self,
+        data_type: Any | None = None,
+        collector: Any | None = None,
+        disown: bool | None = None,
+        request: Any | None = None,
+    ):
         """Execute network.getData."""
         params = {
             "dataType": data_type,
@@ -663,7 +696,15 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def provide_response(self, request: Any | None = None, body: Any | None = None, cookies: List[Any] | None = None, headers: List[Any] | None = None, reason_phrase: Any | None = None, status_code: Any | None = None):
+    def provide_response(
+        self,
+        request: Any | None = None,
+        body: Any | None = None,
+        cookies: list[Any] | None = None,
+        headers: list[Any] | None = None,
+        reason_phrase: Any | None = None,
+        status_code: Any | None = None,
+    ):
         """Execute network.provideResponse."""
         params = {
             "request": request,
@@ -698,7 +739,7 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def set_cache_behavior(self, cache_behavior: Any | None = None, contexts: List[Any] | None = None):
+    def set_cache_behavior(self, cache_behavior: Any | None = None, contexts: list[Any] | None = None):
         """Execute network.setCacheBehavior."""
         params = {
             "cacheBehavior": cache_behavior,
@@ -709,7 +750,12 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def set_extra_headers(self, headers: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_extra_headers(
+        self,
+        headers: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute network.setExtraHeaders."""
         params = {
             "headers": headers,
@@ -918,6 +964,11 @@ AuthRequired = globals().get('AuthRequiredParameters', dict)  # Fallback to dict
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Network.EVENT_CONFIGS = {
-    "auth_required": (EventConfig("auth_required", "network.authRequired", _globals.get("AuthRequired", dict)) if _globals.get("AuthRequired") else EventConfig("auth_required", "network.authRequired", dict)),
+    "auth_required": (
+        EventConfig("auth_required", "network.authRequired",
+                    _globals.get("AuthRequired", dict))
+        if _globals.get("AuthRequired")
+        else EventConfig("auth_required", "network.authRequired", dict)
+    ),
     "before_request": EventConfig("before_request", "network.beforeRequestSent", _globals.get("dict", dict)),
 }

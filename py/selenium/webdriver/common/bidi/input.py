@@ -6,15 +6,14 @@
 # WebDriver BiDi module: input
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class PointerType:
@@ -45,7 +44,7 @@ class PerformActionsParameters:
     """PerformActionsParameters."""
 
     context: Any | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -54,7 +53,7 @@ class NoneSourceActions:
 
     type: str = field(default="none", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -63,7 +62,7 @@ class KeySourceActions:
 
     type: str = field(default="key", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -73,7 +72,7 @@ class PointerSourceActions:
     type: str = field(default="pointer", init=False)
     id: str | None = None
     parameters: Any | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -89,7 +88,7 @@ class WheelSourceActions:
 
     type: str = field(default="wheel", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -163,7 +162,7 @@ class SetFilesParameters:
 
     context: Any | None = None
     element: Any | None = None
-    files: list[Any | None] | None = None
+    files: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -175,7 +174,7 @@ class FileDialogInfo:
     multiple: bool | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "FileDialogInfo":
+    def from_json(cls, params: dict) -> FileDialogInfo:
         """Deserialize event params into FileDialogInfo."""
         return cls(
             context=params.get("context"),
@@ -368,7 +367,7 @@ class Input:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    def perform_actions(self, context: Any | None = None, actions: List[Any] | None = None):
+    def perform_actions(self, context: Any | None = None, actions: list[Any] | None = None):
         """Execute input.performActions."""
         params = {
             "context": context,
@@ -389,7 +388,7 @@ class Input:
         result = self._conn.execute(cmd)
         return result
 
-    def set_files(self, context: Any | None = None, element: Any | None = None, files: List[Any] | None = None):
+    def set_files(self, context: Any | None = None, element: Any | None = None, files: list[Any] | None = None):
         """Execute input.setFiles."""
         params = {
             "context": context,
@@ -454,5 +453,10 @@ FileDialogOpened = globals().get('FileDialogInfo', dict)  # Fallback to dict if 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Input.EVENT_CONFIGS = {
-    "file_dialog_opened": (EventConfig("file_dialog_opened", "input.fileDialogOpened", _globals.get("FileDialogOpened", dict)) if _globals.get("FileDialogOpened") else EventConfig("file_dialog_opened", "input.fileDialogOpened", dict)),
+    "file_dialog_opened": (
+        EventConfig("file_dialog_opened", "input.fileDialogOpened",
+                    _globals.get("FileDialogOpened", dict))
+        if _globals.get("FileDialogOpened")
+        else EventConfig("file_dialog_opened", "input.fileDialogOpened", dict)
+    ),
 }
