@@ -6,11 +6,10 @@
 # WebDriver BiDi module: webExtension
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 @dataclass
@@ -64,7 +63,12 @@ class WebExtension:
     def __init__(self, conn) -> None:
         self._conn = conn
 
-    def install(self, path: str | None = None, archive_path: str | None = None, base64_value: str | None = None):
+    def install(
+        self,
+        path: str | None = None,
+        archive_path: str | None = None,
+        base64_value: str | None = None,
+    ):
         """Install a web extension.
 
         Exactly one of the three keyword arguments must be provided.
@@ -82,7 +86,11 @@ class WebExtension:
         Raises:
             ValueError: If more than one, or none, of the arguments is provided.
         """
-        provided = [k for k, v in {"path": path, "archive_path": archive_path, "base64_value": base64_value}.items() if v is not None]
+        provided = [
+            k for k, v in {
+                "path": path, "archive_path": archive_path, "base64_value": base64_value,
+            }.items() if v is not None
+        ]
         if len(provided) != 1:
             raise ValueError(
                 f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}"

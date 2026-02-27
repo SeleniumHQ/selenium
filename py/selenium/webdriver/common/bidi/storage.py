@@ -6,11 +6,10 @@
 # WebDriver BiDi module: storage
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 @dataclass
@@ -33,7 +32,7 @@ class GetCookiesParameters:
 class GetCookiesResult:
     """GetCookiesResult."""
 
-    cookies: list[Any | None] | None = None
+    cookies: list[Any | None] | None = field(default_factory=list)
     partition_key: Any | None = None
 
 
@@ -107,7 +106,7 @@ class StorageCookie:
     expiry: Any | None = None
 
     @classmethod
-    def from_bidi_dict(cls, raw: dict) -> "StorageCookie":
+    def from_bidi_dict(cls, raw: dict) -> StorageCookie:
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
@@ -234,39 +233,6 @@ class Storage:
 
     def __init__(self, conn) -> None:
         self._conn = conn
-
-    def get_cookies(self, filter: Any | None = None, partition: Any | None = None):
-        """Execute storage.getCookies."""
-        params = {
-            "filter": filter,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.getCookies", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_cookie(self, cookie: Any | None = None, partition: Any | None = None):
-        """Execute storage.setCookie."""
-        params = {
-            "cookie": cookie,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.setCookie", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def delete_cookies(self, filter: Any | None = None, partition: Any | None = None):
-        """Execute storage.deleteCookies."""
-        params = {
-            "filter": filter,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.deleteCookies", params)
-        result = self._conn.execute(cmd)
-        return result
 
     def get_cookies(self, filter=None, partition=None):
         """Execute storage.getCookies and return a GetCookiesResult."""

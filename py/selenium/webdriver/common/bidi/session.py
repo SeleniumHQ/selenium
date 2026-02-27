@@ -6,11 +6,10 @@
 # WebDriver BiDi module: session
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 class UserPromptHandlerType:
@@ -26,7 +25,7 @@ class CapabilitiesRequest:
     """CapabilitiesRequest."""
 
     always_match: Any | None = None
-    first_match: list[Any | None] | None = None
+    first_match: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -62,7 +61,7 @@ class ManualProxyConfiguration:
     proxy_type: str = field(default="manual", init=False)
     http_proxy: str | None = None
     ssl_proxy: str | None = None
-    no_proxy: list[Any | None] | None = None
+    no_proxy: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -92,23 +91,23 @@ class SystemProxyConfiguration:
 class SubscribeParameters:
     """SubscribeParameters."""
 
-    events: list[str | None] | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    events: list[str | None] | None = field(default_factory=list)
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class UnsubscribeByIDRequest:
     """UnsubscribeByIDRequest."""
 
-    subscriptions: list[Any | None] | None = None
+    subscriptions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class UnsubscribeByAttributesRequest:
     """UnsubscribeByAttributesRequest."""
 
-    events: list[str | None] | None = None
+    events: list[str | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -211,7 +210,12 @@ class Session:
         result = self._conn.execute(cmd)
         return result
 
-    def subscribe(self, events: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def subscribe(
+        self,
+        events: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute session.subscribe."""
         params = {
             "events": events,
@@ -223,7 +227,7 @@ class Session:
         result = self._conn.execute(cmd)
         return result
 
-    def unsubscribe(self, events: List[Any] | None = None, subscriptions: List[Any] | None = None):
+    def unsubscribe(self, events: list[Any] | None = None, subscriptions: list[Any] | None = None):
         """Execute session.unsubscribe."""
         params = {
             "events": events,

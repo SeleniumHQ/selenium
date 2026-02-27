@@ -85,7 +85,12 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
         # downloadBehavior is never stripped by the generic None filter.
         # The BiDi spec marks it as required (can be null, but must be present).
         "extra_methods": [
-            '''    def set_download_behavior(self, allowed: bool | None = None, destination_folder: str | None = None, user_contexts: List[Any] | None = None):
+            '''    def set_download_behavior(
+        self,
+        allowed: bool | None = None,
+        destination_folder: str | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Set the download behavior for the browser.
 
         Args:
@@ -272,8 +277,8 @@ class JavascriptLogEntry:
         self,
         coordinates=None,
         error=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setGeolocationOverride.
 
@@ -325,8 +330,8 @@ class JavascriptLogEntry:
             '''    def set_timezone_override(
         self,
         timezone=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setTimezoneOverride.
 
@@ -349,8 +354,8 @@ class JavascriptLogEntry:
             '''    def set_scripting_enabled(
         self,
         enabled=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScriptingEnabled.
 
@@ -373,8 +378,8 @@ class JavascriptLogEntry:
             '''    def set_user_agent_override(
         self,
         user_agent=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setUserAgentOverride.
 
@@ -396,8 +401,8 @@ class JavascriptLogEntry:
             '''    def set_screen_orientation_override(
         self,
         screen_orientation=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScreenOrientationOverride.
 
@@ -433,8 +438,8 @@ class JavascriptLogEntry:
         self,
         network_conditions=None,
         offline: bool | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setNetworkConditions.
 
@@ -534,7 +539,14 @@ class JavascriptLogEntry:
             if raw.get("type") == "success":
                 return raw.get("result")
         return raw''',
-            '''    def _add_preload_script(self, function_declaration, arguments=None, contexts=None, user_contexts=None, sandbox=None):
+            '''    def _add_preload_script(
+        self,
+        function_declaration,
+        arguments=None,
+        contexts=None,
+        user_contexts=None,
+        sandbox=None,
+    ):
         """Add a preload script with validation.
 
         Args:
@@ -586,7 +598,15 @@ class JavascriptLogEntry:
             script_id: The ID returned by pin().
         """
         return self._remove_preload_script(script_id=script_id)''',
-            '''    def _evaluate(self, expression, target, await_promise, result_ownership=None, serialization_options=None, user_activation=None):
+            '''    def _evaluate(
+        self,
+        expression,
+        target,
+        await_promise,
+        result_ownership=None,
+        serialization_options=None,
+        user_activation=None,
+    ):
         """Evaluate a script expression and return a structured result.
 
         Args:
@@ -621,7 +641,17 @@ class JavascriptLogEntry:
                 return _EvalResult(realm=realm, result=None, exception_details=exc)
             return _EvalResult(realm=realm, result=raw.get("result"), exception_details=None)
         return _EvalResult(realm=None, result=raw, exception_details=None)''',
-            '''    def _call_function(self, function_declaration, await_promise, target, arguments=None, result_ownership=None, this=None, user_activation=None, serialization_options=None):
+            '''    def _call_function(
+        self,
+        function_declaration,
+        await_promise,
+        target,
+        arguments=None,
+        result_ownership=None,
+        this=None,
+        user_activation=None,
+        serialization_options=None,
+    ):
         """Call a function and return a structured result.
 
         Args:
@@ -1256,7 +1286,12 @@ class UserPromptHandler:
         # Suppress the raw generated stubs; hand-written versions follow below
         "exclude_methods": ["install", "uninstall"],
         "extra_methods": [
-            '''    def install(self, path: str | None = None, archive_path: str | None = None, base64_value: str | None = None):
+            '''    def install(
+        self,
+        path: str | None = None,
+        archive_path: str | None = None,
+        base64_value: str | None = None,
+    ):
         """Install a web extension.
 
         Exactly one of the three keyword arguments must be provided.
@@ -1274,7 +1309,11 @@ class UserPromptHandler:
         Raises:
             ValueError: If more than one, or none, of the arguments is provided.
         """
-        provided = [k for k, v in {"path": path, "archive_path": archive_path, "base64_value": base64_value}.items() if v is not None]
+        provided = [
+            k for k, v in {
+                "path": path, "archive_path": archive_path, "base64_value": base64_value,
+            }.items() if v is not None
+        ]
         if len(provided) != 1:
             raise ValueError(
                 f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}"
@@ -1502,6 +1541,7 @@ def _add_event_handler(
     - 'history_updated'
 
     Args:
+        self: The module instance this handler is bound to.
         event_name: The name of the event to subscribe to
         callback: Callback function to invoke when event occurs
         contexts: Optional list of context IDs to limit event subscription
@@ -1538,6 +1578,7 @@ def _remove_event_handler(
     """Remove an event handler by its callback ID.
 
     Args:
+        self: The module instance this handler is bound to.
         callback_id: The callback ID returned from add_event_handler
     """
     if not hasattr(self, "_event_handlers"):

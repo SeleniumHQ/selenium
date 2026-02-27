@@ -17,12 +17,13 @@
 
 """Common utilities for BiDi command construction."""
 
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 
 
 def command_builder(
-    method: str, params: Dict[str, Any]
-) -> Generator[Dict[str, Any], Any, Any]:
+    method: str, params: dict[str, Any]
+) -> Generator[dict[str, Any], Any, Any]:
     """Build a BiDi command generator.
 
     Args:

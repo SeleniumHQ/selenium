@@ -6,11 +6,10 @@
 # WebDriver BiDi module: emulation
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 class ForcedColorsModeTheme:
@@ -41,16 +40,16 @@ class SetForcedColorsModeThemeOverrideParameters:
     """SetForcedColorsModeThemeOverrideParameters."""
 
     theme: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class SetGeolocationOverrideParameters:
     """SetGeolocationOverrideParameters."""
 
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -78,8 +77,8 @@ class SetLocaleOverrideParameters:
     """SetLocaleOverrideParameters."""
 
     locale: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -87,8 +86,8 @@ class setNetworkConditionsParameters:
     """setNetworkConditionsParameters."""
 
     network_conditions: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -111,8 +110,8 @@ class SetScreenSettingsOverrideParameters:
     """SetScreenSettingsOverrideParameters."""
 
     screen_area: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -128,8 +127,8 @@ class SetScreenOrientationOverrideParameters:
     """SetScreenOrientationOverrideParameters."""
 
     screen_orientation: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -137,8 +136,8 @@ class SetUserAgentOverrideParameters:
     """SetUserAgentOverrideParameters."""
 
     user_agent: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -146,8 +145,8 @@ class SetViewportMetaOverrideParameters:
     """SetViewportMetaOverrideParameters."""
 
     viewport_meta: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -155,8 +154,8 @@ class SetScriptingEnabledParameters:
     """SetScriptingEnabledParameters."""
 
     enabled: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -164,8 +163,8 @@ class SetScrollbarTypeOverrideParameters:
     """SetScrollbarTypeOverrideParameters."""
 
     scrollbar_type: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
@@ -173,16 +172,16 @@ class SetTimezoneOverrideParameters:
     """SetTimezoneOverrideParameters."""
 
     timezone: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class SetTouchOverrideParameters:
     """SetTouchOverrideParameters."""
 
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any | None] | None = field(default_factory=list)
+    user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 class Emulation:
@@ -191,7 +190,12 @@ class Emulation:
     def __init__(self, conn) -> None:
         self._conn = conn
 
-    def set_forced_colors_mode_theme_override(self, theme: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_forced_colors_mode_theme_override(
+        self,
+        theme: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute emulation.setForcedColorsModeThemeOverride."""
         params = {
             "theme": theme,
@@ -203,18 +207,12 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_geolocation_override(self, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setGeolocationOverride."""
-        params = {
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setGeolocationOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_locale_override(self, locale: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_locale_override(
+        self,
+        locale: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute emulation.setLocaleOverride."""
         params = {
             "locale": locale,
@@ -226,19 +224,12 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_network_conditions(self, network_conditions: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setNetworkConditions."""
-        params = {
-            "networkConditions": network_conditions,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setNetworkConditions", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_screen_settings_override(self, screen_area: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_screen_settings_override(
+        self,
+        screen_area: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute emulation.setScreenSettingsOverride."""
         params = {
             "screenArea": screen_area,
@@ -250,31 +241,12 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_screen_orientation_override(self, screen_orientation: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setScreenOrientationOverride."""
-        params = {
-            "screenOrientation": screen_orientation,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setScreenOrientationOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_user_agent_override(self, user_agent: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setUserAgentOverride."""
-        params = {
-            "userAgent": user_agent,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setUserAgentOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_viewport_meta_override(self, viewport_meta: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_viewport_meta_override(
+        self,
+        viewport_meta: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute emulation.setViewportMetaOverride."""
         params = {
             "viewportMeta": viewport_meta,
@@ -286,19 +258,12 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_scripting_enabled(self, enabled: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setScriptingEnabled."""
-        params = {
-            "enabled": enabled,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setScriptingEnabled", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_scrollbar_type_override(self, scrollbar_type: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_scrollbar_type_override(
+        self,
+        scrollbar_type: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
         """Execute emulation.setScrollbarTypeOverride."""
         params = {
             "scrollbarType": scrollbar_type,
@@ -310,19 +275,7 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_timezone_override(self, timezone: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setTimezoneOverride."""
-        params = {
-            "timezone": timezone,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setTimezoneOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_touch_override(self, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_touch_override(self, contexts: list[Any] | None = None, user_contexts: list[Any] | None = None):
         """Execute emulation.setTouchOverride."""
         params = {
             "contexts": contexts,
@@ -337,8 +290,8 @@ class Emulation:
         self,
         coordinates=None,
         error=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setGeolocationOverride.
 
@@ -390,8 +343,8 @@ class Emulation:
     def set_timezone_override(
         self,
         timezone=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setTimezoneOverride.
 
@@ -414,8 +367,8 @@ class Emulation:
     def set_scripting_enabled(
         self,
         enabled=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScriptingEnabled.
 
@@ -438,8 +391,8 @@ class Emulation:
     def set_user_agent_override(
         self,
         user_agent=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setUserAgentOverride.
 
@@ -461,8 +414,8 @@ class Emulation:
     def set_screen_orientation_override(
         self,
         screen_orientation=None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScreenOrientationOverride.
 
@@ -498,8 +451,8 @@ class Emulation:
         self,
         network_conditions=None,
         offline: bool | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setNetworkConditions.
 
