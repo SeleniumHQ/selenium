@@ -523,11 +523,9 @@ class BrowsingContextTest extends JupiterTestBase {
   @NeedsFreshDriver
   void canPrintPage() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-
     driver.get(appServer.whereIs("formPage.html"));
-    PrintOptions printOptions = new PrintOptions();
 
-    String printPage = browsingContext.print(printOptions);
+    String printPage = browsingContext.print(new PrintOptions());
 
     assertThat(printPage).isNotEmpty();
     // Comparing expected PDF is a hard problem.
