@@ -118,9 +118,13 @@ public enum Keys implements CharSequence {
 
   // macOS-friendly alias (do NOT introduce new codes)
   OPTION(Keys.ALT),
-  // NOTE: The FN key has been removed because it is not part of the W3C WebDriver
-  // key specification and does not have a standardized Unicode PUA mapping.
-  // Selenium cannot reliably automate the hardware-level Fn key.
+
+  /**
+   * @deprecated The FN key is not part of the W3C WebDriver specification and does not have a
+   *     standardized Unicode mapping. Its behavior is not guaranteed across drivers/platforms.
+   */
+  @Deprecated
+  FN(Keys.RIGHT_CONTROL),
 
   ZENKAKU_HANKAKU('\uE040');
 
