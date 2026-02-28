@@ -721,7 +721,9 @@ class CddlModule:
             code += "# BiDi Event Name to Parameter Type Mapping\n"
             code += "EVENT_NAME_MAPPING = {\n"
             # Collect event keys from extra_events so we skip CDDL duplicates
-            extra_event_keys = {evt["event_key"] for evt in enhancements.get("extra_events", [])}
+            extra_event_keys = {
+                evt["event_key"] for evt in enhancements.get("extra_events", [])
+            }
             for event_def in self.events:
                 # Convert method name to user-friendly event name
                 # e.g., "browsingContext.contextCreated" -> "context_created"
@@ -972,7 +974,9 @@ class _EventManager:
             m = re.search(r"def\s+(\w+)\s*\(", extra_meth)
             if m:
                 extra_method_names.add(m.group(1))
-        exclude_methods = set(enhancements.get("exclude_methods", [])) | extra_method_names
+        exclude_methods = (
+            set(enhancements.get("exclude_methods", [])) | extra_method_names
+        )
         if self.commands:
             for command in self.commands:
                 # Get method-specific enhancements
@@ -1035,7 +1039,9 @@ class _EventManager:
             code += "_globals = globals()\n"
             code += f"{class_name}.EVENT_CONFIGS = {{\n"
             # Collect extra event keys to skip CDDL duplicates
-            extra_event_keys_cfg = {evt["event_key"] for evt in enhancements.get("extra_events", [])}
+            extra_event_keys_cfg = {
+                evt["event_key"] for evt in enhancements.get("extra_events", [])
+            }
             for event_def in self.events:
                 # Convert method name to user-friendly event name
                 method_parts = event_def.method.split(".")
@@ -1051,7 +1057,7 @@ class _EventManager:
                         f'                    _globals.get("{event_def.name}", dict))\n'
                         f'        if _globals.get("{event_def.name}")\n'
                         f'        else EventConfig("{event_name}", "{event_def.method}", dict)\n'
-                        f'    ),\n'
+                        f"    ),\n"
                     )
             # Extra events not in the CDDL spec
             for extra_evt in enhancements.get("extra_events", []):
@@ -1064,7 +1070,7 @@ class _EventManager:
                         f'    "{ek}": EventConfig(\n'
                         f'        "{ek}", "{be}",\n'
                         f'        _globals.get("{ec}", dict),\n'
-                        f'    ),\n'
+                        f"    ),\n"
                     )
                 else:
                     code += single + "\n"
