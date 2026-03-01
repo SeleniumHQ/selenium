@@ -7,6 +7,11 @@ on:
         description: Name of workflow
         required: false
         type: string
+      ref:
+        description: Git ref to checkout (branch, tag, or SHA)
+        required: false
+        type: string
+        default: ''
       run:
         description: Bazel command to run
         required: true
@@ -21,31 +26,11 @@ on:
         required: false
         type: string
         default: ''
-      browser-version:
-        description: One of stable, latest, latest-beta or latest-devedition
-        required: false
-        type: string
-        default: ''
       caching:
         description: Toggle caching of Bazel
         required: false
         type: boolean
         default: true
-      cache-key:
-        description: Bazel disk cache key
-        required: false
-        type: string
-        default: ''
-      dotnet-version:
-        description: Custom DotNet version to install
-        required: false
-        type: string
-        default: ''
-      java-version:
-        description: Custom Java version to install
-        required: false
-        type: string
-        default: ''
       node-version:
         description: Custom Node version to install
         required: false
@@ -61,16 +46,36 @@ on:
         required: false
         type: string
         default: ''
-      nightly-release-files:
-        description: Files to upload to the Nightly release tag
-        required: false
-        type: string
-        default: ''
       artifact-name:
         description: Name of artifact to upload
         required: false
         type: string
-        default: 'ignore-artifacts'
+        default: ''
+      artifact-path:
+        description: Path/glob of files to upload (if empty, uploads git diff as changes.patch)
+        required: false
+        type: string
+        default: ''
+      rerun-with-debug:
+        description: Rerun failing tests with debugging enabled
+        required: false
+        type: boolean
+        default: false
+      gpg-sign:
+        description: Import GPG key for signing (Java releases)
+        required: false
+        type: boolean
+        default: false
+      fetch-depth:
+        description: Number of commits to fetch (0 for full history, empty for auto-detect)
+        required: false
+        type: string
+        default: ''
+      cache-name:
+        description: Name for cache restore (restores {name}.gz with key {name}-)
+        required: false
+        type: string
+        default: ''
 
 jobs:
   bazel:
@@ -81,21 +86,54 @@ jobs:
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SE_AVOID_STATS: true
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
+      - name: Calculate fetch depth
+        id: depth
+        shell: bash
+        env:
+          FETCH_DEPTH: ${{ inputs.fetch-depth }}
+          PR_COMMITS: ${{ github.event.pull_request.commits }}
+        run: |
+          # Use explicit value if provided
+          if [ -n "$FETCH_DEPTH" ]; then
+            echo "val=$FETCH_DEPTH" >> "$GITHUB_OUTPUT"
+          # For PRs, use commit count plus buffer for merge base
+          elif [ -n "$PR_COMMITS" ]; then
+            echo "val=$((PR_COMMITS + 2))" >> "$GITHUB_OUTPUT"
+          # For push events, read commit count from event payload
+          else
+            COMMIT_COUNT=$(jq -e '.commits | length // 0' "$GITHUB_EVENT_PATH" 2>/dev/null) || COMMIT_COUNT=0
+            echo "val=$((COMMIT_COUNT + 1))" >> "$GITHUB_OUTPUT"
+          fi
       - name: Checkout source tree
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: ${{ steps.depth.outputs.val }}
+          fetch-tags: ${{ inputs.fetch-depth != '' }}
+      - name: Fetch base ref for PR comparison
+        if: github.event.pull_request.base.sha
+        run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
-        run: git pull origin ${{ github.head_ref }}
+        run: git pull origin "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
-        run: git pull origin ${{ github.ref }}
-      - name: Free space
-        if: inputs.os != 'windows'
-        run: ./scripts/github-actions/free-disk-space.sh
+        run: git pull origin "$GIT_REF"
+        env:
+          GIT_REF: ${{ github.ref }}
+      - name: Restore cache
+        if: inputs.cache-name != ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ inputs.cache-name }}
+          key: ${{ inputs.cache-name }}-
+          restore-keys: ${{ inputs.cache-name }}-
       - name: Remove driver directories Windows
         if: inputs.os == 'windows'
         run: |
@@ -112,17 +150,6 @@ jobs:
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
-      - name: Setup DotNet
-        if: inputs.dotnet-version != ''
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
-      - name: Setup Java
-        if: inputs.java-version != ''
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ inputs.java-version }}
-          distribution: 'temurin'
       - name: Setup Node
         if: inputs.node-version != ''
         uses: actions/setup-node@v4
@@ -130,24 +157,47 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: ${{ github.ref_name == 'trunk' }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           cache-version: 2
-          disk-cache: ${{ inputs.cache-key }}
+          disk-cache: false
           external-cache: |
-            name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
+              "+pin_browsers_extension+linux_beta_chrome": false
+              "+pin_browsers_extension+linux_beta_chromedriver": true
+              "+pin_browsers_extension+linux_beta_firefox": false
+              "+pin_browsers_extension+linux_chrome": false
+              "+pin_browsers_extension+linux_chromedriver": true
+              "+pin_browsers_extension+linux_edge": false
+              "+pin_browsers_extension+linux_edgedriver": true
+              "+pin_browsers_extension+linux_firefox": false
+              "+pin_browsers_extension+linux_geckodriver": true
+              "+pin_browsers_extension+mac_beta_chrome": false
+              "+pin_browsers_extension+mac_beta_chromedriver": false
+              "+pin_browsers_extension+mac_beta_firefox": false
+              "+pin_browsers_extension+mac_chrome": false
+              "+pin_browsers_extension+mac_chromedriver": false
+              "+pin_browsers_extension+mac_edge": false
+              "+pin_browsers_extension+mac_edgedriver": false
+              "+pin_browsers_extension+mac_firefox": false
+              "+pin_browsers_extension+mac_geckodriver": false
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+          repository-cache: true
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
@@ -162,33 +212,66 @@ jobs:
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Disable 8dot3 short names
+        if: inputs.os == 'windows'
+        run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Import GPG key
+        if: inputs.gpg-sign
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Run Bazel
-        run: ${{ inputs.run }}
+        shell: bash
+        env:
+          MSYS_NO_PATHCONV: 1
+          MSYS2_ARG_CONV_EXCL: "*"
+        run: |
+          mkdir -p build
+          {
+            ${{ inputs.run }}
+          } 2>&1 | tee build/bazel-console.log
+      - name: Rerun failures with debug
+        if: failure()
+        shell: bash
+        run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
+      - name: Collect failed test logs
+        if: failure()
+        shell: bash
+        run: ./scripts/github-actions/collect-test-logs.sh
+      - name: Upload failed test logs
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          retention-days: 7
+          path: build/failures/**
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: false
-      - name: Release Nightly
-        if: inputs.nightly-release-files != ''
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "nightly"
-          title: "Nightly"
-          prerelease: true
-          files: ${{ inputs.nightly-release-files }}
-      - name: Save changes
-        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
-        run: |
-          git diff > changes.patch
-      - name: "Upload changes"
-        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
-        uses: actions/upload-artifact@v4
+      - name: Save git diff
+        if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
+        run: git add -A && git diff --binary --staged > changes.patch
+      - name: Upload artifact
+        if: always() && inputs.artifact-name != ''
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.artifact-name }}
-          path: changes.patch
+          path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
+          if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'warn' }}
+      - name: Check disk space
+        if: always()
+        shell: bash
+        run: |
+          avail=$(df -k "$GITHUB_WORKSPACE" | awk 'NR==2 {printf "%.0f", $4/1024/1024}')
+          echo "Remaining disk space: ${avail}GB"
+          if [ "$avail" -lt 5 ]; then
+            echo "::error::Low disk space: ${avail}GB remaining"
+            exit 1
+          fi

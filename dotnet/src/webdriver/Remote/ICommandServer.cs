@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Remote;
 
 /// <summary>
 /// Provides a way to start a server that understands remote commands
 /// </summary>
+[Obsolete("This interface is no longer supported and will be removed in a future release (4.43).")]
 public interface ICommandServer : IDisposable
 {
     /// <summary>

@@ -17,27 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Script;
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class RealmConverter : JsonConverter<Realm>
+internal class RealmConverter(IBiDi bidi) : JsonConverter<Realm>
 {
-    private readonly BiDi _bidi;
-
-    public RealmConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Realm? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Realm(_bidi, id!);
+        return new Realm(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Realm value, JsonSerializerOptions options)

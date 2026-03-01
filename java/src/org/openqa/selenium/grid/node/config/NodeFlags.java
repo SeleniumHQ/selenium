@@ -26,6 +26,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_BI
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_CDP;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_DOWN_FAILURE_THRESHOLD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PORT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
@@ -290,6 +291,16 @@ public class NodeFlags implements HasRoles {
               + "all files that were downloaded for a given session are stored in.")
   @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
   public Boolean managedDownloadsEnabled;
+
+  @Parameter(
+      names = {"--node-down-failure-threshold"},
+      description =
+          "Maximum number of consecutive session creation failures before the Node is marked "
+              + "as DOWN. This helps detect and isolate unhealthy Nodes that consistently fail "
+              + "to create sessions. A value of 0 (default) disables this feature, allowing "
+              + "unlimited retries. A value higher than zero enables this feature.")
+  @ConfigValue(section = NODE_SECTION, name = "node-down-failure-threshold", example = "3")
+  public int nodeDownFailureThreshold = DEFAULT_NODE_DOWN_FAILURE_THRESHOLD;
 
   @Override
   public Set<Role> getRoles() {

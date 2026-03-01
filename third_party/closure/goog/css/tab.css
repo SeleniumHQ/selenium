@@ -5,13 +5,12 @@
  * See the COPYING file for details.
  */
 
-/* Author: attila@google.com (Attila Bodis) */
-/* Author: eae@google.com (Emil A. Eklund) */
-
-
-/*
+/**
  * Styles used by goog.ui.TabRenderer.
  */
+
+@provide 'goog.css.tab';
+
 .goog-tab {
   position: relative;
   padding: 4px 8px;

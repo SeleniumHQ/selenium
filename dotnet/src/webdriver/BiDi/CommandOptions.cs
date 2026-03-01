@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class CommandOptions
+public abstract record CommandOptions
 {
-    public TimeSpan? Timeout { get; set; }
+    public TimeSpan? Timeout { get; init; }
 }

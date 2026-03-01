@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +41,7 @@ public class CreateSessionRequest {
     this.downstreamDialects =
         unmodifiableSet(new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
     this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
-    this.metadata = unmodifiableMap(new HashMap<>(Require.nonNull("Metadata", metadata)));
+    this.metadata = Map.copyOf(Require.nonNull("Metadata", metadata));
   }
 
   public Set<Dialect> getDownstreamDialects() {

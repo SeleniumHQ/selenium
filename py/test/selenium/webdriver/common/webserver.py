@@ -25,19 +25,11 @@ import logging
 import os
 import re
 import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
+from urllib import request as urllib_request
 
 import filetype
-
-try:
-    from urllib import request as urllib_request
-except ImportError:
-    import urllib as urllib_request
-try:
-    from http.server import BaseHTTPRequestHandler, HTTPServer
-    from socketserver import ThreadingMixIn
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-    from SocketServer import ThreadingMixIn
 
 
 def updir():
@@ -47,18 +39,16 @@ def updir():
 
 LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
-HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
-if not os.path.isdir(HTML_ROOT):
-    message = (
-        "Can't find 'common_web' directory, try setting WEBDRIVER"
-        " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT
-    )
-    LOGGER.error(message)
-    assert 0, message
-
 DEFAULT_HOST = "localhost"
 DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
+HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
+
+if not os.path.isdir(HTML_ROOT):
+    raise Exception(
+        "Can't find 'common_web' directory, try setting WEBDRIVER environment variable.\n"
+        f"WEBDRIVER: {WEBDRIVER}\nHTML_ROOT: {HTML_ROOT}"
+    )
 
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):

@@ -18,13 +18,16 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class CommandPayload {
 
   private final String name;
-  private final Map<String, ?> parameters;
+  private final Map<String, ? extends @Nullable Object> parameters;
 
-  public CommandPayload(String name, Map<String, ?> parameters) {
+  public CommandPayload(String name, Map<String, ? extends @Nullable Object> parameters) {
     this.name = name;
     this.parameters = parameters;
   }
@@ -33,7 +36,7 @@ public class CommandPayload {
     return name;
   }
 
-  public Map<String, ?> getParameters() {
+  public Map<String, ? extends @Nullable Object> getParameters() {
     return parameters;
   }
 }

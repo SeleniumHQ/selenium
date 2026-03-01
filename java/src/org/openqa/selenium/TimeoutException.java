@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.Nullable;
+
 /** Thrown when a command does not complete in enough time. */
 public class TimeoutException extends WebDriverException {
 
@@ -30,7 +32,7 @@ public class TimeoutException extends WebDriverException {
     super(cause);
   }
 
-  public TimeoutException(String message, Throwable cause) {
+  public TimeoutException(String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

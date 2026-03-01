@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.service;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -174,7 +173,7 @@ public class DriverFinder {
    */
   private static String getBrowserBinary(Capabilities options) {
     List<String> vendorOptionsCapabilities =
-        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+        List.of("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
     for (String vendorOptionsCapability : vendorOptionsCapabilities) {
       if (options.asMap().containsKey(vendorOptionsCapability)) {
         try {

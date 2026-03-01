@@ -24,6 +24,10 @@ require_relative 'cookies'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedResponse < InterceptedItem
         attr_accessor :reason, :status
         attr_reader :body

@@ -5,9 +5,9 @@
  * See the COPYING file for details.
  */
 
-/* Author: pallosp@google.com (Peter Pallos) */
-
 /* Sample 3-state checkbox styles. */
+
+@provide 'goog.css.checkbox';
 
 .goog-checkbox {
   border: 1px solid #1C5180;

@@ -19,16 +19,21 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-BaseParameters">BiDi spec</a>
+ */
 public class BaseParameters {
 
-  private final String browsingContextId;
+  @Nullable private final String browsingContextId;
 
   private final boolean isBlocked;
 
-  private final String navigationId;
+  @Nullable private final String navigationId;
 
   private final long redirectCount;
 
@@ -39,9 +44,9 @@ public class BaseParameters {
   private final List<String> intercepts;
 
   BaseParameters(
-      String browsingContextId,
+      @Nullable String browsingContextId,
       boolean isBlocked,
-      String navigation,
+      @Nullable String navigation,
       long redirectCount,
       RequestData request,
       long timestamp,
@@ -49,25 +54,19 @@ public class BaseParameters {
     this.browsingContextId = browsingContextId;
     this.isBlocked = isBlocked;
     this.navigationId = navigation;
-    this.redirectCount = redirectCount;
+    this.redirectCount = Require.nonNegative("Redirect count", redirectCount);
     this.request = request;
-    this.timestamp = timestamp;
+    this.timestamp = Require.nonNegative("Timestamp", timestamp);
     this.intercepts = intercepts;
   }
 
   public static BaseParameters fromJson(JsonInput input) {
     String browsingContextId = null;
-
-    boolean isBlocked = false;
-
+    Boolean isBlocked = null;
     String navigationId = null;
-
-    long redirectCount = 0;
-
+    Long redirectCount = null;
     RequestData request = null;
-
-    long timestamp = 0;
-
+    Long timestamp = null;
     List<String> intercepts = new ArrayList<>();
 
     input.beginObject();
@@ -102,9 +101,16 @@ public class BaseParameters {
     input.endObject();
 
     return new BaseParameters(
-        browsingContextId, isBlocked, navigationId, redirectCount, request, timestamp, intercepts);
+        browsingContextId,
+        Require.nonNull("isBlocked", isBlocked),
+        navigationId,
+        Require.nonNull("Redirect count", redirectCount),
+        Require.nonNull("request", request),
+        Require.nonNull("timestamp", timestamp),
+        Require.nonNull("intercepts", intercepts));
   }
 
+  @Nullable
   public String getBrowsingContextId() {
     return browsingContextId;
   }
@@ -113,6 +119,7 @@ public class BaseParameters {
     return isBlocked;
   }
 
+  @Nullable
   public String getNavigationId() {
     return navigationId;
   }

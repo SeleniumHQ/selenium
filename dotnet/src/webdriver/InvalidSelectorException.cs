@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium;
 
 /// <summary>
@@ -30,7 +28,7 @@ public class InvalidSelectorException : WebDriverException
     /// <summary>
     /// Link to the documentation for this error
     /// </summary>
-    private static string supportUrl = baseSupportUrl + "#invalidselectorexception";
+    private static readonly string supportUrl = baseSupportUrl + "#invalidselectorexception";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class.

@@ -468,7 +468,7 @@ public class Actions {
         throw new IllegalStateException(
             String.format(
                 "You may only add one action per input source per tick: %s",
-                Arrays.asList(actions)));
+                Arrays.toString(actions)));
       }
     }
 

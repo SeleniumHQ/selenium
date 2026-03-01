@@ -25,9 +25,7 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetector {
 
   private final int firstEphemeralPort;

@@ -17,27 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.WebExtension;
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class WebExtensionConverter : JsonConverter<Extension>
+internal class WebExtensionConverter(IBiDi bidi) : JsonConverter<Extension>
 {
-    private readonly BiDi _bidi;
-
-    public WebExtensionConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Extension? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Extension(_bidi, id!);
+        return new Extension(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Extension value, JsonSerializerOptions options)

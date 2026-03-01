@@ -348,12 +348,15 @@ def test_set_viewport(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(context=context_id, viewport={"width": 250, "height": 300})
+    try:
+        driver.browsing_context.set_viewport(context=context_id, viewport={"width": 251, "height": 301})
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 251
+        assert viewport_size[1] == 301
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_set_viewport_with_device_pixel_ratio(driver, pages):
@@ -361,18 +364,70 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(
-        context=context_id, viewport={"width": 250, "height": 300}, device_pixel_ratio=5
-    )
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 252, "height": 302}, device_pixel_ratio=5
+        )
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 252
+        assert viewport_size[1] == 302
 
-    device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
-    assert device_pixel_ratio == 5
+        assert device_pixel_ratio == 5
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
+    """Test setting the viewport with no args doesn't change viewport or device pixel ratio."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 253, "height": 303}, device_pixel_ratio=6
+        )
+
+        driver.browsing_context.set_viewport(context=context_id)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+
+        assert viewport_size[0] == 253
+        assert viewport_size[1] == 303
+
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        assert device_pixel_ratio == 6
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+def test_set_viewport_back_to_default(driver, pages):
+    """Test resetting the viewport and device pixel ratio to defaults."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    default_viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+    default_device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 254, "height": 304}, device_pixel_ratio=10
+        )
+
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        assert viewport_size[0] == default_viewport_size[0]
+        assert viewport_size[1] == default_viewport_size[1]
+        assert device_pixel_ratio == default_device_pixel_ratio
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_print_page(driver, pages):

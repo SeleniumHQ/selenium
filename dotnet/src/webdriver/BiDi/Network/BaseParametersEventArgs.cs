@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using System;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
-public abstract record BaseParametersEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, IReadOnlyList<Intercept>? Intercepts)
-    : BrowsingContextEventArgs(BiDi, Context);
+public abstract record BaseParametersEventArgs(BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, IReadOnlyList<Intercept>? Intercepts)
+    : EventArgs;

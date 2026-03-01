@@ -144,4 +144,9 @@ public class Session implements Serializable {
   public int hashCode() {
     return Objects.hash(id, uri);
   }
+
+  @Override
+  public String toString() {
+    return String.format("Session(id:%s, url:%s, started at: %s)", id, uri, getStartTime());
+  }
 }

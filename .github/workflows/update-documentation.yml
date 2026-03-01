@@ -3,111 +3,113 @@ name: Update Documentation
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: Release version (e.g., 4.21.0)
+      tag:
+        description: 'Release tag (e.g., selenium-4.29.0 or selenium-4.28.1-ruby)'
         required: true
         type: string
       language:
-        description: language documentation
-        required: true
+        description: 'Language (overrides tag suffix if provided)'
+        required: false
         type: choice
         default: "all"
         options:
-          - java
-          - rb
-          - py
-          - dotnet
-          - node
           - all
-      force:
-        description: Force generation even if version is nightly, type "force" to enable
-        required: false
-        type: string
-        default: ""
+          - java
+          - ruby
+          - python
+          - dotnet
+          - javascript
 
   workflow_call:
     inputs:
-      version:
-        required: true
-        type: string
-      sha:
+      tag:
         required: true
         type: string
       language:
-        required: false
         type: string
-        default: "all"
+        default: ""
+      skip:
+        description: We're not releasing this one right now
+        type: boolean
+        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
 
 permissions:
   contents: write
-  pull-requests: write
 
 env:
   GITHUB_TOKEN: ${{ github.token }}
 
 jobs:
-  build-docs:
+  parse:
+    name: Parse Tag
+    if: ${{ !inputs.skip }}
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      language: ${{ steps.parse.outputs.language }}
+    steps:
+      - name: Parse tag
+        id: parse
+        env:
+          TAG: ${{ inputs.tag }}
+          INPUT_LANG: ${{ inputs.language }}
+        run: |
+          echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
+
+          # Extract language from tag suffix or use input
+          if [ -n "$INPUT_LANG" ] && [ "$INPUT_LANG" != "all" ]; then
+            LANG="$INPUT_LANG"
+          elif [[ "$TAG" =~ -(javascript|python|ruby|java|dotnet)$ ]]; then
+            LANG="${BASH_REMATCH[1]}"
+          else
+            LANG="all"
+          fi
+          echo "language=$LANG" >> "$GITHUB_OUTPUT"
+
+  generate-docs:
+    name: Generate Documentation
+    needs: parse
+    if: ${{ !inputs.skip }}
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Generate Docs
+      ref: ${{ inputs.tag }}
+      run: ./go ${{ needs.parse.outputs.language }}:docs
+      artifact-name: documentation
+      artifact-path: build/docs/api/**/*
+
+  commit-docs:
+    name: Commit Documentation
+    needs: [parse, generate-docs]
+    if: ${{ !inputs.skip }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || inputs.sha }}
-      - name: Fetch gh-pages branch
-        run: git fetch origin gh-pages
+          ref: gh-pages
+          token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
+      - name: Download documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: documentation
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Setup curl for Ubuntu
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Setup Java
-        if: ${{ inputs.language == 'java' || inputs.language == 'all' }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'temurin'
-      - name: Set up Python 3.10
-        if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
+      - name: Commit documentation
         run: |
-          python -m pip install --upgrade pip
-          pip install tox
-      - name: Install npm dependencies
-        if: ${{ inputs.language == 'node' || inputs.language == 'all' }}
-        run: |
-          npm install
-          npm install --prefix javascript/selenium-webdriver
-      - name: Generate Documentation for selected langauges
-        run: ./go ${{ inputs.language }}:docs ${{ inputs.force }}
-      - name: Documentation Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
-          delete-branch: true
-          branch: api-docs-${{ inputs.version }}
-          base: gh-pages
-          add-paths: docs/api/**
-          title: Update documentation for Selenium ${{ inputs.version }}-${{ inputs.language }}
-          body: |
-            This PR updates the API documentation for version **${{ inputs.version }}-${{ inputs.language }}**.
-
-            - Auto-generated by [workflow run #${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          labels: B-docs
-          draft: false
-      - name: Enable Pull Request Auto-merge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+          git add docs/api/
+          if git diff --staged --quiet; then
+            echo "No documentation changes to commit"
+          else
+            git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
+            for _ in 1 2; do
+              git pull --rebase origin gh-pages && git push origin gh-pages && exit 0
+              sleep 2
+            done
+            exit 1
+          fi

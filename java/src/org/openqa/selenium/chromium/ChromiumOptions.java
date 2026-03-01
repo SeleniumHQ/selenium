@@ -24,8 +24,17 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.internal.Require;
@@ -98,7 +107,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addArguments(List)
    */
   public T addArguments(String... arguments) {
-    addArguments(Arrays.asList(arguments));
+    addArguments(List.of(arguments));
     return (T) this;
   }
 
@@ -126,7 +135,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addExtensions(List)
    */
   public T addExtensions(File... paths) {
-    addExtensions(Arrays.asList(paths));
+    addExtensions(List.of(paths));
     return (T) this;
   }
 
@@ -147,7 +156,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addEncodedExtensions(List)
    */
   public T addEncodedExtensions(String... encoded) {
-    addEncodedExtensions(Arrays.asList(encoded));
+    addEncodedExtensions(List.of(encoded));
     return (T) this;
   }
 
@@ -225,6 +234,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   }
 
   @Override
+  @Nullable
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
     if (!this.capabilityName.equals(capabilityName)) {

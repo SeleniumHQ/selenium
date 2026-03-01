@@ -42,7 +42,7 @@ public enum ChromiumDriverLogLevel
     /// <summary>
     /// Represents the Warning value
     /// </summary>
-    Warning ,
+    Warning,
 
     /// <summary>
     /// Represents the Severe value

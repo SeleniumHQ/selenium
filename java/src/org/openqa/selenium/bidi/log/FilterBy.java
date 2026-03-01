@@ -16,12 +16,14 @@
 // under the License.
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.internal.Require;
+
 public class FilterBy {
 
   private final LogLevel level;
 
   private FilterBy(LogLevel logLevel) {
-    this.level = logLevel;
+    this.level = Require.nonNull("Log level", logLevel);
   }
 
   public static FilterBy logLevel(LogLevel logLevel) {
@@ -30,5 +32,9 @@ public class FilterBy {
 
   public LogLevel getLevel() {
     return level;
+  }
+
+  public boolean matches(BaseLogEntry entry) {
+    return entry.getLevel() == level;
   }
 }

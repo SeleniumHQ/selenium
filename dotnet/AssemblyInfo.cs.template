@@ -1,11 +1,8 @@
-using System;
-using System.Reflection;
-
-[assembly: System.Reflection.AssemblyCompanyAttribute("{ASSEMBLY_COMPANY}")]
-[assembly: System.Reflection.AssemblyCopyrightAttribute("{ASSEMBLY_COPYRIGHT}")]
-[assembly: System.Reflection.AssemblyDescriptionAttribute("{ASSEMBLY_DESCRIPTION}")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("{ASSEMBLY_VERSION}")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("{ASSEMBLY_INFORMATIONAL_VERSION}")]
-[assembly: System.Reflection.AssemblyProductAttribute("{ASSEMBLY_PRODUCT}")]
-[assembly: System.Reflection.AssemblyTitleAttribute("{ASSEMBLY_TITLE}")]
-[assembly: System.Reflection.AssemblyVersionAttribute("{ASSEMBLY_VERSION}")]
+[assembly: global::System.Reflection.AssemblyCompanyAttribute("{ASSEMBLY_COMPANY}")]
+[assembly: global::System.Reflection.AssemblyCopyrightAttribute("{ASSEMBLY_COPYRIGHT}")]
+[assembly: global::System.Reflection.AssemblyDescriptionAttribute("{ASSEMBLY_DESCRIPTION}")]
+[assembly: global::System.Reflection.AssemblyFileVersionAttribute("{ASSEMBLY_VERSION}")]
+[assembly: global::System.Reflection.AssemblyInformationalVersionAttribute("{ASSEMBLY_INFORMATIONAL_VERSION}")]
+[assembly: global::System.Reflection.AssemblyProductAttribute("{ASSEMBLY_PRODUCT}")]
+[assembly: global::System.Reflection.AssemblyTitleAttribute("{ASSEMBLY_TITLE}")]
+[assembly: global::System.Reflection.AssemblyVersionAttribute("{ASSEMBLY_VERSION}")]

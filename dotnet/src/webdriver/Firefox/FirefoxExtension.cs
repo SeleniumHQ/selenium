@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Xml;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 

@@ -21,7 +21,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-/** LocalLogs instance that extracts entries from a logging handler. */
+/**
+ * LocalLogs instance that extracts entries from a logging handler.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 class HandlerBasedLocalLogs extends LocalLogs {
   private final LoggingHandler loggingHandler;
   private final Set<String> logTypesToInclude;

@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -156,11 +155,7 @@ class ProtocolHandshakeTest {
             .orElse(singletonList(EMPTY_MAP));
 
     List<Map<String, Object>> allCaps =
-        firsts.stream()
-            .map(
-                first ->
-                    ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
-            .collect(toList());
+        firsts.stream().map(first -> Map.copyOf(always)).collect(toList());
 
     assertThat(allCaps).isNotEmpty();
 

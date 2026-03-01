@@ -104,6 +104,12 @@ module Selenium
       def env_path
         ENV.fetch(self.class::DRIVER_PATH_ENV_KEY, nil)
       end
+
+      private
+
+      def warn_driver_log_override
+        WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver logging settings', id: :se_debug)
+      end
     end # Service
   end # WebDriver
 end # Selenium

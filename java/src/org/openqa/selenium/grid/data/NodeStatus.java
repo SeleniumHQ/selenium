@@ -248,4 +248,10 @@ public class NodeStatus {
 
     return unmodifiableMap(toReturn);
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "NodeStatus(availability: %s, slots:%s, uri:%s)", availability, slots.size(), externalUri);
+  }
 }

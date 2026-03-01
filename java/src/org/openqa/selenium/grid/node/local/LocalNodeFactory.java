@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.Collections.unmodifiableList;
+
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,11 +26,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Logger;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeSessionFactoryProvider;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
@@ -44,6 +47,8 @@ import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 public class LocalNodeFactory {
+
+  private static final Logger LOG = Logger.getLogger(LocalNodeFactory.class.getName());
 
   public static Node create(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
@@ -71,7 +76,8 @@ public class LocalNodeFactory {
             .enableBiDi(nodeOptions.isBiDiEnabled())
             .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
             .heartbeatPeriod(nodeOptions.getHeartbeatPeriod())
-            .connectionLimitPerSession(nodeOptions.getConnectionLimitPerSession());
+            .connectionLimitPerSession(nodeOptions.getConnectionLimitPerSession())
+            .nodeDownFailureThreshold(nodeOptions.getNodeDownFailureThreshold());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
@@ -94,6 +100,25 @@ public class LocalNodeFactory {
           .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
+    ServiceLoader.load(NodeSessionFactoryProvider.class)
+        .forEach(
+            provider -> {
+              String providerName = provider.getClass().getName();
+              if (provider.isEnabled(config)) {
+                LOG.info(String.format("Loading session factories from %s", providerName));
+                provider
+                    .loadFactories(config, tracer, clientFactory)
+                    .forEach(
+                        (caps, factories) ->
+                            factories.forEach(factory -> builder.add(caps, factory)));
+              } else {
+                LOG.fine(
+                    String.format(
+                        "Extension %s is on the classpath but not enabled by configuration",
+                        providerName));
+              }
+            });
+
     if (config.getAll("relay", "configs").isPresent()) {
       new RelayOptions(config)
           .getSessionFactories(tracer, clientFactory, sessionTimeout)
@@ -110,7 +135,7 @@ public class LocalNodeFactory {
       List<DriverService.Builder<?, ?>> builders,
       ImmutableCapabilities stereotype,
       SlotMatcher slotMatcher) {
-    ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
+    List<SessionFactory> toReturn = new ArrayList<>();
     String webDriverExecutablePath =
         String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
 
@@ -146,6 +171,6 @@ public class LocalNodeFactory {
                       driverServiceBuilder));
             });
 
-    return toReturn.build();
+    return unmodifiableList(toReturn);
   }
 }

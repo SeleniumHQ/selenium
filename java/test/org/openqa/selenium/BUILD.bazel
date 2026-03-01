@@ -8,6 +8,7 @@ SMALL_TESTS = [
     "CookieTest.java",
     "DimensionTest.java",
     "CapabilitiesTest.java",
+    "DownloadedFileTest.java",
     "KeysTest.java",
     "OutputTypeTest.java",
     "PersistentCapabilitiesTest.java",

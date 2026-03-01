@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Defines a 2-element vector class that can be used for
@@ -19,14 +11,14 @@
  * Vec2 objects inherit from goog.math.Coordinate and may be used wherever a
  * Coordinate is required. Where appropriate, Vec2 functions accept both Vec2
  * and Coordinate objects as input.
- *
- * @author brenneman@google.com (Shawn Brenneman)
  */
 
 goog.provide('goog.math.Vec2');
 
 goog.require('goog.math');
 goog.require('goog.math.Coordinate');
+
+goog.require('goog.utils');
 
 
 
@@ -41,6 +33,7 @@ goog.require('goog.math.Coordinate');
  * @extends {goog.math.Coordinate}
  */
 goog.math.Vec2 = function(x, y) {
+  'use strict';
   /**
    * X-value
    * @type {number}
@@ -53,13 +46,14 @@ goog.math.Vec2 = function(x, y) {
    */
   this.y = y;
 };
-goog.inherits(goog.math.Vec2, goog.math.Coordinate);
+goog.utils.inherits(goog.math.Vec2, goog.math.Coordinate);
 
 
 /**
  * @return {!goog.math.Vec2} A random unit-length vector.
  */
 goog.math.Vec2.randomUnit = function() {
+  'use strict';
   var angle = Math.random() * Math.PI * 2;
   return new goog.math.Vec2(Math.cos(angle), Math.sin(angle));
 };
@@ -69,6 +63,7 @@ goog.math.Vec2.randomUnit = function() {
  * @return {!goog.math.Vec2} A random vector inside the unit-disc.
  */
 goog.math.Vec2.random = function() {
+  'use strict';
   var mag = Math.sqrt(Math.random());
   var angle = Math.random() * Math.PI * 2;
 
@@ -82,6 +77,7 @@ goog.math.Vec2.random = function() {
  * @return {!goog.math.Vec2} A new vector object.
  */
 goog.math.Vec2.fromCoordinate = function(a) {
+  'use strict';
   return new goog.math.Vec2(a.x, a.y);
 };
 
@@ -91,6 +87,7 @@ goog.math.Vec2.fromCoordinate = function(a) {
  * @override
  */
 goog.math.Vec2.prototype.clone = function() {
+  'use strict';
   return new goog.math.Vec2(this.x, this.y);
 };
 
@@ -100,7 +97,8 @@ goog.math.Vec2.prototype.clone = function() {
  * @return {number} The length of the vector.
  */
 goog.math.Vec2.prototype.magnitude = function() {
-  return Math.sqrt(this.x * this.x + this.y * this.y);
+  'use strict';
+  return Math.hypot(this.x, this.y);
 };
 
 
@@ -111,14 +109,19 @@ goog.math.Vec2.prototype.magnitude = function() {
  * @return {number} The length of the vector, squared.
  */
 goog.math.Vec2.prototype.squaredMagnitude = function() {
+  'use strict';
   return this.x * this.x + this.y * this.y;
 };
 
 
 /**
- * @return {!goog.math.Vec2} This coordinate after scaling.
+ * @param {number} sx The scale factor to use for the x dimension.
+ * @param {number=} opt_sy The scale factor to use for the y dimension.
+ * @return {!goog.math.Vec2} This vector after scaling.
  * @override
  */
+// Since the implementation of Coordinate.scale() returns "this", we
+// can reuse that implementation here, and just recast the return type.
 goog.math.Vec2.prototype.scale =
     /** @type {function(number, number=):!goog.math.Vec2} */
     (goog.math.Coordinate.prototype.scale);
@@ -129,6 +132,7 @@ goog.math.Vec2.prototype.scale =
  * @return {!goog.math.Vec2} The inverted vector.
  */
 goog.math.Vec2.prototype.invert = function() {
+  'use strict';
   this.x = -this.x;
   this.y = -this.y;
   return this;
@@ -140,6 +144,7 @@ goog.math.Vec2.prototype.invert = function() {
  * @return {!goog.math.Vec2} The normalized vector.
  */
 goog.math.Vec2.prototype.normalize = function() {
+  'use strict';
   return this.scale(1 / this.magnitude());
 };
 
@@ -147,9 +152,10 @@ goog.math.Vec2.prototype.normalize = function() {
 /**
  * Adds another vector to this vector in-place.
  * @param {!goog.math.Coordinate} b The vector to add.
- * @return {!goog.math.Vec2}  This vector with {@code b} added.
+ * @return {!goog.math.Vec2}  This vector with `b` added.
  */
 goog.math.Vec2.prototype.add = function(b) {
+  'use strict';
   this.x += b.x;
   this.y += b.y;
   return this;
@@ -159,9 +165,10 @@ goog.math.Vec2.prototype.add = function(b) {
 /**
  * Subtracts another vector from this vector in-place.
  * @param {!goog.math.Coordinate} b The vector to subtract.
- * @return {!goog.math.Vec2} This vector with {@code b} subtracted.
+ * @return {!goog.math.Vec2} This vector with `b` subtracted.
  */
 goog.math.Vec2.prototype.subtract = function(b) {
+  'use strict';
   this.x -= b.x;
   this.y -= b.y;
   return this;
@@ -171,9 +178,10 @@ goog.math.Vec2.prototype.subtract = function(b) {
 /**
  * Rotates this vector in-place by a given angle, specified in radians.
  * @param {number} angle The angle, in radians.
- * @return {!goog.math.Vec2} This vector rotated {@code angle} radians.
+ * @return {!goog.math.Vec2} This vector rotated `angle` radians.
  */
 goog.math.Vec2.prototype.rotate = function(angle) {
+  'use strict';
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
   var newX = this.x * cos - this.y * sin;
@@ -194,6 +202,7 @@ goog.math.Vec2.prototype.rotate = function(angle) {
  * @return {!goog.math.Vec2} The rotated vector in a newly created instance.
  */
 goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
+  'use strict';
   var res = v.clone();
   return res.subtract(axisPoint).rotate(angle).add(axisPoint);
 };
@@ -201,7 +210,8 @@ goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
 
 /** @override */
 goog.math.Vec2.prototype.equals = function(b) {
-  if (this == b) {
+  'use strict';
+  if (this === b) {
     return true;
   }
   return b instanceof goog.math.Vec2 && !!b && this.x == b.x && this.y == b.y;
@@ -242,6 +252,7 @@ goog.math.Vec2.equals = goog.math.Coordinate.equals;
  * @return {!goog.math.Vec2} The sum vector.
  */
 goog.math.Vec2.sum = function(a, b) {
+  'use strict';
   return new goog.math.Vec2(a.x + b.x, a.y + b.y);
 };
 
@@ -253,6 +264,7 @@ goog.math.Vec2.sum = function(a, b) {
  * @return {!goog.math.Vec2} The difference vector.
  */
 goog.math.Vec2.difference = function(a, b) {
+  'use strict';
   return new goog.math.Vec2(a.x - b.x, a.y - b.y);
 };
 
@@ -264,6 +276,7 @@ goog.math.Vec2.difference = function(a, b) {
  * @return {number} The dot-product of the two vectors.
  */
 goog.math.Vec2.dot = function(a, b) {
+  'use strict';
   return a.x * b.x + a.y * b.y;
 };
 
@@ -275,6 +288,7 @@ goog.math.Vec2.dot = function(a, b) {
  * @return {number} The determinant of the two vectors.
  */
 goog.math.Vec2.determinant = function(a, b) {
+  'use strict';
   return a.x * b.y - a.y * b.x;
 };
 
@@ -288,6 +302,21 @@ goog.math.Vec2.determinant = function(a, b) {
  * @return {!goog.math.Vec2} The interpolated vector.
  */
 goog.math.Vec2.lerp = function(a, b, x) {
+  'use strict';
   return new goog.math.Vec2(
       goog.math.lerp(a.x, b.x, x), goog.math.lerp(a.y, b.y, x));
+};
+
+
+/**
+ * Returns a new Vec2 that is a copy of the vector a, but rescaled by a factors
+ * sx and sy in the x and y directions. If only sx is specified, then y is
+ * scaled by the same factor as x.
+ * @param {!goog.math.Coordinate} a Vector a.
+ * @param {number} sx X scale factor.
+ * @param {number=} sy Y scale factor (optional).
+ * @return {!goog.math.Vec2} A new rescaled vector.
+ */
+goog.math.Vec2.rescaled = function(a, sx, sy = sx) {
+  return new goog.math.Vec2(a.x * sx, a.y * sy);
 };

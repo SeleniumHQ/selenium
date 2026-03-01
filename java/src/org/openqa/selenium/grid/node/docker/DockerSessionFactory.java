@@ -34,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +51,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
@@ -187,6 +187,7 @@ public class DockerSessionFactory implements SessionFactory {
       URL remoteAddress = getUrl(port, containerIp);
       ClientConfig clientConfig =
           ClientConfig.defaultConfig().baseUrl(remoteAddress).readTimeout(sessionTimeout);
+      clientConfig = applyBasicAuth(clientConfig);
       HttpClient client = clientFactory.createClient(clientConfig);
 
       attributeMap.put("docker.browser.image", browserImage.toString());
@@ -457,12 +458,12 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
       String tz = timeZone.get().toString();
-      if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
+      if (List.of(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
     }
     String envTz = System.getenv("TZ");
-    if (Arrays.asList(TimeZone.getAvailableIDs()).contains(envTz)) {
+    if (List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
       return TimeZone.getTimeZone(envTz);
     }
     return null;
@@ -471,7 +472,7 @@ public class DockerSessionFactory implements SessionFactory {
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
         ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
-    if (!screenResolution.isPresent()) {
+    if (screenResolution.isEmpty()) {
       return null;
     }
     try {
@@ -521,8 +522,26 @@ public class DockerSessionFactory implements SessionFactory {
         obj -> {
           HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
           LOG.fine(string(response));
+          if (401 == response.getStatus()) {
+            LOG.warning(
+                "Server requires basic authentication. "
+                    + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
+                    + "to provide credentials.");
+          }
           return 200 == response.getStatus();
         });
+  }
+
+  private ClientConfig applyBasicAuth(ClientConfig clientConfig) {
+    String routerUsername = System.getenv("SE_ROUTER_USERNAME");
+    String routerPassword = System.getenv("SE_ROUTER_PASSWORD");
+    if (routerUsername != null
+        && !routerUsername.isEmpty()
+        && routerPassword != null
+        && !routerPassword.isEmpty()) {
+      return clientConfig.authenticateAs(new UsernameAndPassword(routerUsername, routerPassword));
+    }
+    return clientConfig;
   }
 
   private URL getUrl(int port, String containerIp) {

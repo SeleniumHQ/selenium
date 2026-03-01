@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.bidi.network;
 
-import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-BytesValue">BiDi spec</a>
+ */
 public class BytesValue {
 
   public enum Type {
@@ -40,7 +43,6 @@ public class BytesValue {
   }
 
   private final Type type;
-
   private final String value;
 
   public BytesValue(Type type, String value) {
@@ -56,7 +58,7 @@ public class BytesValue {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          String bytesValue = input.read(String.class);
+          String bytesValue = input.readNonNull(String.class);
           type = bytesValue.equals(Type.BASE64.toString()) ? Type.BASE64 : Type.STRING;
           break;
         case "value":
@@ -69,7 +71,7 @@ public class BytesValue {
 
     input.endObject();
 
-    return new BytesValue(type, value);
+    return new BytesValue(Require.nonNull("type", type), Require.nonNull("value", value));
   }
 
   public Type getType() {
@@ -81,10 +83,6 @@ public class BytesValue {
   }
 
   public Map<String, String> toMap() {
-    Map<String, String> map = new HashMap<>();
-    map.put("type", type.toString());
-    map.put("value", value);
-
-    return Map.copyOf(map);
+    return Map.of("type", type.toString(), "value", value);
   }
 }

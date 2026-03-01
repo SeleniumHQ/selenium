@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.logging.profiler;
 
+/**
+ * A log entry for HTTP command profiling.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 
   public HttpProfilerLogEntry(String commandName, boolean isStart) {

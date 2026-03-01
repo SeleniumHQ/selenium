@@ -25,7 +25,7 @@ public class TestUtilities
 {
     private static IJavaScriptExecutor GetExecutor(IWebDriver driver)
     {
-        return driver as IJavaScriptExecutor;
+        return (IJavaScriptExecutor)driver;
     }
 
     private static string GetUserAgent(IWebDriver driver)
@@ -78,7 +78,7 @@ public class TestUtilities
             if (tokenEnd - tokenStart > 0)
             {
                 string substring = appVersionString.Substring(tokenStart, tokenEnd - tokenStart);
-                double version = 0;
+                double version;
                 bool parsed = double.TryParse(substring, out version);
                 if (parsed)
                 {
@@ -102,20 +102,5 @@ public class TestUtilities
         {
             return false;
         }
-    }
-
-    public static bool IsNativeEventsEnabled(IWebDriver driver)
-    {
-        IHasCapabilities hasCaps = driver as IHasCapabilities;
-        if (hasCaps != null)
-        {
-            object cap = hasCaps.Capabilities.GetCapability(OpenQA.Selenium.CapabilityType.HasNativeEvents);
-            if (cap != null && cap is bool)
-            {
-                return (bool)cap;
-            }
-        }
-
-        return false;
     }
 }

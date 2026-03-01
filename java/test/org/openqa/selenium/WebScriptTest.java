@@ -18,12 +18,15 @@
 package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.time.Duration;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -57,7 +60,7 @@ class WebScriptTest extends JupiterTestBase {
     ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
     assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-    assertThat(logEntry.getArgs().size()).isEqualTo(1);
+    assertThat(logEntry.getArgs()).hasSize(1);
     assertThat(logEntry.getArgs().get(0).getType()).isEqualTo("string");
     assertThat(logEntry.getType()).isEqualTo("console");
     assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
@@ -90,12 +93,10 @@ class WebScriptTest extends JupiterTestBase {
     ConsoleLogEntry logEntry = future1.get(5, TimeUnit.SECONDS);
     assertThat(logEntry.getText()).isEqualTo("Hello, world!");
 
-    try {
-      future2.get(5, TimeUnit.SECONDS);
-      fail("Should be able to read the console messages");
-    } catch (TimeoutException e) {
-      assertThat(e).isNotNull();
-    }
+    assertThatThrownBy(() -> future2.get(5, TimeUnit.SECONDS))
+        .as("Should be able to read the console messages")
+        .isInstanceOf(TimeoutException.class);
+
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id1);
   }
 
@@ -144,12 +145,9 @@ class WebScriptTest extends JupiterTestBase {
     assertThat(logEntry.getType()).isEqualTo("javascript");
     assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
 
-    try {
-      future2.get(5, TimeUnit.SECONDS);
-      fail("Should be able to read the JS errors");
-    } catch (TimeoutException e) {
-      assertThat(e).isNotNull();
-    }
+    assertThatThrownBy(() -> future2.get(5, TimeUnit.SECONDS))
+        .as("Should be able to read the JS errors")
+        .isInstanceOf(TimeoutException.class);
 
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id1);
   }
@@ -259,7 +257,7 @@ class WebScriptTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canUnpinScript() throws ExecutionException, InterruptedException, TimeoutException {
+  void canUnpinScript() {
     CountDownLatch latch = new CountDownLatch(2);
 
     String pinnedScript =

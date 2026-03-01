@@ -17,31 +17,34 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.time.Duration.ofMillis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.time.Duration;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-@Tag("UnitTests")
 class ActionDurationTest extends JupiterTestBase {
   @Test
+  @NotYetImplemented(FIREFOX)
   void shouldScrollToElementWithCustomDuration() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
-    assertFalse(inViewport(iframe));
+    assertThat(elementToBeInViewport(iframe).apply(driver)).isFalse();
 
-    new Actions(driver, Duration.ofMillis(111)).scrollToElement(iframe).perform();
+    long start = System.currentTimeMillis();
+    new Actions(driver, Duration.ofMillis(1000)).scrollToElement(iframe).perform();
+    long elapsed = System.currentTimeMillis() - start;
 
-    assertTrue(inViewport(iframe));
+    assertThat(elapsed).isGreaterThan(1000);
+    wait.until(elementToBeInViewport(iframe));
   }
 
   @Test
@@ -51,32 +54,23 @@ class ActionDurationTest extends JupiterTestBase {
     WebElement footer = driver.findElement(By.tagName("footer"));
     int deltaY = footer.getRect().y;
 
-    new Actions(driver, Duration.ofMillis(111)).scrollByAmount(0, deltaY).perform();
+    long start = System.currentTimeMillis();
+    new Actions(driver, Duration.ofMillis(1000)).scrollByAmount(0, deltaY).perform();
+    long elapsed = System.currentTimeMillis() - start;
 
-    assertTrue(inViewport(footer));
+    assertThat(elapsed).isGreaterThan(1000);
+    wait.until(elementToBeInViewport(footer));
   }
 
   @Test
   void shouldBeDefaultActionDuration250ms() {
     Actions actions = new Actions(driver);
-    assertEquals(Duration.ofMillis(250), actions.getActionDuration());
+    assertThat(actions.getActionDuration()).isEqualTo(ofMillis(250));
   }
 
   @Test
   void shouldBeCustomDuration110ms() {
     Actions actions = new Actions(driver, Duration.ofMillis(110));
-    assertEquals(Duration.ofMillis(110), actions.getActionDuration());
-  }
-
-  private boolean inViewport(WebElement element) {
-
-    String script =
-        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
-            + "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
-            + "return"
-            + " f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
-            + "window.pageYOffset&&t+o>window.pageXOffset";
-
-    return (boolean) ((JavascriptExecutor) driver).executeScript(script, element);
+    assertThat(actions.getActionDuration()).isEqualTo(ofMillis(110));
   }
 }

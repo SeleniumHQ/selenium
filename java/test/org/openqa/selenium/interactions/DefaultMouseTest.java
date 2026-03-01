@@ -19,37 +19,40 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.WaitingConditions.color;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.fuzzyMatchingOfCoordinates;
 import static org.openqa.selenium.support.Colors.GREEN;
 import static org.openqa.selenium.support.Colors.RED;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
-import org.openqa.selenium.support.Colors;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 /** Tests operations that involve mouse and keyboard. */
 class DefaultMouseTest extends JupiterTestBase {
+
+  @BeforeEach
+  void resetMousePointer() {
+    WebElement body = driver.findElement(By.tagName("body"));
+    Dimension size = body.getSize();
+    getBuilder(driver).moveToElement(body, -size.width / 2, -size.height / 2).perform();
+  }
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
@@ -60,8 +63,8 @@ class DefaultMouseTest extends JupiterTestBase {
 
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
 
-    WebElement toDrag = driver.findElement(By.id("rightitem-3"));
-    WebElement dragInto = driver.findElement(By.id("sortable1"));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("rightitem-3")));
+    WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
 
     Action holdItem = getBuilder(driver).clickAndHold(toDrag).build();
 
@@ -90,7 +93,7 @@ class DefaultMouseTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
-    WebElement dragInto = driver.findElement(By.id("sortable1"));
+    WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
     assertThat(dragInto.findElements(By.tagName("li"))).hasSize(6);
   }
 
@@ -103,15 +106,6 @@ class DefaultMouseTest extends JupiterTestBase {
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
     String text = dragReporter.getText();
     assertThat(text).matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3");
-  }
-
-  private boolean isElementAvailable(WebDriver driver, By locator) {
-    try {
-      driver.findElement(locator);
-      return true;
-    } catch (NoSuchElementException e) {
-      return false;
-    }
   }
 
   @Test
@@ -129,37 +123,21 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void testDragAndDrop() throws InterruptedException {
+  public void testDragAndDrop() {
     driver.get(pages.droppableItems);
 
-    long waitEndTime = System.currentTimeMillis() + 15000;
-
-    while (!isElementAvailable(driver, By.id("draggable"))
-        && (System.currentTimeMillis() < waitEndTime)) {
-      Thread.sleep(200);
-    }
-
-    if (!isElementAvailable(driver, By.id("draggable"))) {
-      throw new RuntimeException("Could not find draggable element after 15 seconds.");
-    }
-
-    WebElement toDrag = driver.findElement(By.id("draggable"));
-    WebElement dropInto = driver.findElement(By.id("droppable"));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
+    WebElement dropInto = wait.until(visibilityOfElementLocated(By.id("droppable")));
 
     Action holdDrag = getBuilder(driver).clickAndHold(toDrag).build();
-
     Action move = getBuilder(driver).moveToElement(dropInto).build();
-
     Action drop = getBuilder(driver).release(dropInto).build();
 
     holdDrag.perform();
     move.perform();
     drop.perform();
 
-    dropInto = driver.findElement(By.id("droppable"));
-    String text = dropInto.findElement(By.tagName("p")).getText();
-
-    assertThat(text).isEqualTo("Dropped!");
+    shortWait.until(elementTextToEqual(By.cssSelector("#droppable p"), "Dropped!"));
   }
 
   @Test
@@ -188,14 +166,17 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, issue = "Timeout in RBE, works locally.")
   void testMoveToLocation() {
     driver.get(pages.mouseInteractionPage);
+
+    getBuilder(driver).moveToLocation(70, 60).build().perform();
+    assertThat(driver.findElement(By.id("bottom")).getText()).contains("Click for Results Page");
 
     Action moveAndClick = getBuilder(driver).moveToLocation(70, 60).click().build();
 
     moveAndClick.perform();
 
+    shortWait.until(urlContains("/resultPage.html"));
     WebElement element = driver.findElement(By.id("greeting"));
 
     assertThat(element.getText()).isEqualTo("Success!");
@@ -260,26 +241,33 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void testHoverPersists() throws Exception {
+  public void testHoverPersists() {
     driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the mouse is not over the
-    // element with id 'item1' (from a previous test).
+    unfocusMenu();
+
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
+
+    // Hover the menu icon
+    getBuilder(driver).moveToElement(menu).build().perform();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
+
+    // Wait until the menu items appear
+    wait.until(visibilityOf(menuItem));
+    assertThat(menuItem.getText()).isEqualTo("Item 1");
+
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
+
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
     getBuilder(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
-
-    WebElement element = driver.findElement(By.id("menu1"));
-
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    getBuilder(driver).moveToElement(element).build().perform();
-
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    wait.until(not(elementTextToEqual(item, "")));
-
-    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test
@@ -326,25 +314,20 @@ class DefaultMouseTest extends JupiterTestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, size.getWidth() / 2, size.getHeight() / 2));
   }
 
-  @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
   @NotYetImplemented(SAFARI)
   public void testMoveRelativeToBody() {
-    try {
-      driver.get(pages.mouseTrackerPage);
+    driver.get(pages.mouseTrackerPage);
+    WebElement reporter = driver.findElement(By.id("status"));
 
-      getBuilder(driver).moveByOffset(50, 100).perform();
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
 
-      WebElement reporter = driver.findElement(By.id("status"));
+    getBuilder(driver).moveByOffset(50, 100).perform();
 
-      wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
-    } finally {
-      getBuilder(driver).moveByOffset(-50, -100).perform();
-    }
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 50, 100));
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
@@ -362,14 +345,13 @@ class DefaultMouseTest extends JupiterTestBase {
 
     getBuilder(driver).moveToElement(greenbox, xOffset, yOffset).perform();
 
-    shortWait.until(
-        attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", GREEN));
 
     getBuilder(driver)
         .moveToElement(greenbox, xOffset, yOffset)
         .moveByOffset(shiftX, shiftY)
         .perform();
-    shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", RED));
 
     getBuilder(driver)
         .moveToElement(greenbox, xOffset, yOffset)
@@ -377,12 +359,10 @@ class DefaultMouseTest extends JupiterTestBase {
         .moveByOffset(-shiftX, -shiftY)
         .perform();
 
-    shortWait.until(
-        attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(color(redbox, "background-color", GREEN));
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
@@ -407,32 +387,6 @@ class DefaultMouseTest extends JupiterTestBase {
         .moveToElement(redbox, redSize.getWidth() + 1, redSize.getHeight() + 1)
         .perform();
 
-    wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
-  }
-
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
-    String[] splitString = locationTuple.split(",");
-    int gotX = Integer.parseInt(splitString[0].trim());
-    int gotY = Integer.parseInt(splitString[1].trim());
-
-    // Everything within 5 pixels range is OK
-    final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION
-        && Math.abs(expectedY - gotY) < ALLOWED_DEVIATION;
-  }
-
-  private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
-      final WebElement element, final int x, final int y) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver ignored) {
-        return fuzzyPositionMatching(x, y, element.getText());
-      }
-
-      @Override
-      public String toString() {
-        return "Coordinates: " + element.getText() + " but expected: " + x + ", " + y;
-      }
-    };
+    wait.until(color(redbox, "background-color", GREEN));
   }
 }

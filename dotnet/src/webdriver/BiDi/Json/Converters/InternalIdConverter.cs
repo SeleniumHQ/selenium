@@ -17,27 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Script;
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InternalIdConverter : JsonConverter<InternalId>
+internal class InternalIdConverter(IBiDi bidi) : JsonConverter<InternalId>
 {
-    private readonly BiDi _bidi;
-
-    public InternalIdConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override InternalId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new InternalId(_bidi, id!);
+        return new InternalId(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, InternalId value, JsonSerializerOptions options)

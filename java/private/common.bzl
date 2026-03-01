@@ -1,3 +1,4 @@
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//java/private:module.bzl", "JavaModuleInfo")
 
 MavenInfo = provider(

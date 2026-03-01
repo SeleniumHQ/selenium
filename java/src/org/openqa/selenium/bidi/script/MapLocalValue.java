@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MapLocalValue extends LocalValue {
 
@@ -31,15 +31,10 @@ public class MapLocalValue extends LocalValue {
 
   @Override
   public Map<String, Object> toJson() {
-    List<List<Object>> value = new ArrayList<>();
-
-    map.forEach(
-        (k, v) -> {
-          List<Object> entry = new ArrayList<>();
-          entry.add(k);
-          entry.add(v);
-          value.add(entry);
-        });
+    List<List<Object>> value =
+        map.entrySet().stream()
+            .map(entry -> List.of(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
 
     return Map.of("type", "map", "value", value);
   }

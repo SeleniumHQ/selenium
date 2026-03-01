@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -154,7 +155,7 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertThat(uploadPath.endsWith(file.getName())).isTrue();
+    assertThat(uploadPath).endsWith(file.getName());
   }
 
   @Test
@@ -169,7 +170,7 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertThat(uploadPath.endsWith(file.getName())).isTrue();
+    assertThat(uploadPath).endsWith(file.getName());
   }
 
   @Test
@@ -254,6 +255,8 @@ class FormHandlingTest extends JupiterTestBase {
     alert.accept();
 
     assertThat(text).isEqualTo("Tasty cheese");
+    wait.until(titleIs("Submitted Successfully!"));
+    wait.until(urlContains("submitted_page.html"));
   }
 
   @Test

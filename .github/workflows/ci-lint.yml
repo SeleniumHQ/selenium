@@ -1,0 +1,110 @@
+name: CI - Lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - trunk
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  actionlint:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate workflows
+        uses: raven-actions/actionlint@v2
+
+  check-protected:
+    name: Check Protected Files
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check for protected files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            protected:
+              - 'scripts/format.sh'
+              - 'scripts/github-actions/check-format.sh'
+      - name: Fail if Protected
+        if: steps.filter.outputs.protected == 'true'
+        run: |
+          echo "::notice::PR from fork modifies format script"
+          exit 1
+
+  format:
+    name: Format
+    if: startsWith(github.head_ref, 'renovate/') != true
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Format
+      run: |
+        # Run format - auto-fixes code style issues
+        ./go format
+        # Fail if there were changes (triggers commit-fixes job)
+        if ! git diff --quiet; then
+          echo "Format made changes"
+          exit 1
+        fi
+      artifact-name: format-changes
+
+  fork-format-error:
+    name: Fork format instructions
+    needs: format
+    if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    steps:
+      - name: Format instructions
+        run: |
+          echo "::error::Code needs formatting. Run './go format' locally and push changes."
+          exit 1
+
+  check-bot-commit:
+    name: Check bot commit
+    needs: format
+    if: always() && needs.format.result == 'failure' && github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    outputs:
+      should-commit: ${{ steps.check.outputs.should-commit }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check last commit author
+        id: check
+        run: |
+          LAST_AUTHOR_EMAIL=$(git log -1 --format='%ae')
+          if [ "$LAST_AUTHOR_EMAIL" = "selenium-ci@users.noreply.github.com" ]; then
+            echo "::notice::Last commit was from Selenium CI Bot - skipping commit-fixes"
+            echo "should-commit=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should-commit=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  commit-fixes:
+    name: Commit fixes
+    needs: check-bot-commit
+    if: needs.check-bot-commit.outputs.should-commit == 'true'
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: format-changes
+      commit-message: "Auto-format code"
+      ref: ${{ github.event.pull_request.head.ref }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

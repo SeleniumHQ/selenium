@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -36,16 +33,16 @@ public abstract class DevToolsDomains
     // added to this array and to the method below.
     private static int[] SupportedDevToolsVersions =>
     [
-        142,
-        141,
-        140,
+        145,
+        144,
+        143,
     ];
 
     private static DevToolsDomains? CreateDevToolsDomain(int protocolVersion, DevToolsSession session) => protocolVersion switch
     {
-        142 => new V142.V142Domains(session),
-        141 => new V141.V141Domains(session),
-        140 => new V140.V140Domains(session),
+        145 => new V145.V145Domains(session),
+        144 => new V144.V144Domains(session),
+        143 => new V143.V143Domains(session),
         _ => null
     };
 

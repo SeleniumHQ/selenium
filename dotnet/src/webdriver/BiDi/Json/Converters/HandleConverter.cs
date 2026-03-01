@@ -17,27 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Script;
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class HandleConverter : JsonConverter<Handle>
+internal class HandleConverter(IBiDi bidi) : JsonConverter<Handle>
 {
-    private readonly BiDi _bidi;
-
-    public HandleConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Handle? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Handle(_bidi, id!);
+        return new Handle(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Handle value, JsonSerializerOptions options)

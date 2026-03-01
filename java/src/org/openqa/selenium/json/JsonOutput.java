@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -43,6 +42,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 
@@ -128,10 +128,7 @@ public class JsonOutput implements Closeable {
     this.stack = new ArrayDeque<>();
     this.stack.addFirst(new Root());
 
-    // Order matters, since we want to handle null values first to avoid exceptions, and then the
-    // common kinds of inputs next.
     Map<Predicate<Class<?>>, DepthAwareConsumer> builder = new LinkedHashMap<>();
-    builder.put(Objects::isNull, (obj, maxDepth, depthRemaining) -> append("null"));
     builder.put(
         CharSequence.class::isAssignableFrom,
         (obj, maxDepth, depthRemaining) -> append(asString(obj)));
@@ -216,7 +213,7 @@ public class JsonOutput implements Closeable {
           ((Map<?, ?>) obj)
               .forEach(
                   (key, value) -> {
-                    if (value instanceof Optional && !((Optional) value).isPresent()) {
+                    if (value instanceof Optional && ((Optional) value).isEmpty()) {
                       return;
                     }
                     name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
@@ -241,7 +238,7 @@ public class JsonOutput implements Closeable {
         Optional.class::isAssignableFrom,
         (obj, maxDepth, depthRemaining) -> {
           Optional<?> optional = (Optional<?>) obj;
-          if (!optional.isPresent()) {
+          if (optional.isEmpty()) {
             append("null");
             return;
           }
@@ -384,7 +381,7 @@ public class JsonOutput implements Closeable {
    * @return this {@link JsonOutput} object
    * @throws JsonException if allowed depth has been reached
    */
-  public JsonOutput write(Object value) {
+  public JsonOutput write(@Nullable Object value) {
     return write(value, MAX_DEPTH);
   }
 
@@ -396,13 +393,17 @@ public class JsonOutput implements Closeable {
    * @return this {@link JsonOutput} object
    * @throws JsonException if allowed depth has been reached
    */
-  public JsonOutput write(Object value, int maxDepth) {
+  public JsonOutput write(@Nullable Object value, int maxDepth) {
     return write0(value, maxDepth, maxDepth);
   }
 
-  private JsonOutput write0(Object input, int maxDepth, int depthRemaining) {
+  private JsonOutput write0(@Nullable Object input, int maxDepth, int depthRemaining) {
+    if (input == null) {
+      append("null");
+      return this;
+    }
     converters.entrySet().stream()
-        .filter(entry -> entry.getKey().test(input == null ? null : input.getClass()))
+        .filter(entry -> entry.getKey().test(input.getClass()))
         .findFirst()
         .map(Map.Entry::getValue)
         .orElseThrow(() -> new JsonException("Unable to write " + input))
@@ -472,7 +473,7 @@ public class JsonOutput implements Closeable {
    * @return {@link Method} object with 'accessible' flag set
    * @throws JsonException if a security violation is encountered
    */
-  private Method getMethod(Class<?> clazz, String methodName) {
+  private @Nullable Method getMethod(Class<?> clazz, String methodName) {
     if (Object.class.equals(clazz)) {
       return null;
     }
@@ -542,7 +543,7 @@ public class JsonOutput implements Closeable {
         SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
 
       // Only include methods not on java.lang.Object to stop things being super-noisy
-      Function<Object, Object> readMethod = pd.getReadMethod();
+      Function<Object, @Nullable Object> readMethod = pd.getReadMethod();
       if (readMethod == null) {
         continue;
       }
@@ -551,7 +552,7 @@ public class JsonOutput implements Closeable {
         continue;
       }
 
-      Object value = pd.getReadMethod().apply(toConvert);
+      Object value = readMethod.apply(toConvert);
       if (!Optional.empty().equals(value)) {
         name(pd.getName());
         write0(value, maxDepth, depthRemaining - 1);

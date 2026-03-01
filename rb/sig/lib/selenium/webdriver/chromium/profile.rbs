@@ -10,7 +10,7 @@ module Selenium
 
         @directory: untyped
 
-        @prefs: untyped
+        @prefs: Hash[String, untyped]?
 
         include ProfileHelper
 
@@ -34,9 +34,9 @@ module Selenium
 
         def write_prefs_to: (untyped dir) -> untyped
 
-        def prefs: () -> untyped
+        def prefs: () -> Hash[String, untyped]
 
-        def read_model_prefs: () -> (Hash[untyped, untyped] | untyped)
+        def read_model_prefs: () -> Hash[String, untyped]
 
         def prefs_file_for: (untyped dir) -> untyped
       end

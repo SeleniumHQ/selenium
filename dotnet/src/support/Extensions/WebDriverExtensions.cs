@@ -17,10 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Extensions;
 

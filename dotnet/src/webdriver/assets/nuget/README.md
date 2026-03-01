@@ -6,7 +6,7 @@ Selenium is a set of different software tools each with a different approach to 
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 
-using var driver = new ChromeDriver();
+await using var driver = new ChromeDriver();
 
 driver.Url = "https://www.google.com";
 driver.FindElement(By.Name("q")).SendKeys("webdriver" + Keys.Return);

@@ -1,5 +1,4 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_export")
+load("//java:defs.bzl", "artifact", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
@@ -21,7 +20,7 @@ java_export(
         "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        "@maven//:org_jspecify_jspecify",
+        artifact("org.jspecify:jspecify"),
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

@@ -21,11 +21,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.AttributeKey;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
 
 class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
-
+  private static final Logger LOG = Logger.getLogger(WebSocketMessageHandler.class.getName());
   private final AttributeKey<Consumer<Message>> key;
 
   public WebSocketMessageHandler(AttributeKey<Consumer<Message>> key) {
@@ -39,6 +42,10 @@ class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     Consumer<Message> handler = ctx.channel().attr(key).get();
+    if (handler == null && msg instanceof CloseMessage && ((CloseMessage) msg).code() == -1) {
+      LOG.log(Level.FINE, "Failed to handle websocket message \"{0}\" - handler is null", msg);
+      return;
+    }
 
     ctx.executor()
         .execute(

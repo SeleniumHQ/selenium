@@ -17,21 +17,23 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -88,8 +90,7 @@ class LocalNodeTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -117,14 +118,21 @@ class LocalNodeTest {
 
   @Test
   void canStopASession() {
-    node.stop(session.getId());
+    SessionId sessionId = session.getId();
+    assertThat(node.getSession(sessionId)).isNotNull();
+
+    node.stop(sessionId);
+
+    waitUntilNodeStopped(sessionId);
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.getSession(session.getId()));
+        .isThrownBy(() -> node.getSession(sessionId));
   }
 
   @Test
   void isNotOwnerOfAStoppedSession() {
     node.stop(session.getId());
+
+    waitUntilNodeStopped(session.getId());
     assertThat(node.isSessionOwner(session.getId())).isFalse();
   }
 
@@ -132,12 +140,13 @@ class LocalNodeTest {
   void cannotAcceptNewSessionsWhileDraining() {
     node.drain();
     assertThat(node.isDraining()).isTrue();
+
     node.stop(session.getId()); // stop the default session
+    waitUntilNodeStopped(session.getId());
 
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
   }
@@ -146,8 +155,7 @@ class LocalNodeTest {
   void cannotCreateNewSessionsOnMaxSessionCount() {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
@@ -155,41 +163,25 @@ class LocalNodeTest {
 
   @Test
   void canReturnStatusInfo() {
-    NodeStatus status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    SessionId sessionId = session.getId();
+    assertThat(findSession(sessionId)).isNotEmpty();
 
-    node.stop(session.getId());
-    status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isEmpty();
+    node.stop(sessionId);
+    waitUntilNodeStopped(sessionId);
+
+    assertThat(findSession(sessionId)).isEmpty();
   }
 
   @Test
   void nodeStatusInfoIsImmutable() {
+    SessionId sessionId = session.getId();
     NodeStatus status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    assertThat(findSession(status, sessionId)).isNotEmpty();
 
-    node.stop(session.getId());
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    node.stop(sessionId);
+    waitUntilNodeStopped(sessionId);
+
+    assertThat(findSession(status, sessionId)).isNotEmpty();
   }
 
   @Test
@@ -207,7 +199,7 @@ class LocalNodeTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }
@@ -225,8 +217,7 @@ class LocalNodeTest {
       callables.add(
           () -> {
             Either<WebDriverException, CreateSessionResponse> response =
-                node.newSession(
-                    new CreateSessionRequest(ImmutableSet.of(W3C), caps, ImmutableMap.of()));
+                node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
             if (response.isRight()) {
               CreateSessionResponse res = response.right();
               assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
@@ -271,8 +262,7 @@ class LocalNodeTest {
 
     for (int i = 0; i < 5; i++) {
       Either<WebDriverException, CreateSessionResponse> response =
-          localNode.newSession(
-              new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+          localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
       assertThat(response.isRight()).isTrue();
     }
 
@@ -300,8 +290,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -335,8 +324,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -368,8 +356,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -396,8 +383,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -424,8 +410,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -433,5 +418,35 @@ class LocalNodeTest {
     Object bidiEnabled = capabilities.getCapability("se:bidiEnabled");
     assertThat(bidiEnabled).isNotNull();
     assertThat(Boolean.parseBoolean(bidiEnabled.toString())).isFalse();
+  }
+
+  @Test
+  void extractsFileNameFromRequestUri() {
+    assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
+    assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
+        .isEqualTo("файл+with+tähtedega.png");
+  }
+
+  private void waitUntilNodeStopped(SessionId sessionId) {
+    long timeout = Duration.ofSeconds(5).toMillis();
+
+    for (long start = currentTimeMillis(); currentTimeMillis() - start < timeout; ) {
+      if (findSession(sessionId).isEmpty()) {
+        break;
+      }
+    }
+  }
+
+  private Optional<Session> findSession(SessionId sessionId) {
+    NodeStatus status = node.getStatus();
+    return findSession(status, sessionId);
+  }
+
+  private Optional<Session> findSession(NodeStatus status, SessionId sessionId) {
+    return status.getSlots().stream()
+        .map(Slot::getSession)
+        .filter(Objects::nonNull)
+        .filter(s -> s.getId().equals(sessionId))
+        .findAny();
   }
 }

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Defines the output type for a screenshot.
@@ -30,7 +29,6 @@ import org.jspecify.annotations.NullMarked;
  * @see TakesScreenshot
  * @param <T> Type for the screenshot output.
  */
-@NullMarked
 public interface OutputType<T> {
   /** Obtain the screenshot as base64 data. */
   OutputType<String> BASE64 =
@@ -85,14 +83,29 @@ public interface OutputType<T> {
         }
 
         private File save(byte[] data) {
+          Path tmpFilePath = createScreenshotFile();
           try {
-            Path tmpFilePath = Files.createTempFile("screenshot", ".png");
-            File tmpFile = tmpFilePath.toFile();
-            tmpFile.deleteOnExit();
             Files.write(tmpFilePath, data);
-            return tmpFile;
           } catch (IOException e) {
-            throw new WebDriverException(e);
+            throw new WebDriverException(
+                "Failed to create or write screenshot to temporary file: "
+                    + tmpFilePath.toAbsolutePath().toString(),
+                e);
+          }
+
+          File tmpFile = tmpFilePath.toFile();
+          tmpFile.deleteOnExit();
+          return tmpFile;
+        }
+
+        private Path createScreenshotFile() {
+          try {
+            return Files.createTempFile("screenshot", ".png");
+          } catch (IOException e) {
+            throw new WebDriverException(
+                "Failed to create or write screenshot to temporary file: "
+                    + "temporary file could not be created",
+                e);
           }
         }
 

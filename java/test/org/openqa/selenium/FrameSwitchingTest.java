@@ -39,8 +39,6 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 class FrameSwitchingTest extends JupiterTestBase {
 
-  private Random random;
-
   @AfterEach
   public void tearDown() {
     try {
@@ -450,6 +448,24 @@ class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
+  public void testShouldBeAbleToSwitchToFrameBySelector() {
+    driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("iframe1")));
+    // we should be in the frame now
+    WebElement killIframe = driver.findElement(By.id("killIframe"));
+    killIframe.click();
+
+    driver.switchTo().defaultContent();
+
+    WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
+    addIFrame.click();
+
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("iframe1")));
+    wait.until(presenceOfElementLocated(By.id("success")));
+  }
+
+  @Test
   @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
   @NotYetImplemented(value = EDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
@@ -493,8 +509,7 @@ class FrameSwitchingTest extends JupiterTestBase {
         WebElement input = wait.until(presenceOfElementLocated(By.id("inputText")));
         WebElement submit = wait.until(presenceOfElementLocated(By.id("submitButton")));
         input.clear();
-        random = new Random();
-        input.sendKeys("rand" + random.nextInt());
+        input.sendKeys("rand" + new Random().nextInt());
         submit.click();
       } finally {
         String url =

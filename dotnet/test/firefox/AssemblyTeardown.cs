@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
+using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using System.Threading.Tasks;
-
-namespace OpenQA.Selenium.Firefox;
 
 [SetUpFixture]
-// Outside a namespace to affect the entire assembly
-public class MySetUpClass
+#pragma warning disable // Outside a namespace to affect the entire assembly
+public class AssemblyTeardown
+#pragma warning restore
 {
     [OneTimeSetUp]
     public async Task RunBeforeAnyTestAsync()

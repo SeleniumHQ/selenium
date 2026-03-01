@@ -7,10 +7,11 @@
 
 /*
  * Standard styling for toolbars and toolbar items.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
+@provide 'goog.css.toolbar';
+
+@require './common';
 
 /*
  * Styles used by goog.ui.ToolbarRenderer.
@@ -70,12 +71,14 @@
 }
 
 /* Pre-IE7 BiDi fixes. */
+/* rtl:begin:ignore */
 * html .goog-toolbar-button-rtl .goog-toolbar-button-outer-box {
   /* @noflip */ left: -1px;
 }
 * html .goog-toolbar-button-rtl .goog-toolbar-button-inner-box {
   /* @noflip */ right: auto;
 }
+/* rtl:end:ignore */
 
 
 /* IE7-only hack; ignored by all other browsers. */
@@ -85,10 +88,12 @@
 }
 
 /* IE7 BiDi fix. */
+/* rtl:begin:ignore */
 *:first-child+html .goog-toolbar-button-rtl .goog-toolbar-button-inner-box {
   /* @noflip */ left: 1px;
   /* @noflip */ right: auto;
 }
+/* rtl:end:ignore */
 
 /* Safari-only hacks. */
 ::root .goog-toolbar-button,
@@ -241,12 +246,14 @@
 }
 
 /* Pre-IE7 BiDi fixes. */
+/* rtl:begin:ignore */
 * html .goog-toolbar-menu-button-rtl .goog-toolbar-menu-button-outer-box {
   /* @noflip */ left: -1px;
 }
 * html .goog-toolbar-menu-button-rtl .goog-toolbar-menu-button-inner-box {
   /* @noflip */ right: auto;
 }
+/* rtl:end:ignore */
 
 /* IE7-only hack; ignored by all other browsers. */
 *:first-child+html .goog-toolbar-menu-button-inner-box {
@@ -255,11 +262,13 @@
 }
 
 /* IE7 BiDi fix. */
+/* rtl:begin:ignore */
 *:first-child+html .goog-toolbar-menu-button-rtl
   .goog-toolbar-menu-button-inner-box {
   /* @noflip */ left: 1px;
   /* @noflip */ right: auto;
 }
+/* rtl:end:ignore */
 
 /* Safari-only hacks. */
 ::root .goog-toolbar-menu-button,

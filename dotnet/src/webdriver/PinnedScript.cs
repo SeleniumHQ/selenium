@@ -19,7 +19,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 

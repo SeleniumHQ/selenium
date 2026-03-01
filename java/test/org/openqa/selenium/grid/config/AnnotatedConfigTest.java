@@ -17,17 +17,12 @@
 
 package org.openqa.selenium.grid.config;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +39,7 @@ class AnnotatedConfigTest {
 
     WithAnnotations obj = new WithAnnotations();
     Config config = new AnnotatedConfig(obj);
-    assertEquals(Optional.of("brie"), config.get("cheese", "type"));
+    assertThat(config.get("cheese", "type")).contains("brie");
   }
 
   @Test
@@ -59,8 +54,8 @@ class AnnotatedConfigTest {
     }
 
     Config config = new AnnotatedConfig(new WithTypes());
-    assertEquals(Optional.of(true), config.getBool("types", "bool"));
-    assertEquals(Optional.of(42), config.getInt("types", "int"));
+    assertThat(config.getBool("types", "bool")).contains(true);
+    assertThat(config.getInt("types", "int")).contains(42);
   }
 
   @Test
@@ -68,7 +63,7 @@ class AnnotatedConfigTest {
     class WithBadAnnotation {
 
       @ConfigValue(section = "the", name = "collection", example = "[]")
-      private final Set<String> cheeses = ImmutableSet.of("cheddar", "gouda");
+      private final Set<String> cheeses = Set.of("cheddar", "gouda");
     }
 
     AnnotatedConfig config = new AnnotatedConfig(new WithBadAnnotation());
@@ -77,24 +72,23 @@ class AnnotatedConfigTest {
             .getAll("the", "collection")
             .orElseThrow(() -> new AssertionError("No value returned"));
 
-    assertEquals(2, values.size());
-    assertTrue(values.contains("cheddar"));
-    assertTrue(values.contains("gouda"));
+    assertThat(values).containsExactlyInAnyOrder("cheddar", "gouda");
   }
 
   @Test
   void shouldNotAllowMapTypeFieldsToBeAnnotated() {
-    assertThrows(
-        ConfigException.class,
-        () -> {
-          class WithBadAnnotation {
+    assertThatThrownBy(
+            () -> {
+              class WithBadAnnotation {
 
-            @ConfigValue(section = "bad", name = "map", example = "")
-            private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
-          }
+                @ConfigValue(section = "bad", name = "map", example = "")
+                private final Map<String, String> cheeses = Map.of("peas", "sausage");
+              }
 
-          new AnnotatedConfig(new WithBadAnnotation());
-        });
+              new AnnotatedConfig(new WithBadAnnotation());
+            })
+        .isInstanceOf(ConfigException.class)
+        .hasMessageStartingWith("Map fields may not be used for configuration");
   }
 
   @Test
@@ -109,7 +103,7 @@ class AnnotatedConfigTest {
 
     Config config = new AnnotatedConfig(new Child());
 
-    assertEquals(Optional.of("cheddar"), config.get("cheese", "type"));
+    assertThat(config.get("cheese", "type")).contains("cheddar");
   }
 
   @Test
@@ -128,7 +122,7 @@ class AnnotatedConfigTest {
 
     Config config = new AnnotatedConfig(new Child());
 
-    assertEquals(Optional.of("gorgonzola"), config.get("cheese", "type"));
+    assertThat(config.get("cheese", "type")).contains("gorgonzola");
   }
 
   @Test
@@ -152,11 +146,11 @@ class AnnotatedConfigTest {
 
     Config config = new AnnotatedConfig(new Defaults());
 
-    assertTrue(config.get("default", "bool").isPresent());
-    assertTrue(config.getBool("default", "bool").isPresent());
-    assertFalse(config.get("default", "int").isPresent());
-    assertFalse(config.getInt("default", "int").isPresent());
-    assertFalse(config.get("default", "string").isPresent());
+    assertThat(config.get("default", "bool").isPresent()).isTrue();
+    assertThat(config.getBool("default", "bool").isPresent()).isTrue();
+    assertThat(config.get("default", "int").isPresent()).isFalse();
+    assertThat(config.getInt("default", "int").isPresent()).isFalse();
+    assertThat(config.get("default", "string").isPresent()).isFalse();
   }
 
   @Test
@@ -177,9 +171,9 @@ class AnnotatedConfigTest {
     }
 
     Config config =
-        new AnnotatedConfig(new TypesToBeFiltered(), ImmutableSet.of("--string", "--bool"), true);
-    assertEquals(Optional.of(true), config.getBool("types", "boolean"));
-    assertEquals(Optional.of("A String"), config.get("types", "string"));
-    assertEquals(Optional.empty(), config.getInt("types", "integer"));
+        new AnnotatedConfig(new TypesToBeFiltered(), Set.of("--string", "--bool"), true);
+    assertThat(config.getBool("types", "boolean")).contains(true);
+    assertThat(config.get("types", "string")).contains("A String");
+    assertThat(config.getInt("types", "integer")).isEmpty();
   }
 }

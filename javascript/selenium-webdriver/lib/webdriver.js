@@ -1380,20 +1380,12 @@ class WebDriver {
       }
     })
 
-    await connection.execute(
-      'Fetch.enable',
-      {
-        handleAuthRequests: true,
-      },
-      null,
-    )
-    await connection.execute(
-      'Network.setCacheDisabled',
-      {
-        cacheDisabled: true,
-      },
-      null,
-    )
+    await connection.send('Fetch.enable', {
+      handleAuthRequests: true,
+    })
+    await connection.send('Network.setCacheDisabled', {
+      cacheDisabled: true,
+    })
   }
 
   /**
@@ -1563,15 +1555,11 @@ class WebDriver {
       connection = this._cdpConnection
     }
 
-    await connection.execute('Page.enable', {}, null)
+    await connection.send('Page.enable', {})
 
-    await connection.execute(
-      'Runtime.evaluate',
-      {
-        expression: pinnedScript.creationScript(),
-      },
-      null,
-    )
+    await connection.send('Runtime.evaluate', {
+      expression: pinnedScript.creationScript(),
+    })
 
     let result = await connection.send('Page.addScriptToEvaluateOnNewDocument', {
       source: pinnedScript.creationScript(),
@@ -1597,23 +1585,15 @@ class WebDriver {
         connection = this._cdpConnection
       }
 
-      await connection.execute('Page.enable', {}, null)
+      await connection.send('Page.enable', {})
 
-      await connection.execute(
-        'Runtime.evaluate',
-        {
-          expression: script.removalScript(),
-        },
-        null,
-      )
+      await connection.send('Runtime.evaluate', {
+        expression: script.removalScript(),
+      })
 
-      await connection.execute(
-        'Page.removeScriptToEvaluateOnLoad',
-        {
-          identifier: script.scriptId,
-        },
-        null,
-      )
+      await connection.send('Page.removeScriptToEvaluateOnLoad', {
+        identifier: script.scriptId,
+      })
 
       delete this.pinnedScripts_[script.handle]
     }
@@ -1763,6 +1743,38 @@ class WebDriver {
     }
 
     return await this.execute(new command.Command(command.Name.DELETE_DOWNLOADABLE_FILES))
+  }
+
+  /**
+   * Fires a custom session event to the remote server event bus.
+   *
+   * This allows test code to trigger server-side utilities that subscribe to the event bus.
+   *
+   * @param {string} eventType The type of event (e.g., "test:failed", "log:collect").
+   * @param {Object=} payload Optional data to include with the event.
+   * @return {!Promise<Object>} A promise that resolves to the response containing
+   *     success status, event type, and timestamp.
+   *
+   * @example
+   * // Fire a simple event
+   * await driver.fireSessionEvent('test:started');
+   *
+   * @example
+   * // Fire an event with payload
+   * await driver.fireSessionEvent('test:failed', {
+   *   testName: 'LoginTest',
+   *   error: 'Element not found'
+   * });
+   */
+  async fireSessionEvent(eventType, payload = null) {
+    if (!eventType || typeof eventType !== 'string') {
+      throw new error.InvalidArgumentError('eventType must be a non-empty string')
+    }
+    const cmd = new command.Command(command.Name.FIRE_SESSION_EVENT).setParameter('eventType', eventType)
+    if (payload) {
+      cmd.setParameter('payload', payload)
+    }
+    return await this.execute(cmd)
   }
 }
 

@@ -17,42 +17,49 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed class Collector : IAsyncDisposable
+public sealed record Collector
 {
-    private readonly BiDi _bidi;
-
-    internal Collector(BiDi bidi, string id)
+    public Collector(IBiDi bidi, string id)
+        : this(id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
+    internal Collector(string id)
+    {
         Id = id;
     }
-
     internal string Id { get; }
 
-    public async Task RemoveAsync()
+    private IBiDi? _bidi;
+
+    [JsonIgnore]
+    public IBiDi BiDi
     {
-        await _bidi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
     }
 
-    public async ValueTask DisposeAsync()
+    public bool Equals(Collector? other)
     {
-        await RemoveAsync();
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is Collector collectortObj) return collectortObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

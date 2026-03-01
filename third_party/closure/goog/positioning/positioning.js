@@ -1,21 +1,11 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Common positioning code.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.positioning');
@@ -32,6 +22,7 @@ goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.style');
 goog.require('goog.style.bidi');
+goog.requireType('goog.math.Box');
 
 
 /**
@@ -132,38 +123,14 @@ goog.positioning.OverflowStatus = {
   FAILED_RIGHT: 32,
   FAILED_TOP: 64,
   FAILED_BOTTOM: 128,
-  FAILED_OUTSIDE_VIEWPORT: 256
+  FAILED_OUTSIDE_VIEWPORT: 256,
+  /** Shorthand to check if a status code contains any fail code. */
+  FAILED: 16 | 32 | 64 | 128 | 256,
+  /** Shorthand to check if horizontal positioning failed. */
+  FAILED_HORIZONTAL: 16 | 32,
+  /** Shorthand to check if vertical positioning failed. */
+  FAILED_VERTICAL: 64 | 128,
 };
-
-
-/**
- * Shorthand to check if a status code contains any fail code.
- * @type {number}
- */
-goog.positioning.OverflowStatus.FAILED =
-    goog.positioning.OverflowStatus.FAILED_LEFT |
-    goog.positioning.OverflowStatus.FAILED_RIGHT |
-    goog.positioning.OverflowStatus.FAILED_TOP |
-    goog.positioning.OverflowStatus.FAILED_BOTTOM |
-    goog.positioning.OverflowStatus.FAILED_OUTSIDE_VIEWPORT;
-
-
-/**
- * Shorthand to check if horizontal positioning failed.
- * @type {number}
- */
-goog.positioning.OverflowStatus.FAILED_HORIZONTAL =
-    goog.positioning.OverflowStatus.FAILED_LEFT |
-    goog.positioning.OverflowStatus.FAILED_RIGHT;
-
-
-/**
- * Shorthand to check if vertical positioning failed.
- * @type {number}
- */
-goog.positioning.OverflowStatus.FAILED_VERTICAL =
-    goog.positioning.OverflowStatus.FAILED_TOP |
-    goog.positioning.OverflowStatus.FAILED_BOTTOM;
 
 
 /**
@@ -195,17 +162,17 @@ goog.positioning.OverflowStatus.FAILED_VERTICAL =
  *     movableElement.
  * @param {goog.math.Box=} opt_viewport Box object describing the dimensions of
  *     the viewport. The viewport is specified relative to offsetParent of
- *     {@code movableElement}. In other words, the viewport can be thought of as
+ *     `movableElement`. In other words, the viewport can be thought of as
  *     describing a "position: absolute" element contained in the offsetParent.
  *     It defaults to visible area of nearest scrollable ancestor of
- *     {@code movableElement} (see {@code goog.style.getVisibleRectForElement}).
+ *     `movableElement` (see `goog.style.getVisibleRectForElement`).
  * @return {goog.positioning.OverflowStatus} Status bitmap,
  *     {@see goog.positioning.OverflowStatus}.
  */
 goog.positioning.positionAtAnchor = function(
     anchorElement, anchorElementCorner, movableElement, movableElementCorner,
     opt_offset, opt_margin, opt_overflow, opt_preferredSize, opt_viewport) {
-
+  'use strict';
   goog.asserts.assert(movableElement);
   var movableParentTopLeft =
       goog.positioning.getOffsetParentPageOffset(movableElement);
@@ -274,11 +241,12 @@ goog.positioning.positionAtAnchor = function(
  * offsetParent. This value can be used to translate any x- and
  * y-offset relative to the page to an offset relative to the
  * offsetParent, which can then be used directly with as position
- * coordinate for {@code positionWithCoordinate}.
+ * coordinate for `positionWithCoordinate`.
  * @param {!Element} movableElement The element to calculate.
  * @return {!goog.math.Coordinate} The page offset, may be (0, 0).
  */
 goog.positioning.getOffsetParentPageOffset = function(movableElement) {
+  'use strict';
   // Ignore offset for the BODY element unless its position is non-static.
   // For cases where the offset parent is HTML rather than the BODY (such as in
   // IE strict mode) there's no need to get the position of the BODY as it
@@ -316,6 +284,7 @@ goog.positioning.getOffsetParentPageOffset = function(movableElement) {
  * @private
  */
 goog.positioning.getVisiblePart_ = function(el) {
+  'use strict';
   var rect = goog.style.getBounds(el);
   var visibleBox = goog.style.getVisibleRectForElement(el);
   if (visibleBox) {
@@ -350,6 +319,7 @@ goog.positioning.getVisiblePart_ = function(el) {
 goog.positioning.positionAtCoordinate = function(
     absolutePos, movableElement, movableElementCorner, opt_margin, opt_viewport,
     opt_overflow, opt_preferredSize) {
+  'use strict';
   absolutePos = absolutePos.clone();
 
   // Offset based on attached corner and desired margin.
@@ -402,6 +372,7 @@ goog.positioning.positionAtCoordinate = function(
 goog.positioning.getPositionAtCoordinate = function(
     absolutePos, elementSize, elementCorner, opt_margin, opt_viewport,
     opt_overflow) {
+  'use strict';
   absolutePos = absolutePos.clone();
   elementSize = elementSize.clone();
   var status = goog.positioning.OverflowStatus.NONE;
@@ -456,6 +427,7 @@ goog.positioning.getPositionAtCoordinate = function(
  * @private
  */
 goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
+  'use strict';
   var status = goog.positioning.OverflowStatus.NONE;
 
   var ADJUST_X_EXCEPT_OFFSCREEN =
@@ -559,7 +531,7 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
              0);
   }
 
-  return status;
+  return /** @type {!goog.positioning.OverflowStatus} */ (status);
 };
 
 
@@ -573,6 +545,7 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
  * @return {goog.positioning.Corner} Effective corner.
  */
 goog.positioning.getEffectiveCorner = function(element, corner) {
+  'use strict';
   return /** @type {goog.positioning.Corner} */ (
       (corner & goog.positioning.CornerBit.FLIP_RTL &&
                goog.style.isRightToLeft(element) ?
@@ -588,6 +561,7 @@ goog.positioning.getEffectiveCorner = function(element, corner) {
  * @return {goog.positioning.Corner} The opposite corner horizontally.
  */
 goog.positioning.flipCornerHorizontal = function(corner) {
+  'use strict';
   return /** @type {goog.positioning.Corner} */ (
       corner ^ goog.positioning.CornerBit.RIGHT);
 };
@@ -599,6 +573,7 @@ goog.positioning.flipCornerHorizontal = function(corner) {
  * @return {goog.positioning.Corner} The opposite corner vertically.
  */
 goog.positioning.flipCornerVertical = function(corner) {
+  'use strict';
   return /** @type {goog.positioning.Corner} */ (
       corner ^ goog.positioning.CornerBit.BOTTOM);
 };
@@ -611,6 +586,7 @@ goog.positioning.flipCornerVertical = function(corner) {
  *     vertically.
  */
 goog.positioning.flipCorner = function(corner) {
+  'use strict';
   return /** @type {goog.positioning.Corner} */ (
       corner ^ goog.positioning.CornerBit.BOTTOM ^
       goog.positioning.CornerBit.RIGHT);

@@ -37,8 +37,5 @@ public class DevChannelEdgeDriver : EdgeDriver
     {
     }
 
-    public static EdgeOptions DefaultOptions
-    {
-        get { return new EdgeOptions() { BrowserVersion = "dev" }; }
-    }
+    public static EdgeOptions DefaultOptions => new EdgeOptions() { BrowserVersion = "dev" };
 }

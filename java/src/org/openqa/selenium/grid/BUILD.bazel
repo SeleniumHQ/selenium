@@ -25,6 +25,7 @@ genrule(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
     ],
 )
 
@@ -103,6 +104,7 @@ maven_bom(
         "//java/src/org/openqa/selenium/chromium:chromium",
         "//java/src/org/openqa/selenium/edge:edge",
         "//java/src/org/openqa/selenium/firefox:firefox",
+        "//java/src/org/openqa/selenium/grid/node/kubernetes",
         "//java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc",
         "//java/src/org/openqa/selenium/grid/sessionmap/redis:redis",
         "//java/src/org/openqa/selenium/grid:grid",
@@ -137,9 +139,10 @@ java_export(
         "release-artifact",
     ],
     uses = [
-        "org.openqa.selenium.WebDriverInfo",
+        "org.openqa.selenium.remote.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
         "org.openqa.selenium.grid.config.HasRoles",
+        "org.openqa.selenium.grid.node.NodeSessionFactoryProvider",
         "org.openqa.selenium.remote.locators.CustomLocator",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
@@ -185,6 +188,7 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",

@@ -142,6 +142,6 @@ public enum Architecture {
       }
     }
 
-    throw new UnsupportedOperationException("Unknown architecture: " + arch);
+    throw new UnsupportedOperationException("Unknown architecture: \"" + arch + '"');
   }
 }

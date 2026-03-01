@@ -1,0 +1,52 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "platform",
+    srcs = ["platform.js"],
+    lenient = True,
+    deps = [
+        ":useragent",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "product",
+    srcs = ["product.js"],
+    lenient = True,
+    deps = [
+        ":useragent",
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:platform",
+    ],
+)
+
+closure_js_library(
+    name = "product_isversion",
+    srcs = ["product_isversion.js"],
+    lenient = True,
+    deps = [
+        ":product",
+        ":useragent",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "useragent",
+    srcs = ["useragent.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:engine",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/labs/useragent:util",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/string:internal",
+    ],
+)

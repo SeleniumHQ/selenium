@@ -1,6 +1,29 @@
+## 4.41.0
+
+- Support CDP versions: v143, v144, v145
+- Canonical approach to supporting AI agent directions (#16735)
+- [build] Fix Bazel JSDocs implementation (#16949)
+- create task to update dependencies (#16942)
+- Add eslint binary target for selenium-webdriver (#16992)
+- SE_DEBUG warns only when overriding user settings (#17009)
+- [grid] Add session event API for server-side event bus integration (#17015)
+
+## 4.40.0
+
+- fix JS tests on RBE (#16777)
+- use SE_DEBUG to enable debugging (#16816)
+- [node] Add asMap function to Header class and corresponding tests (#16832)
+- build js docs with bazel (#16922)
+- preserve original file's modification time when uploading to Grid (#16935)
+
+## 4.39.0
+
+- Add CDP for Chrome 143 and remove 140
+- [nodejs] Update dev dependencies to fix vulnerabilities (#16610)
+
 ## 4.38.0
 
-- update devtools versions
+- Add CDP for Chrome 142 and remove 139
 
 ## 4.37.0
 

@@ -20,13 +20,20 @@
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class Cookies < Hash
         def as_json
           map do |name, val|
-            self[:name] = name.to_s
-            self[:value] = {type: 'string', value: val.to_s}
-
-            [compact]
+            {
+              name: name.to_s,
+              value: {
+                type: 'string',
+                value: val.to_s
+              }
+            }
           end
         end
       end

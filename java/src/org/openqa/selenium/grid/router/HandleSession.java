@@ -33,7 +33,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -118,28 +117,29 @@ class HandleSession implements HttpHandler, Closeable {
     Runnable cleanUpHttpClients =
         () -> {
           Instant staleBefore = Instant.now().minus(2, ChronoUnit.MINUTES);
-          Iterator<CacheEntry> iterator = httpClients.values().iterator();
 
-          while (iterator.hasNext()) {
-            CacheEntry entry = iterator.next();
-
-            if (entry.inUse.get() != 0) {
-              // the client is currently in use
-              return;
-            } else if (!entry.lastUse.isBefore(staleBefore)) {
-              // the client was recently used
-              return;
-            } else {
-              // the client has not been used for a while, remove it from the cache
-              iterator.remove();
-
-              try {
-                entry.httpClient.close();
-              } catch (Exception ex) {
-                LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
-              }
-            }
-          }
+          // Use removeIf for safe and efficient removal from ConcurrentHashMap
+          httpClients
+              .entrySet()
+              .removeIf(
+                  entry -> {
+                    CacheEntry cacheEntry = entry.getValue();
+                    if (cacheEntry.inUse.get() != 0) {
+                      // the client is currently in use
+                      return false;
+                    }
+                    if (!cacheEntry.lastUse.isBefore(staleBefore)) {
+                      // the client was recently used
+                      return false;
+                    }
+                    // the client has not been used for a while, close and remove it
+                    try {
+                      cacheEntry.httpClient.close();
+                    } catch (Exception ex) {
+                      LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
+                    }
+                    return true;
+                  });
         };
 
     this.cleanUpHttpClientsCacheService =

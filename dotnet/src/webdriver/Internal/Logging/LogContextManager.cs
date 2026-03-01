@@ -17,21 +17,31 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace OpenQA.Selenium.Internal.Logging;
 
 internal class LogContextManager
 {
+    internal const int DefaultTruncationLength = 1000;
+    private static bool _seDebugWarned;
     private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
 
     public LogContextManager()
     {
-        var defaulLogHandler = new TextWriterHandler(Console.Error);
+        var defaultLogHandler = new TextWriterHandler(Console.Error);
 
-        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
+        // Enable debug logging if SE_DEBUG environment variable is set
+        if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null && !_seDebugWarned)
+        {
+            _seDebugWarned = true;
+            Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; Selenium is forcing verbose logging which may override user-specified settings.");
+        }
+        var level = Environment.GetEnvironmentVariable("SE_DEBUG") is not null
+            ? LogEventLevel.Debug
+            : LogEventLevel.Warn;
+
+        GlobalContext = new LogContext(level, null, null, DefaultTruncationLength, [defaultLogHandler]);
     }
 
     public ILogContext GlobalContext { get; }

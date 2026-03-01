@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.module;
 
+import static java.util.Collections.emptySet;
+
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
@@ -43,7 +45,7 @@ public class LogInspector implements AutoCloseable {
   private final BiDi bidi;
 
   public LogInspector(WebDriver driver) {
-    this(new HashSet<>(), driver);
+    this(emptySet(), driver);
   }
 
   public LogInspector(String browsingContextId, WebDriver driver) {
@@ -72,15 +74,7 @@ public class LogInspector implements AutoCloseable {
 
   public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-        logEntry ->
-            logEntry
-                .getConsoleLogEntry()
-                .ifPresent(
-                    entry -> {
-                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-                        consumer.accept(entry);
-                      }
-                    });
+        logEntry -> logEntry.getConsoleLogEntry().filter(filter::matches).ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
@@ -94,15 +88,7 @@ public class LogInspector implements AutoCloseable {
 
   public void onJavaScriptLog(Consumer<JavascriptLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-        logEntry ->
-            logEntry
-                .getJavascriptLogEntry()
-                .ifPresent(
-                    entry -> {
-                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-                        consumer.accept(entry);
-                      }
-                    });
+        logEntry -> logEntry.getJavascriptLogEntry().filter(filter::matches).ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
@@ -131,15 +117,7 @@ public class LogInspector implements AutoCloseable {
 
   public void onGenericLog(Consumer<GenericLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-        logEntry ->
-            logEntry
-                .getGenericLogEntry()
-                .ifPresent(
-                    entry -> {
-                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-                        consumer.accept(entry);
-                      }
-                    });
+        logEntry -> logEntry.getGenericLogEntry().filter(filter::matches).ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
@@ -151,13 +129,14 @@ public class LogInspector implements AutoCloseable {
   public void onLog(Consumer<LogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry -> {
-          AtomicReference<BaseLogEntry> baseLogEntry = new AtomicReference<>();
+          AtomicReference<@Nullable BaseLogEntry> baseLogEntry = new AtomicReference<>();
 
           logEntry.getGenericLogEntry().ifPresent(baseLogEntry::set);
           logEntry.getConsoleLogEntry().ifPresent(baseLogEntry::set);
           logEntry.getJavascriptLogEntry().ifPresent(baseLogEntry::set);
 
-          if (filter.getLevel() != null && baseLogEntry.get().getLevel() == filter.getLevel()) {
+          BaseLogEntry log = baseLogEntry.get();
+          if (log != null && filter.matches(log)) {
             consumer.accept(logEntry);
           }
         };

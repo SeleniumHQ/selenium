@@ -115,13 +115,27 @@ def get_remote_connection(
         client_config = client_config or ClientConfig(remote_server_addr=command_executor)
         client_config.remote_server_addr = command_executor
         command_executor = RemoteConnection(client_config=client_config)
-    from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
-    from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
-    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
-    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
-    candidates = [ChromeRemoteConnection, EdgeRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
-    handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
+    browser_name = capabilities.get("browserName")
+    handler: type[RemoteConnection]
+    if browser_name == "chrome":
+        from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+
+        handler = ChromeRemoteConnection
+    elif browser_name == "MicrosoftEdge":
+        from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
+
+        handler = EdgeRemoteConnection
+    elif browser_name == "firefox":
+        from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+        handler = FirefoxRemoteConnection
+    elif browser_name == "Safari":
+        from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+
+        handler = SafariRemoteConnection
+    else:
+        handler = RemoteConnection
 
     if hasattr(command_executor, "client_config") and command_executor.client_config:
         remote_server_addr = command_executor.client_config.remote_server_addr
@@ -499,7 +513,7 @@ class WebDriver(BaseWebDriver):
         """
         return list(self.pinned_scripts)
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> Any:
         """Synchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -524,7 +538,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(command, {"script": script, "args": converted_args})["value"]
 
-    def execute_async_script(self, script: str, *args) -> dict:
+    def execute_async_script(self, script: str, *args) -> Any:
         """Asynchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -782,7 +796,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by=By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -808,7 +822,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -1042,18 +1056,26 @@ class WebDriver(BaseWebDriver):
         import_cdp()
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
-            version = self.caps.get("se:cdpVersion").split(".")[0]
+            cdp_version = self.caps.get("se:cdpVersion")
+            if cdp_version is None:
+                raise WebDriverException("CDP version not found in capabilities")
+            version = cdp_version.split(".")[0]
         else:
             version, ws_url = self._get_cdp_details()
 
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if cdp is None:
+            raise WebDriverException("CDP module not loaded")
+
         self._devtools = cdp.import_devtools(version)
         if self._websocket_connection:
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
@@ -1107,6 +1129,9 @@ class WebDriver(BaseWebDriver):
         else:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
+
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
@@ -1118,7 +1143,9 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
+            assert self._websocket_connection is not None
             self._network = Network(self._websocket_connection)
 
         return self._network
@@ -1196,6 +1223,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._storage is None:
             self._storage = Storage(self._websocket_connection)
 
@@ -1262,6 +1290,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._emulation is None:
             self._emulation = Emulation(self._websocket_connection)
 
@@ -1439,6 +1468,37 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
 
         self.execute(Command.DELETE_DOWNLOADABLE_FILES)
+
+    def fire_session_event(self, event_type: str, payload: dict | None = None) -> dict:
+        """Fire a custom session event to the remote server event bus.
+
+        This allows test code to trigger server-side utilities that subscribe to
+        the event bus.
+
+        Args:
+            event_type: The type of event (e.g., "test:failed", "log:collect", "marker:add").
+            payload: Optional data to include with the event.
+
+        Returns:
+            A dictionary containing the response data including success status,
+            event type, and timestamp.
+
+        Raises:
+            WebDriverException: If the event cannot be fired.
+
+        Examples:
+            Simple event::
+
+                driver.fire_session_event("test:started")
+
+            Event with payload::
+
+                driver.fire_session_event("test:failed", {"testName": "LoginTest", "error": "Element not found"})
+        """
+        params: dict[str, str | dict] = {"eventType": event_type}
+        if payload:
+            params["payload"] = payload
+        return self.execute(Command.FIRE_SESSION_EVENT, params)["value"]
 
     @property
     def fedcm(self) -> FedCM:

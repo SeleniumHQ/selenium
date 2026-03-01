@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "concurrent",
@@ -13,6 +13,6 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "@maven//:org_jspecify_jspecify",
+        artifact("org.jspecify:jspecify"),
     ],
 )

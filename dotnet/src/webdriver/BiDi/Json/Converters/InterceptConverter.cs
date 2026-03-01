@@ -17,27 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Network;
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InterceptConverter : JsonConverter<Intercept>
+internal class InterceptConverter(IBiDi bidi) : JsonConverter<Intercept>
 {
-    private readonly BiDi _bidi;
-
-    public InterceptConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Intercept? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Intercept(_bidi, id!);
+        return new Intercept(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Intercept value, JsonSerializerOptions options)
