@@ -47,6 +47,7 @@ from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
 from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.bidi.session import Session
+from selenium.webdriver.common.bidi.speculation import Speculation
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
@@ -277,6 +278,7 @@ class WebDriver(BaseWebDriver):
         self._browser: Browser | None = None
         self._bidi_session: Session | None = None
         self._browsing_context: BrowsingContext | None = None
+        self._speculation: Speculation | None = None
         self._storage: Storage | None = None
         self._webextension: WebExtension | None = None
         self._permissions: Permissions | None = None
@@ -1195,6 +1197,35 @@ class WebDriver(BaseWebDriver):
             self._browsing_context = BrowsingContext(self._websocket_connection)
 
         return self._browsing_context
+
+    @property
+    def speculation(self) -> Speculation:
+        """Returns a speculation module object for BiDi speculation commands.
+
+        The speculation module contains commands for managing the remote end
+        behavior for prefetches, prerenders, and speculation rules.
+
+        Returns:
+            An object containing access to BiDi speculation events.
+
+        Examples:
+            ```
+            from selenium.webdriver.common.bidi.speculation import PreloadingStatus
+
+            events = []
+            callback_id = driver.speculation.add_event_handler("prefetch_status_updated", events.append)
+            # ... trigger prefetch ...
+            driver.speculation.remove_event_handler("prefetch_status_updated", callback_id)
+            ```
+        """
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        assert self._websocket_connection is not None
+        if self._speculation is None:
+            self._speculation = Speculation(self._websocket_connection)
+
+        return self._speculation
 
     @property
     def storage(self) -> Storage:
