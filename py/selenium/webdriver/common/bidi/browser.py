@@ -60,17 +60,9 @@ def validate_download_behavior(
         raise ValueError("destination_folder should not be provided when allowed=False")
 
 
-class ClientWindowNamedState:
-    """ClientWindowNamedState."""
-
-    FULLSCREEN = "fullscreen"
-    MAXIMIZED = "maximized"
-    MINIMIZED = "minimized"
-
-
 @dataclass
 class ClientWindowInfo:
-    """ClientWindowInfo."""
+    """ClientWindowInfo type definition."""
 
     active: bool | None = None
     client_window: Any | None = None
@@ -112,14 +104,14 @@ class ClientWindowInfo:
 
 @dataclass
 class UserContextInfo:
-    """UserContextInfo."""
+    """UserContextInfo type definition."""
 
     user_context: Any | None = None
 
 
 @dataclass
 class CreateUserContextParameters:
-    """CreateUserContextParameters."""
+    """CreateUserContextParameters type definition."""
 
     accept_insecure_certs: bool | None = None
     proxy: Any | None = None
@@ -128,35 +120,35 @@ class CreateUserContextParameters:
 
 @dataclass
 class GetClientWindowsResult:
-    """GetClientWindowsResult."""
+    """GetClientWindowsResult type definition."""
 
     client_windows: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class GetUserContextsResult:
-    """GetUserContextsResult."""
+    """GetUserContextsResult type definition."""
 
     user_contexts: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class RemoveUserContextParameters:
-    """RemoveUserContextParameters."""
+    """RemoveUserContextParameters type definition."""
 
     user_context: Any | None = None
 
 
 @dataclass
 class SetClientWindowStateParameters:
-    """SetClientWindowStateParameters."""
+    """SetClientWindowStateParameters type definition."""
 
     client_window: Any | None = None
 
 
 @dataclass
 class ClientWindowRectState:
-    """ClientWindowRectState."""
+    """ClientWindowRectState type definition."""
 
     state: str = field(default="normal", init=False)
     width: Any | None = None
@@ -167,7 +159,7 @@ class ClientWindowRectState:
 
 @dataclass
 class SetDownloadBehaviorParameters:
-    """SetDownloadBehaviorParameters."""
+    """SetDownloadBehaviorParameters type definition."""
 
     download_behavior: Any | None = None
     user_contexts: list[Any | None] | None = field(default_factory=list)
@@ -175,7 +167,7 @@ class SetDownloadBehaviorParameters:
 
 @dataclass
 class DownloadBehaviorAllowed:
-    """DownloadBehaviorAllowed."""
+    """DownloadBehaviorAllowed type definition."""
 
     type: str = field(default="allowed", init=False)
     destination_folder: str | None = None
@@ -183,10 +175,18 @@ class DownloadBehaviorAllowed:
 
 @dataclass
 class DownloadBehaviorDenied:
-    """DownloadBehaviorDenied."""
+    """DownloadBehaviorDenied type definition."""
 
     type: str = field(default="denied", init=False)
 
+
+class ClientWindowNamedState:
+    """Named states for a browser client window."""
+
+    FULLSCREEN = "fullscreen"
+    MAXIMIZED = "maximized"
+    MINIMIZED = "minimized"
+    NORMAL = "normal"
 
 class Browser:
     """WebDriver BiDi browser module."""

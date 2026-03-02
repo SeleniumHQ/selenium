@@ -49,7 +49,7 @@ class ContinueWithAuthNoCredentials:
 
 @dataclass
 class AuthChallenge:
-    """AuthChallenge."""
+    """AuthChallenge type definition."""
 
     scheme: str | None = None
     realm: str | None = None
@@ -57,7 +57,7 @@ class AuthChallenge:
 
 @dataclass
 class AuthCredentials:
-    """AuthCredentials."""
+    """AuthCredentials type definition."""
 
     type: str = field(default="password", init=False)
     username: str | None = None
@@ -66,7 +66,7 @@ class AuthCredentials:
 
 @dataclass
 class BaseParameters:
-    """BaseParameters."""
+    """BaseParameters type definition."""
 
     context: Any | None = None
     is_blocked: bool | None = None
@@ -79,7 +79,7 @@ class BaseParameters:
 
 @dataclass
 class StringValue:
-    """StringValue."""
+    """StringValue type definition."""
 
     type: str = field(default="string", init=False)
     value: str | None = None
@@ -87,7 +87,7 @@ class StringValue:
 
 @dataclass
 class Base64Value:
-    """Base64Value."""
+    """Base64Value type definition."""
 
     type: str = field(default="base64", init=False)
     value: str | None = None
@@ -95,7 +95,7 @@ class Base64Value:
 
 @dataclass
 class Cookie:
-    """Cookie."""
+    """Cookie type definition."""
 
     name: str | None = None
     value: Any | None = None
@@ -110,7 +110,7 @@ class Cookie:
 
 @dataclass
 class CookieHeader:
-    """CookieHeader."""
+    """CookieHeader type definition."""
 
     name: str | None = None
     value: Any | None = None
@@ -118,7 +118,7 @@ class CookieHeader:
 
 @dataclass
 class FetchTimingInfo:
-    """FetchTimingInfo."""
+    """FetchTimingInfo type definition."""
 
     time_origin: Any | None = None
     request_time: Any | None = None
@@ -137,7 +137,7 @@ class FetchTimingInfo:
 
 @dataclass
 class Header:
-    """Header."""
+    """Header type definition."""
 
     name: str | None = None
     value: Any | None = None
@@ -145,7 +145,7 @@ class Header:
 
 @dataclass
 class Initiator:
-    """Initiator."""
+    """Initiator type definition."""
 
     column_number: Any | None = None
     line_number: Any | None = None
@@ -156,14 +156,14 @@ class Initiator:
 
 @dataclass
 class ResponseContent:
-    """ResponseContent."""
+    """ResponseContent type definition."""
 
     size: Any | None = None
 
 
 @dataclass
 class ResponseData:
-    """ResponseData."""
+    """ResponseData type definition."""
 
     url: str | None = None
     protocol: str | None = None
@@ -181,7 +181,7 @@ class ResponseData:
 
 @dataclass
 class SetCookieHeader:
-    """SetCookieHeader."""
+    """SetCookieHeader type definition."""
 
     name: str | None = None
     value: Any | None = None
@@ -196,7 +196,7 @@ class SetCookieHeader:
 
 @dataclass
 class UrlPatternPattern:
-    """UrlPatternPattern."""
+    """UrlPatternPattern type definition."""
 
     type: str = field(default="pattern", init=False)
     protocol: str | None = None
@@ -208,7 +208,7 @@ class UrlPatternPattern:
 
 @dataclass
 class UrlPatternString:
-    """UrlPatternString."""
+    """UrlPatternString type definition."""
 
     type: str = field(default="string", init=False)
     pattern: str | None = None
@@ -216,7 +216,7 @@ class UrlPatternString:
 
 @dataclass
 class AddDataCollectorParameters:
-    """AddDataCollectorParameters."""
+    """AddDataCollectorParameters type definition."""
 
     data_types: list[Any | None] | None = field(default_factory=list)
     max_encoded_data_size: Any | None = None
@@ -227,14 +227,14 @@ class AddDataCollectorParameters:
 
 @dataclass
 class AddDataCollectorResult:
-    """AddDataCollectorResult."""
+    """AddDataCollectorResult type definition."""
 
     collector: Any | None = None
 
 
 @dataclass
 class AddInterceptParameters:
-    """AddInterceptParameters."""
+    """AddInterceptParameters type definition."""
 
     phases: list[Any | None] | None = field(default_factory=list)
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -243,14 +243,14 @@ class AddInterceptParameters:
 
 @dataclass
 class AddInterceptResult:
-    """AddInterceptResult."""
+    """AddInterceptResult type definition."""
 
     intercept: Any | None = None
 
 
 @dataclass
 class ContinueResponseParameters:
-    """ContinueResponseParameters."""
+    """ContinueResponseParameters type definition."""
 
     request: Any | None = None
     cookies: list[Any | None] | None = field(default_factory=list)
@@ -262,22 +262,22 @@ class ContinueResponseParameters:
 
 @dataclass
 class ContinueWithAuthParameters:
-    """ContinueWithAuthParameters."""
+    """ContinueWithAuthParameters type definition."""
 
     request: Any | None = None
 
 
 @dataclass
 class ContinueWithAuthCredentials:
-    """ContinueWithAuthCredentials."""
+    """ContinueWithAuthCredentials type definition."""
 
     action: str = field(default="provideCredentials", init=False)
     credentials: Any | None = None
 
 
 @dataclass
-class disownDataParameters:
-    """disownDataParameters."""
+class DisownDataParameters:
+    """DisownDataParameters type definition."""
 
     data_type: Any | None = None
     collector: Any | None = None
@@ -286,14 +286,14 @@ class disownDataParameters:
 
 @dataclass
 class FailRequestParameters:
-    """FailRequestParameters."""
+    """FailRequestParameters type definition."""
 
     request: Any | None = None
 
 
 @dataclass
 class GetDataParameters:
-    """GetDataParameters."""
+    """GetDataParameters type definition."""
 
     data_type: Any | None = None
     collector: Any | None = None
@@ -303,14 +303,14 @@ class GetDataParameters:
 
 @dataclass
 class GetDataResult:
-    """GetDataResult."""
+    """GetDataResult type definition."""
 
     bytes: Any | None = None
 
 
 @dataclass
 class ProvideResponseParameters:
-    """ProvideResponseParameters."""
+    """ProvideResponseParameters type definition."""
 
     request: Any | None = None
     body: Any | None = None
@@ -322,21 +322,21 @@ class ProvideResponseParameters:
 
 @dataclass
 class RemoveDataCollectorParameters:
-    """RemoveDataCollectorParameters."""
+    """RemoveDataCollectorParameters type definition."""
 
     collector: Any | None = None
 
 
 @dataclass
 class RemoveInterceptParameters:
-    """RemoveInterceptParameters."""
+    """RemoveInterceptParameters type definition."""
 
     intercept: Any | None = None
 
 
 @dataclass
 class SetCacheBehaviorParameters:
-    """SetCacheBehaviorParameters."""
+    """SetCacheBehaviorParameters type definition."""
 
     cache_behavior: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -344,7 +344,7 @@ class SetCacheBehaviorParameters:
 
 @dataclass
 class SetExtraHeadersParameters:
-    """SetExtraHeadersParameters."""
+    """SetExtraHeadersParameters type definition."""
 
     headers: list[Any | None] | None = field(default_factory=list)
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -352,8 +352,36 @@ class SetExtraHeadersParameters:
 
 
 @dataclass
+class AuthRequiredParameters:
+    """AuthRequiredParameters type definition."""
+
+    response: Any | None = None
+
+
+@dataclass
+class BeforeRequestSentParameters:
+    """BeforeRequestSentParameters type definition."""
+
+    initiator: Any | None = None
+
+
+@dataclass
+class FetchErrorParameters:
+    """FetchErrorParameters type definition."""
+
+    error_text: str | None = None
+
+
+@dataclass
+class ResponseCompletedParameters:
+    """ResponseCompletedParameters type definition."""
+
+    response: Any | None = None
+
+
+@dataclass
 class ResponseStartedParameters:
-    """ResponseStartedParameters."""
+    """ResponseStartedParameters type definition."""
 
     response: Any | None = None
 
@@ -396,6 +424,10 @@ class Request:
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
     "auth_required": "network.authRequired",
+    "before_request_sent": "network.beforeRequestSent",
+    "fetch_error": "network.fetchError",
+    "response_completed": "network.responseCompleted",
+    "response_started": "network.responseStarted",
     "before_request": "network.beforeRequestSent",
 }
 
@@ -560,6 +592,7 @@ class Network:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
         self.intercepts = []
+        self._handler_intercepts: dict = {}
 
     def add_data_collector(
         self,
@@ -767,52 +800,6 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def before_request_sent(self, initiator: Any | None = None, method: Any | None = None, params: Any | None = None):
-        """Execute network.beforeRequestSent."""
-        params = {
-            "initiator": initiator,
-            "method": method,
-            "params": params,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("network.beforeRequestSent", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def fetch_error(self, error_text: Any | None = None, method: Any | None = None, params: Any | None = None):
-        """Execute network.fetchError."""
-        params = {
-            "errorText": error_text,
-            "method": method,
-            "params": params,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("network.fetchError", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def response_completed(self, response: Any | None = None, method: Any | None = None, params: Any | None = None):
-        """Execute network.responseCompleted."""
-        params = {
-            "response": response,
-            "method": method,
-            "params": params,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("network.responseCompleted", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def response_started(self, response: Any | None = None):
-        """Execute network.responseStarted."""
-        params = {
-            "response": response,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("network.responseStarted", params)
-        result = self._conn.execute(cmd)
-        return result
-
     def _add_intercept(self, phases=None, url_patterns=None):
         """Add a low-level network intercept.
 
@@ -861,7 +848,8 @@ class Network:
             "auth_required": "authRequired",
         }
         phase = phase_map.get(event, "beforeRequestSent")
-        self._add_intercept(phases=[phase], url_patterns=url_patterns)
+        intercept_result = self._add_intercept(phases=[phase], url_patterns=url_patterns)
+        intercept_id = intercept_result.get("intercept") if intercept_result else None
 
         def _request_callback(params):
             raw = (
@@ -872,15 +860,21 @@ class Network:
             request = Request(self._conn, raw)
             callback(request)
 
-        return self.add_event_handler(event, _request_callback)
+        callback_id = self.add_event_handler(event, _request_callback)
+        if intercept_id:
+            self._handler_intercepts[callback_id] = intercept_id
+        return callback_id
     def remove_request_handler(self, event, callback_id):
-        """Remove a network request handler.
+        """Remove a network request handler and its associated network intercept.
 
         Args:
             event: The event name used when adding the handler.
             callback_id: The int returned by add_request_handler.
         """
         self.remove_event_handler(event, callback_id)
+        intercept_id = self._handler_intercepts.pop(callback_id, None)
+        if intercept_id:
+            self._remove_intercept(intercept_id)
     def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts."""
         self.clear_event_handlers()
@@ -960,6 +954,18 @@ class Network:
 # Event: network.authRequired
 AuthRequired = globals().get('AuthRequiredParameters', dict)  # Fallback to dict if type not defined
 
+# Event: network.beforeRequestSent
+BeforeRequestSent = globals().get('BeforeRequestSentParameters', dict)  # Fallback to dict if type not defined
+
+# Event: network.fetchError
+FetchError = globals().get('FetchErrorParameters', dict)  # Fallback to dict if type not defined
+
+# Event: network.responseCompleted
+ResponseCompleted = globals().get('ResponseCompletedParameters', dict)  # Fallback to dict if type not defined
+
+# Event: network.responseStarted
+ResponseStarted = globals().get('ResponseStartedParameters', dict)  # Fallback to dict if type not defined
+
 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
@@ -969,6 +975,30 @@ Network.EVENT_CONFIGS = {
                     _globals.get("AuthRequired", dict))
         if _globals.get("AuthRequired")
         else EventConfig("auth_required", "network.authRequired", dict)
+    ),
+    "before_request_sent": (
+        EventConfig("before_request_sent", "network.beforeRequestSent",
+                    _globals.get("BeforeRequestSent", dict))
+        if _globals.get("BeforeRequestSent")
+        else EventConfig("before_request_sent", "network.beforeRequestSent", dict)
+    ),
+    "fetch_error": (
+        EventConfig("fetch_error", "network.fetchError",
+                    _globals.get("FetchError", dict))
+        if _globals.get("FetchError")
+        else EventConfig("fetch_error", "network.fetchError", dict)
+    ),
+    "response_completed": (
+        EventConfig("response_completed", "network.responseCompleted",
+                    _globals.get("ResponseCompleted", dict))
+        if _globals.get("ResponseCompleted")
+        else EventConfig("response_completed", "network.responseCompleted", dict)
+    ),
+    "response_started": (
+        EventConfig("response_started", "network.responseStarted",
+                    _globals.get("ResponseStarted", dict))
+        if _globals.get("ResponseStarted")
+        else EventConfig("response_started", "network.responseStarted", dict)
     ),
     "before_request": EventConfig("before_request", "network.beforeRequestSent", _globals.get("dict", dict)),
 }

@@ -47,7 +47,7 @@ class ResultOwnership:
 
 @dataclass
 class ChannelValue:
-    """ChannelValue."""
+    """ChannelValue type definition."""
 
     type: str = field(default="channel", init=False)
     value: Any | None = None
@@ -55,7 +55,7 @@ class ChannelValue:
 
 @dataclass
 class ChannelProperties:
-    """ChannelProperties."""
+    """ChannelProperties type definition."""
 
     channel: Any | None = None
     serialization_options: Any | None = None
@@ -64,7 +64,7 @@ class ChannelProperties:
 
 @dataclass
 class EvaluateResultSuccess:
-    """EvaluateResultSuccess."""
+    """EvaluateResultSuccess type definition."""
 
     type: str = field(default="success", init=False)
     result: Any | None = None
@@ -73,7 +73,7 @@ class EvaluateResultSuccess:
 
 @dataclass
 class EvaluateResultException:
-    """EvaluateResultException."""
+    """EvaluateResultException type definition."""
 
     type: str = field(default="exception", init=False)
     exception_details: Any | None = None
@@ -82,7 +82,7 @@ class EvaluateResultException:
 
 @dataclass
 class ExceptionDetails:
-    """ExceptionDetails."""
+    """ExceptionDetails type definition."""
 
     column_number: Any | None = None
     exception: Any | None = None
@@ -93,7 +93,7 @@ class ExceptionDetails:
 
 @dataclass
 class ArrayLocalValue:
-    """ArrayLocalValue."""
+    """ArrayLocalValue type definition."""
 
     type: str = field(default="array", init=False)
     value: Any | None = None
@@ -101,7 +101,7 @@ class ArrayLocalValue:
 
 @dataclass
 class DateLocalValue:
-    """DateLocalValue."""
+    """DateLocalValue type definition."""
 
     type: str = field(default="date", init=False)
     value: str | None = None
@@ -109,7 +109,7 @@ class DateLocalValue:
 
 @dataclass
 class MapLocalValue:
-    """MapLocalValue."""
+    """MapLocalValue type definition."""
 
     type: str = field(default="map", init=False)
     value: Any | None = None
@@ -117,7 +117,7 @@ class MapLocalValue:
 
 @dataclass
 class ObjectLocalValue:
-    """ObjectLocalValue."""
+    """ObjectLocalValue type definition."""
 
     type: str = field(default="object", init=False)
     value: Any | None = None
@@ -125,7 +125,7 @@ class ObjectLocalValue:
 
 @dataclass
 class RegExpValue:
-    """RegExpValue."""
+    """RegExpValue type definition."""
 
     pattern: str | None = None
     flags: str | None = None
@@ -133,7 +133,7 @@ class RegExpValue:
 
 @dataclass
 class RegExpLocalValue:
-    """RegExpLocalValue."""
+    """RegExpLocalValue type definition."""
 
     type: str = field(default="regexp", init=False)
     value: Any | None = None
@@ -141,7 +141,7 @@ class RegExpLocalValue:
 
 @dataclass
 class SetLocalValue:
-    """SetLocalValue."""
+    """SetLocalValue type definition."""
 
     type: str = field(default="set", init=False)
     value: Any | None = None
@@ -149,21 +149,21 @@ class SetLocalValue:
 
 @dataclass
 class UndefinedValue:
-    """UndefinedValue."""
+    """UndefinedValue type definition."""
 
     type: str = field(default="undefined", init=False)
 
 
 @dataclass
 class NullValue:
-    """NullValue."""
+    """NullValue type definition."""
 
     type: str = field(default="null", init=False)
 
 
 @dataclass
 class StringValue:
-    """StringValue."""
+    """StringValue type definition."""
 
     type: str = field(default="string", init=False)
     value: str | None = None
@@ -171,7 +171,7 @@ class StringValue:
 
 @dataclass
 class NumberValue:
-    """NumberValue."""
+    """NumberValue type definition."""
 
     type: str = field(default="number", init=False)
     value: Any | None = None
@@ -179,7 +179,7 @@ class NumberValue:
 
 @dataclass
 class BooleanValue:
-    """BooleanValue."""
+    """BooleanValue type definition."""
 
     type: str = field(default="boolean", init=False)
     value: bool | None = None
@@ -187,7 +187,7 @@ class BooleanValue:
 
 @dataclass
 class BigIntValue:
-    """BigIntValue."""
+    """BigIntValue type definition."""
 
     type: str = field(default="bigint", init=False)
     value: str | None = None
@@ -195,7 +195,7 @@ class BigIntValue:
 
 @dataclass
 class BaseRealmInfo:
-    """BaseRealmInfo."""
+    """BaseRealmInfo type definition."""
 
     realm: Any | None = None
     origin: str | None = None
@@ -203,7 +203,7 @@ class BaseRealmInfo:
 
 @dataclass
 class WindowRealmInfo:
-    """WindowRealmInfo."""
+    """WindowRealmInfo type definition."""
 
     type: str = field(default="window", init=False)
     context: Any | None = None
@@ -212,7 +212,7 @@ class WindowRealmInfo:
 
 @dataclass
 class DedicatedWorkerRealmInfo:
-    """DedicatedWorkerRealmInfo."""
+    """DedicatedWorkerRealmInfo type definition."""
 
     type: str = field(default="dedicated-worker", init=False)
     owners: list[Any | None] | None = field(default_factory=list)
@@ -220,49 +220,49 @@ class DedicatedWorkerRealmInfo:
 
 @dataclass
 class SharedWorkerRealmInfo:
-    """SharedWorkerRealmInfo."""
+    """SharedWorkerRealmInfo type definition."""
 
     type: str = field(default="shared-worker", init=False)
 
 
 @dataclass
 class ServiceWorkerRealmInfo:
-    """ServiceWorkerRealmInfo."""
+    """ServiceWorkerRealmInfo type definition."""
 
     type: str = field(default="service-worker", init=False)
 
 
 @dataclass
 class WorkerRealmInfo:
-    """WorkerRealmInfo."""
+    """WorkerRealmInfo type definition."""
 
     type: str = field(default="worker", init=False)
 
 
 @dataclass
 class PaintWorkletRealmInfo:
-    """PaintWorkletRealmInfo."""
+    """PaintWorkletRealmInfo type definition."""
 
     type: str = field(default="paint-worklet", init=False)
 
 
 @dataclass
 class AudioWorkletRealmInfo:
-    """AudioWorkletRealmInfo."""
+    """AudioWorkletRealmInfo type definition."""
 
     type: str = field(default="audio-worklet", init=False)
 
 
 @dataclass
 class WorkletRealmInfo:
-    """WorkletRealmInfo."""
+    """WorkletRealmInfo type definition."""
 
     type: str = field(default="worklet", init=False)
 
 
 @dataclass
 class SharedReference:
-    """SharedReference."""
+    """SharedReference type definition."""
 
     shared_id: Any | None = None
     handle: Any | None = None
@@ -270,7 +270,7 @@ class SharedReference:
 
 @dataclass
 class RemoteObjectReference:
-    """RemoteObjectReference."""
+    """RemoteObjectReference type definition."""
 
     handle: Any | None = None
     shared_id: Any | None = None
@@ -278,7 +278,7 @@ class RemoteObjectReference:
 
 @dataclass
 class SymbolRemoteValue:
-    """SymbolRemoteValue."""
+    """SymbolRemoteValue type definition."""
 
     type: str = field(default="symbol", init=False)
     handle: Any | None = None
@@ -287,7 +287,7 @@ class SymbolRemoteValue:
 
 @dataclass
 class ArrayRemoteValue:
-    """ArrayRemoteValue."""
+    """ArrayRemoteValue type definition."""
 
     type: str = field(default="array", init=False)
     handle: Any | None = None
@@ -297,7 +297,7 @@ class ArrayRemoteValue:
 
 @dataclass
 class ObjectRemoteValue:
-    """ObjectRemoteValue."""
+    """ObjectRemoteValue type definition."""
 
     type: str = field(default="object", init=False)
     handle: Any | None = None
@@ -307,7 +307,7 @@ class ObjectRemoteValue:
 
 @dataclass
 class FunctionRemoteValue:
-    """FunctionRemoteValue."""
+    """FunctionRemoteValue type definition."""
 
     type: str = field(default="function", init=False)
     handle: Any | None = None
@@ -316,7 +316,7 @@ class FunctionRemoteValue:
 
 @dataclass
 class RegExpRemoteValue:
-    """RegExpRemoteValue."""
+    """RegExpRemoteValue type definition."""
 
     handle: Any | None = None
     internal_id: Any | None = None
@@ -324,7 +324,7 @@ class RegExpRemoteValue:
 
 @dataclass
 class DateRemoteValue:
-    """DateRemoteValue."""
+    """DateRemoteValue type definition."""
 
     handle: Any | None = None
     internal_id: Any | None = None
@@ -332,7 +332,7 @@ class DateRemoteValue:
 
 @dataclass
 class MapRemoteValue:
-    """MapRemoteValue."""
+    """MapRemoteValue type definition."""
 
     type: str = field(default="map", init=False)
     handle: Any | None = None
@@ -342,7 +342,7 @@ class MapRemoteValue:
 
 @dataclass
 class SetRemoteValue:
-    """SetRemoteValue."""
+    """SetRemoteValue type definition."""
 
     type: str = field(default="set", init=False)
     handle: Any | None = None
@@ -352,7 +352,7 @@ class SetRemoteValue:
 
 @dataclass
 class WeakMapRemoteValue:
-    """WeakMapRemoteValue."""
+    """WeakMapRemoteValue type definition."""
 
     type: str = field(default="weakmap", init=False)
     handle: Any | None = None
@@ -361,7 +361,7 @@ class WeakMapRemoteValue:
 
 @dataclass
 class WeakSetRemoteValue:
-    """WeakSetRemoteValue."""
+    """WeakSetRemoteValue type definition."""
 
     type: str = field(default="weakset", init=False)
     handle: Any | None = None
@@ -370,7 +370,7 @@ class WeakSetRemoteValue:
 
 @dataclass
 class GeneratorRemoteValue:
-    """GeneratorRemoteValue."""
+    """GeneratorRemoteValue type definition."""
 
     type: str = field(default="generator", init=False)
     handle: Any | None = None
@@ -379,7 +379,7 @@ class GeneratorRemoteValue:
 
 @dataclass
 class ErrorRemoteValue:
-    """ErrorRemoteValue."""
+    """ErrorRemoteValue type definition."""
 
     type: str = field(default="error", init=False)
     handle: Any | None = None
@@ -388,7 +388,7 @@ class ErrorRemoteValue:
 
 @dataclass
 class ProxyRemoteValue:
-    """ProxyRemoteValue."""
+    """ProxyRemoteValue type definition."""
 
     type: str = field(default="proxy", init=False)
     handle: Any | None = None
@@ -397,7 +397,7 @@ class ProxyRemoteValue:
 
 @dataclass
 class PromiseRemoteValue:
-    """PromiseRemoteValue."""
+    """PromiseRemoteValue type definition."""
 
     type: str = field(default="promise", init=False)
     handle: Any | None = None
@@ -406,7 +406,7 @@ class PromiseRemoteValue:
 
 @dataclass
 class TypedArrayRemoteValue:
-    """TypedArrayRemoteValue."""
+    """TypedArrayRemoteValue type definition."""
 
     type: str = field(default="typedarray", init=False)
     handle: Any | None = None
@@ -415,7 +415,7 @@ class TypedArrayRemoteValue:
 
 @dataclass
 class ArrayBufferRemoteValue:
-    """ArrayBufferRemoteValue."""
+    """ArrayBufferRemoteValue type definition."""
 
     type: str = field(default="arraybuffer", init=False)
     handle: Any | None = None
@@ -424,7 +424,7 @@ class ArrayBufferRemoteValue:
 
 @dataclass
 class NodeListRemoteValue:
-    """NodeListRemoteValue."""
+    """NodeListRemoteValue type definition."""
 
     type: str = field(default="nodelist", init=False)
     handle: Any | None = None
@@ -434,7 +434,7 @@ class NodeListRemoteValue:
 
 @dataclass
 class HTMLCollectionRemoteValue:
-    """HTMLCollectionRemoteValue."""
+    """HTMLCollectionRemoteValue type definition."""
 
     type: str = field(default="htmlcollection", init=False)
     handle: Any | None = None
@@ -444,7 +444,7 @@ class HTMLCollectionRemoteValue:
 
 @dataclass
 class NodeRemoteValue:
-    """NodeRemoteValue."""
+    """NodeRemoteValue type definition."""
 
     type: str = field(default="node", init=False)
     shared_id: Any | None = None
@@ -455,7 +455,7 @@ class NodeRemoteValue:
 
 @dataclass
 class NodeProperties:
-    """NodeProperties."""
+    """NodeProperties type definition."""
 
     node_type: Any | None = None
     child_node_count: Any | None = None
@@ -469,7 +469,7 @@ class NodeProperties:
 
 @dataclass
 class WindowProxyRemoteValue:
-    """WindowProxyRemoteValue."""
+    """WindowProxyRemoteValue type definition."""
 
     type: str = field(default="window", init=False)
     value: Any | None = None
@@ -479,14 +479,14 @@ class WindowProxyRemoteValue:
 
 @dataclass
 class WindowProxyProperties:
-    """WindowProxyProperties."""
+    """WindowProxyProperties type definition."""
 
     context: Any | None = None
 
 
 @dataclass
 class StackFrame:
-    """StackFrame."""
+    """StackFrame type definition."""
 
     column_number: Any | None = None
     function_name: str | None = None
@@ -496,14 +496,14 @@ class StackFrame:
 
 @dataclass
 class StackTrace:
-    """StackTrace."""
+    """StackTrace type definition."""
 
     call_frames: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class Source:
-    """Source."""
+    """Source type definition."""
 
     realm: Any | None = None
     context: Any | None = None
@@ -511,14 +511,14 @@ class Source:
 
 @dataclass
 class RealmTarget:
-    """RealmTarget."""
+    """RealmTarget type definition."""
 
     realm: Any | None = None
 
 
 @dataclass
 class ContextTarget:
-    """ContextTarget."""
+    """ContextTarget type definition."""
 
     context: Any | None = None
     sandbox: str | None = None
@@ -526,7 +526,7 @@ class ContextTarget:
 
 @dataclass
 class AddPreloadScriptParameters:
-    """AddPreloadScriptParameters."""
+    """AddPreloadScriptParameters type definition."""
 
     function_declaration: str | None = None
     arguments: list[Any | None] | None = field(default_factory=list)
@@ -537,14 +537,14 @@ class AddPreloadScriptParameters:
 
 @dataclass
 class AddPreloadScriptResult:
-    """AddPreloadScriptResult."""
+    """AddPreloadScriptResult type definition."""
 
     script: Any | None = None
 
 
 @dataclass
 class DisownParameters:
-    """DisownParameters."""
+    """DisownParameters type definition."""
 
     handles: list[Any | None] | None = field(default_factory=list)
     target: Any | None = None
@@ -552,7 +552,7 @@ class DisownParameters:
 
 @dataclass
 class CallFunctionParameters:
-    """CallFunctionParameters."""
+    """CallFunctionParameters type definition."""
 
     function_declaration: str | None = None
     await_promise: bool | None = None
@@ -566,7 +566,7 @@ class CallFunctionParameters:
 
 @dataclass
 class EvaluateParameters:
-    """EvaluateParameters."""
+    """EvaluateParameters type definition."""
 
     expression: str | None = None
     target: Any | None = None
@@ -578,7 +578,7 @@ class EvaluateParameters:
 
 @dataclass
 class GetRealmsParameters:
-    """GetRealmsParameters."""
+    """GetRealmsParameters type definition."""
 
     context: Any | None = None
     type: Any | None = None
@@ -586,21 +586,21 @@ class GetRealmsParameters:
 
 @dataclass
 class GetRealmsResult:
-    """GetRealmsResult."""
+    """GetRealmsResult type definition."""
 
     realms: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class RemovePreloadScriptParameters:
-    """RemovePreloadScriptParameters."""
+    """RemovePreloadScriptParameters type definition."""
 
     script: Any | None = None
 
 
 @dataclass
 class MessageParameters:
-    """MessageParameters."""
+    """MessageParameters type definition."""
 
     channel: Any | None = None
     data: Any | None = None
@@ -609,13 +609,14 @@ class MessageParameters:
 
 @dataclass
 class RealmDestroyedParameters:
-    """RealmDestroyedParameters."""
+    """RealmDestroyedParameters type definition."""
 
     realm: Any | None = None
 
 
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
+    "message": "script.message",
     "realm_created": "script.realmCreated",
     "realm_destroyed": "script.realmDestroyed",
 }
@@ -882,18 +883,6 @@ class Script:
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("script.removePreloadScript", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def message(self, channel: Any | None = None, data: Any | None = None, source: Any | None = None):
-        """Execute script.message."""
-        params = {
-            "channel": channel,
-            "data": data,
-            "source": source,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("script.message", params)
         result = self._conn.execute(cmd)
         return result
 
@@ -1298,6 +1287,9 @@ class Script:
         return self._event_manager.clear_event_handlers()
 
 # Event Info Type Aliases
+# Event: script.message
+Message = globals().get('MessageParameters', dict)  # Fallback to dict if type not defined
+
 # Event: script.realmCreated
 RealmCreated = globals().get('RealmInfo', dict)  # Fallback to dict if type not defined
 
@@ -1308,6 +1300,12 @@ RealmDestroyed = globals().get('RealmDestroyedParameters', dict)  # Fallback to 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Script.EVENT_CONFIGS = {
+    "message": (
+        EventConfig("message", "script.message",
+                    _globals.get("Message", dict))
+        if _globals.get("Message")
+        else EventConfig("message", "script.message", dict)
+    ),
     "realm_created": (
         EventConfig("realm_created", "script.realmCreated",
                     _globals.get("RealmCreated", dict))

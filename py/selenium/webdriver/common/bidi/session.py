@@ -22,7 +22,7 @@ class UserPromptHandlerType:
 
 @dataclass
 class CapabilitiesRequest:
-    """CapabilitiesRequest."""
+    """CapabilitiesRequest type definition."""
 
     always_match: Any | None = None
     first_match: list[Any | None] | None = field(default_factory=list)
@@ -30,7 +30,7 @@ class CapabilitiesRequest:
 
 @dataclass
 class CapabilityRequest:
-    """CapabilityRequest."""
+    """CapabilityRequest type definition."""
 
     accept_insecure_certs: bool | None = None
     browser_name: str | None = None
@@ -42,21 +42,21 @@ class CapabilityRequest:
 
 @dataclass
 class AutodetectProxyConfiguration:
-    """AutodetectProxyConfiguration."""
+    """AutodetectProxyConfiguration type definition."""
 
     proxy_type: str = field(default="autodetect", init=False)
 
 
 @dataclass
 class DirectProxyConfiguration:
-    """DirectProxyConfiguration."""
+    """DirectProxyConfiguration type definition."""
 
     proxy_type: str = field(default="direct", init=False)
 
 
 @dataclass
 class ManualProxyConfiguration:
-    """ManualProxyConfiguration."""
+    """ManualProxyConfiguration type definition."""
 
     proxy_type: str = field(default="manual", init=False)
     http_proxy: str | None = None
@@ -66,7 +66,7 @@ class ManualProxyConfiguration:
 
 @dataclass
 class SocksProxyConfiguration:
-    """SocksProxyConfiguration."""
+    """SocksProxyConfiguration type definition."""
 
     socks_proxy: str | None = None
     socks_version: Any | None = None
@@ -74,7 +74,7 @@ class SocksProxyConfiguration:
 
 @dataclass
 class PacProxyConfiguration:
-    """PacProxyConfiguration."""
+    """PacProxyConfiguration type definition."""
 
     proxy_type: str = field(default="pac", init=False)
     proxy_autoconfig_url: str | None = None
@@ -82,14 +82,14 @@ class PacProxyConfiguration:
 
 @dataclass
 class SystemProxyConfiguration:
-    """SystemProxyConfiguration."""
+    """SystemProxyConfiguration type definition."""
 
     proxy_type: str = field(default="system", init=False)
 
 
 @dataclass
 class SubscribeParameters:
-    """SubscribeParameters."""
+    """SubscribeParameters type definition."""
 
     events: list[str | None] | None = field(default_factory=list)
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -98,21 +98,21 @@ class SubscribeParameters:
 
 @dataclass
 class UnsubscribeByIDRequest:
-    """UnsubscribeByIDRequest."""
+    """UnsubscribeByIDRequest type definition."""
 
     subscriptions: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class UnsubscribeByAttributesRequest:
-    """UnsubscribeByAttributesRequest."""
+    """UnsubscribeByAttributesRequest type definition."""
 
     events: list[str | None] | None = field(default_factory=list)
 
 
 @dataclass
 class StatusResult:
-    """StatusResult."""
+    """StatusResult type definition."""
 
     ready: bool | None = None
     message: str | None = None
@@ -120,14 +120,14 @@ class StatusResult:
 
 @dataclass
 class NewParameters:
-    """NewParameters."""
+    """NewParameters type definition."""
 
     capabilities: Any | None = None
 
 
 @dataclass
 class NewResult:
-    """NewResult."""
+    """NewResult type definition."""
 
     session_id: str | None = None
     accept_insecure_certs: bool | None = None
@@ -143,7 +143,7 @@ class NewResult:
 
 @dataclass
 class SubscribeResult:
-    """SubscribeResult."""
+    """SubscribeResult type definition."""
 
     subscription: Any | None = None
 

@@ -368,11 +368,14 @@ class CddlTypeDefinition:
         dataclass_methods = enhancements.get("dataclass_methods", {})
         method_docstrings = enhancements.get("method_docstrings", {})
 
-        # Generate class name from type name (keep it as-is, don't split on underscores)
-        class_name = self.name
+        # Generate class name from type name.
+        # CDDL type names that start with a lowercase letter (e.g. camelCase
+        # command-parameter types like "setNetworkConditionsParameters") are
+        # capitalised so that the resulting Python class follows PascalCase.
+        class_name = self.name[0].upper() + self.name[1:] if self.name else self.name
         code = "@dataclass\n"
         code += f"class {class_name}:\n"
-        code += f'    """{self.description or self.name}."""\n\n'
+        code += f'    """{class_name} type definition."""\n\n'
 
         if not self.fields:
             code += "    pass\n"
@@ -466,9 +469,9 @@ class CddlEnum:
         Generates a simple class with string constants to match the existing
         pattern in the codebase (e.g., ClientWindowState).
         """
-        class_name = self.name
+        class_name = self.name[0].upper() + self.name[1:] if self.name else self.name
         code = f"class {class_name}:\n"
-        code += f'    """{self.description or self.name}."""\n\n'
+        code += f'    """{class_name}."""\n\n'
 
         for value in self.values:
             # Convert value to UPPER_SNAKE_CASE constant name
@@ -684,8 +687,19 @@ class CddlModule:
 
 """
 
-        # Generate enums first
+        # Collect names of extra_dataclasses so we can skip CDDL-generated
+        # enums and types that are overridden by manual definitions.
+        extra_cls_names = set()
+        for extra_cls in enhancements.get("extra_dataclasses", []):
+            m = re.search(r"^class\s+(\w+)", extra_cls, re.MULTILINE)
+            if m:
+                extra_cls_names.add(m.group(1))
+        exclude_types = set(enhancements.get("exclude_types", [])) | extra_cls_names
+
+        # Generate enums first, skipping any that are overridden via extra_dataclasses
         for enum_def in self.enums:
+            if enum_def.name in exclude_types:
+                continue
             code += enum_def.to_python_class()
             code += "\n\n"
 
@@ -694,13 +708,6 @@ class CddlModule:
             code += f"{alias} = {target}\n\n"
 
         # Generate type dataclasses, skipping any overridden by extra_dataclasses
-        # Also auto-exclude types whose names appear in extra_dataclasses
-        extra_cls_names = set()
-        for extra_cls in enhancements.get("extra_dataclasses", []):
-            m = re.search(r"^class\s+(\w+)", extra_cls, re.MULTILINE)
-            if m:
-                extra_cls_names.add(m.group(1))
-        exclude_types = set(enhancements.get("exclude_types", [])) | extra_cls_names
         for type_def in self.types:
             if type_def.name in exclude_types:
                 continue
@@ -1146,8 +1153,12 @@ class CddlParser:
     def _extract_definitions(self, content: str) -> None:
         """Extract CDDL definitions (type definitions, commands, etc.)."""
         # Match pattern: Name = Definition
-        # Handles multiline definitions properly
-        pattern = r"(\w+(?:\.\w+)*)\s*=\s*(.+?)(?=\n\w+(?:\.\w+)?\s*=|\Z)"
+        # Handles multiline definitions properly.
+        # The \s* after \n in the lookahead allows definitions that start with
+        # leading whitespace (e.g. " network.BeforeRequestSent = (") to be
+        # recognised as separate definitions instead of being swallowed into
+        # the body of the preceding definition.
+        pattern = r"(\w+(?:\.\w+)*)\s*=\s*(.+?)(?=\n\s*\w+(?:\.\w+)?\s*=|\Z)"
 
         for match in re.finditer(pattern, content, re.DOTALL):
             name = match.group(1).strip()
@@ -1589,12 +1600,15 @@ def generate_common_file(output_path: Path) -> None:
         "\n"
         '"""Common utilities for BiDi command construction."""\n'
         "\n"
-        "from typing import Any, Dict, Generator\n"
+        "from __future__ import annotations\n"
+        "\n"
+        "from collections.abc import Generator\n"
+        "from typing import Any\n"
         "\n"
         "\n"
         "def command_builder(\n"
-        "    method: str, params: Dict[str, Any]\n"
-        ") -> Generator[Dict[str, Any], Any, Any]:\n"
+        "    method: str, params: dict[str, Any] | None = None\n"
+        ") -> Generator[dict[str, Any], Any, Any]:\n"
         '    """Build a BiDi command generator.\n'
         "\n"
         "    Args:\n"
@@ -1607,6 +1621,8 @@ def generate_common_file(output_path: Path) -> None:
         "    Returns:\n"
         "        The result from the BiDi command execution\n"
         '    """\n'
+        "    if params is None:\n"
+        "        params = {}\n"
         '    result = yield {"method": method, "params": params}\n'
         "    return result\n"
     )
@@ -1680,8 +1696,10 @@ def generate_permissions_file(output_path: Path) -> None:
         "\n"
         "from __future__ import annotations\n"
         "\n"
+        "from __future__ import annotations\n"
+        "\n"
         "from enum import Enum\n"
-        "from typing import Any, Optional, Union\n"
+        "from typing import Any\n"
         "\n"
         "from .common import command_builder\n"
         "\n"
@@ -1724,10 +1742,10 @@ def generate_permissions_file(output_path: Path) -> None:
         "\n"
         "    def set_permission(\n"
         "        self,\n"
-        "        descriptor: Union[PermissionDescriptor, str],\n"
-        "        state: Union[PermissionState, str],\n"
-        "        origin: Optional[str] = None,\n"
-        "        user_context: Optional[str] = None,\n"
+        "        descriptor: PermissionDescriptor | str,\n"
+        "        state: PermissionState | str,\n"
+        "        origin: str | None = None,\n"
+        "        user_context: str | None = None,\n"
         "    ) -> None:\n"
         '        """Set a permission for a given origin.\n'
         "\n"

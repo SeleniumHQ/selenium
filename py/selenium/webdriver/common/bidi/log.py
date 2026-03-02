@@ -27,7 +27,7 @@ LogLevel = Level
 
 @dataclass
 class BaseLogEntry:
-    """BaseLogEntry."""
+    """BaseLogEntry type definition."""
 
     level: Any | None = None
     source: Any | None = None
@@ -38,7 +38,7 @@ class BaseLogEntry:
 
 @dataclass
 class GenericLogEntry:
-    """GenericLogEntry."""
+    """GenericLogEntry type definition."""
 
     type: str | None = None
 

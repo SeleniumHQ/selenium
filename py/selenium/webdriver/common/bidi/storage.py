@@ -14,7 +14,7 @@ from .common import command_builder
 
 @dataclass
 class PartitionKey:
-    """PartitionKey."""
+    """PartitionKey type definition."""
 
     user_context: str | None = None
     source_origin: str | None = None
@@ -22,7 +22,7 @@ class PartitionKey:
 
 @dataclass
 class GetCookiesParameters:
-    """GetCookiesParameters."""
+    """GetCookiesParameters type definition."""
 
     filter: Any | None = None
     partition: Any | None = None
@@ -30,7 +30,7 @@ class GetCookiesParameters:
 
 @dataclass
 class GetCookiesResult:
-    """GetCookiesResult."""
+    """GetCookiesResult type definition."""
 
     cookies: list[Any | None] | None = field(default_factory=list)
     partition_key: Any | None = None
@@ -38,7 +38,7 @@ class GetCookiesResult:
 
 @dataclass
 class SetCookieParameters:
-    """SetCookieParameters."""
+    """SetCookieParameters type definition."""
 
     cookie: Any | None = None
     partition: Any | None = None
@@ -46,14 +46,14 @@ class SetCookieParameters:
 
 @dataclass
 class SetCookieResult:
-    """SetCookieResult."""
+    """SetCookieResult type definition."""
 
     partition_key: Any | None = None
 
 
 @dataclass
 class DeleteCookiesParameters:
-    """DeleteCookiesParameters."""
+    """DeleteCookiesParameters type definition."""
 
     filter: Any | None = None
     partition: Any | None = None
@@ -61,7 +61,7 @@ class DeleteCookiesParameters:
 
 @dataclass
 class DeleteCookiesResult:
-    """DeleteCookiesResult."""
+    """DeleteCookiesResult type definition."""
 
     partition_key: Any | None = None
 

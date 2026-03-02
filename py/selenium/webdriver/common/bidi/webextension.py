@@ -14,14 +14,14 @@ from .common import command_builder
 
 @dataclass
 class InstallParameters:
-    """InstallParameters."""
+    """InstallParameters type definition."""
 
     extension_data: Any | None = None
 
 
 @dataclass
 class ExtensionPath:
-    """ExtensionPath."""
+    """ExtensionPath type definition."""
 
     type: str = field(default="path", init=False)
     path: str | None = None
@@ -29,7 +29,7 @@ class ExtensionPath:
 
 @dataclass
 class ExtensionArchivePath:
-    """ExtensionArchivePath."""
+    """ExtensionArchivePath type definition."""
 
     type: str = field(default="archivePath", init=False)
     path: str | None = None
@@ -37,7 +37,7 @@ class ExtensionArchivePath:
 
 @dataclass
 class ExtensionBase64Encoded:
-    """ExtensionBase64Encoded."""
+    """ExtensionBase64Encoded type definition."""
 
     type: str = field(default="base64", init=False)
     value: str | None = None
@@ -45,14 +45,14 @@ class ExtensionBase64Encoded:
 
 @dataclass
 class InstallResult:
-    """InstallResult."""
+    """InstallResult type definition."""
 
     extension: Any | None = None
 
 
 @dataclass
 class UninstallParameters:
-    """UninstallParameters."""
+    """UninstallParameters type definition."""
 
     extension: Any | None = None
 

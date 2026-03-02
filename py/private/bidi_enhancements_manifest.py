@@ -81,6 +81,20 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
                 "result_param": "download_behavior",
             },
         },
+        # Replace the auto-generated ClientWindowNamedState so we can add the
+        # convenience NORMAL constant.  In the BiDi spec "normal" is the state
+        # represented by ClientWindowRectState, but exposing it here keeps the
+        # Python API consistent with the old ClientWindowState enum.
+        "exclude_types": ["ClientWindowNamedState"],
+        "extra_dataclasses": [
+            '''class ClientWindowNamedState:
+    """Named states for a browser client window."""
+
+    FULLSCREEN = "fullscreen"
+    MAXIMIZED = "maximized"
+    MINIMIZED = "minimized"
+    NORMAL = "normal"''',
+        ],
         # Override the generator-produced set_download_behavior so that
         # downloadBehavior is never stripped by the generic None filter.
         # The BiDi spec marks it as required (can be null, but must be present).
@@ -845,8 +859,11 @@ class JavascriptLogEntry:
         ],
     },
     "network": {
-        # Initialize intercepts tracking list in __init__
-        "extra_init_code": ["self.intercepts = []"],
+        # Initialize intercepts tracking list and per-handler intercept map
+        "extra_init_code": [
+            "self.intercepts = []",
+            "self._handler_intercepts: dict = {}",
+        ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
             '''class BytesValue:
@@ -940,7 +957,8 @@ class JavascriptLogEntry:
             "auth_required": "authRequired",
         }
         phase = phase_map.get(event, "beforeRequestSent")
-        self._add_intercept(phases=[phase], url_patterns=url_patterns)
+        intercept_result = self._add_intercept(phases=[phase], url_patterns=url_patterns)
+        intercept_id = intercept_result.get("intercept") if intercept_result else None
 
         def _request_callback(params):
             raw = (
@@ -951,15 +969,21 @@ class JavascriptLogEntry:
             request = Request(self._conn, raw)
             callback(request)
 
-        return self.add_event_handler(event, _request_callback)''',
+        callback_id = self.add_event_handler(event, _request_callback)
+        if intercept_id:
+            self._handler_intercepts[callback_id] = intercept_id
+        return callback_id''',
             '''    def remove_request_handler(self, event, callback_id):
-        """Remove a network request handler.
+        """Remove a network request handler and its associated network intercept.
 
         Args:
             event: The event name used when adding the handler.
             callback_id: The int returned by add_request_handler.
         """
-        self.remove_event_handler(event, callback_id)''',
+        self.remove_event_handler(event, callback_id)
+        intercept_id = self._handler_intercepts.pop(callback_id, None)
+        if intercept_id:
+            self._remove_intercept(intercept_id)''',
             '''    def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts."""
         self.clear_event_handlers()

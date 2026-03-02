@@ -17,12 +17,14 @@
 
 """Common utilities for BiDi command construction."""
 
+from __future__ import annotations
+
 from collections.abc import Generator
 from typing import Any
 
 
 def command_builder(
-    method: str, params: dict[str, Any]
+    method: str, params: dict[str, Any] | None = None
 ) -> Generator[dict[str, Any], Any, Any]:
     """Build a BiDi command generator.
 
@@ -36,5 +38,7 @@ def command_builder(
     Returns:
         The result from the BiDi command execution
     """
+    if params is None:
+        params = {}
     result = yield {"method": method, "params": params}
     return result
