@@ -41,6 +41,16 @@ class _BiDiEncoder(json.JSONEncoder):
     directly into its parent action dict as required by the BiDi spec.
     """
 
+    def _convert(self, value):
+        """Recursively convert a value, handling nested dataclasses, lists, and dicts."""
+        if dataclasses.is_dataclass(value) and not isinstance(value, type):
+            return self.default(value)
+        if isinstance(value, list):
+            return [self._convert(item) for item in value]
+        if isinstance(value, dict):
+            return {k: self._convert(v) for k, v in value.items()}
+        return value
+
     def default(self, o):
         if dataclasses.is_dataclass(o) and not isinstance(o, type):
             result = {}
@@ -54,9 +64,9 @@ class _BiDiEncoder(json.JSONEncoder):
                     for pf in dataclasses.fields(value):
                         pv = getattr(value, pf.name)
                         if pv is not None:
-                            result[_snake_to_camel(pf.name)] = pv
+                            result[_snake_to_camel(pf.name)] = self._convert(pv)
                 else:
-                    result[camel_key] = value
+                    result[camel_key] = self._convert(value)
             return result
         return super().default(o)
 
