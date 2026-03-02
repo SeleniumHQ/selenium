@@ -118,6 +118,6 @@ public class UnpinnedScriptKey extends ScriptKey {
     // Avoid dumping raw JavaScript into logs: in UnpinnedScriptKey the identifier is the script.
     return String.format(
         "UnpinnedScriptKey{handle=%s, scriptId=%s, length=%d}",
-        scriptHandle, scriptId, script.length());
+        scriptHandle, Objects.toString(scriptId, "unset"), script.length());
   }
 }
