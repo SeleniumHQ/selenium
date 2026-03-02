@@ -1,6 +1,7 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_binary", "spotbugs_config")
-load(":defs.bzl", "artifact")
+load("@rules_java//java:java_plugin.bzl", "java_plugin")
+load(":defs.bzl", "artifact", "java_library")
 
 exports_files(
     srcs = [

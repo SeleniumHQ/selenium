@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.io.BufferedReader;
@@ -32,18 +33,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 class Preferences {
-
-  /**
-   * The maximum amount of time scripts should be permitted to run. The user may increase this
-   * timeout, but may not set it below the default value.
-   */
-  private static final String MAX_SCRIPT_RUN_TIME_KEY = "dom.max_script_run_time";
-
-  private static final int DEFAULT_MAX_SCRIPT_RUN_TIME = 30;
 
   /**
    * This pattern is used to parse preferences in user.js. It is intended to match all preference
@@ -56,7 +48,6 @@ class Preferences {
   private static final Pattern PREFERENCE_PATTERN =
       Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
 
-  private final Map<String, Object> immutablePrefs = new HashMap<>();
   private final Map<String, Object> allPrefs = new HashMap<>();
 
   public Preferences() {}
@@ -87,6 +78,10 @@ class Preferences {
     }
   }
 
+  Map<String, Object> asMap() {
+    return unmodifiableMap(allPrefs);
+  }
+
   private void readUserPrefs(File userPrefs) {
     try (Reader reader = Files.newBufferedReader(userPrefs.toPath(), Charset.defaultCharset())) {
       readPreferences(reader);
@@ -111,7 +106,6 @@ class Preferences {
               value = ((Long) value).intValue();
             }
             setPreference(key, value);
-            immutablePrefs.put(key, value);
           });
 
       Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
@@ -122,7 +116,7 @@ class Preferences {
     }
   }
 
-  public void setPreference(String key, Object value) {
+  public Preferences setPreference(String key, Object value) {
     if (value instanceof String) {
       if (isStringified((String) value)) {
         throw new IllegalArgumentException(
@@ -134,6 +128,7 @@ class Preferences {
     } else {
       allPrefs.put(key, value);
     }
+    return this;
   }
 
   private void readPreferences(Reader reader) throws IOException {
@@ -196,35 +191,5 @@ class Preferences {
     // Assume we a string is stringified (i.e. wrapped in " ") when
     // the first character == " and the last character == "
     return value.startsWith("\"") && value.endsWith("\"");
-  }
-
-  private void checkPreference(String key, Object value) {
-    Require.nonNull("Key", key);
-    Require.nonNull("Value", value);
-    Require.stateCondition(
-        !immutablePrefs.containsKey(key)
-            || (immutablePrefs.containsKey(key) && value.equals(immutablePrefs.get(key))),
-        "Preference %s may not be overridden: frozen value=%s, requested value=%s",
-        key,
-        immutablePrefs.get(key),
-        value);
-    if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
-      int n;
-      if (value instanceof String) {
-        n = Integer.parseInt((String) value);
-      } else if (value instanceof Integer) {
-        n = (Integer) value;
-      } else {
-        throw new IllegalStateException(
-            String.format(
-                "%s value must be a number: %s",
-                MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
-      }
-      Require.stateCondition(
-          n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-          "%s must be == 0 || >= %s",
-          MAX_SCRIPT_RUN_TIME_KEY,
-          DEFAULT_MAX_SCRIPT_RUN_TIME);
-    }
   }
 }

@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.withLatency;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Duration;
@@ -33,7 +34,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
@@ -167,10 +167,8 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
-    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-    networkConditions.setLatency(Duration.ofMillis(200));
+    conditions.setNetworkConditions(withLatency(Duration.ofMillis(200)));
 
-    conditions.setNetworkConditions(networkConditions);
     assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
 
     conditions.deleteNetworkConditions();

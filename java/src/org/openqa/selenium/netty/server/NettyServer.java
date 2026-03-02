@@ -36,11 +36,13 @@ import java.io.UncheckedIOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.net.ssl.SSLException;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -62,6 +64,7 @@ public class NettyServer implements Server<NettyServer> {
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
   private final SslContext sslCtx;
   private final boolean allowCors;
+  private final Function<String, Optional<URI>> tcpTunnelResolver;
 
   private Channel channel;
 
@@ -73,9 +76,28 @@ public class NettyServer implements Server<NettyServer> {
       BaseServerOptions options,
       HttpHandler handler,
       BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+    this(options, handler, websocketHandler, null);
+  }
+
+  /**
+   * Creates a {@link NettyServer} with an optional TCP-level tunnel resolver for WebSocket
+   * connections. When {@code tcpTunnelResolver} is non-null, WebSocket upgrade requests that
+   * contain a Selenium session ID are intercepted before the normal WebSocket handler: the Router
+   * opens a raw TCP connection to the resolved Node URI and bridges the two sockets directly,
+   * removing itself from the WebSocket data path entirely.
+   *
+   * @param tcpTunnelResolver maps a request URI to the target Node URI. Return {@link
+   *     Optional#empty()} to fall through to the normal WebSocket handler.
+   */
+  public NettyServer(
+      BaseServerOptions options,
+      HttpHandler handler,
+      BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler,
+      Function<String, Optional<URI>> tcpTunnelResolver) {
     Require.nonNull("Server options", options);
     Require.nonNull("Handler", handler);
     this.websocketHandler = Require.nonNull("Factory for websocket connections", websocketHandler);
+    this.tcpTunnelResolver = tcpTunnelResolver;
 
     InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
 
@@ -155,7 +177,9 @@ public class NettyServer implements Server<NettyServer> {
     b.group(bossGroup, workerGroup)
         .channel(NioServerSocketChannel.class)
         .handler(new LoggingHandler(LogLevel.DEBUG))
-        .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler, allowCors));
+        .childHandler(
+            new SeleniumHttpInitializer(
+                sslCtx, handler, websocketHandler, allowCors, tcpTunnelResolver));
 
     try {
       // Using a flag to avoid binding to the host, useful in environments like Docker,

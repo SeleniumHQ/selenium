@@ -177,8 +177,9 @@ public class FirefoxProfile {
     return name;
   }
 
-  public void setPreference(String key, Object value) {
+  public FirefoxProfile setPreference(String key, Object value) {
     additionalPrefs.setPreference(key, value);
+    return this;
   }
 
   protected Preferences getAdditionalPreferences() {
@@ -256,8 +257,9 @@ public class FirefoxProfile {
    *
    * @param loadNoFocusLib Whether to always load the no focus library.
    */
-  public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
+  public FirefoxProfile setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
     this.loadNoFocusLib = loadNoFocusLib;
+    return this;
   }
 
   /**
@@ -266,8 +268,9 @@ public class FirefoxProfile {
    *
    * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
    */
-  public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
+  public FirefoxProfile setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
     this.acceptUntrustedCerts = acceptUntrustedSsl;
+    return this;
   }
 
   /**
@@ -284,8 +287,9 @@ public class FirefoxProfile {
    *
    * @param untrustedIssuer whether to assume untrusted issuer or not.
    */
-  public void setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
+  public FirefoxProfile setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
     this.untrustedCertIssuer = untrustedIssuer;
+    return this;
   }
 
   public void clean(File profileDir) {
