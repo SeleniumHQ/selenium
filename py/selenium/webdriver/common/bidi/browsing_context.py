@@ -48,7 +48,7 @@ class DownloadCompleteParams:
 
 @dataclass
 class Info:
-    """Info."""
+    """Info type definition."""
 
     children: Any | None = None
     client_window: Any | None = None
@@ -61,7 +61,7 @@ class Info:
 
 @dataclass
 class AccessibilityLocator:
-    """AccessibilityLocator."""
+    """AccessibilityLocator type definition."""
 
     type: str = field(default="accessibility", init=False)
     name: str | None = None
@@ -70,7 +70,7 @@ class AccessibilityLocator:
 
 @dataclass
 class CssLocator:
-    """CssLocator."""
+    """CssLocator type definition."""
 
     type: str = field(default="css", init=False)
     value: str | None = None
@@ -78,7 +78,7 @@ class CssLocator:
 
 @dataclass
 class ContextLocator:
-    """ContextLocator."""
+    """ContextLocator type definition."""
 
     type: str = field(default="context", init=False)
     context: Any | None = None
@@ -86,7 +86,7 @@ class ContextLocator:
 
 @dataclass
 class InnerTextLocator:
-    """InnerTextLocator."""
+    """InnerTextLocator type definition."""
 
     type: str = field(default="innerText", init=False)
     value: str | None = None
@@ -97,7 +97,7 @@ class InnerTextLocator:
 
 @dataclass
 class XPathLocator:
-    """XPathLocator."""
+    """XPathLocator type definition."""
 
     type: str = field(default="xpath", init=False)
     value: str | None = None
@@ -105,7 +105,7 @@ class XPathLocator:
 
 @dataclass
 class BaseNavigationInfo:
-    """BaseNavigationInfo."""
+    """BaseNavigationInfo type definition."""
 
     context: Any | None = None
     navigation: Any | None = None
@@ -115,14 +115,14 @@ class BaseNavigationInfo:
 
 @dataclass
 class ActivateParameters:
-    """ActivateParameters."""
+    """ActivateParameters type definition."""
 
     context: Any | None = None
 
 
 @dataclass
 class CaptureScreenshotParameters:
-    """CaptureScreenshotParameters."""
+    """CaptureScreenshotParameters type definition."""
 
     context: Any | None = None
     format: Any | None = None
@@ -131,7 +131,7 @@ class CaptureScreenshotParameters:
 
 @dataclass
 class ImageFormat:
-    """ImageFormat."""
+    """ImageFormat type definition."""
 
     type: str | None = None
     quality: Any | None = None
@@ -139,7 +139,7 @@ class ImageFormat:
 
 @dataclass
 class ElementClipRectangle:
-    """ElementClipRectangle."""
+    """ElementClipRectangle type definition."""
 
     type: str = field(default="element", init=False)
     element: Any | None = None
@@ -147,7 +147,7 @@ class ElementClipRectangle:
 
 @dataclass
 class BoxClipRectangle:
-    """BoxClipRectangle."""
+    """BoxClipRectangle type definition."""
 
     type: str = field(default="box", init=False)
     x: Any | None = None
@@ -158,14 +158,14 @@ class BoxClipRectangle:
 
 @dataclass
 class CaptureScreenshotResult:
-    """CaptureScreenshotResult."""
+    """CaptureScreenshotResult type definition."""
 
     data: str | None = None
 
 
 @dataclass
 class CloseParameters:
-    """CloseParameters."""
+    """CloseParameters type definition."""
 
     context: Any | None = None
     prompt_unload: bool | None = None
@@ -173,7 +173,7 @@ class CloseParameters:
 
 @dataclass
 class CreateParameters:
-    """CreateParameters."""
+    """CreateParameters type definition."""
 
     type: Any | None = None
     reference_context: Any | None = None
@@ -183,14 +183,14 @@ class CreateParameters:
 
 @dataclass
 class CreateResult:
-    """CreateResult."""
+    """CreateResult type definition."""
 
     context: Any | None = None
 
 
 @dataclass
 class GetTreeParameters:
-    """GetTreeParameters."""
+    """GetTreeParameters type definition."""
 
     max_depth: Any | None = None
     root: Any | None = None
@@ -198,14 +198,14 @@ class GetTreeParameters:
 
 @dataclass
 class GetTreeResult:
-    """GetTreeResult."""
+    """GetTreeResult type definition."""
 
     contexts: Any | None = None
 
 
 @dataclass
 class HandleUserPromptParameters:
-    """HandleUserPromptParameters."""
+    """HandleUserPromptParameters type definition."""
 
     context: Any | None = None
     accept: bool | None = None
@@ -214,7 +214,7 @@ class HandleUserPromptParameters:
 
 @dataclass
 class LocateNodesParameters:
-    """LocateNodesParameters."""
+    """LocateNodesParameters type definition."""
 
     context: Any | None = None
     locator: Any | None = None
@@ -224,14 +224,14 @@ class LocateNodesParameters:
 
 @dataclass
 class LocateNodesResult:
-    """LocateNodesResult."""
+    """LocateNodesResult type definition."""
 
     nodes: list[Any | None] | None = field(default_factory=list)
 
 
 @dataclass
 class NavigateParameters:
-    """NavigateParameters."""
+    """NavigateParameters type definition."""
 
     context: Any | None = None
     url: str | None = None
@@ -240,7 +240,7 @@ class NavigateParameters:
 
 @dataclass
 class NavigateResult:
-    """NavigateResult."""
+    """NavigateResult type definition."""
 
     navigation: Any | None = None
     url: str | None = None
@@ -248,7 +248,7 @@ class NavigateResult:
 
 @dataclass
 class PrintParameters:
-    """PrintParameters."""
+    """PrintParameters type definition."""
 
     context: Any | None = None
     background: bool | None = None
@@ -260,7 +260,7 @@ class PrintParameters:
 
 @dataclass
 class PrintMarginParameters:
-    """PrintMarginParameters."""
+    """PrintMarginParameters type definition."""
 
     bottom: Any | None = None
     left: Any | None = None
@@ -270,7 +270,7 @@ class PrintMarginParameters:
 
 @dataclass
 class PrintPageParameters:
-    """PrintPageParameters."""
+    """PrintPageParameters type definition."""
 
     height: Any | None = None
     width: Any | None = None
@@ -278,14 +278,14 @@ class PrintPageParameters:
 
 @dataclass
 class PrintResult:
-    """PrintResult."""
+    """PrintResult type definition."""
 
     data: str | None = None
 
 
 @dataclass
 class ReloadParameters:
-    """ReloadParameters."""
+    """ReloadParameters type definition."""
 
     context: Any | None = None
     ignore_cache: bool | None = None
@@ -294,7 +294,7 @@ class ReloadParameters:
 
 @dataclass
 class SetViewportParameters:
-    """SetViewportParameters."""
+    """SetViewportParameters type definition."""
 
     context: Any | None = None
     viewport: Any | None = None
@@ -304,7 +304,7 @@ class SetViewportParameters:
 
 @dataclass
 class Viewport:
-    """Viewport."""
+    """Viewport type definition."""
 
     width: Any | None = None
     height: Any | None = None
@@ -312,7 +312,7 @@ class Viewport:
 
 @dataclass
 class TraverseHistoryParameters:
-    """TraverseHistoryParameters."""
+    """TraverseHistoryParameters type definition."""
 
     context: Any | None = None
     delta: Any | None = None
@@ -320,7 +320,7 @@ class TraverseHistoryParameters:
 
 @dataclass
 class HistoryUpdatedParameters:
-    """HistoryUpdatedParameters."""
+    """HistoryUpdatedParameters type definition."""
 
     context: Any | None = None
     timestamp: Any | None = None
@@ -329,7 +329,7 @@ class HistoryUpdatedParameters:
 
 @dataclass
 class UserPromptClosedParameters:
-    """UserPromptClosedParameters."""
+    """UserPromptClosedParameters type definition."""
 
     context: Any | None = None
     accepted: bool | None = None
@@ -339,7 +339,7 @@ class UserPromptClosedParameters:
 
 @dataclass
 class UserPromptOpenedParameters:
-    """UserPromptOpenedParameters."""
+    """UserPromptOpenedParameters type definition."""
 
     context: Any | None = None
     handler: Any | None = None

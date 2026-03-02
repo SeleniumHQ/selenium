@@ -33,7 +33,7 @@ class Origin:
 
 @dataclass
 class ElementOrigin:
-    """ElementOrigin."""
+    """ElementOrigin type definition."""
 
     type: str = field(default="element", init=False)
     element: Any | None = None
@@ -41,7 +41,7 @@ class ElementOrigin:
 
 @dataclass
 class PerformActionsParameters:
-    """PerformActionsParameters."""
+    """PerformActionsParameters type definition."""
 
     context: Any | None = None
     actions: list[Any | None] | None = field(default_factory=list)
@@ -49,7 +49,7 @@ class PerformActionsParameters:
 
 @dataclass
 class NoneSourceActions:
-    """NoneSourceActions."""
+    """NoneSourceActions type definition."""
 
     type: str = field(default="none", init=False)
     id: str | None = None
@@ -58,7 +58,7 @@ class NoneSourceActions:
 
 @dataclass
 class KeySourceActions:
-    """KeySourceActions."""
+    """KeySourceActions type definition."""
 
     type: str = field(default="key", init=False)
     id: str | None = None
@@ -67,7 +67,7 @@ class KeySourceActions:
 
 @dataclass
 class PointerSourceActions:
-    """PointerSourceActions."""
+    """PointerSourceActions type definition."""
 
     type: str = field(default="pointer", init=False)
     id: str | None = None
@@ -77,14 +77,14 @@ class PointerSourceActions:
 
 @dataclass
 class PointerParameters:
-    """PointerParameters."""
+    """PointerParameters type definition."""
 
     pointer_type: Any | None = None
 
 
 @dataclass
 class WheelSourceActions:
-    """WheelSourceActions."""
+    """WheelSourceActions type definition."""
 
     type: str = field(default="wheel", init=False)
     id: str | None = None
@@ -93,7 +93,7 @@ class WheelSourceActions:
 
 @dataclass
 class PauseAction:
-    """PauseAction."""
+    """PauseAction type definition."""
 
     type: str = field(default="pause", init=False)
     duration: Any | None = None
@@ -101,7 +101,7 @@ class PauseAction:
 
 @dataclass
 class KeyDownAction:
-    """KeyDownAction."""
+    """KeyDownAction type definition."""
 
     type: str = field(default="keyDown", init=False)
     value: str | None = None
@@ -109,7 +109,7 @@ class KeyDownAction:
 
 @dataclass
 class KeyUpAction:
-    """KeyUpAction."""
+    """KeyUpAction type definition."""
 
     type: str = field(default="keyUp", init=False)
     value: str | None = None
@@ -117,7 +117,7 @@ class KeyUpAction:
 
 @dataclass
 class PointerUpAction:
-    """PointerUpAction."""
+    """PointerUpAction type definition."""
 
     type: str = field(default="pointerUp", init=False)
     button: Any | None = None
@@ -125,7 +125,7 @@ class PointerUpAction:
 
 @dataclass
 class WheelScrollAction:
-    """WheelScrollAction."""
+    """WheelScrollAction type definition."""
 
     type: str = field(default="scroll", init=False)
     x: Any | None = None
@@ -138,7 +138,7 @@ class WheelScrollAction:
 
 @dataclass
 class PointerCommonProperties:
-    """PointerCommonProperties."""
+    """PointerCommonProperties type definition."""
 
     width: Any | None = None
     height: Any | None = None
@@ -151,14 +151,14 @@ class PointerCommonProperties:
 
 @dataclass
 class ReleaseActionsParameters:
-    """ReleaseActionsParameters."""
+    """ReleaseActionsParameters type definition."""
 
     context: Any | None = None
 
 
 @dataclass
 class SetFilesParameters:
-    """SetFilesParameters."""
+    """SetFilesParameters type definition."""
 
     context: Any | None = None
     element: Any | None = None

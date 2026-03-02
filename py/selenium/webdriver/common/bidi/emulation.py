@@ -37,7 +37,7 @@ class ScreenOrientationType:
 
 @dataclass
 class SetForcedColorsModeThemeOverrideParameters:
-    """SetForcedColorsModeThemeOverrideParameters."""
+    """SetForcedColorsModeThemeOverrideParameters type definition."""
 
     theme: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -46,7 +46,7 @@ class SetForcedColorsModeThemeOverrideParameters:
 
 @dataclass
 class SetGeolocationOverrideParameters:
-    """SetGeolocationOverrideParameters."""
+    """SetGeolocationOverrideParameters type definition."""
 
     contexts: list[Any | None] | None = field(default_factory=list)
     user_contexts: list[Any | None] | None = field(default_factory=list)
@@ -54,7 +54,7 @@ class SetGeolocationOverrideParameters:
 
 @dataclass
 class GeolocationCoordinates:
-    """GeolocationCoordinates."""
+    """GeolocationCoordinates type definition."""
 
     latitude: Any | None = None
     longitude: Any | None = None
@@ -67,14 +67,14 @@ class GeolocationCoordinates:
 
 @dataclass
 class GeolocationPositionError:
-    """GeolocationPositionError."""
+    """GeolocationPositionError type definition."""
 
     type: str = field(default="positionUnavailable", init=False)
 
 
 @dataclass
 class SetLocaleOverrideParameters:
-    """SetLocaleOverrideParameters."""
+    """SetLocaleOverrideParameters type definition."""
 
     locale: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -82,8 +82,8 @@ class SetLocaleOverrideParameters:
 
 
 @dataclass
-class setNetworkConditionsParameters:
-    """setNetworkConditionsParameters."""
+class SetNetworkConditionsParameters:
+    """SetNetworkConditionsParameters type definition."""
 
     network_conditions: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -92,14 +92,14 @@ class setNetworkConditionsParameters:
 
 @dataclass
 class NetworkConditionsOffline:
-    """NetworkConditionsOffline."""
+    """NetworkConditionsOffline type definition."""
 
     type: str = field(default="offline", init=False)
 
 
 @dataclass
 class ScreenArea:
-    """ScreenArea."""
+    """ScreenArea type definition."""
 
     width: Any | None = None
     height: Any | None = None
@@ -107,7 +107,7 @@ class ScreenArea:
 
 @dataclass
 class SetScreenSettingsOverrideParameters:
-    """SetScreenSettingsOverrideParameters."""
+    """SetScreenSettingsOverrideParameters type definition."""
 
     screen_area: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -116,7 +116,7 @@ class SetScreenSettingsOverrideParameters:
 
 @dataclass
 class ScreenOrientation:
-    """ScreenOrientation."""
+    """ScreenOrientation type definition."""
 
     natural: Any | None = None
     type: Any | None = None
@@ -124,7 +124,7 @@ class ScreenOrientation:
 
 @dataclass
 class SetScreenOrientationOverrideParameters:
-    """SetScreenOrientationOverrideParameters."""
+    """SetScreenOrientationOverrideParameters type definition."""
 
     screen_orientation: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -133,7 +133,7 @@ class SetScreenOrientationOverrideParameters:
 
 @dataclass
 class SetUserAgentOverrideParameters:
-    """SetUserAgentOverrideParameters."""
+    """SetUserAgentOverrideParameters type definition."""
 
     user_agent: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -142,7 +142,7 @@ class SetUserAgentOverrideParameters:
 
 @dataclass
 class SetViewportMetaOverrideParameters:
-    """SetViewportMetaOverrideParameters."""
+    """SetViewportMetaOverrideParameters type definition."""
 
     viewport_meta: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -151,7 +151,7 @@ class SetViewportMetaOverrideParameters:
 
 @dataclass
 class SetScriptingEnabledParameters:
-    """SetScriptingEnabledParameters."""
+    """SetScriptingEnabledParameters type definition."""
 
     enabled: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -160,7 +160,7 @@ class SetScriptingEnabledParameters:
 
 @dataclass
 class SetScrollbarTypeOverrideParameters:
-    """SetScrollbarTypeOverrideParameters."""
+    """SetScrollbarTypeOverrideParameters type definition."""
 
     scrollbar_type: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -169,7 +169,7 @@ class SetScrollbarTypeOverrideParameters:
 
 @dataclass
 class SetTimezoneOverrideParameters:
-    """SetTimezoneOverrideParameters."""
+    """SetTimezoneOverrideParameters type definition."""
 
     timezone: Any | None = None
     contexts: list[Any | None] | None = field(default_factory=list)
@@ -178,7 +178,7 @@ class SetTimezoneOverrideParameters:
 
 @dataclass
 class SetTouchOverrideParameters:
-    """SetTouchOverrideParameters."""
+    """SetTouchOverrideParameters type definition."""
 
     contexts: list[Any | None] | None = field(default_factory=list)
     user_contexts: list[Any | None] | None = field(default_factory=list)

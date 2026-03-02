@@ -450,8 +450,12 @@ class WebDriver(BaseWebDriver):
         """
         # Handle BiDi generator commands
         if inspect.isgenerator(driver_command):
-            # BiDi command: use WebSocketConnection directly
-            return self.command_executor.execute(driver_command)
+            # BiDi command: route through the WebSocket connection, not the
+            # HTTP RemoteConnection which only accepts (command, params) pairs.
+            if not self._websocket_connection:
+                self._start_bidi()
+            assert self._websocket_connection is not None
+            return self._websocket_connection.execute(driver_command)
 
         # Legacy WebDriver command: handle normally
         params = self._wrap_value(params)
