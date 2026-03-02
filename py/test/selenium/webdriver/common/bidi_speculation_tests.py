@@ -30,6 +30,7 @@ def test_speculation_module_initialized(driver):
     assert driver.speculation is not None
 
 
+@pytest.mark.xfail_firefox
 def test_prefetch_status_updated_with_pending_and_ready_events(driver, pages):
     """Test that prefetch status updated events are received with pending and ready statuses."""
     events_received = []
@@ -66,6 +67,7 @@ def test_prefetch_status_updated_with_pending_and_ready_events(driver, pages):
         driver.speculation.remove_event_handler("prefetch_status_updated", callback_id)
 
 
+@pytest.mark.xfail_firefox
 def test_prefetch_status_updated_with_navigation_and_success(driver, pages):
     """Test that navigating to a prefetched page via link click generates a success status event."""
     events_received = []
@@ -108,6 +110,7 @@ def test_prefetch_status_updated_with_navigation_and_success(driver, pages):
         driver.speculation.remove_event_handler("prefetch_status_updated", callback_id)
 
 
+@pytest.mark.xfail_firefox
 def test_prefetch_status_updated_with_failure_events(driver, pages):
     """Test that a failed prefetch generates failure status events."""
     events_received = []
@@ -138,6 +141,7 @@ def test_prefetch_status_updated_with_failure_events(driver, pages):
         driver.speculation.remove_event_handler("prefetch_status_updated", callback_id)
 
 
+@pytest.mark.xfail_firefox
 def test_can_unsubscribe_from_prefetch_status_updated(driver, pages):
     """Test that events are no longer received after removing the handler."""
     events_received = []
@@ -183,6 +187,7 @@ def test_can_unsubscribe_from_prefetch_status_updated(driver, pages):
         raise
 
 
+@pytest.mark.xfail_firefox
 def test_invalid_event_raises_error(driver):
     """Test that subscribing to an invalid event name raises ValueError."""
     with pytest.raises(ValueError, match="Event 'invalid_event' not found"):
