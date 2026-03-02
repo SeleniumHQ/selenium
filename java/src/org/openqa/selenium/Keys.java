@@ -28,8 +28,8 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>The codes follow conventions partially established by the W3C WebDriver specification and the
  * Selenium project. Some values (e.g., RIGHT_SHIFT, RIGHT_COMMAND) are used in ChromeDriver but are
- * not currently part of the W3C spec. Others (e.g., OPTION, FN) are symbolic and reserved for
- * possible future mapping.
+ * not currently part of the W3C specification. Others (e.g., OPTION) are symbolic aliases for
+ * existing keys.
  *
  * <p>For consistency across platforms and drivers, values should be verified before assuming native
  * support.
@@ -116,9 +116,15 @@ public enum Keys implements CharSequence {
   RIGHT_ALT('\uE052'),
   RIGHT_COMMAND('\uE053'),
 
-  // Symbolic macOS keys not yet standardized
-  OPTION('\uE052'),
-  FN('\uE051'), // TODO: symbolic only; confirm or remove in future
+  // macOS-friendly alias (do NOT introduce new codes)
+  OPTION(Keys.ALT),
+
+  /**
+   * @deprecated The FN key is not part of the W3C WebDriver specification and does not have a
+   *     standardized Unicode mapping. Its behavior is not guaranteed across drivers/platforms.
+   */
+  @Deprecated
+  FN(Keys.RIGHT_CONTROL),
 
   ZENKAKU_HANKAKU('\uE040');
 

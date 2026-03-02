@@ -224,6 +224,17 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     /// <summary>
+    /// Asynchronously disposes the WebDriver Instance
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsyncCore().ConfigureAwait(false);
+        this.Dispose(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Executes JavaScript "asynchronously" in the context of the currently selected frame or window,
     /// executing the callback function specified as the last argument in the list of arguments.
     /// </summary>
@@ -672,25 +683,60 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="disposing">if its in the process of disposing</param>
     protected virtual void Dispose(bool disposing)
     {
-        try
+        if (disposing)
         {
             if (this.SessionId is not null)
             {
-                this.Execute(DriverCommand.Quit, null);
+                try
+                {
+
+                    this.Execute(DriverCommand.Quit, null);
+
+                }
+                catch (NotImplementedException)
+                {
+                }
+                catch (InvalidOperationException)
+                {
+                }
+                catch (WebDriverException)
+                {
+                }
+                finally
+                {
+                    this.SessionId = null!;
+                }
             }
+
+            this.CommandExecutor.Dispose();
         }
-        catch (NotImplementedException)
+    }
+
+    /// <summary>
+    /// Asynchronously performs the core dispose logic.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (this.SessionId is not null)
         {
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        catch (WebDriverException)
-        {
-        }
-        finally
-        {
-            this.SessionId = null!;
+            try
+            {
+                await this.ExecuteAsync(DriverCommand.Quit, null).ConfigureAwait(false);
+            }
+            catch (NotImplementedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (WebDriverException)
+            {
+            }
+            finally
+            {
+                this.SessionId = null!;
+            }
         }
 
         this.CommandExecutor.Dispose();

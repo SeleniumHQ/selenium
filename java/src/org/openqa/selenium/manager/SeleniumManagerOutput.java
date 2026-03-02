@@ -32,16 +32,18 @@ public class SeleniumManagerOutput {
     return logs;
   }
 
-  public void setLogs(List<Log> logs) {
+  public SeleniumManagerOutput setLogs(List<Log> logs) {
     this.logs = logs;
+    return this;
   }
 
   public Result getResult() {
     return result;
   }
 
-  public void setResult(Result result) {
+  public SeleniumManagerOutput setResult(Result result) {
     this.result = result;
+    return this;
   }
 
   public static class Log {

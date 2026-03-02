@@ -55,16 +55,19 @@ public class DesiredCapabilities extends MutableCapabilities {
     }
   }
 
-  public void setBrowserName(String browserName) {
+  public DesiredCapabilities setBrowserName(String browserName) {
     setCapability(BROWSER_NAME, browserName);
+    return this;
   }
 
-  public void setVersion(String version) {
+  public DesiredCapabilities setVersion(String version) {
     setCapability(BROWSER_VERSION, version);
+    return this;
   }
 
-  public void setPlatform(Platform platform) {
+  public DesiredCapabilities setPlatform(Platform platform) {
     setCapability(PLATFORM_NAME, platform);
+    return this;
   }
 
   public boolean acceptInsecureCerts() {
@@ -79,8 +82,9 @@ public class DesiredCapabilities extends MutableCapabilities {
     return true;
   }
 
-  public void setAcceptInsecureCerts(boolean acceptInsecureCerts) {
+  public DesiredCapabilities setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+    return this;
   }
 
   /**

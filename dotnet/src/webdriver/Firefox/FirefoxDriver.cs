@@ -414,17 +414,6 @@ public class FirefoxDriver : WebDriver
         // Does nothing, but provides a hook for subclasses to do "stuff"
     }
 
-    /// <summary>
-    /// Disposes of the FirefoxDriver and frees all resources.
-    /// </summary>
-    /// <param name="disposing">A value indicating whether the user initiated the
-    /// disposal of the object. Pass <see langword="true"/> if the user is actively
-    /// disposing the object; otherwise <see langword="false"/>.</param>
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-    }
-
     private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
     {
         if (options == null)

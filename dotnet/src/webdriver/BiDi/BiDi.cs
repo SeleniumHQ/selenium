@@ -52,9 +52,12 @@ public sealed class BiDi : IBiDi
 
     public Emulation.IEmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
+    public static async Task<IBiDi> ConnectAsync(string url, Action<BiDiOptionsBuilder>? configure = null, CancellationToken cancellationToken = default)
     {
-        var transport = await WebSocketTransport.ConnectAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
+        BiDiOptionsBuilder builder = new();
+        configure?.Invoke(builder);
+
+        var transport = await builder.TransportFactory(new Uri(url), cancellationToken).ConfigureAwait(false);
 
         BiDi bidi = new();
 

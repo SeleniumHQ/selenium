@@ -5,7 +5,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
-load("//java:defs.bzl", "merge_jars")
+load("//java:defs.bzl", "java_import", "merge_jars")
 
 npm_link_all_packages(name = "node_modules")
 
