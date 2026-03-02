@@ -32,14 +32,14 @@ class UnpinnedScriptKeyTest {
   }
 
   @Test
-  void toStringContainsHandleAndScriptIdWhenPresent() {
+  void toStringContainsScriptIdWhenPresent() {
     UnpinnedScriptKey key = new UnpinnedScriptKey("return 1;");
     key.setScriptId("script-99");
 
     String value = key.toString();
 
     assertThat(value).contains("UnpinnedScriptKey{");
-    assertThat(value).contains("handle=");
     assertThat(value).contains("scriptId=script-99");
+    assertThat(value).contains("length=");
   }
 }
