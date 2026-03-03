@@ -21,7 +21,6 @@ from pathlib import Path
 
 OUTPUT_FILE = Path("selenium") / "webdriver" / "__init__.pyi"
 
-
 # Map lazy imports exactly like in selenium/webdriver/__init__.py
 LAZY_IMPORTS = {
     # Chrome
@@ -63,7 +62,6 @@ LAZY_IMPORTS = {
     "Proxy": "Proxy",
 }
 
-
 # Map types to their exact Selenium module for imports
 TYPE_MODULES = {
     "WebDriver": "selenium.webdriver.remote.webdriver",
@@ -89,7 +87,7 @@ def generate_stub():
         "",
         "if TYPE_CHECKING:",
     ]
-
+    # Add precise imports for TYPE_CHECKING
     for typ in sorted(set(LAZY_IMPORTS.values())):
         module = TYPE_MODULES[typ]
         lines.append(f"    from {module} import {typ}")
@@ -97,7 +95,7 @@ def generate_stub():
     # Forward-referenced variables
     lines.append("# Lazy imports (forward references)")
     for name, typ in sorted(LAZY_IMPORTS.items()):
-        lines.append(f"{name}: '{typ}'")
+        lines.append(f'{name}: "{typ}"')
     content = "\n".join(lines) + "\n"
     OUTPUT_FILE.write_text(content, encoding="utf-8")
     print(f"Generated: {OUTPUT_FILE}")
