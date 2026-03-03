@@ -32,12 +32,14 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
 
-    public static async Task<WebSocketTransport> ConnectAsync(Uri uri, CancellationToken cancellationToken)
+    public static async Task<ITransport> ConnectAsync(Uri uri, Action<ClientWebSocketOptions>? configure, CancellationToken cancellationToken)
     {
         ClientWebSocket webSocket = new();
 
         try
         {
+            configure?.Invoke(webSocket.Options);
+
             await webSocket.ConnectAsync(uri, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)

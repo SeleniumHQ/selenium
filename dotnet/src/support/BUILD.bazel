@@ -3,6 +3,7 @@ load(
     "csharp_library",
     "generated_assembly_info",
     "nuget_pack",
+    "nuget_package",
 )
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -44,6 +45,8 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-netstandard2.0",
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
     ],
 )
 
@@ -84,6 +87,8 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-netstandard2.0-strongnamed",
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
     ],
 )
 

@@ -3,7 +3,7 @@ load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
-load("//java:defs.bzl", "artifact")
+load("//java:defs.bzl", "artifact", "java_binary")
 
 exports_files([
     "package.json",

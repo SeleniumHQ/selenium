@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid;
 
 import java.io.Closeable;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,10 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
     Handlers handler = createHandlers(config);
 
     return new NettyServer(
-        new BaseServerOptions(config), handler.httpHandler, handler.websocketHandler) {
+        new BaseServerOptions(config),
+        handler.httpHandler,
+        handler.websocketHandler,
+        handler.tcpTunnelResolver) {
 
       @Override
       public void stop() {
@@ -92,12 +96,23 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
     public final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
         websocketHandler;
 
+    /** Optional resolver for direct TCP tunnel of WebSocket connections. May be null. */
+    public final Function<String, Optional<URI>> tcpTunnelResolver;
+
     public Handlers(
         HttpHandler http,
         BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+      this(http, websocketHandler, null);
+    }
+
+    public Handlers(
+        HttpHandler http,
+        BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler,
+        Function<String, Optional<URI>> tcpTunnelResolver) {
       this.httpHandler = Require.nonNull("HTTP handler", http);
       this.websocketHandler =
           websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;
+      this.tcpTunnelResolver = tcpTunnelResolver;
     }
 
     @Override

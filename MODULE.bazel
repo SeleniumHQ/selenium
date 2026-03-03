@@ -24,7 +24,7 @@ bazel_dep(name = "rules_nodejs", version = "6.3.2")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
 bazel_dep(name = "rules_python", version = "1.8.3")
 bazel_dep(name = "rules_proto", version = "7.0.2")
-bazel_dep(name = "rules_ruby", version = "0.19.0")
+bazel_dep(name = "rules_ruby", version = "0.22.1")
 bazel_dep(name = "rules_rust", version = "0.67.0")
 
 # Until `rules_jvm_external` 6.8 ships
@@ -259,7 +259,7 @@ ruby.toolchain(
         "curl",
         "libyaml",
     ],
-    ruby_build_version = "20260110",
+    portable_ruby = True,
     version_file = "//:rb/.ruby-version",
 )
 ruby.bundle_fetch(
@@ -358,6 +358,9 @@ ruby.bundle_fetch(
     },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
+    jar_checksums = {
+        "org.snakeyaml:snakeyaml-engine:2.10": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
+    },
 )
 use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 

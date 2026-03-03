@@ -1,4 +1,3 @@
-// <copyright file="BiDiOptions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,10 +14,20 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
+package org.openqa.selenium;
 
-namespace OpenQA.Selenium.BiDi;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public sealed class BiDiOptions
-{
+import org.junit.jupiter.api.Test;
+
+class ScriptKeyTest {
+  @Test
+  void hasToStringEqualToIdentifier() {
+    assertThat(new ScriptKey("xxx")).hasToString("xxx");
+  }
+
+  @Test
+  void hasToStringWorksForEmptyIdentifier() {
+    assertThat(new ScriptKey("")).hasToString("");
+  }
 }

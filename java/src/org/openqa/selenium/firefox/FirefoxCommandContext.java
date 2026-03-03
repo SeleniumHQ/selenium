@@ -32,17 +32,15 @@ public enum FirefoxCommandContext {
 
   @Override
   public String toString() {
-    return String.valueOf(text);
+    return text;
   }
 
   public static FirefoxCommandContext fromString(String text) {
-    if (text != null) {
-      for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
-        if (text.equalsIgnoreCase(b.text)) {
-          return b;
-        }
+    for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
+      if (text.equalsIgnoreCase(b.text)) {
+        return b;
       }
     }
-    return null;
+    throw new IllegalArgumentException("Unknown Firefox context: " + text);
   }
 }

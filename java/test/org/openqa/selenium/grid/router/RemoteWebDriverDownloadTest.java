@@ -38,9 +38,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -64,6 +64,11 @@ import org.openqa.selenium.testing.drivers.Browser;
 @Ignore(value = IE, reason = "browser must support setting download location")
 @Ignore(value = SAFARI, reason = "browser must support setting download location")
 class RemoteWebDriverDownloadTest extends JupiterTestBase {
+
+  enum DriverCreationMode {
+    CONSTRUCTOR,
+    BUILDER
+  }
 
   private static final Set<String> FILE_EXTENSIONS = Set.of(".txt", ".jpg");
 
@@ -97,10 +102,11 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(DriverCreationMode.class)
   @NoDriverBeforeTest
-  void canListDownloadedFiles() {
-    localDriver = createWebdriver(capabilities);
+  void canListDownloadedFiles(DriverCreationMode mode) {
+    localDriver = createWebdriver(capabilities, mode);
 
     localDriver.get(appServer.whereIs("downloads/download.html"));
     localDriver.findElement(By.id("file-1")).click();
@@ -121,9 +127,10 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
   @ParameterizedTest
   @MethodSource("downloadableFiles")
   @NoDriverBeforeTest
-  void canDownloadFiles(By selector, String expectedFileName, String expectedFileContent)
+  void canDownloadFiles(
+      DriverCreationMode mode, By selector, String expectedFileName, String expectedFileContent)
       throws IOException {
-    localDriver = createWebdriver(capabilities);
+    localDriver = createWebdriver(capabilities, mode);
 
     localDriver.get(appServer.whereIs("downloads/download.html"));
     localDriver.findElement(selector).click();
@@ -142,16 +149,23 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
   }
 
   static Stream<Arguments> downloadableFiles() {
-    return Stream.of(
-        Arguments.of(By.id("file-1"), "file_1.txt", "Hello, World!"),
-        Arguments.of(
-            By.id("file-3"), "file-with-space 0 & _ ' ~.txt", "Hello, filename with space!"));
+    return Stream.of(DriverCreationMode.values())
+        .flatMap(
+            mode ->
+                Stream.of(
+                    Arguments.of(mode, By.id("file-1"), "file_1.txt", "Hello, World!"),
+                    Arguments.of(
+                        mode,
+                        By.id("file-3"),
+                        "file-with-space 0 & _ ' ~.txt",
+                        "Hello, filename with space!")));
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(DriverCreationMode.class)
   @NoDriverBeforeTest
-  void testCanDeleteFiles() {
-    localDriver = createWebdriver(capabilities);
+  void testCanDeleteFiles(DriverCreationMode mode) {
+    localDriver = createWebdriver(capabilities, mode);
     localDriver.get(appServer.whereIs("downloads/download.html"));
     localDriver.findElement(By.id("file-1")).click();
     waitForDownloadedFiles(localDriver, 1);
@@ -162,16 +176,17 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
     assertThat(afterDeleteNames).isEmpty();
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(DriverCreationMode.class)
   @NoDriverBeforeTest
-  void errorsWhenCapabilityMissing() {
+  void errorsWhenCapabilityMissing(DriverCreationMode mode) {
     Browser browser = Browser.detect();
 
     Capabilities caps =
         new PersistentCapabilities(Objects.requireNonNull(browser).getCapabilities())
             .setCapability(ENABLE_DOWNLOADS, false);
 
-    localDriver = createWebdriver(caps);
+    localDriver = createWebdriver(caps, mode);
     assertThatThrownBy(() -> ((HasDownloads) localDriver).getDownloadedFiles())
         .isInstanceOf(WebDriverException.class)
         .hasMessageStartingWith(
@@ -184,8 +199,15 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
             "You must enable downloads in order to work with downloadable files");
   }
 
-  private WebDriver createWebdriver(Capabilities capabilities) {
-    return new Augmenter().augment(new RemoteWebDriver(server.getUrl(), capabilities));
+  private WebDriver createWebdriver(Capabilities capabilities, DriverCreationMode mode) {
+    return switch (mode) {
+      case CONSTRUCTOR ->
+          new Augmenter().augment(new RemoteWebDriver(server.getUrl(), capabilities));
+      case BUILDER ->
+          new Augmenter()
+              .augment(
+                  RemoteWebDriver.builder().oneOf(capabilities).address(server.getUrl()).build());
+    };
   }
 
   /** ensure we hit no temporary file created by the browser while downloading */

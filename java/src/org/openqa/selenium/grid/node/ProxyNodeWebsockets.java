@@ -251,6 +251,9 @@ public class ProxyNodeWebsockets
     LOG.info("Establishing connection to " + uri);
 
     AtomicBoolean connectionReleased = new AtomicBoolean(false);
+    // Set to true as soon as the browser signals it is closing so the send lambda can stop
+    // forwarding data frames without racing against the JDK WebSocket output stream being closed.
+    AtomicBoolean upstreamClosing = new AtomicBoolean(false);
 
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
     try {
@@ -258,21 +261,65 @@ public class ProxyNodeWebsockets
           client.openSocket(
               new HttpRequest(GET, uri.toString()),
               new ForwardingListener(
-                  node, downstream, sessionConsumer, sessionId, connectionReleased));
+                  node,
+                  downstream,
+                  sessionConsumer,
+                  sessionId,
+                  connectionReleased,
+                  client,
+                  upstreamClosing));
 
       return (msg) -> {
-        try {
-          upstream.send(msg);
-        } finally {
+        // Fast path: once the browser has signalled close, there is no point sending further
+        // data frames — the JDK WebSocket output is already closing and the send would either
+        // be dropped or throw "Output closed".  For the CloseMessage echo we skip the actual
+        // network write (the JDK stack handles the protocol-level echo internally when it fires
+        // onClose) and go straight to resource cleanup.
+        if (upstreamClosing.get()) {
           if (msg instanceof CloseMessage) {
             if (connectionReleased.compareAndSet(false, true)) {
               node.releaseConnection(sessionId);
+              try {
+                client.close();
+              } catch (Exception e) {
+                LOG.log(Level.FINE, "Failed to close client after upstream close for " + uri, e);
+              }
             }
+          } else {
+            LOG.log(Level.FINE, "Dropping in-flight data frame for closing session " + sessionId);
+          }
+          return;
+        }
+
+        // Slow path: upstream is (was) open — attempt the send and catch the narrow race where
+        // the browser closes between the upstreamClosing check above and the actual write.
+        try {
+          upstream.send(msg);
+        } catch (Exception e) {
+          LOG.log(
+              Level.FINE,
+              "Could not forward message to browser WebSocket for session "
+                  + sessionId
+                  + " (connection likely closed concurrently)",
+              e);
+          if (connectionReleased.compareAndSet(false, true)) {
+            node.releaseConnection(sessionId);
             try {
               client.close();
-            } catch (Exception e) {
-              LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
+            } catch (Exception ce) {
+              LOG.log(Level.FINE, "Failed to close client after send error for " + uri, ce);
             }
+          }
+          return;
+        }
+        if (msg instanceof CloseMessage) {
+          if (connectionReleased.compareAndSet(false, true)) {
+            node.releaseConnection(sessionId);
+          }
+          try {
+            client.close();
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
           }
         }
       };
@@ -289,18 +336,24 @@ public class ProxyNodeWebsockets
     private final Consumer<SessionId> sessionConsumer;
     private final SessionId sessionId;
     private final AtomicBoolean connectionReleased;
+    private final HttpClient client;
+    private final AtomicBoolean upstreamClosing;
 
     public ForwardingListener(
         Node node,
         Consumer<Message> downstream,
         Consumer<SessionId> sessionConsumer,
         SessionId sessionId,
-        AtomicBoolean connectionReleased) {
+        AtomicBoolean connectionReleased,
+        HttpClient client,
+        AtomicBoolean upstreamClosing) {
       this.node = node;
       this.downstream = Objects.requireNonNull(downstream);
       this.sessionConsumer = Objects.requireNonNull(sessionConsumer);
       this.sessionId = Objects.requireNonNull(sessionId);
       this.connectionReleased = Objects.requireNonNull(connectionReleased);
+      this.client = Objects.requireNonNull(client);
+      this.upstreamClosing = Objects.requireNonNull(upstreamClosing);
     }
 
     @Override
@@ -311,9 +364,19 @@ public class ProxyNodeWebsockets
 
     @Override
     public void onClose(int code, String reason) {
+      // Signal the send lambda before forwarding the close downstream so that any data frames
+      // still queued in the Netty pipeline are discarded rather than attempted on a closing stream.
+      upstreamClosing.set(true);
       downstream.accept(new CloseMessage(code, reason));
       if (connectionReleased.compareAndSet(false, true)) {
         node.releaseConnection(sessionId);
+        // Close the HttpClient eagerly so the connection slot is freed even if the client-side
+        // Close echo never arrives (e.g. the client dropped the TCP connection).
+        try {
+          client.close();
+        } catch (Exception e) {
+          LOG.log(Level.FINE, "Failed to close client on upstream WebSocket close", e);
+        }
       }
     }
 
@@ -325,9 +388,15 @@ public class ProxyNodeWebsockets
 
     @Override
     public void onError(Throwable cause) {
+      upstreamClosing.set(true);
       LOG.log(Level.WARNING, "Error proxying websocket command", cause);
       if (connectionReleased.compareAndSet(false, true)) {
         node.releaseConnection(sessionId);
+        try {
+          client.close();
+        } catch (Exception e) {
+          LOG.log(Level.FINE, "Failed to close client after WebSocket error", e);
+        }
       }
     }
   }

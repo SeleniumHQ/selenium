@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.BiDi;
 public sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
+    private bool _disposed;
 
     private Broker Broker { get; set; } = null!;
 
@@ -52,9 +53,12 @@ public sealed class BiDi : IBiDi
 
     public Emulation.IEmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public static async Task<IBiDi> ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)
+    public static async Task<IBiDi> ConnectAsync(string url, Action<BiDiOptionsBuilder>? configure = null, CancellationToken cancellationToken = default)
     {
-        var transport = await WebSocketTransport.ConnectAsync(new Uri(url), cancellationToken).ConfigureAwait(false);
+        BiDiOptionsBuilder builder = new();
+        configure?.Invoke(builder);
+
+        var transport = await builder.TransportFactory(new Uri(url), cancellationToken).ConfigureAwait(false);
 
         BiDi bidi = new();
 
@@ -80,6 +84,13 @@ public sealed class BiDi : IBiDi
 
     public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
         await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }

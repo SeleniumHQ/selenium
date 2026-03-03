@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -120,7 +122,21 @@ class PreferencesTest {
 
     preferences.setPreference("frozen.pref", true);
 
-    assertThat(preferences.getPreference("frozen.pref")).isEqualTo(true);
+    assertThat(preferences.asMap()).containsExactly(Map.entry("frozen.pref", true));
+  }
+
+  @Test
+  void canUseFluentSetter() {
+    Preferences preferences =
+        new Preferences()
+            .setPreference("one", true)
+            .setPreference("two", 2)
+            .setPreference("three", "3.0")
+            .setPreference("four", asList(1, 2, 3));
+
+    assertThat(preferences.asMap())
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of("one", true, "two", 2, "three", "3.0", "four", asList(1, 2, 3)));
   }
 
   private boolean canSet(Preferences pref, String value) {

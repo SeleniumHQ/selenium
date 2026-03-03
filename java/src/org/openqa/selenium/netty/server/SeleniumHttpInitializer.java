@@ -25,9 +25,11 @@ import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketSe
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.AttributeKey;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.Message;
@@ -40,16 +42,27 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
   private final SslContext sslCtx;
   private final boolean allowCors;
+  private final Function<String, Optional<URI>> tcpTunnelResolver;
 
   SeleniumHttpInitializer(
       SslContext sslCtx,
       HttpHandler seleniumHandler,
       BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
       boolean allowCors) {
+    this(sslCtx, seleniumHandler, webSocketHandler, allowCors, null);
+  }
+
+  SeleniumHttpInitializer(
+      SslContext sslCtx,
+      HttpHandler seleniumHandler,
+      BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
+      boolean allowCors,
+      Function<String, Optional<URI>> tcpTunnelResolver) {
     this.sslCtx = sslCtx;
     this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
     this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);
     this.allowCors = allowCors;
+    this.tcpTunnelResolver = tcpTunnelResolver;
   }
 
   @Override
@@ -63,6 +76,10 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
     // Websocket magic
     ch.pipeline().addLast("ws-compression", new WebSocketServerCompressionHandler());
+    // TCP tunnel intercepts WS upgrades before the normal WS handler when configured.
+    if (tcpTunnelResolver != null) {
+      ch.pipeline().addLast("tcp-tunnel", new TcpUpgradeTunnelHandler(tcpTunnelResolver));
+    }
     ch.pipeline().addLast("ws-protocol", new WebSocketUpgradeHandler(KEY, webSocketHandler));
     ch.pipeline().addLast("netty-to-se-messages", new MessageInboundConverter());
     ch.pipeline().addLast("se-to-netty-messages", new MessageOutboundConverter());
