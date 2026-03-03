@@ -19,8 +19,6 @@
 
 # ruff: noqa: F401, I001
 
-from typing import TYPE_CHECKING
-
 # Expose runtime version
 __version__: str
 
