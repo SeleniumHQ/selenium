@@ -66,10 +66,10 @@ if TYPE_CHECKING:
     from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
 
     # Common utilities
-    from selenium.webdriver.common.action_chains import ActionChains as ActionChains
-    from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DesiredCapabilities
-    from selenium.webdriver.common.keys import Keys as Keys
-    from selenium.webdriver.common.proxy import Proxy as Proxy
+    import selenium.webdriver.common.action_chains.ActionChains as ActionChains
+    import selenium.webdriver.common.desired_capabilities.DesiredCapabilities as DesiredCapabilities
+    import selenium.webdriver.common.keys.Keys as Keys
+    import selenium.webdriver.common.proxy.Proxy as Proxy
 
     # Submodules
     import selenium.webdriver.chrome as chrome
