@@ -82,3 +82,34 @@ import selenium.webdriver.safari as safari
 import selenium.webdriver.support as support
 import selenium.webdriver.webkitgtk as webkitgtk
 import selenium.webdriver.wpewebkit as wpewebkit
+
+__all__ = [
+    "ActionChains",
+    "Chrome",
+    "ChromeOptions",
+    "ChromeService",
+    "ChromiumEdge",
+    "DesiredCapabilities",
+    "Edge",
+    "EdgeOptions",
+    "EdgeService",
+    "Firefox",
+    "FirefoxOptions",
+    "FirefoxProfile",
+    "FirefoxService",
+    "Ie",
+    "IeOptions",
+    "IeService",
+    "Keys",
+    "Proxy",
+    "Remote",
+    "Safari",
+    "SafariOptions",
+    "SafariService",
+    "WPEWebKit",
+    "WPEWebKitOptions",
+    "WPEWebKitService",
+    "WebKitGTK",
+    "WebKitGTKOptions",
+    "WebKitGTKService",
+]
