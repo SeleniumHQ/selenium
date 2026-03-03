@@ -141,6 +141,7 @@ public enum Browser {
       if (Boolean.getBoolean("webdriver.headless")) {
         options.addArguments("-headless");
       }
+      options.setCapability("unhandledPromptBehavior", "ignore");
 
       options.enableBiDi();
 
