@@ -68,17 +68,7 @@ public abstract record RemoteValue
                 => (TResult)(object)this,
             (BooleanRemoteValue b, Type t) when t == typeof(bool)
                 => (TResult)(object)b.Value,
-            (NullRemoteValue _, Type t) when
-                t == typeof(bool?) ||
-                t == typeof(short?) ||
-                t == typeof(ushort?) ||
-                t == typeof(int?) ||
-                t == typeof(uint?) ||
-                t == typeof(long?) ||
-                t == typeof(ulong?) ||
-                t == typeof(double?) ||
-                t == typeof(float?) ||
-                t == typeof(string)
+            (NullRemoteValue, Type t) when !t.IsValueType || Nullable.GetUnderlyingType(t) is not null
                 => default,
             (NumberRemoteValue n, Type t) when t == typeof(short)
                 => (TResult)(object)Convert.ToInt16(n.Value),
@@ -103,8 +93,18 @@ public abstract record RemoteValue
             (ArrayRemoteValue a, Type t) when t.IsGenericType && t.IsAssignableFrom(typeof(List<>).MakeGenericType(t.GetGenericArguments()[0]))
                 => ConvertRemoteValuesToGenericList<TResult>(a.Value, typeof(List<>).MakeGenericType(t.GetGenericArguments()[0])),
 
+            (_, Type t) when Nullable.GetUnderlyingType(t) is { } underlying
+                => ConvertToNullable<TResult>(underlying),
+
             _ => throw new InvalidCastException($"Cannot convert {GetType().Name} to {typeof(TResult).FullName}")
         };
+
+    private TResult ConvertToNullable<TResult>(Type underlyingType)
+    {
+        var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(underlyingType);
+        var value = convertMethod.Invoke(this, null);
+        return (TResult)value!;
+    }
 
     private static TResult ConvertRemoteValuesToArray<TResult>(IEnumerable<RemoteValue>? remoteValues, Type elementType)
     {
