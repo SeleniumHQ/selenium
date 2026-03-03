@@ -1,5 +1,6 @@
 # Auto-generated stub for selenium.webdriver
 # ruff: noqa: F401, F821, I001, UP037, RUF100
+
 # Expose runtime version
 __version__: str
 

@@ -18,6 +18,7 @@
 
 """Generates selenium/webdriver/__init__.pyi from the lazy import mapping in __init__.py."""
 
+import json
 from pathlib import Path
 
 OUTPUT_FILE = Path("selenium") / "webdriver" / "__init__.pyi"
@@ -69,6 +70,7 @@ def generate_stub():
     lines = [
         "# Auto-generated stub for selenium.webdriver",
         "# ruff: noqa: F401, F821, I001, UP037, RUF100",
+        "",
         "# Expose runtime version",
         "__version__: str",
         "",
@@ -76,7 +78,7 @@ def generate_stub():
     ]
 
     for name, typ in sorted(LAZY_IMPORTS.items()):
-        lines.append(f"{name}: '{typ}'")
+        lines.append(f"{name}: {json.dumps(typ)}")  # always double quotes
 
     content = "\n".join(lines) + "\n"
 
