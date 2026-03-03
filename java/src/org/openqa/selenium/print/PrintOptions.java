@@ -55,15 +55,16 @@ public class PrintOptions {
     return this.orientation;
   }
 
-  public void setOrientation(Orientation orientation) {
+  public PrintOptions setOrientation(Orientation orientation) {
     this.orientation = Require.nonNull("orientation", orientation);
+    return this;
   }
 
   public String @Nullable [] getPageRanges() {
     return this.pageRanges;
   }
 
-  public void setPageRanges(String firstRange, String... ranges) {
+  public PrintOptions setPageRanges(String firstRange, String... ranges) {
     Require.nonNull("pageRanges", firstRange);
     this.pageRanges =
         new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
@@ -71,26 +72,30 @@ public class PrintOptions {
     this.pageRanges[0] = firstRange;
 
     if (ranges.length > 0) System.arraycopy(ranges, 0, this.pageRanges, 1, ranges.length);
+    return this;
   }
 
-  public void setPageRanges(List<String> ranges) {
+  public PrintOptions setPageRanges(List<String> ranges) {
     this.pageRanges = new String[ranges.size()];
     this.pageRanges = ranges.toArray(this.pageRanges);
+    return this;
   }
 
-  public void setBackground(boolean background) {
+  public PrintOptions setBackground(boolean background) {
     this.background = Require.nonNull("background", background);
+    return this;
   }
 
   public boolean getBackground() {
     return this.background;
   }
 
-  public void setScale(double scale) {
+  public PrintOptions setScale(double scale) {
     if (scale < 0.1 || scale > 2) {
       throw new IllegalArgumentException("Scale value should be between 0.1 and 2");
     }
     this.scale = scale;
+    return this;
   }
 
   public double getScale() {
@@ -101,16 +106,19 @@ public class PrintOptions {
     return this.shrinkToFit;
   }
 
-  public void setShrinkToFit(boolean value) {
+  public PrintOptions setShrinkToFit(boolean value) {
     this.shrinkToFit = Require.nonNull("value", value);
+    return this;
   }
 
-  public void setPageSize(PageSize pageSize) {
+  public PrintOptions setPageSize(PageSize pageSize) {
     this.pageSize = Require.nonNull("pageSize", pageSize);
+    return this;
   }
 
-  public void setPageMargin(PageMargin margin) {
+  public PrintOptions setPageMargin(PageMargin margin) {
     this.pageMargin = Require.nonNull("margin", margin);
+    return this;
   }
 
   public PageSize getPageSize() {

@@ -83,7 +83,7 @@ public class LoggingOptions {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
-  public void setLoggingLevel() {
+  public LoggingOptions setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
     if (Debug.isDebugAll()) {
       System.err.println(
@@ -105,6 +105,7 @@ public class LoggingOptions {
                   + DEFAULT_LOG_LEVELS)
           .printStackTrace();
     }
+    return this;
   }
 
   public Tracer getTracer() {

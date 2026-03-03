@@ -31,6 +31,10 @@ public class ChromiumNetworkConditions {
   private int downloadThroughput = -1;
   private int uploadThroughput = -1;
 
+  public static ChromiumNetworkConditions withLatency(Duration latency) {
+    return new ChromiumNetworkConditions().setLatency(latency);
+  }
+
   /**
    * @return whether network is simulated to be offline.
    */
@@ -43,8 +47,9 @@ public class ChromiumNetworkConditions {
    *
    * @param offline when set to true, network is simulated to be offline.
    */
-  public void setOffline(boolean offline) {
+  public ChromiumNetworkConditions setOffline(boolean offline) {
     this.offline = offline;
+    return this;
   }
 
   /**
@@ -61,8 +66,9 @@ public class ChromiumNetworkConditions {
    *
    * @param latency amount of latency, typically a Duration of milliseconds.
    */
-  public void setLatency(Duration latency) {
+  public ChromiumNetworkConditions setLatency(Duration latency) {
     this.latency = latency;
+    return this;
   }
 
   /**
@@ -79,8 +85,9 @@ public class ChromiumNetworkConditions {
    *
    * @param downloadThroughput throughput in kb/second
    */
-  public void setDownloadThroughput(int downloadThroughput) {
+  public ChromiumNetworkConditions setDownloadThroughput(int downloadThroughput) {
     this.downloadThroughput = downloadThroughput;
+    return this;
   }
 
   /**
@@ -97,7 +104,8 @@ public class ChromiumNetworkConditions {
    *
    * @param uploadThroughput throughput in kb/second
    */
-  public void setUploadThroughput(int uploadThroughput) {
+  public ChromiumNetworkConditions setUploadThroughput(int uploadThroughput) {
     this.uploadThroughput = uploadThroughput;
+    return this;
   }
 }

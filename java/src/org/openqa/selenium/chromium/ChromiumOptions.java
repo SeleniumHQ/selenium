@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.chromium;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
@@ -64,12 +62,12 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 public class ChromiumOptions<T extends ChromiumOptions<?>>
     extends AbstractDriverOptions<ChromiumOptions<?>> {
 
-  private String binary;
+  private @Nullable String binary;
   private final List<String> args = new ArrayList<>();
   private final List<File> extensionFiles = new ArrayList<>();
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
-  private Map<String, Object> androidOptions = new HashMap<>();
+  private final Map<String, Object> androidOptions = new HashMap<>();
 
   private final String capabilityName;
 
@@ -87,7 +85,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T setBinary(File path) {
     binary = Require.nonNull("Path to the chrome executable", path).getPath();
-    return (T) this;
+    return self();
   }
 
   /**
@@ -99,7 +97,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T setBinary(String path) {
     binary = Require.nonNull("Path to the chrome executable", path);
-    return (T) this;
+    return self();
   }
 
   /**
@@ -108,7 +106,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T addArguments(String... arguments) {
     addArguments(List.of(arguments));
-    return (T) this;
+    return self();
   }
 
   /**
@@ -127,7 +125,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T addArguments(List<String> arguments) {
     args.addAll(arguments);
-    return (T) this;
+    return self();
   }
 
   /**
@@ -136,7 +134,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T addExtensions(File... paths) {
     addExtensions(List.of(paths));
-    return (T) this;
+    return self();
   }
 
   /**
@@ -148,7 +146,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   public T addExtensions(List<File> paths) {
     paths.forEach(path -> Require.argument("Extension", path.toPath()).isFile());
     extensionFiles.addAll(paths);
-    return (T) this;
+    return self();
   }
 
   /**
@@ -157,7 +155,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T addEncodedExtensions(String... encoded) {
     addEncodedExtensions(List.of(encoded));
-    return (T) this;
+    return self();
   }
 
   /**
@@ -171,12 +169,12 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       Require.nonNull("Encoded extension", extension);
     }
     extensions.addAll(encoded);
-    return (T) this;
+    return self();
   }
 
   public T enableBiDi() {
     setCapability("webSocketUrl", true);
-    return (T) this;
+    return self();
   }
 
   /**
@@ -188,7 +186,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    */
   public T setExperimentalOption(String name, Object value) {
     experimentalOptions.put(Require.nonNull("Option name", name), value);
-    return (T) this;
+    return self();
   }
 
   public T setAndroidPackage(String androidPackage) {
@@ -222,9 +220,12 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   private T setAndroidCapability(String name, Object value) {
     Require.nonNull("Name", name);
     Require.nonNull("Value", value);
-    Map<String, Object> newOptions = new TreeMap<>(androidOptions);
-    newOptions.put(name, value);
-    androidOptions = Collections.unmodifiableMap(newOptions);
+    androidOptions.put(name, value);
+    return self();
+  }
+
+  @SuppressWarnings("unchecked")
+  protected T self() {
     return (T) this;
   }
 
@@ -247,28 +248,26 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       options.put("binary", binary);
     }
 
-    options.put("args", unmodifiableList(new ArrayList<>(args)));
-
-    options.put(
-        "extensions",
-        unmodifiableList(
-            Stream.concat(
-                    extensionFiles.stream()
-                        .map(
-                            file -> {
-                              try {
-                                return Base64.getEncoder()
-                                    .encodeToString(Files.readAllBytes(file.toPath()));
-                              } catch (IOException e) {
-                                throw new SessionNotCreatedException(e.getMessage(), e);
-                              }
-                            }),
-                    extensions.stream())
-                .collect(toList())));
-
+    options.put("args", List.copyOf(args));
+    options.put("extensions", extensionsArgument());
     options.putAll(androidOptions);
 
     return unmodifiableMap(options);
+  }
+
+  private List<String> extensionsArgument() {
+    return Stream.concat(extensionFiles.stream().map(this::fileContentBase64), extensions.stream())
+        .collect(toUnmodifiableList());
+  }
+
+  private String fileContentBase64(File file) {
+    try {
+      byte[] fileContent = Files.readAllBytes(file.toPath());
+      return Base64.getEncoder().encodeToString(fileContent);
+    } catch (IOException e) {
+      throw new SessionNotCreatedException(
+          "Failed to read extension file " + file.getAbsolutePath(), e);
+    }
   }
 
   protected void mergeInPlace(Capabilities capabilities) {
@@ -280,7 +279,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       }
 
       if (name.equals("args") && capabilities.getCapability(name) != null) {
-        List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
+        List<String> arguments = capabilities.required("args");
         arguments.forEach(
             arg -> {
               if (!args.contains(arg)) {
@@ -290,7 +289,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       }
 
       if (name.equals("extensions") && capabilities.getCapability(name) != null) {
-        List<Object> extensionList = (List<Object>) (capabilities.getCapability(("extensions")));
+        List<Object> extensionList = capabilities.required("extensions");
         extensionList.forEach(
             extension -> {
               if (!extensions.contains(extension)) {
@@ -323,12 +322,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       addExtensions(options.extensionFiles);
       addEncodedExtensions(options.extensions);
 
-      Optional.ofNullable(options.binary).ifPresent(this::setBinary);
-
+      if (options.binary != null) setBinary(options.binary);
       options.experimentalOptions.forEach(this::setExperimentalOption);
-
-      Optional.ofNullable(options.androidOptions)
-          .ifPresent(opts -> opts.forEach(this::setAndroidCapability));
+      options.androidOptions.forEach(this::setAndroidCapability);
     }
   }
 

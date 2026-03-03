@@ -15,18 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium;
 
-import java.util.Map;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@NullMarked
-class LocalExecuteMethod implements ExecuteMethod {
-  @Nullable
-  @Override
-  public <T> T execute(String commandName, @Nullable Map<String, ?> parameters) {
-    throw new WebDriverException("Cannot execute remote command: " + commandName);
+import org.junit.jupiter.api.Test;
+
+class UnpinnedScriptKeyTest {
+
+  @Test
+  void toStringDoesNotExposeRawScript() {
+    String script = "return 'SECRET_TOKEN';";
+    UnpinnedScriptKey key = new UnpinnedScriptKey(script);
+
+    assertThat(key.toString()).doesNotContain(script);
+  }
+
+  @Test
+  void toStringContainsScriptIdWhenPresent() {
+    UnpinnedScriptKey key = new UnpinnedScriptKey("return 1;");
+    key.setScriptId("script-99");
+
+    String value = key.toString();
+
+    assertThat(value).contains("UnpinnedScriptKey{");
+    assertThat(value).contains("scriptId=script-99");
+    assertThat(value).contains("length=");
   }
 }

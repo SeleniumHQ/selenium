@@ -31,8 +31,9 @@ public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
     this.driver = Require.nonNull("Remote WebDriver", driver);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters) {
+  public @Nullable <T> T execute(String commandName, @Nullable Map<String, ?> parameters) {
     Response response;
 
     if (parameters == null || parameters.isEmpty()) {
@@ -41,7 +42,7 @@ public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
       response = driver.execute(commandName, parameters);
     }
 
-    return response.getValue();
+    return (T) response.getValue();
   }
 
   @Override

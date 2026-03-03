@@ -67,6 +67,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     addPreference("remote.active-protocols", 1);
   }
 
+  public FirefoxOptions(FirefoxProfile profile) {
+    this();
+    setProfile(profile);
+  }
+
   public FirefoxOptions(Capabilities source) {
     // We need to initialize all our own fields before calling.
     this();
@@ -176,7 +181,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     }
   }
 
-  public FirefoxOptions setProfile(FirefoxProfile profile) {
+  public final FirefoxOptions setProfile(FirefoxProfile profile) {
     Require.nonNull("Profile", profile);
 
     try {
@@ -220,6 +225,14 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     newPrefs.put(key, value);
 
     return setFirefoxOption(Keys.PREFS, Collections.unmodifiableMap(newPrefs));
+  }
+
+  Map<String, Object> prefs() {
+    return getOption(Keys.PREFS);
+  }
+
+  String profile() {
+    return getOption(Keys.PROFILE);
   }
 
   public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {

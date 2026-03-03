@@ -14,19 +14,20 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium;
 
-package org.openqa.selenium.remote;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
+import org.junit.jupiter.api.Test;
 
-@NullMarked
-class LocalExecuteMethod implements ExecuteMethod {
-  @Nullable
-  @Override
-  public <T> T execute(String commandName, @Nullable Map<String, ?> parameters) {
-    throw new WebDriverException("Cannot execute remote command: " + commandName);
+class ScriptKeyTest {
+  @Test
+  void hasToStringEqualToIdentifier() {
+    assertThat(new ScriptKey("xxx")).hasToString("xxx");
+  }
+
+  @Test
+  void hasToStringWorksForEmptyIdentifier() {
+    assertThat(new ScriptKey("")).hasToString("");
   }
 }

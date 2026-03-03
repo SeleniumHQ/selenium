@@ -21,7 +21,6 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -34,8 +33,6 @@ import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class ChromeDriverInfo extends ChromiumDriverInfo {
-  private static final Logger LOG = Logger.getLogger(ChromeDriverInfo.class.getName());
-
   @Override
   public String getDisplayName() {
     return "Chrome";
