@@ -23,7 +23,6 @@ from pathlib import Path
 
 OUTPUT_FILE = Path("selenium") / "webdriver" / "__init__.pyi"
 
-
 # Map lazy imports exactly like in selenium/webdriver/__init__.py
 LAZY_IMPORTS = {
     # Chrome
@@ -76,14 +75,10 @@ def generate_stub():
         "",
         "# Lazy imports (forward references)",
     ]
-
     for name, typ in sorted(LAZY_IMPORTS.items()):
         lines.append(f"{name}: {json.dumps(typ)}")  # always double quotes
-
     content = "\n".join(lines) + "\n"
-
     OUTPUT_FILE.write_text(content, encoding="utf-8")
-
     print(f"Generated: {OUTPUT_FILE}")
 
 
