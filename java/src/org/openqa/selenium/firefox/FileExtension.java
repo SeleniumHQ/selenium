@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.io.BufferedInputStream;
@@ -131,7 +132,7 @@ public class FileExtension implements Extension {
         JsonInput json = new Json().newInput(reader)) {
       String addOnId = null;
 
-      Map<String, Object> manifestObject = json.read(MAP_TYPE);
+      Map<String, Object> manifestObject = json.readNonNull(MAP_TYPE);
       if (manifestObject.get("applications") instanceof Map) {
         Map<?, ?> applicationObj = (Map<?, ?>) manifestObject.get("applications");
         if (applicationObj.get("gecko") instanceof Map) {
@@ -143,10 +144,14 @@ public class FileExtension implements Extension {
       }
 
       if (addOnId == null || addOnId.isEmpty()) {
-        addOnId =
-            ((String) manifestObject.get("name")).replaceAll(" ", "")
-                + "@"
-                + manifestObject.get("version");
+        String name =
+            (String)
+                requireNonNull(
+                    manifestObject.get("name"),
+                    () ->
+                        "Manifest should contain either 'applications' or 'name', but received: "
+                            + manifestObject);
+        addOnId = name.replaceAll(" ", "") + "@" + manifestObject.get("version");
       }
 
       return addOnId;
@@ -158,9 +163,8 @@ public class FileExtension implements Extension {
   }
 
   private String readIdFromInstallRdf(File root) {
+    File installRdf = new File(root, "install.rdf");
     try {
-      File installRdf = new File(root, "install.rdf");
-
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       factory.setNamespaceAware(true);
@@ -214,7 +218,7 @@ public class FileExtension implements Extension {
       }
       return id;
     } catch (Exception e) {
-      throw new WebDriverException(e);
+      throw new WebDriverException("Failed to read id from " + installRdf.getAbsolutePath(), e);
     }
   }
 }

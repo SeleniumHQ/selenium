@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -38,7 +39,7 @@ public class FirefoxProfile {
   private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
   private final Preferences additionalPrefs;
   private final Map<String, Extension> extensions = new HashMap<>();
-  private final File model;
+  private @Nullable final File model;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
@@ -54,7 +55,7 @@ public class FirefoxProfile {
    *
    * @param profileDir The profile directory to use as a model.
    */
-  public FirefoxProfile(File profileDir) {
+  public FirefoxProfile(@Nullable File profileDir) {
     additionalPrefs = new Preferences();
     model = profileDir;
     verifyModel(model);
@@ -124,7 +125,7 @@ public class FirefoxProfile {
     return defaultValue;
   }
 
-  private void verifyModel(File model) {
+  private void verifyModel(@Nullable File model) {
     if (model == null) {
       return;
     }
@@ -292,8 +293,10 @@ public class FirefoxProfile {
     return this;
   }
 
-  public void clean(File profileDir) {
-    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(profileDir);
+  public void clean(@Nullable File profileDir) {
+    if (profileDir != null) {
+      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(profileDir);
+    }
   }
 
   String toJson() throws IOException {
@@ -336,7 +339,7 @@ public class FirefoxProfile {
     }
   }
 
-  protected void copyModel(File sourceDir, File profileDir) throws IOException {
+  protected void copyModel(@Nullable File sourceDir, File profileDir) throws IOException {
     if (sourceDir == null || !sourceDir.exists()) {
       return;
     }

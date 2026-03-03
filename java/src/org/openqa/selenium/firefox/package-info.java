@@ -15,32 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.firefox;
 
-/**
- * Represents the valid values for the command context used for executing Firefox driver commands.
- */
-public enum FirefoxCommandContext {
-  CONTENT("content"),
-  CHROME("chrome");
-
-  private final String text;
-
-  FirefoxCommandContext(String text) {
-    this.text = text;
-  }
-
-  @Override
-  public String toString() {
-    return text;
-  }
-
-  public static FirefoxCommandContext fromString(String text) {
-    for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
-      if (text.equalsIgnoreCase(b.text)) {
-        return b;
-      }
-    }
-    throw new IllegalArgumentException("Unknown Firefox context: " + text);
-  }
-}
+import org.jspecify.annotations.NullMarked;
