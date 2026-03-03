@@ -64,7 +64,7 @@ public abstract record RemoteValue
     public TResult? ConvertTo<TResult>()
         => (this, typeof(TResult)) switch
         {
-            (_, Type t) when typeof(RemoteValue).IsAssignableFrom(t)
+            (_, Type t) when t.IsAssignableFrom(GetType())
                 => (TResult)(object)this,
             (BooleanRemoteValue b, Type t) when t == typeof(bool)
                 => (TResult)(object)b.Value,
