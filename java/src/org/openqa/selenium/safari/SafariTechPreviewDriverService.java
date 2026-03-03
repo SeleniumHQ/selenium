@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -114,7 +115,7 @@ public class SafariTechPreviewDriverService extends DriverService {
       extends DriverService.Builder<
           SafariTechPreviewDriverService, SafariTechPreviewDriverService.Builder> {
 
-    private Boolean diagnose;
+    @Nullable private Boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {
