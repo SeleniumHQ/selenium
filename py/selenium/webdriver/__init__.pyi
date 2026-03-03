@@ -17,9 +17,9 @@
 
 """Type stub with lazy import mapping from __init__.py."""
 
-# ruff: noqa: F401, F821, I001, UP037, RUF100
+# ruff: noqa: F401, I001
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 # Expose runtime version
 __version__: str
@@ -29,34 +29,42 @@ if TYPE_CHECKING:
     from selenium.webdriver.chrome.webdriver import WebDriver as Chrome
     from selenium.webdriver.chrome.options import Options as ChromeOptions
     from selenium.webdriver.chrome.service import Service as ChromeService
+
     # Edge
     from selenium.webdriver.edge.webdriver import WebDriver as Edge
     from selenium.webdriver.edge.webdriver import WebDriver as ChromiumEdge
     from selenium.webdriver.edge.options import Options as EdgeOptions
     from selenium.webdriver.edge.service import Service as EdgeService
+
     # Firefox
     from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
     from selenium.webdriver.firefox.options import Options as FirefoxOptions
     from selenium.webdriver.firefox.service import Service as FirefoxService
     from selenium.webdriver.firefox.firefox_profile import FirefoxProfile as FirefoxProfile
+
     # IE
     from selenium.webdriver.ie.webdriver import WebDriver as Ie
     from selenium.webdriver.ie.options import Options as IeOptions
     from selenium.webdriver.ie.service import Service as IeService
+
     # Safari
     from selenium.webdriver.safari.webdriver import WebDriver as Safari
     from selenium.webdriver.safari.options import Options as SafariOptions
     from selenium.webdriver.safari.service import Service as SafariService
+
     # Remote
     from selenium.webdriver.remote.webdriver import WebDriver as Remote
+
     # WebKitGTK
     from selenium.webdriver.webkitgtk.webdriver import WebDriver as WebKitGTK
     from selenium.webdriver.webkitgtk.options import Options as WebKitGTKOptions
     from selenium.webdriver.webkitgtk.service import Service as WebKitGTKService
+
     # WPEWebKit
     from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit
-    from  selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
+    from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
     from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
+
     # Common utilities
     from selenium.webdriver.common.action_chains import ActionChains as ActionChains
     from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DesiredCapabilities
