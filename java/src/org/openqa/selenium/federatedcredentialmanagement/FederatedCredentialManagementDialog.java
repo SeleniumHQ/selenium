@@ -18,7 +18,6 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import java.util.List;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -26,7 +25,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @see <a href="https://w3c-fedid.github.io/FedCM/">https://w3c-fedid.github.io/FedCM/</a>
  */
-@NullMarked
 public interface FederatedCredentialManagementDialog {
 
   String DIALOG_TYPE_ACCOUNT_LIST = "AccountChooser";
