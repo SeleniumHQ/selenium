@@ -232,6 +232,7 @@ py_library(
     srcs = [
         "selenium/__init__.py",
         "selenium/webdriver/__init__.py",
+        "selenium/webdriver/__init__.pyi",
     ] + glob(["selenium/common/**/*.py"]),
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -549,6 +550,7 @@ py_library(
         "test/selenium/webdriver/firefox/__init__.py",
         "test/selenium/webdriver/safari/conftest.py",
         "test/selenium/webdriver/support/__init__.py",
+        "test/selenium/webdriver/support/__init__.pyi",
     ],
     data = [
         "pyproject.toml",
