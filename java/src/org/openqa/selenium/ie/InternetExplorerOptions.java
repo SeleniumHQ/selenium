@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
@@ -276,6 +277,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return Collections.emptySet();
   }
 
+  @Nullable
   @Override
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);

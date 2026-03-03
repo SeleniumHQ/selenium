@@ -104,7 +104,7 @@ public class EdgeDriverService extends DriverService {
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {

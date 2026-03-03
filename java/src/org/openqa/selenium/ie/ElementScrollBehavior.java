@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.ie;
 
+import org.jspecify.annotations.Nullable;
+
 public enum ElementScrollBehavior {
   TOP(0),
   BOTTOM(1),
@@ -33,6 +35,7 @@ public enum ElementScrollBehavior {
     return String.valueOf(value);
   }
 
+  @Nullable
   public static ElementScrollBehavior fromString(String text) {
     for (ElementScrollBehavior b : ElementScrollBehavior.values()) {
       if (text.equalsIgnoreCase(b.toString())) {

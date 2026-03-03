@@ -18,7 +18,6 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -29,7 +28,6 @@ import org.jspecify.annotations.Nullable;
  * @see <a href="https://w3c-fedid.github.io/FedCM/#webdriver-accountlist">
  *     https://w3c-fedid.github.io/FedCM/#webdriver-accountlist</a>
  */
-@NullMarked
 public class FederatedCredentialManagementAccount {
   private final @Nullable String accountId;
   private final @Nullable String email;
@@ -57,16 +55,16 @@ public class FederatedCredentialManagementAccount {
   public static final String LOGIN_STATE_SIGNIN = "SignIn";
   public static final String LOGIN_STATE_SIGNUP = "SignUp";
 
-  public FederatedCredentialManagementAccount(Map<String, String> dict) {
-    accountId = (String) dict.getOrDefault("accountId", null);
-    email = (String) dict.getOrDefault("email", null);
-    name = (String) dict.getOrDefault("name", null);
-    givenName = (String) dict.getOrDefault("givenName", null);
-    pictureUrl = (String) dict.getOrDefault("pictureUrl", null);
-    idpConfigUrl = (String) dict.getOrDefault("idpConfigUrl", null);
-    loginState = (String) dict.getOrDefault("loginState", null);
-    termsOfServiceUrl = (String) dict.getOrDefault("termsOfServiceUrl", null);
-    privacyPolicyUrl = (String) dict.getOrDefault("privacyPolicyUrl", null);
+  public FederatedCredentialManagementAccount(Map<String, @Nullable String> dict) {
+    accountId = dict.getOrDefault("accountId", null);
+    email = dict.getOrDefault("email", null);
+    name = dict.getOrDefault("name", null);
+    givenName = dict.getOrDefault("givenName", null);
+    pictureUrl = dict.getOrDefault("pictureUrl", null);
+    idpConfigUrl = dict.getOrDefault("idpConfigUrl", null);
+    loginState = dict.getOrDefault("loginState", null);
+    termsOfServiceUrl = dict.getOrDefault("termsOfServiceUrl", null);
+    privacyPolicyUrl = dict.getOrDefault("privacyPolicyUrl", null);
   }
 
   public @Nullable String getAccountid() {

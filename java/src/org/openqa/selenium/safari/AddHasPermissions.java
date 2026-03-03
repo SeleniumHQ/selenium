@@ -67,21 +67,15 @@ public class AddHasPermissions
 
       @Override
       public Map<String, Boolean> getPermissions() {
-        Object resultObject = executeMethod.execute(GET_PERMISSIONS, null);
+        Map<?, ?> resultMap = executeMethod.executeRequired(GET_PERMISSIONS, null);
 
-        if (resultObject instanceof Map<?, ?>) {
-          Map<?, ?> resultMap = (Map<?, ?>) resultObject;
-          Map<String, Boolean> permissionMap = new HashMap<>();
-          for (Map.Entry<?, ?> entry : resultMap.entrySet()) {
-            if (entry.getKey() instanceof String && entry.getValue() instanceof Boolean) {
-              permissionMap.put((String) entry.getKey(), (Boolean) entry.getValue());
-            }
+        Map<String, Boolean> permissionMap = new HashMap<>();
+        for (Map.Entry<?, ?> entry : resultMap.entrySet()) {
+          if (entry.getKey() instanceof String && entry.getValue() instanceof Boolean) {
+            permissionMap.put((String) entry.getKey(), (Boolean) entry.getValue());
           }
-          return permissionMap;
-        } else {
-          throw new IllegalStateException(
-              "Unexpected result type: " + resultObject.getClass().getName());
         }
+        return permissionMap;
       }
     };
   }
