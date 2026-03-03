@@ -25,51 +25,40 @@ from typing import TYPE_CHECKING, Any
 __version__: str
 
 if TYPE_CHECKING:
-    # Browser WebDrivers
-    from selenium.webdriver.chrome.webdriver import WebDriver as ChromeWebDriver
-    from selenium.webdriver.edge.webdriver import WebDriver as EdgeWebDriver
-    from selenium.webdriver.firefox.webdriver import WebDriver as FirefoxWebDriver
-    from selenium.webdriver.ie.webdriver import WebDriver as IeWebDriver
-    from selenium.webdriver.safari.webdriver import WebDriver as SafariWebDriver
-    from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-    from selenium.webdriver.webkitgtk.webdriver import WebDriver as WebKitGTKWebDriver
-    from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKitWebDriver
-
-    # Browser Options
+    # Chrome
+    from selenium.webdriver.chrome.webdriver import WebDriver as Chrome
     from selenium.webdriver.chrome.options import Options as ChromeOptions
-    from selenium.webdriver.edge.options import Options as EdgeOptions
-    from selenium.webdriver.firefox.options import Options as FirefoxOptions
-    from selenium.webdriver.ie.options import Options as IeOptions
-    from selenium.webdriver.safari.options import Options as SafariOptions
-    from selenium.webdriver.webkitgtk.options import Options as WebKitGTKOptions
-    from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
-
-    # Browser Services
     from selenium.webdriver.chrome.service import Service as ChromeService
+    # Edge
+    from selenium.webdriver.edge.webdriver import WebDriver as Edge
+    from selenium.webdriver.edge.webdriver import WebDriver as ChromiumEdge
+    from selenium.webdriver.edge.options import Options as EdgeOptions
     from selenium.webdriver.edge.service import Service as EdgeService
+    # Firefox
+    from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
+    from selenium.webdriver.firefox.options import Options as FirefoxOptions
     from selenium.webdriver.firefox.service import Service as FirefoxService
+    from selenium.webdriver.firefox.firefox_profile import FirefoxProfile as FirefoxProfile
+    # IE
+    from selenium.webdriver.ie.webdriver import WebDriver as Ie
+    from selenium.webdriver.ie.options import Options as IeOptions
     from selenium.webdriver.ie.service import Service as IeService
+    # Safari
+    from selenium.webdriver.safari.webdriver import WebDriver as Safari
+    from selenium.webdriver.safari.options import Options as SafariOptions
     from selenium.webdriver.safari.service import Service as SafariService
+    # Remote
+    from selenium.webdriver.remote.webdriver import WebDriver as Remote
+    # WebKitGTK
+    from selenium.webdriver.webkitgtk.webdriver import WebDriver as WebKitGTK
+    from selenium.webdriver.webkitgtk.options import Options as WebKitGTKOptions
     from selenium.webdriver.webkitgtk.service import Service as WebKitGTKService
+    # WPEWebKit
+    from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit
+    from  selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
     from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
-
-    # Firefox profile
-    from selenium.webdriver.firefox.firefox_profile import FirefoxProfile as FirefoxProfileType
-
     # Common utilities
-    from selenium.webdriver.common.action_chains import ActionChains
-    from selenium.webdriver.common.keys import Keys
-    from selenium.webdriver.common.proxy import Proxy
-
-# Forward references for lazy-loaded WebDrivers
-Chrome: "ChromeWebDriver"
-Edge: "EdgeWebDriver"
-ChromiumEdge: "EdgeWebDriver"
-Firefox: "FirefoxWebDriver"
-Ie: "IeWebDriver"
-Safari: "SafariWebDriver"
-Remote: "RemoteWebDriver"
-WebKitGTK: "WebKitGTKWebDriver"
-WPEWebKit: "WPEWebKitWebDriver"
-FirefoxProfile: "FirefoxProfileType"
-DesiredCapabilities: Any
+    from selenium.webdriver.common.action_chains import ActionChains as ActionChains
+    from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DesiredCapabilities
+    from selenium.webdriver.common.keys import Keys as Keys
+    from selenium.webdriver.common.proxy import Proxy as Proxy
