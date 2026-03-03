@@ -66,7 +66,7 @@ public class SafariTechPreviewDriverService extends DriverService {
       List<String> args,
       Map<String, String> environment)
       throws IOException {
-    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
