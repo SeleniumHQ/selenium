@@ -32,6 +32,8 @@ from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, cast
 
+from typing_extensions import Self
+
 from selenium.common.exceptions import (
     InvalidArgumentException,
     JavascriptException,
@@ -287,7 +289,7 @@ class WebDriver(BaseWebDriver):
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
 
-    def __enter__(self) -> "WebDriver":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
