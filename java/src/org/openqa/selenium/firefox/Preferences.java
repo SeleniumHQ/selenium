@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
@@ -183,7 +184,7 @@ class Preferences {
     }
   }
 
-  Object getPreference(String key) {
+  @Nullable Object getPreference(String key) {
     return allPrefs.get(key);
   }
 

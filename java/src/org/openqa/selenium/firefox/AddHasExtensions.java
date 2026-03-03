@@ -95,9 +95,8 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
           throw new InvalidArgumentException(path + " is an invalid path", e);
         }
 
-        return (String)
-            executeMethod.execute(
-                INSTALL_EXTENSION, Map.of("addon", encoded, "temporary", temporary));
+        return executeMethod.executeRequired(
+            INSTALL_EXTENSION, Map.of("addon", encoded, "temporary", temporary));
       }
 
       private byte[] zipDirectory(Path path) throws IOException {
@@ -105,7 +104,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         try (ZipOutputStream zos = new ZipOutputStream(baos)) {
           Files.walkFileTree(
               path,
-              new SimpleFileVisitor<Path>() {
+              new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                     throws IOException {
