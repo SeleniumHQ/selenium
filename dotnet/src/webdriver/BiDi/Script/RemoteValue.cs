@@ -69,6 +69,10 @@ public abstract record RemoteValue
                 => (TResult)(object)b.Value,
             (NullRemoteValue, Type t) when !t.IsValueType || Nullable.GetUnderlyingType(t) is not null
                 => default,
+            (NumberRemoteValue n, Type t) when t == typeof(byte)
+                => (TResult)(object)Convert.ToByte(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(sbyte)
+                => (TResult)(object)Convert.ToSByte(n.Value),
             (NumberRemoteValue n, Type t) when t == typeof(short)
                 => (TResult)(object)Convert.ToInt16(n.Value),
             (NumberRemoteValue n, Type t) when t == typeof(ushort)
@@ -85,6 +89,8 @@ public abstract record RemoteValue
                 => (TResult)(object)n.Value,
             (NumberRemoteValue n, Type t) when t == typeof(float)
                 => (TResult)(object)Convert.ToSingle(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(decimal)
+                => (TResult)(object)Convert.ToDecimal(n.Value),
             (StringRemoteValue s, Type t) when t == typeof(string)
                 => (TResult)(object)s.Value,
             (ArrayRemoteValue a, Type t) when t.IsArray

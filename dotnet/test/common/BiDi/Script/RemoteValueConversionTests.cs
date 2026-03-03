@@ -30,6 +30,8 @@ internal class RemoteValueConversionTests
         NullRemoteValue arg = new();
 
         AssertValue(arg.ConvertTo<bool?>());
+        AssertValue(arg.ConvertTo<byte?>());
+        AssertValue(arg.ConvertTo<sbyte?>());
         AssertValue(arg.ConvertTo<short?>());
         AssertValue(arg.ConvertTo<ushort?>());
         AssertValue(arg.ConvertTo<int?>());
@@ -38,6 +40,7 @@ internal class RemoteValueConversionTests
         AssertValue(arg.ConvertTo<ulong?>());
         AssertValue(arg.ConvertTo<double?>());
         AssertValue(arg.ConvertTo<float?>());
+        AssertValue(arg.ConvertTo<decimal?>());
         AssertValue(arg.ConvertTo<string>());
 
         static void AssertValue<T>(T value)
@@ -57,6 +60,32 @@ internal class RemoteValueConversionTests
         static void AssertValue(bool value)
         {
             Assert.That(value, Is.True);
+        }
+    }
+
+    [Test]
+    public void CanConvertToByte()
+    {
+        NumberRemoteValue arg = new(5.1);
+
+        AssertValue(arg.ConvertTo<byte>());
+
+        static void AssertValue(byte value)
+        {
+            Assert.That(value, Is.EqualTo((byte)5));
+        }
+    }
+
+    [Test]
+    public void CanConvertToSByte()
+    {
+        NumberRemoteValue arg = new(5.1);
+
+        AssertValue(arg.ConvertTo<sbyte>());
+
+        static void AssertValue(sbyte value)
+        {
+            Assert.That(value, Is.EqualTo((sbyte)5));
         }
     }
 
@@ -169,6 +198,19 @@ internal class RemoteValueConversionTests
         static void AssertValue(float value)
         {
             Assert.That(value, Is.EqualTo(5.1f).Within(0.1f));
+        }
+    }
+
+    [Test]
+    public void CanConvertToDecimal()
+    {
+        NumberRemoteValue arg = new(5.1);
+
+        AssertValue(arg.ConvertTo<decimal>());
+
+        static void AssertValue(decimal value)
+        {
+            Assert.That(value, Is.EqualTo(5.1m));
         }
     }
 
