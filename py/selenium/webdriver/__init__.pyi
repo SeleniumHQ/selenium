@@ -62,3 +62,16 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DesiredCapabilities
     from selenium.webdriver.common.keys import Keys as Keys
     from selenium.webdriver.common.proxy import Proxy as Proxy
+
+    # Submodules
+    import selenium.webdriver.chrome as chrome
+    import selenium.webdriver.chromium as chromium
+    import selenium.webdriver.common as common
+    import selenium.webdriver.edge as edge
+    import selenium.webdriver.firefox as firefox
+    import selenium.webdriver.ie as ie
+    import selenium.webdriver.remote as remote
+    import selenium.webdriver.safari as safari
+    import selenium.webdriver.support as support
+    import selenium.webdriver.webkitgtk as webkitgtk
+    import selenium.webdriver.wpewebkit as wpewebkit
