@@ -103,7 +103,7 @@ public abstract record RemoteValue
             (ArrayRemoteValue a, Type t) when t.IsGenericType && t.IsAssignableFrom(typeof(List<>).MakeGenericType(t.GetGenericArguments()[0]))
                 => ConvertRemoteValuesToGenericList<TResult>(a.Value, typeof(List<>).MakeGenericType(t.GetGenericArguments()[0])),
 
-            _ => throw new BiDiException($"Cannot convert {GetType().Name} to {typeof(TResult).FullName}")
+            _ => throw new InvalidCastException($"Cannot convert {GetType().Name} to {typeof(TResult).FullName}")
         };
 
     private static TResult ConvertRemoteValuesToArray<TResult>(IEnumerable<RemoteValue>? remoteValues, Type elementType)

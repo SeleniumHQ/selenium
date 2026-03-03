@@ -1,4 +1,4 @@
-// <copyright file="RemoteValueConversionTest.cs" company="Selenium Committers">
+// <copyright file="RemoteValueConversionTests.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class RemoteValueConversionTest
+internal class RemoteValueConversionTests
 {
     [Test]
     public void CanConvertToNullable()
@@ -140,7 +140,7 @@ internal class RemoteValueConversionTest
 
         static void AssertValue(ulong value)
         {
-            Assert.That(value, Is.EqualTo(5L));
+            Assert.That(value, Is.EqualTo(5UL));
         }
     }
 
