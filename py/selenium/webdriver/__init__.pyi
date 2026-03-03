@@ -19,7 +19,7 @@
 
 # ruff: noqa: F401, F821, I001, UP037, RUF100
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # Expose runtime version
 __version__: str
@@ -53,35 +53,23 @@ if TYPE_CHECKING:
     from selenium.webdriver.webkitgtk.service import Service as WebKitGTKService
     from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
 
-# Forward references for lazy imports
-Chrome: "ChromeWebDriver"
-ChromeOptions: "ChromeOptions"
-ChromeService: "ChromeService"
+    # Firefox profile
+    from selenium.webdriver.firefox.firefox_profile import FirefoxProfile as FirefoxProfileType
 
+    # Common utilities
+    from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.proxy import Proxy
+
+# Forward references for lazy-loaded WebDrivers
+Chrome: "ChromeWebDriver"
 Edge: "EdgeWebDriver"
 ChromiumEdge: "EdgeWebDriver"
-EdgeOptions: "EdgeOptions"
-EdgeService: "EdgeService"
-
 Firefox: "FirefoxWebDriver"
-FirefoxOptions: "FirefoxOptions"
-FirefoxProfile: "selenium.webdriver.firefox.firefox_profile.FirefoxProfile"
-FirefoxService: "FirefoxService"
-
 Ie: "IeWebDriver"
-IeOptions: "IeOptions"
-IeService: "IeService"
-
 Safari: "SafariWebDriver"
-SafariOptions: "SafariOptions"
-SafariService: "SafariService"
-
 Remote: "RemoteWebDriver"
-
 WebKitGTK: "WebKitGTKWebDriver"
-WebKitGTKOptions: "WebKitGTKOptions"
-WebKitGTKService: "WebKitGTKService"
-
 WPEWebKit: "WPEWebKitWebDriver"
-WPEWebKitOptions: "WPEWebKitOptions"
-WPEWebKitService: "WPEWebKitService"
+FirefoxProfile: "FirefoxProfileType"
+DesiredCapabilities: Any
