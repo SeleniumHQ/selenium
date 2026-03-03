@@ -17,32 +17,35 @@
 
 package org.openqa.selenium.bidi.script;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-script-ChannelValue">BiDi spec</a>
+ */
 public class ChannelValue extends LocalValue {
 
   private final String channelId;
-  private SerializationOptions options;
-
-  private ResultOwnership resultOwnership;
+  private final @Nullable SerializationOptions options;
+  private final @Nullable ResultOwnership resultOwnership;
 
   public ChannelValue(String channelId) {
-    this.channelId = channelId;
+    this(channelId, null, null);
   }
 
   public ChannelValue(String channelId, SerializationOptions options) {
-    this.channelId = channelId;
-    this.options = options;
+    this(channelId, options, null);
   }
 
   public ChannelValue(String channelId, ResultOwnership resultOwnership) {
-    this.channelId = channelId;
-    this.resultOwnership = resultOwnership;
+    this(channelId, null, resultOwnership);
   }
 
-  ChannelValue(String channelId, SerializationOptions options, ResultOwnership resultOwnership) {
+  ChannelValue(
+      String channelId,
+      @Nullable SerializationOptions options,
+      @Nullable ResultOwnership resultOwnership) {
     this.channelId = channelId;
     this.options = options;
     this.resultOwnership = resultOwnership;
@@ -50,10 +53,7 @@ public class ChannelValue extends LocalValue {
 
   @Override
   public Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
     Map<String, Object> channelProperties = new TreeMap<>();
-
     channelProperties.put("channel", channelId);
 
     if (options != null) {
@@ -64,9 +64,6 @@ public class ChannelValue extends LocalValue {
       channelProperties.put("ownership", resultOwnership);
     }
 
-    toReturn.put("type", "channel");
-    toReturn.put("value", channelProperties);
-
-    return Collections.unmodifiableMap(toReturn);
+    return Map.of("type", "channel", "value", channelProperties);
   }
 }

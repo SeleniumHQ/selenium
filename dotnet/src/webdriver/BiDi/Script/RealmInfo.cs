@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
@@ -38,7 +37,9 @@ public abstract record RealmInfo(Realm Realm, string Origin) : EventArgs;
 
 public sealed record WindowRealmInfo(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(Realm, Origin)
 {
-    public string? Sandbox { get; set; }
+    public Browser.UserContext? UserContext { get; init; }
+
+    public string? Sandbox { get; init; }
 }
 
 public sealed record DedicatedWorkerRealmInfo(Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmInfo(Realm, Origin);

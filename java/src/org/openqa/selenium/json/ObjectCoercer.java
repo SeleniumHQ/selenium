@@ -19,11 +19,10 @@ package org.openqa.selenium.json;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import org.openqa.selenium.internal.Require;
 
-class ObjectCoercer extends TypeCoercer {
+class ObjectCoercer extends TypeCoercer<Object> {
 
   private final JsonTypeCoercer coercer;
 
@@ -60,7 +59,7 @@ class ObjectCoercer extends TypeCoercer {
           break;
 
         case START_MAP:
-          target = Map.class;
+          target = Json.MAP_TYPE;
           break;
 
         default:

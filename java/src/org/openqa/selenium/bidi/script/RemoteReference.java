@@ -23,6 +23,7 @@ import static org.openqa.selenium.bidi.script.RemoteReference.Type.SHARED_ID;
 
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 
 public class RemoteReference extends LocalValue {
   public enum Type {
@@ -41,8 +42,8 @@ public class RemoteReference extends LocalValue {
     }
   }
 
-  private String handle;
-  private String sharedId;
+  private final @Nullable String handle;
+  private final @Nullable String sharedId;
 
   public RemoteReference(String handle, String sharedId) {
     this.handle = handle;
@@ -52,8 +53,10 @@ public class RemoteReference extends LocalValue {
   public RemoteReference(Type type, String value) {
     if (HANDLE.equals(type)) {
       this.handle = value;
+      this.sharedId = null;
     } else {
       this.sharedId = value;
+      this.handle = null;
     }
   }
 

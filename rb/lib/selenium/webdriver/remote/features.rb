@@ -25,7 +25,8 @@ module Selenium
           upload_file: [:post, 'session/:session_id/se/file'],
           get_downloadable_files: [:get, 'session/:session_id/se/files'],
           download_file: [:post, 'session/:session_id/se/files'],
-          delete_downloadable_files: [:delete, 'session/:session_id/se/files']
+          delete_downloadable_files: [:delete, 'session/:session_id/se/files'],
+          fire_session_event: [:post, 'session/:session_id/se/event']
         }.freeze
 
         def add_commands(commands)
@@ -68,6 +69,30 @@ module Selenium
 
         def delete_downloadable_files
           execute :delete_downloadable_files
+        end
+
+        #
+        # Fires a custom session event to the remote server event bus.
+        # This allows test code to trigger server-side utilities that subscribe to
+        # the event bus.
+        #
+        # @param [String] event_type The type of event (e.g., "test:failed", "log:collect")
+        # @param [Hash] payload Optional data to include with the event
+        # @return [Hash] Response data including success status, event type, and timestamp
+        #
+        # @example Fire a simple event
+        #   driver.fire_session_event("test:started")
+        #
+        # @example Fire an event with payload
+        #   driver.fire_session_event("test:failed", {
+        #     testName: "LoginTest",
+        #     error: "Element not found"
+        #   })
+        #
+        def fire_session_event(event_type, payload = nil)
+          params = {eventType: event_type}
+          params[:payload] = payload if payload
+          execute :fire_session_event, {}, params
         end
       end
     end # Remote

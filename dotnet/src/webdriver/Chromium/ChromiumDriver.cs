@@ -17,12 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -141,14 +137,14 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// </summary>
     protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands => new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands);
 
-    /// <summary>
-    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="commandTimeout"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
+        return Task.Run(async () =>
+            await GenerateDriverServiceCommandExecutorAsync(service, options, commandTimeout).ConfigureAwait(false))
+            .GetAwaiter().GetResult();
+    }
+
+    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
         if (service is null)
         {
@@ -163,16 +159,32 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
         if (service.DriverServicePath == null)
         {
             DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = finder.GetDriverPath();
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-            if (finder.TryGetBrowserPath(out string? browserPath))
-            {
-                options.BinaryLocation = browserPath;
-                options.BrowserVersion = null;
-            }
+            string fullBrowserPath = await finder.GetBrowserPathAsync().ConfigureAwait(false);
+            options.BinaryLocation = fullBrowserPath;
+            options.BrowserVersion = null;
         }
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+
+        try
+        {
+            await service.StartAsync().ConfigureAwait(false);
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            try
+            {
+                await service.DisposeAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // Ignore exceptions thrown while disposing the service to preserve the original exception.
+            }
+
+            throw;
+        }
     }
 
     /// <summary>
@@ -221,7 +233,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
                 throw new ArgumentNullException(nameof(value), "value must not be null");
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters["network_conditions"] = value;
 
             this.Execute(SetNetworkConditionsCommand, parameters);
@@ -240,7 +252,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(id), "id must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["id"] = id;
 
         this.Execute(LaunchAppCommand, parameters);
@@ -264,9 +276,9 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
         }
 
-        Dictionary<string, object> nameParameter = new Dictionary<string, object>();
+        Dictionary<string, object?> nameParameter = new Dictionary<string, object?>();
         nameParameter["name"] = permissionName;
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["descriptor"] = nameParameter;
         parameters["state"] = permissionValue;
         this.Execute(SetPermissionCommand, parameters);
@@ -279,14 +291,14 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// <param name="commandParameters">Parameters of the command to execute.</param>
     /// <returns>An object representing the result of the command, if applicable.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
-    public object? ExecuteCdpCommand(string commandName, Dictionary<string, object> commandParameters)
+    public object? ExecuteCdpCommand(string commandName, Dictionary<string, object?> commandParameters)
     {
         if (commandName == null)
         {
             throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["cmd"] = commandName;
         parameters["params"] = commandParameters;
         Response response = this.Execute(ExecuteCdp, parameters);
@@ -404,7 +416,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(SelectCastSinkCommand, parameters);
     }
@@ -420,7 +432,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StartCastTabMirroringCommand, parameters);
     }
@@ -436,7 +448,7 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StartCastDesktopMirroringCommand, parameters);
     }
@@ -462,15 +474,15 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["sinkName"] = deviceName;
         this.Execute(StopCastingCommand, parameters);
     }
 
     /// <summary>
-    /// Stops the driver from running
+    /// Disposes of the resources used by the <see cref="ChromiumDriver"/> instance, including any active DevTools session.
     /// </summary>
-    /// <param name="disposing">if its in the process of disposing</param>
+    /// <param name="disposing">Indicates whether the method is being called from a Dispose method (true) or from a finalizer (false).</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -483,6 +495,21 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
         }
 
         base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Asynchronously disposes of the resources used by the <see cref="ChromiumDriver"/> instance, including any active DevTools session.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (this.devToolsSession != null)
+        {
+            this.devToolsSession.Dispose();
+            this.devToolsSession = null;
+        }
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
     }
 
     private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)

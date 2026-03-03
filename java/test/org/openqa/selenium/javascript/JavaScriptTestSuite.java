@@ -36,7 +36,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -61,8 +60,8 @@ class JavaScriptTestSuite {
 
   @BeforeEach
   public void setup() {
-    // this field is actually in use, javascript test do access it
-    testEnvironment = GlobalTestEnvironment.getOrCreate(() -> new InProcessTestEnvironment(true));
+    // this field is actually in use, JavaScript test do access it
+    testEnvironment = GlobalTestEnvironment.getOrCreate(true);
   }
 
   @AfterEach

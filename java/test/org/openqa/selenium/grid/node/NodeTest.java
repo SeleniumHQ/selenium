@@ -75,6 +75,8 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.LocalNode.Builder;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -913,6 +915,119 @@ class NodeTest {
     assertThat(response.getStatus()).isEqualTo(200);
 
     assertThat(latch.getCount()).isEqualTo(1);
+  }
+
+  @Test
+  void shouldFireSessionEventAndReceiveItViaEventBus() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
+
+    bus.addListener(
+        SessionEvent.listener(
+            data -> {
+              receivedEvent.set(data);
+              latch.countDown();
+            }));
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload =
+        Map.of(
+            "eventType",
+            "test:failed",
+            "payload",
+            Map.of("testName", "MyTest", "error", "Element not found"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    HttpResponse httpResponse = node.execute(req);
+
+    assertThat(httpResponse.getStatus()).isEqualTo(200);
+
+    boolean eventReceived = latch.await(5, SECONDS);
+    assertThat(eventReceived).as("Event should be received via EventBus").isTrue();
+
+    SessionEventData eventData = receivedEvent.get();
+    assertThat(eventData).isNotNull();
+    assertThat(eventData.getSessionId()).isEqualTo(session.getId());
+    assertThat(eventData.getEventType()).isEqualTo("test:failed");
+    assertThat(eventData.getPayload()).containsEntry("testName", "MyTest");
+    assertThat(eventData.getNodeId()).isNotNull();
+    assertThat(eventData.getNodeUri()).isNotNull();
+
+    Map<String, Object> responseBody = new Json().toType(string(httpResponse), MAP_TYPE);
+    assertThat(responseBody).containsKey("value");
+    @SuppressWarnings("unchecked")
+    Map<String, Object> value = (Map<String, Object>) responseBody.get("value");
+    assertThat(value).containsEntry("success", true);
+    assertThat(value).containsEntry("eventType", "test:failed");
+    assertThat(value).containsKey("timestamp");
+  }
+
+  @Test
+  void firingSessionEventForNonExistentSessionShouldThrow() {
+    SessionId fakeId = new SessionId(UUID.randomUUID());
+    Map<String, Object> eventPayload = Map.of("eventType", "test:failed");
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", fakeId));
+    req.setContent(Contents.asJson(eventPayload));
+
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.execute(req));
+  }
+
+  @Test
+  void firingSessionEventWithoutEventTypeShouldThrow() {
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload = Map.of("payload", Map.of("data", "value"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> local.execute(req))
+        .withMessageContaining("eventType");
+  }
+
+  @Test
+  void firingSessionEventWithEmptyPayloadShouldSucceed() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
+
+    bus.addListener(
+        SessionEvent.listener(
+            data -> {
+              receivedEvent.set(data);
+              latch.countDown();
+            }));
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload = Map.of("eventType", "log:collect");
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    HttpResponse httpResponse = node.execute(req);
+
+    assertThat(httpResponse.getStatus()).isEqualTo(200);
+
+    boolean eventReceived = latch.await(5, SECONDS);
+    assertThat(eventReceived).isTrue();
+
+    SessionEventData eventData = receivedEvent.get();
+    assertThat(eventData.getEventType()).isEqualTo("log:collect");
+    assertThat(eventData.getPayload()).isEmpty();
   }
 
   private File createFile(String content, File directory) {

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -424,13 +426,21 @@ public class SeleniumExtension
               (Instances current) -> {
                 System.err.println();
                 System.err.println("Test failure details:");
-                System.err.printf("  URL: %s%n", current.driver.getCurrentUrl());
-                System.err.printf("  Title: %s%n", current.driver.getTitle());
+                System.err.printf("  URL: %s%n", safely(current.driver::getCurrentUrl));
+                System.err.printf("  Title: %s%n", safely(current.driver::getTitle));
                 System.err.printf("  Page source: %s%n", savePageSource(current.driver, context));
                 System.err.printf("  Screenshot: %s%n", saveScreenshot(current.driver, context));
               });
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Failed to log webdriver details: " + e.getMessage(), e);
+    }
+  }
+
+  private String safely(Supplier<String> lambda) {
+    try {
+      return lambda.get();
+    } catch (NoSuchWindowException closed) {
+      return String.format("? (%s)", closed.getMessage());
     }
   }
 

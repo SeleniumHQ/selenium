@@ -477,3 +477,48 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setNetworkConditions", params))
+
+    def set_screen_settings_override(
+        self,
+        width: int | None = None,
+        height: int | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set screen settings override for the given contexts or user contexts.
+
+        Args:
+            width: Screen width in pixels (>= 0). None to clear the override.
+            height: Screen height in pixels (>= 0). None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If only one of width/height is provided, or if both contexts
+                and user_contexts are provided, or if neither is provided.
+        """
+        if (width is None) != (height is None):
+            raise ValueError("Must provide both width and height, or neither to clear the override")
+
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        screen_area = None
+        if width is not None and height is not None:
+            if not isinstance(width, int) or not isinstance(height, int):
+                raise ValueError("width and height must be integers")
+            if width < 0 or height < 0:
+                raise ValueError("width and height must be >= 0")
+            screen_area = {"width": width, "height": height}
+
+        params: dict[str, Any] = {"screenArea": screen_area}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setScreenSettingsOverride", params))

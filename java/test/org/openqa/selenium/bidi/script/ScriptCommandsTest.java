@@ -829,6 +829,28 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  void canAddPreloadScriptWithArgumentsInASandbox() {
+    try (Script script = new Script(driver)) {
+      String id =
+          script.addPreloadScript(
+              "() => { window.bar=2; }",
+              List.of(new ChannelValue("ch1"), new ChannelValue("ch2")),
+              "sandbox3");
+      assertThat(id).isNotNull();
+      assertThat(id).isNotEmpty();
+
+      driver.get(new Pages(appServer).blankPage);
+
+      EvaluateResult result =
+          script.evaluateFunctionInBrowsingContext(
+              driver.getWindowHandle(), "sandbox3", "window.bar", true, Optional.empty());
+      assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+      assertThat(((EvaluateResultSuccess) result).getResult().getValue()).hasValue(2L);
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
   void canRemovePreloadedScript() {
     Script script = new Script(driver.getWindowHandle(), driver);
     String id = script.addPreloadScript("() => { window.bar=2; }");

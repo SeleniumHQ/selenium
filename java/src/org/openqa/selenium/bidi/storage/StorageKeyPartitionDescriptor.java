@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StorageKeyPartitionDescriptor extends PartitionDescriptor {
-  Map<String, Object> map = new HashMap<>();
+  private final Map<String, Object> map = new HashMap<>();
 
   public StorageKeyPartitionDescriptor() {
     super(Type.STORAGE_KEY);

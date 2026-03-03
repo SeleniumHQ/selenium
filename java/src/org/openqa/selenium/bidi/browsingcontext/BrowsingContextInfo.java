@@ -17,26 +17,30 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.openqa.selenium.bidi.browsingcontext.BrowsingContext.LIST_OF_BROWSING_CONTEXT_INFO;
-
+import java.lang.reflect.Type;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class BrowsingContextInfo {
 
-  private final String id;
+  private static final Type LIST_OF_BROWSING_CONTEXT_INFO =
+      new TypeToken<List<BrowsingContextInfo>>() {}.getType();
 
+  private final String id;
   private final String url;
 
-  private final List<BrowsingContextInfo> children;
+  @Nullable private final List<BrowsingContextInfo> children;
 
   private final String clientWindow;
 
-  private final String originalOpener;
+  @Nullable private final String originalOpener;
 
   private final String userContext;
 
-  private final String parentBrowsingContext;
+  @Nullable private final String parentBrowsingContext;
 
   public String getId() {
     return id;
@@ -46,6 +50,7 @@ public class BrowsingContextInfo {
     return url;
   }
 
+  @Nullable
   public List<BrowsingContextInfo> getChildren() {
     return children;
   }
@@ -54,6 +59,7 @@ public class BrowsingContextInfo {
     return clientWindow;
   }
 
+  @Nullable
   public String getOriginalOpener() {
     return originalOpener;
   }
@@ -62,6 +68,7 @@ public class BrowsingContextInfo {
     return userContext;
   }
 
+  @Nullable
   public String getParentBrowsingContext() {
     return parentBrowsingContext;
   }
@@ -69,11 +76,11 @@ public class BrowsingContextInfo {
   public BrowsingContextInfo(
       String id,
       String url,
-      List<BrowsingContextInfo> children,
+      @Nullable List<BrowsingContextInfo> children,
       String clientWindow,
-      String originalOpener,
+      @Nullable String originalOpener,
       String userContext,
-      String parentBrowsingContext) {
+      @Nullable String parentBrowsingContext) {
     this.id = id;
     this.url = url;
     this.children = children;
@@ -132,7 +139,13 @@ public class BrowsingContextInfo {
     input.endObject();
 
     return new BrowsingContextInfo(
-        id, url, children, clientWindow, originalOpener, userContext, parentBrowsingContext);
+        Require.nonNull("context", id),
+        Require.nonNull("url", url),
+        children,
+        Require.nonNull("clientWindow", clientWindow),
+        originalOpener,
+        Require.nonNull("userContext", userContext),
+        parentBrowsingContext);
   }
 
   @Override

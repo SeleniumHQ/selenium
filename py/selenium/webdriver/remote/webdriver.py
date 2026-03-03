@@ -32,6 +32,8 @@ from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, cast
 
+from typing_extensions import Self
+
 from selenium.common.exceptions import (
     InvalidArgumentException,
     JavascriptException,
@@ -287,7 +289,7 @@ class WebDriver(BaseWebDriver):
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
 
-    def __enter__(self) -> "WebDriver":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
@@ -506,7 +508,7 @@ class WebDriver(BaseWebDriver):
         """
         return list(self.pinned_scripts)
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> Any:
         """Synchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -531,7 +533,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(command, {"script": script, "args": converted_args})["value"]
 
-    def execute_async_script(self, script: str, *args) -> dict:
+    def execute_async_script(self, script: str, *args) -> Any:
         """Asynchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -1461,6 +1463,37 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
 
         self.execute(Command.DELETE_DOWNLOADABLE_FILES)
+
+    def fire_session_event(self, event_type: str, payload: dict | None = None) -> dict:
+        """Fire a custom session event to the remote server event bus.
+
+        This allows test code to trigger server-side utilities that subscribe to
+        the event bus.
+
+        Args:
+            event_type: The type of event (e.g., "test:failed", "log:collect", "marker:add").
+            payload: Optional data to include with the event.
+
+        Returns:
+            A dictionary containing the response data including success status,
+            event type, and timestamp.
+
+        Raises:
+            WebDriverException: If the event cannot be fired.
+
+        Examples:
+            Simple event::
+
+                driver.fire_session_event("test:started")
+
+            Event with payload::
+
+                driver.fire_session_event("test:failed", {"testName": "LoginTest", "error": "Element not found"})
+        """
+        params: dict[str, str | dict] = {"eventType": event_type}
+        if payload:
+            params["payload"] = payload
+        return self.execute(Command.FIRE_SESSION_EVENT, params)["value"]
 
     @property
     def fedcm(self) -> FedCM:

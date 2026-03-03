@@ -56,6 +56,26 @@ import org.openqa.selenium.testing.TestUtilities;
 class FirefoxOptionsTest {
 
   @Test
+  void defaultConstructor() {
+    FirefoxOptions options = new FirefoxOptions();
+
+    assertThat(options.getBrowserName()).isEqualTo("firefox");
+    assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(options.prefs()).containsExactly(Map.entry("remote.active-protocols", 1));
+    assertThat(options.profile()).isNull();
+  }
+
+  @Test
+  void constructorWithProfile() {
+    FirefoxOptions options = new FirefoxOptions(new FirefoxProfile().setPreference("foo", "bar"));
+
+    assertThat(options.getBrowserName()).isEqualTo("firefox");
+    assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(options.prefs()).containsExactly(Map.entry("remote.active-protocols", 1));
+    assertThat(options.profile()).isBase64();
+  }
+
+  @Test
   void canInitFirefoxOptionsWithCapabilities() {
     FirefoxOptions options =
         new FirefoxOptions(
@@ -138,8 +158,7 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
+    FirefoxProfile profile = new FirefoxProfile().setPreference(key, value);
 
     FirefoxOptions options = new FirefoxOptions();
     options.setProfile(profile);
@@ -311,11 +330,7 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
-
-    options.setProfile(profile);
-
+    options.setProfile(new FirefoxProfile().setPreference(key, value));
     options.setLogLevel(DEBUG);
 
     File binary = TestUtilities.createTmpFile("binary");
@@ -383,8 +398,7 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
+    FirefoxProfile profile = new FirefoxProfile().setPreference(key, value);
 
     File binary = TestUtilities.createTmpFile("binary");
 

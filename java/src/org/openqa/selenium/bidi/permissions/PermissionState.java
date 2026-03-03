@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.bidi.permissions;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-
-@NullMarked
+/**
+ * @see <a
+ *     href="https://www.w3.org/TR/permissions/#webdriver-bidi-type-permissions-PermissionState">BiDi
+ *     spec</a>
+ */
 public enum PermissionState {
   GRANTED("granted"),
   DENIED("denied"),
@@ -37,14 +38,12 @@ public enum PermissionState {
     return state;
   }
 
-  public static @Nullable PermissionState findByName(String name) {
-    PermissionState result = null;
+  public static PermissionState findByName(String name) {
     for (PermissionState state : values()) {
       if (state.toString().equalsIgnoreCase(name)) {
-        result = state;
-        break;
+        return state;
       }
     }
-    return result;
+    throw new IllegalArgumentException("Unsupported permission state: " + name);
   }
 }

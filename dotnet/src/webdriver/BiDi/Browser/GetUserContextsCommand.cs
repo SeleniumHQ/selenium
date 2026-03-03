@@ -17,13 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class GetUserContextsCommand()
     : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
 
-public class GetUserContextsOptions : CommandOptions;
+public record GetUserContextsOptions : CommandOptions;
 
 public sealed record GetUserContextsResult(IReadOnlyList<UserContextInfo> UserContexts) : EmptyResult;

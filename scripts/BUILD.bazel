@@ -1,6 +1,6 @@
 load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_python//python:defs.bzl", "py_binary")
-load("//java:defs.bzl", "artifact")
+load("//java:defs.bzl", "artifact", "java_binary")
 
 py_binary(
     name = "pinned_browsers",

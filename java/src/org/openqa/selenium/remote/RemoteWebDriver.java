@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -528,7 +529,7 @@ public class RemoteWebDriver
   }
 
   @Override
-  public Object executeScript(String script, Object... args) {
+  public @Nullable Object executeScript(@NonNull String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
@@ -808,6 +809,45 @@ public class RemoteWebDriver
     requireDownloadsEnabled(capabilities);
 
     execute(DriverCommand.DELETE_DOWNLOADABLE_FILES);
+  }
+
+  /**
+   * Fires a custom session event to the remote server event bus. This allows test code to trigger
+   * server-side utilities that subscribe to the event bus.
+   *
+   * <p>Example usage:
+   *
+   * <pre>{@code
+   * // Simple event
+   * driver.fireSessionEvent("test:started");
+   *
+   * // Event with payload
+   * driver.fireSessionEvent("test:failed", Map.of(
+   *     "testName", "LoginTest",
+   *     "error", "Element not found"
+   * ));
+   * }</pre>
+   *
+   * @param eventType the type of event (e.g., "test:failed", "log:collect", "marker:add")
+   * @param payload optional data to include with the event (maybe null or empty)
+   * @return the response data from the server
+   * @throws WebDriverException if the event cannot be fired
+   */
+  public Map<String, Object> fireSessionEvent(String eventType, Map<String, Object> payload) {
+    Response response = execute(DriverCommand.FIRE_SESSION_EVENT(eventType, payload));
+    return (Map<String, Object>) response.getValue();
+  }
+
+  /**
+   * Fires a custom session event to the remote server event bus without a payload.
+   *
+   * @param eventType the type of event (e.g., "test:started", "log:collect")
+   * @return the response data from the server
+   * @throws WebDriverException if the event cannot be fired
+   * @see #fireSessionEvent(String, Map)
+   */
+  public Map<String, Object> fireSessionEvent(String eventType) {
+    return fireSessionEvent(eventType, null);
   }
 
   @Override

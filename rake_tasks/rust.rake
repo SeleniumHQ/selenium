@@ -15,18 +15,21 @@ end
 desc 'Update the rust lock files'
 task :update do
   puts 'pinning cargo versions'
-  ENV['CARGO_BAZEL_REPIN'] = 'true'
-  Bazel.execute('fetch', [], '@crates//:all')
+  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
 end
 
 desc 'Pin Rust dependencies'
 task pin: :update
 
-desc 'Run Rust linting'
-task :lint do |_task, arguments|
-  args = arguments.to_a
+desc 'Format Rust code with rustfmt'
+task :format do
   puts '  Running rustfmt...'
-  Bazel.execute('run', args, '@rules_rust//:rustfmt')
+  Bazel.execute('run', [], '@rules_rust//:rustfmt')
+end
+
+desc 'Run Rust linter (no-op, clippy not configured)'
+task :lint do
+  puts '  Rust linting not configured'
 end
 
 desc 'Update Rust changelog'

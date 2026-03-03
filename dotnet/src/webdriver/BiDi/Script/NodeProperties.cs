@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record NodeProperties(long NodeType, long ChildNodeCount, IReadOnlyDictionary<string, string>? Attributes, IReadOnlyList<NodeRemoteValue>? Children, string? LocalName, Mode? Mode, string? NamespaceUri, string? NodeValue, NodeRemoteValue? ShadowRoot);
