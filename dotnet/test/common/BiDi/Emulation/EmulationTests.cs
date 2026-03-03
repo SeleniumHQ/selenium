@@ -132,6 +132,26 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    public void CanSetScrollbarTypeOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScrollbarTypeOverrideAsync(ScrollbarType.Overlay, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetScrollbarTypeOverrideToDefault()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScrollbarTypeOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
