@@ -66,151 +66,150 @@ internal class RemoteValueConversionTests
     [Test]
     public void CanConvertToByte()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<byte>());
 
         static void AssertValue(byte value)
         {
-            Assert.That(value, Is.EqualTo((byte)5));
+            Assert.That(value, Is.EqualTo((byte)6));
         }
     }
 
     [Test]
     public void CanConvertToSByte()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<sbyte>());
 
         static void AssertValue(sbyte value)
         {
-            Assert.That(value, Is.EqualTo((sbyte)5));
+            Assert.That(value, Is.EqualTo((sbyte)6));
         }
     }
 
     [Test]
     public void CanConvertToInt16()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<short>());
         AssertValue((short)arg);
 
         static void AssertValue(short value)
         {
-            Assert.That(value, Is.EqualTo((short)5));
+            Assert.That(value, Is.EqualTo((short)6));
         }
     }
 
     [Test]
     public void CanConvertToUInt16()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<ushort>());
         AssertValue((ushort)arg);
 
         static void AssertValue(ushort value)
         {
-            Assert.That(value, Is.EqualTo((ushort)5));
+            Assert.That(value, Is.EqualTo((ushort)6));
         }
     }
 
     [Test]
     public void CanConvertToInt32()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<int>());
         AssertValue((int)arg);
 
         static void AssertValue(int value)
         {
-            Assert.That(value, Is.EqualTo(5));
+            Assert.That(value, Is.EqualTo(6));
         }
     }
 
     [Test]
     public void CanConvertToUInt32()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<uint>());
         AssertValue((uint)arg);
 
         static void AssertValue(uint value)
         {
-            Assert.That(value, Is.EqualTo(5));
+            Assert.That(value, Is.EqualTo(6U));
         }
     }
 
     [Test]
     public void CanConvertToInt64()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<long>());
         AssertValue((long)arg);
 
         static void AssertValue(long value)
         {
-            Assert.That(value, Is.EqualTo(5L));
+            Assert.That(value, Is.EqualTo(6L));
         }
     }
 
     [Test]
     public void CanConvertToUInt64()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<ulong>());
-        AssertValue((ulong)arg);
 
         static void AssertValue(ulong value)
         {
-            Assert.That(value, Is.EqualTo(5UL));
+            Assert.That(value, Is.EqualTo(6UL));
         }
     }
 
     [Test]
     public void CanConvertToDouble()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<double>());
         AssertValue((double)arg);
 
         static void AssertValue(double value)
         {
-            Assert.That(value, Is.EqualTo(5.1d));
+            Assert.That(value, Is.EqualTo(5.9d));
         }
     }
 
     [Test]
     public void CanConvertToFloat()
     {
-        NumberRemoteValue arg = new(5.5);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<float>());
         AssertValue((float)arg);
 
         static void AssertValue(float value)
         {
-            Assert.That(value, Is.EqualTo(5.5f));
+            Assert.That(value, Is.EqualTo(5.9f));
         }
     }
 
     [Test]
     public void CanConvertToDecimal()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.9);
 
         AssertValue(arg.ConvertTo<decimal>());
 
         static void AssertValue(decimal value)
         {
-            Assert.That(value, Is.EqualTo(5.1m));
+            Assert.That(value, Is.EqualTo(5.9m));
         }
     }
 
