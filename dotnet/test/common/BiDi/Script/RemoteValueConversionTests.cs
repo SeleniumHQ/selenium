@@ -190,14 +190,14 @@ internal class RemoteValueConversionTests
     [Test]
     public void CanConvertToFloat()
     {
-        NumberRemoteValue arg = new(5.1);
+        NumberRemoteValue arg = new(5.5);
 
         AssertValue(arg.ConvertTo<float>());
         AssertValue((float)arg);
 
         static void AssertValue(float value)
         {
-            Assert.That(value, Is.EqualTo(5.1f).Within(0.1f));
+            Assert.That(value, Is.EqualTo(5.5f));
         }
     }
 

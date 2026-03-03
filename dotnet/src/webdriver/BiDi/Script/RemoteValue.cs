@@ -56,6 +56,7 @@ public abstract record RemoteValue
 {
     public static implicit operator bool(RemoteValue remoteValue) => remoteValue.ConvertTo<bool>();
     public static implicit operator double(RemoteValue remoteValue) => remoteValue.ConvertTo<double>();
+    public static implicit operator float(RemoteValue remoteValue) => remoteValue.ConvertTo<float>();
     public static implicit operator int(RemoteValue remoteValue) => remoteValue.ConvertTo<int>();
     public static implicit operator long(RemoteValue remoteValue) => remoteValue.ConvertTo<long>();
     public static implicit operator string?(RemoteValue remoteValue) => remoteValue.ConvertTo<string>();
