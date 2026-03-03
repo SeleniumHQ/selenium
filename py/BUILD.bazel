@@ -550,7 +550,6 @@ py_library(
         "test/selenium/webdriver/firefox/__init__.py",
         "test/selenium/webdriver/safari/conftest.py",
         "test/selenium/webdriver/support/__init__.py",
-        "test/selenium/webdriver/support/__init__.pyi",
     ],
     data = [
         "pyproject.toml",
