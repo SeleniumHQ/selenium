@@ -60,7 +60,6 @@ public abstract record RemoteValue
     public static implicit operator long(RemoteValue remoteValue) => remoteValue.ConvertTo<long>();
     public static implicit operator string?(RemoteValue remoteValue) => remoteValue.ConvertTo<string>();
 
-    // TODO: extend types
     public TResult? ConvertTo<TResult>()
         => (this, typeof(TResult)) switch
         {
