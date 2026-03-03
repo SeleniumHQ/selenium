@@ -237,7 +237,7 @@ internal class RemoteValueConversionTests
 
         static void AssertValue(int[] value)
         {
-            Assert.That(value, Is.EquivalentTo(new int[] { 1, 2 }));
+            Assert.That(value, Is.EqualTo(new int[] { 1, 2 }));
         }
     }
 
@@ -269,7 +269,7 @@ internal class RemoteValueConversionTests
 
         static void AssertValue(IEnumerable<int> value)
         {
-            Assert.That(value, Is.EquivalentTo(new List<int> { 1, 2 }));
+            Assert.That(value, Is.EqualTo(new List<int> { 1, 2 }));
         }
     }
 
