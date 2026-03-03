@@ -16,12 +16,9 @@
 # under the License.
 
 
-"""
-Generates selenium/webdriver/__init__.pyi from the lazy import mapping in __init__.py
-"""
+"""Generates selenium/webdriver/__init__.pyi from the lazy import mapping in __init__.py."""
 
 from pathlib import Path
-
 
 OUTPUT_FILE = Path("selenium") / "webdriver" / "__init__.pyi"
 
@@ -71,8 +68,7 @@ LAZY_IMPORTS = {
 def generate_stub():
     lines = [
         "# Auto-generated stub for selenium.webdriver",
-        "# ruff: noqa: F401, I001",
-        "",
+        "# ruff: noqa: F401, F821, I001, UP037, RUF100",
         "# Expose runtime version",
         "__version__: str",
         "",
@@ -85,6 +81,7 @@ def generate_stub():
     content = "\n".join(lines) + "\n"
 
     OUTPUT_FILE.write_text(content, encoding="utf-8")
+
     print(f"Generated: {OUTPUT_FILE}")
 
 
