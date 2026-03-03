@@ -1,4 +1,4 @@
-# Auto-generated stub for selenium.webdriver
+# This is an auto-generated stub for selenium.webdriver. DO NOT EDIT.
 # ruff: noqa: F401, F821, I001, UP037, RUF100
 
 # Expose runtime version
