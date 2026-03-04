@@ -42,7 +42,7 @@ internal class BrowserUserContextConverter(IBiDi bidi) : JsonConverter<UserConte
             sessionCache.Clear();
         }
 
-        return sessionCache.GetOrAdd(id!, key => new UserContext(key) { BiDi = bidi });
+        return sessionCache.GetOrAdd(id!, key => new UserContext(bidi, key));
     }
 
     public override void Write(Utf8JsonWriter writer, UserContext value, JsonSerializerOptions options)

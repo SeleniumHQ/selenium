@@ -30,20 +30,18 @@ internal class BrowsingContextConverter(IBiDi bidi) : JsonConverter<BrowsingCont
 
     private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, BrowsingContext.BrowsingContext>> s_cache = new();
 
-    private readonly IBiDi _bidi = bidi;
-
     public override BrowsingContext.BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        var sessionCache = s_cache.GetValue(_bidi, _ => new ConcurrentDictionary<string, BrowsingContext.BrowsingContext>());
+        var sessionCache = s_cache.GetValue(bidi, _ => new ConcurrentDictionary<string, BrowsingContext.BrowsingContext>());
 
         if (sessionCache.Count >= MaxCacheSize)
         {
             sessionCache.Clear();
         }
 
-        return sessionCache.GetOrAdd(id!, key => new BrowsingContext.BrowsingContext(_bidi, key));
+        return sessionCache.GetOrAdd(id!, key => new BrowsingContext.BrowsingContext(bidi, key));
     }
 
     public override void Write(Utf8JsonWriter writer, BrowsingContext.BrowsingContext value, JsonSerializerOptions options)
