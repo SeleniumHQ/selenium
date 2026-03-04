@@ -146,10 +146,10 @@ public enum Keys implements CharSequence {
 
   @Override
   public char charAt(int index) {
-    if (index == 0) {
-      return keyCode;
+    if (index != 0) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", Length: 1");
     }
-    return 0;
+    return keyCode;
   }
 
   @Override
