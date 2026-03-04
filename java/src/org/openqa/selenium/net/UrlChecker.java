@@ -189,6 +189,8 @@ public class UrlChecker {
   }
 
   public static class TimeoutException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     public TimeoutException(String s, Throwable throwable) {
       super(s, throwable);
     }
