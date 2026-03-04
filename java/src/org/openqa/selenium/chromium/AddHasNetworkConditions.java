@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 import static org.openqa.selenium.chromium.ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT;
 import static org.openqa.selenium.chromium.ChromiumNetworkConditions.LATENCY;
@@ -77,9 +76,7 @@ public class AddHasNetworkConditions
       @Override
       public ChromiumNetworkConditions getNetworkConditions() {
         @SuppressWarnings("unchecked")
-        Map<String, Object> result =
-            (Map<String, Object>)
-                requireNonNull(executeMethod.execute(GET_NETWORK_CONDITIONS, null));
+        Map<String, Object> result = executeMethod.executeRequired(GET_NETWORK_CONDITIONS, null);
         return new ChromiumNetworkConditions()
             .setOffline((Boolean) result.getOrDefault(OFFLINE, false))
             .setLatency(Duration.ofMillis((Long) result.getOrDefault(LATENCY, 0)))

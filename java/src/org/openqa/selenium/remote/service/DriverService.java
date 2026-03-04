@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
@@ -117,8 +118,8 @@ public class DriverService implements Closeable {
       this.executable = executable.getCanonicalPath();
     }
     this.timeout = timeout;
-    this.args = args;
-    this.environment = environment;
+    this.args = args == null ? emptyList() : List.copyOf(args);
+    this.environment = environment == null ? emptyMap() : Map.copyOf(environment);
 
     this.url = getUrl(port);
   }

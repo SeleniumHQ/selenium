@@ -34,6 +34,11 @@ public class ScriptKey {
   }
 
   @Override
+  public String toString() {
+    return identifier;
+  }
+
+  @Override
   public boolean equals(@Nullable Object o) {
     if (!(o instanceof ScriptKey)) {
       return false;

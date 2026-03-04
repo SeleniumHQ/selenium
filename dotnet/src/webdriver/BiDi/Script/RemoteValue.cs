@@ -54,49 +54,101 @@ namespace OpenQA.Selenium.BiDi.Script;
 [JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
-    public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;
+    public static implicit operator bool(RemoteValue remoteValue) => remoteValue.ConvertTo<bool>();
+    public static implicit operator double(RemoteValue remoteValue) => remoteValue.ConvertTo<double>();
+    public static implicit operator float(RemoteValue remoteValue) => remoteValue.ConvertTo<float>();
+    public static implicit operator int(RemoteValue remoteValue) => remoteValue.ConvertTo<int>();
+    public static implicit operator long(RemoteValue remoteValue) => remoteValue.ConvertTo<long>();
+    public static implicit operator string?(RemoteValue remoteValue) => remoteValue.ConvertTo<string>();
 
-    public static implicit operator int(RemoteValue remoteValue) => (int)(double)remoteValue;
-    public static implicit operator long(RemoteValue remoteValue) => (long)(double)remoteValue;
-
-    public static implicit operator string?(RemoteValue remoteValue)
-    {
-        return remoteValue switch
+    public TResult? ConvertTo<TResult>()
+        => (this, typeof(TResult)) switch
         {
-            StringRemoteValue stringValue => stringValue.Value,
-            NullRemoteValue => null,
-            _ => throw new InvalidCastException($"Cannot convert {remoteValue} to string")
+            (_, Type t) when t.IsAssignableFrom(GetType())
+                => (TResult)(object)this,
+            (BooleanRemoteValue b, Type t) when t == typeof(bool)
+                => (TResult)(object)b.Value,
+            (NullRemoteValue, Type t) when !t.IsValueType || Nullable.GetUnderlyingType(t) is not null
+                => default,
+            (NumberRemoteValue n, Type t) when t == typeof(byte)
+                => (TResult)(object)Convert.ToByte(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(sbyte)
+                => (TResult)(object)Convert.ToSByte(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(short)
+                => (TResult)(object)Convert.ToInt16(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(ushort)
+                => (TResult)(object)Convert.ToUInt16(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(int)
+                => (TResult)(object)Convert.ToInt32(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(uint)
+                => (TResult)(object)Convert.ToUInt32(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(long)
+                => (TResult)(object)Convert.ToInt64(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(ulong)
+                => (TResult)(object)Convert.ToUInt64(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(double)
+                => (TResult)(object)n.Value,
+            (NumberRemoteValue n, Type t) when t == typeof(float)
+                => (TResult)(object)Convert.ToSingle(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(decimal)
+                => (TResult)(object)Convert.ToDecimal(n.Value),
+            (StringRemoteValue s, Type t) when t == typeof(string)
+                => (TResult)(object)s.Value,
+            (ArrayRemoteValue a, Type t) when t.IsArray
+                => ConvertRemoteValuesToArray<TResult>(a.Value, t.GetElementType()!),
+            (ArrayRemoteValue a, Type t) when t.IsGenericType && t.IsAssignableFrom(typeof(List<>).MakeGenericType(t.GetGenericArguments()[0]))
+                => ConvertRemoteValuesToGenericList<TResult>(a.Value, typeof(List<>).MakeGenericType(t.GetGenericArguments()[0])),
+
+            (_, Type t) when Nullable.GetUnderlyingType(t) is { } underlying
+                => ConvertToNullable<TResult>(underlying),
+
+            _ => throw new InvalidCastException($"Cannot convert {GetType().Name} to {typeof(TResult).FullName}")
         };
+
+    private TResult ConvertToNullable<TResult>(Type underlyingType)
+    {
+        var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(underlyingType);
+        var value = convertMethod.Invoke(this, null);
+        return (TResult)value!;
     }
 
-    // TODO: extend types
-    public TResult? ConvertTo<TResult>()
+    private static TResult ConvertRemoteValuesToArray<TResult>(IEnumerable<RemoteValue>? remoteValues, Type elementType)
     {
-        var type = typeof(TResult);
-
-        if (typeof(RemoteValue).IsAssignableFrom(type)) // handle native derived types
+        if (remoteValues is null)
         {
-            return (TResult)(this as object);
-        }
-        if (type == typeof(bool))
-        {
-            return (TResult)(Convert.ToBoolean(((BooleanRemoteValue)this).Value) as object);
-        }
-        if (type == typeof(int))
-        {
-            return (TResult)(Convert.ToInt32(((NumberRemoteValue)this).Value) as object);
-        }
-        else if (type == typeof(string))
-        {
-            return (TResult)(((StringRemoteValue)this).Value as object);
-        }
-        else if (type is object)
-        {
-            // :)
-            return (TResult)new object();
+            return (TResult)(object)Array.CreateInstance(elementType, 0);
         }
 
-        throw new BiDiException("Cannot convert .....");
+        var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
+        var items = remoteValues.ToList();
+        var array = Array.CreateInstance(elementType, items.Count);
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            var convertedItem = convertMethod.Invoke(items[i], null);
+            array.SetValue(convertedItem, i);
+        }
+
+        return (TResult)(object)array;
+    }
+
+    private static TResult ConvertRemoteValuesToGenericList<TResult>(IEnumerable<RemoteValue>? remoteValues, Type listType)
+    {
+        var elementType = listType.GetGenericArguments()[0];
+        var list = (System.Collections.IList)Activator.CreateInstance(listType)!;
+
+        if (remoteValues is not null)
+        {
+            var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
+
+            foreach (var item in remoteValues)
+            {
+                var convertedItem = convertMethod.Invoke(item, null);
+                list.Add(convertedItem);
+            }
+        }
+
+        return (TResult)list;
     }
 }
 

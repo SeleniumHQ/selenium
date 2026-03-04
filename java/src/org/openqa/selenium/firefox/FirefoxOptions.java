@@ -227,11 +227,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return setFirefoxOption(Keys.PREFS, Collections.unmodifiableMap(newPrefs));
   }
 
-  Map<String, Object> prefs() {
+  @Nullable Map<String, Object> prefs() {
     return getOption(Keys.PREFS);
   }
 
-  String profile() {
+  @Nullable String profile() {
     return getOption(Keys.PROFILE);
   }
 
@@ -293,6 +293,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return Collections.unmodifiableSet(names);
   }
 
+  @Nullable
   @Override
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
@@ -440,6 +441,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       @Override
       public void amend(Map<String, Object> sourceOptions, Map<String, Object> toAmend) {}
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         return null;
@@ -465,6 +467,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         toAmend.put(key(), Collections.unmodifiableList(new ArrayList<>(newArgs)));
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new ArrayList<>());
@@ -494,6 +497,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object value = second.get(key());
@@ -527,6 +531,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         toAmend.put(key(), Collections.unmodifiableMap(collected));
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new TreeMap<>());
@@ -559,6 +564,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         toAmend.put(key(), o);
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object value = second.get(key());
@@ -590,6 +596,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         toAmend.put(key(), Collections.unmodifiableMap(collected));
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new TreeMap<>());
@@ -627,6 +634,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         toAmend.put(key(), o);
       }
 
+      @Nullable
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object value = second.get(key());
@@ -657,6 +665,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     public abstract void amend(Map<String, Object> sourceOptions, Map<String, Object> toAmend);
 
+    @Nullable
     public abstract Object mirror(Map<String, Object> first, Map<String, Object> second);
   }
 }
