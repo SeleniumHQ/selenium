@@ -27,13 +27,20 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class BrowserUserContextConverter(IBiDi bidi) : JsonConverter<UserContext>
 {
-    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, UserContext>> s_cache = [];
+    private const int MaxCacheSize = 1_000;
+
+    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, UserContext>> s_cache = new();
 
     public override UserContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
         var sessionCache = s_cache.GetValue(bidi, _ => new ConcurrentDictionary<string, UserContext>());
+
+        if (sessionCache.Count >= MaxCacheSize)
+        {
+            sessionCache.Clear();
+        }
 
         return sessionCache.GetOrAdd(id!, key => new UserContext(key) { BiDi = bidi });
     }

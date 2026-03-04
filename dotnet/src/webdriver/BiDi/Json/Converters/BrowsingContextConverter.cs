@@ -26,7 +26,9 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class BrowsingContextConverter(IBiDi bidi) : JsonConverter<BrowsingContext.BrowsingContext>
 {
-    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, BrowsingContext.BrowsingContext>> s_cache = [];
+    private const int MaxCacheSize = 1_000;
+
+    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, BrowsingContext.BrowsingContext>> s_cache = new();
 
     private readonly IBiDi _bidi = bidi;
 
@@ -35,6 +37,11 @@ internal class BrowsingContextConverter(IBiDi bidi) : JsonConverter<BrowsingCont
         var id = reader.GetString();
 
         var sessionCache = s_cache.GetValue(_bidi, _ => new ConcurrentDictionary<string, BrowsingContext.BrowsingContext>());
+
+        if (sessionCache.Count >= MaxCacheSize)
+        {
+            sessionCache.Clear();
+        }
 
         return sessionCache.GetOrAdd(id!, key => new BrowsingContext.BrowsingContext(_bidi, key));
     }
