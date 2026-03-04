@@ -64,6 +64,7 @@ public class NodeId implements Comparable<NodeId>, Serializable {
     return uuid;
   }
 
+  @SuppressWarnings({"unused"})
   private static NodeId fromJson(UUID id) {
     return new NodeId(id);
   }

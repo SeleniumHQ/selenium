@@ -15,5 +15,6 @@ java_library(
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         artifact("com.beust:jcommander"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

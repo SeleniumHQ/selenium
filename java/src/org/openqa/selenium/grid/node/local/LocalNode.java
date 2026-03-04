@@ -76,6 +76,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -171,7 +172,7 @@ public class LocalNode extends Node implements Closeable {
       EventBus bus,
       URI uri,
       URI gridUri,
-      HealthCheck healthCheck,
+      @Nullable HealthCheck healthCheck,
       int maxSessionCount,
       int drainAfterSessionCount,
       boolean cdpEnabled,
@@ -337,7 +338,8 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
+  private void stopTimedOutSession(
+      @Nullable SessionId id, @Nullable SessionSlot slot, RemovalCause cause) {
     try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
@@ -1013,7 +1015,7 @@ public class LocalNode extends Node implements Closeable {
     for (File file : files) {
       FileHandler.delete(file);
     }
-    Map<String, Object> toReturn = new HashMap<>();
+    Map<String, @Nullable Object> toReturn = new HashMap<>();
     toReturn.put("value", null);
     return new HttpResponse().setContent(asJson(toReturn));
   }
