@@ -15,32 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium;
 
-/**
- * Represents the valid values for the command context used for executing Firefox driver commands.
- */
-public enum FirefoxCommandContext {
-  CONTENT("content"),
-  CHROME("chrome");
+import static org.assertj.core.api.Assertions.assertThat;
 
-  private final String text;
+import org.junit.jupiter.api.Test;
 
-  FirefoxCommandContext(String text) {
-    this.text = text;
+class UnpinnedScriptKeyTest {
+
+  @Test
+  void toStringDoesNotExposeRawScript() {
+    String script = "return 'SECRET_TOKEN';";
+    UnpinnedScriptKey key = new UnpinnedScriptKey(script);
+
+    assertThat(key.toString()).doesNotContain(script);
   }
 
-  @Override
-  public String toString() {
-    return text;
-  }
+  @Test
+  void toStringContainsScriptIdWhenPresent() {
+    UnpinnedScriptKey key = new UnpinnedScriptKey("return 1;");
+    key.setScriptId("script-99");
 
-  public static FirefoxCommandContext fromString(String text) {
-    for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
-      if (text.equalsIgnoreCase(b.text)) {
-        return b;
-      }
-    }
-    throw new IllegalArgumentException("Unknown Firefox context: " + text);
+    String value = key.toString();
+
+    assertThat(value).contains("UnpinnedScriptKey{");
+    assertThat(value).contains("scriptId=script-99");
+    assertThat(value).contains("length=");
   }
 }

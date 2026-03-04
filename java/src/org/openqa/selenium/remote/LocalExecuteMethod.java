@@ -18,13 +18,15 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 class LocalExecuteMethod implements ExecuteMethod {
   @Nullable
   @Override
-  public Object execute(String commandName, @Nullable Map<String, ?> parameters) {
+  public <T> T execute(String commandName, @Nullable Map<String, ?> parameters) {
     throw new WebDriverException("Cannot execute remote command: " + commandName);
   }
 }

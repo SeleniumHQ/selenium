@@ -14,33 +14,20 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium;
 
-package org.openqa.selenium.firefox;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Represents the valid values for the command context used for executing Firefox driver commands.
- */
-public enum FirefoxCommandContext {
-  CONTENT("content"),
-  CHROME("chrome");
+import org.junit.jupiter.api.Test;
 
-  private final String text;
-
-  FirefoxCommandContext(String text) {
-    this.text = text;
+class ScriptKeyTest {
+  @Test
+  void hasToStringEqualToIdentifier() {
+    assertThat(new ScriptKey("xxx")).hasToString("xxx");
   }
 
-  @Override
-  public String toString() {
-    return text;
-  }
-
-  public static FirefoxCommandContext fromString(String text) {
-    for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
-      if (text.equalsIgnoreCase(b.text)) {
-        return b;
-      }
-    }
-    throw new IllegalArgumentException("Unknown Firefox context: " + text);
+  @Test
+  void hasToStringWorksForEmptyIdentifier() {
+    assertThat(new ScriptKey("")).hasToString("");
   }
 }

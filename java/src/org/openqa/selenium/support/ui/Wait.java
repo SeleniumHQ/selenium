@@ -18,6 +18,8 @@
 package org.openqa.selenium.support.ui;
 
 import java.util.function.Function;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A generic interface for waiting until a condition is true or not null. The condition may take a
@@ -36,9 +38,9 @@ public interface Wait<F> {
    * implementor may throw whatever is idiomatic for a given test infrastructure (e.g. JUnit4 would
    * throw {@link AssertionError}).
    *
-   * @param <T> the return type of the method, which must not be Void
+   * @param <V> the return type of the method, which must not be Void
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @return truthy value from the isTrue condition
    */
-  <T> T until(Function<? super F, T> isTrue);
+  <V extends @Nullable Object> @NonNull V until(Function<? super F, ? extends V> isTrue);
 }

@@ -53,8 +53,7 @@ class PrintPageTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME)
   public void canPrintTwoPages() {
-    PrintOptions printOptions = new PrintOptions();
-    printOptions.setPageRanges("1-2");
+    PrintOptions printOptions = new PrintOptions().setPageRanges("1-2");
 
     Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent()).contains(MAGIC_STRING);
@@ -64,12 +63,11 @@ class PrintPageTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME)
   public void canPrintWithValidParams() {
-    PrintOptions printOptions = new PrintOptions();
-    PageSize pageSize = new PageSize();
-
-    printOptions.setPageRanges("1-2");
-    printOptions.setOrientation(PrintOptions.Orientation.LANDSCAPE);
-    printOptions.setPageSize(pageSize);
+    PrintOptions printOptions =
+        new PrintOptions()
+            .setPageRanges("1-2")
+            .setOrientation(PrintOptions.Orientation.LANDSCAPE)
+            .setPageSize(new PageSize());
 
     Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent()).contains(MAGIC_STRING);
