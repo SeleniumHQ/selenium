@@ -15,7 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Type stub with lazy import mapping from __init__.py."""
+"""Type stub with lazy import mapping from __init__.py.
+
+This stub file is necessary for type checkers and IDEs to automatically have
+visibility into lazy modules since they are not imported immediately at runtime.
+"""
 
 # ruff: noqa: F401, I001
 
