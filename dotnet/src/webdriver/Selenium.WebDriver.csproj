@@ -61,11 +61,6 @@
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="assets\nuget\build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
-    <None Include="assets\nuget\buildTransitive\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
-  </ItemGroup>
-
   <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="BeforeBuild">
     <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
   </Target>
@@ -83,6 +78,11 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets/nuget/build/Selenium.WebDriver.props" Pack="true" PackagePath="build\" />
+    <None Update="assets/nuget/buildTransitive/Selenium.WebDriver.props" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
 
   <Target Name="GenerateResources" BeforeTargets="CoreCompile">
