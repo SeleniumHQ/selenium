@@ -41,7 +41,7 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile as FirefoxProfile
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 # IE
 from selenium.webdriver.ie.webdriver import WebDriver as Ie
@@ -67,10 +67,10 @@ from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
 from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
 
 # Common utilities
-from selenium.webdriver.common.action_chains import ActionChains as ActionChains
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DesiredCapabilities
-from selenium.webdriver.common.keys import Keys as Keys
-from selenium.webdriver.common.proxy import Proxy as Proxy
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.proxy import Proxy
 
 # Submodules
 import selenium.webdriver.chrome as chrome
