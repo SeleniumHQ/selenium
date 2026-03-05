@@ -88,7 +88,9 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   }
 
   private static void validateIntegralRange(Number number, Class<?> stereotype) {
-    // Only for integral targets
+    // Prevent silent overflow when JSON numbers are coerced to integral types.
+    // Java's Number.intValue()/longValue() silently wraps values outside the
+    // valid range, which previously produced incorrect results instead of errors.
     if (!(stereotype == Byte.class
         || stereotype == Short.class
         || stereotype == Integer.class
@@ -98,7 +100,7 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
     final BigInteger value;
     try {
-      // Parses "2147483648", "1e3", "1.0" safely; rejects "1.2"
+      // Use BigDecimal so we can reject fractional values and validate range before coercion.
       BigDecimal bd =
           (number instanceof BigDecimal) ? (BigDecimal) number : new BigDecimal(number.toString());
       value = bd.toBigIntegerExact();
