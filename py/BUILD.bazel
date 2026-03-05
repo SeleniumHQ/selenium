@@ -345,8 +345,8 @@ py_library(
     name = "firefox",
     srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
     data = [
-        ":firefox-driver-prefs",
         "selenium/webdriver/firefox/__init__.pyi",
+        ":firefox-driver-prefs",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
