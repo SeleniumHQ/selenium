@@ -21,12 +21,6 @@ This stub file is necessary for type checkers and IDEs to automatically have
 visibility into lazy modules since they are not imported immediately at runtime.
 """
 
-# ruff: noqa: F401
-
-from . import options
-from . import permissions
-from . import remote_connection
-from . import service
-from . import webdriver
+from . import options, permissions, remote_connection, service, webdriver
 
 __all__ = ["options", "permissions", "remote_connection", "service", "webdriver"]

@@ -21,12 +21,6 @@ This stub file is necessary for type checkers and IDEs to automatically have
 visibility into lazy modules since they are not imported immediately at runtime.
 """
 
-# ruff: noqa: F401
-
-from . import firefox_profile
-from . import options
-from . import remote_connection
-from . import service
-from . import webdriver
+from . import firefox_profile, options, remote_connection, service, webdriver
 
 __all__ = ["firefox_profile", "options", "remote_connection", "service", "webdriver"]
