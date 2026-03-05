@@ -803,7 +803,7 @@ public class NodeOptions {
   private String unquote(String input) {
     int len = input.length();
     if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
-      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
+      return new Json().newInput(new StringReader(input)).readNonNull(Json.OBJECT_TYPE);
     }
     return input;
   }

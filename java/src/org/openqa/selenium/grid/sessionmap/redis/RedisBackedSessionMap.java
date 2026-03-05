@@ -64,19 +64,18 @@ public class RedisBackedSessionMap extends SessionMap {
   private static final String DATABASE_SYSTEM = AttributeKey.DATABASE_SYSTEM.getKey();
   private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.getKey();
   private final GridRedisClient connection;
-  private final EventBus bus;
   private final URI serverUri;
 
   public RedisBackedSessionMap(Tracer tracer, URI serverUri, EventBus bus) {
     super(tracer);
 
     Require.nonNull("Redis Server Uri", serverUri);
-    this.bus = Require.nonNull("Event bus", bus);
+    Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
+    bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
-    this.bus.addListener(
+    bus.addListener(
         NodeRemovedEvent.listener(
             nodeStatus ->
                 nodeStatus.getSlots().stream()
@@ -195,6 +194,7 @@ public class RedisBackedSessionMap extends SessionMap {
       CAPABILITIES_EVENT.accept(attributeMap, caps);
 
       span.addEvent("Retrieved session from the database", attributeMap);
+      //noinspection DataFlowIssue
       return new Session(id, uri, stereotype, caps, start);
     }
   }

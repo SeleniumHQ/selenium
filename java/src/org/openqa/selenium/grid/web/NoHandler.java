@@ -26,6 +26,7 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -43,7 +44,7 @@ public class NoHandler implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // We're not using ImmutableMap for the outer map because it disallows null values.
-    Map<String, Object> responseMap = new HashMap<>();
+    Map<String, @Nullable Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", null);
     responseMap.put(
         "value",

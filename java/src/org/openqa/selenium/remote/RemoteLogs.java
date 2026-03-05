@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -111,16 +112,17 @@ public class RemoteLogs implements Logs {
     }
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
-    List<LogEntry> remoteEntries = new ArrayList<>(rawList.size());
+    List<LogEntry> remoteEntries =
+        rawList.stream().map(this::createLogEntry).collect(Collectors.toList());
 
-    for (Map<String, Object> obj : rawList) {
-      remoteEntries.add(
-          new LogEntry(
-              LogLevelMapping.toLevel((String) obj.get(LEVEL)),
-              (Long) obj.get(TIMESTAMP),
-              (String) obj.get(MESSAGE)));
-    }
     return new LogEntries(remoteEntries);
+  }
+
+  private LogEntry createLogEntry(Map<String, Object> obj) {
+    return new LogEntry(
+        LogLevelMapping.toLevel((String) obj.get(LEVEL)),
+        (Long) obj.get(TIMESTAMP),
+        (String) obj.get(MESSAGE));
   }
 
   /**
@@ -146,11 +148,9 @@ public class RemoteLogs implements Logs {
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public Set<String> getAvailableLogTypes() {
-    Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
-    @SuppressWarnings("unchecked")
-    List<String> rawList = (List<String>) raw;
+    List<String> rawList =
+        executeMethod.executeRequired(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     Set<String> builder = new LinkedHashSet<>();
     builder.addAll(rawList);
     builder.addAll(getAvailableLocalLogs());

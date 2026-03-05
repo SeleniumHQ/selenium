@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.web;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class MergedResource implements Resource {
@@ -31,7 +32,7 @@ public class MergedResource implements Resource {
     this(base, null);
   }
 
-  private MergedResource(Resource base, Resource next) {
+  private MergedResource(Resource base, @Nullable Resource next) {
     this.base = Require.nonNull("Base resource", base);
     this.next = Optional.ofNullable(next);
   }

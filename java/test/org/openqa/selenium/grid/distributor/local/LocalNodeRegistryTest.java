@@ -86,6 +86,7 @@ class LocalNodeRegistryTest {
   }
 
   @AfterEach
+  @SuppressWarnings("ConstantValue")
   void tearDown() {
     if (registry != null) {
       registry.close();

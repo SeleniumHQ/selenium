@@ -29,7 +29,6 @@ public class Debug {
   private static final boolean IS_DEBUG;
   private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
   private static boolean loggerConfigured = false;
-  private static Logger seleniumLogger;
 
   static {
     IS_DEBUG =
@@ -64,7 +63,7 @@ public class Debug {
       return;
     }
 
-    seleniumLogger = Logger.getLogger("org.openqa.selenium");
+    Logger seleniumLogger = Logger.getLogger("org.openqa.selenium");
     seleniumLogger.setLevel(Level.FINE);
 
     StreamHandler handler = new StreamHandler(System.err, new SimpleFormatter());

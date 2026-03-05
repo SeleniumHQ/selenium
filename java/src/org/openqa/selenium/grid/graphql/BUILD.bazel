@@ -22,5 +22,6 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("com.graphql-java:graphql-java"),
         artifact("com.github.ben-manes.caffeine:caffeine"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
@@ -38,12 +39,12 @@ public class DockerSession extends DefaultActiveSession {
 
   private static final Logger LOG = Logger.getLogger(DockerSession.class.getName());
   private final Container container;
-  private final Container videoContainer;
+  private final @Nullable Container videoContainer;
   private final DockerAssetsPath assetsPath;
 
   DockerSession(
       Container container,
-      Container videoContainer,
+      @Nullable Container videoContainer,
       Tracer tracer,
       HttpClient client,
       SessionId id,

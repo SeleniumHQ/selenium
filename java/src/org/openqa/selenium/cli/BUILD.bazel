@@ -9,5 +9,6 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid/config",
+        "@maven//:org_jspecify_jspecify",
     ],
 )
