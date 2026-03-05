@@ -286,4 +286,76 @@ internal class RemoteValueConversionTests
             Assert.That(value, Is.Empty);
         }
     }
+
+    [Test]
+    public void CanConvertMapRemoteValueToDictionary()
+    {
+        MapRemoteValue arg = new()
+        {
+            Value =
+            [
+                [new StringRemoteValue("key1"), new NumberRemoteValue(1)],
+                [new StringRemoteValue("key2"), new NumberRemoteValue(2)],
+            ]
+        };
+
+        AssertValue(arg.ConvertTo<Dictionary<string, int>>());
+        AssertValue(arg.ConvertTo<IDictionary<string, int>>());
+
+        static void AssertValue(IDictionary<string, int> value)
+        {
+            Assert.That(value, Has.Count.EqualTo(2));
+            Assert.That(value["key1"], Is.EqualTo(1));
+            Assert.That(value["key2"], Is.EqualTo(2));
+        }
+    }
+
+    [Test]
+    public void CanConvertEmptyMapRemoteValueToDictionary()
+    {
+        MapRemoteValue arg = new();
+
+        AssertValue(arg.ConvertTo<Dictionary<string, int>>());
+
+        static void AssertValue(IDictionary<string, int> value)
+        {
+            Assert.That(value, Is.Empty);
+        }
+    }
+
+    [Test]
+    public void CanConvertObjectRemoteValueToDictionary()
+    {
+        ObjectRemoteValue arg = new()
+        {
+            Value =
+            [
+                [new StringRemoteValue("a"), new BooleanRemoteValue(true)],
+                [new StringRemoteValue("b"), new BooleanRemoteValue(false)],
+            ]
+        };
+
+        AssertValue(arg.ConvertTo<Dictionary<string, bool>>());
+        AssertValue(arg.ConvertTo<IDictionary<string, bool>>());
+
+        static void AssertValue(IDictionary<string, bool> value)
+        {
+            Assert.That(value, Has.Count.EqualTo(2));
+            Assert.That(value["a"], Is.True);
+            Assert.That(value["b"], Is.False);
+        }
+    }
+
+    [Test]
+    public void CanConvertEmptyObjectRemoteValueToDictionary()
+    {
+        ObjectRemoteValue arg = new();
+
+        AssertValue(arg.ConvertTo<Dictionary<string, string>>());
+
+        static void AssertValue(IDictionary<string, string> value)
+        {
+            Assert.That(value, Is.Empty);
+        }
+    }
 }
