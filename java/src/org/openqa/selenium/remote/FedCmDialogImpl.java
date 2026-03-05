@@ -17,12 +17,15 @@
 
 package org.openqa.selenium.remote;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementAccount;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
 
+@NullMarked
 class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   private final ExecuteMethod executeMethod;
 
@@ -40,9 +43,10 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
     executeMethod.execute(DriverCommand.SELECT_ACCOUNT, Map.of("accountIndex", index));
   }
 
+  @Nullable
   @Override
   public String getDialogType() {
-    return (String) executeMethod.execute(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
+    return executeMethod.execute(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
   }
 
   @Override
@@ -51,29 +55,27 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
         DriverCommand.CLICK_DIALOG, Map.of("dialogButton", "ConfirmIdpLoginContinue"));
   }
 
+  @Nullable
   @Override
   public String getTitle() {
-    Map<String, Object> result =
-        (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
-    return (String) result.getOrDefault("title", null);
+    Map<String, String> result = executeMethod.executeRequired(DriverCommand.GET_FEDCM_TITLE, null);
+    return result.get("title");
   }
 
+  @Nullable
   @Override
   public String getSubtitle() {
-    Map<String, Object> result =
-        (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
-    return (String) result.getOrDefault("subtitle", null);
+    Map<String, String> result = executeMethod.executeRequired(DriverCommand.GET_FEDCM_TITLE, null);
+    return result.get("subtitle");
   }
 
   @Override
   public List<FederatedCredentialManagementAccount> getAccounts() {
-    List<Map<String, String>> list =
-        (List<Map<String, String>>) executeMethod.execute(DriverCommand.GET_ACCOUNTS, null);
-    ArrayList<FederatedCredentialManagementAccount> accounts =
-        new ArrayList<FederatedCredentialManagementAccount>();
-    for (Map<String, String> map : list) {
-      accounts.add(new FederatedCredentialManagementAccount(map));
-    }
-    return accounts;
+    List<Map<String, String>> accounts =
+        executeMethod.executeRequired(DriverCommand.GET_ACCOUNTS, null);
+
+    return accounts.stream()
+        .map(map -> new FederatedCredentialManagementAccount(map))
+        .collect(Collectors.toList());
   }
 }

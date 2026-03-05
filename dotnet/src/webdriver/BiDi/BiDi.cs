@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.BiDi;
 public sealed class BiDi : IBiDi
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
+    private bool _disposed;
 
     private Broker Broker { get; set; } = null!;
 
@@ -83,6 +84,13 @@ public sealed class BiDi : IBiDi
 
     public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
         await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }

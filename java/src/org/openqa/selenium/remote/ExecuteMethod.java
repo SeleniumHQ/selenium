@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -35,5 +37,9 @@ public interface ExecuteMethod {
    * @param parameters The parameters to execute that command with
    * @return The result of {@link Response#getValue()}.
    */
-  @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters);
+  @Nullable <T> T execute(String commandName, @Nullable Map<String, ?> parameters);
+
+  default <T> T executeRequired(String commandName, @Nullable Map<String, ?> parameters) {
+    return requireNonNull(execute(commandName, parameters));
+  }
 }

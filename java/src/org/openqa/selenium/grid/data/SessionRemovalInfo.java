@@ -20,13 +20,14 @@ package org.openqa.selenium.grid.data;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import org.jspecify.annotations.Nullable;
 
 public class SessionRemovalInfo {
   private final Instant removedAt;
   private final String reason;
-  private final URI nodeUri;
+  private final @Nullable URI nodeUri;
 
-  public SessionRemovalInfo(String reason, URI nodeUri) {
+  public SessionRemovalInfo(String reason, @Nullable URI nodeUri) {
     this.removedAt = Instant.now();
     this.reason = reason;
     this.nodeUri = nodeUri;

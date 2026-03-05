@@ -26,6 +26,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -91,24 +92,26 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
   protected abstract Handlers createHandlers(Config config);
 
-  public abstract static class Handlers implements Closeable {
+  protected abstract static class Handlers implements Closeable {
     public final HttpHandler httpHandler;
     public final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
         websocketHandler;
 
     /** Optional resolver for direct TCP tunnel of WebSocket connections. May be null. */
-    public final Function<String, Optional<URI>> tcpTunnelResolver;
+    public final @Nullable Function<String, Optional<URI>> tcpTunnelResolver;
 
-    public Handlers(
+    protected Handlers(
         HttpHandler http,
-        BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+        @Nullable BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
+            websocketHandler) {
       this(http, websocketHandler, null);
     }
 
-    public Handlers(
+    protected Handlers(
         HttpHandler http,
-        BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler,
-        Function<String, Optional<URI>> tcpTunnelResolver) {
+        @Nullable BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
+            websocketHandler,
+        @Nullable Function<String, Optional<URI>> tcpTunnelResolver) {
       this.httpHandler = Require.nonNull("HTTP handler", http);
       this.websocketHandler =
           websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;

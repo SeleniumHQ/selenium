@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
@@ -70,9 +71,11 @@ public class SeleniumManager {
   private static final String EXE = ".exe";
   private static final String SE_ENV_PREFIX = "SE_";
 
-  private static volatile SeleniumManager manager;
-  private final String managerPath = System.getenv("SE_MANAGER_PATH");
-  private Path binary = managerPath == null ? null : Paths.get(managerPath);
+  @Nullable private static volatile SeleniumManager manager;
+
+  @Nullable private final String managerPath = System.getenv("SE_MANAGER_PATH");
+
+  @Nullable private Path binary = managerPath == null ? null : Paths.get(managerPath);
   private final String seleniumManagerVersion;
   private boolean binaryInTemporalFolder = false;
 

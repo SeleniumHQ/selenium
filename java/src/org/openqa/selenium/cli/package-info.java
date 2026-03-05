@@ -44,4 +44,7 @@
  * <p>Ultimately, this means that flag objects have all (most?) fields annotated with JCommander's
  * {@link com.beust.jcommander.Parameter} annotation as well as {@code ConfigValue}.
  */
+@NullMarked
 package org.openqa.selenium.cli;
+
+import org.jspecify.annotations.NullMarked;

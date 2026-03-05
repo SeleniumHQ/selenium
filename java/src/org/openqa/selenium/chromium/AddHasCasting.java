@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.chromium;
 
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNullElse;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -51,10 +54,9 @@ public abstract class AddHasCasting
   @Override
   public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
-      @SuppressWarnings("unchecked")
       @Override
       public List<Map<String, String>> getCastSinks() {
-        return (List<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
+        return requireNonNullElse(executeMethod.execute(GET_CAST_SINKS, null), emptyList());
       }
 
       @Override
@@ -80,7 +82,7 @@ public abstract class AddHasCasting
 
       @Override
       public String getCastIssueMessage() {
-        return executeMethod.execute(GET_CAST_ISSUE_MESSAGE, null).toString();
+        return executeMethod.executeRequired(GET_CAST_ISSUE_MESSAGE, null).toString();
       }
 
       @Override

@@ -35,8 +35,10 @@ class KeysTest {
   }
 
   @Test
-  void charAtOtherPositionReturnsZero() {
-    assertThat(Keys.LEFT.charAt(10)).isEqualTo((char) 0);
+  void charAtOtherPositionThrows() {
+
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+        .isThrownBy(() -> Keys.LEFT.charAt(10));
   }
 
   @Test
