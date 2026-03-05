@@ -21,7 +21,7 @@ This stub file is necessary for type checkers and IDEs to automatically have
 visibility into lazy modules since they are not imported immediately at runtime.
 """
 
-# ruff: noqa: F401, I001
+# ruff: noqa: I001
 
 # Expose runtime version
 __version__: str
@@ -73,19 +73,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.proxy import Proxy
 
 # Submodules
-import selenium.webdriver.chrome as chrome
-import selenium.webdriver.chromium as chromium
-import selenium.webdriver.common as common
-import selenium.webdriver.edge as edge
-import selenium.webdriver.firefox as firefox
-import selenium.webdriver.ie as ie
-import selenium.webdriver.remote as remote
-import selenium.webdriver.safari as safari
-import selenium.webdriver.support as support
-import selenium.webdriver.webkitgtk as webkitgtk
-import selenium.webdriver.wpewebkit as wpewebkit
+from . import chrome
+from . import chromium
+from . import common
+from . import edge
+from . import firefox
+from . import ie
+from . import remote
+from . import safari
+from . import support
+from . import webkitgtk
+from . import wpewebkit
 
+# Exposed names
 __all__ = [
+    # Classes
     "ActionChains",
     "Chrome",
     "ChromeOptions",
@@ -114,4 +116,16 @@ __all__ = [
     "WebKitGTK",
     "WebKitGTKOptions",
     "WebKitGTKService",
+    # Submodules
+    "chrome",
+    "chromium",
+    "common",
+    "edge",
+    "firefox",
+    "ie",
+    "remote",
+    "safari",
+    "support",
+    "webkitgtk",
+    "wpewebkit",
 ]
