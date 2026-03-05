@@ -167,6 +167,11 @@ public abstract record RemoteValue
 
             foreach (var pair in remoteValues)
             {
+                if (pair.Count != 2)
+                {
+                    throw new FormatException($"Expected a pair of RemoteValues for dictionary entry, but got {pair.Count} values.");
+                }
+
                 var convertedKey = convertKeyMethod.Invoke(pair[0], null)!;
                 var convertedValue = convertValueMethod.Invoke(pair[1], null);
                 dict.Add(convertedKey, convertedValue);
