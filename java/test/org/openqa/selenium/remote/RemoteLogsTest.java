@@ -133,7 +133,7 @@ class RemoteLogsTest {
   @Test
   void canGetAvailableLogTypes() {
     List<String> remoteAvailableLogTypes = List.of(LogType.PROFILER, LogType.SERVER);
-    when(executeMethod.executeRequired(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
+    when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES))
         .thenReturn(remoteAvailableLogTypes);
 
     Set<String> localAvailableLogTypes = Set.of(LogType.PROFILER, LogType.CLIENT);
