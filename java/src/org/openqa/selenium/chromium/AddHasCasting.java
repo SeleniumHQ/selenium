@@ -81,7 +81,7 @@ public abstract class AddHasCasting
 
       @Override
       public String getCastIssueMessage() {
-        return executeMethod.executeRequired(GET_CAST_ISSUE_MESSAGE, null).toString();
+        return executeMethod.execute(GET_CAST_ISSUE_MESSAGE).toString();
       }
 
       @Override

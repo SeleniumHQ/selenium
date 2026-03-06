@@ -69,7 +69,7 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
       @Override
       public FirefoxCommandContext getContext() {
-        String context = executeMethod.executeRequired(GET_CONTEXT, null);
+        String context = executeMethod.execute(GET_CONTEXT);
         return FirefoxCommandContext.fromString(context);
       }
     };
