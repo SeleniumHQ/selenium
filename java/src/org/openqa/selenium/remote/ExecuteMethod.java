@@ -42,6 +42,7 @@ public interface ExecuteMethod {
 
   /**
    * Execute the given command and return the default value if the command return null.
+   *
    * @return non-nullable value of type T.
    */
   @SuppressWarnings("unchecked")
@@ -51,6 +52,7 @@ public interface ExecuteMethod {
 
   /**
    * Execute the given command and cast the returned value to T.
+   *
    * @return non-nullable value of type T.
    */
   @SuppressWarnings("unchecked")
@@ -60,6 +62,7 @@ public interface ExecuteMethod {
 
   /**
    * Execute the given command without parameters and cast the returned value to T.
+   *
    * @return non-nullable value of type T.
    */
   @SuppressWarnings("unchecked")
