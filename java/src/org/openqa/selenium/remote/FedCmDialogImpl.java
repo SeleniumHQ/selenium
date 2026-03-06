@@ -46,7 +46,7 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   @Nullable
   @Override
   public String getDialogType() {
-    return executeMethod.execute(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
+    return executeMethod.executeOptional(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
   }
 
   @Override

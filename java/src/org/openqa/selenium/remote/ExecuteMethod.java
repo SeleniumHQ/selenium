@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
@@ -37,9 +38,18 @@ public interface ExecuteMethod {
    * @param parameters The parameters to execute that command with
    * @return The result of {@link Response#getValue()}.
    */
-  @Nullable <T> T execute(String commandName, @Nullable Map<String, ?> parameters);
+  @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters);
+
+  default <T> T execute(String commandName, @Nullable Map<String, ?> parameters, T defaultValue) {
+    return requireNonNullElse(executeOptional(commandName, parameters), defaultValue);
+  }
+
+  @SuppressWarnings("unchecked")
+  default @Nullable <T> T executeOptional(String commandName, @Nullable Map<String, ?> parameters) {
+    return (T) execute(commandName, parameters);
+  }
 
   default <T> T executeRequired(String commandName, @Nullable Map<String, ?> parameters) {
-    return requireNonNull(execute(commandName, parameters));
+    return requireNonNull(executeOptional(commandName, parameters));
   }
 }

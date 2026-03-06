@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriverException;
 class LocalExecuteMethod implements ExecuteMethod {
   @Nullable
   @Override
-  public <T> T execute(String commandName, @Nullable Map<String, ?> parameters) {
+  public Object execute(String commandName, @Nullable Map<String, ?> parameters) {
     throw new WebDriverException("Cannot execute remote command: " + commandName);
   }
 }
