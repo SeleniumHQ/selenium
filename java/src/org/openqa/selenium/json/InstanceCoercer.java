@@ -126,7 +126,9 @@ class InstanceCoercer extends TypeCoercer<Object> {
                         }
                       };
                   return new TypeAndWriter(type, writer);
-                }));
+                },
+                (existing, ignored) -> existing,
+                java.util.LinkedHashMap::new));
   }
 
   private Map<String, TypeAndWriter> getBeanWriters(Constructor<?> constructor) {
