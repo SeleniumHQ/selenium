@@ -96,6 +96,8 @@ class JavascriptLogEntry:
             stacktrace=params.get("stackTrace"),
         )
 
+Entry = GenericLogEntry | ConsoleLogEntry | JavascriptLogEntry
+
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
     "entry_added": "log.entryAdded",
@@ -292,7 +294,7 @@ class Log:
 
 # Event Info Type Aliases
 # Event: log.entryAdded
-EntryAdded = globals().get('Entry', dict)  # Fallback to dict if type not defined
+EntryAdded = Entry
 
 
 # Populate EVENT_CONFIGS with event configuration mappings

@@ -284,6 +284,13 @@ class JavascriptLogEntry:
             stacktrace=params.get("stackTrace"),
         )''',
         ],
+        # Define Entry union type for log.entryAdded event deserialization
+        "extra_type_aliases": [
+            "Entry = GenericLogEntry | ConsoleLogEntry | JavascriptLogEntry",
+        ],
+        "event_type_aliases": {
+            "entry_added": "Entry",
+        },
     },
     "emulation": {
         "extra_methods": [
