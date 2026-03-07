@@ -158,7 +158,7 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
         if hasattr(state, '__dataclass_fields__'):
             # It's a dataclass, convert to dict
             state_param = {
-                k: v for k, v in state.__dict__.items() 
+                k: v for k, v in state.__dict__.items()
                 if v is not None
             }
 
