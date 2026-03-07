@@ -341,3 +341,40 @@ class Browser:
             params["userContexts"] = user_contexts
         cmd = command_builder("browser.setDownloadBehavior", params)
         return self._conn.execute(cmd)
+    def set_client_window_state(
+        self,
+        client_window: Any | None = None,
+        state: Any | None = None,
+    ):
+        """Set the client window state.
+
+        Args:
+            client_window: The client window ID to apply the state to.
+            state: The window state to set. Can be one of:
+                - A string: "fullscreen", "maximized", "minimized", "normal"
+                - A ClientWindowRectState object with width, height, x, y
+                - A dict representing the state
+
+        Raises:
+            ValueError: If client_window is not provided or state is invalid.
+        """
+        if client_window is None:
+            raise ValueError("client_window is required")
+        if state is None:
+            raise ValueError("state is required")
+
+        # Serialize ClientWindowRectState if needed
+        state_param = state
+        if hasattr(state, '__dataclass_fields__'):
+            # It's a dataclass, convert to dict
+            state_param = {
+                k: v for k, v in state.__dict__.items() 
+                if v is not None
+            }
+
+        params = {
+            "clientWindow": client_window,
+            "state": state_param,
+        }
+        cmd = command_builder("browser.setClientWindowState", params)
+        return self._conn.execute(cmd)
