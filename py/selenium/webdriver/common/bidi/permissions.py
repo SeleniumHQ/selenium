@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, Optional, Union
 
 from .common import command_builder
 
@@ -63,10 +63,10 @@ class Permissions:
 
     def set_permission(
         self,
-        descriptor: PermissionDescriptor | str,
-        state: PermissionState | str,
-        origin: str | None = None,
-        user_context: str | None = None,
+        descriptor: Union[PermissionDescriptor, str],
+        state: Union[PermissionState, str],
+        origin: Optional[str] = None,
+        user_context: Optional[str] = None,
     ) -> None:
         """Set a permission for a given origin.
 

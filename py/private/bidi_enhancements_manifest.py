@@ -1351,18 +1351,24 @@ class UserPromptHandler:
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
         return self._conn.execute(cmd)''',
-            '''    def uninstall(self, extension: Any | None = None):
+            '''    def uninstall(self, extension: str | dict):
         """Uninstall a web extension.
 
         Args:
             extension: Either the extension ID string returned by ``install``,
                 or the full result dict returned by ``install`` (the
                 ``"extension"`` value is extracted automatically).
+
+        Raises:
+            ValueError: If extension is not provided or is None.
         """
         if isinstance(extension, dict):
             extension = extension.get("extension")
+
+        if extension is None:
+            raise ValueError("extension parameter is required")
+
         params = {"extension": extension}
-        params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("webExtension.uninstall", params)
         return self._conn.execute(cmd)''',
         ],
