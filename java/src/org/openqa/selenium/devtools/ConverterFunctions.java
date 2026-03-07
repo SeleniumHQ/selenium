@@ -38,7 +38,7 @@ public class ConverterFunctions {
     Require.nonNull("Read callback", read);
 
     return input -> {
-      @Nullable X value = null;
+      X value = null;
 
       input.beginObject();
       while (input.hasNext()) {
