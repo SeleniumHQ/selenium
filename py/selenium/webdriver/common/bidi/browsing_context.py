@@ -220,14 +220,14 @@ class LocateNodesParameters:
     context: Any | None = None
     locator: Any | None = None
     serialization_options: Any | None = None
-    start_nodes: list[Any | None] | None = None
+    start_nodes: list[Any] = field(default_factory=list)
 
 
 @dataclass
 class LocateNodesResult:
     """LocateNodesResult."""
 
-    nodes: list[Any | None] | None = None
+    nodes: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -300,7 +300,7 @@ class SetViewportParameters:
     context: Any | None = None
     viewport: Any | None = None
     device_pixel_ratio: Any | None = None
-    user_contexts: list[Any | None] | None = None
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass

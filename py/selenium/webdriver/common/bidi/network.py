@@ -75,7 +75,7 @@ class BaseParameters:
     redirect_count: Any | None = None
     request: Any | None = None
     timestamp: Any | None = None
-    intercepts: list[Any | None] | None = None
+    intercepts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -171,13 +171,13 @@ class ResponseData:
     status: Any | None = None
     status_text: str | None = None
     from_cache: bool | None = None
-    headers: list[Any | None] | None = None
+    headers: list[Any] = field(default_factory=list)
     mime_type: str | None = None
     bytes_received: Any | None = None
     headers_size: Any | None = None
     body_size: Any | None = None
     content: Any | None = None
-    auth_challenges: list[Any | None] | None = None
+    auth_challenges: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -219,11 +219,11 @@ class UrlPatternString:
 class AddDataCollectorParameters:
     """AddDataCollectorParameters."""
 
-    data_types: list[Any | None] | None = None
+    data_types: list[Any] = field(default_factory=list)
     max_encoded_data_size: Any | None = None
     collector_type: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -237,9 +237,9 @@ class AddDataCollectorResult:
 class AddInterceptParameters:
     """AddInterceptParameters."""
 
-    phases: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    url_patterns: list[Any | None] | None = None
+    phases: list[Any] = field(default_factory=list)
+    contexts: list[Any] = field(default_factory=list)
+    url_patterns: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -254,9 +254,9 @@ class ContinueResponseParameters:
     """ContinueResponseParameters."""
 
     request: Any | None = None
-    cookies: list[Any | None] | None = None
+    cookies: list[Any] = field(default_factory=list)
     credentials: Any | None = None
-    headers: list[Any | None] | None = None
+    headers: list[Any] = field(default_factory=list)
     reason_phrase: str | None = None
     status_code: Any | None = None
 
@@ -315,8 +315,8 @@ class ProvideResponseParameters:
 
     request: Any | None = None
     body: Any | None = None
-    cookies: list[Any | None] | None = None
-    headers: list[Any | None] | None = None
+    cookies: list[Any] = field(default_factory=list)
+    headers: list[Any] = field(default_factory=list)
     reason_phrase: str | None = None
     status_code: Any | None = None
 
@@ -340,16 +340,16 @@ class SetCacheBehaviorParameters:
     """SetCacheBehaviorParameters."""
 
     cache_behavior: Any | None = None
-    contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
 class SetExtraHeadersParameters:
     """SetExtraHeadersParameters."""
 
-    headers: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    headers: list[Any] = field(default_factory=list)
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass

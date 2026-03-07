@@ -33,7 +33,7 @@ class GetCookiesParameters:
 class GetCookiesResult:
     """GetCookiesResult."""
 
-    cookies: list[Any | None] | None = None
+    cookies: list[Any] = field(default_factory=list)
     partition_key: Any | None = None
 
 

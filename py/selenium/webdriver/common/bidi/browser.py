@@ -131,14 +131,14 @@ class CreateUserContextParameters:
 class GetClientWindowsResult:
     """GetClientWindowsResult."""
 
-    client_windows: list[Any | None] | None = None
+    client_windows: list[Any] = field(default_factory=list)
 
 
 @dataclass
 class GetUserContextsResult:
     """GetUserContextsResult."""
 
-    user_contexts: list[Any | None] | None = None
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -171,7 +171,7 @@ class SetDownloadBehaviorParameters:
     """SetDownloadBehaviorParameters."""
 
     download_behavior: Any | None = None
-    user_contexts: list[Any | None] | None = None
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
