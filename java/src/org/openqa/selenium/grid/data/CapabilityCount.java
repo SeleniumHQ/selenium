@@ -60,6 +60,7 @@ public class CapabilityCount {
                 UNORDERED));
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static CapabilityCount fromJson(JsonInput input) {
     Map<Capabilities, Integer> toReturn = new HashMap<>();
 

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -200,7 +201,7 @@ public class FluentWait<T> implements Wait<T> {
    * @throws TimeoutException If the timeout expires.
    */
   @Override
-  public <V> V until(Function<? super T, @Nullable V> isTrue) {
+  public <V extends @Nullable Object> @NonNull V until(Function<? super T, ? extends V> isTrue) {
     Instant end = clock.instant().plus(timeout);
 
     Throwable lastException;

@@ -23,5 +23,6 @@ java_library(
         "//java/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

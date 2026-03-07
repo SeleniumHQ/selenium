@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
@@ -41,7 +42,7 @@ public class ProfilesIni {
     profiles = readProfiles(appData);
   }
 
-  protected Map<String, File> readProfiles(File appData) {
+  protected Map<String, File> readProfiles(@Nullable File appData) {
     Map<String, File> toReturn = new HashMap<>();
 
     File profilesIni = new File(appData, "profiles.ini");
@@ -95,13 +96,16 @@ public class ProfilesIni {
     return toReturn;
   }
 
-  protected File newProfile(String name, File appData, String path, boolean isRelative) {
+  @Nullable
+  protected File newProfile(
+      @Nullable String name, @Nullable File appData, @Nullable String path, boolean isRelative) {
     if (name != null && path != null) {
       return isRelative ? new File(appData, path) : new File(path);
     }
     return null;
   }
 
+  @Nullable
   public FirefoxProfile getProfile(String profileName) {
     File profileDir = profiles.get(profileName);
     if (profileDir == null) {
@@ -127,6 +131,7 @@ public class ProfilesIni {
     return new FirefoxProfile(tempDir);
   }
 
+  @Nullable
   protected File locateAppDataDirectory(Platform os) {
     File appData;
     if (os.is(WINDOWS)) {

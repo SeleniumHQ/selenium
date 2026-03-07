@@ -280,9 +280,6 @@ class WebScriptExecuteTest extends JupiterTestBase {
 
   @Test
   void canExecuteScriptWithObjectArgument() {
-
-    PrintOptions options = new PrintOptions();
-
     RemoteValue value =
         ((RemoteWebDriver) driver)
             .script()
@@ -293,7 +290,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                     + "                    Object.prototype.toString.call(arg));\n"
                     + "            return arg;\n"
                     + "        }}",
-                options);
+                new PrintOptions());
 
     assertThat(value.getType()).isEqualTo("object");
 

@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
@@ -320,7 +321,7 @@ public class KubernetesOptions {
     return getNamespace(null);
   }
 
-  String getNamespace(KubernetesClient kubeClient) {
+  String getNamespace(@Nullable KubernetesClient kubeClient) {
     // Priority: config → client auto-detected namespace → "default"
     // The fabric8 KubernetesClient.getNamespace() already reads from kubeconfig,
     // in-cluster service account namespace file, and KUBERNETES_NAMESPACE env var.
@@ -366,6 +367,7 @@ public class KubernetesOptions {
     return parseKeyValueMap(config.get(K8S_SECTION, "node-selector").orElse(null));
   }
 
+  @Nullable
   private String getVideoImage() {
     String image = config.get(K8S_SECTION, "video-image").orElse(DEFAULT_VIDEO_IMAGE);
     if (image.equalsIgnoreCase("false")) {
@@ -374,6 +376,7 @@ public class KubernetesOptions {
     return image;
   }
 
+  @Nullable
   private String getAssetsPath() {
     return config.get(K8S_SECTION, "assets-path").orElse(null);
   }
@@ -388,7 +391,10 @@ public class KubernetesOptions {
   }
 
   InheritedPodSpec inspectNodePod(
-      KubernetesClient kubeClient, String namespace, String labelInheritPrefix, String assetsPath) {
+      KubernetesClient kubeClient,
+      String namespace,
+      String labelInheritPrefix,
+      @Nullable String assetsPath) {
     if (!isRunningInKubernetes()) {
       LOG.fine("Not running in Kubernetes; skipping Node Pod inspection");
       return InheritedPodSpec.empty();
@@ -496,7 +502,8 @@ public class KubernetesOptions {
     }
   }
 
-  static Map<String, String> filterByPrefix(Map<String, String> map, String prefix) {
+  static Map<String, String> filterByPrefix(
+      @Nullable Map<String, String> map, @Nullable String prefix) {
     if (map == null || map.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -508,7 +515,7 @@ public class KubernetesOptions {
         .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  static Map<String, Quantity> parseResourceMap(String resourceString) {
+  static Map<String, Quantity> parseResourceMap(@Nullable String resourceString) {
     if (resourceString == null || resourceString.trim().isEmpty()) {
       return Collections.emptyMap();
     }
@@ -522,7 +529,7 @@ public class KubernetesOptions {
     return resources;
   }
 
-  static Map<String, String> parseKeyValueMap(String mapString) {
+  static Map<String, String> parseKeyValueMap(@Nullable String mapString) {
     if (mapString == null || mapString.trim().isEmpty()) {
       return Collections.emptyMap();
     }

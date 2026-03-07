@@ -18,6 +18,12 @@
 package org.openqa.selenium.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.Platform.ANDROID;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,9 +38,52 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 class DesiredCapabilitiesTest {
 
   @Test
+  void defaultConstructor() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    assertThat(capabilities.asMap()).isEmpty();
+  }
+
+  @Test
+  void constructorWithMap() {
+    DesiredCapabilities capabilities = new DesiredCapabilities(Map.of("foo", 8));
+    assertThat(capabilities.asMap()).containsExactly(Map.entry("foo", 8));
+  }
+
+  @Test
+  void constructorWithBrowserVersion() {
+    DesiredCapabilities capabilities = new DesiredCapabilities("firefox", "2.0", WINDOWS);
+    assertThat(capabilities.asMap())
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of(
+                BROWSER_VERSION, "2.0",
+                BROWSER_NAME, "firefox",
+                PLATFORM_NAME, WINDOWS));
+  }
+
+  @Test
+  void fluentSetters() {
+    DesiredCapabilities capabilities =
+        new DesiredCapabilities()
+            .setBrowserName("edge")
+            .setVersion("3.0")
+            .setPlatform(ANDROID)
+            .setAcceptInsecureCerts(true);
+    assertThat(capabilities.asMap())
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of(
+                BROWSER_VERSION,
+                "3.0",
+                BROWSER_NAME,
+                "edge",
+                PLATFORM_NAME,
+                ANDROID,
+                ACCEPT_INSECURE_CERTS,
+                true));
+  }
+
+  @Test
   void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
-    Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-        new ConcurrentHashMap<>();
+    Map<Capabilities, Class<? extends WebDriver>> capabilitiesToDriver = new ConcurrentHashMap<>();
 
     capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
     capabilitiesToDriver.put(new FirefoxOptions(), RemoteWebDriver.class);

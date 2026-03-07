@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.node.docker;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.docker.ContainerConfig.image;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
@@ -44,6 +43,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -98,8 +98,8 @@ public class DockerSessionFactory implements SessionFactory {
   private final Image browserImage;
   private final Capabilities stereotype;
   private final List<Device> devices;
-  private final Image videoImage;
-  private final DockerAssetsPath assetsPath;
+  private final @Nullable Image videoImage;
+  private final @Nullable DockerAssetsPath assetsPath;
   private final String networkName;
   private final boolean runningInDocker;
   private final Predicate<Capabilities> predicate;
@@ -117,8 +117,8 @@ public class DockerSessionFactory implements SessionFactory {
       Image browserImage,
       Capabilities stereotype,
       List<Device> devices,
-      Image videoImage,
-      DockerAssetsPath assetsPath,
+      @Nullable Image videoImage,
+      @Nullable DockerAssetsPath assetsPath,
       String networkName,
       boolean runningInDocker,
       Predicate<Capabilities> predicate,
@@ -162,7 +162,7 @@ public class DockerSessionFactory implements SessionFactory {
     // Generate unique identifier for consistent naming between browser and recorder containers
     // Using browserName-timestamp-UUID to avoid conflicts in concurrent session creation
     String browserName = sessionRequest.getDesiredCapabilities().getBrowserName();
-    if (browserName != null && !browserName.isEmpty()) {
+    if (!browserName.isEmpty()) {
       browserName = browserName.toLowerCase();
     } else {
       browserName = "unknown";
@@ -374,6 +374,7 @@ public class DockerSessionFactory implements SessionFactory {
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
   }
 
+  @Nullable
   private Container startVideoContainer(
       Capabilities sessionCapabilities,
       String browserContainerIp,
@@ -438,6 +439,7 @@ public class DockerSessionFactory implements SessionFactory {
     return envVars;
   }
 
+  @Nullable
   private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
     Optional<Object> testName =
         ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
@@ -454,6 +456,7 @@ public class DockerSessionFactory implements SessionFactory {
     return null;
   }
 
+  @Nullable
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
@@ -469,6 +472,7 @@ public class DockerSessionFactory implements SessionFactory {
     return null;
   }
 
+  @Nullable
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
         ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
@@ -521,7 +525,7 @@ public class DockerSessionFactory implements SessionFactory {
     wait.until(
         obj -> {
           HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-          LOG.fine(string(response));
+          LOG.fine(response::contentAsString);
           if (401 == response.getStatus()) {
             LOG.warning(
                 "Server requires basic authentication. "

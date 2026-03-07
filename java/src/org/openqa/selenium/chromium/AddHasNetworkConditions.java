@@ -18,6 +18,10 @@
 package org.openqa.selenium.chromium;
 
 import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.LATENCY;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.OFFLINE;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.UPLOAD_THROUGHPUT;
 
 import com.google.auto.service.AutoService;
 import java.time.Duration;
@@ -71,21 +75,13 @@ public class AddHasNetworkConditions
     return new HasNetworkConditions() {
       @Override
       public ChromiumNetworkConditions getNetworkConditions() {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result =
-            (Map<String, Object>) executeMethod.execute(GET_NETWORK_CONDITIONS, null);
-        ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-        networkConditions.setOffline(
-            (Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));
-        networkConditions.setLatency(
-            Duration.ofMillis((Long) result.getOrDefault(ChromiumNetworkConditions.LATENCY, 0)));
-        networkConditions.setDownloadThroughput(
-            ((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1))
-                .intValue());
-        networkConditions.setUploadThroughput(
-            ((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1))
-                .intValue());
-        return networkConditions;
+        Map<String, Object> result = executeMethod.execute(GET_NETWORK_CONDITIONS);
+        return new ChromiumNetworkConditions()
+            .setOffline((Boolean) result.getOrDefault(OFFLINE, false))
+            .setLatency(Duration.ofMillis((Long) result.getOrDefault(LATENCY, 0)))
+            .setDownloadThroughput(
+                ((Number) result.getOrDefault(DOWNLOAD_THROUGHPUT, -1)).intValue())
+            .setUploadThroughput(((Number) result.getOrDefault(UPLOAD_THROUGHPUT, -1)).intValue());
       }
 
       @Override
@@ -94,13 +90,13 @@ public class AddHasNetworkConditions
 
         Map<String, Object> conditions =
             Map.of(
-                ChromiumNetworkConditions.OFFLINE,
+                OFFLINE,
                 networkConditions.getOffline(),
-                ChromiumNetworkConditions.LATENCY,
+                LATENCY,
                 networkConditions.getLatency().toMillis(),
-                ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT,
+                DOWNLOAD_THROUGHPUT,
                 networkConditions.getDownloadThroughput(),
-                ChromiumNetworkConditions.UPLOAD_THROUGHPUT,
+                UPLOAD_THROUGHPUT,
                 networkConditions.getUploadThroughput());
         executeMethod.execute(SET_NETWORK_CONDITIONS, Map.of("network_conditions", conditions));
       }
