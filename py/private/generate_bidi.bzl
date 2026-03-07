@@ -53,7 +53,6 @@ def _generate_bidi_impl(ctx):
     args = [
         cddl_file.path,
         output_base,
-        "--version",
         spec_version,
     ]
 
