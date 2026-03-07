@@ -88,13 +88,9 @@ class WebExtension:
             ValueError: If more than one, or none, of the arguments is provided.
         """
         provided = [
-            k
-            for k, v in {
-                "path": path,
-                "archive_path": archive_path,
-                "base64_value": base64_value,
-            }.items()
-            if v is not None
+            k for k, v in {
+                "path": path, "archive_path": archive_path, "base64_value": base64_value,
+            }.items() if v is not None
         ]
         if len(provided) != 1:
             raise ValueError(
@@ -109,7 +105,6 @@ class WebExtension:
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
         return self._conn.execute(cmd)
-
     def uninstall(self, extension: str | dict):
         """Uninstall a web extension.
 

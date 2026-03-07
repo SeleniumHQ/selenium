@@ -672,6 +672,11 @@ class CddlModule:
             code += extra_cls
             code += "\n\n"
 
+        # Emit extra type aliases from enhancement manifest (e.g., union types for events)
+        for extra_alias in enhancements.get("extra_type_aliases", []):
+            code += extra_alias
+            code += "\n\n"
+
         # NOTE: Don't generate event type aliases here - they reference types that may not be defined yet
         # They will be generated after the class definition instead
 
@@ -976,8 +981,22 @@ class _EventManager:
         # This ensures all types are available when we create the aliases
         if self.events:
             code += "\n# Event Info Type Aliases\n"
+            # Check for explicit event_type_aliases in the enhancement manifest
+            event_type_aliases = enhancements.get("event_type_aliases", {})
             for event_def in self.events:
-                code += event_def.to_python_dataclass()
+                # Convert method name to user-friendly event name
+                method_parts = event_def.method.split(".")
+                if len(method_parts) == 2:
+                    event_name = self._convert_method_to_event_name(method_parts[1])
+                    # Check if there's an explicit alias defined in the enhancement manifest
+                    if event_name in event_type_aliases:
+                        # Use the alias directly
+                        type_name = event_type_aliases[event_name]
+                        code += f"# Event: {event_def.method}\n"
+                        code += f"{event_def.name} = {type_name}\n"
+                    else:
+                        # Fall back to the original behavior
+                        code += event_def.to_python_dataclass()
                 code += "\n"
 
             # Now populate EVENT_CONFIGS after the aliases are defined
