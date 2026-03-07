@@ -216,7 +216,7 @@ class DedicatedWorkerRealmInfo:
     """DedicatedWorkerRealmInfo."""
 
     type: str = field(default="dedicated-worker", init=False)
-    owners: list[Any | None] | None = None
+    owners: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -460,7 +460,7 @@ class NodeProperties:
 
     node_type: Any | None = None
     child_node_count: Any | None = None
-    children: list[Any | None] | None = None
+    children: list[Any] = field(default_factory=list)
     local_name: str | None = None
     mode: Any | None = None
     namespace_uri: str | None = None
@@ -499,7 +499,7 @@ class StackFrame:
 class StackTrace:
     """StackTrace."""
 
-    call_frames: list[Any | None] | None = None
+    call_frames: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -530,9 +530,9 @@ class AddPreloadScriptParameters:
     """AddPreloadScriptParameters."""
 
     function_declaration: str | None = None
-    arguments: list[Any | None] | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    arguments: list[Any] = field(default_factory=list)
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
     sandbox: str | None = None
 
 
@@ -547,7 +547,7 @@ class AddPreloadScriptResult:
 class DisownParameters:
     """DisownParameters."""
 
-    handles: list[Any | None] | None = None
+    handles: list[Any] = field(default_factory=list)
     target: Any | None = None
 
 
@@ -558,7 +558,7 @@ class CallFunctionParameters:
     function_declaration: str | None = None
     await_promise: bool | None = None
     target: Any | None = None
-    arguments: list[Any | None] | None = None
+    arguments: list[Any] = field(default_factory=list)
     result_ownership: Any | None = None
     serialization_options: Any | None = None
     this: Any | None = None
@@ -589,7 +589,7 @@ class GetRealmsParameters:
 class GetRealmsResult:
     """GetRealmsResult."""
 
-    realms: list[Any | None] | None = None
+    realms: list[Any] = field(default_factory=list)
 
 
 @dataclass

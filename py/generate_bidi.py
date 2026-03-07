@@ -385,9 +385,16 @@ class CddlTypeDefinition:
                 if literal_match:
                     literal_value = literal_match.group(1)
                     code += f'    {snake_name}: str = field(default="{literal_value}", init=False)\n'
-                # Check if this field is a list type
-                elif "List[" in python_type:
-                    code += f"    {snake_name}: {python_type} = field(default_factory=list)\n"
+                # Check if this field is a list type (using lowercase 'list[' from Python 3.10+ syntax)
+                elif python_type.startswith("list["):
+                    # Remove the trailing ' | None' from list types since default_factory=list ensures non-None
+                    type_annotation = python_type.replace(" | None", "")
+                    code += f"    {snake_name}: {type_annotation} = field(default_factory=list)\n"
+                # Check if this field is a dict type (using lowercase 'dict[' from Python 3.10+ syntax)
+                elif python_type.startswith("dict["):
+                    # Remove the trailing ' | None' from dict types since default_factory=dict ensures non-None
+                    type_annotation = python_type.replace(" | None", "")
+                    code += f"    {snake_name}: {type_annotation} = field(default_factory=dict)\n"
                 else:
                     code += f"    {snake_name}: {python_type} = None\n"
 

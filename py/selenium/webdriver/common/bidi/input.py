@@ -45,7 +45,7 @@ class PerformActionsParameters:
     """PerformActionsParameters."""
 
     context: Any | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -54,7 +54,7 @@ class NoneSourceActions:
 
     type: str = field(default="none", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -63,7 +63,7 @@ class KeySourceActions:
 
     type: str = field(default="key", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -73,7 +73,7 @@ class PointerSourceActions:
     type: str = field(default="pointer", init=False)
     id: str | None = None
     parameters: Any | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -89,7 +89,7 @@ class WheelSourceActions:
 
     type: str = field(default="wheel", init=False)
     id: str | None = None
-    actions: list[Any | None] | None = None
+    actions: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -163,7 +163,7 @@ class SetFilesParameters:
 
     context: Any | None = None
     element: Any | None = None
-    files: list[Any | None] | None = None
+    files: list[Any] = field(default_factory=list)
 
 
 @dataclass

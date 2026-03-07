@@ -41,16 +41,16 @@ class SetForcedColorsModeThemeOverrideParameters:
     """SetForcedColorsModeThemeOverrideParameters."""
 
     theme: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
 class SetGeolocationOverrideParameters:
     """SetGeolocationOverrideParameters."""
 
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -78,8 +78,8 @@ class SetLocaleOverrideParameters:
     """SetLocaleOverrideParameters."""
 
     locale: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -87,8 +87,8 @@ class setNetworkConditionsParameters:
     """setNetworkConditionsParameters."""
 
     network_conditions: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -111,8 +111,8 @@ class SetScreenSettingsOverrideParameters:
     """SetScreenSettingsOverrideParameters."""
 
     screen_area: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -128,8 +128,8 @@ class SetScreenOrientationOverrideParameters:
     """SetScreenOrientationOverrideParameters."""
 
     screen_orientation: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -137,8 +137,8 @@ class SetUserAgentOverrideParameters:
     """SetUserAgentOverrideParameters."""
 
     user_agent: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -146,8 +146,8 @@ class SetViewportMetaOverrideParameters:
     """SetViewportMetaOverrideParameters."""
 
     viewport_meta: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -155,8 +155,8 @@ class SetScriptingEnabledParameters:
     """SetScriptingEnabledParameters."""
 
     enabled: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -164,8 +164,8 @@ class SetScrollbarTypeOverrideParameters:
     """SetScrollbarTypeOverrideParameters."""
 
     scrollbar_type: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -173,16 +173,16 @@ class SetTimezoneOverrideParameters:
     """SetTimezoneOverrideParameters."""
 
     timezone: Any | None = None
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 @dataclass
 class SetTouchOverrideParameters:
     """SetTouchOverrideParameters."""
 
-    contexts: list[Any | None] | None = None
-    user_contexts: list[Any | None] | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
 
 
 class Emulation:
