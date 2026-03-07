@@ -133,6 +133,18 @@ class JsonTest {
   }
 
   @Test
+  void shouldThrowWhenDuplicateFieldNamesExistWithFieldSetting() {
+    String raw = "{\"value\": \"test\"}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, ChildFieldBean.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessage("Duplicate JSON field name detected while collecting field writers");
+  }
+
+  @Test
   void settingFinalFieldsShouldWork() {
     Map<String, String> map = Map.of("theName", "fishy");
 
@@ -659,6 +671,14 @@ class JsonTest {
     public void setBean(SimpleBean bean) {
       this.bean = bean;
     }
+  }
+
+  public static class ParentFieldBean {
+    String value;
+  }
+
+  public static class ChildFieldBean extends ParentFieldBean {
+    String value;
   }
 
   public static class JsonAware {
