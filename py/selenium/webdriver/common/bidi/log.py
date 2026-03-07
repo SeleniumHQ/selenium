@@ -264,7 +264,6 @@ class Log:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    pass
 
     def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
         """Add an event handler.

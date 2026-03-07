@@ -946,7 +946,7 @@ class _EventManager:
                 method_enhancements = enhancements.get(method_name_snake, {})
                 code += command.to_python_method(method_enhancements)
                 code += "\n"
-        else:
+        elif not self.events and not enhancements.get("extra_methods", []):
             code += "    pass\n"
 
         # Emit extra methods from enhancement manifest
