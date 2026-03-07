@@ -95,7 +95,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
           throw new InvalidArgumentException(path + " is an invalid path", e);
         }
 
-        return executeMethod.executeAs(
+        return executeMethod.executeRequired(
             INSTALL_EXTENSION, Map.of("addon", encoded, "temporary", temporary));
       }
 

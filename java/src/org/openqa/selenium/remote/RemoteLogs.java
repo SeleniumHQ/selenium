@@ -149,7 +149,8 @@ public class RemoteLogs implements Logs {
 
   @Override
   public Set<String> getAvailableLogTypes() {
-    List<String> rawList = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES);
+    List<String> rawList =
+        executeMethod.executeRequired(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     Set<String> builder = new LinkedHashSet<>();
     builder.addAll(rawList);
     builder.addAll(getAvailableLocalLogs());

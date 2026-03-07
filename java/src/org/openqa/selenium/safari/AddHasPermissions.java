@@ -67,7 +67,7 @@ public class AddHasPermissions
 
       @Override
       public Map<String, Boolean> getPermissions() {
-        Map<?, ?> resultMap = executeMethod.execute(GET_PERMISSIONS);
+        Map<?, ?> resultMap = executeMethod.executeRequired(GET_PERMISSIONS, null);
 
         Map<String, Boolean> permissionMap = new HashMap<>();
         for (Map.Entry<?, ?> entry : resultMap.entrySet()) {
