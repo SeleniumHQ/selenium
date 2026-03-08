@@ -80,6 +80,7 @@ class RemoteWebDriverBiDiTest extends JupiterTestBase {
   }
 
   @AfterEach
+  @SuppressWarnings("ConstantValue")
   void tearDownDeployment() {
     if (localDriver != null) {
       localDriver.quit();

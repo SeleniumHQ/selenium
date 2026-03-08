@@ -34,6 +34,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
@@ -169,7 +170,7 @@ public class LocalGridModel extends GridModel {
         if (node.getNodeId().equals(status.getNodeId())) {
           iterator.remove();
 
-          // if the node was marked as "down", keep it down until a healthcheck passes:
+          // if the node was marked as "down", keep it down until a health check passes:
           // just because the node can hit the event bus doesn't mean it's reachable
           if (node.getAvailability() == DOWN) {
             nodes.add(rewrite(status, DOWN));
@@ -375,6 +376,7 @@ public class LocalGridModel extends GridModel {
     }
   }
 
+  @Nullable
   private NodeStatus getNode(NodeId id) {
     Require.nonNull("Node ID", id);
 
@@ -401,7 +403,7 @@ public class LocalGridModel extends GridModel {
   }
 
   @Override
-  public void release(SessionId id) {
+  public void release(@Nullable SessionId id) {
     if (id == null) {
       return;
     }
@@ -430,7 +432,7 @@ public class LocalGridModel extends GridModel {
   }
 
   @Override
-  public void setSession(SlotId slotId, Session session) {
+  public void setSession(SlotId slotId, @Nullable Session session) {
     Require.nonNull("Slot ID", slotId);
 
     Lock writeLock = lock.writeLock();

@@ -52,6 +52,7 @@ public class CreateSessionResponse {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static CreateSessionResponse fromJson(JsonInput input) {
     Session session = null;
     byte[] downstreamResponse = null;

@@ -61,7 +61,7 @@ public class Values {
         }
       }
 
-      throw new IllegalStateException("Unable to locate value: " + string(response));
+      throw new IllegalStateException("Unable to locate value: " + response.contentAsString());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

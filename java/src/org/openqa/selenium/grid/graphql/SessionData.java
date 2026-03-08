@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.graphql;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -62,6 +63,7 @@ public class SessionData implements DataFetcher<org.openqa.selenium.grid.graphql
     }
   }
 
+  @Nullable
   private SessionInSlot findSession(String sessionId, Set<NodeStatus> nodeStatuses) {
     for (NodeStatus status : nodeStatuses) {
       for (Slot slot : status.getSlots()) {

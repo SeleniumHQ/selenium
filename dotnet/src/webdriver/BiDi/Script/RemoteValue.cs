@@ -98,6 +98,10 @@ public abstract record RemoteValue
                 => ConvertRemoteValuesToArray<TResult>(a.Value, t.GetElementType()!),
             (ArrayRemoteValue a, Type t) when t.IsGenericType && t.IsAssignableFrom(typeof(List<>).MakeGenericType(t.GetGenericArguments()[0]))
                 => ConvertRemoteValuesToGenericList<TResult>(a.Value, typeof(List<>).MakeGenericType(t.GetGenericArguments()[0])),
+            (MapRemoteValue m, Type t) when t.IsGenericType && t.GetGenericArguments().Length == 2 && t.IsAssignableFrom(typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments()))
+                => ConvertRemoteValuesToDictionary<TResult>(m.Value, typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments())),
+            (ObjectRemoteValue o, Type t) when t.IsGenericType && t.GetGenericArguments().Length == 2 && t.IsAssignableFrom(typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments()))
+                => ConvertRemoteValuesToDictionary<TResult>(o.Value, typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments())),
 
             (_, Type t) when Nullable.GetUnderlyingType(t) is { } underlying
                 => ConvertToNullable<TResult>(underlying),
@@ -149,6 +153,32 @@ public abstract record RemoteValue
         }
 
         return (TResult)list;
+    }
+
+    private static TResult ConvertRemoteValuesToDictionary<TResult>(IReadOnlyList<IReadOnlyList<RemoteValue>>? remoteValues, Type dictionaryType)
+    {
+        var typeArgs = dictionaryType.GetGenericArguments();
+        var dict = (System.Collections.IDictionary)Activator.CreateInstance(dictionaryType)!;
+
+        if (remoteValues is not null)
+        {
+            var convertKeyMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[0]);
+            var convertValueMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[1]);
+
+            foreach (var pair in remoteValues)
+            {
+                if (pair.Count != 2)
+                {
+                    throw new FormatException($"Expected a pair of RemoteValues for dictionary entry, but got {pair.Count} values.");
+                }
+
+                var convertedKey = convertKeyMethod.Invoke(pair[0], null)!;
+                var convertedValue = convertValueMethod.Invoke(pair[1], null);
+                dict.Add(convertedKey, convertedValue);
+            }
+        }
+
+        return (TResult)dict;
     }
 }
 

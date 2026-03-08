@@ -74,7 +74,7 @@ public class MutableCapabilities implements Capabilities {
     setCapability(capabilityName, (Object) value);
   }
 
-  public void setCapability(String capabilityName, String value) {
+  public void setCapability(String capabilityName, @Nullable String value) {
     setCapability(capabilityName, (Object) value);
   }
 

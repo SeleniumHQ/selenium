@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
@@ -75,18 +76,18 @@ public class SessionEventData {
 
   private final SessionId sessionId;
   private final String eventType;
-  private final NodeId nodeId;
-  private final URI nodeUri;
+  private final @Nullable NodeId nodeId;
+  private final @Nullable URI nodeUri;
   private final Instant timestamp;
   private final Map<String, Object> payload;
 
   public SessionEventData(
       SessionId sessionId,
       String eventType,
-      NodeId nodeId,
-      URI nodeUri,
+      @Nullable NodeId nodeId,
+      @Nullable URI nodeUri,
       Instant timestamp,
-      Map<String, Object> payload) {
+      @Nullable Map<String, Object> payload) {
     this.sessionId = Require.nonNull("Session ID", sessionId);
     this.eventType = Require.nonNull("Event type", eventType);
     if (!eventType.matches("^[a-zA-Z][a-zA-Z0-9:._-]*$")) {
@@ -133,10 +134,12 @@ public class SessionEventData {
     return eventType;
   }
 
+  @Nullable
   public NodeId getNodeId() {
     return nodeId;
   }
 
+  @Nullable
   public URI getNodeUri() {
     return nodeUri;
   }
@@ -165,6 +168,7 @@ public class SessionEventData {
    * @param key the key to look up
    * @return the string value, or null if not present or not a string
    */
+  @Nullable
   public String getString(String key) {
     Object value = payload.get(key);
     return value instanceof String ? (String) value : null;
@@ -212,7 +216,7 @@ public class SessionEventData {
     return result;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionEventData fromJson(JsonInput input) {
     SessionId sessionId = null;
     String eventType = null;

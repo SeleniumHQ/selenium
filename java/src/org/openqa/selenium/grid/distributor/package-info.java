@@ -27,4 +27,7 @@
  * that dialects match, or that a converter of some sort is added. The Node may be the part of the
  * system responsible for adding this converter.
  */
+@NullMarked
 package org.openqa.selenium.grid.distributor;
+
+import org.jspecify.annotations.NullMarked;

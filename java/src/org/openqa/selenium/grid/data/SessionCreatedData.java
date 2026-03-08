@@ -104,6 +104,7 @@ public class SessionCreatedData {
     return toReturn;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionCreatedData fromJson(JsonInput input) {
     SessionId sessionId = null;
     NodeId nodeId = null;

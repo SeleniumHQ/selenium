@@ -89,7 +89,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           EDGE_EXECUTABLE_PATH,
           IGNORE_PROCESS_MATCH);
 
-  private final Map<String, Object> ieOptions = new HashMap<>();
+  private final Map<String, @Nullable Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
     setCapability(BROWSER_NAME, IE.browserName());
@@ -233,7 +233,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   @Override
-  public void setCapability(String key, Object value) {
+  public void setCapability(String key, @Nullable Object value) {
     if (IE_SWITCHES.equals(key)) {
       if (value instanceof List) {
         value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
@@ -249,9 +249,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
-      Map<String, Object> streamFrom;
+      Map<String, @Nullable Object> streamFrom;
       if (value instanceof Map) {
-        streamFrom = (Map<String, Object>) value;
+        streamFrom = (Map<String, @Nullable Object>) value;
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
