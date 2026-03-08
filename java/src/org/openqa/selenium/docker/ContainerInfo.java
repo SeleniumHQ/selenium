@@ -29,8 +29,8 @@ public class ContainerInfo {
   private final ContainerId id;
   private final List<Map<String, Object>> mountedVolumes;
   private final String networkName;
-  private Map<String, Object> hostConfig;
-  private Map<String, String> labels;
+  private final Map<String, Object> hostConfig;
+  private final Map<String, String> labels;
 
   public ContainerInfo(
       ContainerId id,
