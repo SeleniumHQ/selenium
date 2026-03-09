@@ -22,6 +22,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -62,7 +63,7 @@ public class CdpEventTypes {
     };
   }
 
-  public static EventType<Void> domMutation(Consumer<DomMutationEvent> handler) {
+  public static EventType<Void> domMutation(Consumer<@Nullable DomMutationEvent> handler) {
     Require.nonNull("Handler", handler);
 
     String script = Read.resourceAsString("/org/openqa/selenium/devtools/mutation-listener.js");

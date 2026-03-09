@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools.idealized;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.WARNING;
 
 import java.net.URI;
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -151,7 +153,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     prepareToInterceptTraffic();
   }
 
-  @SuppressWarnings("SuspiciousMethodCalls")
   public void resetNetworkFilter() {
     filter = defaultFilter;
   }
@@ -216,7 +217,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
             Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
             if (message.isRight()) {
-              HttpResponse res = message.right();
+              HttpResponse res = requireNonNull(message.right());
               CompletableFuture<HttpResponse> future = pendingResponses.remove(id);
 
               if (future == null) {
@@ -310,9 +311,9 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   protected HttpResponse createHttpResponse(
       Optional<Integer> statusCode,
-      String body,
-      Boolean bodyIsBase64Encoded,
-      List<Map.Entry<String, String>> headers) {
+      @Nullable String body,
+      @Nullable Boolean bodyIsBase64Encoded,
+      List<Map.Entry<String, @Nullable String>> headers) {
     Contents.Supplier content;
 
     if (body == null) {

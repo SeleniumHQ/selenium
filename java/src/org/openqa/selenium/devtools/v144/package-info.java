@@ -15,33 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.runtime.model;
+@NullMarked
+package org.openqa.selenium.devtools.v144;
 
-import org.jspecify.annotations.Nullable;
-
-public class RemoteObject {
-
-  private final String type;
-  private final @Nullable Object value;
-
-  public RemoteObject(String type, @Nullable Object value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return value instanceof String
-        ? ("\"" + ((String) value).replace("\"", "\\\"") + "\"")
-        : String.valueOf(value);
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  @Nullable
-  public Object getValue() {
-    return value;
-  }
-}
+import org.jspecify.annotations.NullMarked;

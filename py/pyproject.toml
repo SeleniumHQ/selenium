@@ -67,6 +67,7 @@ binding = "Exec"
 [tool.setuptools.package-data]
 "*" = [
     "*.py",
+    "*.pyi",
     "*.rst",
     "*.json",
     "*.xpi",
