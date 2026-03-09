@@ -15,11 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import time
 
 import pytest
 
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 

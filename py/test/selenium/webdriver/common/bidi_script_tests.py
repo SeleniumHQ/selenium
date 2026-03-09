@@ -17,11 +17,11 @@
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.log import LogLevel
 from selenium.webdriver.common.bidi.script import RealmType, ResultOwnership
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import WebDriverException
 
 
 def has_shadow_root(node):
@@ -864,7 +864,6 @@ def test_execute_script_with_exception(driver, pages):
     """Test executing script that throws an exception."""
     pages.load("blank.html")
 
-    from selenium.common.exceptions import WebDriverException
 
     with pytest.raises(WebDriverException) as exc_info:
         driver.script.execute(
