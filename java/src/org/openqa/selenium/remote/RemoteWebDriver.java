@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
@@ -696,6 +697,7 @@ public class RemoteWebDriver
   }
 
   @Override
+  @NullMarked
   public void perform(Collection<Sequence> actions) {
     execute(DriverCommand.ACTIONS(actions));
   }

@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.interactions;
 
-import org.jspecify.annotations.NullMarked;
-
 /**
  * Models an <a href="https://www.w3.org/TR/webdriver/#dfn-input-source">input source</a> as defined
  * and used by the W3C WebDriver spec.
  */
-@NullMarked
 public interface InputSource {
   SourceType getInputType();
 

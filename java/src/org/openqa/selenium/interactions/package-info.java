@@ -15,26 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.interactions;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.openqa.selenium.internal.Require;
-
-/** An action for aggregating actions and triggering all of them at the same time. */
-public class CompositeAction implements Action {
-
-  private final List<Action> actionsList = new ArrayList<>();
-
-  @Override
-  public void perform() {
-    for (Action action : actionsList) {
-      action.perform();
-    }
-  }
-
-  public CompositeAction addAction(Action action) {
-    actionsList.add(Require.nonNull("Action", action));
-    return this;
-  }
-}
+import org.jspecify.annotations.NullMarked;

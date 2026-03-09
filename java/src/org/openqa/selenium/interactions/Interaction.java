@@ -19,13 +19,10 @@ package org.openqa.selenium.interactions;
 
 import static java.util.Objects.requireNonNull;
 
-import org.jspecify.annotations.NullMarked;
-
 /**
  * Used as the basis of {@link Sequence}s for the W3C WebDriver spec <a
  * href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.
  */
-@NullMarked
 public abstract class Interaction {
 
   private final InputSource source;
