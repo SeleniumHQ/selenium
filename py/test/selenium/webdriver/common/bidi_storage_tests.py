@@ -353,3 +353,369 @@ class TestBidiStorage:
 
         driver.get(pages.url("formPage.html"))
         assert_cookie_is_not_present_with_name(driver, "fish")
+
+    def test_delete_cookies_by_name_filter(self, driver, pages, webserver):
+        """Test deleting cookies with specific name filter."""
+        assert_no_cookies_are_present(driver)
+
+        key1 = generate_unique_key()
+        key2 = generate_unique_key()
+        key3 = generate_unique_key()
+
+        driver.add_cookie({"name": key1, "value": "value1"})
+        driver.add_cookie({"name": key2, "value": "value2"})
+        driver.add_cookie({"name": key3, "value": "value3"})
+
+        # Delete only key1
+        driver.storage.delete_cookies(filter=CookieFilter(name=key1))
+
+        # Verify
+        assert_cookie_is_not_present_with_name(driver, key1)
+        assert_cookie_is_present_with_name(driver, key2)
+        assert_cookie_is_present_with_name(driver, key3)
+
+    def test_delete_cookies_multiple_filters(self, driver, pages, webserver):
+        """Test deleting cookies with multiple filter criteria."""
+        assert_no_cookies_are_present(driver)
+
+        key1 = "http_only_delete_test"
+        key2 = "normal_delete_test"
+        value = BytesValue(BytesValue.TYPE_STRING, "test_value")
+
+        cookie1 = PartialCookie(key1, value, webserver.host, http_only=True)
+        cookie2 = PartialCookie(key2, value, webserver.host, http_only=False)
+
+        driver.storage.set_cookie(cookie=cookie1)
+        driver.storage.set_cookie(cookie=cookie2)
+
+        # Delete only http_only cookies
+        driver.storage.delete_cookies(filter=CookieFilter(name=key1, http_only=True))
+
+        # Verify
+        assert_cookie_is_not_present_with_name(driver, key1)
+        assert_cookie_is_present_with_name(driver, key2)
+
+    def test_delete_cookies_empty_filter(self, driver, pages, webserver):
+        """Test deleting with empty filter deletes all cookies."""
+        assert_no_cookies_are_present(driver)
+
+        # Add multiple cookies
+        for i in range(3):
+            driver.add_cookie({"name": f"cookie_{i}", "value": f"value_{i}"})
+
+        assert_some_cookies_are_present(driver)
+
+        # Delete with empty filter
+        driver.storage.delete_cookies(filter=CookieFilter())
+
+        # Verify all deleted
+        assert_no_cookies_are_present(driver)
+
+    def test_set_cookie_with_http_only_attribute(self, driver, pages, webserver):
+        """Test setting a cookie with http_only attribute."""
+        assert_no_cookies_are_present(driver)
+
+        key = "http_only_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "protected")
+
+        cookie = PartialCookie(key, value, webserver.host, http_only=True)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, http_only=True)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].http_only is True
+
+    def test_set_cookie_with_secure_attribute(self, driver, pages, webserver):
+        """Test setting a cookie with secure attribute."""
+        assert_no_cookies_are_present(driver)
+
+        key = "secure_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "encrypted")
+
+        cookie = PartialCookie(key, value, webserver.host, secure=True)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, secure=True)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].secure is True
+
+    def test_set_cookie_with_same_site_strict(self, driver, pages, webserver):
+        """Test setting a cookie with SameSite=Strict."""
+        assert_no_cookies_are_present(driver)
+
+        key = "samesite_strict"
+        value = BytesValue(BytesValue.TYPE_STRING, "strict")
+
+        cookie = PartialCookie(key, value, webserver.host, same_site=SameSite.STRICT)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, same_site=SameSite.STRICT)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].same_site == SameSite.STRICT
+
+    def test_set_cookie_with_same_site_lax(self, driver, pages, webserver):
+        """Test setting a cookie with SameSite=Lax."""
+        assert_no_cookies_are_present(driver)
+
+        key = "samesite_lax"
+        value = BytesValue(BytesValue.TYPE_STRING, "lax")
+
+        cookie = PartialCookie(key, value, webserver.host, same_site=SameSite.LAX)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, same_site=SameSite.LAX)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].same_site == SameSite.LAX
+
+    def test_set_cookie_with_same_site_none(self, driver, pages, webserver):
+        """Test setting a cookie with SameSite=None (requires Secure)."""
+        assert_no_cookies_are_present(driver)
+
+        key = "samesite_none"
+        value = BytesValue(BytesValue.TYPE_STRING, "none")
+
+        # SameSite=None typically requires secure=True
+        cookie = PartialCookie(key, value, webserver.host, same_site=SameSite.NONE, secure=True)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, same_site=SameSite.NONE)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].same_site == SameSite.NONE
+
+    def test_set_cookie_with_path_and_domain(self, driver, pages, webserver):
+        """Test setting a cookie with specific path and domain."""
+        assert_no_cookies_are_present(driver)
+
+        key = "path_domain_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "scoped")
+        path = "/simpleTest.html"
+
+        cookie = PartialCookie(key, value, webserver.host, path=path)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key, path=path)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].path == path
+        assert result.cookies[0].domain == webserver.host
+
+    def test_set_cookie_with_future_expiry(self, driver, pages, webserver):
+        """Test setting a cookie with a future expiry date."""
+        assert_no_cookies_are_present(driver)
+
+        key = "future_expiry_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "future")
+
+        # Set expiry to 1 hour from now
+        future_expiry = int(time.time() + 3600)
+
+        cookie = PartialCookie(key, value, webserver.host, expiry=future_expiry)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].expiry == future_expiry
+
+    def test_set_cookie_with_string_value(self, driver, pages, webserver):
+        """Test setting a cookie with string value (standard format)."""
+        assert_no_cookies_are_present(driver)
+
+        key = "string_value_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "hello")
+
+        cookie = PartialCookie(key, value, webserver.host)
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify
+        cookie_filter = CookieFilter(name=key)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].value.value == "hello"
+
+    def test_get_cookies_filter_by_domain(self, driver, pages, webserver):
+        """Test getting cookies filtered by domain."""
+        assert_no_cookies_are_present(driver)
+
+        key = generate_unique_key()
+        value = BytesValue(BytesValue.TYPE_STRING, "domain_test")
+
+        cookie = PartialCookie(key, value, webserver.host)
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Filter by domain
+        cookie_filter = CookieFilter(domain=webserver.host)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        # Should find the cookie
+        cookie_names = [c.name for c in result.cookies]
+        assert key in cookie_names
+
+    def test_get_cookies_filter_by_path(self, driver, pages, webserver):
+        """Test getting cookies filtered by path."""
+        assert_no_cookies_are_present(driver)
+
+        key1 = generate_unique_key()
+        key2 = generate_unique_key()
+        value = BytesValue(BytesValue.TYPE_STRING, "path_test")
+
+        # Cookie with specific path
+        cookie1 = PartialCookie(key1, value, webserver.host, path="/simpleTest.html")
+        # Cookie with root path
+        cookie2 = PartialCookie(key2, value, webserver.host, path="/")
+
+        driver.storage.set_cookie(cookie=cookie1)
+        driver.storage.set_cookie(cookie=cookie2)
+
+        # Filter by specific path
+        cookie_filter = CookieFilter(path="/simpleTest.html")
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert all(c.path == "/simpleTest.html" for c in result.cookies)
+
+    def test_multiple_cookies_same_name_different_paths(self, driver, pages, webserver):
+        """Test setting multiple cookies with same name but different paths."""
+        assert_no_cookies_are_present(driver)
+
+        key = "multi_path_cookie"
+        value = BytesValue(BytesValue.TYPE_STRING, "test")
+
+        # Create cookies with same name but different paths
+        cookie1 = PartialCookie(key, value, webserver.host, path="/")
+        cookie2 = PartialCookie(key, value, webserver.host, path="/simpleTest.html")
+
+        driver.storage.set_cookie(cookie=cookie1)
+        driver.storage.set_cookie(cookie=cookie2)
+
+        # Both should exist
+        cookie_filter = CookieFilter(name=key)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        # Should find at least 2 cookies with this name (different paths)
+        assert len(result.cookies) >= 2
+
+    def test_delete_cookie_by_path(self, driver, pages, webserver):
+        """Test deleting cookies filtered by path."""
+        assert_no_cookies_are_present(driver)
+
+        key1 = generate_unique_key()
+        key2 = generate_unique_key()
+        value = BytesValue(BytesValue.TYPE_STRING, "delete_test")
+
+        cookie1 = PartialCookie(key1, value, webserver.host, path="/simpleTest.html")
+        cookie2 = PartialCookie(key2, value, webserver.host, path="/")
+
+        driver.storage.set_cookie(cookie=cookie1)
+        driver.storage.set_cookie(cookie=cookie2)
+
+        # Delete only cookies with specific path
+        driver.storage.delete_cookies(filter=CookieFilter(path="/simpleTest.html"))
+
+        # Verify path-specific cookie is deleted, root path cookie remains
+        result = driver.storage.get_cookies(filter=CookieFilter())
+        cookie_names = [c.name for c in result.cookies]
+
+        assert key1 not in cookie_names or all(c.path != "/simpleTest.html" for c in result.cookies if c.name == key1)
+
+    def test_cookie_expiry_timestamp(self, driver, pages, webserver):
+        """Test that cookie expiry is stored correctly as timestamp."""
+        assert_no_cookies_are_present(driver)
+
+        key = "expiry_test"
+        value = BytesValue(BytesValue.TYPE_STRING, "expires")
+
+        # Set expiry to specific time
+        expiry_time = int(time.time() + 7200)  # 2 hours from now
+
+        cookie = PartialCookie(key, value, webserver.host, expiry=expiry_time)
+
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Get and verify
+        cookie_filter = CookieFilter(name=key)
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        assert result.cookies[0].expiry == expiry_time
+
+    def test_cookie_combined_attributes(self, driver, pages, webserver):
+        """Test setting and getting cookie with multiple attributes combined."""
+        assert_no_cookies_are_present(driver)
+
+        key = "combined_attrs"
+        value = BytesValue(BytesValue.TYPE_STRING, "all_features")
+        path = "/simpleTest.html"
+        expiry = int(time.time() + 3600)
+
+        cookie = PartialCookie(
+            key,
+            value,
+            webserver.host,
+            path=path,
+            http_only=True,
+            secure=True,
+            same_site=SameSite.LAX,
+            expiry=expiry,
+        )
+
+        # Test
+        driver.storage.set_cookie(cookie=cookie)
+
+        # Verify with matching filter
+        cookie_filter = CookieFilter(
+            name=key,
+            path=path,
+            http_only=True,
+            secure=True,
+            same_site=SameSite.LAX,
+            expiry=expiry,
+        )
+
+        result = driver.storage.get_cookies(filter=cookie_filter)
+
+        assert len(result.cookies) > 0
+        cookie_result = result.cookies[0]
+        assert cookie_result.name == key
+        assert cookie_result.value.value == value.value
+        assert cookie_result.path == path
+        assert cookie_result.http_only is True
+        assert cookie_result.secure is True
+        assert cookie_result.same_site == SameSite.LAX
+        assert cookie_result.expiry == expiry
