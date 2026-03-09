@@ -182,8 +182,8 @@ js_library(
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.microsoft.com/145.0.3800.82/edgedriver_mac64_m1.zip",
-        sha256 = "178502258e17aef84051c5a317956ab3d3944e7329e3eee662105b17a3b60dc8",
+        url = "https://msedgedriver.microsoft.com/145.0.3800.97/edgedriver_mac64_m1.zip",
+        sha256 = "8e811839e69209e947f63da484e5813f1eca3eb9af673d780eab9c448b77f386",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
