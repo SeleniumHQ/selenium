@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.util.function.Predicate;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -47,6 +48,7 @@ public class AddHasLogEvents implements AugmenterProvider<HasLogEvents> {
   public HasLogEvents getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasLogEvents() {
       @Override
+      @NullMarked
       public <X> void onLogEvent(EventType<X> kind) {
         if (((RemoteExecuteMethod) executeMethod).getWrappedDriver() instanceof HasDevTools) {
           WebDriver driver = ((RemoteExecuteMethod) executeMethod).getWrappedDriver();
