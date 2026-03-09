@@ -21,6 +21,7 @@ from selenium.webdriver.common.bidi.log import LogLevel
 from selenium.webdriver.common.bidi.script import RealmType, ResultOwnership
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 
 
 def has_shadow_root(node):
@@ -159,7 +160,9 @@ def test_add_preload_script(driver, pages):
 
     # Check if the preload script was executed
     result = driver.script._evaluate(
-        "window.preloadExecuted", {"context": driver.current_window_handle}, await_promise=False
+        "window.preloadExecuted",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["value"] is True
 
@@ -168,15 +171,21 @@ def test_add_preload_script_with_arguments(driver, pages):
     """Test adding a preload script with channel arguments."""
     function_declaration = "(channelFunc) => { channelFunc('test_value'); window.preloadValue = 'received'; }"
 
-    arguments = [{"type": "channel", "value": {"channel": "test-channel", "ownership": "root"}}]
+    arguments = [
+        {"type": "channel", "value": {"channel": "test-channel", "ownership": "root"}}
+    ]
 
-    script_id = driver.script._add_preload_script(function_declaration, arguments=arguments)
+    script_id = driver.script._add_preload_script(
+        function_declaration, arguments=arguments
+    )
     assert script_id is not None
 
     pages.load("blank.html")
 
     result = driver.script._evaluate(
-        "window.preloadValue", {"context": driver.current_window_handle}, await_promise=False
+        "window.preloadValue",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["value"] == "received"
 
@@ -186,13 +195,17 @@ def test_add_preload_script_with_contexts(driver, pages):
     function_declaration = "() => { window.contextSpecific = true; }"
     contexts = [driver.current_window_handle]
 
-    script_id = driver.script._add_preload_script(function_declaration, contexts=contexts)
+    script_id = driver.script._add_preload_script(
+        function_declaration, contexts=contexts
+    )
     assert script_id is not None
 
     pages.load("blank.html")
 
     result = driver.script._evaluate(
-        "window.contextSpecific", {"context": driver.current_window_handle}, await_promise=False
+        "window.contextSpecific",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["value"] is True
 
@@ -207,13 +220,17 @@ def test_add_preload_script_with_user_contexts(driver, pages):
 
     user_contexts = [user_context]
 
-    script_id = driver.script._add_preload_script(function_declaration, user_contexts=user_contexts)
+    script_id = driver.script._add_preload_script(
+        function_declaration, user_contexts=user_contexts
+    )
     assert script_id is not None
 
     pages.load("blank.html")
 
     result = driver.script._evaluate(
-        "window.contextSpecific", {"context": driver.current_window_handle}, await_promise=False
+        "window.contextSpecific",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["value"] is True
 
@@ -222,14 +239,18 @@ def test_add_preload_script_with_sandbox(driver, pages):
     """Test adding a preload script with sandbox."""
     function_declaration = "() => { window.sandboxScript = true; }"
 
-    script_id = driver.script._add_preload_script(function_declaration, sandbox="test-sandbox")
+    script_id = driver.script._add_preload_script(
+        function_declaration, sandbox="test-sandbox"
+    )
     assert script_id is not None
 
     pages.load("blank.html")
 
     # calling evaluate without sandbox should return undefined
     result = driver.script._evaluate(
-        "window.sandboxScript", {"context": driver.current_window_handle}, await_promise=False
+        "window.sandboxScript",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["type"] == "undefined"
 
@@ -246,8 +267,12 @@ def test_add_preload_script_invalid_arguments(driver):
     """Test that providing both contexts and user_contexts raises an error."""
     function_declaration = "() => {}"
 
-    with pytest.raises(ValueError, match="Cannot specify both contexts and user_contexts"):
-        driver.script._add_preload_script(function_declaration, contexts=["context1"], user_contexts=["user1"])
+    with pytest.raises(
+        ValueError, match="Cannot specify both contexts and user_contexts"
+    ):
+        driver.script._add_preload_script(
+            function_declaration, contexts=["context1"], user_contexts=["user1"]
+        )
 
 
 def test_remove_preload_script(driver, pages):
@@ -262,7 +287,9 @@ def test_remove_preload_script(driver, pages):
 
     # The script should not have executed
     result = driver.script._evaluate(
-        "typeof window.removableScript", {"context": driver.current_window_handle}, await_promise=False
+        "typeof window.removableScript",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
     assert result.result["value"] == "undefined"
 
@@ -271,7 +298,9 @@ def test_evaluate_expression(driver, pages):
     """Test evaluating a simple expression."""
     pages.load("blank.html")
 
-    result = driver.script._evaluate("1 + 2", {"context": driver.current_window_handle}, await_promise=False)
+    result = driver.script._evaluate(
+        "1 + 2", {"context": driver.current_window_handle}, await_promise=False
+    )
 
     assert result.realm is not None
     assert result.result["type"] == "number"
@@ -284,7 +313,9 @@ def test_evaluate_with_await_promise(driver, pages):
     pages.load("blank.html")
 
     result = driver.script._evaluate(
-        "Promise.resolve(42)", {"context": driver.current_window_handle}, await_promise=True
+        "Promise.resolve(42)",
+        {"context": driver.current_window_handle},
+        await_promise=True,
     )
 
     assert result.result["type"] == "number"
@@ -296,7 +327,9 @@ def test_evaluate_with_exception(driver, pages):
     pages.load("blank.html")
 
     result = driver.script._evaluate(
-        "throw new Error('Test error')", {"context": driver.current_window_handle}, await_promise=False
+        "throw new Error('Test error')",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
 
     assert result.exception_details is not None
@@ -334,7 +367,11 @@ def test_evaluate_with_serialization_options(driver, pages):
     """Test evaluating with serialization options."""
     pages.load("shadowRootPage.html")
 
-    serialization_options = {"maxDomDepth": 2, "maxObjectDepth": 2, "includeShadowTree": "all"}
+    serialization_options = {
+        "maxDomDepth": 2,
+        "maxObjectDepth": 2,
+        "includeShadowTree": "all",
+    }
 
     result = driver.script._evaluate(
         "document.body",
@@ -386,7 +423,9 @@ def test_call_function_with_this(driver, pages):
 
     # First set up an object
     driver.script._evaluate(
-        "window.testObj = { value: 10 }", {"context": driver.current_window_handle}, await_promise=False
+        "window.testObj = { value: 10 }",
+        {"context": driver.current_window_handle},
+        await_promise=False,
     )
 
     result = driver.script._call_function(
@@ -419,7 +458,11 @@ def test_call_function_with_serialization_options(driver, pages):
     """Test calling a function with serialization options."""
     pages.load("shadowRootPage.html")
 
-    serialization_options = {"maxDomDepth": 2, "maxObjectDepth": 2, "includeShadowTree": "all"}
+    serialization_options = {
+        "maxDomDepth": 2,
+        "maxObjectDepth": 2,
+        "includeShadowTree": "all",
+    }
 
     result = driver.script._call_function(
         "() => document.body",
@@ -455,7 +498,9 @@ def test_call_function_with_await_promise(driver, pages):
     pages.load("blank.html")
 
     result = driver.script._call_function(
-        "() => Promise.resolve('async result')", await_promise=True, target={"context": driver.current_window_handle}
+        "() => Promise.resolve('async result')",
+        await_promise=True,
+        target={"context": driver.current_window_handle},
     )
 
     assert result.result["type"] == "string"
@@ -534,7 +579,10 @@ def test_disown_handles(driver, pages):
 
     # Create an object with root ownership (this will return a handle)
     result = driver.script._evaluate(
-        "({foo: 'bar'})", target={"context": driver.current_window_handle}, await_promise=False, result_ownership="root"
+        "({foo: 'bar'})",
+        target={"context": driver.current_window_handle},
+        await_promise=False,
+        result_ownership="root",
     )
 
     handle = result.result["handle"]
@@ -551,7 +599,9 @@ def test_disown_handles(driver, pages):
     assert result_before.result["value"] == "bar"
 
     # Disown the handle
-    driver.script._disown(handles=[handle], target={"context": driver.current_window_handle})
+    driver.script._disown(
+        handles=[handle], target={"context": driver.current_window_handle}
+    )
 
     # Try using the disowned handle (this should fail)
     with pytest.raises(Exception):
@@ -870,3 +920,441 @@ def test_execute_script_with_nested_objects(driver, pages):
     assert value_dict["userName"] == "John"
     assert value_dict["userAge"] == 30
     assert value_dict["hobbyCount"] == 2
+
+
+class TestBidiScriptExecution:
+    """Test script execution via execute_script."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_execute_script_returns_string(self, driver):
+        """Test executing script that returns string."""
+        result = driver.execute_script("return 'hello';")
+        assert result == "hello"
+
+    def test_execute_script_returns_number(self, driver):
+        """Test executing script that returns number."""
+        result = driver.execute_script("return 42;")
+        assert result == 42
+
+    def test_execute_script_returns_boolean(self, driver):
+        """Test executing script that returns boolean."""
+        result = driver.execute_script("return true;")
+        assert result is True
+
+    def test_execute_script_returns_null(self, driver):
+        """Test executing script that returns null."""
+        result = driver.execute_script("return null;")
+        assert result is None
+
+    def test_execute_script_returns_object(self, driver):
+        """Test executing script that returns object."""
+        result = driver.execute_script("return {x: 1, y: 2};")
+        assert isinstance(result, dict)
+        assert result["x"] == 1
+
+    def test_execute_script_returns_array(self, driver):
+        """Test executing script that returns array."""
+        result = driver.execute_script("return [1, 2, 3, 4, 5];")
+        assert isinstance(result, list)
+        assert len(result) == 5
+
+    def test_execute_script_dom_query(self, driver, pages):
+        """Test executing script that queries DOM."""
+        pages.load("formPage.html")
+        result = driver.execute_script(
+            "return document.querySelectorAll('input').length;"
+        )
+        assert result > 0
+
+    def test_execute_script_with_arguments(self, driver):
+        """Test executing script with arguments."""
+        result = driver.execute_script("return arguments[0] * arguments[1];", 3, 5)
+        assert result == 15
+
+
+class TestBidiScriptGlobalState:
+    """Test script execution with global state management."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_global_state_persistence(self, driver):
+        """Test that global state persists across script calls."""
+        driver.execute_script("window.testVar = 42;")
+        result = driver.execute_script("return window.testVar;")
+        assert result == 42
+
+    def test_multiple_global_variables(self, driver):
+        """Test managing multiple global variables."""
+        driver.execute_script(
+            """
+            window.var1 = 'first';
+            window.var2 = 'second';
+            window.var3 = 'third';
+        """
+        )
+
+        result = driver.execute_script(
+            """
+            return {
+                v1: window.var1,
+                v2: window.var2,
+                v3: window.var3
+            };
+        """
+        )
+
+        assert result["v1"] == "first"
+        assert result["v2"] == "second"
+        assert result["v3"] == "third"
+
+    def test_function_definition_in_global_scope(self, driver):
+        """Test defining functions in global scope."""
+        driver.execute_script(
+            """
+            window.multiply = function(a, b) {
+                return a * b;
+            };
+        """
+        )
+
+        result = driver.execute_script("return window.multiply(3, 7);")
+        assert result == 21
+
+    def test_complex_object_in_global_scope(self, driver):
+        """Test storing complex objects globally."""
+        driver.execute_script(
+            """
+            window.data = {
+                users: [
+                    {name: 'Alice', age: 30},
+                    {name: 'Bob', age: 25}
+                ],
+                metadata: {
+                    version: '1.0',
+                    timestamp: Date.now()
+                }
+            };
+        """
+        )
+
+        result = driver.execute_script("return window.data.users.length;")
+        assert result == 2
+
+
+class TestBidiScriptPreloadScripts:
+    """Test preload script lifecycle and edge cases."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_multiple_preload_scripts(self, driver, pages):
+        """Test adding multiple preload scripts."""
+        id1 = driver.script._add_preload_script("() => { window.test1 = 'loaded'; }")
+        id2 = driver.script._add_preload_script("() => { window.test2 = 'loaded'; }")
+
+        try:
+            pages.load("blank.html")
+
+            result1 = driver.script._evaluate(
+                "window.test1",
+                {"context": driver.current_window_handle},
+                await_promise=False
+            )
+            result2 = driver.script._evaluate(
+                "window.test2",
+                {"context": driver.current_window_handle},
+                await_promise=False
+            )
+
+            assert result1.result["value"] == "loaded"
+            assert result2.result["value"] == "loaded"
+        finally:
+            driver.script._remove_preload_script(script_id=id1)
+            driver.script._remove_preload_script(script_id=id2)
+
+    def test_preload_script_with_function(self, driver, pages):
+        """Test preload script defining functions."""
+        script_id = driver.script._add_preload_script(
+            "() => { window.customFunc = (x) => x * 2; }"
+        )
+
+        try:
+            pages.load("blank.html")
+            result = driver.script._evaluate(
+                "window.customFunc(5)",
+                {"context": driver.current_window_handle},
+                await_promise=False
+            )
+            assert result.result["value"] == 10
+        finally:
+            driver.script._remove_preload_script(script_id=script_id)
+
+    def test_preload_script_removal_prevents_execution(self, driver, pages):
+        """Test that removing preload script prevents its execution."""
+        script_id = driver.script._add_preload_script("() => { window.shouldNotExist = true; }")
+        driver.script._remove_preload_script(script_id=script_id)
+
+        pages.load("blank.html")
+        result = driver.script._evaluate(
+            "typeof window.shouldNotExist",
+            {"context": driver.current_window_handle},
+            await_promise=False
+        )
+        assert result.result["value"] == "undefined"
+
+    def test_preload_script_with_dom_manipulation(self, driver, pages):
+        """Test preload script that manipulates DOM."""
+        script_id = driver.script._add_preload_script(
+            """
+            () => {
+                document.addEventListener('DOMContentLoaded', function() {
+                    var div = document.createElement('div');
+                    div.id = 'injected-element';
+                    div.textContent = 'injected';
+                    document.body.appendChild(div);
+                });
+            }
+        """
+        )
+
+        try:
+            pages.load("blank.html")
+            element = driver.find_element(By.ID, "injected-element")
+            assert element is not None
+            assert element.text == "injected"
+        finally:
+            driver.script._remove_preload_script(script_id=script_id)
+
+
+class TestBidiScriptContextManagement:
+    """Test script execution across browsing contexts."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_script_executes_in_current_context(self, driver):
+        """Test that scripts execute in the current browsing context."""
+        # Set variable in current context
+        driver.execute_script("window.contextVar = 'main';")
+
+        # Verify it's accessible
+        result = driver.execute_script("return window.contextVar;")
+        assert result == "main"
+
+    def test_multiple_navigations_maintain_context(self, driver, pages):
+        """Test script context changes with navigation."""
+        # Load first page
+        pages.load("blank.html")
+        driver.execute_script("window.page = 'blank';")
+
+        # Load second page - context should reset
+        pages.load("formPage.html")
+        result = driver.execute_script("return window.page;")
+        assert result is None
+
+        # Set new value
+        driver.execute_script("window.page = 'form';")
+        result = driver.execute_script("return window.page;")
+        assert result == "form"
+
+    def test_script_can_access_dom_elements(self, driver, pages):
+        """Test that scripts can access and manipulate DOM."""
+        pages.load("formPage.html")
+
+        # Find element count
+        result = driver.execute_script(
+            """
+            return document.querySelectorAll('input[type="text"]').length;
+        """
+        )
+        assert result > 0
+
+    def test_script_context_with_console_handler(self, driver, pages):
+        """Test script execution with console message handler active."""
+        log_entries = []
+        driver.script.add_console_message_handler(log_entries.append)
+
+        try:
+            pages.load("bidi/logEntryAdded.html")
+            driver.execute_script("console.log('test message');")
+
+            # Give some time for handler to capture
+            WebDriverWait(driver, 3).until(lambda _: log_entries)
+            assert len(log_entries) > 0
+        finally:
+            # Clean up handler
+            if log_entries:
+                # Handler was registered and used
+                pass
+
+    def test_script_error_handler_active(self, driver, pages):
+        """Test script execution with error handler active."""
+        errors = []
+        driver.script.add_javascript_error_handler(errors.append)
+
+        try:
+            pages.load("bidi/logEntryAdded.html")
+            # Click element that triggers JS error
+            driver.find_element(By.ID, "jsException").click()
+            
+            # Give time for error handler to capture
+            WebDriverWait(driver, 5).until(lambda _: errors)
+            assert len(errors) > 0
+        finally:
+            # Handler cleanup happens automatically via fixture
+            pass
+
+
+class TestBidiScriptComplexOperations:
+    """Test complex script operations and edge cases."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_execute_script_with_timeout(self, driver):
+        """Test script execution within time constraints."""
+        # Execute script that completes quickly
+        result = driver.execute_script(
+            """
+            return new Promise((resolve) => {
+                setTimeout(() => resolve('completed'), 10);
+            });
+        """
+        )
+        # Note: synchronous execute_script may not wait for promises
+        # This just tests that the method handles the call
+        assert result is not None
+
+    def test_execute_script_with_dom_creation(self, driver):
+        """Test script that creates and manipulates DOM."""
+        driver.execute_script(
+            """
+            const div = document.createElement('div');
+            div.id = 'created-element';
+            div.textContent = 'Created by script';
+            document.body.appendChild(div);
+        """
+        )
+
+        # Verify element was created
+        result = driver.execute_script(
+            """
+            const elem = document.getElementById('created-element');
+            return elem ? elem.textContent : null;
+        """
+        )
+        assert result == "Created by script"
+
+    def test_execute_script_with_nested_objects(self, driver):
+        """Test script that returns deeply nested objects."""
+        result = driver.execute_script(
+            """
+            return {
+                level1: {
+                    level2: {
+                        level3: {
+                            value: 'deep'
+                        }
+                    }
+                }
+            };
+        """
+        )
+
+        assert result["level1"]["level2"]["level3"]["value"] == "deep"
+
+    def test_execute_script_with_exception_handling(self, driver):
+        """Test script that handles exceptions internally."""
+        result = driver.execute_script(
+            """
+            try {
+                throw new Error('test error');
+            } catch (e) {
+                return 'error caught: ' + e.message;
+            }
+        """
+        )
+        assert "error caught" in result
+
+
+class TestBidiScriptErrorHandling:
+    """Test script error and logging scenarios."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test."""
+        pages.load("blank.html")
+
+    def test_script_error_handler_captures_errors(self, driver, pages):
+        """Test that error handler can capture script errors."""
+        errors = []
+
+        def error_handler(entry):
+            errors.append(entry)
+
+        driver.script.add_javascript_error_handler(error_handler)
+
+        try:
+            pages.load("bidi/logEntryAdded.html")
+            driver.find_element(By.ID, "jsException").click()
+
+            WebDriverWait(driver, 5).until(lambda _: errors)
+            assert len(errors) > 0
+        finally:
+            # Handler removal happens automatically
+            pass
+
+    def test_multiple_error_handlers(self, driver, pages):
+        """Test multiple error handlers can be registered."""
+        errors1 = []
+        errors2 = []
+
+        driver.script.add_javascript_error_handler(errors1.append)
+        driver.script.add_javascript_error_handler(errors2.append)
+
+        try:
+            pages.load("bidi/logEntryAdded.html")
+            driver.find_element(By.ID, "jsException").click()
+
+            # Both handlers should receive events when error occurs
+            WebDriverWait(driver, 5).until(lambda _: len(errors1) > 0)
+            assert len(errors1) > 0
+            assert len(errors2) > 0
+        finally:
+            # Handler cleanup happens automatically
+            pass
+
+    def test_console_message_with_logging(self, driver, pages):
+        """Test console message handler with actual logging."""
+        log_entries = []
+        driver.script.add_console_message_handler(log_entries.append)
+
+        try:
+            pages.load("bidi/logEntryAdded.html")
+            driver.find_element(By.ID, "consoleLog").click()
+
+            WebDriverWait(driver, 5).until(lambda _: log_entries)
+            assert len(log_entries) > 0
+        finally:
+            # Handler cleanup
+            pass
+
+    def test_execute_script_syntax_error(self, driver):
+        """Test executing script with syntax errors."""
+        # This should raise an exception
+        with pytest.raises(Exception):
+            driver.execute_script("{{invalid syntax}}")
+
