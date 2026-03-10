@@ -15,20 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.virtualauthenticator;
 
-/** Interface implemented by each driver that allows access to the virtual authenticator API. */
-public interface HasVirtualAuthenticator {
-  /**
-   * Adds a virtual authenticator with the given options.
-   *
-   * @return the new virtual authenticator.
-   */
-  VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options);
-
-  /**
-   * Removes a previously added virtual authenticator. The authenticator is no longer valid after
-   * removal, so no methods may be called.
-   */
-  void removeVirtualAuthenticator(VirtualAuthenticator authenticator);
-}
+import org.jspecify.annotations.NullMarked;
