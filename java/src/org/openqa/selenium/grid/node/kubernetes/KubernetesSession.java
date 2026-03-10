@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.internal.Require;
@@ -51,20 +52,20 @@ public class KubernetesSession extends DefaultActiveSession {
   private final String namespace;
   private final KubernetesClient kubeClient;
   private final String podName;
-  private final String assetsPath;
-  private final String videoFileName;
+  private final @Nullable String assetsPath;
+  private final @Nullable String videoFileName;
   private final long terminationGracePeriodSeconds;
-  private final LocalPortForward portForward;
+  private final @Nullable LocalPortForward portForward;
 
   KubernetesSession(
       String jobName,
       String namespace,
       KubernetesClient kubeClient,
       String podName,
-      String assetsPath,
-      String videoFileName,
+      @Nullable String assetsPath,
+      @Nullable String videoFileName,
       long terminationGracePeriodSeconds,
-      LocalPortForward portForward,
+      @Nullable LocalPortForward portForward,
       Tracer tracer,
       HttpClient client,
       SessionId id,

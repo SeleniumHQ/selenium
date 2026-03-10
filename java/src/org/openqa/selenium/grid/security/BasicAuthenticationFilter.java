@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import java.net.HttpURLConnection;
 import java.util.Base64;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -55,7 +56,7 @@ public class BasicAuthenticationFilter implements Filter {
     };
   }
 
-  private boolean isAuthorized(String auth) {
+  private boolean isAuthorized(@Nullable String auth) {
     if (auth != null) {
       final int index = auth.indexOf(' ') + 1;
 

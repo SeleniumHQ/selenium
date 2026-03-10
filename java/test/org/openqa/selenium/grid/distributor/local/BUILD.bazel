@@ -32,5 +32,6 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

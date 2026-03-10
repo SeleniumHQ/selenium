@@ -52,7 +52,7 @@ public enum ChromiumDriverLogLevel {
   }
 
   @Nullable
-  public static ChromiumDriverLogLevel fromString(String text) {
+  public static ChromiumDriverLogLevel fromString(@Nullable String text) {
     if (text != null) {
       for (ChromiumDriverLogLevel b : ChromiumDriverLogLevel.values()) {
         if (text.equalsIgnoreCase(b.toString())) {

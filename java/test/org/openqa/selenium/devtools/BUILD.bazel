@@ -15,6 +15,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/remote",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -46,6 +47,7 @@ java_selenium_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -67,5 +69,6 @@ java_library(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

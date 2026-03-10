@@ -90,6 +90,7 @@ public class Session implements Serializable {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static Session fromJson(JsonInput input) {
     SessionId id = null;
     URI uri = null;
@@ -101,7 +102,7 @@ public class Session implements Serializable {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "capabilities":
-          caps = ImmutableCapabilities.copyOf(input.read(Capabilities.class));
+          caps = ImmutableCapabilities.copyOf(input.readNonNull(Capabilities.class));
           break;
 
         case "sessionId":

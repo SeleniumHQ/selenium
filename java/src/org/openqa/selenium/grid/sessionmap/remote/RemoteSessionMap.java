@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -26,6 +27,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
@@ -79,7 +81,7 @@ public class RemoteSessionMap extends SessionMap {
     HttpRequest request = new HttpRequest(POST, "/se/grid/session");
     request.setContent(asJson(session));
 
-    return makeRequest(request, Boolean.class);
+    return requireNonNull(makeRequest(request, Boolean.class));
   }
 
   @Override
@@ -111,6 +113,7 @@ public class RemoteSessionMap extends SessionMap {
     makeRequest(new HttpRequest(DELETE, "/se/grid/session/" + id), Void.class);
   }
 
+  @Nullable
   private <T> T makeRequest(HttpRequest request, Type typeOfT) {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 

@@ -20,11 +20,9 @@ package org.openqa.selenium.print;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class PrintOptions {
 
   public enum Orientation {

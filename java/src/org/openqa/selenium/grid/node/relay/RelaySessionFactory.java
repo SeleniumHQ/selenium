@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -59,7 +60,6 @@ import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -77,7 +77,7 @@ public class RelaySessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Duration sessionTimeout;
   private final URL serviceUrl;
-  private final URL serviceStatusUrl;
+  private final @Nullable URL serviceStatusUrl;
   private final String serviceProtocolVersion;
   private final Capabilities stereotype;
 
@@ -86,13 +86,13 @@ public class RelaySessionFactory implements SessionFactory {
       HttpClient.Factory clientFactory,
       Duration sessionTimeout,
       URI serviceUri,
-      URI serviceStatusUri,
+      @Nullable URI serviceStatusUri,
       String serviceProtocolVersion,
       Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
-    this.serviceUrl = createUrlFromUri(Require.nonNull("Service URL", serviceUri));
+    this.serviceUrl = Require.nonNull("Service URL", createUrlFromUri(serviceUri));
     this.serviceStatusUrl = createUrlFromUri(serviceStatusUri);
     this.serviceProtocolVersion =
         Require.nonNull("Service protocol version", serviceProtocolVersion);
@@ -244,7 +244,7 @@ public class RelaySessionFactory implements SessionFactory {
     try (HttpClient client = clientFactory.createClient(clientConfig)) {
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
-      LOG.log(Debug.getDebugLogLevel(), () -> Contents.string(response));
+      LOG.log(Debug.getDebugLogLevel(), response::contentAsString);
       return response.getStatus() == 200;
     } catch (Exception e) {
       LOG.log(
@@ -257,7 +257,8 @@ public class RelaySessionFactory implements SessionFactory {
     return false;
   }
 
-  private URL createUrlFromUri(URI uri) {
+  @Nullable
+  private URL createUrlFromUri(@Nullable URI uri) {
     if (uri == null) {
       return null;
     }

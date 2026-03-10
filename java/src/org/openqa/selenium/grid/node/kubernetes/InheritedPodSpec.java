@@ -26,43 +26,44 @@ import io.fabric8.kubernetes.api.model.Toleration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class InheritedPodSpec {
 
   private final List<Toleration> tolerations;
-  private final Affinity affinity;
+  private final @Nullable Affinity affinity;
   private final List<LocalObjectReference> imagePullSecrets;
-  private final String dnsPolicy;
-  private final PodDNSConfig dnsConfig;
-  private final PodSecurityContext securityContext;
-  private final String priorityClassName;
+  private final @Nullable String dnsPolicy;
+  private final @Nullable PodDNSConfig dnsConfig;
+  private final @Nullable PodSecurityContext securityContext;
+  private final @Nullable String priorityClassName;
   private final Map<String, String> nodeSelector;
-  private final String serviceAccountName;
+  private final @Nullable String serviceAccountName;
   private final Map<String, String> labels;
   private final Map<String, String> annotations;
-  private final String imagePullPolicy;
+  private final @Nullable String imagePullPolicy;
   private final Map<String, Quantity> resourceRequests;
   private final Map<String, Quantity> resourceLimits;
-  private final String assetsClaimName;
-  private final String nodePodName;
-  private final String nodePodUid;
+  private final @Nullable String assetsClaimName;
+  private final @Nullable String nodePodName;
+  private final @Nullable String nodePodUid;
 
   public InheritedPodSpec(
-      List<Toleration> tolerations,
-      Affinity affinity,
-      List<LocalObjectReference> imagePullSecrets,
-      String dnsPolicy,
-      PodDNSConfig dnsConfig,
-      PodSecurityContext securityContext,
-      String priorityClassName,
-      Map<String, String> nodeSelector,
-      String serviceAccountName,
-      Map<String, String> labels,
-      Map<String, String> annotations,
-      String imagePullPolicy,
-      Map<String, Quantity> resourceRequests,
-      Map<String, Quantity> resourceLimits,
-      String assetsClaimName) {
+      @Nullable List<Toleration> tolerations,
+      @Nullable Affinity affinity,
+      @Nullable List<LocalObjectReference> imagePullSecrets,
+      @Nullable String dnsPolicy,
+      @Nullable PodDNSConfig dnsConfig,
+      @Nullable PodSecurityContext securityContext,
+      @Nullable String priorityClassName,
+      @Nullable Map<String, String> nodeSelector,
+      @Nullable String serviceAccountName,
+      @Nullable Map<String, String> labels,
+      @Nullable Map<String, String> annotations,
+      @Nullable String imagePullPolicy,
+      @Nullable Map<String, Quantity> resourceRequests,
+      @Nullable Map<String, Quantity> resourceLimits,
+      @Nullable String assetsClaimName) {
     this(
         tolerations,
         affinity,
@@ -84,23 +85,23 @@ public class InheritedPodSpec {
   }
 
   public InheritedPodSpec(
-      List<Toleration> tolerations,
-      Affinity affinity,
-      List<LocalObjectReference> imagePullSecrets,
-      String dnsPolicy,
-      PodDNSConfig dnsConfig,
-      PodSecurityContext securityContext,
-      String priorityClassName,
-      Map<String, String> nodeSelector,
-      String serviceAccountName,
-      Map<String, String> labels,
-      Map<String, String> annotations,
-      String imagePullPolicy,
-      Map<String, Quantity> resourceRequests,
-      Map<String, Quantity> resourceLimits,
-      String assetsClaimName,
-      String nodePodName,
-      String nodePodUid) {
+      @Nullable List<Toleration> tolerations,
+      @Nullable Affinity affinity,
+      @Nullable List<LocalObjectReference> imagePullSecrets,
+      @Nullable String dnsPolicy,
+      @Nullable PodDNSConfig dnsConfig,
+      @Nullable PodSecurityContext securityContext,
+      @Nullable String priorityClassName,
+      @Nullable Map<String, String> nodeSelector,
+      @Nullable String serviceAccountName,
+      @Nullable Map<String, String> labels,
+      @Nullable Map<String, String> annotations,
+      @Nullable String imagePullPolicy,
+      @Nullable Map<String, Quantity> resourceRequests,
+      @Nullable Map<String, Quantity> resourceLimits,
+      @Nullable String assetsClaimName,
+      @Nullable String nodePodName,
+      @Nullable String nodePodUid) {
     this.tolerations = tolerations != null ? List.copyOf(tolerations) : List.of();
     this.affinity = affinity;
     this.imagePullSecrets = imagePullSecrets != null ? List.copyOf(imagePullSecrets) : List.of();
@@ -150,6 +151,7 @@ public class InheritedPodSpec {
     return tolerations;
   }
 
+  @Nullable
   public Affinity getAffinity() {
     return affinity;
   }
@@ -158,18 +160,22 @@ public class InheritedPodSpec {
     return imagePullSecrets;
   }
 
+  @Nullable
   public String getDnsPolicy() {
     return dnsPolicy;
   }
 
+  @Nullable
   public PodDNSConfig getDnsConfig() {
     return dnsConfig;
   }
 
+  @Nullable
   public PodSecurityContext getSecurityContext() {
     return securityContext;
   }
 
+  @Nullable
   public String getPriorityClassName() {
     return priorityClassName;
   }
@@ -178,6 +184,7 @@ public class InheritedPodSpec {
     return nodeSelector;
   }
 
+  @Nullable
   public String getServiceAccountName() {
     return serviceAccountName;
   }
@@ -190,6 +197,7 @@ public class InheritedPodSpec {
     return annotations;
   }
 
+  @Nullable
   public String getImagePullPolicy() {
     return imagePullPolicy;
   }
@@ -202,6 +210,7 @@ public class InheritedPodSpec {
     return resourceLimits;
   }
 
+  @Nullable
   public String getAssetsClaimName() {
     return assetsClaimName;
   }
@@ -213,10 +222,12 @@ public class InheritedPodSpec {
         && !nodePodUid.isEmpty();
   }
 
+  @Nullable
   public String getNodePodName() {
     return nodePodName;
   }
 
+  @Nullable
   public String getNodePodUid() {
     return nodePodUid;
   }

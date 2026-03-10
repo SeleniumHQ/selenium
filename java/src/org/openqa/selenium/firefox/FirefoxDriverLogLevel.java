@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jspecify.annotations.Nullable;
 
 /**
  * <a href="https://github.com/mozilla/geckodriver#log-object">Log levels</a> defined by GeckoDriver
@@ -51,7 +52,8 @@ public enum FirefoxDriverLogLevel {
     return super.toString().toLowerCase(Locale.ENGLISH);
   }
 
-  public static FirefoxDriverLogLevel fromString(String text) {
+  @Nullable
+  public static FirefoxDriverLogLevel fromString(@Nullable String text) {
     if (text != null) {
       for (FirefoxDriverLogLevel b : FirefoxDriverLogLevel.values()) {
         if (text.equalsIgnoreCase(b.toString())) {
@@ -70,6 +72,7 @@ public enum FirefoxDriverLogLevel {
     return Collections.singletonMap("level", toString());
   }
 
+  @Nullable
   static FirefoxDriverLogLevel fromJson(Map<String, String> json) {
     return fromString(json.get("level"));
   }
