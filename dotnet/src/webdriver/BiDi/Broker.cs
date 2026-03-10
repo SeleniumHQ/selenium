@@ -37,8 +37,6 @@ internal sealed class Broker : IAsyncDisposable
 
     private long _currentCommandId;
 
-    private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
-
     private readonly Task _receivingMessageTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
@@ -49,7 +47,7 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
+        _receivingMessageTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
     }
 
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
