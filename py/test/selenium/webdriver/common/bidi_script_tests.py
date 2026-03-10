@@ -238,26 +238,32 @@ def test_add_preload_script_with_contexts(driver, pages):
 def test_add_preload_script_with_user_contexts(driver, pages):
     """Test adding a preload script with user contexts."""
     function_declaration = "() => { window.contextSpecific = true; }"
+    original_handle = driver.current_window_handle
     user_context = driver.browser.create_user_context()
 
     context1 = driver.browsing_context.create(type="window", user_context=user_context)
     driver.switch_to.window(context1)
 
-    user_contexts = [user_context]
+    try:
+        user_contexts = [user_context]
 
-    script_id = driver.script._add_preload_script(
-        function_declaration, user_contexts=user_contexts
-    )
-    assert script_id is not None
+        script_id = driver.script._add_preload_script(
+            function_declaration, user_contexts=user_contexts
+        )
+        assert script_id is not None
 
-    pages.load("blank.html")
+        pages.load("blank.html")
 
-    result = driver.script._evaluate(
-        "window.contextSpecific",
-        {"context": driver.current_window_handle},
-        await_promise=False,
-    )
-    assert result.result["value"] is True
+        result = driver.script._evaluate(
+            "window.contextSpecific",
+            {"context": driver.current_window_handle},
+            await_promise=False,
+        )
+        assert result.result["value"] is True
+    finally:
+        driver.switch_to.window(original_handle)
+        driver.browsing_context.close(context1)
+        driver.browser.remove_user_context(user_context)
 
 
 def test_add_preload_script_with_sandbox(driver, pages):

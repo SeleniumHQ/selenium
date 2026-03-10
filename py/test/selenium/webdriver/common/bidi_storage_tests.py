@@ -411,22 +411,26 @@ class TestBidiStorage:
         """Test deleting cookies with multiple filter criteria."""
         assert_no_cookies_are_present(driver)
 
-        key1 = "http_only_delete_test"
-        key2 = "normal_delete_test"
+        key = "multi_filter_delete_test"
         value = BytesValue(BytesValue.TYPE_STRING, "test_value")
 
-        cookie1 = PartialCookie(key1, value, webserver.host, http_only=True)
-        cookie2 = PartialCookie(key2, value, webserver.host, http_only=False)
+        # Create two cookies with same name but different http_only attributes
+        # This ensures the http_only filter actually affects which cookies are deleted
+        cookie1 = PartialCookie(key, value, webserver.host, http_only=True)
+        cookie2 = PartialCookie(key, value, webserver.host, http_only=False)
 
         driver.storage.set_cookie(cookie=cookie1)
         driver.storage.set_cookie(cookie=cookie2)
 
-        # Delete only http_only cookies
-        driver.storage.delete_cookies(filter=CookieFilter(name=key1, http_only=True))
+        # Delete only http_only cookies - the http_only filter should actually matter here
+        driver.storage.delete_cookies(filter=CookieFilter(name=key, http_only=True))
 
-        # Verify
-        assert_cookie_is_not_present_with_name(driver, key1)
-        assert_cookie_is_present_with_name(driver, key2)
+        # Verify - only the http_only=True cookie should be deleted
+        result = driver.storage.get_cookies(filter=CookieFilter(name=key))
+
+        # Should have one cookie remaining (the http_only=False one)
+        assert len(result.cookies) == 1
+        assert result.cookies[0].http_only is False
 
     def test_delete_cookies_empty_filter(self, driver, pages, webserver):
         """Test deleting with empty filter deletes all cookies."""
