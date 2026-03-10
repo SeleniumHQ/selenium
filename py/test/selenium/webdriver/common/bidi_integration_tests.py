@@ -29,6 +29,9 @@ class TestBidiNetworkWithCookies:
     def setup(self, driver, pages):
         """Setup for each test in this class."""
         pages.load("blank.html")
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
+        driver.delete_all_cookies()
 
     def test_cookies_interaction(self, driver, pages):
         """Test that cookies work with network operations."""
@@ -65,7 +68,10 @@ class TestBidiScriptWithNavigation:
     @pytest.fixture(autouse=True)
     def setup(self, driver, pages):
         """Setup for each test in this class."""
+        driver.delete_all_cookies()
         pages.load("blank.html")
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
         driver.delete_all_cookies()
 
     def test_script_execution_after_navigation(self, driver, pages):
@@ -112,6 +118,9 @@ class TestBidiEmulationWithNavigation:
     def setup(self, driver, pages):
         """Setup for each test in this class."""
         pages.load("blank.html")
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
+        driver.delete_all_cookies()
 
     def test_basic_navigation(self, driver, pages):
         """Test basic navigation."""
@@ -152,6 +161,9 @@ class TestBidiEventHandlers:
     def setup(self, driver, pages):
         """Setup for each test in this class."""
         pages.load("blank.html")
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
+        driver.delete_all_cookies()
 
     def test_multiple_console_handlers(self, driver):
         """Test multiple console message handlers."""
@@ -176,6 +188,15 @@ class TestBidiEventHandlers:
 
 class TestBidiStorageOperations:
     """Test storage operations."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver, pages):
+        """Setup for each test in this class."""
+        driver.delete_all_cookies()
+        pages.load("blank.html")
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
+        driver.delete_all_cookies()
 
     def test_cookie_operations(self, driver, pages):
         """Test basic cookie operations."""
@@ -212,6 +233,14 @@ class TestBidiStorageOperations:
 
 class TestBidiBrowsingContexts:
     """Test browsing context operations."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, driver):
+        """Setup for each test in this class."""
+        driver.delete_all_cookies()
+        yield
+        # Cleanup: delete all cookies to prevent bleed-through
+        driver.delete_all_cookies()
 
     def test_create_new_window(self, driver):
         """Test creating a new window context."""

@@ -21,11 +21,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-def test_errors_module_initialized(driver):
-    """Test that the errors module is accessible."""
-    assert driver.script is not None
-
-
 def test_invalid_browsing_context_id(driver):
     """Test that invalid browsing context ID raises an error."""
     with pytest.raises(WebDriverException):

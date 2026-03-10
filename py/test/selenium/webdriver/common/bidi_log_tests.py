@@ -159,12 +159,3 @@ class TestBidiLogging:
             assert hasattr(log_entries[0], "text") or hasattr(log_entries[0], "args")
         finally:
             driver.script.remove_console_message_handler(handler_id)
-
-
-class TestBidiJavaScriptErrors:
-    """Test class for JavaScript error logging."""
-
-    @pytest.fixture(autouse=True)
-    def setup(self, driver, pages):
-        """Setup for each test in this class."""
-        pages.load("blank.html")

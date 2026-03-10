@@ -42,18 +42,21 @@ def test_logs_console_messages(driver, pages):
     pages.load("bidi/logEntryAdded.html")
 
     log_entries = []
-    driver.script.add_console_message_handler(log_entries.append)
+    handler_id = driver.script.add_console_message_handler(log_entries.append)
 
-    driver.find_element(By.ID, "jsException").click()
-    driver.find_element(By.ID, "consoleLog").click()
+    try:
+        driver.find_element(By.ID, "jsException").click()
+        driver.find_element(By.ID, "consoleLog").click()
 
-    WebDriverWait(driver, 5).until(lambda _: log_entries)
+        WebDriverWait(driver, 5).until(lambda _: log_entries)
 
-    log_entry = log_entries[0]
-    assert log_entry.level == LogLevel.INFO
-    assert log_entry.method == "log"
-    assert log_entry.text == "Hello, world!"
-    assert log_entry.type_ == "console"
+        log_entry = log_entries[0]
+        assert log_entry.level == LogLevel.INFO
+        assert log_entry.method == "log"
+        assert log_entry.text == "Hello, world!"
+        assert log_entry.type_ == "console"
+    finally:
+        driver.script.remove_console_message_handler(handler_id)
 
 
 def test_logs_console_errors(driver, pages):
@@ -64,34 +67,41 @@ def test_logs_console_errors(driver, pages):
         if entry.level == LogLevel.ERROR:
             log_entries.append(entry)
 
-    driver.script.add_console_message_handler(log_error)
+    handler_id = driver.script.add_console_message_handler(log_error)
 
-    driver.find_element(By.ID, "consoleLog").click()
-    driver.find_element(By.ID, "consoleError").click()
+    try:
+        driver.find_element(By.ID, "consoleLog").click()
+        driver.find_element(By.ID, "consoleError").click()
 
-    WebDriverWait(driver, 5).until(lambda _: log_entries)
+        WebDriverWait(driver, 5).until(lambda _: log_entries)
 
-    assert len(log_entries) == 1
+        assert len(log_entries) == 1
 
-    log_entry = log_entries[0]
-    assert log_entry.level == LogLevel.ERROR
-    assert log_entry.method == "error"
-    assert log_entry.text == "I am console error"
-    assert log_entry.type_ == "console"
+        log_entry = log_entries[0]
+        assert log_entry.level == LogLevel.ERROR
+        assert log_entry.method == "error"
+        assert log_entry.text == "I am console error"
+        assert log_entry.type_ == "console"
+    finally:
+        driver.script.remove_console_message_handler(handler_id)
 
 
 def test_logs_multiple_console_messages(driver, pages):
     pages.load("bidi/logEntryAdded.html")
 
     log_entries = []
-    driver.script.add_console_message_handler(log_entries.append)
-    driver.script.add_console_message_handler(log_entries.append)
+    handler_id1 = driver.script.add_console_message_handler(log_entries.append)
+    handler_id2 = driver.script.add_console_message_handler(log_entries.append)
 
-    driver.find_element(By.ID, "jsException").click()
-    driver.find_element(By.ID, "consoleLog").click()
+    try:
+        driver.find_element(By.ID, "jsException").click()
+        driver.find_element(By.ID, "consoleLog").click()
 
-    WebDriverWait(driver, 5).until(lambda _: len(log_entries) > 1)
-    assert len(log_entries) == 2
+        WebDriverWait(driver, 5).until(lambda _: len(log_entries) > 1)
+        assert len(log_entries) == 2
+    finally:
+        driver.script.remove_console_message_handler(handler_id1)
+        driver.script.remove_console_message_handler(handler_id2)
 
 
 def test_removes_console_message_handler(driver, pages):
@@ -100,32 +110,41 @@ def test_removes_console_message_handler(driver, pages):
     log_entries1 = []
     log_entries2 = []
 
-    id = driver.script.add_console_message_handler(log_entries1.append)
-    driver.script.add_console_message_handler(log_entries2.append)
+    id1 = driver.script.add_console_message_handler(log_entries1.append)
+    id2 = driver.script.add_console_message_handler(log_entries2.append)
 
-    driver.find_element(By.ID, "consoleLog").click()
-    WebDriverWait(driver, 5).until(lambda _: len(log_entries1) and len(log_entries2))
+    try:
+        driver.find_element(By.ID, "consoleLog").click()
+        WebDriverWait(driver, 5).until(
+            lambda _: len(log_entries1) and len(log_entries2)
+        )
 
-    driver.script.remove_console_message_handler(id)
-    driver.find_element(By.ID, "consoleLog").click()
+        driver.script.remove_console_message_handler(id1)
+        driver.find_element(By.ID, "consoleLog").click()
 
-    WebDriverWait(driver, 5).until(lambda _: len(log_entries2) == 2)
-    assert len(log_entries1) == 1
+        WebDriverWait(driver, 5).until(lambda _: len(log_entries2) == 2)
+        assert len(log_entries1) == 1
+    finally:
+        driver.script.remove_console_message_handler(id1)
+        driver.script.remove_console_message_handler(id2)
 
 
 def test_javascript_error_messages(driver, pages):
     pages.load("bidi/logEntryAdded.html")
 
     log_entries = []
-    driver.script.add_javascript_error_handler(log_entries.append)
+    handler_id = driver.script.add_javascript_error_handler(log_entries.append)
 
-    driver.find_element(By.ID, "jsException").click()
-    WebDriverWait(driver, 5).until(lambda _: log_entries)
+    try:
+        driver.find_element(By.ID, "jsException").click()
+        WebDriverWait(driver, 5).until(lambda _: log_entries)
 
-    log_entry = log_entries[0]
-    assert log_entry.text == "Error: Not working"
-    assert log_entry.level == LogLevel.ERROR
-    assert log_entry.type_ == "javascript"
+        log_entry = log_entries[0]
+        assert log_entry.text == "Error: Not working"
+        assert log_entry.level == LogLevel.ERROR
+        assert log_entry.type_ == "javascript"
+    finally:
+        driver.script.remove_javascript_error_handler(handler_id)
 
 
 def test_removes_javascript_message_handler(driver, pages):
@@ -134,17 +153,23 @@ def test_removes_javascript_message_handler(driver, pages):
     log_entries1 = []
     log_entries2 = []
 
-    id = driver.script.add_javascript_error_handler(log_entries1.append)
-    driver.script.add_javascript_error_handler(log_entries2.append)
+    id1 = driver.script.add_javascript_error_handler(log_entries1.append)
+    id2 = driver.script.add_javascript_error_handler(log_entries2.append)
 
-    driver.find_element(By.ID, "jsException").click()
-    WebDriverWait(driver, 5).until(lambda _: len(log_entries1) and len(log_entries2))
+    try:
+        driver.find_element(By.ID, "jsException").click()
+        WebDriverWait(driver, 5).until(
+            lambda _: len(log_entries1) and len(log_entries2)
+        )
 
-    driver.script.remove_javascript_error_handler(id)
-    driver.find_element(By.ID, "jsException").click()
+        driver.script.remove_javascript_error_handler(id1)
+        driver.find_element(By.ID, "jsException").click()
 
-    WebDriverWait(driver, 5).until(lambda _: len(log_entries2) == 2)
-    assert len(log_entries1) == 1
+        WebDriverWait(driver, 5).until(lambda _: len(log_entries2) == 2)
+        assert len(log_entries1) == 1
+    finally:
+        driver.script.remove_javascript_error_handler(id1)
+        driver.script.remove_javascript_error_handler(id2)
 
 
 def test_add_preload_script(driver, pages):
@@ -864,7 +889,6 @@ def test_execute_script_with_exception(driver, pages):
     """Test executing script that throws an exception."""
     pages.load("blank.html")
 
-
     with pytest.raises(WebDriverException) as exc_info:
         driver.script.execute(
             """() => {
@@ -1066,12 +1090,12 @@ class TestBidiScriptPreloadScripts:
             result1 = driver.script._evaluate(
                 "window.test1",
                 {"context": driver.current_window_handle},
-                await_promise=False
+                await_promise=False,
             )
             result2 = driver.script._evaluate(
                 "window.test2",
                 {"context": driver.current_window_handle},
-                await_promise=False
+                await_promise=False,
             )
 
             assert result1.result["value"] == "loaded"
@@ -1091,7 +1115,7 @@ class TestBidiScriptPreloadScripts:
             result = driver.script._evaluate(
                 "window.customFunc(5)",
                 {"context": driver.current_window_handle},
-                await_promise=False
+                await_promise=False,
             )
             assert result.result["value"] == 10
         finally:
@@ -1099,14 +1123,16 @@ class TestBidiScriptPreloadScripts:
 
     def test_preload_script_removal_prevents_execution(self, driver, pages):
         """Test that removing preload script prevents its execution."""
-        script_id = driver.script._add_preload_script("() => { window.shouldNotExist = true; }")
+        script_id = driver.script._add_preload_script(
+            "() => { window.shouldNotExist = true; }"
+        )
         driver.script._remove_preload_script(script_id=script_id)
 
         pages.load("blank.html")
         result = driver.script._evaluate(
             "typeof window.shouldNotExist",
             {"context": driver.current_window_handle},
-            await_promise=False
+            await_promise=False,
         )
         assert result.result["value"] == "undefined"
 
@@ -1182,7 +1208,7 @@ class TestBidiScriptContextManagement:
     def test_script_context_with_console_handler(self, driver, pages):
         """Test script execution with console message handler active."""
         log_entries = []
-        driver.script.add_console_message_handler(log_entries.append)
+        handler_id = driver.script.add_console_message_handler(log_entries.append)
 
         try:
             pages.load("bidi/logEntryAdded.html")
@@ -1192,27 +1218,23 @@ class TestBidiScriptContextManagement:
             WebDriverWait(driver, 3).until(lambda _: log_entries)
             assert len(log_entries) > 0
         finally:
-            # Clean up handler
-            if log_entries:
-                # Handler was registered and used
-                pass
+            driver.script.remove_console_message_handler(handler_id)
 
     def test_script_error_handler_active(self, driver, pages):
         """Test script execution with error handler active."""
         errors = []
-        driver.script.add_javascript_error_handler(errors.append)
+        handler_id = driver.script.add_javascript_error_handler(errors.append)
 
         try:
             pages.load("bidi/logEntryAdded.html")
             # Click element that triggers JS error
             driver.find_element(By.ID, "jsException").click()
-            
+
             # Give time for error handler to capture
             WebDriverWait(driver, 5).until(lambda _: errors)
             assert len(errors) > 0
         finally:
-            # Handler cleanup happens automatically via fixture
-            pass
+            driver.script.remove_javascript_error_handler(handler_id)
 
 
 class TestBidiScriptComplexOperations:
@@ -1304,7 +1326,7 @@ class TestBidiScriptErrorHandling:
         def error_handler(entry):
             errors.append(entry)
 
-        driver.script.add_javascript_error_handler(error_handler)
+        handler_id = driver.script.add_javascript_error_handler(error_handler)
 
         try:
             pages.load("bidi/logEntryAdded.html")
@@ -1313,33 +1335,34 @@ class TestBidiScriptErrorHandling:
             WebDriverWait(driver, 5).until(lambda _: errors)
             assert len(errors) > 0
         finally:
-            # Handler removal happens automatically
-            pass
+            driver.script.remove_javascript_error_handler(handler_id)
 
     def test_multiple_error_handlers(self, driver, pages):
         """Test multiple error handlers can be registered."""
         errors1 = []
         errors2 = []
 
-        driver.script.add_javascript_error_handler(errors1.append)
-        driver.script.add_javascript_error_handler(errors2.append)
+        handler_id1 = driver.script.add_javascript_error_handler(errors1.append)
+        handler_id2 = driver.script.add_javascript_error_handler(errors2.append)
 
         try:
             pages.load("bidi/logEntryAdded.html")
             driver.find_element(By.ID, "jsException").click()
 
             # Both handlers should receive events when error occurs
-            WebDriverWait(driver, 5).until(lambda _: len(errors1) > 0)
+            WebDriverWait(driver, 5).until(
+                lambda _: len(errors1) > 0 and len(errors2) > 0
+            )
             assert len(errors1) > 0
             assert len(errors2) > 0
         finally:
-            # Handler cleanup happens automatically
-            pass
+            driver.script.remove_javascript_error_handler(handler_id1)
+            driver.script.remove_javascript_error_handler(handler_id2)
 
     def test_console_message_with_logging(self, driver, pages):
         """Test console message handler with actual logging."""
         log_entries = []
-        driver.script.add_console_message_handler(log_entries.append)
+        handler_id = driver.script.add_console_message_handler(log_entries.append)
 
         try:
             pages.load("bidi/logEntryAdded.html")
@@ -1348,12 +1371,10 @@ class TestBidiScriptErrorHandling:
             WebDriverWait(driver, 5).until(lambda _: log_entries)
             assert len(log_entries) > 0
         finally:
-            # Handler cleanup
-            pass
+            driver.script.remove_console_message_handler(handler_id)
 
     def test_execute_script_syntax_error(self, driver):
         """Test executing script with syntax errors."""
         # This should raise an exception
         with pytest.raises(Exception):
             driver.execute_script("{{invalid syntax}}")
-
