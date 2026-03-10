@@ -19,6 +19,7 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.nio.NioIoHandler;
@@ -177,6 +178,10 @@ public class NettyServer implements Server<NettyServer> {
     b.group(bossGroup, workerGroup)
         .channel(NioServerSocketChannel.class)
         .handler(new LoggingHandler(LogLevel.DEBUG))
+        // OS-level TCP keepalive: kernel probes stale connections that the app cannot detect.
+        .childOption(ChannelOption.SO_KEEPALIVE, true)
+        // Disable Nagle: flush small frames (BiDi, CDP) immediately without buffering.
+        .childOption(ChannelOption.TCP_NODELAY, true)
         .childHandler(
             new SeleniumHttpInitializer(
                 sslCtx, handler, websocketHandler, allowCors, tcpTunnelResolver));

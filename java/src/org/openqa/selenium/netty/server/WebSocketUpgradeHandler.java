@@ -30,6 +30,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -43,10 +44,12 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.AttributeKey;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -157,7 +160,27 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
                 if (!future.isSuccess()) {
                   ctx.fireExceptionCaught(future.cause());
                 } else {
-                  ctx.channel().attr(key).setIfAbsent(maybeHandler.get());
+                  Consumer<Message> handler = maybeHandler.get();
+                  ctx.channel().attr(key).setIfAbsent(handler);
+
+                  // Install application-level keepalive for all WebSocket connections.
+                  // Cloud LBs (AWS ALB: 60 s, k8s ingress-nginx: 60 s) silently drop idle
+                  // TCP connections; OS-level SO_KEEPALIVE alone is not enough because
+                  // most LBs ignore TCP keepalive probes. A WS ping every 30 s resets
+                  // the LB's idle timer at the application level.
+                  ChannelPipeline pipeline = ctx.pipeline();
+                  pipeline.addAfter(
+                      "ws-protocol",
+                      "ws-idle",
+                      new IdleStateHandler(
+                          0, WebSocketKeepAliveHandler.PING_INTERVAL_SECONDS, 0, TimeUnit.SECONDS));
+                  pipeline.addAfter("ws-idle", "ws-keepalive", new WebSocketKeepAliveHandler());
+
+                  // Allow the handler to rewire the pipeline now that the channel
+                  // is fully in WebSocket mode (HTTP codec no longer active).
+                  if (handler instanceof PostUpgradeHook) {
+                    ((PostUpgradeHook) handler).onUpgradeComplete(ctx);
+                  }
                 }
               });
     }

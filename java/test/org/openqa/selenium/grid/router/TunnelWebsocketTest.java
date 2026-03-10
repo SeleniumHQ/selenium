@@ -67,6 +67,7 @@ import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.BinaryMessage;
+import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -631,5 +632,256 @@ class TunnelWebsocketTest {
 
     distributor.close();
     bus.close();
+  }
+
+  // ---------------------------------------------------------------------------
+  // ProxyWebsocketsIntoGrid + WebSocketFrameProxy (fallback path) tests
+  //
+  // These tests deliberately omit the TCP tunnel resolver so TcpUpgradeTunnelHandler
+  // is NOT installed. Every WebSocket upgrade goes through ProxyWebsocketsIntoGrid
+  // which, after the Netty handshake, rewires the pipeline via WebSocketFrameProxy.
+  // ---------------------------------------------------------------------------
+
+  private Server<?> createProxyRouter() {
+    // 3-arg constructor: no tcpTunnelResolver → no TcpUpgradeTunnelHandler in the pipeline.
+    return new NettyServer(
+            new BaseServerOptions(emptyConfig),
+            nullHandler,
+            new ProxyWebsocketsIntoGrid(HttpClient.Factory.createDefault(), sessions))
+        .start();
+  }
+
+  @Test
+  void proxyPath_shouldForwardTextMessageToBackend()
+      throws URISyntaxException, InterruptedException {
+    AtomicReference<String> received = new AtomicReference<>();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    backendServer = createEchoBackend("", latch, received);
+
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(
+        new Session(
+            id,
+            backendServer.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
+
+    tunnelServer = createProxyRouter();
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    try (WebSocket socket =
+        factory
+            .createClient(tunnelServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, "/session/" + id + "/bidi"), new WebSocket.Listener() {})) {
+
+      socket.sendText("proxy-hello");
+
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(received.get()).isEqualTo("proxy-hello");
+    }
+  }
+
+  @Test
+  void proxyPath_shouldForwardReplyFromBackendToClient()
+      throws URISyntaxException, InterruptedException {
+    backendServer = createEchoBackend("proxy-pong", new CountDownLatch(1), new AtomicReference<>());
+
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(
+        new Session(
+            id,
+            backendServer.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
+
+    tunnelServer = createProxyRouter();
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<String> reply = new AtomicReference<>();
+
+    try (WebSocket socket =
+        factory
+            .createClient(tunnelServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, "/session/" + id + "/bidi"),
+                new WebSocket.Listener() {
+                  @Override
+                  public void onText(CharSequence data) {
+                    reply.set(data.toString());
+                    latch.countDown();
+                  }
+                })) {
+
+      socket.sendText("proxy-ping");
+
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(reply.get()).isEqualTo("proxy-pong");
+    }
+  }
+
+  @Test
+  void proxyPath_shouldForwardBinaryMessages() throws URISyntaxException, InterruptedException {
+    byte[] payload = new byte[] {10, 20, 30, 40};
+
+    AtomicReference<byte[]> received = new AtomicReference<>();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    backendServer =
+        new NettyServer(
+                new BaseServerOptions(emptyConfig),
+                nullHandler,
+                (uri, sink) ->
+                    Optional.of(
+                        msg -> {
+                          if (msg instanceof BinaryMessage) {
+                            received.set(((BinaryMessage) msg).data());
+                            latch.countDown();
+                          }
+                        }))
+            .start();
+
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(
+        new Session(
+            id,
+            backendServer.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
+
+    tunnelServer = createProxyRouter();
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    try (WebSocket socket =
+        factory
+            .createClient(tunnelServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, "/session/" + id + "/bidi"), new WebSocket.Listener() {})) {
+
+      socket.sendBinary(payload);
+
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(received.get()).isEqualTo(payload);
+    }
+  }
+
+  @Test
+  void proxyPath_shouldSupportMultipleMessagesAndBidirectionalFlow()
+      throws URISyntaxException, InterruptedException {
+    // Backend echoes every text message back with a ">" prefix to distinguish direction.
+    int messageCount = 5;
+    CountDownLatch backendLatch = new CountDownLatch(messageCount);
+    CountDownLatch clientLatch = new CountDownLatch(messageCount);
+
+    backendServer =
+        new NettyServer(
+                new BaseServerOptions(emptyConfig),
+                nullHandler,
+                (uri, sink) ->
+                    Optional.of(
+                        msg -> {
+                          if (msg instanceof TextMessage) {
+                            backendLatch.countDown();
+                            sink.accept(new TextMessage(">" + ((TextMessage) msg).text()));
+                          }
+                        }))
+            .start();
+
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(
+        new Session(
+            id,
+            backendServer.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
+
+    tunnelServer = createProxyRouter();
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    try (WebSocket socket =
+        factory
+            .createClient(tunnelServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, "/session/" + id + "/bidi"),
+                new WebSocket.Listener() {
+                  @Override
+                  public void onText(CharSequence data) {
+                    clientLatch.countDown();
+                  }
+                })) {
+
+      for (int i = 0; i < messageCount; i++) {
+        socket.sendText("msg-" + i);
+      }
+
+      assertThat(backendLatch.await(10, SECONDS)).as("backend received all messages").isTrue();
+      assertThat(clientLatch.await(10, SECONDS)).as("client received all replies").isTrue();
+    }
+  }
+
+  /**
+   * Regression test for node-initiated close in proxy path.
+   *
+   * <p>After the Netty pipeline is rewired by {@code WebSocketFrameProxy} (i.e. {@code
+   * MessageOutboundConverter} is removed), a close message sent by the backend must still reach the
+   * client as a proper WebSocket close frame — not silently dropped.
+   */
+  @Test
+  void proxyPath_shouldRelayNodeInitiatedClose() throws URISyntaxException, InterruptedException {
+    CountDownLatch closeLatch = new CountDownLatch(1);
+    AtomicReference<Integer> closeCode = new AtomicReference<>();
+
+    // Backend sends one text message, then immediately closes the connection.
+    backendServer =
+        new NettyServer(
+                new BaseServerOptions(emptyConfig),
+                nullHandler,
+                (uri, sink) ->
+                    Optional.of(
+                        msg -> {
+                          if (msg instanceof TextMessage) {
+                            sink.accept(new CloseMessage(1000, "done"));
+                          }
+                        }))
+            .start();
+
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(
+        new Session(
+            id,
+            backendServer.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
+
+    tunnelServer = createProxyRouter();
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    try (WebSocket socket =
+        factory
+            .createClient(tunnelServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, "/session/" + id + "/bidi"),
+                new WebSocket.Listener() {
+                  @Override
+                  public void onClose(int code, String reason) {
+                    closeCode.set(code);
+                    closeLatch.countDown();
+                  }
+                })) {
+
+      socket.sendText("trigger-close");
+
+      assertThat(closeLatch.await(5, SECONDS))
+          .as("client should receive close frame from node")
+          .isTrue();
+      assertThat(closeCode.get()).isEqualTo(1000);
+    }
   }
 }
