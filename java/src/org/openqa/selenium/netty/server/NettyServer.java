@@ -45,6 +45,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.net.ssl.SSLException;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
@@ -63,11 +64,11 @@ public class NettyServer implements Server<NettyServer> {
   private final URL externalUrl;
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
-  private final SslContext sslCtx;
+  private final @Nullable SslContext sslCtx;
   private final boolean allowCors;
-  private final Function<String, Optional<URI>> tcpTunnelResolver;
+  private final @Nullable Function<String, Optional<URI>> tcpTunnelResolver;
 
-  private Channel channel;
+  @Nullable private Channel channel;
 
   public NettyServer(BaseServerOptions options, HttpHandler handler) {
     this(options, handler, (str, sink) -> Optional.empty());
@@ -94,7 +95,7 @@ public class NettyServer implements Server<NettyServer> {
       BaseServerOptions options,
       HttpHandler handler,
       BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler,
-      Function<String, Optional<URI>> tcpTunnelResolver) {
+      @Nullable Function<String, Optional<URI>> tcpTunnelResolver) {
     Require.nonNull("Server options", options);
     Require.nonNull("Handler", handler);
     this.websocketHandler = Require.nonNull("Factory for websocket connections", websocketHandler);

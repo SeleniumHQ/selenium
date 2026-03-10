@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.netty.server;
 
+import static org.openqa.selenium.concurrent.Lazy.lazy;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -50,6 +52,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLException;
+import org.openqa.selenium.concurrent.Lazy;
 
 /**
  * Netty handler placed in the server pipeline before {@link WebSocketUpgradeHandler}. When it sees
@@ -75,7 +78,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
    * certificates are trusted because Grid nodes commonly use self-signed certificates for internal
    * cluster communication. The external client↔Router TLS boundary is separate and unaffected.
    */
-  private static volatile SslContext clientSslContext;
+  private static final Lazy<SslContext> clientSslContext = lazy(() -> buildClientSslContext());
 
   private final Function<String, Optional<URI>> nodeUriResolver;
 
@@ -122,8 +125,8 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
     SslContext nodeSslCtx = null;
     if (useTls) {
       try {
-        nodeSslCtx = buildClientSslContext();
-      } catch (SSLException e) {
+        nodeSslCtx = clientSslContext.get();
+      } catch (Lazy.InitializationException e) {
         LOG.log(
             Level.WARNING,
             "Failed to build SSL context for HTTPS node at "
@@ -131,7 +134,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
                 + ":"
                 + port
                 + ", falling back to WebSocket handler",
-            e);
+            e.getCause());
         clientChannel.config().setAutoRead(true);
         ctx.fireChannelRead(req);
         return;
@@ -192,20 +195,10 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
   }
 
   private static SslContext buildClientSslContext() throws SSLException {
-    if (clientSslContext == null) {
-      synchronized (TcpUpgradeTunnelHandler.class) {
-        if (clientSslContext == null) {
-          // InsecureTrustManagerFactory is appropriate here: Grid nodes commonly use self-signed
-          // certificates for intra-cluster communication, and the trust boundary that matters to
-          // end users is the client↔Router TLS connection, not this Router↔Node hop.
-          clientSslContext =
-              SslContextBuilder.forClient()
-                  .trustManager(InsecureTrustManagerFactory.INSTANCE)
-                  .build();
-        }
-      }
-    }
-    return clientSslContext;
+    // InsecureTrustManagerFactory is appropriate here: Grid nodes commonly use self-signed
+    // certificates for intra-cluster communication, and the trust boundary that matters to
+    // end users is the client↔Router TLS connection, not this Router↔Node hop.
+    return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
   }
 
   // ---------------------------------------------------------------------------

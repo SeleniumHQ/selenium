@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.Message;
@@ -40,9 +41,9 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
       AttributeKey.newInstance("se-ws-handler");
   private final HttpHandler seleniumHandler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
-  private final SslContext sslCtx;
+  private final @Nullable SslContext sslCtx;
   private final boolean allowCors;
-  private final Function<String, Optional<URI>> tcpTunnelResolver;
+  private final @Nullable Function<String, Optional<URI>> tcpTunnelResolver;
 
   SeleniumHttpInitializer(
       SslContext sslCtx,
@@ -53,11 +54,11 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
   }
 
   SeleniumHttpInitializer(
-      SslContext sslCtx,
+      @Nullable SslContext sslCtx,
       HttpHandler seleniumHandler,
       BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
       boolean allowCors,
-      Function<String, Optional<URI>> tcpTunnelResolver) {
+      @Nullable Function<String, Optional<URI>> tcpTunnelResolver) {
     this.sslCtx = sslCtx;
     this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
     this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);

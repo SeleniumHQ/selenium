@@ -54,6 +54,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
@@ -67,7 +68,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
   private static final Logger LOG = Logger.getLogger(WebSocketUpgradeHandler.class.getName());
   private final AttributeKey<Consumer<Message>> key;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory;
-  private WebSocketServerHandshaker handshaker;
+  private @Nullable WebSocketServerHandshaker handshaker;
 
   public WebSocketUpgradeHandler(
       AttributeKey<Consumer<Message>> key,
