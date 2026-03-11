@@ -87,46 +87,49 @@ module Selenium
             reset_driver!(unhandled_prompt_behavior: :ignore)
           end
 
-          it 'accepts users prompts without text' do
+          it 'accepts user prompts without text' do
             browsing_context = described_class.new(bridge)
 
             driver.navigate.to url_for('alerts.html')
             window = driver.window_handle
-            prompt_opened = false
+            prompt_opened = Queue.new
             bridge.bidi.session.subscribe('browsingContext.userPromptOpened')
-            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened = true }
+            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened.push(true) }
             driver.find_element(id: 'alert').click
-            wait.until { prompt_opened }
+            wait.until { !prompt_opened.empty? }
             browsing_context.handle_user_prompt(window, accept: true)
+            wait_for_no_alert
 
             expect(driver.title).to eq('Testing Alerts')
           end
 
-          it 'accepts users prompts with text' do
+          it 'accepts user prompts with text' do
             browsing_context = described_class.new(bridge)
             driver.navigate.to url_for('alerts.html')
             window = driver.window_handle
-            prompt_opened = false
+            prompt_opened = Queue.new
             bridge.bidi.session.subscribe('browsingContext.userPromptOpened')
-            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened = true }
+            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened.push(true) }
             driver.find_element(id: 'prompt').click
-            wait.until { prompt_opened }
+            wait.until { !prompt_opened.empty? }
             browsing_context.handle_user_prompt(window, accept: true, text: 'Hello, world!')
+            wait_for_no_alert
 
             expect(driver.title).to eq('Testing Alerts')
           end
 
-          it 'rejects users prompts' do
+          it 'rejects user prompts' do
             browsing_context = described_class.new(bridge)
             driver.navigate.to url_for('alerts.html')
             window = driver.window_handle
-            prompt_opened = false
+            prompt_opened = Queue.new
             bridge.bidi.session.subscribe('browsingContext.userPromptOpened')
-            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened = true }
+            bridge.bidi.add_callback('browsingContext.userPromptOpened') { prompt_opened.push(true) }
             driver.find_element(id: 'alert').click
-            wait.until { prompt_opened }
+            wait.until { !prompt_opened.empty? }
 
             browsing_context.handle_user_prompt(window, accept: false)
+            wait_for_no_alert
 
             expect(driver.title).to eq('Testing Alerts')
           end
