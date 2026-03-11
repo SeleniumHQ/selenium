@@ -20,6 +20,7 @@ package org.openqa.selenium.devtools.idealized.target.model;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.idealized.browser.model.BrowserContextID;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class TargetInfo {
@@ -42,11 +43,11 @@ public class TargetInfo {
       Boolean attached,
       Optional<TargetID> openerId,
       Optional<BrowserContextID> browserContextId) {
-    this.targetId = java.util.Objects.requireNonNull(targetId, "targetId is required");
-    this.type = java.util.Objects.requireNonNull(type, "type is required");
-    this.title = java.util.Objects.requireNonNull(title, "title is required");
-    this.url = java.util.Objects.requireNonNull(url, "url is required");
-    this.attached = java.util.Objects.requireNonNull(attached, "attached is required");
+    this.targetId = Require.nonNull("targetId", targetId);
+    this.type = Require.nonNull("type", type);
+    this.title = Require.nonNull("title", title);
+    this.url = Require.nonNull("url", url);
+    this.attached = Require.nonNull("attached", attached);
     this.openerId = openerId;
     this.browserContextId = browserContextId;
   }
@@ -82,6 +83,7 @@ public class TargetInfo {
     return browserContextId;
   }
 
+  @SuppressWarnings("DataFlowIssue")
   private static TargetInfo fromJson(JsonInput input) {
     TargetID targetId = null;
     String type = null;

@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor;
 
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -101,7 +102,7 @@ public abstract class GridModel {
    * @param slotId The ID of the slot to update
    * @param session The session to associate with the slot, or null to clear
    */
-  public abstract void setSession(SlotId slotId, Session session);
+  public abstract void setSession(SlotId slotId, @Nullable Session session);
 
   /**
    * Updates the health check count for a node based on its availability.

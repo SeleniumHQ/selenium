@@ -99,7 +99,7 @@ public class MBean implements DynamicMBean {
     String name = bean.getClass().getName();
     String description = mBean.description();
     collectAttributeInfo(bean);
-    MBeanAttributeInfo[] attributes =
+    @Nullable MBeanAttributeInfo[] attributes =
         attributeMap.values().stream()
             .map(AttributeInfo::getMBeanAttributeInfo)
             .toArray(MBeanAttributeInfo[]::new);
@@ -254,7 +254,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public AttributeList getAttributes(String[] attributes) {
+  public AttributeList getAttributes(String @Nullable [] attributes) {
     AttributeList resultList = new AttributeList();
 
     // if attributeNames is empty, return an empty result list

@@ -966,8 +966,7 @@ final class ExpectedConditionsTest {
           .thenReturn("16pt")
           .thenReturn("17pt")
           .thenReturn("18pt");
-      when(mockElement.getText())
-          .thenThrow(new StaleElementReferenceException("Element disappeared"));
+      when(mockElement.getText()).thenThrow(new NoSuchElementException("Element disappeared"));
 
       assertThat(
               wait.until(
@@ -981,7 +980,7 @@ final class ExpectedConditionsTest {
     void whenAllThrow() {
       String attributeName = "test";
       when(mockElement.getAttribute(attributeName))
-          .thenThrow(new StaleElementReferenceException("Disappeared 1"));
+          .thenThrow(new NoSuchElementException("Disappeared 1"));
       when(mockElement.getCssValue(attributeName))
           .thenThrow(new StaleElementReferenceException("Disappeared 2"));
       when(mockElement.getText()).thenThrow(new StaleElementReferenceException("Disappeared 3"));
@@ -999,7 +998,8 @@ final class ExpectedConditionsTest {
                   + "1. element to have text \"test\", but..."
                   + " org.openqa.selenium.StaleElementReferenceException: Disappeared 3."
                   + lineSeparator()
-                  + "2. attribute or CSS value \"test\"=\"test\". Current value: \"null\".")
+                  + "2. attribute or CSS value \"test\"=\"test\". Current value: \"null\". (caused"
+                  + " by: org.openqa.selenium.NoSuchElementException: Disappeared 1)")
           .hasMessageContaining("tried for 1.1 seconds with 250 milliseconds interval");
     }
   }

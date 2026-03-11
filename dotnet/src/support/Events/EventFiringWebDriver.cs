@@ -406,6 +406,38 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     }
 
     /// <summary>
+    /// Asynchronously disposes this instance.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsyncCore().ConfigureAwait(false);
+        this.Dispose(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Stops the client from running.
+    /// </summary>
+    /// <param name="disposing">If <see langword="true"/>, managed resources are disposed.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            WrappedDriver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously performs the core dispose logic.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        await WrappedDriver.DisposeAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Executes JavaScript in the context of the currently selected frame or window.
     /// </summary>
     /// <param name="script">The JavaScript code to execute.</param>
@@ -578,19 +610,6 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         }
 
         return screenshotDriver.GetScreenshot();
-    }
-
-    /// <summary>
-    /// Frees all managed and, optionally, unmanaged resources used by this instance.
-    /// </summary>
-    /// <param name="disposing"><see langword="true"/> to dispose of only managed resources;
-    /// <see langword="false"/> to dispose of managed and unmanaged resources.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            this.WrappedDriver.Dispose();
-        }
     }
 
     /// <summary>

@@ -42,6 +42,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
@@ -110,7 +111,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
             thread.setName(NAME);
             return thread;
           });
-  private final MBean jmxBean;
+
+  @Nullable private final MBean jmxBean;
 
   public LocalNewSessionQueue(
       Tracer tracer,

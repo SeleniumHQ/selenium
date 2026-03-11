@@ -74,8 +74,9 @@ public class ErrorHandler {
     return includeServerErrors;
   }
 
-  public void setIncludeServerErrors(boolean includeServerErrors) {
+  public ErrorHandler setIncludeServerErrors(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
+    return this;
   }
 
   @SuppressWarnings("unchecked")

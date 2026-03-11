@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -213,6 +214,7 @@ public class LocalSessionMap extends SessionMap {
     private final ConcurrentMap<URI, Set<SessionId>> sessionsByUri = new ConcurrentHashMap<>();
     private final Object coordinationLock = new Object();
 
+    @Nullable
     public Session get(SessionId id) {
       return sessions.get(id);
     }
@@ -232,6 +234,7 @@ public class LocalSessionMap extends SessionMap {
       }
     }
 
+    @Nullable
     public Session remove(SessionId id) {
       synchronized (coordinationLock) {
         Session removed = sessions.remove(id);

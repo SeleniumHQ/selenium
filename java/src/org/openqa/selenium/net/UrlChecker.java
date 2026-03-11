@@ -31,6 +31,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.io.Read;
 
 /** Polls a URL until a HTTP 200 response is received. */
@@ -59,7 +60,7 @@ public class UrlChecker {
     long start = System.currentTimeMillis();
     LOG.fine("Waiting for " + Arrays.toString(urls));
     try {
-      Future<Void> callback =
+      Future<@Nullable Void> callback =
           EXECUTOR.submit(
               () -> {
                 HttpURLConnection connection = null;
@@ -113,7 +114,7 @@ public class UrlChecker {
     long start = System.currentTimeMillis();
     LOG.fine("Waiting for " + url);
     try {
-      Future<Void> callback =
+      Future<@Nullable Void> callback =
           EXECUTOR.submit(
               () -> {
                 HttpURLConnection connection = null;

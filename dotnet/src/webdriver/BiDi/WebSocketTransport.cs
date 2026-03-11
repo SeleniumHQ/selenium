@@ -24,7 +24,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDisposable
+sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
@@ -32,12 +32,14 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDispos
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
 
-    public static async Task<WebSocketTransport> ConnectAsync(Uri uri, CancellationToken cancellationToken)
+    public static async Task<ITransport> ConnectAsync(Uri uri, Action<ClientWebSocketOptions>? configure, CancellationToken cancellationToken)
     {
         ClientWebSocket webSocket = new();
 
         try
         {
+            configure?.Invoke(webSocket.Options);
+
             await webSocket.ConnectAsync(uri, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
@@ -66,6 +68,14 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDispos
             do
             {
                 result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
+
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+
+                    throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
+                        $"The remote end closed the WebSocket connection. Status: {result.CloseStatus}, Description: {result.CloseStatusDescription}");
+                }
 
                 _sharedMemoryStream.Write(receiveBuffer, 0, result.Count);
             }
@@ -107,26 +117,31 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport, IDispos
 
     private bool _disposed;
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        if (_disposed) return;
 
-    private void Dispose(bool disposing)
-    {
-        if (_disposed)
+        if (_webSocket.State == WebSocketState.Open)
         {
-            return;
+            try
+            {
+                await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"Error closing WebSocket gracefully: {ex.Message}");
+                }
+            }
         }
 
-        if (disposing)
-        {
-            _webSocket.Dispose();
-            _sharedMemoryStream.Dispose();
-            _socketSendSemaphoreSlim.Dispose();
-        }
+        _webSocket.Dispose();
+        _sharedMemoryStream.Dispose();
+        _socketSendSemaphoreSlim.Dispose();
 
         _disposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }

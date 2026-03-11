@@ -27,6 +27,7 @@ import java.util.function.Function;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.internal.Require;
 
 public class SessionCapabilitiesMutator implements Function<Capabilities, Capabilities> {
 
@@ -49,11 +50,13 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       return capabilities;
     }
 
-    if (slotStereotype.getCapability(SE_VNC_ENABLED) != null) {
+    Object vncEnabled = slotStereotype.getCapability(SE_VNC_ENABLED);
+    if (vncEnabled != null) {
+      Object vncPort = slotStereotype.getCapability(SE_NO_VNC_PORT);
       capabilities =
           new PersistentCapabilities(capabilities)
-              .setCapability(SE_VNC_ENABLED, slotStereotype.getCapability(SE_VNC_ENABLED))
-              .setCapability(SE_NO_VNC_PORT, slotStereotype.getCapability(SE_NO_VNC_PORT));
+              .setCapability(SE_VNC_ENABLED, vncEnabled)
+              .setCapability(SE_NO_VNC_PORT, Require.nonNull(SE_NO_VNC_PORT, vncPort));
     }
 
     String browserName = capabilities.getBrowserName().toLowerCase(Locale.ENGLISH);

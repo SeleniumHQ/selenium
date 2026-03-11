@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -115,6 +116,7 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  @Nullable
   private String getApiVersion() {
     return config.get(DOCKER_SECTION, "api-version").orElse(null);
   }
@@ -238,6 +240,7 @@ public class DockerOptions {
     return deviceMapping;
   }
 
+  @Nullable
   private Image getVideoImage(Docker docker) {
     String videoImage = config.get(DOCKER_SECTION, "video-image").orElse(DEFAULT_VIDEO_IMAGE);
     if (videoImage.equalsIgnoreCase("false")) {
@@ -280,6 +283,7 @@ public class DockerOptions {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  @Nullable
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private DockerAssetsPath getAssetsPath(Optional<ContainerInfo> info) {
     if (info.isPresent()) {

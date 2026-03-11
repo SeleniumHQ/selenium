@@ -17,22 +17,22 @@
 
 package org.openqa.selenium.devtools;
 
-import org.jspecify.annotations.NullMarked;
+import static java.util.Objects.requireNonNullElseGet;
+
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
-@NullMarked
 public class DevToolsException extends WebDriverException {
 
-  public DevToolsException(@Nullable Throwable cause) {
-    this(cause.getMessage(), cause);
+  public DevToolsException(Throwable cause) {
+    this(requireNonNullElseGet(cause.getMessage(), cause::toString), cause);
   }
 
-  public DevToolsException(@Nullable String message) {
+  public DevToolsException(String message) {
     this(message, null);
   }
 
-  public DevToolsException(@Nullable String message, @Nullable Throwable cause) {
+  public DevToolsException(String message, @Nullable Throwable cause) {
     super(message, cause);
     addInfo(WebDriverException.DRIVER_INFO, "DevTools Connection");
   }

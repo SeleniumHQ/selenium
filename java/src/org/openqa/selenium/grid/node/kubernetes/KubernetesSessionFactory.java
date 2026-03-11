@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node.kubernetes;
 
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
@@ -81,6 +80,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -134,19 +134,19 @@ public class KubernetesSessionFactory implements SessionFactory {
   private final String namespace;
   private final String browserImage;
   private final Capabilities stereotype;
-  private final String imagePullPolicy;
-  private final String serviceAccount;
+  private final @Nullable String imagePullPolicy;
+  private final @Nullable String serviceAccount;
   private final Map<String, Quantity> resourceRequests;
   private final Map<String, Quantity> resourceLimits;
   private final Map<String, String> nodeSelector;
-  private final String videoImage;
-  private final String assetsPath;
+  private final @Nullable String videoImage;
+  private final @Nullable String assetsPath;
   private final InheritedPodSpec inheritedPodSpec;
-  private final Job jobTemplate;
+  private final @Nullable Job jobTemplate;
   private final long terminationGracePeriodSeconds;
   private final boolean usePortForwarding;
   private final Predicate<Capabilities> predicate;
-  private final OwnerReference nodePodOwnerReference;
+  private final @Nullable OwnerReference nodePodOwnerReference;
 
   public KubernetesSessionFactory(
       Tracer tracer,
@@ -158,12 +158,12 @@ public class KubernetesSessionFactory implements SessionFactory {
       String browserImage,
       Capabilities stereotype,
       String imagePullPolicy,
-      String serviceAccount,
+      @Nullable String serviceAccount,
       Map<String, Quantity> resourceRequests,
       Map<String, Quantity> resourceLimits,
       Map<String, String> nodeSelector,
-      String videoImage,
-      String assetsPath,
+      @Nullable String videoImage,
+      @Nullable String assetsPath,
       InheritedPodSpec inheritedPodSpec,
       long terminationGracePeriodSeconds,
       boolean usePortForwarding,
@@ -202,8 +202,8 @@ public class KubernetesSessionFactory implements SessionFactory {
       String browserImage,
       Capabilities stereotype,
       Job jobTemplate,
-      String videoImage,
-      String assetsPath,
+      @Nullable String videoImage,
+      @Nullable String assetsPath,
       long terminationGracePeriodSeconds,
       boolean usePortForwarding,
       Predicate<Capabilities> predicate) {
@@ -235,8 +235,8 @@ public class KubernetesSessionFactory implements SessionFactory {
       String browserImage,
       Capabilities stereotype,
       Job jobTemplate,
-      String videoImage,
-      String assetsPath,
+      @Nullable String videoImage,
+      @Nullable String assetsPath,
       InheritedPodSpec inheritedPodSpec,
       long terminationGracePeriodSeconds,
       boolean usePortForwarding,
@@ -319,7 +319,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     LOG.info("Starting K8s session for " + sessionRequest.getDesiredCapabilities());
 
     String browserName = sessionRequest.getDesiredCapabilities().getBrowserName();
-    if (browserName == null || browserName.isEmpty()) {
+    if (browserName.isEmpty()) {
       browserName = "unknown";
     } else {
       browserName = browserName.toLowerCase();
@@ -539,7 +539,9 @@ public class KubernetesSessionFactory implements SessionFactory {
     return name;
   }
 
-  private static OwnerReference createNodePodOwnerReference(InheritedPodSpec inheritedPodSpec) {
+  @Nullable
+  private static OwnerReference createNodePodOwnerReference(
+      @Nullable InheritedPodSpec inheritedPodSpec) {
     if (inheritedPodSpec == null || !inheritedPodSpec.hasNodePodOwnerReference()) {
       return null;
     }
@@ -571,7 +573,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     labels.put("app", "selenium-session");
     labels.put("se/job-name", jobName);
     String browser = sessionCapabilities.getBrowserName();
-    if (browser != null && !browser.isEmpty()) {
+    if (!browser.isEmpty()) {
       labels.put("se/browser", browser.toLowerCase());
     }
 
@@ -861,6 +863,7 @@ public class KubernetesSessionFactory implements SessionFactory {
         .build();
   }
 
+  @Nullable
   private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
     String trimRegex = getVideoFileNameTrimRegex();
     Optional<Object> testName =
@@ -916,7 +919,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     labels.put("app", "selenium-session");
     labels.put("se/job-name", jobName);
     String browser = sessionCapabilities.getBrowserName();
-    if (browser != null && !browser.isEmpty()) {
+    if (!browser.isEmpty()) {
       labels.put("se/browser", browser.toLowerCase());
     }
 
@@ -990,7 +993,8 @@ public class KubernetesSessionFactory implements SessionFactory {
     return job;
   }
 
-  static Container findContainerByName(List<Container> containers, String name) {
+  @Nullable
+  static Container findContainerByName(@Nullable List<Container> containers, String name) {
     if (containers == null) {
       return null;
     }
@@ -1059,7 +1063,8 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
   }
 
-  static void ensureVolumeMount(Container container, String volumeName, String mountPath) {
+  static void ensureVolumeMount(
+      @Nullable Container container, String volumeName, String mountPath) {
     if (container == null) {
       return;
     }
@@ -1147,7 +1152,7 @@ public class KubernetesSessionFactory implements SessionFactory {
             .inNamespace(namespace)
             .withLabel("job-name", jobName)
             .watch(
-                new Watcher<Pod>() {
+                new Watcher<>() {
                   @Override
                   public void eventReceived(Action action, Pod pod) {
                     if (action == Action.DELETED) {
@@ -1166,7 +1171,7 @@ public class KubernetesSessionFactory implements SessionFactory {
                   }
 
                   @Override
-                  public void onClose(WatcherException cause) {
+                  public void onClose(@Nullable WatcherException cause) {
                     if (!future.isDone() && cause != null) {
                       future.completeExceptionally(
                           new SessionNotCreatedException(
@@ -1283,11 +1288,12 @@ public class KubernetesSessionFactory implements SessionFactory {
     return true;
   }
 
+  @Nullable
   private String resolvePodIp(Pod pod) {
     if (pod.getStatus() == null) {
       return null;
     }
-    List<PodIP> podIps = pod.getStatus().getPodIPs();
+    List<@Nullable PodIP> podIps = pod.getStatus().getPodIPs();
     if (podIps != null) {
       for (PodIP podIp : podIps) {
         if (podIp != null && podIp.getIp() != null && !podIp.getIp().isBlank()) {
@@ -1309,7 +1315,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     wait.until(
         obj -> {
           HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-          LOG.fine(string(response));
+          LOG.fine(response::contentAsString);
           if (401 == response.getStatus()) {
             LOG.warning(
                 "Server requires basic authentication. "
@@ -1339,7 +1345,7 @@ public class KubernetesSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private void closePortForward(LocalPortForward portForward) {
+  private void closePortForward(@Nullable LocalPortForward portForward) {
     if (portForward != null) {
       try {
         portForward.close();
@@ -1387,6 +1393,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     }
   }
 
+  @Nullable
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
@@ -1408,6 +1415,7 @@ public class KubernetesSessionFactory implements SessionFactory {
     return recordVideo.isPresent() && Boolean.parseBoolean(recordVideo.get().toString());
   }
 
+  @Nullable
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
         ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));

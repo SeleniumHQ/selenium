@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -528,7 +529,7 @@ public class RemoteWebDriver
   }
 
   @Override
-  public Object executeScript(String script, Object... args) {
+  public @Nullable Object executeScript(@NonNull String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
