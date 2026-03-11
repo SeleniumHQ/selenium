@@ -194,6 +194,9 @@ class Session:
 
     def new(self, capabilities: Any | None = None):
         """Execute session.new."""
+        if capabilities is None:
+            raise TypeError("new() missing required argument: 'capabilities'")
+
         params = {
             "capabilities": capabilities,
         }
@@ -213,6 +216,9 @@ class Session:
 
     def subscribe(self, events: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute session.subscribe."""
+        if events is None:
+            raise TypeError("subscribe() missing required argument: 'events'")
+
         params = {
             "events": events,
             "contexts": contexts,

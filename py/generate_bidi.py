@@ -18,12 +18,11 @@ import importlib.util
 import logging
 import re
 import sys
-from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from textwrap import dedent, indent as tw_indent
-from typing import Any, Dict, List, Optional, Set, Tuple
+from textwrap import indent as tw_indent
+from typing import Any
 
 __version__ = "1.0.0"
 
@@ -53,7 +52,7 @@ def indent(s: str, n: int) -> str:
     return tw_indent(s, n * " ")
 
 
-def load_enhancements_manifest(manifest_path: Optional[str]) -> Dict[str, Any]:
+def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
     """Load enhancement manifest from a Python file.
 
     Args:
@@ -139,11 +138,12 @@ class CddlCommand:
 
     module: str
     name: str
-    params: Dict[str, str] = field(default_factory=dict)
-    result: Optional[str] = None
+    params: dict[str, str] = field(default_factory=dict)
+    required_params: set[str] = field(default_factory=set)
+    result: str | None = None
     description: str = ""
 
-    def to_python_method(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def to_python_method(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python method code for this command.
 
         Args:
@@ -178,7 +178,17 @@ class CddlCommand:
         body = f"    def {method_name}({param_list}):\n"
         body += f'        """{self.description or "Execute " + self.module + "." + self.name}."""\n'
 
-        # Add validation if specified
+        # Add automatic validation for required parameters
+        # (This is used unless there's no required_params, in which case all params are optional)
+        if self.required_params:
+            for param_name, snake_param in param_names:
+                if param_name in self.required_params:
+                    method_snake = self._camel_to_snake(self.name)
+                    body += f"        if {snake_param} is None:\n"
+                    body += f'            raise TypeError("{method_snake}() missing required argument: {snake_param!r}")\n'
+            body += "\n"
+
+        # Add validation if specified in enhancements (for additional business logic validation)
         if "validate" in enhancements:
             validate_func = enhancements["validate"]
             # Build parameter list for validation function
@@ -264,45 +274,45 @@ class CddlCommand:
                 # Extract property from list items
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f'                item.get("{extract_property}")\n'
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
             elif extract_field in deserialize_rules:
                 # Extract field and deserialize to typed objects
                 type_name = deserialize_rules[extract_field]
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            items = result.get("{extract_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(extract_field, type_name)
-                body += f"                )\n"
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                )\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
             else:
                 # Simple field extraction (return the value directly, not wrapped in result dict)
                 body += f'        if result and "{extract_field}" in result:\n'
                 body += f'            extracted = result.get("{extract_field}")\n'
-                body += f"            return extracted\n"
-                body += f"        return result\n"
+                body += "            return extracted\n"
+                body += "        return result\n"
         elif "deserialize" in enhancements:
             # Deserialize response to typed objects (legacy, without extract_field)
             deserialize_rules = enhancements["deserialize"]
             for response_field, type_name in deserialize_rules.items():
                 body += f'        if result and "{response_field}" in result:\n'
                 body += f'            items = result.get("{response_field}", [])\n'
-                body += f"            return [\n"
+                body += "            return [\n"
                 body += f"                {type_name}(\n"
                 body += self._generate_field_args(response_field, type_name)
-                body += f"                )\n"
-                body += f"                for item in items\n"
-                body += f"                if isinstance(item, dict)\n"
-                body += f"            ]\n"
-                body += f"        return []\n"
+                body += "                )\n"
+                body += "                for item in items\n"
+                body += "                if isinstance(item, dict)\n"
+                body += "            ]\n"
+                body += "        return []\n"
         else:
             # No special response handling, just return the result
             body += "        return result\n"
@@ -351,10 +361,10 @@ class CddlTypeDefinition:
 
     module: str
     name: str
-    fields: Dict[str, str] = field(default_factory=dict)
+    fields: dict[str, str] = field(default_factory=dict)
     description: str = ""
 
-    def to_python_dataclass(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def to_python_dataclass(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python dataclass code for this type.
 
         Args:
@@ -366,7 +376,7 @@ class CddlTypeDefinition:
 
         # Generate class name from type name (keep it as-is, don't split on underscores)
         class_name = self.name
-        code = f"@dataclass\n"
+        code = "@dataclass\n"
         code += f"class {class_name}:\n"
         code += f'    """{self.description or self.name}."""\n\n'
 
@@ -460,7 +470,7 @@ class CddlEnum:
 
     module: str
     name: str
-    values: List[str] = field(default_factory=list)
+    values: list[str] = field(default_factory=list)
     description: str = ""
 
     def to_python_class(self) -> str:
@@ -537,10 +547,10 @@ class CddlModule:
     """Represents a CDDL module (e.g., script, network, browsing_context)."""
 
     name: str
-    commands: List[CddlCommand] = field(default_factory=list)
-    types: List[CddlTypeDefinition] = field(default_factory=list)
-    enums: List[CddlEnum] = field(default_factory=list)
-    events: List[CddlEvent] = field(default_factory=list)
+    commands: list[CddlCommand] = field(default_factory=list)
+    types: list[CddlTypeDefinition] = field(default_factory=list)
+    enums: list[CddlEnum] = field(default_factory=list)
+    events: list[CddlEvent] = field(default_factory=list)
 
     @staticmethod
     def _convert_method_to_event_name(method_suffix: str) -> str:
@@ -555,7 +565,7 @@ class CddlModule:
         s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", method_suffix)
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
-    def generate_code(self, enhancements: Optional[Dict[str, Any]] = None) -> str:
+    def generate_code(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python code for this module.
 
         Args:
@@ -1007,9 +1017,9 @@ class _EventManager:
                 code += "\n"
 
             # Now populate EVENT_CONFIGS after the aliases are defined
-            code += f"\n# Populate EVENT_CONFIGS with event configuration mappings\n"
+            code += "\n# Populate EVENT_CONFIGS with event configuration mappings\n"
             # Use globals() to look up types dynamically to handle missing types gracefully
-            code += f"_globals = globals()\n"
+            code += "_globals = globals()\n"
             code += f"{class_name}.EVENT_CONFIGS = {{\n"
             for event_def in self.events:
                 # Convert method name to user-friendly event name
@@ -1037,9 +1047,9 @@ class CddlParser:
         """Initialize parser with CDDL file path."""
         self.cddl_path = Path(cddl_path)
         self.content = ""
-        self.modules: Dict[str, CddlModule] = {}
-        self.definitions: Dict[str, str] = {}
-        self.event_names: Set[str] = set()  # Names of definitions that are events
+        self.modules: dict[str, CddlModule] = {}
+        self.definitions: dict[str, str] = {}
+        self.event_names: set[str] = set()  # Names of definitions that are events
         self._read_file()
 
     def _read_file(self) -> None:
@@ -1047,12 +1057,12 @@ class CddlParser:
         if not self.cddl_path.exists():
             raise FileNotFoundError(f"CDDL file not found: {self.cddl_path}")
 
-        with open(self.cddl_path, "r", encoding="utf-8") as f:
+        with open(self.cddl_path, encoding="utf-8") as f:
             self.content = f.read()
 
         logger.info(f"Loaded CDDL file: {self.cddl_path}")
 
-    def parse(self) -> Dict[str, CddlModule]:
+    def parse(self) -> dict[str, CddlModule]:
         """Parse CDDL content and return modules."""
         # Remove comments
         content = self._remove_comments(self.content)
@@ -1201,7 +1211,7 @@ class CddlParser:
         # Pattern: "something" / "something_else"
         return " / " in clean_def and '"' in clean_def
 
-    def _extract_enum_values(self, enum_definition: str) -> List[str]:
+    def _extract_enum_values(self, enum_definition: str) -> list[str]:
         """Extract individual values from an enum definition.
 
         Enums are defined as: "value1" / "value2" / "value3"
@@ -1251,7 +1261,7 @@ class CddlParser:
         result = re.sub(r"-?\d+(?:\.\d+)?\.{2,3}-?\d+(?:\.\d+)?", "float", result)
         return result.strip()
 
-    def _extract_type_fields(self, type_definition: str) -> Dict[str, str]:
+    def _extract_type_fields(self, type_definition: str) -> dict[str, str]:
         """Extract fields from a type definition block."""
         fields = {}
 
@@ -1361,14 +1371,17 @@ class CddlParser:
                         if module_name not in self.modules:
                             self.modules[module_name] = CddlModule(name=module_name)
 
-                        # Extract parameters
-                        params = self._extract_parameters(params_type)
+                        # Extract parameters and required parameters
+                        params, required_params = self._extract_parameters_and_required(
+                            params_type
+                        )
 
                         # Create command
                         cmd = CddlCommand(
                             module=module_name,
                             name=command_name,
                             params=params,
+                            required_params=required_params,
                             description=f"Execute {method}",
                         )
 
@@ -1378,24 +1391,36 @@ class CddlParser:
                         )
 
     def _extract_parameters(
-        self, params_type: str, _seen: Optional[Set[str]] = None
-    ) -> Dict[str, str]:
+        self, params_type: str, _seen: set[str] | None = None
+    ) -> dict[str, str]:
         """Extract parameters from a parameter type definition.
 
         Handles both struct types ({...}) and top-level union types (TypeA / TypeB),
         merging all fields from each alternative as optional parameters.
         """
+        params, _ = self._extract_parameters_and_required(params_type, _seen)
+        return params
+
+    def _extract_parameters_and_required(
+        self, params_type: str, _seen: set[str] | None = None
+    ) -> tuple[dict[str, str], set[str]]:
+        """Extract parameters and track which are required from a parameter type definition.
+
+        Returns:
+            Tuple of (params dict, required_params set)
+        """
         params = {}
+        required = set()
 
         if _seen is None:
             _seen = set()
         if params_type in _seen:
-            return params
+            return params, required
         _seen.add(params_type)
 
         if params_type not in self.definitions:
             logger.debug(f"Parameter type not found: {params_type}")
-            return params
+            return params, required
 
         definition = self.definitions[params_type]
 
@@ -1409,10 +1434,15 @@ class CddlParser:
             alternatives = [a.strip() for a in stripped.split("/") if a.strip()]
             all_named = all(re.match(r"^[\w.]+$", a) for a in alternatives)
             if all_named:
+                # For union types, collect parameters from all alternatives
+                # but treat them as optional since the caller only needs to pass one alternative
                 for alt_type in alternatives:
-                    alt_params = self._extract_parameters(alt_type, _seen)
+                    alt_params, _ = self._extract_parameters_and_required(
+                        alt_type, _seen
+                    )
                     params.update(alt_params)
-                return params
+                    # Note: We intentionally DON'T add to required, since these are union alternatives
+                return params, required
 
         # Remove the outer curly braces and split by comma
         # Then parse each line for key: type patterns
@@ -1429,6 +1459,9 @@ class CddlParser:
                 continue
 
             # Match pattern: [?] name: type
+            # Check if parameter has optional marker (?)
+            is_optional = line.startswith("?")
+
             # Using a simple pattern that handles optional prefix
             match = re.match(r"\?\s*(\w+)\s*:\s*(.+?)(?:,\s*)?$", line)
             if not match:
@@ -1443,11 +1476,13 @@ class CddlParser:
                 # Skip lines that are part of nested definitions
                 if "{" not in normalized_type and "(" not in normalized_type:
                     params[param_name] = normalized_type
+                    if not is_optional:
+                        required.add(param_name)
                     logger.debug(
-                        f"Extracted param {param_name}: {normalized_type} from {params_type}"
+                        f"Extracted param {param_name}: {normalized_type} (required={not is_optional}) from {params_type}"
                     )
 
-        return params
+        return params, required
 
 
 def module_name_to_class_name(module_name: str) -> str:
@@ -1492,7 +1527,7 @@ def module_name_to_filename(module_name: str) -> str:
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
-def generate_init_file(output_path: Path, modules: Dict[str, CddlModule]) -> None:
+def generate_init_file(output_path: Path, modules: dict[str, CddlModule]) -> None:
     """Generate __init__.py file for the module."""
     init_path = output_path / "__init__.py"
 
@@ -1507,7 +1542,7 @@ from __future__ import annotations
         filename = module_name_to_filename(module_name)
         code += f"from .{filename} import {class_name}\n"
 
-    code += f"\n__all__ = [\n"
+    code += "\n__all__ = [\n"
     for module_name in sorted(modules.keys()):
         class_name = module_name_to_class_name(module_name)
         code += f'    "{class_name}",\n'
@@ -1729,7 +1764,7 @@ def main(
     cddl_file: str,
     output_dir: str,
     spec_version: str = "1.0",
-    enhancements_manifest: Optional[str] = None,
+    enhancements_manifest: str | None = None,
 ) -> None:
     """Main entry point.
 

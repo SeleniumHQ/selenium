@@ -565,6 +565,11 @@ class Network:
 
     def add_data_collector(self, data_types: List[Any] | None = None, max_encoded_data_size: Any | None = None, collector_type: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute network.addDataCollector."""
+        if data_types is None:
+            raise TypeError("add_data_collector() missing required argument: 'data_types'")
+        if max_encoded_data_size is None:
+            raise TypeError("add_data_collector() missing required argument: 'max_encoded_data_size'")
+
         params = {
             "dataTypes": data_types,
             "maxEncodedDataSize": max_encoded_data_size,
@@ -579,6 +584,9 @@ class Network:
 
     def add_intercept(self, phases: List[Any] | None = None, contexts: List[Any] | None = None, url_patterns: List[Any] | None = None):
         """Execute network.addIntercept."""
+        if phases is None:
+            raise TypeError("add_intercept() missing required argument: 'phases'")
+
         params = {
             "phases": phases,
             "contexts": contexts,
@@ -591,6 +599,9 @@ class Network:
 
     def continue_request(self, request: Any | None = None, body: Any | None = None, cookies: List[Any] | None = None, headers: List[Any] | None = None, method: Any | None = None, url: Any | None = None):
         """Execute network.continueRequest."""
+        if request is None:
+            raise TypeError("continue_request() missing required argument: 'request'")
+
         params = {
             "request": request,
             "body": body,
@@ -606,6 +617,9 @@ class Network:
 
     def continue_response(self, request: Any | None = None, cookies: List[Any] | None = None, credentials: Any | None = None, headers: List[Any] | None = None, reason_phrase: Any | None = None, status_code: Any | None = None):
         """Execute network.continueResponse."""
+        if request is None:
+            raise TypeError("continue_response() missing required argument: 'request'")
+
         params = {
             "request": request,
             "cookies": cookies,
@@ -621,6 +635,9 @@ class Network:
 
     def continue_with_auth(self, request: Any | None = None):
         """Execute network.continueWithAuth."""
+        if request is None:
+            raise TypeError("continue_with_auth() missing required argument: 'request'")
+
         params = {
             "request": request,
         }
@@ -631,6 +648,13 @@ class Network:
 
     def disown_data(self, data_type: Any | None = None, collector: Any | None = None, request: Any | None = None):
         """Execute network.disownData."""
+        if data_type is None:
+            raise TypeError("disown_data() missing required argument: 'data_type'")
+        if collector is None:
+            raise TypeError("disown_data() missing required argument: 'collector'")
+        if request is None:
+            raise TypeError("disown_data() missing required argument: 'request'")
+
         params = {
             "dataType": data_type,
             "collector": collector,
@@ -643,6 +667,9 @@ class Network:
 
     def fail_request(self, request: Any | None = None):
         """Execute network.failRequest."""
+        if request is None:
+            raise TypeError("fail_request() missing required argument: 'request'")
+
         params = {
             "request": request,
         }
@@ -653,6 +680,11 @@ class Network:
 
     def get_data(self, data_type: Any | None = None, collector: Any | None = None, disown: bool | None = None, request: Any | None = None):
         """Execute network.getData."""
+        if data_type is None:
+            raise TypeError("get_data() missing required argument: 'data_type'")
+        if request is None:
+            raise TypeError("get_data() missing required argument: 'request'")
+
         params = {
             "dataType": data_type,
             "collector": collector,
@@ -666,6 +698,9 @@ class Network:
 
     def provide_response(self, request: Any | None = None, body: Any | None = None, cookies: List[Any] | None = None, headers: List[Any] | None = None, reason_phrase: Any | None = None, status_code: Any | None = None):
         """Execute network.provideResponse."""
+        if request is None:
+            raise TypeError("provide_response() missing required argument: 'request'")
+
         params = {
             "request": request,
             "body": body,
@@ -681,6 +716,9 @@ class Network:
 
     def remove_data_collector(self, collector: Any | None = None):
         """Execute network.removeDataCollector."""
+        if collector is None:
+            raise TypeError("remove_data_collector() missing required argument: 'collector'")
+
         params = {
             "collector": collector,
         }
@@ -691,6 +729,9 @@ class Network:
 
     def remove_intercept(self, intercept: Any | None = None):
         """Execute network.removeIntercept."""
+        if intercept is None:
+            raise TypeError("remove_intercept() missing required argument: 'intercept'")
+
         params = {
             "intercept": intercept,
         }
@@ -701,6 +742,9 @@ class Network:
 
     def set_cache_behavior(self, cache_behavior: Any | None = None, contexts: List[Any] | None = None):
         """Execute network.setCacheBehavior."""
+        if cache_behavior is None:
+            raise TypeError("set_cache_behavior() missing required argument: 'cache_behavior'")
+
         params = {
             "cacheBehavior": cache_behavior,
             "contexts": contexts,
@@ -712,6 +756,9 @@ class Network:
 
     def set_extra_headers(self, headers: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute network.setExtraHeaders."""
+        if headers is None:
+            raise TypeError("set_extra_headers() missing required argument: 'headers'")
+
         params = {
             "headers": headers,
             "contexts": contexts,
@@ -724,6 +771,11 @@ class Network:
 
     def before_request_sent(self, initiator: Any | None = None, method: Any | None = None, params: Any | None = None):
         """Execute network.beforeRequestSent."""
+        if method is None:
+            raise TypeError("before_request_sent() missing required argument: 'method'")
+        if params is None:
+            raise TypeError("before_request_sent() missing required argument: 'params'")
+
         params = {
             "initiator": initiator,
             "method": method,
@@ -736,6 +788,13 @@ class Network:
 
     def fetch_error(self, error_text: Any | None = None, method: Any | None = None, params: Any | None = None):
         """Execute network.fetchError."""
+        if error_text is None:
+            raise TypeError("fetch_error() missing required argument: 'error_text'")
+        if method is None:
+            raise TypeError("fetch_error() missing required argument: 'method'")
+        if params is None:
+            raise TypeError("fetch_error() missing required argument: 'params'")
+
         params = {
             "errorText": error_text,
             "method": method,
@@ -748,6 +807,13 @@ class Network:
 
     def response_completed(self, response: Any | None = None, method: Any | None = None, params: Any | None = None):
         """Execute network.responseCompleted."""
+        if response is None:
+            raise TypeError("response_completed() missing required argument: 'response'")
+        if method is None:
+            raise TypeError("response_completed() missing required argument: 'method'")
+        if params is None:
+            raise TypeError("response_completed() missing required argument: 'params'")
+
         params = {
             "response": response,
             "method": method,
@@ -760,6 +826,9 @@ class Network:
 
     def response_started(self, response: Any | None = None):
         """Execute network.responseStarted."""
+        if response is None:
+            raise TypeError("response_started() missing required argument: 'response'")
+
         params = {
             "response": response,
         }
