@@ -192,11 +192,11 @@ internal sealed class Broker : IAsyncDisposable
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
 
-                        command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
+                        command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)
                     {
-                        command.TaskCompletionSource.SetException(ex);
+                        command.TaskCompletionSource.TrySetException(ex);
                     }
                     finally
                     {
@@ -224,7 +224,7 @@ internal sealed class Broker : IAsyncDisposable
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
                 {
-                    errorCommand.TaskCompletionSource.SetException(new BiDiException($"{error}: {message}"));
+                    errorCommand.TaskCompletionSource.TrySetException(new BiDiException($"{error}: {message}"));
                     _pendingCommands.TryRemove(id.Value, out _);
                 }
                 else
