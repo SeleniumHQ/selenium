@@ -118,8 +118,12 @@ internal sealed class Broker : IAsyncDisposable
 
     private void ProcessReceivedMessage(byte[] data)
     {
+        const int TypeSuccess = 1;
+        const int TypeEvent = 2;
+        const int TypeError = 3;
+
         long? id = default;
-        string? type = default;
+        int messageType = 0;
         string? method = default;
         string? error = default;
         string? message = default;
@@ -144,7 +148,9 @@ internal sealed class Broker : IAsyncDisposable
             else if (reader.ValueTextEquals("type"u8))
             {
                 reader.Read();
-                type = reader.GetString();
+                if (reader.ValueTextEquals("success"u8)) messageType = TypeSuccess;
+                else if (reader.ValueTextEquals("event"u8)) messageType = TypeEvent;
+                else if (reader.ValueTextEquals("error"u8)) messageType = TypeError;
             }
             else if (reader.ValueTextEquals("method"u8))
             {
@@ -182,9 +188,9 @@ internal sealed class Broker : IAsyncDisposable
             reader.Read();
         }
 
-        switch (type)
+        switch (messageType)
         {
-            case "success":
+            case TypeSuccess:
                 if (id is null) throw new BiDiException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var command))
@@ -215,13 +221,13 @@ internal sealed class Broker : IAsyncDisposable
 
                 break;
 
-            case "event":
+            case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
                 var paramsJsonData = new ReadOnlyMemory<byte>(data, paramsStartIndex, paramsEndIndex - paramsStartIndex);
                 _eventDispatcher.EnqueueEvent(method, paramsJsonData, _bidi);
                 break;
 
-            case "error":
+            case TypeError:
                 if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
