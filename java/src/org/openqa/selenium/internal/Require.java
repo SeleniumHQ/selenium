@@ -211,6 +211,14 @@ public final class Require {
     return arg;
   }
 
+  public static String nonEmpty(String argName, @Nullable String arg) {
+    nonNull(argName, arg);
+    if (arg.isEmpty()) {
+      throw new IllegalArgumentException(String.format(MUST_NOT_BE_EMPTY, argName));
+    }
+    return arg;
+  }
+
   public static void stateCondition(boolean state, String message, Object... args) {
     if (!state) {
       throw new IllegalStateException(String.format(message, args));
