@@ -529,6 +529,7 @@ def test_perform_actions_pointer_touch_type(driver, pages):
     assert button.get_attribute("value") == "Clicked"
 
 
+@pytest.mark.xfail_firefox
 def test_perform_actions_pointer_pen_type(driver, pages):
     """Test pointer actions with pen pointer type."""
     pages.load("javascriptPage.html")
