@@ -338,7 +338,7 @@ class JavascriptLogEntry:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {}
+        params: dict[str, Any] = {}
         if coordinates is not None:
             if isinstance(coordinates, dict):
                 coords_dict = coordinates
@@ -390,7 +390,7 @@ class JavascriptLogEntry:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"timezone": timezone}
+        params: dict[str, Any] = {"timezone": timezone}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -414,7 +414,7 @@ class JavascriptLogEntry:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"enabled": enabled}
+        params: dict[str, Any] = {"enabled": enabled}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -437,7 +437,7 @@ class JavascriptLogEntry:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"userAgent": user_agent}
+        params: dict[str, Any] = {"userAgent": user_agent}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -473,7 +473,7 @@ class JavascriptLogEntry:
                 "natural": natural.lower() if isinstance(natural, str) else natural,
                 "type": orientation_type.lower() if isinstance(orientation_type, str) else orientation_type,
             }
-        params = {"screenOrientation": so_value}
+        params: dict[str, Any] = {"screenOrientation": so_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -506,7 +506,7 @@ class JavascriptLogEntry:
             nc_value = {"type": "offline"} if offline else None
         else:
             nc_value = network_conditions
-        params = {"networkConditions": nc_value}
+        params: dict[str, Any] = {"networkConditions": nc_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -893,8 +893,8 @@ class JavascriptLogEntry:
     "network": {
         # Initialize intercepts tracking list and per-handler intercept map
         "extra_init_code": [
-            "self.intercepts = []",
-            "self._handler_intercepts: dict = {}",
+            "self.intercepts: list[Any] = []",
+            "self._handler_intercepts: dict[str, Any] = {}",
         ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
@@ -908,7 +908,7 @@ class JavascriptLogEntry:
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: str, value: str) -> None:
+    def __init__(self, type: Any | None, value: Any | None) -> None:
         self.type = type
         self.value = value
 
@@ -1089,7 +1089,7 @@ class JavascriptLogEntry:
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: str, value: str) -> None:
+    def __init__(self, type: Any | None, value: Any | None) -> None:
         self.type = type
         self.value = value
 
@@ -1122,7 +1122,7 @@ class StorageCookie:
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
-            value = BytesValue(value_raw.get("type"), value_raw.get("value"))
+            value: Any = BytesValue(value_raw.get("type"), value_raw.get("value"))
         else:
             value = value_raw
         return cls(
@@ -1379,6 +1379,7 @@ class UserPromptHandler:
         elif archive_path is not None:
             extension_data = {"type": "archivePath", "path": archive_path}
         else:
+            assert base64_value is not None
             extension_data = {"type": "base64", "value": base64_value}
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
@@ -1395,12 +1396,14 @@ class UserPromptHandler:
             ValueError: If extension is not provided or is None.
         """
         if isinstance(extension, dict):
-            extension = extension.get("extension")
+            extension_id: Any = extension.get("extension")
+        else:
+            extension_id = extension
 
-        if extension is None:
+        if extension_id is None:
             raise ValueError("extension parameter is required")
-
-        params = {"extension": extension}
+        
+        params = {"extension": extension_id}
         cmd = command_builder("webExtension.uninstall", params)
         return self._conn.execute(cmd)''',
         ],

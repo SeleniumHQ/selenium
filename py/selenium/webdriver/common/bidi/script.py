@@ -776,7 +776,7 @@ class _EventManager:
 class Script:
     """WebDriver BiDi script module."""
 
-    EVENT_CONFIGS = {}
+    EVENT_CONFIGS: dict[str, EventConfig] = {}
     def __init__(self, conn, driver=None) -> None:
         self._conn = conn
         self._driver = driver

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 """
 Generate Python WebDriver BiDi command modules from CDDL specification.
 
@@ -43,7 +43,6 @@ MODULE_HEADER = f"""{SHARED_HEADER}
 from __future__ import annotations
 
 from typing import Any
-from .common import command_builder
 """
 
 
@@ -590,17 +589,17 @@ class CddlModule:
         code = MODULE_HEADER.format(self.name)
 
         # Collect needed imports to avoid duplicates
+        needs_command_builder = bool(self.commands)
         needs_dataclass = self.commands or self.types or self.events
-        needs_field = self.types
         needs_threading = self.events
         needs_callable = self.events
         needs_session = self.events
 
-        # Add imports if needed
+        # Add imports (field import will be added conditionally after code generation)
+        if needs_command_builder:
+            code += "from .common import command_builder\n"
         if needs_dataclass:
             code += "from dataclasses import dataclass\n"
-        if needs_field:
-            code += "from dataclasses import field\n"
         if needs_threading:
             code += "import threading\n"
         if needs_callable:
@@ -954,7 +953,7 @@ class _EventManager:
         # Add EVENT_CONFIGS dict if there are events
         if self.events:
             code += (
-                "    EVENT_CONFIGS = {}\n"  # Will be populated after types are defined
+                "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
             )
 
         if self.name == "script":
@@ -1094,6 +1093,26 @@ class _EventManager:
                 ec = extra_evt["event_class"]
                 code += f'    "{ek}": EventConfig("{ek}", "{be}", _globals.get("{ec}", dict)),\n'
             code += "}\n"
+
+        # Check if field() is actually used in the generated code
+        # If so, add the field import after the dataclass import
+        if "field(" in code:
+            # Find where to insert the field import
+            # It should go after "from dataclasses import dataclass" line
+            dataclass_import_pattern = r"from dataclasses import dataclass\n"
+            if re.search(dataclass_import_pattern, code):
+                code = re.sub(
+                    dataclass_import_pattern,
+                    "from dataclasses import dataclass\nfrom dataclasses import field\n",
+                    code,
+                    count=1
+                )
+            elif "from dataclasses import" not in code:
+                # If there's no dataclasses import yet, add field import after typing
+                code = code.replace(
+                    "from typing import Any\n",
+                    "from typing import Any\nfrom dataclasses import field\n"
+                )
 
         return code
 
@@ -1634,12 +1653,14 @@ def generate_common_file(output_path: Path) -> None:
         "\n"
         '"""Common utilities for BiDi command construction."""\n'
         "\n"
-        "from typing import Any, Dict, Generator\n"
+        "from __future__ import annotations\n"
+        "\n"
+        "from typing import Any\n"
         "\n"
         "\n"
         "def command_builder(\n"
-        "    method: str, params: Dict[str, Any]\n"
-        ") -> Generator[Dict[str, Any], Any, Any]:\n"
+        "    method: str, params: dict[str, Any]\n"
+        ") -> dict[str, Any]:\n"
         '    """Build a BiDi command generator.\n'
         "\n"
         "    Args:\n"
@@ -1726,7 +1747,7 @@ def generate_permissions_file(output_path: Path) -> None:
         "from __future__ import annotations\n"
         "\n"
         "from enum import Enum\n"
-        "from typing import Any, Optional, Union\n"
+        "from typing import Any\n"
         "\n"
         "from .common import command_builder\n"
         "\n"
@@ -1769,10 +1790,10 @@ def generate_permissions_file(output_path: Path) -> None:
         "\n"
         "    def set_permission(\n"
         "        self,\n"
-        "        descriptor: Union[PermissionDescriptor, str],\n"
-        "        state: Union[PermissionState, str],\n"
-        "        origin: Optional[str] = None,\n"
-        "        user_context: Optional[str] = None,\n"
+        "        descriptor: PermissionDescriptor | str,\n"
+        "        state: PermissionState | str,\n"
+        "        origin: str | None = None,\n"
+        "        user_context: str | None = None,\n"
         "    ) -> None:\n"
         '        """Set a permission for a given origin.\n'
         "\n"

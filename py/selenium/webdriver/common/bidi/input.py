@@ -362,7 +362,7 @@ class _EventManager:
 class Input:
     """WebDriver BiDi input module."""
 
-    EVENT_CONFIGS = {}
+    EVENT_CONFIGS: dict[str, EventConfig] = {}
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)

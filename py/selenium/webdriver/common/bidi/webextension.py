@@ -100,6 +100,7 @@ class WebExtension:
         elif archive_path is not None:
             extension_data = {"type": "archivePath", "path": archive_path}
         else:
+            assert base64_value is not None
             extension_data = {"type": "base64", "value": base64_value}
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
@@ -116,11 +117,13 @@ class WebExtension:
             ValueError: If extension is not provided or is None.
         """
         if isinstance(extension, dict):
-            extension = extension.get("extension")
+            extension_id: Any = extension.get("extension")
+        else:
+            extension_id = extension
 
-        if extension is None:
+        if extension_id is None:
             raise ValueError("extension parameter is required")
-
-        params = {"extension": extension}
+        
+        params = {"extension": extension_id}
         cmd = command_builder("webExtension.uninstall", params)
         return self._conn.execute(cmd)
