@@ -61,14 +61,6 @@ def validate_download_behavior(
         raise ValueError("destination_folder should not be provided when allowed=False")
 
 
-class ClientWindowNamedState:
-    """ClientWindowNamedState."""
-
-    FULLSCREEN = "fullscreen"
-    MAXIMIZED = "maximized"
-    MINIMIZED = "minimized"
-
-
 @dataclass
 class ClientWindowInfo:
     """ClientWindowInfo."""
@@ -212,7 +204,12 @@ class Browser:
         result = self._conn.execute(cmd)
         return result
 
-    def create_user_context(self, accept_insecure_certs: bool | None = None, proxy: Any | None = None, unhandled_prompt_behavior: Any | None = None):
+    def create_user_context(
+        self,
+        accept_insecure_certs: bool | None = None,
+        proxy: Any | None = None,
+        unhandled_prompt_behavior: Any | None = None,
+    ):
         """Execute browser.createUserContext."""
         if proxy and hasattr(proxy, 'to_bidi_dict'):
             proxy = proxy.to_bidi_dict()
@@ -276,43 +273,13 @@ class Browser:
     def remove_user_context(self, user_context: Any | None = None):
         """Execute browser.removeUserContext."""
         if user_context is None:
-            raise TypeError("remove_user_context() missing required argument: 'user_context'")
+            raise TypeError("remove_user_context() missing required argument: {{snake_param!r}}")
 
         params = {
             "userContext": user_context,
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browser.removeUserContext", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_client_window_state(self, client_window: Any | None = None):
-        """Execute browser.setClientWindowState."""
-        if client_window is None:
-            raise TypeError("set_client_window_state() missing required argument: 'client_window'")
-
-        params = {
-            "clientWindow": client_window,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("browser.setClientWindowState", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_download_behavior(self, allowed: bool | None = None, destination_folder: str | None = None, user_contexts: List[Any] | None = None):
-        """Execute browser.setDownloadBehavior."""
-
-        validate_download_behavior(allowed=allowed, destination_folder=destination_folder, user_contexts=user_contexts)
-
-        download_behavior = None
-        download_behavior = transform_download_params(allowed, destination_folder)
-
-        params = {
-            "downloadBehavior": download_behavior,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("browser.setDownloadBehavior", params)
         result = self._conn.execute(cmd)
         return result
 

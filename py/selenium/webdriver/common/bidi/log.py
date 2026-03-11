@@ -299,5 +299,9 @@ EntryAdded = Entry
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Log.EVENT_CONFIGS = {
-    "entry_added": (EventConfig("entry_added", "log.entryAdded", _globals.get("EntryAdded", dict)) if _globals.get("EntryAdded") else EventConfig("entry_added", "log.entryAdded", dict)),
+    "entry_added": EventConfig(
+        "entry_added",
+        "log.entryAdded",
+        _globals.get("EntryAdded", dict) if _globals.get("EntryAdded") else dict,
+    ),
 }

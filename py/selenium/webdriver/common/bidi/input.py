@@ -371,9 +371,9 @@ class Input:
     def perform_actions(self, context: Any | None = None, actions: List[Any] | None = None):
         """Execute input.performActions."""
         if context is None:
-            raise TypeError("perform_actions() missing required argument: 'context'")
+            raise TypeError("perform_actions() missing required argument: {{snake_param!r}}")
         if actions is None:
-            raise TypeError("perform_actions() missing required argument: 'actions'")
+            raise TypeError("perform_actions() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -387,7 +387,7 @@ class Input:
     def release_actions(self, context: Any | None = None):
         """Execute input.releaseActions."""
         if context is None:
-            raise TypeError("release_actions() missing required argument: 'context'")
+            raise TypeError("release_actions() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -400,11 +400,11 @@ class Input:
     def set_files(self, context: Any | None = None, element: Any | None = None, files: List[Any] | None = None):
         """Execute input.setFiles."""
         if context is None:
-            raise TypeError("set_files() missing required argument: 'context'")
+            raise TypeError("set_files() missing required argument: {{snake_param!r}}")
         if element is None:
-            raise TypeError("set_files() missing required argument: 'element'")
+            raise TypeError("set_files() missing required argument: {{snake_param!r}}")
         if files is None:
-            raise TypeError("set_files() missing required argument: 'files'")
+            raise TypeError("set_files() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -469,5 +469,9 @@ FileDialogOpened = globals().get('FileDialogInfo', dict)  # Fallback to dict if 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Input.EVENT_CONFIGS = {
-    "file_dialog_opened": (EventConfig("file_dialog_opened", "input.fileDialogOpened", _globals.get("FileDialogOpened", dict)) if _globals.get("FileDialogOpened") else EventConfig("file_dialog_opened", "input.fileDialogOpened", dict)),
+    "file_dialog_opened": EventConfig(
+        "file_dialog_opened",
+        "input.fileDialogOpened",
+        _globals.get("FileDialogOpened", dict) if _globals.get("FileDialogOpened") else dict,
+    ),
 }
