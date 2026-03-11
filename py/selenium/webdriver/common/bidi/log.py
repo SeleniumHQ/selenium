@@ -6,14 +6,11 @@
 # WebDriver BiDi module: log
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
 
 
@@ -60,7 +57,7 @@ class ConsoleLogEntry:
     stack_trace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "ConsoleLogEntry":
+    def from_json(cls, params: dict) -> ConsoleLogEntry:
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),
@@ -85,7 +82,7 @@ class JavascriptLogEntry:
     stacktrace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "JavascriptLogEntry":
+    def from_json(cls, params: dict) -> JavascriptLogEntry:
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),

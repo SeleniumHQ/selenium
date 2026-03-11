@@ -6,11 +6,10 @@
 # WebDriver BiDi module: browser
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 def transform_download_params(

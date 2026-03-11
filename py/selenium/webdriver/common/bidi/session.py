@@ -6,11 +6,10 @@
 # WebDriver BiDi module: session
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 class UserPromptHandlerType:
@@ -216,9 +215,9 @@ class Session:
 
     def subscribe(
         self,
-        events: List[Any] | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        events: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute session.subscribe."""
         if events is None:
@@ -234,7 +233,7 @@ class Session:
         result = self._conn.execute(cmd)
         return result
 
-    def unsubscribe(self, events: List[Any] | None = None, subscriptions: List[Any] | None = None):
+    def unsubscribe(self, events: list[Any] | None = None, subscriptions: list[Any] | None = None):
         """Execute session.unsubscribe."""
         params = {
             "events": events,

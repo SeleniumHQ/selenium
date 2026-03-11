@@ -6,11 +6,10 @@
 # WebDriver BiDi module: emulation
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any
+
 from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 
 
 class ForcedColorsModeTheme:
@@ -194,8 +193,8 @@ class Emulation:
     def set_forced_colors_mode_theme_override(
         self,
         theme: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setForcedColorsModeThemeOverride."""
         if theme is None:
@@ -214,8 +213,8 @@ class Emulation:
     def set_locale_override(
         self,
         locale: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setLocaleOverride."""
         if locale is None:
@@ -234,8 +233,8 @@ class Emulation:
     def set_screen_settings_override(
         self,
         screen_area: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScreenSettingsOverride."""
         if screen_area is None:
@@ -254,8 +253,8 @@ class Emulation:
     def set_viewport_meta_override(
         self,
         viewport_meta: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setViewportMetaOverride."""
         if viewport_meta is None:
@@ -274,8 +273,8 @@ class Emulation:
     def set_scrollbar_type_override(
         self,
         scrollbar_type: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute emulation.setScrollbarTypeOverride."""
         if scrollbar_type is None:
@@ -291,7 +290,7 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_touch_override(self, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_touch_override(self, contexts: list[Any] | None = None, user_contexts: list[Any] | None = None):
         """Execute emulation.setTouchOverride."""
         params = {
             "contexts": contexts,
