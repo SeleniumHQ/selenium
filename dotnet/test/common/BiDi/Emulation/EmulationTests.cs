@@ -132,6 +132,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverride()
     {
         Assert.That(async () =>
@@ -142,6 +145,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverrideToDefault()
     {
         Assert.That(async () =>
