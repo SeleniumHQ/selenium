@@ -108,7 +108,7 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
                 _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(data.Span)}");
             }
 
-            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
 #else
             if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray(data, out ArraySegment<byte> segment))
             {
@@ -120,7 +120,7 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
                 _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(segment.Array!, segment.Offset, segment.Count)}");
             }
 
-            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
 #endif
         }
         finally
