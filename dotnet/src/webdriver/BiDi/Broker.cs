@@ -244,6 +244,14 @@ internal sealed class Broker : IAsyncDisposable
                 }
 
                 break;
+
+            default:
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"The remote end responded with unknown message type. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                }
+
+                break;
         }
     }
 
