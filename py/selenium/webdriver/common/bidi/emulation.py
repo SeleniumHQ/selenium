@@ -193,6 +193,9 @@ class Emulation:
 
     def set_forced_colors_mode_theme_override(self, theme: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setForcedColorsModeThemeOverride."""
+        if theme is None:
+            raise TypeError("set_forced_colors_mode_theme_override() missing required argument: 'theme'")
+
         params = {
             "theme": theme,
             "contexts": contexts,
@@ -216,6 +219,9 @@ class Emulation:
 
     def set_locale_override(self, locale: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setLocaleOverride."""
+        if locale is None:
+            raise TypeError("set_locale_override() missing required argument: 'locale'")
+
         params = {
             "locale": locale,
             "contexts": contexts,
@@ -228,6 +234,9 @@ class Emulation:
 
     def set_network_conditions(self, network_conditions: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setNetworkConditions."""
+        if network_conditions is None:
+            raise TypeError("set_network_conditions() missing required argument: 'network_conditions'")
+
         params = {
             "networkConditions": network_conditions,
             "contexts": contexts,
@@ -240,6 +249,9 @@ class Emulation:
 
     def set_screen_settings_override(self, screen_area: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setScreenSettingsOverride."""
+        if screen_area is None:
+            raise TypeError("set_screen_settings_override() missing required argument: 'screen_area'")
+
         params = {
             "screenArea": screen_area,
             "contexts": contexts,
@@ -252,6 +264,9 @@ class Emulation:
 
     def set_screen_orientation_override(self, screen_orientation: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setScreenOrientationOverride."""
+        if screen_orientation is None:
+            raise TypeError("set_screen_orientation_override() missing required argument: 'screen_orientation'")
+
         params = {
             "screenOrientation": screen_orientation,
             "contexts": contexts,
@@ -264,6 +279,9 @@ class Emulation:
 
     def set_user_agent_override(self, user_agent: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setUserAgentOverride."""
+        if user_agent is None:
+            raise TypeError("set_user_agent_override() missing required argument: 'user_agent'")
+
         params = {
             "userAgent": user_agent,
             "contexts": contexts,
@@ -276,6 +294,9 @@ class Emulation:
 
     def set_viewport_meta_override(self, viewport_meta: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setViewportMetaOverride."""
+        if viewport_meta is None:
+            raise TypeError("set_viewport_meta_override() missing required argument: 'viewport_meta'")
+
         params = {
             "viewportMeta": viewport_meta,
             "contexts": contexts,
@@ -288,6 +309,9 @@ class Emulation:
 
     def set_scripting_enabled(self, enabled: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setScriptingEnabled."""
+        if enabled is None:
+            raise TypeError("set_scripting_enabled() missing required argument: 'enabled'")
+
         params = {
             "enabled": enabled,
             "contexts": contexts,
@@ -300,6 +324,9 @@ class Emulation:
 
     def set_scrollbar_type_override(self, scrollbar_type: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setScrollbarTypeOverride."""
+        if scrollbar_type is None:
+            raise TypeError("set_scrollbar_type_override() missing required argument: 'scrollbar_type'")
+
         params = {
             "scrollbarType": scrollbar_type,
             "contexts": contexts,
@@ -312,6 +339,9 @@ class Emulation:
 
     def set_timezone_override(self, timezone: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
         """Execute emulation.setTimezoneOverride."""
+        if timezone is None:
+            raise TypeError("set_timezone_override() missing required argument: 'timezone'")
+
         params = {
             "timezone": timezone,
             "contexts": contexts,

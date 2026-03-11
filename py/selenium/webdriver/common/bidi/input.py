@@ -370,6 +370,11 @@ class Input:
 
     def perform_actions(self, context: Any | None = None, actions: List[Any] | None = None):
         """Execute input.performActions."""
+        if context is None:
+            raise TypeError("perform_actions() missing required argument: 'context'")
+        if actions is None:
+            raise TypeError("perform_actions() missing required argument: 'actions'")
+
         params = {
             "context": context,
             "actions": actions,
@@ -381,6 +386,9 @@ class Input:
 
     def release_actions(self, context: Any | None = None):
         """Execute input.releaseActions."""
+        if context is None:
+            raise TypeError("release_actions() missing required argument: 'context'")
+
         params = {
             "context": context,
         }
@@ -391,6 +399,13 @@ class Input:
 
     def set_files(self, context: Any | None = None, element: Any | None = None, files: List[Any] | None = None):
         """Execute input.setFiles."""
+        if context is None:
+            raise TypeError("set_files() missing required argument: 'context'")
+        if element is None:
+            raise TypeError("set_files() missing required argument: 'element'")
+        if files is None:
+            raise TypeError("set_files() missing required argument: 'files'")
+
         params = {
             "context": context,
             "element": element,

@@ -275,6 +275,9 @@ class Browser:
 
     def remove_user_context(self, user_context: Any | None = None):
         """Execute browser.removeUserContext."""
+        if user_context is None:
+            raise TypeError("remove_user_context() missing required argument: 'user_context'")
+
         params = {
             "userContext": user_context,
         }
@@ -285,6 +288,9 @@ class Browser:
 
     def set_client_window_state(self, client_window: Any | None = None):
         """Execute browser.setClientWindowState."""
+        if client_window is None:
+            raise TypeError("set_client_window_state() missing required argument: 'client_window'")
+
         params = {
             "clientWindow": client_window,
         }
@@ -295,6 +301,7 @@ class Browser:
 
     def set_download_behavior(self, allowed: bool | None = None, destination_folder: str | None = None, user_contexts: List[Any] | None = None):
         """Execute browser.setDownloadBehavior."""
+
         validate_download_behavior(allowed=allowed, destination_folder=destination_folder, user_contexts=user_contexts)
 
         download_behavior = None
@@ -368,7 +375,7 @@ class Browser:
         if hasattr(state, '__dataclass_fields__'):
             # It's a dataclass, convert to dict
             state_param = {
-                k: v for k, v in state.__dict__.items() 
+                k: v for k, v in state.__dict__.items()
                 if v is not None
             }
 

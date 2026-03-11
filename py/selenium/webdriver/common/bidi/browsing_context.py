@@ -622,6 +622,9 @@ class BrowsingContext:
 
     def activate(self, context: Any | None = None):
         """Execute browsingContext.activate."""
+        if context is None:
+            raise TypeError("activate() missing required argument: 'context'")
+
         params = {
             "context": context,
         }
@@ -632,6 +635,9 @@ class BrowsingContext:
 
     def capture_screenshot(self, context: str | None = None, format: Any | None = None, clip: Any | None = None, origin: str | None = None):
         """Execute browsingContext.captureScreenshot."""
+        if context is None:
+            raise TypeError("capture_screenshot() missing required argument: 'context'")
+
         params = {
             "context": context,
             "format": format,
@@ -648,6 +654,9 @@ class BrowsingContext:
 
     def close(self, context: Any | None = None, prompt_unload: bool | None = None):
         """Execute browsingContext.close."""
+        if context is None:
+            raise TypeError("close() missing required argument: 'context'")
+
         params = {
             "context": context,
             "promptUnload": prompt_unload,
@@ -659,6 +668,9 @@ class BrowsingContext:
 
     def create(self, type: Any | None = None, reference_context: Any | None = None, background: bool | None = None, user_context: Any | None = None):
         """Execute browsingContext.create."""
+        if type is None:
+            raise TypeError("create() missing required argument: 'type'")
+
         params = {
             "type": type,
             "referenceContext": reference_context,
@@ -701,6 +713,9 @@ class BrowsingContext:
 
     def handle_user_prompt(self, context: Any | None = None, accept: bool | None = None, user_text: Any | None = None):
         """Execute browsingContext.handleUserPrompt."""
+        if context is None:
+            raise TypeError("handle_user_prompt() missing required argument: 'context'")
+
         params = {
             "context": context,
             "accept": accept,
@@ -713,6 +728,11 @@ class BrowsingContext:
 
     def locate_nodes(self, context: str | None = None, locator: Any | None = None, serialization_options: Any | None = None, start_nodes: Any | None = None, max_node_count: int | None = None):
         """Execute browsingContext.locateNodes."""
+        if context is None:
+            raise TypeError("locate_nodes() missing required argument: 'context'")
+        if locator is None:
+            raise TypeError("locate_nodes() missing required argument: 'locator'")
+
         params = {
             "context": context,
             "locator": locator,
@@ -730,6 +750,11 @@ class BrowsingContext:
 
     def navigate(self, context: Any | None = None, url: Any | None = None, wait: Any | None = None):
         """Execute browsingContext.navigate."""
+        if context is None:
+            raise TypeError("navigate() missing required argument: 'context'")
+        if url is None:
+            raise TypeError("navigate() missing required argument: 'url'")
+
         params = {
             "context": context,
             "url": url,
@@ -742,6 +767,9 @@ class BrowsingContext:
 
     def print(self, context: Any | None = None, background: bool | None = None, margin: Any | None = None, page: Any | None = None, scale: Any | None = None, shrink_to_fit: bool | None = None):
         """Execute browsingContext.print."""
+        if context is None:
+            raise TypeError("print() missing required argument: 'context'")
+
         params = {
             "context": context,
             "background": background,
@@ -760,6 +788,9 @@ class BrowsingContext:
 
     def reload(self, context: Any | None = None, ignore_cache: bool | None = None, wait: Any | None = None):
         """Execute browsingContext.reload."""
+        if context is None:
+            raise TypeError("reload() missing required argument: 'context'")
+
         params = {
             "context": context,
             "ignoreCache": ignore_cache,
@@ -785,6 +816,11 @@ class BrowsingContext:
 
     def traverse_history(self, context: Any | None = None, delta: Any | None = None):
         """Execute browsingContext.traverseHistory."""
+        if context is None:
+            raise TypeError("traverse_history() missing required argument: 'context'")
+        if delta is None:
+            raise TypeError("traverse_history() missing required argument: 'delta'")
+
         params = {
             "context": context,
             "delta": delta,

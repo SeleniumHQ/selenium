@@ -248,6 +248,9 @@ class Storage:
 
     def set_cookie(self, cookie: Any | None = None, partition: Any | None = None):
         """Execute storage.setCookie."""
+        if cookie is None:
+            raise TypeError("set_cookie() missing required argument: 'cookie'")
+
         params = {
             "cookie": cookie,
             "partition": partition,
