@@ -37,6 +37,7 @@ public static class WebDriverExtensions
         var bidi = await BiDi.ConnectAsync(options =>
         {
             options.UseWebSocket(webSocketUrl);
+            configure?.Invoke(options);
         }, cancellationToken).ConfigureAwait(false);
 
         return bidi;
