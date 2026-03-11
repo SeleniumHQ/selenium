@@ -81,8 +81,7 @@ module Selenium
           expect(driver.execute_script('return window.devicePixelRatio')).to eq(2.0)
         end
 
-        context 'user prompts', except: {browser: %i[edge chrome],
-                                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+        context 'with user prompts' do
           before do
             reset_driver!(unhandled_prompt_behavior: :ignore)
           end
