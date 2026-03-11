@@ -783,10 +783,17 @@ class Script:
         self._driver = driver
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    def add_preload_script(self, function_declaration: Any | None = None, arguments: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None, sandbox: Any | None = None):
+    def add_preload_script(
+        self,
+        function_declaration: Any | None = None,
+        arguments: List[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+        sandbox: Any | None = None,
+    ):
         """Execute script.addPreloadScript."""
         if function_declaration is None:
-            raise TypeError("add_preload_script() missing required argument: 'function_declaration'")
+            raise TypeError("add_preload_script() missing required argument: {{snake_param!r}}")
 
         params = {
             "functionDeclaration": function_declaration,
@@ -803,9 +810,9 @@ class Script:
     def disown(self, handles: List[Any] | None = None, target: Any | None = None):
         """Execute script.disown."""
         if handles is None:
-            raise TypeError("disown() missing required argument: 'handles'")
+            raise TypeError("disown() missing required argument: {{snake_param!r}}")
         if target is None:
-            raise TypeError("disown() missing required argument: 'target'")
+            raise TypeError("disown() missing required argument: {{snake_param!r}}")
 
         params = {
             "handles": handles,
@@ -816,14 +823,24 @@ class Script:
         result = self._conn.execute(cmd)
         return result
 
-    def call_function(self, function_declaration: Any | None = None, await_promise: bool | None = None, target: Any | None = None, arguments: List[Any] | None = None, result_ownership: Any | None = None, serialization_options: Any | None = None, this: Any | None = None, user_activation: bool | None = None):
+    def call_function(
+        self,
+        function_declaration: Any | None = None,
+        await_promise: bool | None = None,
+        target: Any | None = None,
+        arguments: List[Any] | None = None,
+        result_ownership: Any | None = None,
+        serialization_options: Any | None = None,
+        this: Any | None = None,
+        user_activation: bool | None = None,
+    ):
         """Execute script.callFunction."""
         if function_declaration is None:
-            raise TypeError("call_function() missing required argument: 'function_declaration'")
+            raise TypeError("call_function() missing required argument: {{snake_param!r}}")
         if await_promise is None:
-            raise TypeError("call_function() missing required argument: 'await_promise'")
+            raise TypeError("call_function() missing required argument: {{snake_param!r}}")
         if target is None:
-            raise TypeError("call_function() missing required argument: 'target'")
+            raise TypeError("call_function() missing required argument: {{snake_param!r}}")
 
         params = {
             "functionDeclaration": function_declaration,
@@ -840,14 +857,22 @@ class Script:
         result = self._conn.execute(cmd)
         return result
 
-    def evaluate(self, expression: Any | None = None, target: Any | None = None, await_promise: bool | None = None, result_ownership: Any | None = None, serialization_options: Any | None = None, user_activation: bool | None = None):
+    def evaluate(
+        self,
+        expression: Any | None = None,
+        target: Any | None = None,
+        await_promise: bool | None = None,
+        result_ownership: Any | None = None,
+        serialization_options: Any | None = None,
+        user_activation: bool | None = None,
+    ):
         """Execute script.evaluate."""
         if expression is None:
-            raise TypeError("evaluate() missing required argument: 'expression'")
+            raise TypeError("evaluate() missing required argument: {{snake_param!r}}")
         if target is None:
-            raise TypeError("evaluate() missing required argument: 'target'")
+            raise TypeError("evaluate() missing required argument: {{snake_param!r}}")
         if await_promise is None:
-            raise TypeError("evaluate() missing required argument: 'await_promise'")
+            raise TypeError("evaluate() missing required argument: {{snake_param!r}}")
 
         params = {
             "expression": expression,
@@ -876,7 +901,7 @@ class Script:
     def remove_preload_script(self, script: Any | None = None):
         """Execute script.removePreloadScript."""
         if script is None:
-            raise TypeError("remove_preload_script() missing required argument: 'script'")
+            raise TypeError("remove_preload_script() missing required argument: {{snake_param!r}}")
 
         params = {
             "script": script,
@@ -889,11 +914,11 @@ class Script:
     def message(self, channel: Any | None = None, data: Any | None = None, source: Any | None = None):
         """Execute script.message."""
         if channel is None:
-            raise TypeError("message() missing required argument: 'channel'")
+            raise TypeError("message() missing required argument: {{snake_param!r}}")
         if data is None:
-            raise TypeError("message() missing required argument: 'data'")
+            raise TypeError("message() missing required argument: {{snake_param!r}}")
         if source is None:
-            raise TypeError("message() missing required argument: 'source'")
+            raise TypeError("message() missing required argument: {{snake_param!r}}")
 
         params = {
             "channel": channel,
@@ -1314,6 +1339,14 @@ RealmDestroyed = globals().get('RealmDestroyedParameters', dict)  # Fallback to 
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 Script.EVENT_CONFIGS = {
-    "realm_created": (EventConfig("realm_created", "script.realmCreated", _globals.get("RealmCreated", dict)) if _globals.get("RealmCreated") else EventConfig("realm_created", "script.realmCreated", dict)),
-    "realm_destroyed": (EventConfig("realm_destroyed", "script.realmDestroyed", _globals.get("RealmDestroyed", dict)) if _globals.get("RealmDestroyed") else EventConfig("realm_destroyed", "script.realmDestroyed", dict)),
+    "realm_created": EventConfig(
+        "realm_created",
+        "script.realmCreated",
+        _globals.get("RealmCreated", dict) if _globals.get("RealmCreated") else dict,
+    ),
+    "realm_destroyed": EventConfig(
+        "realm_destroyed",
+        "script.realmDestroyed",
+        _globals.get("RealmDestroyed", dict) if _globals.get("RealmDestroyed") else dict,
+    ),
 }

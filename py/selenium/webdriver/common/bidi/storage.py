@@ -235,42 +235,6 @@ class Storage:
     def __init__(self, conn) -> None:
         self._conn = conn
 
-    def get_cookies(self, filter: Any | None = None, partition: Any | None = None):
-        """Execute storage.getCookies."""
-        params = {
-            "filter": filter,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.getCookies", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_cookie(self, cookie: Any | None = None, partition: Any | None = None):
-        """Execute storage.setCookie."""
-        if cookie is None:
-            raise TypeError("set_cookie() missing required argument: 'cookie'")
-
-        params = {
-            "cookie": cookie,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.setCookie", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def delete_cookies(self, filter: Any | None = None, partition: Any | None = None):
-        """Execute storage.deleteCookies."""
-        params = {
-            "filter": filter,
-            "partition": partition,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("storage.deleteCookies", params)
-        result = self._conn.execute(cmd)
-        return result
-
     def get_cookies(self, filter=None, partition=None):
         """Execute storage.getCookies and return a GetCookiesResult."""
         if filter and hasattr(filter, "to_bidi_dict"):

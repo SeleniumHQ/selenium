@@ -329,20 +329,6 @@ class HistoryUpdatedParameters:
 
 
 @dataclass
-class DownloadWillBeginParams:
-    """DownloadWillBeginParams."""
-
-    suggested_filename: str | None = None
-
-
-@dataclass
-class DownloadCanceledParams:
-    """DownloadCanceledParams."""
-
-    status: str = field(default="canceled", init=False)
-
-
-@dataclass
 class UserPromptClosedParameters:
     """UserPromptClosedParameters."""
 
@@ -421,8 +407,6 @@ EVENT_NAME_MAPPING = {
     "navigation_failed": "browsingContext.navigationFailed",
     "user_prompt_closed": "browsingContext.userPromptClosed",
     "user_prompt_opened": "browsingContext.userPromptOpened",
-    "download_will_begin": "browsingContext.downloadWillBegin",
-    "download_end": "browsingContext.downloadEnd",
 }
 
 def _deserialize_info_list(items: list) -> list | None:
@@ -623,7 +607,7 @@ class BrowsingContext:
     def activate(self, context: Any | None = None):
         """Execute browsingContext.activate."""
         if context is None:
-            raise TypeError("activate() missing required argument: 'context'")
+            raise TypeError("activate() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -633,10 +617,16 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def capture_screenshot(self, context: str | None = None, format: Any | None = None, clip: Any | None = None, origin: str | None = None):
+    def capture_screenshot(
+        self,
+        context: str | None = None,
+        format: Any | None = None,
+        clip: Any | None = None,
+        origin: str | None = None,
+    ):
         """Execute browsingContext.captureScreenshot."""
         if context is None:
-            raise TypeError("capture_screenshot() missing required argument: 'context'")
+            raise TypeError("capture_screenshot() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -655,7 +645,7 @@ class BrowsingContext:
     def close(self, context: Any | None = None, prompt_unload: bool | None = None):
         """Execute browsingContext.close."""
         if context is None:
-            raise TypeError("close() missing required argument: 'context'")
+            raise TypeError("close() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -666,10 +656,16 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def create(self, type: Any | None = None, reference_context: Any | None = None, background: bool | None = None, user_context: Any | None = None):
+    def create(
+        self,
+        type: Any | None = None,
+        reference_context: Any | None = None,
+        background: bool | None = None,
+        user_context: Any | None = None,
+    ):
         """Execute browsingContext.create."""
         if type is None:
-            raise TypeError("create() missing required argument: 'type'")
+            raise TypeError("create() missing required argument: {{snake_param!r}}")
 
         params = {
             "type": type,
@@ -714,7 +710,7 @@ class BrowsingContext:
     def handle_user_prompt(self, context: Any | None = None, accept: bool | None = None, user_text: Any | None = None):
         """Execute browsingContext.handleUserPrompt."""
         if context is None:
-            raise TypeError("handle_user_prompt() missing required argument: 'context'")
+            raise TypeError("handle_user_prompt() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -726,12 +722,19 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def locate_nodes(self, context: str | None = None, locator: Any | None = None, serialization_options: Any | None = None, start_nodes: Any | None = None, max_node_count: int | None = None):
+    def locate_nodes(
+        self,
+        context: str | None = None,
+        locator: Any | None = None,
+        serialization_options: Any | None = None,
+        start_nodes: Any | None = None,
+        max_node_count: int | None = None,
+    ):
         """Execute browsingContext.locateNodes."""
         if context is None:
-            raise TypeError("locate_nodes() missing required argument: 'context'")
+            raise TypeError("locate_nodes() missing required argument: {{snake_param!r}}")
         if locator is None:
-            raise TypeError("locate_nodes() missing required argument: 'locator'")
+            raise TypeError("locate_nodes() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -751,9 +754,9 @@ class BrowsingContext:
     def navigate(self, context: Any | None = None, url: Any | None = None, wait: Any | None = None):
         """Execute browsingContext.navigate."""
         if context is None:
-            raise TypeError("navigate() missing required argument: 'context'")
+            raise TypeError("navigate() missing required argument: {{snake_param!r}}")
         if url is None:
-            raise TypeError("navigate() missing required argument: 'url'")
+            raise TypeError("navigate() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -765,10 +768,18 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def print(self, context: Any | None = None, background: bool | None = None, margin: Any | None = None, page: Any | None = None, scale: Any | None = None, shrink_to_fit: bool | None = None):
+    def print(
+        self,
+        context: Any | None = None,
+        background: bool | None = None,
+        margin: Any | None = None,
+        page: Any | None = None,
+        scale: Any | None = None,
+        shrink_to_fit: bool | None = None,
+    ):
         """Execute browsingContext.print."""
         if context is None:
-            raise TypeError("print() missing required argument: 'context'")
+            raise TypeError("print() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -789,7 +800,7 @@ class BrowsingContext:
     def reload(self, context: Any | None = None, ignore_cache: bool | None = None, wait: Any | None = None):
         """Execute browsingContext.reload."""
         if context is None:
-            raise TypeError("reload() missing required argument: 'context'")
+            raise TypeError("reload() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -801,7 +812,13 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def set_viewport(self, context: str | None = None, viewport: Any | None = None, user_contexts: Any | None = None, device_pixel_ratio: Any | None = None):
+    def set_viewport(
+        self,
+        context: str | None = None,
+        viewport: Any | None = None,
+        user_contexts: Any | None = None,
+        device_pixel_ratio: Any | None = None,
+    ):
         """Execute browsingContext.setViewport."""
         params = {
             "context": context,
@@ -817,9 +834,9 @@ class BrowsingContext:
     def traverse_history(self, context: Any | None = None, delta: Any | None = None):
         """Execute browsingContext.traverseHistory."""
         if context is None:
-            raise TypeError("traverse_history() missing required argument: 'context'")
+            raise TypeError("traverse_history() missing required argument: {{snake_param!r}}")
         if delta is None:
-            raise TypeError("traverse_history() missing required argument: 'delta'")
+            raise TypeError("traverse_history() missing required argument: {{snake_param!r}}")
 
         params = {
             "context": context,
@@ -904,20 +921,70 @@ UserPromptOpened = globals().get('UserPromptOpenedParameters', dict)  # Fallback
 # Populate EVENT_CONFIGS with event configuration mappings
 _globals = globals()
 BrowsingContext.EVENT_CONFIGS = {
-    "context_created": (EventConfig("context_created", "browsingContext.contextCreated", _globals.get("ContextCreated", dict)) if _globals.get("ContextCreated") else EventConfig("context_created", "browsingContext.contextCreated", dict)),
-    "context_destroyed": (EventConfig("context_destroyed", "browsingContext.contextDestroyed", _globals.get("ContextDestroyed", dict)) if _globals.get("ContextDestroyed") else EventConfig("context_destroyed", "browsingContext.contextDestroyed", dict)),
-    "navigation_started": (EventConfig("navigation_started", "browsingContext.navigationStarted", _globals.get("NavigationStarted", dict)) if _globals.get("NavigationStarted") else EventConfig("navigation_started", "browsingContext.navigationStarted", dict)),
-    "fragment_navigated": (EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", _globals.get("FragmentNavigated", dict)) if _globals.get("FragmentNavigated") else EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", dict)),
-    "history_updated": (EventConfig("history_updated", "browsingContext.historyUpdated", _globals.get("HistoryUpdated", dict)) if _globals.get("HistoryUpdated") else EventConfig("history_updated", "browsingContext.historyUpdated", dict)),
-    "dom_content_loaded": (EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", _globals.get("DomContentLoaded", dict)) if _globals.get("DomContentLoaded") else EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", dict)),
-    "load": (EventConfig("load", "browsingContext.load", _globals.get("Load", dict)) if _globals.get("Load") else EventConfig("load", "browsingContext.load", dict)),
-    "download_will_begin": (EventConfig("download_will_begin", "browsingContext.downloadWillBegin", _globals.get("DownloadWillBegin", dict)) if _globals.get("DownloadWillBegin") else EventConfig("download_will_begin", "browsingContext.downloadWillBegin", dict)),
-    "download_end": (EventConfig("download_end", "browsingContext.downloadEnd", _globals.get("DownloadEnd", dict)) if _globals.get("DownloadEnd") else EventConfig("download_end", "browsingContext.downloadEnd", dict)),
-    "navigation_aborted": (EventConfig("navigation_aborted", "browsingContext.navigationAborted", _globals.get("NavigationAborted", dict)) if _globals.get("NavigationAborted") else EventConfig("navigation_aborted", "browsingContext.navigationAborted", dict)),
-    "navigation_committed": (EventConfig("navigation_committed", "browsingContext.navigationCommitted", _globals.get("NavigationCommitted", dict)) if _globals.get("NavigationCommitted") else EventConfig("navigation_committed", "browsingContext.navigationCommitted", dict)),
-    "navigation_failed": (EventConfig("navigation_failed", "browsingContext.navigationFailed", _globals.get("NavigationFailed", dict)) if _globals.get("NavigationFailed") else EventConfig("navigation_failed", "browsingContext.navigationFailed", dict)),
-    "user_prompt_closed": (EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", _globals.get("UserPromptClosed", dict)) if _globals.get("UserPromptClosed") else EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", dict)),
-    "user_prompt_opened": (EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", _globals.get("UserPromptOpened", dict)) if _globals.get("UserPromptOpened") else EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", dict)),
-    "download_will_begin": EventConfig("download_will_begin", "browsingContext.downloadWillBegin", _globals.get("DownloadWillBeginParams", dict)),
-    "download_end": EventConfig("download_end", "browsingContext.downloadEnd", _globals.get("DownloadEndParams", dict)),
+    "context_created": EventConfig(
+        "context_created",
+        "browsingContext.contextCreated",
+        _globals.get("ContextCreated", dict) if _globals.get("ContextCreated") else dict,
+    ),
+    "context_destroyed": EventConfig(
+        "context_destroyed",
+        "browsingContext.contextDestroyed",
+        _globals.get("ContextDestroyed", dict) if _globals.get("ContextDestroyed") else dict,
+    ),
+    "navigation_started": EventConfig(
+        "navigation_started",
+        "browsingContext.navigationStarted",
+        _globals.get("NavigationStarted", dict) if _globals.get("NavigationStarted") else dict,
+    ),
+    "fragment_navigated": EventConfig(
+        "fragment_navigated",
+        "browsingContext.fragmentNavigated",
+        _globals.get("FragmentNavigated", dict) if _globals.get("FragmentNavigated") else dict,
+    ),
+    "history_updated": EventConfig(
+        "history_updated",
+        "browsingContext.historyUpdated",
+        _globals.get("HistoryUpdated", dict) if _globals.get("HistoryUpdated") else dict,
+    ),
+    "dom_content_loaded": EventConfig(
+        "dom_content_loaded",
+        "browsingContext.domContentLoaded",
+        _globals.get("DomContentLoaded", dict) if _globals.get("DomContentLoaded") else dict,
+    ),
+    "load": EventConfig("load", "browsingContext.load", _globals.get("Load", dict) if _globals.get("Load") else dict),
+    "download_will_begin": EventConfig(
+        "download_will_begin",
+        "browsingContext.downloadWillBegin",
+        _globals.get("DownloadWillBegin", dict) if _globals.get("DownloadWillBegin") else dict,
+    ),
+    "download_end": EventConfig(
+        "download_end",
+        "browsingContext.downloadEnd",
+        _globals.get("DownloadEnd", dict) if _globals.get("DownloadEnd") else dict,
+    ),
+    "navigation_aborted": EventConfig(
+        "navigation_aborted",
+        "browsingContext.navigationAborted",
+        _globals.get("NavigationAborted", dict) if _globals.get("NavigationAborted") else dict,
+    ),
+    "navigation_committed": EventConfig(
+        "navigation_committed",
+        "browsingContext.navigationCommitted",
+        _globals.get("NavigationCommitted", dict) if _globals.get("NavigationCommitted") else dict,
+    ),
+    "navigation_failed": EventConfig(
+        "navigation_failed",
+        "browsingContext.navigationFailed",
+        _globals.get("NavigationFailed", dict) if _globals.get("NavigationFailed") else dict,
+    ),
+    "user_prompt_closed": EventConfig(
+        "user_prompt_closed",
+        "browsingContext.userPromptClosed",
+        _globals.get("UserPromptClosed", dict) if _globals.get("UserPromptClosed") else dict,
+    ),
+    "user_prompt_opened": EventConfig(
+        "user_prompt_opened",
+        "browsingContext.userPromptOpened",
+        _globals.get("UserPromptOpened", dict) if _globals.get("UserPromptOpened") else dict,
+    ),
 }

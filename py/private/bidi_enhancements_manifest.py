@@ -252,19 +252,7 @@ class DownloadEndParams:
         )
         return cls(download_params=dp)''',
         ],
-        # Non-CDDL download events (Chromium-specific, not in the BiDi spec)
-        "extra_events": [
-            {
-                "event_key": "download_will_begin",
-                "bidi_event": "browsingContext.downloadWillBegin",
-                "event_class": "DownloadWillBeginParams",
-            },
-            {
-                "event_key": "download_end",
-                "bidi_event": "browsingContext.downloadEnd",
-                "event_class": "DownloadEndParams",
-            },
-        ],
+        # Download events are now in the CDDL spec, so no extra_events needed
     },
     "log": {
         # Make LogLevel an alias for Level so existing code using LogLevel works

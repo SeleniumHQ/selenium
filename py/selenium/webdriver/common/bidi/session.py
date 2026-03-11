@@ -195,7 +195,7 @@ class Session:
     def new(self, capabilities: Any | None = None):
         """Execute session.new."""
         if capabilities is None:
-            raise TypeError("new() missing required argument: 'capabilities'")
+            raise TypeError("new() missing required argument: {{snake_param!r}}")
 
         params = {
             "capabilities": capabilities,
@@ -214,10 +214,15 @@ class Session:
         result = self._conn.execute(cmd)
         return result
 
-    def subscribe(self, events: List[Any] | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def subscribe(
+        self,
+        events: List[Any] | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute session.subscribe."""
         if events is None:
-            raise TypeError("subscribe() missing required argument: 'events'")
+            raise TypeError("subscribe() missing required argument: {{snake_param!r}}")
 
         params = {
             "events": events,

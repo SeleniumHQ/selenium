@@ -191,10 +191,15 @@ class Emulation:
     def __init__(self, conn) -> None:
         self._conn = conn
 
-    def set_forced_colors_mode_theme_override(self, theme: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_forced_colors_mode_theme_override(
+        self,
+        theme: Any | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute emulation.setForcedColorsModeThemeOverride."""
         if theme is None:
-            raise TypeError("set_forced_colors_mode_theme_override() missing required argument: 'theme'")
+            raise TypeError("set_forced_colors_mode_theme_override() missing required argument: {{snake_param!r}}")
 
         params = {
             "theme": theme,
@@ -206,21 +211,15 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_geolocation_override(self, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setGeolocationOverride."""
-        params = {
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setGeolocationOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_locale_override(self, locale: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_locale_override(
+        self,
+        locale: Any | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute emulation.setLocaleOverride."""
         if locale is None:
-            raise TypeError("set_locale_override() missing required argument: 'locale'")
+            raise TypeError("set_locale_override() missing required argument: {{snake_param!r}}")
 
         params = {
             "locale": locale,
@@ -232,25 +231,15 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_network_conditions(self, network_conditions: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setNetworkConditions."""
-        if network_conditions is None:
-            raise TypeError("set_network_conditions() missing required argument: 'network_conditions'")
-
-        params = {
-            "networkConditions": network_conditions,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setNetworkConditions", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_screen_settings_override(self, screen_area: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_screen_settings_override(
+        self,
+        screen_area: Any | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute emulation.setScreenSettingsOverride."""
         if screen_area is None:
-            raise TypeError("set_screen_settings_override() missing required argument: 'screen_area'")
+            raise TypeError("set_screen_settings_override() missing required argument: {{snake_param!r}}")
 
         params = {
             "screenArea": screen_area,
@@ -262,40 +251,15 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_screen_orientation_override(self, screen_orientation: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setScreenOrientationOverride."""
-        if screen_orientation is None:
-            raise TypeError("set_screen_orientation_override() missing required argument: 'screen_orientation'")
-
-        params = {
-            "screenOrientation": screen_orientation,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setScreenOrientationOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_user_agent_override(self, user_agent: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setUserAgentOverride."""
-        if user_agent is None:
-            raise TypeError("set_user_agent_override() missing required argument: 'user_agent'")
-
-        params = {
-            "userAgent": user_agent,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setUserAgentOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_viewport_meta_override(self, viewport_meta: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_viewport_meta_override(
+        self,
+        viewport_meta: Any | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute emulation.setViewportMetaOverride."""
         if viewport_meta is None:
-            raise TypeError("set_viewport_meta_override() missing required argument: 'viewport_meta'")
+            raise TypeError("set_viewport_meta_override() missing required argument: {{snake_param!r}}")
 
         params = {
             "viewportMeta": viewport_meta,
@@ -307,25 +271,15 @@ class Emulation:
         result = self._conn.execute(cmd)
         return result
 
-    def set_scripting_enabled(self, enabled: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setScriptingEnabled."""
-        if enabled is None:
-            raise TypeError("set_scripting_enabled() missing required argument: 'enabled'")
-
-        params = {
-            "enabled": enabled,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setScriptingEnabled", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_scrollbar_type_override(self, scrollbar_type: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
+    def set_scrollbar_type_override(
+        self,
+        scrollbar_type: Any | None = None,
+        contexts: List[Any] | None = None,
+        user_contexts: List[Any] | None = None,
+    ):
         """Execute emulation.setScrollbarTypeOverride."""
         if scrollbar_type is None:
-            raise TypeError("set_scrollbar_type_override() missing required argument: 'scrollbar_type'")
+            raise TypeError("set_scrollbar_type_override() missing required argument: {{snake_param!r}}")
 
         params = {
             "scrollbarType": scrollbar_type,
@@ -334,21 +288,6 @@ class Emulation:
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("emulation.setScrollbarTypeOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_timezone_override(self, timezone: Any | None = None, contexts: List[Any] | None = None, user_contexts: List[Any] | None = None):
-        """Execute emulation.setTimezoneOverride."""
-        if timezone is None:
-            raise TypeError("set_timezone_override() missing required argument: 'timezone'")
-
-        params = {
-            "timezone": timezone,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setTimezoneOverride", params)
         result = self._conn.execute(cmd)
         return result
 

@@ -170,22 +170,34 @@ class CddlCommand:
             param_strs.append(f"{snake_param}: {python_type} | None = None")
 
         if param_strs:
-            param_list = "self, " + ", ".join(param_strs)
+            # Check if full signature would exceed line length limit (120 chars)
+            single_line_signature = f"    def {method_name}(self, {', '.join(param_strs)}):"
+            if len(single_line_signature) > 120:
+                # Format parameters on multiple lines
+                body = f"    def {method_name}(\n"
+                body += "        self,\n"
+                for i, param_str in enumerate(param_strs):
+                    if i < len(param_strs) - 1:
+                        body += f"        {param_str},\n"
+                    else:
+                        body += f"        {param_str},\n"
+                body += "    ):\n"
+            else:
+                param_list = "self, " + ", ".join(param_strs)
+                body = f"    def {method_name}({param_list}):\n"
         else:
-            param_list = "self"
-
-        # Build method body
-        body = f"    def {method_name}({param_list}):\n"
+            body = f"    def {method_name}(self):\n"
         body += f'        """{self.description or "Execute " + self.module + "." + self.name}."""\n'
 
         # Add automatic validation for required parameters
         # (This is used unless there's no required_params, in which case all params are optional)
         if self.required_params:
+            method_snake = self._camel_to_snake(self.name)
             for param_name, snake_param in param_names:
                 if param_name in self.required_params:
-                    method_snake = self._camel_to_snake(self.name)
                     body += f"        if {snake_param} is None:\n"
-                    body += f'            raise TypeError("{method_snake}() missing required argument: {snake_param!r}")\n'
+                    msg = f"{method_snake}() missing required argument:"
+                    body += f'            raise TypeError("{msg} {{{{snake_param!r}}}}")\n'
             body += "\n"
 
         # Add validation if specified in enhancements (for additional business logic validation)
@@ -247,7 +259,6 @@ class CddlCommand:
             if result_param == "download_behavior":
                 body += '            "downloadBehavior": download_behavior,\n'
                 # Add remaining parameters that weren't part of the transform
-                override_params = enhancements.get("params_override", {})
                 for cddl_param_name in self.params:
                     if cddl_param_name not in ["downloadBehavior"]:
                         snake_name = self._camel_to_snake(cddl_param_name)
@@ -667,8 +678,20 @@ class CddlModule:
 
 """
 
-        # Generate enums first
+        # Generate enums first (excluding those in exclude_types)
+        exclude_types = set(enhancements.get("exclude_types", []))
+        
+        # Also exclude any types that have extra_dataclasses overrides
+        # Extract class names from extra_dataclasses strings
+        for extra_cls in enhancements.get("extra_dataclasses", []):
+            # Match "class ClassName:" pattern
+            match = re.search(r"class\s+(\w+)\s*:", extra_cls)
+            if match:
+                exclude_types.add(match.group(1))
+        
         for enum_def in self.enums:
+            if enum_def.name in exclude_types:
+                continue
             code += enum_def.to_python_class()
             code += "\n\n"
 
@@ -677,7 +700,6 @@ class CddlModule:
             code += f"{alias} = {target}\n\n"
 
         # Generate type dataclasses, skipping any overridden by extra_dataclasses
-        exclude_types = set(enhancements.get("exclude_types", []))
         for type_def in self.types:
             if type_def.name in exclude_types:
                 continue
@@ -946,6 +968,16 @@ class _EventManager:
 
         # Generate command methods
         exclude_methods = enhancements.get("exclude_methods", [])
+        
+        # Automatically exclude methods that are defined in extra_methods
+        # to prevent generating duplicates
+        if "extra_methods" in enhancements:
+            for extra_method in enhancements["extra_methods"]:
+                # Extract method name from "def method_name("
+                match = re.search(r"def\s+(\w+)\s*\(", extra_method)
+                if match:
+                    exclude_methods = list(exclude_methods) + [match.group(1)]
+        
         if self.commands:
             for command in self.commands:
                 # Get method-specific enhancements
@@ -1026,9 +1058,26 @@ class _EventManager:
                 method_parts = event_def.method.split(".")
                 if len(method_parts) == 2:
                     event_name = self._convert_method_to_event_name(method_parts[1])
-                    # The event class is the event name (e.g., ContextCreated)
-                    # Try to get it from globals, default to dict if not found
-                    code += f'    "{event_name}": (EventConfig("{event_name}", "{event_def.method}", _globals.get("{event_def.name}", dict)) if _globals.get("{event_def.name}") else EventConfig("{event_name}", "{event_def.method}", dict)),\n'
+                    # Try to get event class from globals, default to dict if not found
+                    getter = f'_globals.get("{event_def.name}", dict)'
+                    condition = f'_globals.get("{event_def.name}")'
+                    event_class = f'{getter} if {condition} else dict'
+                    
+                    # Build the entry line and check if it exceeds 120 chars
+                    single_line = (
+                        f'    "{event_name}": '
+                        f'EventConfig("{event_name}", "{event_def.method}", {event_class}),'
+                    )
+                    
+                    if len(single_line) > 120:
+                        # Break into multiple lines
+                        code += f'    "{event_name}": EventConfig(\n'
+                        code += f'        "{event_name}",\n'
+                        code += f'        "{event_def.method}",\n'
+                        code += f'        {event_class},\n'
+                        code += '    ),\n'
+                    else:
+                        code += single_line + '\n'
             # Extra events not in the CDDL spec
             for extra_evt in enhancements.get("extra_events", []):
                 ek = extra_evt["event_key"]
@@ -1126,9 +1175,6 @@ class CddlParser:
               ...
             )
         """
-        # Look for definitions like "BrowsingContextEvent", "SessionEvent", etc.
-        event_union_pattern = re.compile(r"(\w+\.)?(\w+)Event")
-
         for def_name, def_content in self.definitions.items():
             # Check if this looks like an event union (name ends with "Event") and
             # contains a module-qualified reference like "module.EventName".
@@ -1479,7 +1525,8 @@ class CddlParser:
                     if not is_optional:
                         required.add(param_name)
                     logger.debug(
-                        f"Extracted param {param_name}: {normalized_type} (required={not is_optional}) from {params_type}"
+                        f"Extracted param {param_name}: {normalized_type} "
+                        f"(required={not is_optional}) from {params_type}"
                     )
 
         return params, required
