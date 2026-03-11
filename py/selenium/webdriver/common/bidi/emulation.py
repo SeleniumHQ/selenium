@@ -320,7 +320,7 @@ class Emulation:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {}
+        params: dict[str, Any] = {}
         if coordinates is not None:
             if isinstance(coordinates, dict):
                 coords_dict = coordinates
@@ -372,7 +372,7 @@ class Emulation:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"timezone": timezone}
+        params: dict[str, Any] = {"timezone": timezone}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -396,7 +396,7 @@ class Emulation:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"enabled": enabled}
+        params: dict[str, Any] = {"enabled": enabled}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -419,7 +419,7 @@ class Emulation:
             contexts: List of browsing context IDs to target.
             user_contexts: List of user context IDs to target.
         """
-        params = {"userAgent": user_agent}
+        params: dict[str, Any] = {"userAgent": user_agent}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -455,7 +455,7 @@ class Emulation:
                 "natural": natural.lower() if isinstance(natural, str) else natural,
                 "type": orientation_type.lower() if isinstance(orientation_type, str) else orientation_type,
             }
-        params = {"screenOrientation": so_value}
+        params: dict[str, Any] = {"screenOrientation": so_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -488,7 +488,7 @@ class Emulation:
             nc_value = {"type": "offline"} if offline else None
         else:
             nc_value = network_conditions
-        params = {"networkConditions": nc_value}
+        params: dict[str, Any] = {"networkConditions": nc_value}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:

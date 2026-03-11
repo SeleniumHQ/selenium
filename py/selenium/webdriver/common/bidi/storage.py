@@ -76,7 +76,7 @@ class BytesValue:
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: str, value: str) -> None:
+    def __init__(self, type: Any | None, value: Any | None) -> None:
         self.type = type
         self.value = value
 
@@ -110,7 +110,7 @@ class StorageCookie:
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
-            value = BytesValue(value_raw.get("type"), value_raw.get("value"))
+            value: Any = BytesValue(value_raw.get("type"), value_raw.get("value"))
         else:
             value = value_raw
         return cls(

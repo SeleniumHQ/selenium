@@ -368,7 +368,7 @@ class BytesValue:
     TYPE_STRING = "string"
     TYPE_BASE64 = "base64"
 
-    def __init__(self, type: str, value: str) -> None:
+    def __init__(self, type: Any | None, value: Any | None) -> None:
         self.type = type
         self.value = value
 
@@ -555,12 +555,12 @@ class _EventManager:
 class Network:
     """WebDriver BiDi network module."""
 
-    EVENT_CONFIGS = {}
+    EVENT_CONFIGS: dict[str, EventConfig] = {}
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
-        self.intercepts = []
-        self._handler_intercepts: dict = {}
+        self.intercepts: list[Any] = []
+        self._handler_intercepts: dict[str, Any] = {}
 
     def add_data_collector(
         self,
