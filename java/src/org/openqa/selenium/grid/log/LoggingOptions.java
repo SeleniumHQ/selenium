@@ -30,6 +30,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.internal.Debug;
@@ -79,6 +80,7 @@ public class LoggingOptions {
     return config.getBool(LOGGING_SECTION, "plain-logs").orElse(DEFAULT_PLAIN_LOGS);
   }
 
+  @Nullable
   public String getLogEncoding() {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
@@ -169,7 +171,7 @@ public class LoggingOptions {
     }
   }
 
-  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+  private void configureLogEncoding(Logger logger, @Nullable String encoding, Handler handler) {
     String message;
     try {
       if (encoding != null) {

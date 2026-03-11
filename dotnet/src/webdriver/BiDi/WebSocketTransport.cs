@@ -96,18 +96,32 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
         }
     }
 
-    public async Task SendAsync(byte[] data, CancellationToken cancellationToken)
+    public async ValueTask SendAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
         await _socketSendSemaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {
+#if NET8_0_OR_GREATER
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(data)}");
+                _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(data.Span)}");
             }
 
-            await _webSocket.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+#else
+            if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray(data, out ArraySegment<byte> segment))
+            {
+                segment = new ArraySegment<byte>(data.ToArray());
+            }
+
+            if (_logger.IsEnabled(LogEventLevel.Trace))
+            {
+                _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(segment.Array!, segment.Offset, segment.Count)}");
+            }
+
+            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+#endif
         }
         finally
         {

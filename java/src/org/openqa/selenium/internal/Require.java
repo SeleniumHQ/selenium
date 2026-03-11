@@ -51,6 +51,7 @@ public final class Require {
   private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
   private static final String MUST_BE_BETWEEN = "%s must be between %s and %s (inclusive)";
   private static final String MUST_NOT_BE_EMPTY = "%s must not be empty";
+  private static final String MUST_NOT_BE_BLANK = "%s must not be blank";
 
   private Require() {
     // An utility class
@@ -198,6 +199,14 @@ public final class Require {
     nonNull(argName, arg);
     if (arg.isEmpty()) {
       throw new IllegalArgumentException(String.format(MUST_NOT_BE_EMPTY, argName));
+    }
+    return arg;
+  }
+
+  public static String nonBlank(String argName, @Nullable String arg) {
+    nonNull(argName, arg);
+    if (arg.trim().isEmpty()) {
+      throw new IllegalArgumentException(String.format(MUST_NOT_BE_BLANK, argName));
     }
     return arg;
   }

@@ -46,7 +46,7 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   @Nullable
   @Override
   public String getDialogType() {
-    return executeMethod.execute(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
+    return (String) executeMethod.execute(DriverCommand.GET_FEDCM_DIALOG_TYPE, null);
   }
 
   @Override
@@ -58,21 +58,20 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   @Nullable
   @Override
   public String getTitle() {
-    Map<String, String> result = executeMethod.executeRequired(DriverCommand.GET_FEDCM_TITLE, null);
+    Map<String, String> result = executeMethod.execute(DriverCommand.GET_FEDCM_TITLE);
     return result.get("title");
   }
 
   @Nullable
   @Override
   public String getSubtitle() {
-    Map<String, String> result = executeMethod.executeRequired(DriverCommand.GET_FEDCM_TITLE, null);
+    Map<String, String> result = executeMethod.execute(DriverCommand.GET_FEDCM_TITLE);
     return result.get("subtitle");
   }
 
   @Override
   public List<FederatedCredentialManagementAccount> getAccounts() {
-    List<Map<String, String>> accounts =
-        executeMethod.executeRequired(DriverCommand.GET_ACCOUNTS, null);
+    List<Map<String, String>> accounts = executeMethod.execute(DriverCommand.GET_ACCOUNTS);
 
     return accounts.stream()
         .map(map -> new FederatedCredentialManagementAccount(map))

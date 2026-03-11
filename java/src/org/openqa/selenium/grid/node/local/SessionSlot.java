@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -67,7 +68,7 @@ public class SessionSlot
   private final boolean supportingBiDi;
   private final AtomicLong connectionCounter;
   // volatile ensures memory visibility across threads when session is set after reservation
-  private volatile ActiveSession currentSession;
+  private volatile @Nullable ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
@@ -118,6 +119,7 @@ public class SessionSlot
     return !reserved.get();
   }
 
+  @Nullable
   public ActiveSession getSession() {
     if (isAvailable()) {
       throw new NoSuchSessionException("Session is not running");
@@ -143,7 +145,7 @@ public class SessionSlot
    * @param nodeUri the URI of the node where the session was running (may be null for backward
    *     compatibility)
    */
-  public void stop(SessionClosedReason reason, NodeId nodeId, URI nodeUri) {
+  public void stop(SessionClosedReason reason, @Nullable NodeId nodeId, @Nullable URI nodeUri) {
     if (isAvailable()) {
       return;
     }

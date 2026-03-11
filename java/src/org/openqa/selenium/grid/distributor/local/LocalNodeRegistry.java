@@ -46,6 +46,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.HealthCheckFailedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
@@ -519,7 +520,7 @@ public class LocalNodeRegistry implements NodeRegistry {
   }
 
   @Override
-  public void setSession(SlotId slotId, Session session) {
+  public void setSession(SlotId slotId, @Nullable Session session) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -565,6 +566,7 @@ public class LocalNodeRegistry implements NodeRegistry {
    * @param uri The URI of the node to find
    * @return The node if found, null otherwise
    */
+  @Nullable
   public Node getNode(URI uri) {
     Lock readLock = this.lock.readLock();
     readLock.lock();

@@ -24,6 +24,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -39,9 +40,12 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.ReferenceCountUtil;
 import java.net.URI;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,6 +143,11 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
         new Bootstrap()
             .group(clientChannel.eventLoop())
             .channel(NioSocketChannel.class)
+            // Mirror the server-side socket options so both legs of the tunnel behave
+            // the same: SO_KEEPALIVE lets the OS probe stale connections, TCP_NODELAY
+            // flushes small CDP/BiDi frames without Nagle buffering.
+            .option(ChannelOption.SO_KEEPALIVE, true)
+            .option(ChannelOption.TCP_NODELAY, true)
             .handler(
                 new ChannelInitializer<SocketChannel>() {
                   @Override
@@ -303,6 +312,29 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
                     }
                   }
 
+                  // Install read-idle detection on both tunnel channels. The tunnel carries raw
+                  // WebSocket bytes (CDP / BiDi); application-level pings from the client (e.g.
+                  // Playwright's 30 s pings) flow through and reset the timer naturally. If no
+                  // bytes arrive for IDLE_TIMEOUT_SECONDS the upstream LB has silently dropped
+                  // the TCP connection — close both ends so the session slot is freed promptly.
+                  int idleSeconds = WebSocketKeepAliveHandler.PING_INTERVAL_SECONDS * 4;
+                  nodeChannel
+                      .pipeline()
+                      .addBefore(
+                          "tunnel",
+                          "node-idle",
+                          new IdleStateHandler(idleSeconds, 0, 0, TimeUnit.SECONDS));
+                  nodeChannel
+                      .pipeline()
+                      .addAfter(
+                          "node-idle", "node-idle-close", new IdleCloseHandler(clientChannel));
+                  cp.addBefore(
+                      "tunnel",
+                      "client-idle",
+                      new IdleStateHandler(idleSeconds, 0, 0, TimeUnit.SECONDS));
+                  cp.addAfter(
+                      "client-idle", "client-idle-close", new IdleCloseHandler(nodeChannel));
+
                   // Re-enable reads on the client now that the tunnel is live.
                   clientChannel.config().setAutoRead(true);
                 });
@@ -325,6 +357,39 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
       LOG.log(Level.WARNING, "Error during node upgrade handshake", cause);
       ctx.close();
       clientChannel.close();
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Idle-close handler shared by both legs of the tunnel
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Closes both tunnel channels when no bytes have been received on this channel for the configured
+   * read-idle window. This cleans up sessions where the intermediate load balancer silently dropped
+   * the TCP connection without sending a FIN or RST (common with AWS ALB, k8s ingress-nginx at
+   * their default 60 s idle timeout).
+   */
+  private static final class IdleCloseHandler extends ChannelInboundHandlerAdapter {
+
+    private final Channel peer;
+
+    IdleCloseHandler(Channel peer) {
+      this.peer = peer;
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+      if (evt instanceof IdleStateEvent) {
+        LOG.log(
+            Level.FINE,
+            "TCP tunnel read-idle timeout on {0}, closing both channels",
+            ctx.channel());
+        ctx.close();
+        peer.close();
+        return;
+      }
+      super.userEventTriggered(ctx, evt);
     }
   }
 }

@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Browser;
@@ -25,11 +27,15 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class BrowserUserContextConverter(IBiDi bidi) : JsonConverter<UserContext>
 {
+    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, UserContext>> s_cache = new();
+
     public override UserContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new UserContext(id!) { BiDi = bidi };
+        var sessionCache = s_cache.GetValue(bidi, _ => new ConcurrentDictionary<string, UserContext>());
+
+        return sessionCache.GetOrAdd(id!, key => new UserContext(bidi, key));
     }
 
     public override void Write(Utf8JsonWriter writer, UserContext value, JsonSerializerOptions options)

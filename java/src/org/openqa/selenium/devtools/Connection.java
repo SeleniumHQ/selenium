@@ -47,6 +47,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.internal.Either;
@@ -90,7 +91,6 @@ public class Connection implements Closeable {
   }
 
   public Connection(HttpClient client, String url, ClientConfig clientConfig) {
-    ;
     this.client = Require.nonNull("HTTP client", client);
     this.wsConfig = wsClientConfig(clientConfig, url);
     this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
@@ -117,7 +117,7 @@ public class Connection implements Closeable {
     }
   }
 
-  private static class NamedConsumer<X> implements Consumer<X> {
+  private static final class NamedConsumer<X> implements Consumer<X> {
 
     private final String name;
     private final Consumer<X> delegate;
@@ -142,7 +142,7 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
+  public <X> CompletableFuture<X> send(@Nullable SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
@@ -185,13 +185,16 @@ public class Connection implements Closeable {
     socket.sendText(json);
 
     if (!command.getSendsResponse()) {
+      // As far as I see, it never happens.
+      // All DevTools commands return something - at least empty map.
+      //noinspection DataFlowIssue
       result.complete(null);
     }
 
     return result;
   }
 
-  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
+  public <X> X sendAndWait(@Nullable SessionID sessionId, Command<X> command, Duration timeout) {
     try {
       CompletableFuture<X> future = send(sessionId, command);
       return future.get(timeout.toMillis(), MILLISECONDS);

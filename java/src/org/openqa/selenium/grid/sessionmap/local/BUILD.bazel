@@ -18,5 +18,6 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionmap",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.github.ben-manes.caffeine:caffeine"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

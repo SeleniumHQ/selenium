@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -366,13 +367,13 @@ class ProxyNodeWebsocketsTest {
   private static class CountingStubNode extends StubNode {
 
     private final SessionId ownedSession;
-    private final Session session;
+    private final @Nullable Session session;
     private final AtomicInteger acquireCount;
     private final AtomicInteger releaseCount;
 
     CountingStubNode(
         SessionId ownedSession,
-        Session session,
+        @Nullable Session session,
         AtomicInteger acquireCount,
         AtomicInteger releaseCount) {
       super(new NodeId(UUID.randomUUID()), URI.create("http://localhost:5555"));
@@ -400,6 +401,9 @@ class ProxyNodeWebsocketsTest {
 
     @Override
     public Session getSession(SessionId id) {
+      if (session == null) {
+        throw new UnsupportedOperationException();
+      }
       return session;
     }
   }
