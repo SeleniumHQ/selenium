@@ -130,7 +130,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
         private readonly object _lock = new();
-        private EventHandler[] _handlers = [];
+        private volatile EventHandler[] _handlers = [];
 
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
 
