@@ -19,12 +19,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import Any
 
 
 def command_builder(
     method: str, params: dict[str, Any]
-) -> dict[str, Any]:
+) -> Generator[dict[str, Any], Any, Any]:
     """Build a BiDi command generator.
 
     Args:
