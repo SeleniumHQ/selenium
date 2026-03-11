@@ -1402,7 +1402,7 @@ class UserPromptHandler:
 
         if extension_id is None:
             raise ValueError("extension parameter is required")
-        
+
         params = {"extension": extension_id}
         cmd = command_builder("webExtension.uninstall", params)
         return self._conn.execute(cmd)''',
