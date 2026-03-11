@@ -132,9 +132,9 @@ internal sealed class Broker : IAsyncDisposable
         int paramsEndIndex = 0;
 
         Utf8JsonReader reader = new(data);
-        reader.Read();
-
         reader.Read(); // "{"
+
+        reader.Read();
 
         while (reader.TokenType == JsonTokenType.PropertyName)
         {
