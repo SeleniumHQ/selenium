@@ -6,15 +6,14 @@
 # WebDriver BiDi module: input
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class PointerType:
@@ -175,7 +174,7 @@ class FileDialogInfo:
     multiple: bool | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "FileDialogInfo":
+    def from_json(cls, params: dict) -> FileDialogInfo:
         """Deserialize event params into FileDialogInfo."""
         return cls(
             context=params.get("context"),
@@ -368,7 +367,7 @@ class Input:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    def perform_actions(self, context: Any | None = None, actions: List[Any] | None = None):
+    def perform_actions(self, context: Any | None = None, actions: list[Any] | None = None):
         """Execute input.performActions."""
         if context is None:
             raise TypeError("perform_actions() missing required argument: {{snake_param!r}}")
@@ -397,7 +396,7 @@ class Input:
         result = self._conn.execute(cmd)
         return result
 
-    def set_files(self, context: Any | None = None, element: Any | None = None, files: List[Any] | None = None):
+    def set_files(self, context: Any | None = None, element: Any | None = None, files: list[Any] | None = None):
         """Execute input.setFiles."""
         if context is None:
             raise TypeError("set_files() missing required argument: {{snake_param!r}}")

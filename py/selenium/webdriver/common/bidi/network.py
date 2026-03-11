@@ -6,15 +6,14 @@
 # WebDriver BiDi module: network
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class SameSite:
@@ -565,11 +564,11 @@ class Network:
 
     def add_data_collector(
         self,
-        data_types: List[Any] | None = None,
+        data_types: list[Any] | None = None,
         max_encoded_data_size: Any | None = None,
         collector_type: Any | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute network.addDataCollector."""
         if data_types is None:
@@ -591,9 +590,9 @@ class Network:
 
     def add_intercept(
         self,
-        phases: List[Any] | None = None,
-        contexts: List[Any] | None = None,
-        url_patterns: List[Any] | None = None,
+        phases: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        url_patterns: list[Any] | None = None,
     ):
         """Execute network.addIntercept."""
         if phases is None:
@@ -613,8 +612,8 @@ class Network:
         self,
         request: Any | None = None,
         body: Any | None = None,
-        cookies: List[Any] | None = None,
-        headers: List[Any] | None = None,
+        cookies: list[Any] | None = None,
+        headers: list[Any] | None = None,
         method: Any | None = None,
         url: Any | None = None,
     ):
@@ -638,9 +637,9 @@ class Network:
     def continue_response(
         self,
         request: Any | None = None,
-        cookies: List[Any] | None = None,
+        cookies: list[Any] | None = None,
         credentials: Any | None = None,
-        headers: List[Any] | None = None,
+        headers: list[Any] | None = None,
         reason_phrase: Any | None = None,
         status_code: Any | None = None,
     ):
@@ -734,8 +733,8 @@ class Network:
         self,
         request: Any | None = None,
         body: Any | None = None,
-        cookies: List[Any] | None = None,
-        headers: List[Any] | None = None,
+        cookies: list[Any] | None = None,
+        headers: list[Any] | None = None,
         reason_phrase: Any | None = None,
         status_code: Any | None = None,
     ):
@@ -782,7 +781,7 @@ class Network:
         result = self._conn.execute(cmd)
         return result
 
-    def set_cache_behavior(self, cache_behavior: Any | None = None, contexts: List[Any] | None = None):
+    def set_cache_behavior(self, cache_behavior: Any | None = None, contexts: list[Any] | None = None):
         """Execute network.setCacheBehavior."""
         if cache_behavior is None:
             raise TypeError("set_cache_behavior() missing required argument: {{snake_param!r}}")
@@ -798,9 +797,9 @@ class Network:
 
     def set_extra_headers(
         self,
-        headers: List[Any] | None = None,
-        contexts: List[Any] | None = None,
-        user_contexts: List[Any] | None = None,
+        headers: list[Any] | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
     ):
         """Execute network.setExtraHeaders."""
         if headers is None:

@@ -6,15 +6,14 @@
 # WebDriver BiDi module: browsingContext
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
-from .common import command_builder
-from dataclasses import field
-from typing import Generator
-from dataclasses import dataclass
 import threading
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class ReadinessState:
@@ -376,10 +375,10 @@ class DownloadParams:
 class DownloadEndParams:
     """DownloadEndParams - params for browsingContext.downloadEnd event."""
 
-    download_params: "DownloadParams | None" = None
+    download_params: DownloadParams | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "DownloadEndParams":
+    def from_json(cls, params: dict) -> DownloadEndParams:
         """Deserialize from BiDi wire-level params dict."""
         dp = DownloadParams(
             status=params.get("status"),

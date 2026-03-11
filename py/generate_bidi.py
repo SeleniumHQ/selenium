@@ -42,7 +42,7 @@ MODULE_HEADER = f"""{SHARED_HEADER}
 # WebDriver BiDi module: {{}}
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 from .common import command_builder
 """
 
@@ -123,10 +123,10 @@ class CddlType(Enum):
         if cddl_type.startswith("["):  # Array
             inner = cddl_type.strip("[]+ ")
             inner_type = cls.get_annotation(inner)
-            return f"List[{inner_type}]"
+            return f"list[{inner_type}]"
 
         if cddl_type.startswith("{"):  # Map/Dict
-            return "Dict[str, Any]"
+            return "dict[str, Any]"
 
         # Default to Any for unknown types
         return "Any"
@@ -171,7 +171,9 @@ class CddlCommand:
 
         if param_strs:
             # Check if full signature would exceed line length limit (120 chars)
-            single_line_signature = f"    def {method_name}(self, {', '.join(param_strs)}):"
+            single_line_signature = (
+                f"    def {method_name}(self, {', '.join(param_strs)}):"
+            )
             if len(single_line_signature) > 120:
                 # Format parameters on multiple lines
                 body = f"    def {method_name}(\n"
@@ -197,7 +199,9 @@ class CddlCommand:
                 if param_name in self.required_params:
                     body += f"        if {snake_param} is None:\n"
                     msg = f"{method_snake}() missing required argument:"
-                    body += f'            raise TypeError("{msg} {{{{snake_param!r}}}}")\n'
+                    body += (
+                        f'            raise TypeError("{msg} {{{{snake_param!r}}}}")\n'
+                    )
             body += "\n"
 
         # Add validation if specified in enhancements (for additional business logic validation)
@@ -585,18 +589,23 @@ class CddlModule:
         enhancements = enhancements or {}
         code = MODULE_HEADER.format(self.name)
 
-        # Add imports if needed
-        if self.types:
-            code += "from dataclasses import field\n"
-        if self.commands or self.types:
-            code += "from typing import Generator\n"
-            code += "from dataclasses import dataclass\n"
+        # Collect needed imports to avoid duplicates
+        needs_dataclass = self.commands or self.types or self.events
+        needs_field = self.types
+        needs_threading = self.events
+        needs_callable = self.events
+        needs_session = self.events
 
-        # Add imports for event handling if needed
-        if self.events:
-            code += "import threading\n"
-            code += "from collections.abc import Callable\n"
+        # Add imports if needed
+        if needs_dataclass:
             code += "from dataclasses import dataclass\n"
+        if needs_field:
+            code += "from dataclasses import field\n"
+        if needs_threading:
+            code += "import threading\n"
+        if needs_callable:
+            code += "from collections.abc import Callable\n"
+        if needs_session:
             code += "from selenium.webdriver.common.bidi.session import Session\n"
 
         code += "\n\n"
@@ -680,7 +689,7 @@ class CddlModule:
 
         # Generate enums first (excluding those in exclude_types)
         exclude_types = set(enhancements.get("exclude_types", []))
-        
+
         # Also exclude any types that have extra_dataclasses overrides
         # Extract class names from extra_dataclasses strings
         for extra_cls in enhancements.get("extra_dataclasses", []):
@@ -688,7 +697,7 @@ class CddlModule:
             match = re.search(r"class\s+(\w+)\s*:", extra_cls)
             if match:
                 exclude_types.add(match.group(1))
-        
+
         for enum_def in self.enums:
             if enum_def.name in exclude_types:
                 continue
@@ -968,7 +977,7 @@ class _EventManager:
 
         # Generate command methods
         exclude_methods = enhancements.get("exclude_methods", [])
-        
+
         # Automatically exclude methods that are defined in extra_methods
         # to prevent generating duplicates
         if "extra_methods" in enhancements:
@@ -977,7 +986,7 @@ class _EventManager:
                 match = re.search(r"def\s+(\w+)\s*\(", extra_method)
                 if match:
                     exclude_methods = list(exclude_methods) + [match.group(1)]
-        
+
         if self.commands:
             for command in self.commands:
                 # Get method-specific enhancements
@@ -1061,23 +1070,23 @@ class _EventManager:
                     # Try to get event class from globals, default to dict if not found
                     getter = f'_globals.get("{event_def.name}", dict)'
                     condition = f'_globals.get("{event_def.name}")'
-                    event_class = f'{getter} if {condition} else dict'
-                    
+                    event_class = f"{getter} if {condition} else dict"
+
                     # Build the entry line and check if it exceeds 120 chars
                     single_line = (
                         f'    "{event_name}": '
                         f'EventConfig("{event_name}", "{event_def.method}", {event_class}),'
                     )
-                    
+
                     if len(single_line) > 120:
                         # Break into multiple lines
                         code += f'    "{event_name}": EventConfig(\n'
                         code += f'        "{event_name}",\n'
                         code += f'        "{event_def.method}",\n'
-                        code += f'        {event_class},\n'
-                        code += '    ),\n'
+                        code += f"        {event_class},\n"
+                        code += "    ),\n"
                     else:
-                        code += single_line + '\n'
+                        code += single_line + "\n"
             # Extra events not in the CDDL spec
             for extra_evt in enhancements.get("extra_events", []):
                 ek = extra_evt["event_key"]
