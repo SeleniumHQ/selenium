@@ -74,9 +74,7 @@ def test_basic_key_input(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: input_element.get_attribute("value") == "hello"
-    )
+    WebDriverWait(driver, 5).until(lambda d: input_element.get_attribute("value") == "hello")
     assert input_element.get_attribute("value") == "hello"
 
 
@@ -100,9 +98,7 @@ def test_key_input_with_pause(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: input_element.get_attribute("value") == "ab"
-    )
+    WebDriverWait(driver, 5).until(lambda d: input_element.get_attribute("value") == "ab")
     assert input_element.get_attribute("value") == "ab"
 
 
@@ -208,11 +204,7 @@ def test_wheel_scroll(driver, pages):
     # Scroll down
     wheel_actions = WheelSourceActions(
         id="wheel",
-        actions=[
-            WheelScrollAction(
-                x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT
-            )
-        ],
+        actions=[WheelScrollAction(x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT)],
     )
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions])
@@ -263,13 +255,9 @@ def test_combined_input_actions(driver, pages):
         ],
     )
 
-    driver.input.perform_actions(
-        driver.current_window_handle, [pointer_actions, key_actions]
-    )
+    driver.input.perform_actions(driver.current_window_handle, [pointer_actions, key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: input_element.get_attribute("value") == "test"
-    )
+    WebDriverWait(driver, 5).until(lambda d: input_element.get_attribute("value") == "test")
     assert input_element.get_attribute("value") == "test"
 
 
@@ -281,9 +269,7 @@ def test_set_files(driver, pages):
     assert upload_element.get_attribute("value") == ""
 
     # Create a temporary file
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".txt", delete=False
-    ) as temp_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as temp_file:
         temp_file.write("test content")
         temp_file_path = temp_file.name
 
@@ -293,9 +279,7 @@ def test_set_files(driver, pages):
         element_ref = {"sharedId": element_id}
 
         # Set files using BiDi
-        driver.input.set_files(
-            driver.current_window_handle, element_ref, [temp_file_path]
-        )
+        driver.input.set_files(driver.current_window_handle, element_ref, [temp_file_path])
 
         # Verify file was set
         value = upload_element.get_attribute("value")
@@ -370,9 +354,7 @@ def test_release_actions(driver, pages):
     driver.input.perform_actions(driver.current_window_handle, [key_actions2])
 
     # Should be able to type normally
-    WebDriverWait(driver, 5).until(
-        lambda d: "b" in input_element.get_attribute("value")
-    )
+    WebDriverWait(driver, 5).until(lambda d: "b" in input_element.get_attribute("value"))
 
 
 @pytest.mark.parametrize("multiple", [True, False])
@@ -388,9 +370,7 @@ def test_file_dialog_event_handler_multiple(driver, multiple):
     handler_id = driver.input.add_file_dialog_handler(file_dialog_handler)
     assert handler_id is not None
 
-    driver.get(
-        f"data:text/html,<input id=upload type=file {'multiple' if multiple else ''} />"
-    )
+    driver.get(f"data:text/html,<input id=upload type=file {'multiple' if multiple else ''} />")
 
     # Use script.evaluate to trigger the file dialog with user activation
     driver.script._evaluate(
@@ -490,9 +470,7 @@ def test_perform_actions_rapid_key_sequence(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: input_element.get_attribute("value") == "abcd"
-    )
+    WebDriverWait(driver, 5).until(lambda d: input_element.get_attribute("value") == "abcd")
     assert input_element.get_attribute("value") == "abcd"
 
 
@@ -617,11 +595,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
     # First scroll down
     wheel_actions_down = WheelSourceActions(
         id="wheel_down",
-        actions=[
-            WheelScrollAction(
-                x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT
-            )
-        ],
+        actions=[WheelScrollAction(x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT)],
     )
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions_down])
@@ -632,11 +606,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
     # Then scroll back up (negative delta)
     wheel_actions_up = WheelSourceActions(
         id="wheel_up",
-        actions=[
-            WheelScrollAction(
-                x=100, y=100, delta_x=0, delta_y=-50, origin=Origin.VIEWPORT
-            )
-        ],
+        actions=[WheelScrollAction(x=100, y=100, delta_x=0, delta_y=-50, origin=Origin.VIEWPORT)],
     )
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions_up])
@@ -676,11 +646,7 @@ def test_wheel_scroll_horizontal(driver, pages):
     # Scroll horizontally
     wheel_actions = WheelSourceActions(
         id="wheel",
-        actions=[
-            WheelScrollAction(
-                x=100, y=100, delta_x=50, delta_y=0, origin=Origin.VIEWPORT
-            )
-        ],
+        actions=[WheelScrollAction(x=100, y=100, delta_x=50, delta_y=0, origin=Origin.VIEWPORT)],
     )
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions])
@@ -711,9 +677,7 @@ def test_key_input_special_characters(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: "!" in input_element.get_attribute("value")
-    )
+    WebDriverWait(driver, 5).until(lambda d: "!" in input_element.get_attribute("value"))
 
 
 def test_set_files_empty_file_list(driver, pages):
@@ -741,9 +705,7 @@ def test_set_files_with_absolute_path(driver):
     upload_element = driver.find_element(By.ID, "upload")
 
     # Create a temporary file
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".txt", delete=False
-    ) as temp_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as temp_file:
         temp_file.write("test file content")
         temp_file_path = temp_file.name
 
@@ -753,9 +715,7 @@ def test_set_files_with_absolute_path(driver):
         element_ref = {"sharedId": element_id}
 
         # Set file using absolute path
-        driver.input.set_files(
-            driver.current_window_handle, element_ref, [temp_file_path]
-        )
+        driver.input.set_files(driver.current_window_handle, element_ref, [temp_file_path])
 
         value = upload_element.get_attribute("value")
         assert os.path.basename(temp_file_path) in value
@@ -882,15 +842,11 @@ def test_combined_keyboard_and_wheel_actions(driver, pages):
         id="wheel",
         actions=[
             PauseAction(duration=0),  # Sync with keyboard
-            WheelScrollAction(
-                x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT
-            ),
+            WheelScrollAction(x=100, y=100, delta_x=0, delta_y=100, origin=Origin.VIEWPORT),
         ],
     )
 
-    driver.input.perform_actions(
-        driver.current_window_handle, [key_actions, wheel_actions]
-    )
+    driver.input.perform_actions(driver.current_window_handle, [key_actions, wheel_actions])
 
     scroll_y = driver.execute_script("return window.pageYOffset;")
     assert scroll_y == 100
@@ -917,9 +873,7 @@ def test_key_input_with_value_attribute(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions])
 
-    WebDriverWait(driver, 5).until(
-        lambda d: input_element.get_attribute("value") == "xyz"
-    )
+    WebDriverWait(driver, 5).until(lambda d: input_element.get_attribute("value") == "xyz")
     assert input_element.get_attribute("value") == "xyz"
 
 
@@ -936,11 +890,7 @@ def test_wheel_scroll_with_element_origin(driver, pages):
     # Scroll with element origin
     wheel_actions = WheelSourceActions(
         id="wheel",
-        actions=[
-            WheelScrollAction(
-                x=100, y=100, delta_x=0, delta_y=100, origin=element_origin
-            )
-        ],
+        actions=[WheelScrollAction(x=100, y=100, delta_x=0, delta_y=100, origin=element_origin)],
     )
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions])

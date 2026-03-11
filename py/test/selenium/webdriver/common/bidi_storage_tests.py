@@ -98,9 +98,7 @@ class TestBidiStorage:
         driver.add_cookie({"name": key, "value": value})
 
         # Test
-        cookie_filter = CookieFilter(
-            name=key, value=BytesValue(BytesValue.TYPE_STRING, "set")
-        )
+        cookie_filter = CookieFilter(name=key, value=BytesValue(BytesValue.TYPE_STRING, "set"))
 
         result = driver.storage.get_cookies(filter=cookie_filter)
 
@@ -122,18 +120,14 @@ class TestBidiStorage:
         driver.add_cookie({"name": key, "value": value})
 
         # Test
-        cookie_filter = CookieFilter(
-            name=key, value=BytesValue(BytesValue.TYPE_STRING, "set")
-        )
+        cookie_filter = CookieFilter(name=key, value=BytesValue(BytesValue.TYPE_STRING, "set"))
 
         driver.switch_to.new_window(WindowTypes.WINDOW)
 
         descriptor = BrowsingContextPartitionDescriptor(driver.current_window_handle)
 
         params = cookie_filter
-        result_after_switching_context = driver.storage.get_cookies(
-            filter=params, partition=descriptor
-        )
+        result_after_switching_context = driver.storage.get_cookies(filter=params, partition=descriptor)
 
         assert len(result_after_switching_context.cookies) > 0
         assert result_after_switching_context.cookies[0].value.value == value
@@ -164,21 +158,15 @@ class TestBidiStorage:
 
         descriptor = StorageKeyPartitionDescriptor(user_context=user_context)
 
-        parameters = PartialCookie(
-            key, BytesValue(BytesValue.TYPE_STRING, value), webserver.host
-        )
+        parameters = PartialCookie(key, BytesValue(BytesValue.TYPE_STRING, value), webserver.host)
 
         driver.storage.set_cookie(cookie=parameters, partition=descriptor)
 
         # Test
-        cookie_filter = CookieFilter(
-            name=key, value=BytesValue(BytesValue.TYPE_STRING, "set")
-        )
+        cookie_filter = CookieFilter(name=key, value=BytesValue(BytesValue.TYPE_STRING, "set"))
 
         # Create a new window with the user context
-        new_window = driver.browsing_context.create(
-            type=WindowTypes.TAB, user_context=user_context
-        )
+        new_window = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
         driver.switch_to.window(new_window)
 
@@ -193,13 +181,9 @@ class TestBidiStorage:
 
         driver.switch_to.window(window_handle)
 
-        browsing_context_partition_descriptor = BrowsingContextPartitionDescriptor(
-            window_handle
-        )
+        browsing_context_partition_descriptor = BrowsingContextPartitionDescriptor(window_handle)
 
-        result1 = driver.storage.get_cookies(
-            filter=cookie_filter, partition=browsing_context_partition_descriptor
-        )
+        result1 = driver.storage.get_cookies(filter=cookie_filter, partition=browsing_context_partition_descriptor)
 
         assert len(result1.cookies) == 0
 
@@ -214,9 +198,7 @@ class TestBidiStorage:
         key = generate_unique_key()
         value = "foo"
 
-        parameters = PartialCookie(
-            key, BytesValue(BytesValue.TYPE_STRING, value), webserver.host
-        )
+        parameters = PartialCookie(key, BytesValue(BytesValue.TYPE_STRING, value), webserver.host)
         assert_cookie_is_not_present_with_name(driver, key)
 
         # Test
@@ -532,9 +514,7 @@ class TestBidiStorage:
         value = BytesValue(BytesValue.TYPE_STRING, "none")
 
         # SameSite=None typically requires secure=True
-        cookie = PartialCookie(
-            key, value, webserver.host, same_site=SameSite.NONE, secure=True
-        )
+        cookie = PartialCookie(key, value, webserver.host, same_site=SameSite.NONE, secure=True)
 
         # Test
         driver.storage.set_cookie(cookie=cookie)
@@ -691,9 +671,7 @@ class TestBidiStorage:
         result = driver.storage.get_cookies(filter=CookieFilter())
         cookie_names = [c.name for c in result.cookies]
 
-        assert key1 not in cookie_names or all(
-            c.path != "/simpleTest.html" for c in result.cookies if c.name == key1
-        )
+        assert key1 not in cookie_names or all(c.path != "/simpleTest.html" for c in result.cookies if c.name == key1)
 
     def test_cookie_expiry_timestamp(self, driver, pages, webserver):
         """Test that cookie expiry is stored correctly as timestamp."""

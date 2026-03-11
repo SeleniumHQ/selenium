@@ -179,9 +179,7 @@ class TestChromiumWebExtension:
         ext_info = chromium_driver.webextension.install(path=path)
         extension_id = ext_info.get("extension")
         # Uninstall using the extension ID
-        uninstall_extension_and_verify_extension_uninstalled(
-            chromium_driver, extension_id
-        )
+        uninstall_extension_and_verify_extension_uninstalled(chromium_driver, extension_id)
 
 
 # Additional edge case tests for better WPT coverage
@@ -251,10 +249,7 @@ class TestFirefoxWebExtensionEdgeCases:
         )
 
         assert injected_element is not None
-        assert (
-            "Content injected by webextensions-selenium-example"
-            in injected_element.text
-        )
+        assert "Content injected by webextensions-selenium-example" in injected_element.text
 
         # Cleanup
         driver.webextension.uninstall(ext_info)
@@ -268,9 +263,7 @@ class TestFirefoxWebExtensionEdgeCases:
 
         # Verify injection works
         pages.load("blank.html")
-        WebDriverWait(driver, timeout=5).until(
-            lambda dr: dr.find_element(By.ID, "webextensions-selenium-example")
-        )
+        WebDriverWait(driver, timeout=5).until(lambda dr: dr.find_element(By.ID, "webextensions-selenium-example"))
 
         # Uninstall
         driver.webextension.uninstall(ext_info)
@@ -379,10 +372,7 @@ class TestChromiumWebExtensionEdgeCases:
 
         # Verify uninstall was successful
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
-        assert (
-            len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example"))
-            == 0
-        )
+        assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
     @pytest.mark.xfail_firefox
     def test_uninstall_extension_by_result_dict(self, chromium_driver, pages_chromium):
@@ -395,10 +385,7 @@ class TestChromiumWebExtensionEdgeCases:
 
         # Verify uninstall was successful
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
-        assert (
-            len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example"))
-            == 0
-        )
+        assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
     @pytest.mark.xfail_firefox
     def test_install_returns_extension_id(self, chromium_driver, pages_chromium):
@@ -429,10 +416,7 @@ class TestChromiumWebExtensionEdgeCases:
         )
 
         assert injected_element is not None
-        assert (
-            "Content injected by webextensions-selenium-example"
-            in injected_element.text
-        )
+        assert "Content injected by webextensions-selenium-example" in injected_element.text
 
         # Cleanup
         chromium_driver.webextension.uninstall(ext_info)
@@ -454,15 +438,10 @@ class TestChromiumWebExtensionEdgeCases:
 
         # Reload page and verify injection is gone
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
-        assert (
-            len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example"))
-            == 0
-        )
+        assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
     @pytest.mark.xfail_firefox
-    def test_multiple_installations_and_uninstalls(
-        self, chromium_driver, pages_chromium
-    ):
+    def test_multiple_installations_and_uninstalls(self, chromium_driver, pages_chromium):
         """Test installing and uninstalling extension multiple times."""
         path = os.path.join(EXTENSIONS, EXTENSION_PATH)
 
@@ -471,17 +450,11 @@ class TestChromiumWebExtensionEdgeCases:
         verify_extension_injection(chromium_driver, pages_chromium)
         chromium_driver.webextension.uninstall(ext_info_1)
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
-        assert (
-            len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example"))
-            == 0
-        )
+        assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
         # Install/uninstall cycle 2
         ext_info_2 = chromium_driver.webextension.install(path=path)
         verify_extension_injection(chromium_driver, pages_chromium)
         chromium_driver.webextension.uninstall(ext_info_2)
         chromium_driver.browsing_context.reload(chromium_driver.current_window_handle)
-        assert (
-            len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example"))
-            == 0
-        )
+        assert len(chromium_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0

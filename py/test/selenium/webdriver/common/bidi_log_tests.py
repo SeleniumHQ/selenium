@@ -82,9 +82,7 @@ class TestBidiLogging:
 
         try:
             driver.execute_script("console.log('first message');")
-            WebDriverWait(driver, 5).until(
-                lambda _: len(log_entries1) > 0 and len(log_entries2) > 0
-            )
+            WebDriverWait(driver, 5).until(lambda _: len(log_entries1) > 0 and len(log_entries2) > 0)
 
             assert len(log_entries1) > 0
             assert len(log_entries2) > 0

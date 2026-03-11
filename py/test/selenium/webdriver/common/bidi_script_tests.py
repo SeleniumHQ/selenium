@@ -115,9 +115,7 @@ def test_removes_console_message_handler(driver, pages):
 
     try:
         driver.find_element(By.ID, "consoleLog").click()
-        WebDriverWait(driver, 5).until(
-            lambda _: len(log_entries1) and len(log_entries2)
-        )
+        WebDriverWait(driver, 5).until(lambda _: len(log_entries1) and len(log_entries2))
 
         driver.script.remove_console_message_handler(id1)
         driver.find_element(By.ID, "consoleLog").click()
@@ -158,9 +156,7 @@ def test_removes_javascript_message_handler(driver, pages):
 
     try:
         driver.find_element(By.ID, "jsException").click()
-        WebDriverWait(driver, 5).until(
-            lambda _: len(log_entries1) and len(log_entries2)
-        )
+        WebDriverWait(driver, 5).until(lambda _: len(log_entries1) and len(log_entries2))
 
         driver.script.remove_javascript_error_handler(id1)
         driver.find_element(By.ID, "jsException").click()
@@ -196,13 +192,9 @@ def test_add_preload_script_with_arguments(driver, pages):
     """Test adding a preload script with channel arguments."""
     function_declaration = "(channelFunc) => { channelFunc('test_value'); window.preloadValue = 'received'; }"
 
-    arguments = [
-        {"type": "channel", "value": {"channel": "test-channel", "ownership": "root"}}
-    ]
+    arguments = [{"type": "channel", "value": {"channel": "test-channel", "ownership": "root"}}]
 
-    script_id = driver.script._add_preload_script(
-        function_declaration, arguments=arguments
-    )
+    script_id = driver.script._add_preload_script(function_declaration, arguments=arguments)
     assert script_id is not None
 
     pages.load("blank.html")
@@ -220,9 +212,7 @@ def test_add_preload_script_with_contexts(driver, pages):
     function_declaration = "() => { window.contextSpecific = true; }"
     contexts = [driver.current_window_handle]
 
-    script_id = driver.script._add_preload_script(
-        function_declaration, contexts=contexts
-    )
+    script_id = driver.script._add_preload_script(function_declaration, contexts=contexts)
     assert script_id is not None
 
     pages.load("blank.html")
@@ -247,9 +237,7 @@ def test_add_preload_script_with_user_contexts(driver, pages):
     try:
         user_contexts = [user_context]
 
-        script_id = driver.script._add_preload_script(
-            function_declaration, user_contexts=user_contexts
-        )
+        script_id = driver.script._add_preload_script(function_declaration, user_contexts=user_contexts)
         assert script_id is not None
 
         pages.load("blank.html")
@@ -270,9 +258,7 @@ def test_add_preload_script_with_sandbox(driver, pages):
     """Test adding a preload script with sandbox."""
     function_declaration = "() => { window.sandboxScript = true; }"
 
-    script_id = driver.script._add_preload_script(
-        function_declaration, sandbox="test-sandbox"
-    )
+    script_id = driver.script._add_preload_script(function_declaration, sandbox="test-sandbox")
     assert script_id is not None
 
     pages.load("blank.html")
@@ -298,12 +284,8 @@ def test_add_preload_script_invalid_arguments(driver):
     """Test that providing both contexts and user_contexts raises an error."""
     function_declaration = "() => {}"
 
-    with pytest.raises(
-        ValueError, match="Cannot specify both contexts and user_contexts"
-    ):
-        driver.script._add_preload_script(
-            function_declaration, contexts=["context1"], user_contexts=["user1"]
-        )
+    with pytest.raises(ValueError, match="Cannot specify both contexts and user_contexts"):
+        driver.script._add_preload_script(function_declaration, contexts=["context1"], user_contexts=["user1"])
 
 
 def test_remove_preload_script(driver, pages):
@@ -329,9 +311,7 @@ def test_evaluate_expression(driver, pages):
     """Test evaluating a simple expression."""
     pages.load("blank.html")
 
-    result = driver.script._evaluate(
-        "1 + 2", {"context": driver.current_window_handle}, await_promise=False
-    )
+    result = driver.script._evaluate("1 + 2", {"context": driver.current_window_handle}, await_promise=False)
 
     assert result.realm is not None
     assert result.result["type"] == "number"
@@ -630,9 +610,7 @@ def test_disown_handles(driver, pages):
     assert result_before.result["value"] == "bar"
 
     # Disown the handle
-    driver.script._disown(
-        handles=[handle], target={"context": driver.current_window_handle}
-    )
+    driver.script._disown(handles=[handle], target={"context": driver.current_window_handle})
 
     # Try using the disowned handle (this should fail)
     with pytest.raises(Exception):
@@ -994,9 +972,7 @@ class TestBidiScriptExecution:
     def test_execute_script_dom_query(self, driver, pages):
         """Test executing script that queries DOM."""
         pages.load("formPage.html")
-        result = driver.execute_script(
-            "return document.querySelectorAll('input').length;"
-        )
+        result = driver.execute_script("return document.querySelectorAll('input').length;")
         assert result > 0
 
     def test_execute_script_with_arguments(self, driver):
@@ -1112,9 +1088,7 @@ class TestBidiScriptPreloadScripts:
 
     def test_preload_script_with_function(self, driver, pages):
         """Test preload script defining functions."""
-        script_id = driver.script._add_preload_script(
-            "() => { window.customFunc = (x) => x * 2; }"
-        )
+        script_id = driver.script._add_preload_script("() => { window.customFunc = (x) => x * 2; }")
 
         try:
             pages.load("blank.html")
@@ -1129,9 +1103,7 @@ class TestBidiScriptPreloadScripts:
 
     def test_preload_script_removal_prevents_execution(self, driver, pages):
         """Test that removing preload script prevents its execution."""
-        script_id = driver.script._add_preload_script(
-            "() => { window.shouldNotExist = true; }"
-        )
+        script_id = driver.script._add_preload_script("() => { window.shouldNotExist = true; }")
         driver.script._remove_preload_script(script_id=script_id)
 
         pages.load("blank.html")
@@ -1356,9 +1328,7 @@ class TestBidiScriptErrorHandling:
             driver.find_element(By.ID, "jsException").click()
 
             # Both handlers should receive events when error occurs
-            WebDriverWait(driver, 5).until(
-                lambda _: len(errors1) > 0 and len(errors2) > 0
-            )
+            WebDriverWait(driver, 5).until(lambda _: len(errors1) > 0 and len(errors2) > 0)
             assert len(errors1) > 0
             assert len(errors2) > 0
         finally:

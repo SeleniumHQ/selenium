@@ -175,9 +175,7 @@ class TestBidiEventHandlers:
 
         try:
             driver.execute_script("console.log('test message');")
-            WebDriverWait(driver, 5).until(
-                lambda _: len(messages1) > 0 and len(messages2) > 0
-            )
+            WebDriverWait(driver, 5).until(lambda _: len(messages1) > 0 and len(messages2) > 0)
 
             assert len(messages1) > 0
             assert len(messages2) > 0
@@ -220,9 +218,7 @@ class TestBidiStorageOperations:
         """Test cookie with various attributes."""
         pages.load("blank.html")
 
-        driver.add_cookie(
-            {"name": "attr_cookie", "value": "test_value", "path": "/", "secure": False}
-        )
+        driver.add_cookie({"name": "attr_cookie", "value": "test_value", "path": "/", "secure": False})
 
         cookies = driver.get_cookies()
         cookie = next((c for c in cookies if c.get("name") == "attr_cookie"), None)
@@ -257,9 +253,7 @@ class TestBidiBrowsingContexts:
         pages.load("blank.html")
 
         # Navigate using the BiDi API with the current context
-        driver.browsing_context.navigate(
-            context=driver.current_window_handle, url=pages.url("blank.html")
-        )
+        driver.browsing_context.navigate(context=driver.current_window_handle, url=pages.url("blank.html"))
 
         # Verify page loaded
         element = driver.find_element(By.TAG_NAME, "body")
