@@ -16,6 +16,7 @@
 # under the License.
 
 import os
+import sys
 from unittest.mock import patch
 
 import pytest
@@ -56,3 +57,14 @@ def test_enable_logging():
 def test_service_url():
     service = Service(port=1313)
     assert service.service_url == "http://localhost:1313"
+
+
+def test_service_allows_reusing_stdout_for_logging(clean_driver, clean_options, driver_executable):
+    service1 = Service(executable_path=driver_executable, log_output=sys.stdout)
+    driver1 = clean_driver(service=service1, options=clean_options)
+    assert driver1.session_id is not None
+    driver1.quit()
+    service2 = Service(executable_path=driver_executable, log_output=sys.stdout)
+    driver2 = clean_driver(service=service2, options=clean_options)
+    assert driver2.session_id is not None
+    driver2.quit()
