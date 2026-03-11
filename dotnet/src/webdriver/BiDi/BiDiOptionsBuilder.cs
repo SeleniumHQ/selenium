@@ -27,22 +27,21 @@ namespace OpenQA.Selenium.BiDi;
 /// </summary>
 public sealed class BiDiOptionsBuilder
 {
-    internal Func<Uri, CancellationToken, Task<ITransport>> TransportFactory { get; private set; }
-        = (uri, ct) => WebSocketTransport.ConnectAsync(uri, null, ct);
+    private Func<CancellationToken, Task<ITransport>>? _transportFactory;
 
     /// <summary>
-    /// Configures the BiDi connection to use a WebSocket transport.
+    /// Configures the BiDi connection to use a WebSocket transport with the specified URL.
     /// </summary>
-    /// <remarks>
-    /// WebSocket is the default transport; calling this method is only necessary
-    /// when you need to customize the underlying <see cref="ClientWebSocketOptions"/>
-    /// (e.g., to set headers, proxy, or certificates).
-    /// </remarks>
+    /// <param name="url">The WebSocket URL to connect to.</param>
     /// <param name="configure">An optional action to configure the <see cref="ClientWebSocketOptions"/> before connecting.</param>
     /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
-    public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions>? configure = null)
+    public BiDiOptionsBuilder UseWebSocket(string url, Action<ClientWebSocketOptions>? configure = null)
     {
-        TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
+        var uri = new Uri(url);
+        _transportFactory = ct => WebSocketTransport.ConnectAsync(uri, configure, ct);
         return this;
     }
+
+    internal Func<CancellationToken, Task<ITransport>> TransportFactory
+        => _transportFactory ?? throw new BiDiException("Transport is not configured. Call UseWebSocket(url) on BiDiOptionsBuilder.");
 }
