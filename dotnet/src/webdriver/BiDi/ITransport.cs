@@ -23,5 +23,5 @@ interface ITransport : IAsyncDisposable
 {
     Task<byte[]> ReceiveAsync(CancellationToken cancellationToken);
 
-    Task SendAsync(byte[] data, CancellationToken cancellationToken);
+    ValueTask SendAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken);
 }
