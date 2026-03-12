@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -34,6 +35,7 @@ internal sealed class Broker : IAsyncDisposable
     private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
+    private readonly ReceiveBufferWriter _receiveBufferWriter = new();
 
     private long _currentCommandId;
 
@@ -83,6 +85,15 @@ internal sealed class Broker : IAsyncDisposable
 
         try
         {
+            if (_logger.IsEnabled(LogEventLevel.Trace))
+            {
+#if NET8_0_OR_GREATER
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(data.AsSpan())}");
+#else
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(data)}");
+#endif
+            }
+
             await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
         }
         catch
@@ -116,7 +127,7 @@ internal sealed class Broker : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void ProcessReceivedMessage(byte[] data)
+    private void ProcessReceivedMessage(ReadOnlyMemory<byte> data)
     {
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
@@ -130,7 +141,7 @@ internal sealed class Broker : IAsyncDisposable
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
 
-        Utf8JsonReader reader = new(data);
+        Utf8JsonReader reader = new(data.Span);
         reader.Read(); // "{"
 
         reader.Read();
@@ -210,20 +221,20 @@ internal sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
-                        _logger.Warn($"The remote end responded with 'success' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                        _logger.Warn($"The remote end responded with 'success' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                     }
                 }
 
                 break;
 
             case TypeEvent:
-                if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
                 if (!_eventDispatcher.TryGetJsonTypeInfo(method, out var jsonTypeInfo))
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
-                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                     }
 
                     break;
@@ -238,7 +249,7 @@ internal sealed class Broker : IAsyncDisposable
                 break;
 
             case TypeError:
-                if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
                 {
@@ -249,7 +260,7 @@ internal sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
-                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                     }
                 }
 
@@ -258,7 +269,7 @@ internal sealed class Broker : IAsyncDisposable
             default:
                 if (_logger.IsEnabled(LogEventLevel.Warn))
                 {
-                    _logger.Warn($"The remote end responded with unknown message type. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                    _logger.Warn($"The remote end responded with unknown message type. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
                 break;
@@ -271,11 +282,22 @@ internal sealed class Broker : IAsyncDisposable
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+                _receiveBufferWriter.Reset();
+
+                await _transport.ReceiveAsync(_receiveBufferWriter, cancellationToken).ConfigureAwait(false);
+
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+#if NET8_0_OR_GREATER
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(_receiveBufferWriter.WrittenMemory.Span)}");
+#else
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(_receiveBufferWriter.WrittenMemory.ToArray())}");
+#endif
+                }
 
                 try
                 {
-                    ProcessReceivedMessage(data);
+                    ProcessReceivedMessage(_receiveBufferWriter.WrittenMemory);
                 }
                 catch (Exception ex)
                 {
@@ -307,4 +329,39 @@ internal sealed class Broker : IAsyncDisposable
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
+
+    private sealed class ReceiveBufferWriter : IBufferWriter<byte>
+    {
+        private byte[] _buffer = new byte[1024 * 8];
+        private int _written;
+
+        public ReadOnlyMemory<byte> WrittenMemory => new(_buffer, 0, _written);
+
+        public void Reset() => _written = 0;
+
+        public void Advance(int count) => _written += count;
+
+        public Memory<byte> GetMemory(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsMemory(_written);
+        }
+
+        public Span<byte> GetSpan(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsSpan(_written);
+        }
+
+        private void EnsureCapacity(int sizeHint)
+        {
+            if (sizeHint <= 0) sizeHint = _buffer.Length - _written;
+            if (sizeHint <= 0) sizeHint = _buffer.Length;
+
+            if (_written + sizeHint > _buffer.Length)
+            {
+                Array.Resize(ref _buffer, Math.Max(_buffer.Length * 2, _written + sizeHint));
+            }
+        }
+    }
 }
