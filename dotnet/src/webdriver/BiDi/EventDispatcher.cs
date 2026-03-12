@@ -34,6 +34,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
 
+    private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
+
     private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
     {
         SingleReader = true,
@@ -81,23 +83,34 @@ internal sealed class EventDispatcher : IAsyncDisposable
         {
             while (reader.TryRead(out var result))
             {
-                try
+                if (_eventRegistrations.TryGetValue(result.Method, out var registration))
                 {
-                    if (_eventRegistrations.TryGetValue(result.Method, out var registration))
+                    foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                     {
-                        foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
+                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs);
+                        if (!runningHandlerTask.IsCompleted)
                         {
-                            await handler.InvokeAsync(result.EventArgs).ConfigureAwait(false);
+                            _runningHandlers.TryAdd(runningHandlerTask, 0);
+                            _ = runningHandlerTask.ContinueWith(static (t, state) => ((ConcurrentDictionary<Task, byte>)state!).TryRemove(t, out _),
+                                _runningHandlers, TaskContinuationOptions.ExecuteSynchronously);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                    }
-                }
+            }
+        }
+    }
+
+    private async Task InvokeHandlerAsync(EventHandler handler, EventArgs eventArgs)
+    {
+        try
+        {
+            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
             }
         }
     }
@@ -107,6 +120,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _pendingEvents.Writer.Complete();
 
         await _eventEmitterTask.ConfigureAwait(false);
+
+        await Task.WhenAll(_runningHandlers.Keys).ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
     }
