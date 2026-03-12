@@ -48,7 +48,7 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
+        _receivingMessageTask = Task.Run(() => ReceiveMessagesLoopAsync(_receiveMessagesCancellationTokenSource.Token));
     }
 
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -275,7 +275,7 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
+    private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
     {
         using var receiveBufferWriter = new PooledBufferWriter();
 
