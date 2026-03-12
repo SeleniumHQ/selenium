@@ -55,7 +55,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
         var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
-        registration.Handlers.Add(eventHandler);
+        registration.AddHandler(eventHandler);
 
         return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
@@ -65,7 +65,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         if (_events.TryGetValue(subscription.EventHandler.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.Handlers.Remove(subscription.EventHandler);
+            registration.RemoveHandler(subscription.EventHandler);
         }
     }
 
@@ -99,7 +99,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
                         var eventArgs = (EventArgs)JsonSerializer.Deserialize(result.JsonUtf8Bytes.Span, result.TypeInfo)!;
                         eventArgs.BiDi = result.BiDi;
 
-                        foreach (var handler in registration.Handlers.ToArray()) // copy handlers avoiding modified collection while iterating
+                        foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                         {
                             await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
                         }
@@ -129,7 +129,21 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
+        private readonly object _lock = new();
+        private volatile EventHandler[] _handlers = [];
+
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
-        public List<EventHandler> Handlers { get; } = [];
+
+        public EventHandler[] GetHandlers() => _handlers;
+
+        public void AddHandler(EventHandler handler)
+        {
+            lock (_lock) _handlers = [.. _handlers, handler];
+        }
+
+        public void RemoveHandler(EventHandler handler)
+        {
+            lock (_lock) _handlers = Array.FindAll(_handlers, h => h != handler);
+        }
     }
 }

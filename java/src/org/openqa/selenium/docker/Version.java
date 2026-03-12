@@ -86,14 +86,7 @@ class Version {
       return Long.compare(mine, others);
     } catch (NumberFormatException e) {
       String mine = index < ours.length ? ours[index] : "";
-      if (mine == null) {
-        mine = "";
-      }
       String others = index < theirs.length ? theirs[index] : "";
-      if (others == null) {
-        others = "";
-      }
-
       return mine.compareTo(others);
     }
   }

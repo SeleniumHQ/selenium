@@ -15,31 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker;
+@NullMarked
+package org.openqa.selenium.docker.internal;
 
-import java.util.List;
-import org.openqa.selenium.internal.Require;
-
-public class ContainerLogs {
-
-  private final List<String> logLines;
-  private final ContainerId id;
-
-  public ContainerLogs(ContainerId id, List<String> logLines) {
-    this.logLines = Require.nonNull("Container logs", logLines);
-    this.id = Require.nonNull("Container id", id);
-  }
-
-  public List<String> getLogLines() {
-    return logLines;
-  }
-
-  public ContainerId getId() {
-    return id;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("ContainerInfo{containerLogs=%s, id=%s}", logLines, id);
-  }
-}
+import org.jspecify.annotations.NullMarked;
