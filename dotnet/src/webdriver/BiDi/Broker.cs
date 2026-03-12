@@ -35,7 +35,6 @@ internal sealed class Broker : IAsyncDisposable
     private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
-    private readonly ReceiveBufferWriter _receiveBufferWriter = new();
 
     private long _currentCommandId;
 
@@ -278,26 +277,28 @@ internal sealed class Broker : IAsyncDisposable
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
+        using var receiveBufferWriter = new PooledBufferWriter();
+
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _receiveBufferWriter.Reset();
+                receiveBufferWriter.Reset();
 
-                await _transport.ReceiveAsync(_receiveBufferWriter, cancellationToken).ConfigureAwait(false);
+                await _transport.ReceiveAsync(receiveBufferWriter, cancellationToken).ConfigureAwait(false);
 
                 if (_logger.IsEnabled(LogEventLevel.Trace))
                 {
 #if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(_receiveBufferWriter.WrittenMemory.Span)}");
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.Span)}");
 #else
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(_receiveBufferWriter.WrittenMemory.ToArray())}");
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.ToArray())}");
 #endif
                 }
 
                 try
                 {
-                    ProcessReceivedMessage(_receiveBufferWriter.WrittenMemory);
+                    ProcessReceivedMessage(receiveBufferWriter.WrittenMemory);
                 }
                 catch (Exception ex)
                 {
@@ -330,14 +331,27 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
 
-    private sealed class ReceiveBufferWriter : IBufferWriter<byte>
+    private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable
     {
-        private byte[] _buffer = new byte[1024 * 8];
+        private const int DefaultBufferSize = 1024 * 8;
+
+        private byte[]? _buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
         private int _written;
 
         public ReadOnlyMemory<byte> WrittenMemory => new(_buffer, 0, _written);
 
-        public void Reset() => _written = 0;
+        public void Reset()
+        {
+            var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
+
+            if (buffer.Length > DefaultBufferSize)
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+                _buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
+            }
+
+            _written = 0;
+        }
 
         public void Advance(int count) => _written += count;
 
@@ -355,12 +369,29 @@ internal sealed class Broker : IAsyncDisposable
 
         private void EnsureCapacity(int sizeHint)
         {
-            if (sizeHint <= 0) sizeHint = _buffer.Length - _written;
-            if (sizeHint <= 0) sizeHint = _buffer.Length;
+            var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
 
-            if (_written + sizeHint > _buffer.Length)
+            if (sizeHint <= 0) sizeHint = buffer.Length - _written;
+            if (sizeHint <= 0) sizeHint = buffer.Length;
+
+            if (_written + sizeHint > buffer.Length)
             {
-                Array.Resize(ref _buffer, Math.Max(_buffer.Length * 2, _written + sizeHint));
+                var newSize = Math.Max(buffer.Length * 2, _written + sizeHint);
+                var newBuffer = ArrayPool<byte>.Shared.Rent(newSize);
+                buffer.AsSpan(0, _written).CopyTo(newBuffer);
+                ArrayPool<byte>.Shared.Return(buffer);
+                _buffer = newBuffer;
+            }
+        }
+
+        public void Dispose()
+        {
+            var buffer = _buffer;
+
+            if (buffer is not null)
+            {
+                _buffer = null;
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
     }
