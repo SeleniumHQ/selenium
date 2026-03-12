@@ -35,6 +35,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -277,8 +278,17 @@ class HandleSession implements HttpHandler, Closeable {
           // long-running navigation. Fall back to the Node's own sessionTimeout when it is larger,
           // as it represents the Grid operator's upper bound for command duration.
           Duration pageLoadTimeout = sessionReadTimeout(session.getCapabilities());
+          // Only cache successful fetches so that a transient error on the first command
+          // does not permanently lock in the fallback default for the node's timeout.
+          // computeIfAbsent skips storing when the mapping function returns null, so a
+          // failed fetch is retried on the next command rather than cached forever.
+          Duration fetchedNodeTimeout =
+              nodeTimeoutCache.computeIfAbsent(
+                  sessionUri, uri -> fetchNodeTimeout(uri).orElse(null));
           Duration nodeTimeout =
-              nodeTimeoutCache.computeIfAbsent(sessionUri, this::fetchNodeTimeout);
+              fetchedNodeTimeout != null
+                  ? fetchedNodeTimeout
+                  : ClientConfig.defaultConfig().readTimeout();
           Duration base =
               pageLoadTimeout.compareTo(nodeTimeout) >= 0 ? pageLoadTimeout : nodeTimeout;
           Duration effectiveTimeout = base.plus(READ_TIMEOUT_BUFFER);
@@ -344,20 +354,22 @@ class HandleSession implements HttpHandler, Closeable {
     return 0L;
   }
 
-  /** Fetches the Node's own session-timeout from {@code /se/grid/node/status}. */
-  private Duration fetchNodeTimeout(URI uri) {
-    Duration nodeTimeout = ClientConfig.defaultConfig().readTimeout();
+  /**
+   * Fetches the Node's own session-timeout from {@code /se/grid/node/status}. Returns empty on any
+   * failure so the caller can skip caching and retry on the next command.
+   */
+  private Optional<Duration> fetchNodeTimeout(URI uri) {
     ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
     try (HttpClient httpClient = httpClientFactory.createClient(config)) {
       HttpResponse res = httpClient.execute(new HttpRequest(GET, "/se/grid/node/status"));
       NodeStatus nodeStatus = new Json().toType(string(res), NodeStatus.class);
       if (nodeStatus != null) {
-        nodeTimeout = nodeStatus.getSessionTimeout();
+        return Optional.of(nodeStatus.getSessionTimeout());
       }
     } catch (Exception e) {
       LOG.fine("Unable to fetch node status for " + uri);
     }
-    return nodeTimeout;
+    return Optional.empty();
   }
 
   @Override
