@@ -128,8 +128,7 @@ internal sealed class Broker : IAsyncDisposable
         string? error = default;
         string? message = default;
         Utf8JsonReader resultReader = default;
-        int paramsStartIndex = 0;
-        int paramsEndIndex = 0;
+        Utf8JsonReader paramsReader = default;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -138,8 +137,6 @@ internal sealed class Broker : IAsyncDisposable
 
         while (reader.TokenType == JsonTokenType.PropertyName)
         {
-            bool isParams = false;
-
             if (reader.ValueTextEquals("id"u8))
             {
                 reader.Read();
@@ -165,8 +162,7 @@ internal sealed class Broker : IAsyncDisposable
             else if (reader.ValueTextEquals("params"u8))
             {
                 reader.Read();
-                paramsStartIndex = (int)reader.TokenStartIndex;
-                isParams = true;
+                paramsReader = reader; // snapshot
             }
             else if (reader.ValueTextEquals("error"u8))
             {
@@ -184,7 +180,6 @@ internal sealed class Broker : IAsyncDisposable
             }
 
             reader.Skip();
-            if (isParams) paramsEndIndex = (int)reader.BytesConsumed;
             reader.Read();
         }
 
@@ -223,8 +218,23 @@ internal sealed class Broker : IAsyncDisposable
 
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
-                var paramsJsonData = new ReadOnlyMemory<byte>(data, paramsStartIndex, paramsEndIndex - paramsStartIndex);
-                _eventDispatcher.EnqueueEvent(method, paramsJsonData, _bidi);
+
+                if (!_eventDispatcher.TryGetJsonTypeInfo(method, out var jsonTypeInfo))
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data)}");
+                    }
+
+                    break;
+                }
+
+                var eventArgs = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventArgs
+                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
+
+                eventArgs.BiDi = _bidi;
+
+                _eventDispatcher.EnqueueEvent(method, eventArgs);
                 break;
 
             case TypeError:

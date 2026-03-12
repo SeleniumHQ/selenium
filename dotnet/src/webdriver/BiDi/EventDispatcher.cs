@@ -18,7 +18,7 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Text.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.BiDi.Session;
@@ -32,7 +32,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Func<ISessionModule> _sessionProvider;
 
-    private readonly ConcurrentDictionary<string, EventRegistration> _events = new();
+    private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
 
     private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
     {
@@ -51,7 +51,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var registration = _events.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
+        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
 
         var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
@@ -62,26 +62,16 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        if (_events.TryGetValue(subscription.EventHandler.EventName, out var registration))
+        if (_eventRegistrations.TryGetValue(subscription.EventHandler.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
             registration.RemoveHandler(subscription.EventHandler);
         }
     }
 
-    public void EnqueueEvent(string method, ReadOnlyMemory<byte> jsonUtf8Bytes, IBiDi bidi)
+    public void EnqueueEvent(string method, EventArgs eventArgs)
     {
-        if (_events.TryGetValue(method, out var registration) && registration.TypeInfo is not null)
-        {
-            _pendingEvents.Writer.TryWrite(new PendingEvent(method, jsonUtf8Bytes, bidi, registration.TypeInfo));
-        }
-        else
-        {
-            if (_logger.IsEnabled(LogEventLevel.Warn))
-            {
-                _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored.");
-            }
-        }
+        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
     }
 
     private async Task ProcessEventsAwaiterAsync()
@@ -93,15 +83,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 try
                 {
-                    if (_events.TryGetValue(result.Method, out var registration))
+                    if (_eventRegistrations.TryGetValue(result.Method, out var registration))
                     {
-                        // Deserialize on background thread instead of network thread (single parse)
-                        var eventArgs = (EventArgs)JsonSerializer.Deserialize(result.JsonUtf8Bytes.Span, result.TypeInfo)!;
-                        eventArgs.BiDi = result.BiDi;
-
                         foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                         {
-                            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+                            await handler.InvokeAsync(result.EventArgs).ConfigureAwait(false);
                         }
                     }
                 }
@@ -125,7 +111,19 @@ internal sealed class EventDispatcher : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    private readonly record struct PendingEvent(string Method, ReadOnlyMemory<byte> JsonUtf8Bytes, IBiDi BiDi, JsonTypeInfo TypeInfo);
+    public bool TryGetJsonTypeInfo(string eventName, [NotNullWhen(true)] out JsonTypeInfo? jsonTypeInfo)
+    {
+        if (_eventRegistrations.TryGetValue(eventName, out var registration))
+        {
+            jsonTypeInfo = registration.TypeInfo;
+            return true;
+        }
+
+        jsonTypeInfo = null;
+        return false;
+    }
+
+    private readonly record struct PendingEvent(string Method, EventArgs EventArgs);
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
