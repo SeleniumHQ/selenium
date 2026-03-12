@@ -74,7 +74,7 @@ internal sealed class Broker : IAsyncDisposable
 
         using var sendBuffer = new PooledBufferWriter();
 
-        using (var writer = new Utf8JsonWriter((IBufferWriter<byte>)sendBuffer))
+        using (var writer = new Utf8JsonWriter(sendBuffer))
         {
             JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
         }
