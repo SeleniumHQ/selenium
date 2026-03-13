@@ -52,6 +52,27 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 
     public async Task ReceiveAsync(IBufferWriter<byte> writer, CancellationToken cancellationToken)
     {
+#if NET8_0_OR_GREATER
+        ValueWebSocketReceiveResult result;
+
+        do
+        {
+            var memory = writer.GetMemory();
+
+            result = await _webSocket.ReceiveAsync(memory, cancellationToken).ConfigureAwait(false);
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+
+                throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
+                    $"The remote end closed the WebSocket connection. Status: {_webSocket.CloseStatus}, Description: {_webSocket.CloseStatusDescription}");
+            }
+
+            writer.Advance(result.Count);
+        }
+        while (!result.EndOfMessage);
+#else
         WebSocketReceiveResult result;
 
         do
@@ -60,7 +81,7 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 
             if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray((ReadOnlyMemory<byte>)memory, out var segment))
             {
-                segment = new ArraySegment<byte>(memory.ToArray());
+                throw new InvalidOperationException($"The {nameof(IBufferWriter<byte>)} must provide array-backed memory.");
             }
 
             result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
@@ -76,6 +97,7 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
             writer.Advance(result.Count);
         }
         while (!result.EndOfMessage);
+#endif
     }
 
     public async Task SendAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
