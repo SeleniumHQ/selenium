@@ -47,10 +47,9 @@ class GetContainerLogs {
     String requestUrl =
         String.format("/v%s/containers/%s/logs?stdout=true&stderr=true", apiVersion, id);
 
-    HttpResponse res =
-        client.execute(new HttpRequest(GET, requestUrl).addHeader("Content-Type", "text/plain"));
+    HttpResponse res = client.execute(new HttpRequest(GET, requestUrl));
     if (res.getStatus() != HTTP_OK) {
-      LOG.warning("Unable to inspect container " + id);
+      LOG.warning(() -> "Unable to inspect container " + id);
     }
     List<String> logLines = List.of(Contents.string(res).split("\n"));
     return new ContainerLogs(id, logLines);
