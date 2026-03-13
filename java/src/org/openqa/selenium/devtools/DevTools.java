@@ -32,7 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.idealized.Domains;
@@ -47,8 +46,8 @@ public class DevTools implements Closeable {
   private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(30);
   private final Connection connection;
-  private volatile String windowHandle;
-  private volatile SessionID cdpSession;
+  private volatile @Nullable String windowHandle;
+  private volatile @Nullable SessionID cdpSession;
 
   public DevTools(Function<DevTools, Domains> protocol, Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
@@ -66,7 +65,8 @@ public class DevTools implements Closeable {
   }
 
   public void disconnectSession() {
-    if (cdpSession != null) {
+    SessionID id = cdpSession;
+    if (id != null) {
       try {
         // ensure network interception does cancel the wait for responses
         getDomains().network().disable();
@@ -75,7 +75,6 @@ public class DevTools implements Closeable {
         LOG.log(Level.WARNING, "Exception while disabling network", e);
       }
 
-      SessionID id = cdpSession;
       cdpSession = null;
       windowHandle = null;
 
@@ -168,7 +167,7 @@ public class DevTools implements Closeable {
     attachToWindow(windowHandle);
   }
 
-  private void attachToWindow(String windowHandle) {
+  private void attachToWindow(@Nullable String windowHandle) {
     TargetID targetId = findTarget(windowHandle);
     attachToTarget(targetId);
     this.windowHandle = windowHandle;
@@ -210,8 +209,7 @@ public class DevTools implements Closeable {
     }
   }
 
-  @NonNull
-  private TargetID findTarget(String windowHandle) {
+  private TargetID findTarget(@Nullable String windowHandle) {
     // Figure out the targets.
     List<TargetInfo> infos =
         connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
@@ -231,6 +229,7 @@ public class DevTools implements Closeable {
     return e.getCause() != null ? e.getCause() : e;
   }
 
+  @Nullable
   public SessionID getCdpSession() {
     return cdpSession;
   }

@@ -34,7 +34,6 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 import org.openqa.selenium.grid.config.Role;
@@ -107,6 +106,11 @@ public class InfoCommand implements CliCommand {
           toDisplay = "sessionmaps.txt";
           break;
 
+        case "kubernetes":
+          title = "Dynamic Grid on Kubernetes";
+          toDisplay = "kubernetes.txt";
+          break;
+
         case "help":
         case "info":
         default:
@@ -164,7 +168,6 @@ public class InfoCommand implements CliCommand {
     return formattedText.toString();
   }
 
-  @NonNull
   private String unformattedText(String path) throws IOException {
     try (InputStream in = getClass().getClassLoader().getResourceAsStream(path)) {
       requireNonNull(in, () -> "Resource is not found in classpath: " + path);

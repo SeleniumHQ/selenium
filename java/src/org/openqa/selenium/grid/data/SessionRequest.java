@@ -164,6 +164,7 @@ public class SessionRequest {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionRequest fromJson(JsonInput input) {
     RequestId id = null;
     Instant enqueued = null;

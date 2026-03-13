@@ -232,6 +232,12 @@ def get_edgedriver_url(version, platform):
     return url if r.status == 200 else None
 
 
+def verify_url(url):
+    """Verify that a URL is downloadable."""
+    r = http.request("HEAD", url)
+    return r.status == 200
+
+
 def find_matching_edge_version(platform):
     """Find the latest Edge version where both browser and driver are available."""
     browsers = get_edge_versions(platform)
@@ -240,6 +246,13 @@ def find_matching_edge_version(platform):
     browsers.sort(key=lambda x: parse(x["version"]), reverse=True)
 
     for browser in browsers:
+        if not verify_url(browser["url"]):
+            print(
+                f"  Browser {browser['version']} not downloadable for {platform}",
+                file=sys.stderr,
+            )
+            continue
+
         major = browser["version"].split(".")[0]
         driver_version = get_edgedriver_version(major, platform)
         if not driver_version:

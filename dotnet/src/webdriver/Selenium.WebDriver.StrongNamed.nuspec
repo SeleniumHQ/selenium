@@ -54,8 +54,8 @@
     <file src="lib/net8.0/WebDriver.StrongNamed.pdb" target="lib/net8.0/WebDriver.StrongNamed.pdb" />
     <file src="lib/net8.0/WebDriver.StrongNamed.xml" target="lib/net8.0/WebDriver.StrongNamed.xml" />
 
-    <file src="build/Selenium.WebDriver.StrongNamed.targets" target="build/Selenium.WebDriver.StrongNamed.targets"/>
-    <file src="buildTransitive/Selenium.WebDriver.StrongNamed.targets" target="buildTransitive/Selenium.WebDriver.StrongNamed.targets"/>
+    <file src="build/Selenium.WebDriver.StrongNamed.props" target="build/Selenium.WebDriver.StrongNamed.props"/>
+    <file src="buildTransitive/Selenium.WebDriver.StrongNamed.props" target="buildTransitive/Selenium.WebDriver.StrongNamed.props"/>
 
     <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
     <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />

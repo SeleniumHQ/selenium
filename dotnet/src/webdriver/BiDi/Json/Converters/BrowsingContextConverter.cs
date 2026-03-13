@@ -17,26 +17,24 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class BrowsingContextConverter : JsonConverter<BrowsingContext.BrowsingContext>
+internal class BrowsingContextConverter(IBiDi bidi) : JsonConverter<BrowsingContext.BrowsingContext>
 {
-    private readonly BiDi _bidi;
-
-    public BrowsingContextConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
+    private static readonly ConditionalWeakTable<IBiDi, ConcurrentDictionary<string, BrowsingContext.BrowsingContext>> s_cache = new();
 
     public override BrowsingContext.BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new BrowsingContext.BrowsingContext(id!) { BiDi = _bidi };
+        var sessionCache = s_cache.GetValue(bidi, _ => new ConcurrentDictionary<string, BrowsingContext.BrowsingContext>());
+
+        return sessionCache.GetOrAdd(id!, key => new BrowsingContext.BrowsingContext(bidi, key));
     }
 
     public override void Write(Utf8JsonWriter writer, BrowsingContext.BrowsingContext value, JsonSerializerOptions options)

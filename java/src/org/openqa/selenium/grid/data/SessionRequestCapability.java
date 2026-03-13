@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -77,12 +75,10 @@ public class SessionRequestCapability {
   }
 
   private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new HashMap<>();
-    toReturn.put("requestId", requestId);
-    toReturn.put("capabilities", desiredCapabilities);
-    return unmodifiableMap(toReturn);
+    return Map.of("requestId", requestId, "capabilities", desiredCapabilities);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionRequestCapability fromJson(JsonInput input) {
     RequestId id = null;
     Set<Capabilities> capabilities = null;

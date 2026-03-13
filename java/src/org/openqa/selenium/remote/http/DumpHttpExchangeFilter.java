@@ -52,7 +52,7 @@ public class DumpHttpExchangeFilter implements Filter {
     message.forEachHeader(
         (name, value) -> builder.append("  ").append(name).append(": ").append(value).append("\n"));
     builder.append("\n");
-    builder.append(Contents.string(message));
+    builder.append(message);
   }
 
   /** visible for testing only */

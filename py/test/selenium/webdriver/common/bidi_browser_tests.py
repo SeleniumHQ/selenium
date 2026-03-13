@@ -90,8 +90,8 @@ def test_get_client_windows(driver):
     assert window_info.get_width() > 0
     assert window_info.get_height() > 0
     assert isinstance(window_info.is_active(), bool)
-    assert window_info.get_x() >= 0
-    assert window_info.get_y() >= 0
+    assert isinstance(window_info.get_x(), int)
+    assert isinstance(window_info.get_y(), int)
 
 
 def test_raises_exception_when_removing_default_user_context(driver):

@@ -20,12 +20,12 @@ package org.openqa.selenium.concurrent;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
-public class Lazy<T> {
+public final class Lazy<T> {
 
-  @Nullable private volatile T value;
+  private final Object lock = new Object();
+  private volatile @Nullable T value;
   private final Supplier<T> supplier;
 
   private Lazy(Supplier<T> supplier) {
@@ -33,14 +33,18 @@ public class Lazy<T> {
   }
 
   public Optional<T> getIfInitialized() {
-    return Optional.ofNullable(value);
+    return value == null ? Optional.empty() : Optional.ofNullable(value);
   }
 
   public T get() {
     if (value == null) {
-      synchronized (this) {
+      synchronized (lock) {
         if (value == null) {
-          value = supplier.get();
+          try {
+            value = supplier.get();
+          } catch (Exception e) {
+            throw new InitializationException(e);
+          }
         }
       }
     }
@@ -49,5 +53,16 @@ public class Lazy<T> {
 
   public static <T> Lazy<T> lazy(Supplier<T> supplier) {
     return new Lazy<>(supplier);
+  }
+
+  @FunctionalInterface
+  public interface Supplier<T> {
+    T get() throws Exception;
+  }
+
+  public static class InitializationException extends RuntimeException {
+    public InitializationException(Exception cause) {
+      super(cause);
+    }
   }
 }

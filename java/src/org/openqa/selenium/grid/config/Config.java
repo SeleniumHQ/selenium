@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.json.Json;
 
 public interface Config {
@@ -34,7 +35,7 @@ public interface Config {
 
   Optional<List<String>> getAll(String section, String option);
 
-  default Optional<String> get(String section, String option) {
+  default Optional<@Nullable String> get(String section, String option) {
     return getAll(section, option).map(items -> items.isEmpty() ? null : items.get(0));
   }
 

@@ -39,11 +39,8 @@ class PrintOptionsTest {
 
   @Test
   void setsValuesAsPassed() {
-    PrintOptions printOptions = new PrintOptions();
-
-    printOptions.setBackground(true);
-    printOptions.setScale(1.5);
-    printOptions.setShrinkToFit(false);
+    PrintOptions printOptions =
+        new PrintOptions().setBackground(true).setScale(1.5).setShrinkToFit(false);
 
     assertThat(printOptions.getScale()).isEqualTo(1.5);
     assertThat(printOptions.getBackground()).isTrue();
@@ -66,14 +63,12 @@ class PrintOptionsTest {
 
     Map<String, Object> map = printOptions.toMap();
     assertThat(map).hasSize(7);
-    assertThat(map).containsKey("page");
-    assertThat(map).containsKey("orientation");
-    assertThat(map).containsKey("scale");
-    assertThat(map).containsKey("shrinkToFit");
-    assertThat(map).containsKey("background");
-    assertThat(map).containsKey("pageRanges");
-    assertThat(map).containsKey("margin");
-    assertThat(map.get("margin")).asInstanceOf(MAP).hasSize(4);
-    assertThat(map.get("page")).asInstanceOf(MAP).hasSize(2);
+    assertThat(map)
+        .containsOnlyKeys(
+            "page", "orientation", "scale", "shrinkToFit", "background", "pageRanges", "margin");
+    assertThat(map.get("margin"))
+        .asInstanceOf(MAP)
+        .containsOnlyKeys("top", "left", "bottom", "right");
+    assertThat(map.get("page")).asInstanceOf(MAP).containsOnlyKeys("width", "height");
   }
 }

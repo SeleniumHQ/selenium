@@ -19,7 +19,7 @@
 
 using System.Threading.Tasks;
 using NUnit.Framework;
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V144;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V145;
 
 namespace OpenQA.Selenium.DevTools;
 

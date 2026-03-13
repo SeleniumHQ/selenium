@@ -20,5 +20,6 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("dev.failsafe:failsafe"),
         artifact("org.zeromq:jeromq"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

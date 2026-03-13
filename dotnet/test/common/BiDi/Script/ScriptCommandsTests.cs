@@ -92,7 +92,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        TaskCompletionSource<Log.LogEntry> tcs = new();
+        TaskCompletionSource<Log.LogEntryEventArgs> tcs = new();
 
         await context.Log.OnEntryAddedAsync(tcs.SetResult);
 

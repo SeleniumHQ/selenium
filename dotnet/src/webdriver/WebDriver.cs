@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.VirtualAuth;
@@ -53,6 +50,16 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
     {
         this.CommandExecutor = executor;
+        this.elementFactory = new WebElementFactory(this);
+        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
+
+        if (this is ISupportsLogs)
+        {
+            // Only add the legacy log commands if the driver supports
+            // retrieving the logs via the extension end points.
+            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
+        }
 
         try
         {
@@ -63,24 +70,13 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             try
             {
                 // Failed to start driver session, disposing of driver
-                this.Quit();
+                this.Dispose();
             }
             catch
             {
                 // Ignore the clean-up exception. We'll propagate the original failure.
             }
             throw;
-        }
-
-        this.elementFactory = new WebElementFactory(this);
-        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
-
-        if (this is ISupportsLogs)
-        {
-            // Only add the legacy log commands if the driver supports
-            // retrieving the logs via the extension end points.
-            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
-            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
         }
     }
 
@@ -224,6 +220,17 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     public void Dispose()
     {
         this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Asynchronously disposes the WebDriver Instance
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsyncCore().ConfigureAwait(false);
+        this.Dispose(false);
         GC.SuppressFinalize(this);
     }
 
@@ -676,25 +683,60 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="disposing">if its in the process of disposing</param>
     protected virtual void Dispose(bool disposing)
     {
-        try
+        if (disposing)
         {
             if (this.SessionId is not null)
             {
-                this.Execute(DriverCommand.Quit, null);
+                try
+                {
+
+                    this.Execute(DriverCommand.Quit, null);
+
+                }
+                catch (NotImplementedException)
+                {
+                }
+                catch (InvalidOperationException)
+                {
+                }
+                catch (WebDriverException)
+                {
+                }
+                finally
+                {
+                    this.SessionId = null!;
+                }
             }
+
+            this.CommandExecutor.Dispose();
         }
-        catch (NotImplementedException)
+    }
+
+    /// <summary>
+    /// Asynchronously performs the core dispose logic.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (this.SessionId is not null)
         {
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        catch (WebDriverException)
-        {
-        }
-        finally
-        {
-            this.SessionId = null!;
+            try
+            {
+                await this.ExecuteAsync(DriverCommand.Quit, null).ConfigureAwait(false);
+            }
+            catch (NotImplementedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (WebDriverException)
+            {
+            }
+            finally
+            {
+                this.SessionId = null!;
+            }
         }
 
         this.CommandExecutor.Dispose();

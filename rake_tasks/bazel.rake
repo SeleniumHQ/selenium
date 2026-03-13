@@ -27,6 +27,8 @@ task :affected_targets do |_task, args|
   puts "Commit range: #{base_rev}..#{head_rev}"
 
   changed_files = `git diff --name-only #{base_rev} #{head_rev}`.split("\n").map(&:strip).reject(&:empty?)
+  raise "git diff failed for range #{base_rev}..#{head_rev}" unless $CHILD_STATUS.success?
+
   puts "Changed files: #{changed_files.size}"
 
   targets = if changed_files.any? { |f| f.match?(HIGH_IMPACT_PATTERN) }

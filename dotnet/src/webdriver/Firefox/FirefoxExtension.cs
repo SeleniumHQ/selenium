@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Nodes;
