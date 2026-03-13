@@ -39,6 +39,7 @@ import io.netty.util.ReferenceCountUtil;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -51,9 +52,9 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final Set<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
       Set.of(DELETE, GET, POST, OPTIONS);
-  private volatile FileBackedOutputStream buffer;
+  private volatile @Nullable FileBackedOutputStream buffer;
   private final AtomicLong length = new AtomicLong();
-  private volatile HttpRequest request;
+  private volatile @Nullable HttpRequest request;
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
@@ -131,6 +132,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     super.channelInactive(ctx);
   }
 
+  @Nullable
   private HttpRequest createRequest(
       ChannelHandlerContext ctx, io.netty.handler.codec.http.HttpRequest nettyRequest) {
 

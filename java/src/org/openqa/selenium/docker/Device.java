@@ -18,6 +18,7 @@
 package org.openqa.selenium.docker;
 
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public class Device {
 
@@ -33,8 +34,9 @@ public class Device {
     this.cgroupPermissions = cgroupPermissions;
   }
 
-  public static Device device(String pathOnHost, String pathInContainer, String cgroupPermissions) {
-    if (Objects.isNull(cgroupPermissions) || cgroupPermissions.trim().isEmpty()) {
+  public static Device device(
+      String pathOnHost, String pathInContainer, @Nullable String cgroupPermissions) {
+    if (cgroupPermissions == null || cgroupPermissions.trim().isEmpty()) {
       cgroupPermissions = "crw";
     }
     return new Device(pathOnHost, pathInContainer, cgroupPermissions);

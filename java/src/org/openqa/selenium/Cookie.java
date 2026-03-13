@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
 public class Cookie implements Serializable {
   private static final long serialVersionUID = 4115876353625612383L;
@@ -214,10 +215,9 @@ public class Cookie implements Serializable {
   }
 
   public void validate() {
-    if (name == null || name.isEmpty() || value == null || path == null) {
-      throw new IllegalArgumentException(
-          "Required attributes are not set or " + "any non-null attribute set to null");
-    }
+    Require.nonEmpty("Name", name);
+    Require.nonNull("Value", value);
+    Require.nonNull("Path", path);
 
     if (name.indexOf(';') != -1) {
       throw new IllegalArgumentException("Cookie names cannot contain a ';': " + name);
