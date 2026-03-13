@@ -37,6 +37,7 @@ from typing import Any
 # ============================================================================
 
 ENHANCEMENTS: dict[str, dict[str, Any]] = {
+
     "browser": {
         # Dataclass custom methods
         "__dataclass_methods__": {
@@ -170,6 +171,7 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
         return self._conn.execute(cmd)''',
         ],
     },
+
     "browsingContext": {
         # Method enhancements
         "create": {
@@ -254,6 +256,7 @@ class DownloadEndParams:
         ],
         # Download events are now in the CDDL spec, so no extra_events needed
     },
+
     "log": {
         # Make LogLevel an alias for Level so existing code using LogLevel works
         "aliases": {"LogLevel": "Level"},
@@ -317,6 +320,7 @@ class JavascriptLogEntry:
             "entry_added": "Entry",
         },
     },
+
     "emulation": {
         "extra_methods": [
             '''    def set_geolocation_override(
@@ -515,6 +519,7 @@ class JavascriptLogEntry:
         return self._conn.execute(cmd)''',
         ],
     },
+
     "script": {
         "extra_methods": [
             '''    def execute(self, function_declaration: str, *args, context_id: str | None = None) -> Any:
@@ -890,6 +895,7 @@ class JavascriptLogEntry:
         self._unsubscribe_log_entry(callback_id)''',
         ],
     },
+
     "network": {
         # Initialize intercepts tracking list and per-handler intercept map
         "extra_init_code": [
@@ -1080,6 +1086,7 @@ class JavascriptLogEntry:
             self._remove_intercept(intercept_id)''',
         ],
     },
+
     "storage": {
         # Exclude auto-generated dataclasses that need custom to_bidi_dict()
         # for JSON-over-WebSocket serialization, or custom constructors.
@@ -1319,6 +1326,7 @@ class StorageKeyPartitionDescriptor:
         return result''',
         ],
     },
+
     "session": {
         # Override UserPromptHandler to add to_bidi_dict() for JSON serialization
         "exclude_types": ["UserPromptHandler"],
@@ -1352,6 +1360,7 @@ class UserPromptHandler:
         return result''',
         ],
     },
+
     "webExtension": {
         # Suppress the raw generated stubs; hand-written versions follow below
         "exclude_methods": ["install", "uninstall"],
@@ -1422,6 +1431,7 @@ class UserPromptHandler:
         return self._conn.execute(cmd)''',
         ],
     },
+
     "input": {
         # FileDialogInfo needs from_json for event deserialization
         "exclude_types": ["FileDialogInfo", "PointerMoveAction", "PointerDownAction"],
