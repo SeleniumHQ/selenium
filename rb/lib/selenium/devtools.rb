@@ -32,15 +32,19 @@ module Selenium
 
       private
 
-      # Try to load up to 2 versions back
+      # Try to load up to 3 versions back
       def load_older_version
         load_old_version(@version - 1)
       rescue LoadError
         begin
           load_old_version(@version - 2)
         rescue LoadError
-          raise WebDriver::Error::WebDriverError,
-                'Could not find a valid devtools version; use a more recent version of selenium-devtools gem'
+          begin
+            load_old_version(@version - 3)
+          rescue LoadError
+            raise WebDriver::Error::WebDriverError,
+                  'Could not find a valid devtools version; use a more recent version of selenium-devtools gem'
+          end
         end
       end
 
