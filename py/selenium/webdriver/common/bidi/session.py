@@ -6,10 +6,10 @@
 # WebDriver BiDi module: session
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any
-
 from .common import command_builder
+from dataclasses import dataclass
+from dataclasses import field
 
 
 class UserPromptHandlerType:
