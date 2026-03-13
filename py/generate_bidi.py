@@ -952,7 +952,9 @@ class _EventManager:
 
         # Add EVENT_CONFIGS dict if there are events
         if self.events:
-            code += "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
+            code += (
+                "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
+            )
 
         if self.name == "script":
             code += "    def __init__(self, conn, driver=None) -> None:\n"
@@ -1103,13 +1105,13 @@ class _EventManager:
                     dataclass_import_pattern,
                     "from dataclasses import dataclass\nfrom dataclasses import field\n",
                     code,
-                    count=1,
+                    count=1
                 )
             elif "from dataclasses import" not in code:
                 # If there's no dataclasses import yet, add field import after typing
                 code = code.replace(
                     "from typing import Any\n",
-                    "from typing import Any\nfrom dataclasses import field\n",
+                    "from typing import Any\nfrom dataclasses import field\n"
                 )
 
         return code
@@ -1653,12 +1655,12 @@ def generate_common_file(output_path: Path) -> None:
         "\n"
         "from __future__ import annotations\n"
         "\n"
-        "from typing import Any, Generator\n"
+        "from typing import Any\n"
         "\n"
         "\n"
         "def command_builder(\n"
         "    method: str, params: dict[str, Any]\n"
-        ") -> Generator[dict[str, Any], Any, Any]:\n"
+        ") -> dict[str, Any]:\n"
         '    """Build a BiDi command generator.\n'
         "\n"
         "    Args:\n"

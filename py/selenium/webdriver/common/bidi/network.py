@@ -975,6 +975,10 @@ class Network:
         """
         from selenium.webdriver.common.bidi.common import command_builder as _cb
 
+        # Set up network intercept for authRequired phase
+        intercept_result = self._add_intercept(phases=["authRequired"])
+        intercept_id = intercept_result.get("intercept") if intercept_result else None
+
         def _auth_callback(params):
             raw = (
                 params
@@ -1002,10 +1006,20 @@ class Network:
                     )
                 )
 
-        return self.add_event_handler("auth_required", _auth_callback)
+        callback_id = self.add_event_handler("auth_required", _auth_callback)
+        if intercept_id:
+            self._handler_intercepts[callback_id] = intercept_id
+        return callback_id
     def remove_auth_handler(self, callback_id):
-        """Remove an auth handler by callback ID."""
+        """Remove an auth handler by callback ID and its associated network intercept.
+
+        Args:
+            callback_id: The handler ID returned by add_auth_handler.
+        """
         self.remove_event_handler("auth_required", callback_id)
+        intercept_id = self._handler_intercepts.pop(callback_id, None)
+        if intercept_id:
+            self._remove_intercept(intercept_id)
 
     def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
         """Add an event handler.
