@@ -107,14 +107,14 @@ sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
         try
         {
 #if NET8_0_OR_GREATER
-            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
 #else
             if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray(data, out ArraySegment<byte> segment))
             {
                 segment = new ArraySegment<byte>(data.ToArray());
             }
 
-            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
 #endif
         }
         finally
