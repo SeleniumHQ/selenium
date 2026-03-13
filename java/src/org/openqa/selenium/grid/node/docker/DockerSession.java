@@ -50,6 +50,8 @@ public class DockerSession extends DefaultActiveSession {
   private final Container container;
   private final @Nullable Container videoContainer;
   private final DockerAssetsPath assetsPath;
+  private final Duration containerStopTimeout;
+  private final Duration videoContainerStopTimeout;
 
   DockerSession(
       Container container,
@@ -63,21 +65,29 @@ public class DockerSession extends DefaultActiveSession {
       Dialect downstream,
       Dialect upstream,
       Instant startTime,
-      DockerAssetsPath assetsPath) {
+      DockerAssetsPath assetsPath,
+      Duration containerStopTimeout,
+      Duration videoContainerStopTimeout) {
     super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
     this.videoContainer = videoContainer;
     this.assetsPath = Require.nonNull("Assets path", assetsPath);
+    this.containerStopTimeout = Require.nonNull("Container stop timeout", containerStopTimeout);
+    this.videoContainerStopTimeout =
+        Require.nonNull("Video container stop timeout", videoContainerStopTimeout);
   }
 
   @Override
   public void stop() {
-    if (videoContainer != null) {
-      videoContainer.stop(Duration.ofSeconds(10));
+    try {
+      if (videoContainer != null) {
+        videoContainer.stop(videoContainerStopTimeout);
+      }
+      saveLogs();
+    } finally {
+      container.stop(containerStopTimeout);
+      super.stop();
     }
-    saveLogs();
-    container.stop(Duration.ofMinutes(1));
-    super.stop();
   }
 
   private void saveLogs() {

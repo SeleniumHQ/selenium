@@ -144,6 +144,17 @@ public class DockerFlags implements HasRoles {
       example = "\"" + DockerOptions.DEFAULT_ASSETS_PATH + "\"")
   private String assetsPath;
 
+  @Parameter(
+      names = {"--docker-stop-grace-period"},
+      description =
+          "Grace period (in seconds) to wait for browser and video containers to stop gracefully"
+              + " before they are forcibly terminated.")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "stop-grace-period",
+      example = "" + DockerOptions.DEFAULT_STOP_GRACE_PERIOD)
+  private Integer stopGracePeriod;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);
