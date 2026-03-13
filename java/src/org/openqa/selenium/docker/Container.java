@@ -74,4 +74,8 @@ public class Container {
     }
     return new ContainerLogs(getId(), new ArrayList<>());
   }
+
+  public boolean isRunning() {
+    return running;
+  }
 }

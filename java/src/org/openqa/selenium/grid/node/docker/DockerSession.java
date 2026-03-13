@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import static java.util.logging.Level.FINE;
+
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -72,6 +74,12 @@ public class DockerSession extends DefaultActiveSession {
   }
 
   private void saveLogs() {
+    if (!container.isRunning()) {
+      LOG.log(
+          FINE, () -> "Skip saving logs because container is not running: " + container.getId());
+      return;
+    }
+
     String sessionAssetsPath = assetsPath.getContainerPath(getId());
     String seleniumServerLog = String.format("%s/selenium-server.log", sessionAssetsPath);
     try {
