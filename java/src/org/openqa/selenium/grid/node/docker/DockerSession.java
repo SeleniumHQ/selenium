@@ -117,8 +117,8 @@ public class DockerSession extends DefaultActiveSession {
   private void parseMultiplexedStream(InputStream stream, OutputStream out) throws IOException {
     try (DataInputStream in = new DataInputStream(new BufferedInputStream(stream))) {
       while (true) {
-        in.skipBytes(1); // Skip "stream type" byte (1 = stdout, 2 = stderr)
-        in.skipBytes(3); // Skip the 3 empty padding bytes
+        in.readFully(new byte[1]); // Skip "stream type" byte (1 = stdout, 2 = stderr)
+        in.readFully(new byte[3]); // Skip the 3 empty padding bytes
         int payloadSize = in.readInt(); // Read the 4-byte payload size
         byte[] payload = new byte[payloadSize];
         in.readFully(payload);

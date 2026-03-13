@@ -118,8 +118,13 @@ public class DockerOptions {
   }
 
   private Duration getStopGracePeriod() {
-    return Duration.ofSeconds(
-        config.getInt(DOCKER_SECTION, "stop-grace-period").orElse(DEFAULT_STOP_GRACE_PERIOD));
+    int seconds =
+        config.getInt(DOCKER_SECTION, "stop-grace-period").orElse(DEFAULT_STOP_GRACE_PERIOD);
+    if (seconds < 0) {
+      throw new ConfigException(
+          "stop-grace-period must be a non-negative integer, but was: " + seconds);
+    }
+    return Duration.ofSeconds(seconds);
   }
 
   @Nullable
