@@ -191,18 +191,22 @@ public class RouterServer extends TemplateGridServerCommand {
 
     // Resolve a request URI to the Node URI for direct TCP tunnelling of WebSocket connections.
     // Falls back to ProxyWebsocketsIntoGrid (the websocketHandler) when the session is not found.
+    // Passing null disables the tunnel entirely (--tcp-tunnel false), forcing all WebSocket traffic
+    // through ProxyWebsocketsIntoGrid — useful for benchmarking or restricted network topologies.
     Function<String, Optional<URI>> tcpTunnelResolver =
-        uri ->
-            HttpSessionId.getSessionId(uri)
-                .map(SessionId::new)
-                .flatMap(
-                    id -> {
-                      try {
-                        return Optional.of(sessions.getUri(id));
-                      } catch (NoSuchSessionException e) {
-                        return Optional.empty();
-                      }
-                    });
+        routerOptions.tcpTunnel()
+            ? uri ->
+                HttpSessionId.getSessionId(uri)
+                    .map(SessionId::new)
+                    .flatMap(
+                        id -> {
+                          try {
+                            return Optional.of(sessions.getUri(id));
+                          } catch (NoSuchSessionException e) {
+                            return Optional.empty();
+                          }
+                        })
+            : null;
 
     return new Handlers(
         routeWithLiveness,

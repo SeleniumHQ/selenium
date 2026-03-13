@@ -36,7 +36,7 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
-    public async Task ShouldRespectTimeout()
+    public void ShouldRespectTimeout()
     {
         Assert.That(
             () => bidi.StatusAsync(new() { Timeout = TimeSpan.FromMicroseconds(1) }),
@@ -44,7 +44,7 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
-    public async Task ShouldRespectCancellationToken()
+    public void ShouldRespectCancellationToken()
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMicroseconds(1));
 

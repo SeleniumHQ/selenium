@@ -21,9 +21,12 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/status",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
         artifact("org.jspecify:jspecify"),
     ],
 )

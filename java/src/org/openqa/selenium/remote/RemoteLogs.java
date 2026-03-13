@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -67,6 +68,7 @@ public class RemoteLogs implements Logs {
   }
 
   @Override
+  @NullMarked
   @SuppressWarnings("deprecation")
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType)) {
