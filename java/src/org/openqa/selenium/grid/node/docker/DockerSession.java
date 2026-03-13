@@ -21,8 +21,11 @@ import static java.util.logging.Level.FINE;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -88,27 +91,31 @@ public class DockerSession extends DefaultActiveSession {
     File seleniumServerLog = new File(sessionAssetsPath, "selenium-server.log");
     ContainerLogs containerLogs = container.getLogs();
 
-    try (InputStream in = new BufferedInputStream(containerLogs.getLogs())) {
-      // We could just use method `Files.copy(in, seleniumServerLog)`, but it can fail on Java 11.
-      // See JDK bug https://bugs.openjdk.org/browse/JDK-8228970
-
-      try (OutputStream out = new BufferedOutputStream(new FileOutputStream(seleniumServerLog))) {
-        byte[] buffer = new byte[1024];
-
-        int readCount;
-        while ((readCount = in.read(buffer)) != -1) {
-          out.write(buffer, 0, readCount);
-        }
-      }
-
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(seleniumServerLog))) {
+      parseMultiplexedStream(containerLogs.getLogs(), out);
       LOG.log(
           FINE,
           () ->
               String.format(
-                  "Saved container %s logs to file %s",
-                  container.getId(), seleniumServerLog.getAbsolutePath()));
-    } catch (Exception e) {
+                  "Saved container %s logs to file %s", container.getId(), seleniumServerLog));
+    } catch (IOException e) {
       LOG.log(Level.WARNING, "Error saving logs", e);
+    }
+  }
+
+  @SuppressWarnings("InfiniteLoopStatement")
+  private void parseMultiplexedStream(InputStream stream, OutputStream out) throws IOException {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(stream))) {
+      while (true) {
+        in.skipBytes(1); // Skip "stream type" byte (1 = stdout, 2 = stderr)
+        in.skipBytes(3); // Skip the 3 empty padding bytes
+        int payloadSize = in.readInt(); // Read the 4-byte payload size
+        byte[] payload = new byte[payloadSize];
+        in.readFully(payload);
+        out.write(payload);
+      }
+    } catch (EOFException done) {
+      LOG.log(FINE, () -> "Finished reading multiplexed stream: " + done);
     }
   }
 }
