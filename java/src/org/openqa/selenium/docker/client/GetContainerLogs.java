@@ -20,12 +20,10 @@ package org.openqa.selenium.docker.client;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import java.util.List;
 import java.util.logging.Logger;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -51,7 +49,7 @@ class GetContainerLogs {
     if (res.getStatus() != HTTP_OK) {
       LOG.warning(() -> "Unable to inspect container " + id);
     }
-    List<String> logLines = List.of(Contents.string(res).split("\n"));
-    return new ContainerLogs(id, logLines);
+
+    return new ContainerLogs(id, res.getContent());
   }
 }

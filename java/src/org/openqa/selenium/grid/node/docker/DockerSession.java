@@ -19,17 +19,21 @@ package org.openqa.selenium.grid.node.docker;
 
 import static java.util.logging.Level.FINE;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
+import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
@@ -81,10 +85,28 @@ public class DockerSession extends DefaultActiveSession {
     }
 
     String sessionAssetsPath = assetsPath.getContainerPath(getId());
-    String seleniumServerLog = String.format("%s/selenium-server.log", sessionAssetsPath);
-    try {
-      List<String> logs = container.getLogs().getLogLines();
-      Files.write(Paths.get(seleniumServerLog), logs);
+    File seleniumServerLog = new File(sessionAssetsPath, "selenium-server.log");
+    ContainerLogs containerLogs = container.getLogs();
+
+    try (InputStream in = new BufferedInputStream(containerLogs.getLogs())) {
+      // We could just use method `Files.copy(in, seleniumServerLog)`, but it can fail on Java 11.
+      // See JDK bug https://bugs.openjdk.org/browse/JDK-8228970
+
+      try (OutputStream out = new BufferedOutputStream(new FileOutputStream(seleniumServerLog))) {
+        byte[] buffer = new byte[1024];
+
+        int readCount;
+        while ((readCount = in.read(buffer)) != -1) {
+          out.write(buffer, 0, readCount);
+        }
+      }
+
+      LOG.log(
+          FINE,
+          () ->
+              String.format(
+                  "Saved container %s logs to file %s",
+                  container.getId(), seleniumServerLog.getAbsolutePath()));
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Error saving logs", e);
     }
