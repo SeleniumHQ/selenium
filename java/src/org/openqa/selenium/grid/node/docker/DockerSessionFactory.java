@@ -466,7 +466,7 @@ public class DockerSessionFactory implements SessionFactory {
       }
     }
     String envTz = System.getenv("TZ");
-    if (List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
+    if (envTz != null && List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
       return TimeZone.getTimeZone(envTz);
     }
     return null;

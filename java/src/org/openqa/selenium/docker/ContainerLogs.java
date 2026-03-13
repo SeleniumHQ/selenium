@@ -17,21 +17,39 @@
 
 package org.openqa.selenium.docker;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 
 public class ContainerLogs {
 
-  private final List<String> logLines;
+  private final Contents.Supplier contents;
   private final ContainerId id;
 
-  public ContainerLogs(ContainerId id, List<String> logLines) {
-    this.logLines = Require.nonNull("Container logs", logLines);
+  public ContainerLogs(ContainerId id, Contents.Supplier contents) {
+    this.contents = Require.nonNull("Container logs", contents);
     this.id = Require.nonNull("Container id", id);
   }
 
+  /**
+   * @deprecated List of container logs might be very long. If you need to write down the logs, use
+   *     {@link #getLogs()} to avoid reading the whole content to memory.
+   */
+  @Deprecated
   public List<String> getLogLines() {
-    return logLines;
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(contents.get(), UTF_8))) {
+      return in.lines().collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public ContainerId getId() {
@@ -40,6 +58,10 @@ public class ContainerLogs {
 
   @Override
   public String toString() {
-    return String.format("ContainerInfo{containerLogs=%s, id=%s}", logLines, id);
+    return String.format("ContainerInfo{id=%s,size=%s}", id, contents.length());
+  }
+
+  public InputStream getLogs() {
+    return contents.get();
   }
 }
