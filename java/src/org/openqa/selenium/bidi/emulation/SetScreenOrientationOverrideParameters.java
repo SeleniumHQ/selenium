@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
+import org.jspecify.annotations.Nullable;
+
 public class SetScreenOrientationOverrideParameters extends AbstractOverrideParameters {
 
-  public SetScreenOrientationOverrideParameters(ScreenOrientation screenOrientation) {
+  public SetScreenOrientationOverrideParameters(@Nullable ScreenOrientation screenOrientation) {
     if (screenOrientation == null) {
       map.put("screenOrientation", null);
     } else {
@@ -28,13 +31,13 @@ public class SetScreenOrientationOverrideParameters extends AbstractOverridePara
   }
 
   @Override
-  public SetScreenOrientationOverrideParameters contexts(java.util.List<String> contexts) {
+  public SetScreenOrientationOverrideParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetScreenOrientationOverrideParameters userContexts(java.util.List<String> userContexts) {
+  public SetScreenOrientationOverrideParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

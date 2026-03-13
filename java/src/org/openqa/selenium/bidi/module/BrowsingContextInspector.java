@@ -47,79 +47,80 @@ public class BrowsingContextInspector implements AutoCloseable {
 
   private final BiDi bidi;
 
-  private final Function<Map<String, Object>, BrowsingContextInfo> browsingContextInfoMapper =
+  private static final Function<Map<String, Object>, BrowsingContextInfo>
+      browsingContextInfoMapper =
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.readNonNull(BrowsingContextInfo.class);
+            }
+          };
+
+  private static final Function<Map<String, Object>, NavigationInfo> navigationInfoMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(BrowsingContextInfo.class);
+          return input.readNonNull(NavigationInfo.class);
         }
       };
 
-  private final Function<Map<String, Object>, NavigationInfo> navigationInfoMapper =
+  private static final Function<Map<String, Object>, DownloadInfo> downloadWillBeginMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(NavigationInfo.class);
+          return input.readNonNull(DownloadInfo.class);
         }
       };
 
-  private final Function<Map<String, Object>, DownloadInfo> downloadWillBeginMapper =
+  private static final Function<Map<String, Object>, DownloadEnded> downloadEndMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(DownloadInfo.class);
-        }
-      };
-
-  private final Function<Map<String, Object>, DownloadEnded> downloadEndMapper =
-      params -> {
-        try (StringReader reader = new StringReader(JSON.toJson(params));
-            JsonInput input = JSON.newInput(reader)) {
-          return input.read(DownloadEnded.class);
+          return input.readNonNull(DownloadEnded.class);
         }
       };
 
   private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
-  private final Event<BrowsingContextInfo> browsingContextDestroyed =
+  private static final Event<BrowsingContextInfo> browsingContextDestroyed =
       new Event<>("browsingContext.contextDestroyed", browsingContextInfoMapper);
 
-  private final Event<UserPromptClosed> userPromptClosed =
+  private static final Event<UserPromptClosed> userPromptClosed =
       new Event<>(
           "browsingContext.userPromptClosed",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(UserPromptClosed.class);
+              return input.readNonNull(UserPromptClosed.class);
             }
           });
 
   private final Set<Event<NavigationInfo>> navigationEventSet = new HashSet<>();
 
-  private final Event<DownloadInfo> downloadWillBeginEvent =
+  private static final Event<DownloadInfo> downloadWillBeginEvent =
       new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
 
-  private final Event<DownloadEnded> downloadEndEvent =
+  private static final Event<DownloadEnded> downloadEndEvent =
       new Event<>("browsingContext.downloadEnd", downloadEndMapper);
 
-  private final Event<UserPromptOpened> userPromptOpened =
+  private static final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
           "browsingContext.userPromptOpened",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(UserPromptOpened.class);
+              return input.readNonNull(UserPromptOpened.class);
             }
           });
 
-  private final Event<HistoryUpdated> historyUpdated =
+  private static final Event<HistoryUpdated> historyUpdated =
       new Event<>(
           "browsingContext.historyUpdated",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(HistoryUpdated.class);
+              return input.readNonNull(HistoryUpdated.class);
             }
           });
 

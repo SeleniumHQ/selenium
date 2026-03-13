@@ -19,13 +19,11 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule : Module
+public sealed class EmulationModule : Module, IEmulationModule
 {
     private EmulationJsonSerializerContext _jsonContext = null!;
 
@@ -78,6 +76,13 @@ public sealed class EmulationModule : Module
         return await ExecuteCommandAsync(new SetScreenSettingsOverrideCommand(@params), options, _jsonContext.SetScreenSettingsOverrideCommand, _jsonContext.SetScreenSettingsOverrideResult, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetScrollbarTypeOverrideParameters(scrollbarType, options?.Contexts, options?.UserContexts);
+
+        return await ExecuteCommandAsync(new SetScrollbarTypeOverrideCommand(@params), options, _jsonContext.SetScrollbarTypeOverrideCommand, _jsonContext.SetScrollbarTypeOverrideResult, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
@@ -101,7 +106,21 @@ public sealed class EmulationModule : Module
         return await ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    public async Task<SetTouchOverrideResult> SetTouchOverrideAsync(long? maxTouchPoints, SetTouchOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetTouchOverrideParameters(maxTouchPoints, options?.Contexts, options?.UserContexts);
+
+        return await ExecuteCommandAsync(new SetTouchOverrideCommand(@params), options, _jsonContext.SetTouchOverrideCommand, _jsonContext.SetTouchOverrideResult, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<SetNetworkConditionsResult> SetNetworkConditionsAsync(NetworkConditions? networkConditions, SetNetworkConditionsOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetNetworkConditionsParameters(networkConditions, options?.Contexts, options?.UserContexts);
+
+        return await ExecuteCommandAsync(new SetNetworkConditionsCommand(@params), options, _jsonContext.SetNetworkConditionsCommand, _jsonContext.SetNetworkConditionsResult, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
@@ -124,7 +143,13 @@ public sealed class EmulationModule : Module
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideCommand))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
+[JsonSerializable(typeof(SetScrollbarTypeOverrideCommand))]
+[JsonSerializable(typeof(SetScrollbarTypeOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
+[JsonSerializable(typeof(SetTouchOverrideCommand))]
+[JsonSerializable(typeof(SetTouchOverrideResult))]
+[JsonSerializable(typeof(SetNetworkConditionsCommand))]
+[JsonSerializable(typeof(SetNetworkConditionsResult))]
 
 internal partial class EmulationJsonSerializerContext : JsonSerializerContext;

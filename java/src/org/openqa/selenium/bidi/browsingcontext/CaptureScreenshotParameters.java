@@ -46,21 +46,35 @@ public class CaptureScreenshotParameters {
   }
 
   public CaptureScreenshotParameters imageFormat(String type) {
-    map.put("format", Map.of("type", type));
+    map.put("format", new ImageFormat(type, null).toMap());
     return this;
   }
 
   public CaptureScreenshotParameters imageFormat(String type, double quality) {
-    map.put("format", Map.of("type", type, "quality", quality));
+    map.put("format", new ImageFormat(type, quality).toMap());
+    return this;
+  }
+
+  public CaptureScreenshotParameters format(ImageFormat format) {
+    map.put("format", format.toMap());
     return this;
   }
 
   public CaptureScreenshotParameters clipRectangle(ClipRectangle clipRectangle) {
-    map.put("clip", clipRectangle.toMap());
+    return clip(clipRectangle);
+  }
+
+  public CaptureScreenshotParameters clip(ClipRectangle clip) {
+    map.put("clip", clip.toMap());
     return this;
   }
 
   public Map<String, Object> toMap() {
     return Map.copyOf(map);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("CaptureScreenshotParameters%s", map);
   }
 }

@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class RealmConverter(BiDi bidi) : JsonConverter<Realm>
+internal class RealmConverter(IBiDi bidi) : JsonConverter<Realm>
 {
     public override Realm? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

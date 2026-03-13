@@ -119,6 +119,7 @@ class SessionCleanUpTest {
   }
 
   @AfterEach
+  @SuppressWarnings("ConstantValue")
   public void stopServer() {
     if (server != null) {
       server.stop();

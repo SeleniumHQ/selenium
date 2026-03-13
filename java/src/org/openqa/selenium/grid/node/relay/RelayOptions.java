@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.net.URI;
@@ -30,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
@@ -87,6 +87,7 @@ public class RelayOptions {
     }
   }
 
+  @Nullable
   public URI getServiceStatusUri() {
     try {
       if (config.get(RELAY_SECTION, "status-endpoint").isEmpty()) {
@@ -134,7 +135,7 @@ public class RelayOptions {
     }
     try {
       HttpResponse response = client.execute(new HttpRequest(GET, serviceStatusUri.toString()));
-      LOG.fine(string(response));
+      LOG.fine(response::contentAsString);
       return 200 == response.getStatus();
     } catch (Exception e) {
       throw new ConfigException("Unable to reach the service at " + getServiceUri(), e);

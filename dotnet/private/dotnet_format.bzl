@@ -95,7 +95,7 @@ for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
     echo   Formatting %%p...
     "%DOTNET%" format %* "%%p" || exit /b 1
 )
-for /r "%DOTNET_DIR%\test" %%p in (*.csproj) do (
+for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
     echo   Formatting %%p...
     "%DOTNET%" format %* "%%p" || exit /b 1
 )

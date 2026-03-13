@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace OpenQA.Selenium.Support.UI;
 

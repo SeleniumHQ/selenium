@@ -21,17 +21,17 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record SetCookieHeader(string Name, BytesValue Value)
 {
-    public string? Domain { get; set; }
+    public string? Domain { get; init; }
 
-    public bool? HttpOnly { get; set; }
+    public bool? HttpOnly { get; init; }
 
-    public string? Expiry { get; set; }
+    public string? Expiry { get; init; }
 
-    public long? MaxAge { get; set; }
+    public long? MaxAge { get; init; }
 
-    public string? Path { get; set; }
+    public string? Path { get; init; }
 
-    public SameSite? SameSite { get; set; }
+    public SameSite? SameSite { get; init; }
 
-    public bool? Secure { get; set; }
+    public bool? Secure { get; init; }
 }

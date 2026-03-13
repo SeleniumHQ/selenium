@@ -17,18 +17,14 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class ScriptModule : Module
+public sealed class ScriptModule : Module, IScriptModule
 {
     private ScriptJsonSerializerContext _jsonContext = null!;
 
@@ -76,7 +72,7 @@ public sealed class ScriptModule : Module
 
     public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, AddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
+        var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.UserContexts, options?.Sandbox);
 
         return await ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, _jsonContext.AddPreloadScriptCommand, _jsonContext.AddPreloadScriptResult, cancellationToken).ConfigureAwait(false);
     }
@@ -118,9 +114,10 @@ public sealed class ScriptModule : Module
         return await SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
         jsonSerializerOptions.Converters.Add(new PreloadScriptConverter(bidi));
         jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
         jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));

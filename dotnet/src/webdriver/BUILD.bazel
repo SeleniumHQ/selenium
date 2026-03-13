@@ -228,15 +228,15 @@ copy_file(
 )
 
 copy_file(
-    name = "assets-nuget-build-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.targets",
-    out = "Selenium.WebDriver.targets",
+    name = "assets-nuget-build-props",
+    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.props",
+    out = "Selenium.WebDriver.props",
 )
 
 copy_file(
-    name = "assets-nuget-buildtransitive-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.targets",
-    out = "transitiveSelenium.WebDriver.targets",
+    name = "assets-nuget-buildtransitive-props",
+    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.props",
+    out = "transitiveSelenium.WebDriver.props",
 )
 
 copy_file(
@@ -268,8 +268,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",
     },
     id = "Selenium.WebDriver",
     libs = {
@@ -295,8 +295,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.StrongNamed.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.StrongNamed.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.props",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {

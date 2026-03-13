@@ -17,77 +17,105 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Buffers;
-using System.IO;
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+sealed class WebSocketTransport(ClientWebSocket webSocket) : ITransport
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
-
-    private readonly ClientWebSocket _webSocket = new();
+    private readonly ClientWebSocket _webSocket = webSocket;
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
-    private readonly MemoryStream _sharedMemoryStream = new();
 
-    public async Task ConnectAsync(CancellationToken cancellationToken)
+    public static async Task<ITransport> ConnectAsync(Uri uri, Action<ClientWebSocketOptions>? configure, CancellationToken cancellationToken)
     {
-        await _webSocket.ConnectAsync(_uri, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<byte[]> ReceiveAsync(CancellationToken cancellationToken)
-    {
-        var receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
+        ClientWebSocket webSocket = new();
 
         try
         {
-            _sharedMemoryStream.SetLength(0);
+            configure?.Invoke(webSocket.Options);
 
-            ArraySegment<byte> segment = new(receiveBuffer);
-
-            WebSocketReceiveResult result;
-
-            do
-            {
-                result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
-
-                _sharedMemoryStream.Write(receiveBuffer, 0, result.Count);
-            }
-            while (!result.EndOfMessage);
-
-            byte[] data = _sharedMemoryStream.ToArray();
-
-            if (_logger.IsEnabled(LogEventLevel.Trace))
-            {
-                _logger.Trace($"BiDi RCV <-- {Encoding.UTF8.GetString(data)}");
-            }
-
-            return data;
+            await webSocket.ConnectAsync(uri, cancellationToken).ConfigureAwait(false);
         }
-        finally
+        catch (Exception)
         {
-            ArrayPool<byte>.Shared.Return(receiveBuffer);
+            webSocket.Dispose();
+            throw;
         }
+
+        WebSocketTransport webSocketTransport = new(webSocket);
+
+        return webSocketTransport;
     }
 
-    public async Task SendAsync(byte[] data, CancellationToken cancellationToken)
+    public async Task ReceiveAsync(IBufferWriter<byte> writer, CancellationToken cancellationToken)
+    {
+#if NET8_0_OR_GREATER
+        ValueWebSocketReceiveResult result;
+
+        do
+        {
+            var memory = writer.GetMemory();
+
+            result = await _webSocket.ReceiveAsync(memory, cancellationToken).ConfigureAwait(false);
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+
+                throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
+                    $"The remote end closed the WebSocket connection. Status: {_webSocket.CloseStatus}, Description: {_webSocket.CloseStatusDescription}");
+            }
+
+            writer.Advance(result.Count);
+        }
+        while (!result.EndOfMessage);
+#else
+        WebSocketReceiveResult result;
+
+        do
+        {
+            var memory = writer.GetMemory();
+
+            if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray((ReadOnlyMemory<byte>)memory, out var segment))
+            {
+                throw new InvalidOperationException($"The {nameof(IBufferWriter<byte>)} must provide array-backed memory.");
+            }
+
+            result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+
+                throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely,
+                    $"The remote end closed the WebSocket connection. Status: {result.CloseStatus}, Description: {result.CloseStatusDescription}");
+            }
+
+            writer.Advance(result.Count);
+        }
+        while (!result.EndOfMessage);
+#endif
+    }
+
+    public async Task SendAsync(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
         await _socketSendSemaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {
-            if (_logger.IsEnabled(LogEventLevel.Trace))
+#if NET8_0_OR_GREATER
+            await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+#else
+            if (!System.Runtime.InteropServices.MemoryMarshal.TryGetArray(data, out ArraySegment<byte> segment))
             {
-                _logger.Trace($"BiDi SND --> {Encoding.UTF8.GetString(data)}");
+                segment = new ArraySegment<byte>(data.ToArray());
             }
 
-            await _webSocket.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            await _webSocket.SendAsync(segment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+#endif
         }
         finally
         {
@@ -97,26 +125,30 @@ sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     private bool _disposed;
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        if (_disposed) return;
 
-    private void Dispose(bool disposing)
-    {
-        if (_disposed)
+        if (_webSocket.State == WebSocketState.Open)
         {
-            return;
+            try
+            {
+                await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"Error closing WebSocket gracefully: {ex.Message}");
+                }
+            }
         }
 
-        if (disposing)
-        {
-            _webSocket.Dispose();
-            _sharedMemoryStream.Dispose();
-            _socketSendSemaphoreSlim.Dispose();
-        }
+        _webSocket.Dispose();
+        _socketSendSemaphoreSlim.Dispose();
 
         _disposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }

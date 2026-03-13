@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class DownloadInfo extends NavigationInfo {
@@ -25,7 +27,7 @@ public class DownloadInfo extends NavigationInfo {
 
   private DownloadInfo(
       String browsingContextId,
-      String navigationId,
+      @Nullable String navigationId,
       long timestamp,
       String url,
       String suggestedFilename) {
@@ -36,7 +38,7 @@ public class DownloadInfo extends NavigationInfo {
   public static DownloadInfo fromJson(JsonInput input) {
     String browsingContextId = null;
     String navigationId = null;
-    long timestamp = 0;
+    Long timestamp = null;
     String url = null;
     String suggestedFilename = null;
 
@@ -71,7 +73,12 @@ public class DownloadInfo extends NavigationInfo {
 
     input.endObject();
 
-    return new DownloadInfo(browsingContextId, navigationId, timestamp, url, suggestedFilename);
+    return new DownloadInfo(
+        Require.nonNull("browsingContext", browsingContextId),
+        navigationId,
+        Require.positive("Timestamp", timestamp),
+        Require.nonNull("URL", url),
+        Require.nonNull("Suggested file name", suggestedFilename));
   }
 
   public String getSuggestedFilename() {

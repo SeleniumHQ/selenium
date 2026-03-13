@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -108,7 +109,8 @@ public class AnnotatedConfig implements Config {
     this.config = values;
   }
 
-  private String getSingleValue(Object value) {
+  @Nullable
+  private String getSingleValue(@Nullable Object value) {
     if (value == null) {
       return null;
     }

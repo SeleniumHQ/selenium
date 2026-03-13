@@ -17,11 +17,21 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class SetNetworkConditionsParameters extends AbstractOverrideParameters {
 
-  public SetNetworkConditionsParameters(Boolean offline) {
+  public static SetNetworkConditionsParameters online() {
+    return new SetNetworkConditionsParameters(null);
+  }
+
+  public static SetNetworkConditionsParameters offline() {
+    return new SetNetworkConditionsParameters(true);
+  }
+
+  public SetNetworkConditionsParameters(@Nullable Boolean offline) {
     if (Boolean.TRUE.equals(offline)) {
       map.put("networkConditions", Map.of("type", "offline"));
     } else {
@@ -30,13 +40,13 @@ public class SetNetworkConditionsParameters extends AbstractOverrideParameters {
   }
 
   @Override
-  public SetNetworkConditionsParameters contexts(java.util.List<String> contexts) {
+  public SetNetworkConditionsParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetNetworkConditionsParameters userContexts(java.util.List<String> userContexts) {
+  public SetNetworkConditionsParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

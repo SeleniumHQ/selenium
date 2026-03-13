@@ -51,4 +51,8 @@ public class RouterOptions {
   public boolean disableUi() {
     return config.get(ROUTER_SECTION, "disable-ui").map(Boolean::parseBoolean).orElse(false);
   }
+
+  public boolean tcpTunnel() {
+    return config.get(ROUTER_SECTION, "tcp-tunnel").map(Boolean::parseBoolean).orElse(true);
+  }
 }

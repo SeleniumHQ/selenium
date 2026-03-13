@@ -17,14 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Buffers;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using System.Threading;
-using System.Threading.Channels;
-using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
@@ -33,107 +30,31 @@ internal sealed class Broker : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
-    private readonly BiDi _bidi;
     private readonly ITransport _transport;
+    private readonly EventDispatcher _eventDispatcher;
+    private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
-    private readonly Channel<(string Method, EventArgs Params)> _pendingEvents = Channel.CreateUnbounded<(string Method, EventArgs Params)>(new()
-    {
-        SingleReader = true,
-        SingleWriter = true
-    });
-    private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
-
-    private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
 
     private long _currentCommandId;
 
-    private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
+    private readonly Task _receivingMessageTask;
+    private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
-    private Task? _receivingMessageTask;
-    private Task? _eventEmitterTask;
-    private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
-
-    internal Broker(BiDi bidi, Uri url)
+    public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
     {
+        _transport = transport;
         _bidi = bidi;
-        _transport = new WebSocketTransport(url);
-    }
-
-    public async Task ConnectAsync(CancellationToken cancellationToken)
-    {
-        await _transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
-        _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
+        _receivingMessageTask = Task.Run(() => ReceiveMessagesLoopAsync(_receiveMessagesCancellationTokenSource.Token));
     }
 
-    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
+    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
     {
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
-
-                try
-                {
-                    ProcessReceivedMessage(data);
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
-                    }
-                }
-            }
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
-            {
-                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
-            }
-
-            throw;
-        }
-    }
-
-    private async Task ProcessEventsAwaiterAsync()
-    {
-        var reader = _pendingEvents.Reader;
-        while (await reader.WaitToReadAsync().ConfigureAwait(false))
-        {
-            while (reader.TryRead(out var result))
-            {
-                try
-                {
-                    if (_eventHandlers.TryGetValue(result.Method, out var eventHandlers))
-                    {
-                        if (eventHandlers is not null)
-                        {
-                            foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
-                            {
-                                var args = result.Params;
-
-                                args.BiDi = _bidi;
-
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                    }
-                }
-            }
-        }
+        return _eventDispatcher.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
@@ -151,127 +72,150 @@ internal sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
         cts.CancelAfter(timeout);
 
-        cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
-        var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
-        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
+        using var sendBuffer = new PooledBufferWriter();
 
-        await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
+        using (var writer = new Utf8JsonWriter(sendBuffer))
+        {
+            JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
+        }
+
+        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+        _pendingCommands[command.Id] = commandInfo;
+
+        using var ctsRegistration = cts.Token.Register(() =>
+        {
+            tcs.TrySetCanceled(cts.Token);
+            _pendingCommands.TryRemove(command.Id, out _);
+        });
+
+        try
+        {
+            if (_logger.IsEnabled(LogEventLevel.Trace))
+            {
+#if NET8_0_OR_GREATER
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
+#else
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
+#endif
+            }
+
+            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+        }
+        catch
+        {
+            _pendingCommands.TryRemove(command.Id, out _);
+            throw;
+        }
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        _eventTypesMap[eventName] = jsonTypeInfo;
-
-        var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
-
-        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
-        handlers.Add(eventHandler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
-    }
-
-    public async Task UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
-    {
-        var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
-
-        eventHandlers.Remove(subscription.EventHandler);
-
-        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-    }
-
     public async ValueTask DisposeAsync()
     {
-        _pendingEvents.Writer.Complete();
+        _receiveMessagesCancellationTokenSource.Cancel();
 
-        _receiveMessagesCancellationTokenSource?.Cancel();
+        await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
 
-        if (_eventEmitterTask is not null)
+        try
         {
-            await _eventEmitterTask.ConfigureAwait(false);
+            await _receivingMessageTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+        {
+            // Expected when cancellation is requested, ignore.
         }
 
-        _transport.Dispose();
+        _receiveMessagesCancellationTokenSource.Dispose();
+
+        await _transport.DisposeAsync().ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
     }
 
-    private void ProcessReceivedMessage(byte[]? data)
+    private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
+        const int TypeSuccess = 1;
+        const int TypeEvent = 2;
+        const int TypeError = 3;
+
         long? id = default;
-        string? type = default;
+        int messageType = 0;
         string? method = default;
         string? error = default;
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
 
-        Utf8JsonReader reader = new(new ReadOnlySpan<byte>(data));
-        reader.Read();
-
+        Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
+
+        reader.Read();
 
         while (reader.TokenType == JsonTokenType.PropertyName)
         {
-            string? propertyName = reader.GetString();
-            reader.Read();
-
-            switch (propertyName)
+            if (reader.ValueTextEquals("id"u8))
             {
-                case "id":
-                    id = reader.GetInt64();
-                    break;
-
-                case "type":
-                    type = reader.GetString();
-                    break;
-
-                case "method":
-                    method = reader.GetString();
-                    break;
-
-                case "result":
-                    resultReader = reader; // snapshot
-                    break;
-
-                case "params":
-                    paramsReader = reader; // snapshot
-                    break;
-
-                case "error":
-                    error = reader.GetString();
-                    break;
-
-                case "message":
-                    message = reader.GetString();
-                    break;
+                reader.Read();
+                id = reader.GetInt64();
+            }
+            else if (reader.ValueTextEquals("type"u8))
+            {
+                reader.Read();
+                if (reader.ValueTextEquals("success"u8)) messageType = TypeSuccess;
+                else if (reader.ValueTextEquals("event"u8)) messageType = TypeEvent;
+                else if (reader.ValueTextEquals("error"u8)) messageType = TypeError;
+            }
+            else if (reader.ValueTextEquals("method"u8))
+            {
+                reader.Read();
+                method = reader.GetString();
+            }
+            else if (reader.ValueTextEquals("result"u8))
+            {
+                reader.Read();
+                resultReader = reader; // snapshot
+            }
+            else if (reader.ValueTextEquals("params"u8))
+            {
+                reader.Read();
+                paramsReader = reader; // snapshot
+            }
+            else if (reader.ValueTextEquals("error"u8))
+            {
+                reader.Read();
+                error = reader.GetString();
+            }
+            else if (reader.ValueTextEquals("message"u8))
+            {
+                reader.Read();
+                message = reader.GetString();
+            }
+            else
+            {
+                reader.Read();
             }
 
             reader.Skip();
             reader.Read();
         }
 
-        switch (type)
+        switch (messageType)
         {
-            case "success":
-                if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
+            case TypeSuccess:
+                if (id is null) throw new BiDiException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var command))
                 {
                     try
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
-                            ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
+                            ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
 
-                        command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
+                        command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)
                     {
-                        command.TaskCompletionSource.SetException(ex);
+                        command.TaskCompletionSource.TrySetException(ex);
                     }
                     finally
                     {
@@ -280,53 +224,181 @@ internal sealed class Broker : IAsyncDisposable
                 }
                 else
                 {
-                    throw new BiDiException($"The remote end responded with 'success' message type, but no pending command with id {id} was found.");
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"The remote end responded with 'success' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
+                    }
                 }
 
                 break;
 
-            case "event":
-                if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
+            case TypeEvent:
+                if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (_eventTypesMap.TryGetValue(method, out var eventInfo))
+                if (!_eventDispatcher.TryGetJsonTypeInfo(method, out var jsonTypeInfo))
                 {
-                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
+                    }
 
-                    eventArgs.BiDi = _bidi;
-
-                    var messageEvent = (method, eventArgs);
-                    _pendingEvents.Writer.TryWrite(messageEvent);
-                }
-                else
-                {
-                    throw new BiDiException($"The remote end responded with 'event' message type, but no event type mapping for method '{method}' was found.");
+                    break;
                 }
 
+                var eventArgs = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventArgs
+                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
+
+                eventArgs.BiDi = _bidi;
+
+                _eventDispatcher.EnqueueEvent(method, eventArgs);
                 break;
 
-            case "error":
-                if (id is null) throw new JsonException("The remote end responded with 'error' message type, but missed required 'id' property.");
+            case TypeError:
+                if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
                 if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
                 {
-                    errorCommand.TaskCompletionSource.SetException(new BiDiException($"{error}: {message}"));
+                    errorCommand.TaskCompletionSource.TrySetException(new BiDiException($"{error}: {message}"));
                     _pendingCommands.TryRemove(id.Value, out _);
                 }
                 else
                 {
-                    throw new BiDiException($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                    if (_logger.IsEnabled(LogEventLevel.Warn))
+                    {
+                        _logger.Warn($"The remote end responded with 'error' message type, but no pending command with id {id} was found. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
+                    }
+                }
+
+                break;
+
+            default:
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"The remote end responded with unknown message type. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
                 break;
         }
     }
 
-    class CommandInfo(long id, TaskCompletionSource<EmptyResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
+    private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
     {
-        public long Id { get; } = id;
+        using var receiveBufferWriter = new PooledBufferWriter();
 
-        public TaskCompletionSource<EmptyResult> TaskCompletionSource { get; } = taskCompletionSource;
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                receiveBufferWriter.Reset();
 
-        public JsonTypeInfo JsonResultTypeInfo { get; } = jsonResultTypeInfo;
-    };
+                await _transport.ReceiveAsync(receiveBufferWriter, cancellationToken).ConfigureAwait(false);
+
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+#if NET8_0_OR_GREATER
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.Span)}");
+#else
+                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.ToArray())}");
+#endif
+                }
+
+                try
+                {
+                    ProcessReceivedMessage(receiveBufferWriter.WrittenMemory.Span);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
+            }
+
+            // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
+            foreach (var id in _pendingCommands.Keys)
+            {
+                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                {
+                    pendingCommand.TaskCompletionSource.TrySetException(ex);
+                }
+            }
+
+            throw;
+        }
+    }
+
+    private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
+
+    private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable
+    {
+        private const int DefaultBufferSize = 1024 * 8;
+
+        private byte[]? _buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
+        private int _written;
+
+        public ReadOnlyMemory<byte> WrittenMemory => new(_buffer, 0, _written);
+
+        public void Reset()
+        {
+            var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
+
+            if (buffer.Length > DefaultBufferSize)
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+                _buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
+            }
+
+            _written = 0;
+        }
+
+        public void Advance(int count) => _written += count;
+
+        public Memory<byte> GetMemory(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsMemory(_written);
+        }
+
+        public Span<byte> GetSpan(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsSpan(_written);
+        }
+
+        private void EnsureCapacity(int sizeHint)
+        {
+            var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
+
+            if (sizeHint <= 0) sizeHint = buffer.Length - _written;
+            if (sizeHint <= 0) sizeHint = buffer.Length;
+
+            if (_written + sizeHint > buffer.Length)
+            {
+                var newSize = Math.Max(buffer.Length * 2, _written + sizeHint);
+                var newBuffer = ArrayPool<byte>.Shared.Rent(newSize);
+                buffer.AsSpan(0, _written).CopyTo(newBuffer);
+                ArrayPool<byte>.Shared.Return(buffer);
+                _buffer = newBuffer;
+            }
+        }
+
+        public void Dispose()
+        {
+            var buffer = _buffer;
+
+            if (buffer is not null)
+            {
+                _buffer = null;
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
+        }
+    }
 }

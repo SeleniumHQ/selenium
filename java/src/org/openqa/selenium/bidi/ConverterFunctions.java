@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi;
 
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -28,7 +29,7 @@ public class ConverterFunctions {
     throw new IllegalStateException("Utility class");
   }
 
-  public static <X> Function<JsonInput, X> map(final String keyName, Type typeOfX) {
+  public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Type typeOfX) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Type to convert to", typeOfX);
 

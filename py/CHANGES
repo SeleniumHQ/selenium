@@ -1,3 +1,12 @@
+Selenium 4.41.0
+* Support CDP versions: v143, v144, v145
+* Fix return type hint for `alert_is_present` (#16975)
+* Use lazy imports in webdriver __init__.py (#16993)
+* SE_DEBUG warns only when overriding user settings (#17009)
+* Modularize Bazel build with per-module targets (#17012)
+* [grid] Add session event API for server-side event bus integration (#17015)
+* [bidi]: add emulation command `set_screen_settings_override` (#17030)
+
 Selenium 4.40.0
 * Properly verify Selenium Manager exists (#16711)
 * Remove deprecated FTP proxy support (#16721)

@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class MemoizedConfig implements Config {
@@ -61,7 +62,7 @@ public class MemoizedConfig implements Config {
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
+  public Optional<@Nullable String> get(String section, String option) {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
@@ -94,7 +95,7 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Type to load", typeOfX);
     Require.nonNull("Default class name", defaultClassName);
 
-    AtomicReference<Exception> thrown = new AtomicReference<>();
+    AtomicReference<@Nullable Exception> thrown = new AtomicReference<>();
     Object value =
         seenClasses.computeIfAbsent(
             new Key(section, option, typeOfX.toGenericString(), defaultClassName),

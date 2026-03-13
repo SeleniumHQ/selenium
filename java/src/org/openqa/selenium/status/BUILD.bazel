@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 java_library(
@@ -6,5 +7,8 @@ java_library(
     visibility = [
         "//java/src/org/openqa/selenium:__subpackages__",
         "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        artifact("org.jspecify:jspecify"),
     ],
 )

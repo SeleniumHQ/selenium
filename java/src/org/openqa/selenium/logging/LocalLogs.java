@@ -19,6 +19,7 @@ package org.openqa.selenium.logging;
 
 import java.util.Collections;
 import java.util.Set;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Stores and retrieves logs in-process (i.e. without any RPCs).
@@ -32,6 +33,7 @@ public abstract class LocalLogs implements Logs {
   private static final LocalLogs NULL_LOGGER =
       new LocalLogs() {
         @Override
+        @NullMarked
         public LogEntries get(String logType) {
           return new LogEntries(Collections.emptyList());
         }
@@ -79,6 +81,7 @@ public abstract class LocalLogs implements Logs {
   protected LocalLogs() {}
 
   @Override
+  @NullMarked
   public abstract LogEntries get(String logType);
 
   public abstract void addEntry(String logType, LogEntry entry);

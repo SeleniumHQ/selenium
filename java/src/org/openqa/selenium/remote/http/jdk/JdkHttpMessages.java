@@ -181,7 +181,7 @@ class JdkHttpMessages {
         response
             .headers()
             .firstValue("Content-Type")
-            .map(contentType -> contentType.equalsIgnoreCase(MediaType.OCTET_STREAM.toString()))
+            .map(contentType -> isBinaryStream(contentType))
             .orElse(false);
 
     if (isBinaryStream) {
@@ -191,6 +191,12 @@ class JdkHttpMessages {
       byte[] responseBody = readResponseBody(response);
       return responseBody.length > 0 ? Contents.bytes(responseBody) : Contents.empty();
     }
+  }
+
+  private static boolean isBinaryStream(String contentType) {
+    return MediaType.OCTET_STREAM.toString().equalsIgnoreCase(contentType)
+        || "application/vnd.docker.multiplexed-stream".equalsIgnoreCase(contentType)
+        || "application/vnd.docker.raw-stream".equalsIgnoreCase(contentType);
   }
 
   private byte[] readResponseBody(java.net.http.HttpResponse<InputStream> response) {

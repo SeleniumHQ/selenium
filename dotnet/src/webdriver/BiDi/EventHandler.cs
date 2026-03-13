@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi;
 
 internal abstract class EventHandler(string eventName)

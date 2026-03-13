@@ -33,4 +33,8 @@ public interface TestEnvironment {
 
     assertThat(hostName).isNotEqualTo(alternateHostName);
   }
+
+  default boolean isSecure() {
+    return getAppServer().isSecure();
+  }
 }

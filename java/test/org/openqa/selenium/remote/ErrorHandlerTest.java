@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -49,7 +48,7 @@ import org.openqa.selenium.json.Json;
 @Tag("UnitTests")
 @SuppressWarnings("removal")
 class ErrorHandlerTest {
-  private ErrorHandler handler;
+  private final ErrorHandler handler = new ErrorHandler().setIncludeServerErrors(true);
 
   private static void assertStackTracesEqual(
       StackTraceElement[] expected, StackTraceElement[] actual) {
@@ -66,12 +65,6 @@ class ErrorHandlerTest {
   private static Map<String, Object> toMap(Object o) {
     String rawJson = new Json().toJson(o);
     return new Json().toType(rawJson, Map.class);
-  }
-
-  @BeforeEach
-  public void setUp() {
-    handler = new ErrorHandler();
-    handler.setIncludeServerErrors(true);
   }
 
   @Test

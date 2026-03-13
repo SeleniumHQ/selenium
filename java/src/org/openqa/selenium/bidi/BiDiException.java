@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 public class BiDiException extends WebDriverException {
@@ -29,7 +30,7 @@ public class BiDiException extends WebDriverException {
     this(message, null);
   }
 
-  public BiDiException(String message, Throwable cause) {
+  public BiDiException(String message, @Nullable Throwable cause) {
     super(message, cause);
     addInfo(WebDriverException.DRIVER_INFO, "BiDi Connection");
   }

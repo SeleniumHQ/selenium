@@ -38,6 +38,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -72,8 +73,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class NodeServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
-  private Node node;
-  private EventBus bus;
+  private @Nullable Node node;
+  private @Nullable EventBus bus;
   private final Thread shutdownHook =
       new Thread(() -> bus.fire(new NodeRemovedEvent(node.getStatus())));
 

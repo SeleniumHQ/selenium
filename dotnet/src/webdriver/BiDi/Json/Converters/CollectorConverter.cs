@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class CollectorConverter(BiDi bidi) : JsonConverter<Collector>
+internal class CollectorConverter(IBiDi bidi) : JsonConverter<Collector>
 {
     public override Collector? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

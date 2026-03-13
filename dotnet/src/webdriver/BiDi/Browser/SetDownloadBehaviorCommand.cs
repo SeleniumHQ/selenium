@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
@@ -36,9 +35,9 @@ internal sealed record DownloadBehaviorAllowed(string DestinationFolder) : Downl
 
 internal sealed record DownloadBehaviorDenied : DownloadBehavior;
 
-public sealed class SetDownloadBehaviorOptions : CommandOptions
+public sealed record SetDownloadBehaviorOptions : CommandOptions
 {
-    public IEnumerable<UserContext>? UserContexts { get; set; }
+    public IEnumerable<UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetDownloadBehaviorResult : EmptyResult;

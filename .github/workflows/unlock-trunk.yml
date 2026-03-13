@@ -1,0 +1,16 @@
+name: Unlock Trunk
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  unrestrict-trunk:
+    name: Unrestrict Trunk Branch
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
