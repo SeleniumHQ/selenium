@@ -22,6 +22,8 @@ using System.Diagnostics.CodeAnalysis;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
+#pragma warning disable CS0618 // Obsolete members are used internally
+
 namespace OpenQA.Selenium.Chromium;
 
 /// <summary>
@@ -32,77 +34,93 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     /// <summary>
     /// Accept untrusted SSL Certificates
     /// </summary>
-    protected static readonly bool AcceptUntrustedCertificates = true;
+    [Obsolete("This field will be made protected in v4.44.")]
+    // When make it protected don't forget to remove pragma warning disable CS0618 and the Obsolete attribute from this field.
+    public static readonly bool AcceptUntrustedCertificates = true;
 
     /// <summary>
     /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string ExecuteCdp = "executeCdpCommand";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string ExecuteCdp = "executeCdpCommand";
 
     /// <summary>
     /// Command for getting cast sinks in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string GetCastSinksCommand = "getCastSinks";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string GetCastSinksCommand = "getCastSinks";
 
     /// <summary>
     /// Command for selecting a cast sink in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string SelectCastSinkCommand = "selectCastSink";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string SelectCastSinkCommand = "selectCastSink";
 
     /// <summary>
     /// Command for starting cast tab mirroring in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
 
     /// <summary>
     /// Command for starting cast desktop mirroring in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string StartCastDesktopMirroringCommand = "startCastDesktopMirroring";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string StartCastDesktopMirroringCommand = "startCastDesktopMirroring";
 
     /// <summary>
     /// Command for getting a cast issued message in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
 
     /// <summary>
     /// Command for stopping casting in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string StopCastingCommand = "stopCasting";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string StopCastingCommand = "stopCasting";
 
     /// <summary>
     /// Command for getting the simulated network conditions in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string GetNetworkConditionsCommand = "getNetworkConditions";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string GetNetworkConditionsCommand = "getNetworkConditions";
 
     /// <summary>
     /// Command for setting the simulated network conditions in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string SetNetworkConditionsCommand = "setNetworkConditions";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string SetNetworkConditionsCommand = "setNetworkConditions";
 
     /// <summary>
     /// Command for deleting the simulated network conditions in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
 
     /// <summary>
     /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string SendChromeCommand = "sendChromeCommand";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string SendChromeCommand = "sendChromeCommand";
 
     /// <summary>
     /// Command for executing a Chrome DevTools Protocol command that returns a result in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
     /// <summary>
     /// Command for launching an app in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string LaunchAppCommand = "launchAppCommand";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string LaunchAppCommand = "launchAppCommand";
 
     /// <summary>
     /// Command for setting permissions in a driver for a Chromium-based browser.
     /// </summary>
-    protected static readonly string SetPermissionCommand = "setPermission";
+    [Obsolete("This field will be made protected in v4.44.")]
+    public static readonly string SetPermissionCommand = "setPermission";
 
     private readonly string optionsCapabilityName;
     private DevToolsSession? devToolsSession;
