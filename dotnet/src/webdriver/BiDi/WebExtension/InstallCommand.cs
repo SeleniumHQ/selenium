@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
@@ -39,6 +38,6 @@ public sealed record ExtensionBase64Encoded(ReadOnlyMemory<byte> Value) : Extens
 
 public sealed record ExtensionPath(string Path) : ExtensionData;
 
-public sealed class InstallOptions : CommandOptions;
+public sealed record InstallOptions : CommandOptions;
 
 public sealed record InstallResult(Extension Extension) : EmptyResult;

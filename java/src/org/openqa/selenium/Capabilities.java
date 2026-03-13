@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -69,6 +71,16 @@ public interface Capabilities extends Serializable {
    * @see org.openqa.selenium.remote.CapabilityType
    */
   @Nullable Object getCapability(String capabilityName);
+
+  @SuppressWarnings("unchecked")
+  default @Nullable <T> T get(String capabilityName) {
+    return (T) getCapability(capabilityName);
+  }
+
+  default <T> T required(String capabilityName) {
+    return requireNonNull(
+        get(capabilityName), () -> "Capability " + capabilityName + " is not set");
+  }
 
   /**
    * @param capabilityName The capability to check.

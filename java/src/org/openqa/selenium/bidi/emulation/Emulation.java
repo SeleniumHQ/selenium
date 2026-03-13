@@ -17,15 +17,13 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.Map;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
 
 public class Emulation {
-  private final BiDi bidi;
+  private final HasBiDi driver;
 
   public Emulation(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
@@ -34,49 +32,39 @@ public class Emulation {
       throw new IllegalArgumentException("WebDriver must implement BiDi interface");
     }
 
-    this.bidi = ((HasBiDi) driver).getBiDi();
+    this.driver = (HasBiDi) driver;
   }
 
   public void setGeolocationOverride(SetGeolocationOverrideParameters parameters) {
-    Require.nonNull("SetGeolocationOverride parameters", parameters);
-
-    bidi.send(new Command<>("emulation.setGeolocationOverride", parameters.toMap(), Map.class));
+    send("emulation.setGeolocationOverride", parameters);
   }
 
   public void setTimezoneOverride(SetTimezoneOverrideParameters parameters) {
-    Require.nonNull("SetTimezoneOverride parameters", parameters);
-
-    bidi.send(new Command<>("emulation.setTimezoneOverride", parameters.toMap(), Map.class));
+    send("emulation.setTimezoneOverride", parameters);
   }
 
   public void setScriptingEnabled(SetScriptingEnabledParameters parameters) {
-    Require.nonNull("SetScriptingEnabled parameters", parameters);
-
-    bidi.send(new Command<>("emulation.setScriptingEnabled", parameters.toMap(), Map.class));
+    send("emulation.setScriptingEnabled", parameters);
   }
 
   public void setUserAgentOverride(SetUserAgentOverrideParameters parameters) {
-    Require.nonNull("SetUserAgentOverride parameters", parameters);
-
-    bidi.send(new Command<>("emulation.setUserAgentOverride", parameters.toMap(), Map.class));
+    send("emulation.setUserAgentOverride", parameters);
   }
 
   public void setScreenOrientationOverride(SetScreenOrientationOverrideParameters parameters) {
-    Require.nonNull("SetScreenOrientationOverride parameters", parameters);
-
-    bidi.send(
-        new Command<>("emulation.setScreenOrientationOverride", parameters.toMap(), Map.class));
+    send("emulation.setScreenOrientationOverride", parameters);
   }
 
   public void setNetworkConditions(SetNetworkConditionsParameters parameters) {
-    Require.nonNull("SetNetworkConditions parameters", parameters);
-
-    bidi.send(new Command<>("emulation.setNetworkConditions", parameters.toMap(), Map.class));
+    send("emulation.setNetworkConditions", parameters);
   }
 
   public void setScreenSettingsOverride(SetScreenSettingsOverrideParameters parameters) {
-    Require.nonNull("SetScreenSettingsOverride parameters", parameters);
+    send("emulation.setScreenSettingsOverride", parameters);
+  }
 
-    bidi.send(new Command<>("emulation.setScreenSettingsOverride", parameters.toMap(), Map.class));
+  private void send(String command, OverrideParameters parameters) {
+    Require.nonNull("Parameters", parameters);
+    driver.getBiDi().send(new Command<>(command, parameters.toMap()));
   }
 }

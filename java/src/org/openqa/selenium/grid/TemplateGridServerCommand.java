@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid;
 
 import java.io.Closeable;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -47,7 +49,10 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
     Handlers handler = createHandlers(config);
 
     return new NettyServer(
-        new BaseServerOptions(config), handler.httpHandler, handler.websocketHandler) {
+        new BaseServerOptions(config),
+        handler.httpHandler,
+        handler.websocketHandler,
+        handler.tcpTunnelResolver) {
 
       @Override
       public void stop() {
@@ -87,17 +92,30 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
   protected abstract Handlers createHandlers(Config config);
 
-  public abstract static class Handlers implements Closeable {
+  protected abstract static class Handlers implements Closeable {
     public final HttpHandler httpHandler;
     public final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
         websocketHandler;
 
-    public Handlers(
+    /** Optional resolver for direct TCP tunnel of WebSocket connections. May be null. */
+    public final @Nullable Function<String, Optional<URI>> tcpTunnelResolver;
+
+    protected Handlers(
         HttpHandler http,
-        BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+        @Nullable BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
+            websocketHandler) {
+      this(http, websocketHandler, null);
+    }
+
+    protected Handlers(
+        HttpHandler http,
+        @Nullable BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
+            websocketHandler,
+        @Nullable Function<String, Optional<URI>> tcpTunnelResolver) {
       this.httpHandler = Require.nonNull("HTTP handler", http);
       this.websocketHandler =
           websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;
+      this.tcpTunnelResolver = tcpTunnelResolver;
     }
 
     @Override

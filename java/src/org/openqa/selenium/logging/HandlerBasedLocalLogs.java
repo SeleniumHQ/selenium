@@ -20,6 +20,7 @@ package org.openqa.selenium.logging;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * LocalLogs instance that extracts entries from a logging handler.
@@ -39,6 +40,7 @@ class HandlerBasedLocalLogs extends LocalLogs {
   }
 
   @Override
+  @NullMarked
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType) && logTypesToInclude.contains(logType)) {
       Collection<LogEntry> entries = loggingHandler.getRecords();

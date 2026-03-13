@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -30,13 +28,13 @@ internal sealed class EvaluateCommand(EvaluateParameters @params)
 
 internal sealed record EvaluateParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 
-public sealed class EvaluateOptions : CommandOptions
+public sealed record EvaluateOptions : CommandOptions
 {
-    public ResultOwnership? ResultOwnership { get; set; }
+    public ResultOwnership? ResultOwnership { get; init; }
 
-    public SerializationOptions? SerializationOptions { get; set; }
+    public SerializationOptions? SerializationOptions { get; init; }
 
-    public bool? UserActivation { get; set; }
+    public bool? UserActivation { get; init; }
 }
 
 // https://github.com/dotnet/runtime/issues/72604

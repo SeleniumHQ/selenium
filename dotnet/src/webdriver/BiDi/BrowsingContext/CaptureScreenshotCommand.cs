@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
@@ -28,13 +27,13 @@ internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @para
 
 internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 
-public sealed class CaptureScreenshotOptions : CommandOptions
+public sealed record CaptureScreenshotOptions : CommandOptions
 {
-    public ScreenshotOrigin? Origin { get; set; }
+    public ScreenshotOrigin? Origin { get; init; }
 
-    public ImageFormat? Format { get; set; }
+    public ImageFormat? Format { get; init; }
 
-    public ClipRectangle? Clip { get; set; }
+    public ClipRectangle? Clip { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ScreenshotOrigin>))]
@@ -46,7 +45,7 @@ public enum ScreenshotOrigin
 
 public record struct ImageFormat(string Type)
 {
-    public double? Quality { get; set; }
+    public double? Quality { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]

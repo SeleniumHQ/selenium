@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.bidi.network;
 
-import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-Header">BiDi spec</a>
+ */
 public class Header {
   private final String name;
   private final BytesValue value;
@@ -50,7 +53,7 @@ public class Header {
 
     input.endObject();
 
-    return new Header(name, value);
+    return new Header(Require.nonNull("name", name), Require.nonNull("value", value));
   }
 
   public String getName() {
@@ -62,10 +65,6 @@ public class Header {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("name", this.name);
-    map.put("value", this.value.toMap());
-
-    return Map.copyOf(map);
+    return Map.of("name", this.name, "value", this.value.toMap());
   }
 }

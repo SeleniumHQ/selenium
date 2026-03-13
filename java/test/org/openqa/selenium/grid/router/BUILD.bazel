@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_library", "java_selenium_test_suite", "java_test_suite")
 load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -38,6 +38,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -67,6 +68,7 @@ java_selenium_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
@@ -98,6 +100,7 @@ java_selenium_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
@@ -120,6 +123,7 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
@@ -139,6 +143,10 @@ java_test_suite(
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/distributor",
+        "//java/src/org/openqa/selenium/grid/distributor/local",
+        "//java/src/org/openqa/selenium/grid/distributor/selector",
+        "//java/src/org/openqa/selenium/grid/node/local",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
@@ -152,5 +160,6 @@ java_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.assertj:assertj-core"),
         artifact("org.zeromq:jeromq"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

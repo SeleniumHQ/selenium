@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
@@ -28,20 +27,20 @@ internal sealed class AddDataCollectorCommand(AddDataCollectorParameters @params
 
 internal sealed record AddDataCollectorParameters(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, CollectorType? CollectorType, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public sealed class AddDataCollectorOptions : CommandOptions
+public sealed record AddDataCollectorOptions : CommandOptions
 {
-    public CollectorType? CollectorType { get; set; }
+    public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
-public sealed class ContextAddDataCollectorOptions : CommandOptions
+public sealed record ContextAddDataCollectorOptions : CommandOptions
 {
-    public CollectorType? CollectorType { get; set; }
+    public CollectorType? CollectorType { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 
     internal static AddDataCollectorOptions WithContext(ContextAddDataCollectorOptions? options, BrowsingContext.BrowsingContext context) => new()
     {

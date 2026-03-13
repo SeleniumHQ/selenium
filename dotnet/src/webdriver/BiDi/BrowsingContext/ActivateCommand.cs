@@ -24,6 +24,6 @@ internal sealed class ActivateCommand(ActivateParameters @params)
 
 internal sealed record ActivateParameters(BrowsingContext Context) : Parameters;
 
-public sealed class ActivateOptions : CommandOptions;
+public sealed record ActivateOptions : CommandOptions;
 
 public sealed record ActivateResult : EmptyResult;

@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class ConcatenatingConfig implements Config {
@@ -34,7 +35,7 @@ public class ConcatenatingConfig implements Config {
   private final char separator;
   private final Map<String, String> values;
 
-  public ConcatenatingConfig(String prefix, char separator, Map<?, ?> values) {
+  public ConcatenatingConfig(@Nullable String prefix, char separator, Map<?, ?> values) {
     this.prefix = prefix == null || prefix.isEmpty() ? "" : (prefix + separator);
     this.separator = separator;
 

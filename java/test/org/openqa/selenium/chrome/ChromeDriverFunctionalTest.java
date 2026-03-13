@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.time.Duration.ofMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.withLatency;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import java.time.Duration;
@@ -33,7 +35,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
@@ -64,10 +65,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void builderOverridesDefaultChromeOptions() {
     ChromeOptions options = (ChromeOptions) CHROME.getCapabilities();
-    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    options.setImplicitWaitTimeout(ofMillis(1));
     localDriver = ChromeDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout())
-        .isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(ofMillis(1));
   }
 
   @Test
@@ -171,11 +171,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
-    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-    networkConditions.setLatency(Duration.ofMillis(200));
+    conditions.setNetworkConditions(withLatency(ofMillis(200)));
 
-    conditions.setNetworkConditions(networkConditions);
-    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(ofMillis(200));
 
     conditions.deleteNetworkConditions();
 

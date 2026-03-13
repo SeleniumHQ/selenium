@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonException;
@@ -37,10 +38,10 @@ public class SessionClosedData {
 
   private final SessionId sessionId;
   private final SessionClosedReason reason;
-  private final NodeId nodeId;
-  private final URI nodeUri;
-  private final Capabilities capabilities;
-  private final Instant startTime;
+  private final @Nullable NodeId nodeId;
+  private final @Nullable URI nodeUri;
+  private final @Nullable Capabilities capabilities;
+  private final @Nullable Instant startTime;
   private final Instant endTime;
 
   /** Backward compatible constructor for existing code. */
@@ -52,10 +53,10 @@ public class SessionClosedData {
   public SessionClosedData(
       SessionId sessionId,
       SessionClosedReason reason,
-      NodeId nodeId,
-      URI nodeUri,
-      Capabilities capabilities,
-      Instant startTime,
+      @Nullable NodeId nodeId,
+      @Nullable URI nodeUri,
+      @Nullable Capabilities capabilities,
+      @Nullable Instant startTime,
       Instant endTime) {
     this.sessionId = Require.nonNull("Session ID", sessionId);
     this.reason = Require.nonNull("Reason", reason);
@@ -74,18 +75,22 @@ public class SessionClosedData {
     return reason;
   }
 
+  @Nullable
   public NodeId getNodeId() {
     return nodeId;
   }
 
+  @Nullable
   public URI getNodeUri() {
     return nodeUri;
   }
 
+  @Nullable
   public Capabilities getCapabilities() {
     return capabilities;
   }
 
+  @Nullable
   public Instant getStartTime() {
     return startTime;
   }
@@ -99,8 +104,9 @@ public class SessionClosedData {
    *
    * @return the session duration, or null if start time was not recorded
    */
+  @Nullable
   public Duration getSessionDuration() {
-    if (startTime == null || endTime == null) {
+    if (startTime == null) {
       return null;
     }
     return Duration.between(startTime, endTime);
@@ -132,6 +138,7 @@ public class SessionClosedData {
     return result;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionClosedData fromJson(JsonInput input) {
     SessionId sessionId = null;
     SessionClosedReason reason = null;

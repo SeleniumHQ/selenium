@@ -141,7 +141,7 @@ class FirefoxDriverTest extends JupiterTestBase {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
     assumeTrue(profile != null);
 
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
+    localDriver = new WebDriverBuilder().get(new FirefoxOptions(profile));
   }
 
   @Test

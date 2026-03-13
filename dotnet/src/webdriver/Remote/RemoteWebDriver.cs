@@ -17,14 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -533,7 +528,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
             throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
         {
             { "name", fileName }
         };

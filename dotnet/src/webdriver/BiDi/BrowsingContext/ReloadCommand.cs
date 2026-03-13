@@ -24,11 +24,11 @@ internal sealed class ReloadCommand(ReloadParameters @params)
 
 internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 
-public sealed class ReloadOptions : CommandOptions
+public sealed record ReloadOptions : CommandOptions
 {
-    public bool? IgnoreCache { get; set; }
+    public bool? IgnoreCache { get; init; }
 
-    public ReadinessState? Wait { get; set; }
+    public ReadinessState? Wait { get; init; }
 }
 
 public sealed record ReloadResult(Navigation? Navigation, string Url) : NavigateResult(Navigation, Url);

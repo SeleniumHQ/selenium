@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class GetTreeCommand(GetTreeParameters @params)
@@ -26,16 +24,16 @@ internal sealed class GetTreeCommand(GetTreeParameters @params)
 
 internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 
-public sealed class GetTreeOptions : CommandOptions
+public sealed record GetTreeOptions : CommandOptions
 {
-    public long? MaxDepth { get; set; }
+    public long? MaxDepth { get; init; }
 
-    public BrowsingContext? Root { get; set; }
+    public BrowsingContext? Root { get; init; }
 }
 
-public sealed class ContextGetTreeOptions : CommandOptions
+public sealed record ContextGetTreeOptions : CommandOptions
 {
-    public long? MaxDepth { get; set; }
+    public long? MaxDepth { get; init; }
 
     internal static GetTreeOptions WithContext(ContextGetTreeOptions? options, BrowsingContext context) => new()
     {

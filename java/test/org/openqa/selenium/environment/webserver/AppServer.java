@@ -34,6 +34,8 @@ public interface AppServer {
 
   String whereIsWithCredentials(String relativeUrl, String user, String password);
 
+  boolean isSecure();
+
   String create(Page page);
 
   void start();

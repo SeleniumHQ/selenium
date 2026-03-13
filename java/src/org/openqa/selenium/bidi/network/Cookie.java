@@ -16,9 +16,13 @@
 // under the License.
 package org.openqa.selenium.bidi.network;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Cookie {
@@ -40,36 +44,34 @@ public class Cookie {
     }
 
     public static SameSite findByName(String name) {
-      SameSite result = null;
       for (SameSite type : values()) {
         if (type.toString().equalsIgnoreCase(name)) {
-          result = type;
-          break;
+          return type;
         }
       }
-      return result;
+      throw new IllegalArgumentException("Unsupported \"SameSite\" attribute: " + name);
     }
   }
 
   private final String name;
   private final BytesValue value;
-  private final String domain;
-  private final String path;
-  private final long size;
+  private final @Nullable String domain;
+  private final @Nullable String path;
+  private final @Nullable Long size;
   private final boolean isSecure;
   private final boolean isHttpOnly;
-  private final SameSite sameSite;
+  private final @Nullable SameSite sameSite;
   private final Optional<Long> expiry;
 
   public Cookie(
       String name,
       BytesValue value,
-      String domain,
-      String path,
-      long size,
+      @Nullable String domain,
+      @Nullable String path,
+      @Nullable Long size,
       boolean isSecure,
       boolean httpOnly,
-      SameSite sameSite,
+      @Nullable SameSite sameSite,
       Optional<Long> expiry) {
     this.name = name;
     this.value = value;
@@ -87,7 +89,7 @@ public class Cookie {
     BytesValue value = null;
     String domain = null;
     String path = null;
-    long size = 0;
+    Long size = null;
     boolean isSecure = false;
     boolean isHttpOnly = false;
     SameSite sameSite = null;
@@ -112,17 +114,17 @@ public class Cookie {
           size = input.read(Long.class);
           break;
         case "secure":
-          isSecure = input.read(Boolean.class);
+          isSecure = input.readNonNull(Boolean.class);
           break;
         case "httpOnly":
-          isHttpOnly = input.read(Boolean.class);
+          isHttpOnly = input.readNonNull(Boolean.class);
           break;
         case "sameSite":
-          String sameSiteValue = input.read(String.class);
+          String sameSiteValue = input.readNonNull(String.class);
           sameSite = SameSite.findByName(sameSiteValue);
           break;
         case "expiry":
-          expiry = Optional.of(input.read(Long.class));
+          expiry = Optional.of(input.readNonNull(Long.class));
           break;
         default:
           input.skipValue();
@@ -131,7 +133,16 @@ public class Cookie {
 
     input.endObject();
 
-    return new Cookie(name, value, domain, path, size, isSecure, isHttpOnly, sameSite, expiry);
+    return new Cookie(
+        Require.nonNull("name", name),
+        Require.nonNull("value", value),
+        domain,
+        path,
+        size,
+        isSecure,
+        isHttpOnly,
+        sameSite,
+        expiry);
   }
 
   public String getName() {
@@ -142,15 +153,18 @@ public class Cookie {
     return value;
   }
 
+  @Nullable
   public String getDomain() {
     return domain;
   }
 
+  @Nullable
   public String getPath() {
     return path;
   }
 
-  public long getSize() {
+  @Nullable
+  public Long getSize() {
     return size;
   }
 
@@ -162,6 +176,7 @@ public class Cookie {
     return isHttpOnly;
   }
 
+  @Nullable
   public SameSite getSameSite() {
     return sameSite;
   }
@@ -174,15 +189,13 @@ public class Cookie {
     Map<String, Object> map = new HashMap<>();
     map.put("name", getName());
     map.put("value", getValue().toMap());
-    map.put("domain", getDomain());
-    map.put("path", getPath());
-    map.put("size", getSize());
+    if (domain != null) map.put("domain", domain);
+    if (path != null) map.put("path", path);
+    if (size != null) map.put("size", size);
     map.put("secure", isSecure());
     map.put("httpOnly", isHttpOnly());
-    map.put("sameSite", getSameSite().toString());
-
-    getExpiry().ifPresent(expiryValue -> map.put("expiry", expiryValue));
-
-    return Map.copyOf(map);
+    if (sameSite != null) map.put("sameSite", sameSite.toString());
+    expiry.ifPresent(expiry -> map.put("expiry", expiry));
+    return unmodifiableMap(map);
   }
 }

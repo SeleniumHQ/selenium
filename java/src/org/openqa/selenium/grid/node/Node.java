@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -255,8 +256,10 @@ public abstract class Node implements HasReadyState, Routable {
     throw new UnsupportedOperationException();
   }
 
+  @Nullable
   public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
 
+  @Nullable
   public abstract HttpResponse downloadFile(HttpRequest req, SessionId id);
 
   /**

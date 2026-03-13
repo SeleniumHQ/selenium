@@ -32,6 +32,8 @@ from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, cast
 
+from typing_extensions import Self
+
 from selenium.common.exceptions import (
     InvalidArgumentException,
     JavascriptException,
@@ -287,7 +289,7 @@ class WebDriver(BaseWebDriver):
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
 
-    def __enter__(self) -> "WebDriver":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
@@ -506,7 +508,7 @@ class WebDriver(BaseWebDriver):
         """
         return list(self.pinned_scripts)
 
-    def execute_script(self, script: str, *args):
+    def execute_script(self, script: str, *args) -> Any:
         """Synchronously Executes JavaScript in the current window/frame.
 
         Args:
@@ -531,7 +533,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(command, {"script": script, "args": converted_args})["value"]
 
-    def execute_async_script(self, script: str, *args) -> dict:
+    def execute_async_script(self, script: str, *args) -> Any:
         """Asynchronously Executes JavaScript in the current window/frame.
 
         Args:

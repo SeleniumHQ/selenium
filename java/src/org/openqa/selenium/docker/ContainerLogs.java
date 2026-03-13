@@ -40,6 +40,6 @@ public class ContainerLogs {
 
   @Override
   public String toString() {
-    return "ContainerInfo{" + "containerLogs=" + logLines.toString() + ", id=" + id + '}';
+    return String.format("ContainerInfo{containerLogs=%s, id=%s}", logLines, id);
   }
 }

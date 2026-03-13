@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class AuthChallenge {
@@ -49,7 +50,7 @@ public class AuthChallenge {
 
     input.endObject();
 
-    return new AuthChallenge(scheme, realm);
+    return new AuthChallenge(Require.nonNull("scheme", scheme), Require.nonNull("realm", realm));
   }
 
   public String getScheme() {

@@ -19,11 +19,12 @@ package org.openqa.selenium.bidi.script;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 public class NodeProperties {
-  private enum Mode {
+  public enum Mode {
     OPEN("open"),
     CLOSED("closed");
 
@@ -39,36 +40,26 @@ public class NodeProperties {
     }
 
     public static Mode findByName(String name) {
-      Mode result = null;
       for (Mode type : values()) {
         if (type.toString().equalsIgnoreCase(name)) {
-          result = type;
-          break;
+          return type;
         }
       }
-      return result;
+      throw new IllegalArgumentException("Unsupported node mode: " + name);
     }
   }
 
   private final long nodeType;
-
   private final long childNodeCount;
-
   private final Optional<Map<String, String>> attributes;
-
   private final Optional<List<RemoteValue>> children;
-
   private final Optional<String> localName;
-
   private final Optional<Mode> mode;
-
   private final Optional<String> namespaceURI;
-
   private final Optional<String> nodeValue;
-
   private final Optional<RemoteValue> shadowRoot;
 
-  public NodeProperties(
+  private NodeProperties(
       long nodeType,
       long childNodeCount,
       Optional<Map<String, String>> attributes,
@@ -78,8 +69,8 @@ public class NodeProperties {
       Optional<String> namespaceURI,
       Optional<String> nodeValue,
       Optional<RemoteValue> shadowRoot) {
-    this.nodeType = nodeType;
-    this.childNodeCount = childNodeCount;
+    this.nodeType = Require.nonNegative("nodeType", nodeType);
+    this.childNodeCount = Require.nonNegative("childNodeCount", childNodeCount);
     this.attributes = attributes;
     this.children = children;
     this.localName = localName;
@@ -90,57 +81,51 @@ public class NodeProperties {
   }
 
   public static NodeProperties fromJson(JsonInput input) {
-    long nodeType = 0L;
-
-    long childNodeCount = 0L;
-
+    Long nodeType = null;
+    Long childNodeCount = null;
     Optional<Map<String, String>> attributes = Optional.empty();
-
     Optional<List<RemoteValue>> children = Optional.empty();
-
     Optional<String> localName = Optional.empty();
-
     Optional<Mode> mode = Optional.empty();
-
     Optional<String> namespaceURI = Optional.empty();
-
     Optional<String> nodeValue = Optional.empty();
-
     Optional<RemoteValue> shadowRoot = Optional.empty();
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "nodeType":
-          nodeType = input.read(long.class);
+          nodeType = input.read(Long.class);
           break;
 
         case "childNodeCount":
-          childNodeCount = input.read(long.class);
+          childNodeCount = input.read(Long.class);
           break;
 
         case "attributes":
-          attributes = Optional.of(input.read(new TypeToken<Map<String, String>>() {}.getType()));
+          attributes =
+              Optional.of(input.readNonNull(new TypeToken<Map<String, String>>() {}.getType()));
           break;
 
         case "children":
-          children = Optional.of(input.read(new TypeToken<List<RemoteValue>>() {}.getType()));
+          children =
+              Optional.of(input.readNonNull(new TypeToken<List<RemoteValue>>() {}.getType()));
           break;
 
         case "localName":
-          localName = Optional.of(input.read(String.class));
+          localName = Optional.of(input.readNonNull(String.class));
           break;
 
         case "mode":
-          mode = Optional.of(Mode.findByName(input.read(String.class)));
+          mode = Optional.of(Mode.findByName(input.readNonNull(String.class)));
           break;
 
         case "namespaceURI":
-          namespaceURI = Optional.of(input.read(String.class));
+          namespaceURI = Optional.of(input.readNonNull(String.class));
           break;
 
         case "nodeValue":
-          nodeValue = Optional.of(input.read(String.class));
+          nodeValue = Optional.of(input.readNonNull(String.class));
           break;
 
         case "shadowRoot":
@@ -156,8 +141,8 @@ public class NodeProperties {
     input.endObject();
 
     return new NodeProperties(
-        nodeType,
-        childNodeCount,
+        Require.nonNegative("nodeType", nodeType),
+        Require.nonNegative("childNodeCount", childNodeCount),
         attributes,
         children,
         localName,

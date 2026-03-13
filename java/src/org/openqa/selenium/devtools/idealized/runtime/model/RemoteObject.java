@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.devtools.idealized.runtime.model;
 
+import org.jspecify.annotations.Nullable;
+
 public class RemoteObject {
 
   private final String type;
-  private final Object value;
+  private final @Nullable Object value;
 
-  public RemoteObject(String type, Object value) {
+  public RemoteObject(String type, @Nullable Object value) {
     this.type = type;
     this.value = value;
   }
@@ -38,6 +40,7 @@ public class RemoteObject {
     return type;
   }
 
+  @Nullable
   public Object getValue() {
     return value;
   }

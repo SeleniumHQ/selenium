@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.joining;
@@ -176,8 +177,11 @@ public class CdpClientGenerator {
   }
 
   private static class BaseSpec {
+    // it seems `name` is always filled from JSON
+    @SuppressWarnings({"NotNullFieldNotInitialized", "InstanceVariableMayNotBeInitialized"})
     protected String name;
-    protected String description;
+
+    protected @Nullable String description;
     protected boolean experimental;
     protected boolean deprecated;
   }
@@ -343,7 +347,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(commandFile);
 
       try {
-        Files.write(commandFile, unit.toString().getBytes());
+        Files.write(commandFile, unit.toString().getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -426,7 +430,7 @@ public class CdpClientGenerator {
         ensureFileDoesNotExists(eventFile);
 
         try {
-          Files.write(eventFile, unit.toString().getBytes());
+          Files.write(eventFile, unit.toString().getBytes(UTF_8));
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -540,7 +544,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(typeFile);
 
       try {
-        Files.write(typeFile, unit.toString().getBytes());
+        Files.write(typeFile, unit.toString().getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -766,7 +770,7 @@ public class CdpClientGenerator {
 
     String getJavaDefaultValue();
 
-    TypeDeclaration<?> toTypeDeclaration();
+    @Nullable TypeDeclaration<?> toTypeDeclaration();
 
     String getMapper();
   }
@@ -1240,7 +1244,10 @@ public class CdpClientGenerator {
   }
 
   private static class ArrayType implements IType {
+    // it seems `name` is always filled from JSON
+    @SuppressWarnings({"NotNullFieldNotInitialized", "InstanceVariableMayNotBeInitialized"})
     private IType itemType;
+
     private final String name;
 
     public ArrayType(String name) {
@@ -1402,7 +1409,10 @@ public class CdpClientGenerator {
     }
   }
 
-  private static String capitalize(String text) {
+  private static String capitalize(@Nullable String text) {
+    if (text == null) {
+      return "";
+    }
     return text.substring(0, 1).toUpperCase() + text.substring(1);
   }
 
@@ -1415,9 +1425,6 @@ public class CdpClientGenerator {
   }
 
   private static String sanitizeJavadoc(String description) {
-    if (description == null) {
-      return null;
-    }
     // Escape */ sequences which would prematurely close the JavaDoc comment
     return description.replace("*/", "*&#47;");
   }

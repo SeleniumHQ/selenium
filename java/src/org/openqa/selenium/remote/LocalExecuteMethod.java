@@ -18,9 +18,11 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 class LocalExecuteMethod implements ExecuteMethod {
   @Nullable
   @Override

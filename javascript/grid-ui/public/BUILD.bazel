@@ -1,4 +1,5 @@
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
+load("//java:defs.bzl", "java_import")
 
 pkg_zip(
     name = "build-zip",

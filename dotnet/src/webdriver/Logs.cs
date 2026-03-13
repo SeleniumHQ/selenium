@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium;
@@ -84,7 +82,7 @@ public class Logs : ILogs
 
         List<LogEntry> entries = new List<LogEntry>();
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("type", logKind);
         Response commandResponse = this.driver.Execute(DriverCommand.GetLog, parameters);
 

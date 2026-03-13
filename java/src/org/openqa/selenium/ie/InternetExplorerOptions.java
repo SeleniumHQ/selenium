@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
@@ -88,7 +89,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           EDGE_EXECUTABLE_PATH,
           IGNORE_PROCESS_MATCH);
 
-  private final Map<String, Object> ieOptions = new HashMap<>();
+  private final Map<String, @Nullable Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
     setCapability(BROWSER_NAME, IE.browserName());
@@ -232,7 +233,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   @Override
-  public void setCapability(String key, Object value) {
+  public void setCapability(String key, @Nullable Object value) {
     if (IE_SWITCHES.equals(key)) {
       if (value instanceof List) {
         value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
@@ -248,9 +249,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
-      Map<String, Object> streamFrom;
+      Map<String, @Nullable Object> streamFrom;
       if (value instanceof Map) {
-        streamFrom = (Map<String, Object>) value;
+        streamFrom = (Map<String, @Nullable Object>) value;
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
@@ -276,6 +277,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return Collections.emptySet();
   }
 
+  @Nullable
   @Override
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Remote;

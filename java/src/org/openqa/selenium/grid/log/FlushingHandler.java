@@ -21,10 +21,11 @@ import java.io.OutputStream;
 import java.util.Objects;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
+import org.jspecify.annotations.Nullable;
 
 class FlushingHandler extends StreamHandler {
 
-  private OutputStream out;
+  @Nullable private OutputStream out;
 
   FlushingHandler(OutputStream out) {
     setOutputStream(out);
