@@ -2,13 +2,13 @@ module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
-bazel_dep(name = "aspect_rules_esbuild", version = "0.25.0")
-bazel_dep(name = "aspect_rules_jest", version = "0.25.1")
-bazel_dep(name = "aspect_rules_js", version = "3.0.0-rc5")
-bazel_dep(name = "aspect_rules_ts", version = "3.8.5")
-bazel_dep(name = "bazel_features", version = "1.41.0")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.25.1")
+bazel_dep(name = "aspect_rules_jest", version = "0.25.2")
+bazel_dep(name = "aspect_rules_js", version = "3.0.3")
+bazel_dep(name = "aspect_rules_ts", version = "3.8.6")
+bazel_dep(name = "bazel_features", version = "1.43.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "buildifier_prebuilt", version = "8.2.1.2")
+bazel_dep(name = "buildifier_prebuilt", version = "8.5.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.32.0")
 bazel_dep(name = "package_metadata", version = "0.0.7")
 bazel_dep(name = "platforms", version = "1.0.0")
@@ -17,23 +17,23 @@ bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "protobuf", version = "33.5")
 
 # Required for rules_rust to import the crates properly
-bazel_dep(name = "rules_cc", version = "0.2.16", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.17", dev_dependency = True)
 
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 # See below for actual version used
-bazel_dep(name = "rules_java", version = "9.5.0")
+bazel_dep(name = "rules_java", version = "9.6.1")
 bazel_dep(name = "rules_jvm_external", version = "6.10")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.3")
-bazel_dep(name = "rules_oci", version = "2.2.7")
+bazel_dep(name = "rules_oci", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "1.2.0")
-bazel_dep(name = "rules_python", version = "1.8.4")
+bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
-bazel_dep(name = "rules_ruby", version = "0.22.1")
-bazel_dep(name = "rules_rust", version = "0.68.1")
+bazel_dep(name = "rules_ruby", version = "0.23.1")
+bazel_dep(name = "rules_rust", version = "0.69.0")
 
 # Use latest rules_jvm_external for Bazel 9 compatibility
 single_version_override(
@@ -42,15 +42,13 @@ single_version_override(
     patches = ["//third_party/bazel:rules_jvm_external_javadoc.patch"],
 )
 
-# aspect_rules_jest 0.25.1 is incompatible with aspect_rules_js 3.x:
-# 1. It does not declare bazel_lib 3.x as a dep (aspect_bazel_lib → bazel_lib rename)
-# 2. It reads process.env.RUNFILES which was replaced by JS_BINARY__RUNFILES
+# aspect_rules_jest 0.25.2 does not declare bazel_lib 3.x as a dep
+# (aspect_bazel_lib → bazel_lib rename)
 single_version_override(
     module_name = "aspect_rules_jest",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:aspect_rules_jest_bazel_lib.patch",
-        "//third_party/bazel:aspect_rules_jest_runfiles.patch",
     ],
 )
 

@@ -1,4 +1,3 @@
-load("@rules_java//java:java_binary.bzl", "java_binary")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_binary", "selenium_test")
 
