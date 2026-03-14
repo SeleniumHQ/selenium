@@ -119,8 +119,11 @@ public class InProject {
     }
 
     Path asPath = Paths.get(path);
-    if (asPath.isAbsolute() || Files.exists(asPath)) {
+    if (asPath.isAbsolute()) {
       return path;
+    }
+    if (Files.exists(asPath)) {
+      return asPath.toAbsolutePath().normalize().toString();
     }
 
     Path runfilesRoot = findRunfilesRoot();
