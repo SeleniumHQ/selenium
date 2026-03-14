@@ -520,6 +520,8 @@ class APIRequestContext(_BaseRequestContext):
                         state = json.load(f)
                 except json.JSONDecodeError as e:
                     raise ValueError(f"Invalid JSON in storage state file {file_path}: {e}") from e
+                except OSError as e:
+                    raise OSError(f"Cannot read storage state file {file_path}: {e}") from e
             else:
                 state = storage_state
             cookies = list(state.get("cookies", []))
@@ -567,7 +569,7 @@ class APIRequestContext(_BaseRequestContext):
             if current:
                 default_domain = urllib.parse.urlparse(current).hostname or ""
         except Exception:
-            pass
+            logger.debug("Could not get current URL for host-only cookie matching", exc_info=True)
         return [c for c in browser_cookies if _cookie_matches(c, url, default_domain)]
 
     def _handle_response_cookies(self, set_cookie_headers: list[str], url: str) -> None:
@@ -579,6 +581,13 @@ class APIRequestContext(_BaseRequestContext):
                 continue
             cookie.setdefault("domain", parsed_url.hostname or "")
             cookie.setdefault("path", "/")
+            expiry = cookie.get("expiry")
+            if expiry is not None and expiry <= int(time.time()):
+                try:
+                    self._driver.delete_cookie(cookie["name"])
+                except Exception:
+                    pass
+                continue
             try:
                 self._driver.add_cookie(cookie)
             except Exception:

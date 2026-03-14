@@ -45,6 +45,7 @@ from selenium.webdriver.common.api_request_context import (
     _BaseRequestContext,
     _IsolatedAPIRequestContext,
     _cookie_matches,
+    _get_set_cookie_headers,
     _parse_set_cookie,
 )
 
@@ -414,6 +415,30 @@ class TestParseSetCookie:
         c = _parse_set_cookie("a=1; Expires=Wed, 09 Jun 2021 10:18:14 GMT; Max-Age=7200")
         # Max-Age=7200 should overwrite the Expires value
         assert c["expiry"] >= before + 7200
+
+
+# ===========================================================================
+# 2b. _get_set_cookie_headers
+# ===========================================================================
+
+
+class TestGetSetCookieHeaders:
+    def test_with_getlist(self):
+        resp = mock.MagicMock()
+        resp.headers.getlist.return_value = ["a=1", "b=2"]
+        assert _get_set_cookie_headers(resp) == ["a=1", "b=2"]
+
+    def test_fallback_to_get(self):
+        resp = mock.MagicMock(spec=[])
+        resp.headers = mock.MagicMock(spec=["get"])
+        resp.headers.get.return_value = "a=1"
+        assert _get_set_cookie_headers(resp) == ["a=1"]
+
+    def test_none_when_no_set_cookie(self):
+        resp = mock.MagicMock(spec=[])
+        resp.headers = mock.MagicMock(spec=["get"])
+        resp.headers.get.return_value = None
+        assert _get_set_cookie_headers(resp) == []
 
 
 # ===========================================================================
@@ -934,6 +959,114 @@ class TestAPIRequestContextMocked:
         ctx = APIRequestContext(driver)
         with pytest.raises(OSError, match="Cannot write"):
             ctx.storage_state(path="/nonexistent_dir_abc123/state.json")
+
+    def test_host_only_cookie_skipped_when_current_url_unavailable(self):
+        """Host-only cookies (empty domain) should NOT be sent when current_url raises."""
+        driver = self._make_mock_driver([
+            {"name": "hostonly", "value": "1", "domain": "", "path": "/"},
+            {"name": "explicit", "value": "2", "domain": "example.com", "path": "/"},
+        ])
+        driver.current_url = mock.PropertyMock(side_effect=Exception("no session"))
+        ctx = APIRequestContext(driver)
+        matched = ctx._get_cookies_for_request("http://example.com/")
+        names = {c["name"] for c in matched}
+        assert "hostonly" not in names
+        assert "explicit" in names
+
+    def test_host_only_cookie_skipped_when_current_url_empty(self):
+        """Host-only cookies should NOT be sent when current_url returns empty string."""
+        driver = self._make_mock_driver([
+            {"name": "hostonly", "value": "1", "domain": "", "path": "/"},
+            {"name": "explicit", "value": "2", "domain": "example.com", "path": "/"},
+        ])
+        driver.current_url = ""
+        ctx = APIRequestContext(driver)
+        matched = ctx._get_cookies_for_request("http://example.com/")
+        names = {c["name"] for c in matched}
+        assert "hostonly" not in names
+        assert "explicit" in names
+
+    def test_host_only_cookie_skipped_when_current_url_about_blank(self):
+        """Host-only cookies should NOT be sent when current_url is about:blank."""
+        driver = self._make_mock_driver([
+            {"name": "hostonly", "value": "1", "domain": "", "path": "/"},
+            {"name": "explicit", "value": "2", "domain": "example.com", "path": "/"},
+        ])
+        driver.current_url = "about:blank"
+        ctx = APIRequestContext(driver)
+        matched = ctx._get_cookies_for_request("http://example.com/")
+        names = {c["name"] for c in matched}
+        assert "hostonly" not in names
+        assert "explicit" in names
+
+    def test_handle_response_cookies_skips_expired_in_browser_context(self):
+        """Set-Cookie with Max-Age=0 should delete, not add, in browser context."""
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        # Max-Age=0 means expired immediately
+        ctx._handle_response_cookies(
+            ["sess=; Max-Age=0; Path=/"], "http://example.com/"
+        )
+        driver.add_cookie.assert_not_called()
+        driver.delete_cookie.assert_called_once_with("sess")
+
+    def test_new_context_file_read_error(self):
+        """File exists but raises OSError on read → should raise OSError with clear message."""
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
+            f.write("{}")
+            tmp = f.name
+        try:
+            with mock.patch("builtins.open", side_effect=OSError("Permission denied")):
+                with pytest.raises(OSError, match="Cannot read storage state file"):
+                    ctx.new_context(storage_state=tmp)
+        finally:
+            Path(tmp).unlink(missing_ok=True)
+
+    def test_handle_response_cookies_multiple_headers(self):
+        """Multiple Set-Cookie headers should each trigger add_cookie."""
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        ctx._handle_response_cookies(
+            ["a=1; Path=/", "b=2; Path=/"], "http://example.com/"
+        )
+        assert driver.add_cookie.call_count == 2
+        names = {call[0][0]["name"] for call in driver.add_cookie.call_args_list}
+        assert names == {"a", "b"}
+
+    def test_handle_response_cookies_expired_delete_failure_swallowed(self):
+        """delete_cookie failure on expired cookie should be silently swallowed."""
+        driver = self._make_mock_driver()
+        driver.delete_cookie.side_effect = Exception("no such cookie")
+        ctx = APIRequestContext(driver)
+        ctx._handle_response_cookies(
+            ["sess=; Max-Age=0; Path=/"], "http://example.com/"
+        )
+        driver.delete_cookie.assert_called_once_with("sess")
+        driver.add_cookie.assert_not_called()
+
+    def test_host_only_cookie_included_when_current_url_matches(self):
+        """Host-only cookie (empty domain) should be included when current_url hostname matches."""
+        driver = self._make_mock_driver([
+            {"name": "hostonly", "value": "1", "domain": "", "path": "/"},
+            {"name": "explicit", "value": "2", "domain": "example.com", "path": "/"},
+        ])
+        driver.current_url = "http://example.com/page"
+        ctx = APIRequestContext(driver)
+        matched = ctx._get_cookies_for_request("http://example.com/api")
+        names = {c["name"] for c in matched}
+        assert "hostonly" in names
+        assert "explicit" in names
+
+    def test_new_context_storage_state_dict_no_cookies_key(self):
+        """storage_state dict without 'cookies' key should produce an isolated context with 0 cookies."""
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        isolated = ctx.new_context(storage_state={"other": "data"})
+        state = isolated.storage_state()
+        assert state["cookies"] == []
+        isolated.dispose()
 
 
 # ===========================================================================
