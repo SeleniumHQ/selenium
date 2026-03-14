@@ -99,6 +99,21 @@ class _TestHandler(BaseHTTPRequestHandler):
             self.send_response(302)
             self.send_header("Location", "/ok")
             self.end_headers()
+        elif path == "/redirect_chain":
+            import urllib.parse
+
+            qs = urllib.parse.urlparse(self.path).query
+            params = urllib.parse.parse_qs(qs)
+            n = int(params.get("n", ["0"])[0])
+            if n > 0:
+                self.send_response(302)
+                self.send_header("Location", f"/redirect_chain?n={n - 1}")
+                self.end_headers()
+            else:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"end")
         elif path == "/echo_params":
             self.send_response(200)
             self.send_header("Content-Type", "text/plain")
@@ -410,10 +425,16 @@ class TestParseSetCookie:
         assert c["expiry"] < int(time.time())
 
     def test_max_age_takes_precedence_over_expires(self):
-        """When both Max-Age and Expires are present, Max-Age is parsed last and overwrites."""
+        """When both Max-Age and Expires are present, Max-Age wins per RFC 6265 §5.3."""
         before = int(time.time())
         c = _parse_set_cookie("a=1; Expires=Wed, 09 Jun 2021 10:18:14 GMT; Max-Age=7200")
-        # Max-Age=7200 should overwrite the Expires value
+        # Max-Age=7200 should take precedence regardless of order
+        assert c["expiry"] >= before + 7200
+
+    def test_max_age_takes_precedence_even_when_first(self):
+        """Max-Age must win even when it appears before Expires in the header."""
+        before = int(time.time())
+        c = _parse_set_cookie("a=1; Max-Age=7200; Expires=Wed, 09 Jun 2021 10:18:14 GMT")
         assert c["expiry"] >= before + 7200
 
 
@@ -666,6 +687,39 @@ class TestBaseRequestContext:
         ctx = _BaseRequestContext()
         ctx.dispose()
         # Should not raise; pool is cleared
+
+    def test_execute_request_no_silent_retries(self):
+        """Retry config should disable connection/read retries to prevent silent retry storms."""
+        ctx = _BaseRequestContext()
+        with mock.patch.object(ctx._pool, "request") as mock_request:
+            mock_request.return_value = mock.MagicMock(status=200, headers={}, data=b"")
+            ctx._execute_request("GET", "http://example.com/", {}, None, {})
+            retries = mock_request.call_args[1]["retries"]
+            assert retries.connect == 0, "connect retries must be disabled"
+            assert retries.read == 0, "read retries must be disabled"
+            assert retries.status == 0, "status retries must be disabled"
+            assert retries.other == 0, "other retries must be disabled"
+
+    def test_build_response_reason_missing(self):
+        """_build_response should not raise if resp has no 'reason' attribute (urllib3 2.x+)."""
+        ctx = _BaseRequestContext()
+        resp = mock.MagicMock(spec=["status", "headers", "data"])
+        resp.status = 200
+        resp.headers = {}
+        resp.data = b""
+        result = ctx._build_response(resp, "http://example.com/")
+        assert result.status == 200
+        assert result.status_text == "OK"
+
+    def test_build_response_reason_present(self):
+        """_build_response should use resp.reason when present."""
+        ctx = _BaseRequestContext()
+        resp = mock.MagicMock()
+        resp.status = 200
+        resp.reason = "Custom Reason"
+        resp.headers = {}
+        result = ctx._build_response(resp, "http://example.com/")
+        assert result.status_text == "Custom Reason"
 
 
 # ===========================================================================
@@ -1182,6 +1236,15 @@ class TestE2EIsolated:
         assert "content-type" in r.headers
         ctx.dispose()
 
+    def test_duplicate_response_headers_preserved(self, base_url):
+        """Multiple Set-Cookie headers should be combined with ', ' per RFC 7230."""
+        ctx = _IsolatedAPIRequestContext(base_url=base_url)
+        r = ctx.get("/set_multi_cookies")
+        sc = r.headers.get("set-cookie", "")
+        assert "a=1" in sc
+        assert "b=2" in sc
+        ctx.dispose()
+
     def test_response_status_text(self, base_url):
         ctx = _IsolatedAPIRequestContext(base_url=base_url)
         r = ctx.get("/ok")
@@ -1227,6 +1290,22 @@ class TestE2EIsolated:
         r = ctx.get("/redirect")
         assert r.status == 200
         assert r.text() == "ok"
+        ctx.dispose()
+
+    def test_redirect_chain_within_limit(self, base_url):
+        """A 3-hop redirect chain should succeed with max_redirects=5."""
+        ctx = _IsolatedAPIRequestContext(base_url=base_url, max_redirects=5)
+        r = ctx.get("/redirect_chain?n=3")
+        assert r.status == 200
+        assert r.text() == "end"
+        ctx.dispose()
+
+    def test_redirect_chain_exceeds_limit(self, base_url):
+        """A 5-hop chain with max_redirects=2 should NOT reach the final 200."""
+        ctx = _IsolatedAPIRequestContext(base_url=base_url, max_redirects=2)
+        r = ctx.get("/redirect_chain?n=5")
+        # Should get a 302 (stopped mid-chain) instead of following all the way to 200
+        assert r.status == 302
         ctx.dispose()
 
     def test_cookie_set_and_sent(self, base_url):

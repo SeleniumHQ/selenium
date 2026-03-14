@@ -27,6 +27,7 @@ from http.client import responses as http_status_phrases
 from typing import TYPE_CHECKING, Any
 
 import urllib3
+from urllib3.util.retry import Retry
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -171,6 +172,7 @@ def _parse_set_cookie(header_value: str) -> dict:
     value = name_value[eq_idx + 1 :].strip()
 
     cookie: dict[str, Any] = {"name": name, "value": value}
+    has_max_age = False
 
     for part in parts[1:]:
         part = part.strip()
@@ -198,9 +200,11 @@ def _parse_set_cookie(header_value: str) -> dict:
             try:
                 max_age = int(attr_value)
                 cookie["expiry"] = int(time.time()) + max_age
+                has_max_age = True
             except ValueError:
                 pass
-        elif attr_name == "expires":
+        elif attr_name == "expires" and not has_max_age:
+            # RFC 6265 §5.3: Max-Age takes precedence over Expires
             try:
                 dt = parsedate_to_datetime(attr_value)
                 cookie["expiry"] = int(dt.timestamp())
@@ -387,21 +391,37 @@ class _BaseRequestContext:
         timeout = kwargs.get("timeout", self._timeout)
         max_redirects = kwargs.get("max_redirects", self._max_redirects)
 
+        follow = max_redirects > 0
+        retries = Retry(
+            connect=0, read=0, status=0, other=0,
+            redirect=max_redirects if follow else 0,
+            raise_on_redirect=False,
+        )
+
         return self._pool.request(
             method,
             url,
             headers=headers,
             body=body,
             timeout=timeout,
-            redirect=max_redirects,
+            redirect=follow,
+            retries=retries,
             preload_content=True,
         )
 
     def _build_response(self, resp: urllib3.HTTPResponse, url: str) -> APIResponse:
         """Build an APIResponse from a urllib3 response."""
-        resp_headers = {k.lower(): v for k, v in resp.headers.items()}
+        # Merge duplicate headers per RFC 7230 §3.2.2 (combine with ", ")
+        resp_headers: dict[str, str] = {}
+        for k, v in resp.headers.items():
+            key = k.lower()
+            if key in resp_headers:
+                resp_headers[key] = resp_headers[key] + ", " + v
+            else:
+                resp_headers[key] = v
         # urllib3 2.x removed resp.reason; fall back to stdlib phrase lookup
-        status_text = resp.reason or http_status_phrases.get(resp.status, "")
+        reason = getattr(resp, "reason", None)
+        status_text = reason or http_status_phrases.get(resp.status, "")
         return APIResponse(
             status=resp.status,
             status_text=status_text,
