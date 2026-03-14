@@ -117,21 +117,6 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  void manifestHasCorrectMimeType() throws IOException {
-    String url = server.whereIs("html5/test.appcache");
-    HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    HttpClient client = factory.createClient(new URL(url));
-    HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
-
-    System.out.printf("Content for %s was %s%n", url, string(response));
-
-    assertThat(
-            stream(response.getHeaders("Content-Type").spliterator(), false)
-                .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)))
-        .isTrue();
-  }
-
-  @Test
   void uploadsFile() throws Throwable {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");

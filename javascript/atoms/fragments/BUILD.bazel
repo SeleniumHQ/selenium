@@ -54,18 +54,6 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "execute-sql",
-    function = "bot.storage.database.executeSql",
-    module = "bot.storage.database",
-    visibility = [
-        "//javascript/chrome-driver:__pkg__",
-    ],
-    deps = [
-        "//javascript/atoms:html5",
-    ],
-)
-
-closure_fragment(
     name = "get-effective-style",
     function = "bot.dom.getEffectiveStyle",
     module = "bot.dom",
@@ -85,18 +73,6 @@ closure_fragment(
     visibility = [],
     deps = [
         "//javascript/atoms:inject",
-    ],
-)
-
-closure_fragment(
-    name = "get-location",
-    function = "bot.geolocation.getCurrentPosition",
-    module = "bot.geolocation",
-    visibility = [
-        "//javascript/chrome-driver:__pkg__",
-    ],
-    deps = [
-        "//javascript/atoms:html5",
     ],
 )
 

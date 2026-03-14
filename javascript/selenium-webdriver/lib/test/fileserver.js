@@ -72,7 +72,6 @@ const Pages = (function () {
   addPage('framesetPage', 'frameset.html')
   addPage('grandchildPage', 'child/grandchild/grandchildPage.html')
   addPage('html5Page', 'html5Page.html')
-  addPage('html5OfflinePage', 'html5/offline.html')
   addPage('iframePage', 'iframes.html')
   addPage('javascriptEnhancedForm', 'javascriptEnhancedForm.html')
   addPage('javascriptPage', 'javascriptPage.html')

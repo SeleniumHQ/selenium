@@ -174,29 +174,6 @@ webdriver.CommandName = {
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
 
-  EXECUTE_SQL: 'executeSQL',
-  GET_LOCATION: 'getLocation',
-  SET_LOCATION: 'setLocation',
-  GET_APP_CACHE: 'getAppCache',
-  GET_APP_CACHE_STATUS: 'getStatus',
-  CLEAR_APP_CACHE: 'clearAppCache',
-  IS_BROWSER_ONLINE: 'isBrowserOnline',
-  SET_BROWSER_ONLINE: 'setBrowserOnline',
-
-  GET_LOCAL_STORAGE_ITEM: 'getLocalStorageItem',
-  GET_LOCAL_STORAGE_KEYS: 'getLocalStorageKeys',
-  SET_LOCAL_STORAGE_ITEM: 'setLocalStorageItem',
-  REMOVE_LOCAL_STORAGE_ITEM: 'removeLocalStorageItem',
-  CLEAR_LOCAL_STORAGE: 'clearLocalStorage',
-  GET_LOCAL_STORAGE_SIZE: 'getLocalStorageSize',
-
-  GET_SESSION_STORAGE_ITEM: 'getSessionStorageItem',
-  GET_SESSION_STORAGE_KEYS: 'getSessionStorageKey',
-  SET_SESSION_STORAGE_ITEM: 'setSessionStorageItem',
-  REMOVE_SESSION_STORAGE_ITEM: 'removeSessionStorageItem',
-  CLEAR_SESSION_STORAGE: 'clearSessionStorage',
-  GET_SESSION_STORAGE_SIZE: 'getSessionStorageSize',
-
   SET_SCREEN_ORIENTATION: 'setScreenOrientation',
   GET_SCREEN_ORIENTATION: 'getScreenOrientation',
 

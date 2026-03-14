@@ -218,24 +218,6 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "html5",
-    srcs = glob(["html5/*.js"]),
-    suppress = [
-        "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_UNKNOWN_EXPR_TYPE",
-        "JSC_USE_OF_GOOG_PROVIDE",
-    ],
-    deps = [
-        ":bot",
-        ":errors",
-        ":json",
-        ":useragent",
-        "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/useragent:product",
-    ],
-)
-
-closure_js_library(
     name = "inject",
     srcs = ["inject.js"],
     suppress = [
@@ -390,7 +372,6 @@ closure_js_deps(
         ":domcore",
         ":errors",
         ":events",
-        ":html5",
         ":inject",
         ":json",
         ":locators",

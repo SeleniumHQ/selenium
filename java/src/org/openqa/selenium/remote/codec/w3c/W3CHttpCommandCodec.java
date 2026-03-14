@@ -21,8 +21,6 @@ import static org.openqa.selenium.io.Read.resourceAsString;
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
@@ -48,27 +46,17 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SHADOW_ROOT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.MINIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.PRINT_PAGE;
-import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
@@ -117,18 +105,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(EXECUTE_ASYNC_SCRIPT, post(sessionId + "/execute/async"));
 
     alias(GET_PAGE_SOURCE, EXECUTE_SCRIPT);
-    alias(CLEAR_LOCAL_STORAGE, EXECUTE_SCRIPT);
-    alias(GET_LOCAL_STORAGE_KEYS, EXECUTE_SCRIPT);
-    alias(SET_LOCAL_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(REMOVE_LOCAL_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(GET_LOCAL_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(GET_LOCAL_STORAGE_SIZE, EXECUTE_SCRIPT);
-    alias(CLEAR_SESSION_STORAGE, EXECUTE_SCRIPT);
-    alias(GET_SESSION_STORAGE_KEYS, EXECUTE_SCRIPT);
-    alias(SET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(REMOVE_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(GET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
-    alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
     String window = sessionId + "/window";
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post(window + "/maximize"));
@@ -219,54 +195,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
             "var source = document.documentElement.outerHTML; \n"
                 + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
                 + "return source;");
-
-      case CLEAR_LOCAL_STORAGE:
-        return toScript("localStorage.clear()");
-
-      case GET_LOCAL_STORAGE_KEYS:
-        return toScript("return Object.keys(localStorage)");
-
-      case SET_LOCAL_STORAGE_ITEM:
-        return toScript(
-            "localStorage.setItem(arguments[0], arguments[1])",
-            parameters.get("key"),
-            parameters.get("value"));
-
-      case REMOVE_LOCAL_STORAGE_ITEM:
-        return toScript(
-            "var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]);"
-                + " return item",
-            parameters.get("key"));
-
-      case GET_LOCAL_STORAGE_ITEM:
-        return toScript("return localStorage.getItem(arguments[0])", parameters.get("key"));
-
-      case GET_LOCAL_STORAGE_SIZE:
-        return toScript("return localStorage.length");
-
-      case CLEAR_SESSION_STORAGE:
-        return toScript("sessionStorage.clear()");
-
-      case GET_SESSION_STORAGE_KEYS:
-        return toScript("return Object.keys(sessionStorage)");
-
-      case SET_SESSION_STORAGE_ITEM:
-        return toScript(
-            "sessionStorage.setItem(arguments[0], arguments[1])",
-            parameters.get("key"),
-            parameters.get("value"));
-
-      case REMOVE_SESSION_STORAGE_ITEM:
-        return toScript(
-            "var item = sessionStorage.getItem(arguments[0]);"
-                + " sessionStorage.removeItem(arguments[0]); return item",
-            parameters.get("key"));
-
-      case GET_SESSION_STORAGE_ITEM:
-        return toScript("return sessionStorage.getItem(arguments[0])", parameters.get("key"));
-
-      case GET_SESSION_STORAGE_SIZE:
-        return toScript("return sessionStorage.length");
 
       case IS_ELEMENT_DISPLAYED:
         return executeAtom("isDisplayed.js", asElement(parameters.get("id")));

@@ -54,7 +54,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_DIALOG_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_TITLE;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_TIMEOUTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
@@ -73,7 +72,6 @@ import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SELECT_ACCOUNT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_DELAY_ENABLED;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_USER_VERIFIED;
@@ -174,11 +172,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SET_TIMEOUT, post(timeouts));
     defineCommand(SET_SCRIPT_TIMEOUT, post(timeouts + "/async_script"));
     defineCommand(IMPLICITLY_WAIT, post(timeouts + "/implicit_wait"));
-
-    defineCommand(
-        GET_LOCATION, get(sessionId + "/location")); // Not w3c; used in RemoteLocationContext
-    defineCommand(
-        SET_LOCATION, post(sessionId + "/location")); // Not w3c; used in RemoteLocationContext
 
     // Virtual Authenticator API
     String webauthn = sessionId + "/webauthn/authenticator";
