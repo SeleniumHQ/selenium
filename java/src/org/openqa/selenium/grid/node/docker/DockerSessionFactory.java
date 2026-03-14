@@ -106,6 +106,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Map<String, Object> hostConfig;
   private final List<String> hostConfigKeys;
   private final Map<String, String> groupingLabels;
+  private final Duration stopGracePeriod;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -124,7 +125,8 @@ public class DockerSessionFactory implements SessionFactory {
       Predicate<Capabilities> predicate,
       Map<String, Object> hostConfig,
       List<String> hostConfigKeys,
-      Map<String, String> groupingLabels) {
+      Map<String, String> groupingLabels,
+      Duration stopGracePeriod) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -142,6 +144,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
     this.groupingLabels = Require.nonNull("Container grouping labels", groupingLabels);
+    this.stopGracePeriod = Require.nonNull("Container stop grace period", stopGracePeriod);
   }
 
   @Override
@@ -289,7 +292,9 @@ public class DockerSessionFactory implements SessionFactory {
               downstream,
               result.getDialect(),
               Instant.now(),
-              assetsPath));
+              assetsPath,
+              stopGracePeriod,
+              stopGracePeriod));
     }
   }
 

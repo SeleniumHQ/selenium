@@ -66,6 +66,7 @@ public class DockerOptions {
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   static final int DEFAULT_SERVER_START_TIMEOUT = 60;
+  static final int DEFAULT_STOP_GRACE_PERIOD = 60;
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -114,6 +115,16 @@ public class DockerOptions {
   private Duration getServerStartTimeout() {
     return Duration.ofSeconds(
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
+  }
+
+  private Duration getStopGracePeriod() {
+    int seconds =
+        config.getInt(DOCKER_SECTION, "stop-grace-period").orElse(DEFAULT_STOP_GRACE_PERIOD);
+    if (seconds < 0) {
+      throw new ConfigException(
+          "stop-grace-period must be a non-negative integer, but was: " + seconds);
+    }
+    return Duration.ofSeconds(seconds);
   }
 
   @Nullable
@@ -189,6 +200,7 @@ public class DockerOptions {
             config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
             DEFAULT_MAX_SESSIONS);
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
+    Duration stopGracePeriod = getStopGracePeriod();
     kinds.forEach(
         (name, caps) -> {
           Image image = docker.getImage(name);
@@ -212,7 +224,8 @@ public class DockerOptions {
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
                     hostConfigKeys,
-                    groupingLabels));
+                    groupingLabels,
+                    stopGracePeriod));
           }
           LOG.info(
               String.format(

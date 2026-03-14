@@ -50,6 +50,8 @@ public class DockerSession extends DefaultActiveSession {
   private final Container container;
   private final @Nullable Container videoContainer;
   private final DockerAssetsPath assetsPath;
+  private final Duration containerStopTimeout;
+  private final Duration videoContainerStopTimeout;
 
   DockerSession(
       Container container,
@@ -63,21 +65,29 @@ public class DockerSession extends DefaultActiveSession {
       Dialect downstream,
       Dialect upstream,
       Instant startTime,
-      DockerAssetsPath assetsPath) {
+      DockerAssetsPath assetsPath,
+      Duration containerStopTimeout,
+      Duration videoContainerStopTimeout) {
     super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
     this.videoContainer = videoContainer;
     this.assetsPath = Require.nonNull("Assets path", assetsPath);
+    this.containerStopTimeout = Require.nonNull("Container stop timeout", containerStopTimeout);
+    this.videoContainerStopTimeout =
+        Require.nonNull("Video container stop timeout", videoContainerStopTimeout);
   }
 
   @Override
   public void stop() {
-    if (videoContainer != null) {
-      videoContainer.stop(Duration.ofSeconds(10));
+    try {
+      if (videoContainer != null) {
+        videoContainer.stop(videoContainerStopTimeout);
+      }
+      saveLogs();
+    } finally {
+      container.stop(containerStopTimeout);
+      super.stop();
     }
-    saveLogs();
-    container.stop(Duration.ofMinutes(1));
-    super.stop();
   }
 
   private void saveLogs() {
@@ -107,8 +117,8 @@ public class DockerSession extends DefaultActiveSession {
   private void parseMultiplexedStream(InputStream stream, OutputStream out) throws IOException {
     try (DataInputStream in = new DataInputStream(new BufferedInputStream(stream))) {
       while (true) {
-        in.skipBytes(1); // Skip "stream type" byte (1 = stdout, 2 = stderr)
-        in.skipBytes(3); // Skip the 3 empty padding bytes
+        in.readFully(new byte[1]); // Skip "stream type" byte (1 = stdout, 2 = stderr)
+        in.readFully(new byte[3]); // Skip the 3 empty padding bytes
         int payloadSize = in.readInt(); // Read the 4-byte payload size
         byte[] payload = new byte[payloadSize];
         in.readFully(payload);
