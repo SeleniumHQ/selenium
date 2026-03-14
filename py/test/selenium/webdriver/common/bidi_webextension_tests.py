@@ -341,11 +341,11 @@ class TestChromiumWebExtensionEdgeCases:
         chromium_options.add_argument("--no-sandbox")
         chromium_options.add_argument("--disable-dev-shm-usage")
 
-        binary = request.config.option.binary
+        binary = _resolve_bazel_path(request.config.option.binary)
         if binary:
             chromium_options.binary_location = binary
 
-        executable = request.config.option.executable
+        executable = _resolve_bazel_path(request.config.option.executable)
         if executable:
             service = browser_service(executable_path=executable)
         else:
