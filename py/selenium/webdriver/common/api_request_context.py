@@ -97,28 +97,37 @@ class APIResponse:
         self._body = b""
 
 
-def _cookie_matches(cookie: dict, url: str) -> bool:
+def _cookie_matches(cookie: dict, url: str, default_domain: str = "") -> bool:
     """Check if a browser cookie should be sent with a request to the given URL.
 
-    Evaluates domain, path, and secure attribute matching per RFC 6265.
+    Evaluates expiry, domain, path, and secure attribute matching per RFC 6265.
 
     Args:
         cookie: A cookie dict from driver.get_cookies().
         url: The target request URL.
+        default_domain: Fallback domain for host-only cookies (no domain attribute).
+            When a cookie has no domain, it only matches if the request hostname
+            equals this value. If empty and cookie has no domain, the cookie is skipped.
 
     Returns:
         True if the cookie matches the URL.
     """
+    # Expiry check — skip expired cookies
+    expiry = cookie.get("expiry")
+    if expiry is not None and expiry <= int(time.time()):
+        return False
+
     parsed = urllib.parse.urlparse(url)
     hostname = parsed.hostname or ""
     path = parsed.path or "/"
     scheme = parsed.scheme or "http"
 
-    # Domain matching
+    # Domain matching (RFC 6265 section 5.1.3)
     cookie_domain = cookie.get("domain", "")
     if not cookie_domain:
-        # No domain set — treat as host-only, match any host
-        pass
+        # Host-only cookie — must match the origin host exactly
+        if not default_domain or hostname != default_domain:
+            return False
     elif cookie_domain.startswith("."):
         # .example.com matches example.com and sub.example.com
         if not (hostname == cookie_domain[1:] or hostname.endswith(cookie_domain)):
@@ -503,8 +512,14 @@ class APIRequestContext(_BaseRequestContext):
         cookies: list[dict] = []
         if storage_state is not None:
             if isinstance(storage_state, (str, pathlib.Path)):
-                with open(storage_state) as f:
-                    state = json.load(f)
+                file_path = pathlib.Path(storage_state)
+                if not file_path.exists():
+                    raise FileNotFoundError(f"Storage state file not found: {file_path}")
+                try:
+                    with open(file_path) as f:
+                        state = json.load(f)
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"Invalid JSON in storage state file {file_path}: {e}") from e
             else:
                 state = storage_state
             cookies = list(state.get("cookies", []))
@@ -530,8 +545,12 @@ class APIRequestContext(_BaseRequestContext):
         cookies = self._driver.get_cookies()
         state: dict[str, Any] = {"cookies": cookies}
         if path is not None:
-            with open(path, "w") as f:
-                json.dump(state, f, indent=2)
+            file_path = pathlib.Path(path)
+            try:
+                with open(file_path, "w") as f:
+                    json.dump(state, f, indent=2)
+            except OSError as e:
+                raise OSError(f"Cannot write storage state to {file_path}: {e}") from e
         return state
 
     def _get_cookies_for_request(self, url: str) -> list[dict]:
@@ -541,7 +560,15 @@ class APIRequestContext(_BaseRequestContext):
         except Exception:
             logger.debug("Could not retrieve browser cookies", exc_info=True)
             return []
-        return [c for c in browser_cookies if _cookie_matches(c, url)]
+        # Derive default domain from the browser's current page for host-only cookies
+        default_domain = ""
+        try:
+            current = self._driver.current_url
+            if current:
+                default_domain = urllib.parse.urlparse(current).hostname or ""
+        except Exception:
+            pass
+        return [c for c in browser_cookies if _cookie_matches(c, url, default_domain)]
 
     def _handle_response_cookies(self, set_cookie_headers: list[str], url: str) -> None:
         """Sync Set-Cookie headers back to the browser."""
@@ -592,11 +619,14 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
 
     def _get_cookies_for_request(self, url: str) -> list[dict]:
         """Get matching cookies from the internal jar."""
-        return [c for c in self._cookies if _cookie_matches(c, url)]
+        # For isolated contexts, use the request hostname as default domain
+        default_domain = urllib.parse.urlparse(url).hostname or ""
+        return [c for c in self._cookies if _cookie_matches(c, url, default_domain)]
 
     def _handle_response_cookies(self, set_cookie_headers: list[str], url: str) -> None:
         """Store Set-Cookie headers in the internal jar."""
         parsed_url = urllib.parse.urlparse(url)
+        now = int(time.time())
         for sc_header in set_cookie_headers:
             cookie = _parse_set_cookie(sc_header)
             if not cookie.get("name"):
@@ -605,8 +635,13 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
             cookie.setdefault("path", "/")
             # Cookies are unique by (name, domain, path)
             key = (cookie["name"], cookie.get("domain", ""), cookie.get("path", "/"))
+            # Remove existing cookie with same key
             self._cookies = [
                 c for c in self._cookies
                 if (c.get("name"), c.get("domain", ""), c.get("path", "/")) != key
             ]
+            # Only store if not expired (Max-Age=0 or negative means delete)
+            expiry = cookie.get("expiry")
+            if expiry is not None and expiry <= now:
+                continue
             self._cookies.append(cookie)

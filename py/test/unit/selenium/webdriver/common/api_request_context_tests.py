@@ -193,46 +193,71 @@ class TestCookieMatches:
             {"name": "a", "value": "1", "domain": ".example.com"}, "http://fakeexample.com/"
         )
 
-    def test_empty_domain_matches_any_host(self):
-        assert _cookie_matches({"name": "a", "value": "1", "domain": ""}, "http://anything.example.com/")
+    def test_empty_domain_no_default_skipped(self):
+        """Host-only cookie with no default_domain should NOT match."""
+        assert not _cookie_matches({"name": "a", "value": "1", "domain": ""}, "http://anything.example.com/")
 
-    def test_missing_domain_matches_any_host(self):
-        assert _cookie_matches({"name": "a", "value": "1"}, "http://anything.example.com/")
+    def test_missing_domain_no_default_skipped(self):
+        """Host-only cookie with no default_domain should NOT match."""
+        assert not _cookie_matches({"name": "a", "value": "1"}, "http://anything.example.com/")
+
+    def test_empty_domain_matches_with_default(self):
+        """Host-only cookie matches when default_domain equals the request hostname."""
+        assert _cookie_matches(
+            {"name": "a", "value": "1", "domain": ""},
+            "http://example.com/",
+            default_domain="example.com",
+        )
+
+    def test_empty_domain_no_match_wrong_default(self):
+        """Host-only cookie does NOT match when default_domain differs from request hostname."""
+        assert not _cookie_matches(
+            {"name": "a", "value": "1", "domain": ""},
+            "http://other.com/",
+            default_domain="example.com",
+        )
+
+    def test_missing_domain_matches_with_default(self):
+        assert _cookie_matches(
+            {"name": "a", "value": "1"},
+            "http://example.com/",
+            default_domain="example.com",
+        )
 
     # --- Path ---
 
     def test_root_path_matches_all(self):
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/"}, "http://example.com/any/path")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/"}, "http://example.com/any/path")
 
     def test_exact_path_match(self):
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/api")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/api")
 
     def test_path_prefix_match(self):
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/api/v1")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/api/v1")
 
     def test_path_no_match_different(self):
-        assert not _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/other")
+        assert not _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/other")
 
     def test_path_boundary_no_match(self):
         """/api must NOT match /apikeys (no / boundary)."""
-        assert not _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/apikeys")
+        assert not _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/apikeys")
 
     def test_missing_path_defaults_root(self):
-        assert _cookie_matches({"name": "a", "value": "1"}, "http://example.com/anything")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com"}, "http://example.com/anything")
 
     # --- Secure ---
 
     def test_secure_cookie_matches_https(self):
-        assert _cookie_matches({"name": "a", "value": "1", "secure": True}, "https://example.com/")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "secure": True}, "https://example.com/")
 
     def test_secure_cookie_no_match_http(self):
-        assert not _cookie_matches({"name": "a", "value": "1", "secure": True}, "http://example.com/")
+        assert not _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "secure": True}, "http://example.com/")
 
     def test_non_secure_cookie_matches_http(self):
-        assert _cookie_matches({"name": "a", "value": "1", "secure": False}, "http://example.com/")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "secure": False}, "http://example.com/")
 
     def test_non_secure_cookie_matches_https(self):
-        assert _cookie_matches({"name": "a", "value": "1", "secure": False}, "https://example.com/")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "secure": False}, "https://example.com/")
 
     # --- Combined ---
 
@@ -243,16 +268,39 @@ class TestCookieMatches:
         assert not _cookie_matches(cookie, "https://sub.example.com/other")  # wrong path
         assert not _cookie_matches(cookie, "https://other.com/api/v1")  # wrong domain
 
+    # --- Expiry ---
+
+    def test_expired_cookie_no_match(self):
+        past = int(time.time()) - 3600
+        assert not _cookie_matches(
+            {"name": "a", "value": "1", "domain": "example.com", "expiry": past},
+            "http://example.com/",
+        )
+
+    def test_future_expiry_matches(self):
+        future = int(time.time()) + 3600
+        assert _cookie_matches(
+            {"name": "a", "value": "1", "domain": "example.com", "expiry": future},
+            "http://example.com/",
+        )
+
+    def test_no_expiry_matches(self):
+        """Cookie with no expiry (session cookie) should match."""
+        assert _cookie_matches(
+            {"name": "a", "value": "1", "domain": "example.com"},
+            "http://example.com/",
+        )
+
     # --- Edge cases ---
 
     def test_url_with_port(self):
         assert _cookie_matches({"name": "a", "value": "1", "domain": "localhost"}, "http://localhost:8080/")
 
     def test_url_with_query_string(self):
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/api?foo=bar")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/api?foo=bar")
 
     def test_url_with_fragment(self):
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/api"}, "http://example.com/api#section")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/api"}, "http://example.com/api#section")
 
     def test_deep_subdomain(self):
         assert _cookie_matches(
@@ -267,7 +315,7 @@ class TestCookieMatches:
 
     def test_url_no_path(self):
         """URL like http://example.com (no trailing slash) has path '' which defaults to '/'."""
-        assert _cookie_matches({"name": "a", "value": "1", "path": "/"}, "http://example.com")
+        assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com", "path": "/"}, "http://example.com")
 
 
 # ===========================================================================
@@ -669,6 +717,23 @@ class TestIsolatedAPIRequestContext:
         assert len(ctx._cookies) == 1
         assert ctx._cookies[0]["name"] == "good"
 
+    def test_expired_cookie_not_stored(self):
+        """Set-Cookie with Max-Age=0 should remove existing cookie and not store new one."""
+        ctx = _IsolatedAPIRequestContext()
+        ctx._handle_response_cookies(["sess=val; Path=/"], "http://example.com/")
+        assert len(ctx._cookies) == 1
+        # Server sends Max-Age=0 to delete the cookie
+        ctx._handle_response_cookies(["sess=; Max-Age=0; Path=/"], "http://example.com/")
+        assert len(ctx._cookies) == 0
+
+    def test_expired_cookie_not_sent(self):
+        """Cookies with past expiry should not be sent with requests."""
+        past = int(time.time()) - 3600
+        cookies = [{"name": "old", "value": "stale", "domain": "example.com", "path": "/", "expiry": past}]
+        ctx = _IsolatedAPIRequestContext(cookies=cookies)
+        matched = ctx._get_cookies_for_request("http://example.com/")
+        assert len(matched) == 0
+
     def test_dispose(self):
         ctx = _IsolatedAPIRequestContext()
         ctx.dispose()  # should not raise
@@ -845,6 +910,30 @@ class TestAPIRequestContextMocked:
         assert len(matched) == 2
         names = {c["name"] for c in matched}
         assert names == {"a", "b"}
+
+    def test_new_context_file_not_found(self):
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        with pytest.raises(FileNotFoundError, match="not_exist"):
+            ctx.new_context(storage_state="/tmp/not_exist_abc123.json")
+
+    def test_new_context_invalid_json(self):
+        driver = self._make_mock_driver()
+        ctx = APIRequestContext(driver)
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
+            f.write("not valid json {{{")
+            tmp = f.name
+        try:
+            with pytest.raises(ValueError, match="Invalid JSON"):
+                ctx.new_context(storage_state=tmp)
+        finally:
+            Path(tmp).unlink(missing_ok=True)
+
+    def test_storage_state_unwritable_path(self):
+        driver = self._make_mock_driver([{"name": "x", "value": "y"}])
+        ctx = APIRequestContext(driver)
+        with pytest.raises(OSError, match="Cannot write"):
+            ctx.storage_state(path="/nonexistent_dir_abc123/state.json")
 
 
 # ===========================================================================
