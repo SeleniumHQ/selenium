@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.By.tagName;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
@@ -35,10 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
