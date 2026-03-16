@@ -213,13 +213,15 @@ class DistributedTest {
       BiDi cnn3 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
       assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
+          .hasCauseInstanceOf(ConnectionFailedException.class)
+          .cause()
           .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn1.close();
       BiDi cnn4 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
       assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
+          .hasCauseInstanceOf(ConnectionFailedException.class)
+          .cause()
           .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn2.close();
       cnn3.close();
@@ -227,7 +229,8 @@ class DistributedTest {
       BiDi cnn6 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
       assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
+          .hasCauseInstanceOf(ConnectionFailedException.class)
+          .cause()
           .hasMessageStartingWith("JdkWebSocket initial request execution error");
 
       cnn4.close();
