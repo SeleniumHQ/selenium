@@ -43,7 +43,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 public abstract class AppServerTestBase {
-  private static final String APPCACHE_MIME_TYPE = "text/cache-manifest";
   private AppServer server;
   private static WebDriver driver;
 
