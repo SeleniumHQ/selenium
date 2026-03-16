@@ -266,7 +266,8 @@ class _BaseRequestContext:
 
         Args:
             url: The request URL (absolute or relative to base_url).
-            **kwargs: Optional arguments: headers, params, data, form, json_data, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, data, form,
+                json_data, timeout, max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -278,7 +279,8 @@ class _BaseRequestContext:
 
         Args:
             url: The request URL (absolute or relative to base_url).
-            **kwargs: Optional arguments: headers, params, data, form, json_data, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, data, form,
+                json_data, timeout, max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -290,7 +292,8 @@ class _BaseRequestContext:
 
         Args:
             url: The request URL (absolute or relative to base_url).
-            **kwargs: Optional arguments: headers, params, data, form, json_data, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, data, form,
+                json_data, timeout, max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -302,7 +305,8 @@ class _BaseRequestContext:
 
         Args:
             url: The request URL (absolute or relative to base_url).
-            **kwargs: Optional arguments: headers, params, data, form, json_data, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, data, form,
+                json_data, timeout, max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -314,7 +318,8 @@ class _BaseRequestContext:
 
         Args:
             url: The request URL (absolute or relative to base_url).
-            **kwargs: Optional arguments: headers, params, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, timeout,
+                max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -327,7 +332,8 @@ class _BaseRequestContext:
         Args:
             url: The request URL (absolute or relative to base_url).
             method: The HTTP method to use.
-            **kwargs: Optional arguments: headers, params, data, form, json_data, timeout, max_redirects, fail_on_status_code.
+            **kwargs: Optional arguments: headers, params, data, form,
+                json_data, timeout, max_redirects, fail_on_status_code.
 
         Returns:
             An APIResponse object.
@@ -393,7 +399,10 @@ class _BaseRequestContext:
 
         follow = max_redirects > 0
         retries = Retry(
-            connect=0, read=0, status=0, other=0,
+            connect=0,
+            read=0,
+            status=0,
+            other=0,
             redirect=max_redirects if follow else 0,
             raise_on_redirect=False,
         )
@@ -666,8 +675,7 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
             key = (cookie["name"], cookie.get("domain", ""), cookie.get("path", "/"))
             # Remove existing cookie with same key
             self._cookies = [
-                c for c in self._cookies
-                if (c.get("name"), c.get("domain", ""), c.get("path", "/")) != key
+                c for c in self._cookies if (c.get("name"), c.get("domain", ""), c.get("path", "/")) != key
             ]
             # Only store if not expired (Max-Age=0 or negative means delete)
             expiry = cookie.get("expiry")
