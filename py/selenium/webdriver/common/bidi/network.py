@@ -6,13 +6,14 @@
 # WebDriver BiDi module: network
 from __future__ import annotations
 
-from typing import Any
-from .common import command_builder
-from dataclasses import dataclass
-from dataclasses import field
 import threading
 from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.session import Session
+
+from .common import command_builder
 
 
 class SameSite:

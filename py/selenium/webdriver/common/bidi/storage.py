@@ -6,10 +6,10 @@
 # WebDriver BiDi module: storage
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Any
+
 from .common import command_builder
-from dataclasses import dataclass
-from dataclasses import field
 
 
 @dataclass
@@ -106,7 +106,7 @@ class StorageCookie:
     expiry: Any | None = None
 
     @classmethod
-    def from_bidi_dict(cls, raw: dict) -> "StorageCookie":
+    def from_bidi_dict(cls, raw: dict) -> StorageCookie:
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
