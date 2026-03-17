@@ -207,7 +207,7 @@ impl SeleniumManager for ElectronManager {
             if X32.is(arch) {
                 "win32-ia32"
             } else if ARM64.is(arch) {
-                "win32-arm64-x64"
+                "win32-arm64"
             } else {
                 "win32-x64"
             }

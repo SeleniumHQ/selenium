@@ -1719,10 +1719,19 @@ pub fn clear_cache(log: &Logger, path: &str) {
 }
 
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
-    let mut client_builder = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
-        .timeout(Duration::from_secs(timeout));
+    let mut client_builder = Client::builder().danger_accept_invalid_certs(true);
+    #[cfg(all(target_os = "windows", target_arch = "aarch64"))]
+    {
+        // There are known issues with the Ring dependency on Windows arm64 that cause Bazel
+        // tests to fail. We force the use of native TLS on this platform.
+        // https://github.com/briansmith/ring/issues/2215
+        client_builder = client_builder.use_native_tls();
+    }
+    #[cfg(not(all(target_os = "windows", target_arch = "aarch64")))]
+    {
+        client_builder = client_builder.use_rustls_tls();
+    }
+    let mut client_builder = client_builder.timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }

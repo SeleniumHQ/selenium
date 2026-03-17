@@ -18,7 +18,7 @@ env_logger = "0.11.8"
 regex = "1.11.3"
 tokio = { version = "1.47.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.23.0"
-reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
+reqwest = { version = "0.12.23", default-features = false }
 zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.228", features = ["derive"] }
@@ -34,13 +34,21 @@ xz2 = "0.1.7"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.100", default-features = false, features = ["backtrace", "std"] }
-apple-flat-package = "0.20.0"
 which = "8.0.0"
 fs2 = "0.4.3"
 fs_extra = "1.3.0"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = ["winver", "winnt", "sysinfoapi"] }
+
+[target.'cfg(all(windows, target_arch = "aarch64"))'.dependencies]
+reqwest = { version = "0.12.23", default-features = false, features = ["native-tls"] }
+
+[target.'cfg(not(all(windows, target_arch = "aarch64")))'.dependencies]
+reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+apple-flat-package = "0.20.0"
 
 [features]
 avoid_stats = []

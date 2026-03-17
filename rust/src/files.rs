@@ -23,6 +23,7 @@ use crate::{
 };
 use anyhow::Error;
 use anyhow::anyhow;
+#[cfg(target_os = "macos")]
 use apple_flat_package::PkgReader;
 use bzip2::read::BzDecoder;
 use directories::BaseDirs;
@@ -148,7 +149,10 @@ pub fn uncompress(
             log,
         )?
     } else if extension.eq_ignore_ascii_case(PKG) {
-        uncompress_pkg(compressed_file, target, log)?
+        #[cfg(target_os = "macos")]
+        uncompress_pkg(compressed_file, target, log)?;
+        #[cfg(not(target_os = "macos"))]
+        return Err(anyhow!("PKG extraction is only supported on macOS"));
     } else if extension.eq_ignore_ascii_case(DMG) {
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
@@ -208,6 +212,7 @@ pub fn move_folder_content(source: &str, target: &Path, log: &Logger) -> Result<
     Ok(())
 }
 
+#[cfg(target_os = "macos")]
 pub fn uncompress_pkg(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     let target_path = Path::new(target);
     let mut reader = PkgReader::new(File::open(compressed_file)?)?;

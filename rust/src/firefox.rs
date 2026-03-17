@@ -381,19 +381,13 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_platform_label(&self) -> &str {
-        let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
-        let minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
         if WINDOWS.is(os) {
-            if X32.is(arch) {
-                "win32"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
+            if ARM64.is(arch) {
                 "win-arm64"
+            } else if X32.is(arch) {
+                "win32"
             } else {
                 "win64"
             }
@@ -401,7 +395,7 @@ impl SeleniumManager for FirefoxManager {
             if ARM64.is(arch) { "mac-arm64" } else { "mac64" }
         } else if X32.is(arch) {
             "linux32"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
+        } else if ARM64.is(arch) {
             "linux-arm64"
         } else {
             "linux64"
@@ -550,7 +544,7 @@ impl SeleniumManager for FirefoxManager {
             if X32.is(arch) || major_browser_version < 42 {
                 platform_label = "win32";
             } else if ARM64.is(arch) {
-                platform_label = "win-aarch64";
+                platform_label = "win64-aarch64";
             } else {
                 platform_label = "win64";
             }
@@ -779,6 +773,31 @@ mod unit_tests {
             firefox_manager.set_arch(d.get(2).unwrap().to_string());
             let driver_url = firefox_manager.get_driver_url().unwrap();
             assert_eq!(d.get(3).unwrap().to_string(), driver_url);
+        });
+    }
+
+    #[test]
+    fn test_platform_label() {
+        let mut firefox_manager = FirefoxManager::new().unwrap();
+
+        let data = vec![
+            vec!["windows", "x86", "win32"],
+            vec!["windows", "x86_64", "win64"],
+            vec!["windows", "aarch64", "win-arm64"],
+            vec!["macos", "x86_64", "mac64"],
+            vec!["macos", "aarch64", "mac-arm64"],
+            vec!["linux", "x86", "linux32"],
+            vec!["linux", "x86_64", "linux64"],
+            vec!["linux", "aarch64", "linux-arm64"],
+        ];
+
+        data.iter().for_each(|d| {
+            firefox_manager.set_os(d.first().unwrap().to_string());
+            firefox_manager.set_arch(d.get(1).unwrap().to_string());
+            assert_eq!(
+                d.get(2).unwrap().to_string(),
+                firefox_manager.get_platform_label()
+            );
         });
     }
 }

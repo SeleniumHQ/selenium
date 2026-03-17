@@ -38,6 +38,7 @@ jobs:
           - os: macos
           - os: ubuntu
           - os: windows
+          - os: windows-11-arm
     with:
       name: Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
@@ -58,19 +59,30 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
-          rustup toolchain install stable-i686-pc-windows-msvc
-          rustup default stable-i686-pc-windows-msvc
+          rustup target install i686-pc-windows-msvc
+          rustup target install aarch64-pc-windows-msvc
           rustc -vV
-      - name: "Build release binary"
-        run: cargo build --release
+      - name: "Build release binary (x86)"
+        run: cargo build --target i686-pc-windows-msvc --release
         working-directory: rust
-      - name: "Rename binary"
-        run: mv rust/target/release/selenium-manager.exe selenium-manager-windows.exe
-      - name: "Upload release binary"
+      - name: "Build release binary (arm64)"
+        run: cargo build --target aarch64-pc-windows-msvc --release
+        working-directory: rust
+      - name: "Rename binary (x86)"
+        run: mv rust/target/i686-pc-windows-msvc/release/selenium-manager.exe selenium-manager-windows.exe
+      - name: "Rename binary (arm64)"
+        run: mv rust/target/aarch64-pc-windows-msvc/release/selenium-manager.exe selenium-manager-windows-arm64.exe
+      - name: "Upload release binary (x86)"
         uses: actions/upload-artifact@v5
         with:
           name: selenium-manager-windows
           path: selenium-manager-windows.exe
+          retention-days: 6
+      - name: "Upload release binary (arm64)"
+        uses: actions/upload-artifact@v5
+        with:
+          name: selenium-manager-windows-arm64
+          path: selenium-manager-windows-arm64.exe
           retention-days: 6
 
   windows-debug:
@@ -88,19 +100,30 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
-          rustup toolchain install stable-i686-pc-windows-msvc
-          rustup default stable-i686-pc-windows-msvc
+          rustup target install i686-pc-windows-msvc
+          rustup target install aarch64-pc-windows-msvc
           rustc -vV
-      - name: "Build release binary"
-        run: cargo build --profile dev
+      - name: "Build release binary (x86)"
+        run: cargo build --target i686-pc-windows-msvc --profile dev
         working-directory: rust
-      - name: "Rename binary"
-        run: mv rust/target/debug/selenium-manager.exe selenium-manager-windows-debug.exe
-      - name: "Upload release binary"
+      - name: "Build release binary (arm64)"
+        run: cargo build --target aarch64-pc-windows-msvc --profile dev
+        working-directory: rust
+      - name: "Rename binary (x86)"
+        run: mv rust/target/i686-pc-windows-msvc/debug/selenium-manager.exe selenium-manager-windows-debug.exe
+      - name: "Rename binary (arm64)"
+        run: mv rust/target/aarch64-pc-windows-msvc/debug/selenium-manager.exe selenium-manager-windows-arm64-debug.exe
+      - name: "Upload release binary (x86)"
         uses: actions/upload-artifact@v5
         with:
           name: selenium-manager-windows-debug
           path: selenium-manager-windows-debug.exe
+          retention-days: 6
+      - name: "Upload release binary (arm64)"
+        uses: actions/upload-artifact@v5
+        with:
+          name: selenium-manager-windows-arm64-debug
+          path: selenium-manager-windows-arm64-debug.exe
           retention-days: 6
 
   linux-stable:
@@ -250,7 +273,8 @@ jobs:
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
-          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\"}" > latest.json
+          windows_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows-arm64.exe | awk '{print $1}')
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"windows-arm64\": \"$windows_arm64_sha\", \"linux\": \"$linux_sha\"}" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add latest.json
@@ -271,6 +295,8 @@ jobs:
             artifacts/selenium-manager-linux/selenium-manager-linux
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
+            artifacts/selenium-manager-windows-arm64/selenium-manager-windows-arm64.exe
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
+            artifacts/selenium-manager-windows-arm64-debug/selenium-manager-windows-arm64-debug.exe
