@@ -15,3 +15,13 @@
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
+-//java/test/org/openqa/selenium:AlertsTest-firefox-beta
+-//java/test/org/openqa/selenium:FormHandlingTest-firefox-beta
+-//java/test/org/openqa/selenium:WebScriptTest-firefox-beta
+-//java/test/org/openqa/selenium/bidi/browser:BrowserCommandsTest-firefox-beta
+-//java/test/org/openqa/selenium/bidi/browser:BrowserCommandsTest-firefox-beta-remote
+-//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextInspectorTest-firefox-beta
+-//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextInspectorTest-firefox-beta-remote
+-//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-firefox-beta
+-//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-firefox-beta-remote
+-//rb/spec/integration/selenium/webdriver/bidi:browsing_context-firefox-beta-bidi
