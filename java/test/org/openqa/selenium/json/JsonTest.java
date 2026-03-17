@@ -133,6 +133,24 @@ class JsonTest {
   }
 
   @Test
+  void shouldThrowWhenDuplicateFieldNamesExistWithFieldSetting() {
+    String raw = "{\"value\": \"test\"}";
+
+    ParentFieldBean parent = new Json().toType(raw, ParentFieldBean.class, BY_FIELD);
+    assertThat(parent.value).isEqualTo("test");
+
+    assertThatThrownBy(() -> new Json().toType(raw, ChildFieldBean.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith(
+            "Duplicate JSON field name detected while collecting field writers:"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ChildFieldBean.value) vs"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ParentFieldBean.value)");
+  }
+
+  @Test
   void settingFinalFieldsShouldWork() {
     Map<String, String> map = Map.of("theName", "fishy");
 
@@ -659,6 +677,14 @@ class JsonTest {
     public void setBean(SimpleBean bean) {
       this.bean = bean;
     }
+  }
+
+  public static class ParentFieldBean {
+    String value;
+  }
+
+  public static class ChildFieldBean extends ParentFieldBean {
+    String value;
   }
 
   public static class JsonAware {

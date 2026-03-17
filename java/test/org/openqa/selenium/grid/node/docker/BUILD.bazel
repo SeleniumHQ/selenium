@@ -10,9 +10,11 @@ java_test_suite(
         TOOLS_JAVA_VERSION,
     ],
     deps = [
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/docker",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/node/docker",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
