@@ -21,20 +21,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /** Reads information about how the current application was built. */
 public class BuildInfo {
+  private static final Logger LOG = Logger.getLogger(BuildInfo.class.getName());
 
   private static final Properties BUILD_PROPERTIES = loadBuildProperties();
 
   private static Properties loadBuildProperties() {
     Properties properties = new Properties();
 
-    URL resource = BuildInfo.class.getResource("/META-INF/selenium-build.properties");
-    try (InputStream is = resource.openStream()) {
-      properties.load(is);
-    } catch (IOException | NullPointerException ignored) {
-      // Do nothing
+    String file = "/META-INF/selenium-build.properties";
+    URL resource = BuildInfo.class.getResource(file);
+    if (resource != null) {
+      try (InputStream is = resource.openStream()) {
+        properties.load(is);
+      } catch (IOException ignored) {
+        LOG.warning(() -> "Failed to read build info from " + file);
+      }
     }
 
     return properties;

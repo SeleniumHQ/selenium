@@ -18,6 +18,7 @@
 package org.openqa.selenium.docker.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,8 +52,11 @@ class V144AdapterTest {
 
     Map<String, Object> adapted = adapter.adaptImageResponse(response);
 
-    assertThat(adapted.get("Size")).isEqualTo(1234567890L);
-    assertThat(adapted.containsKey("VirtualSize")).isFalse();
+    assertThat(adapted)
+        .hasSize(2)
+        .containsEntry("Id", "sha256:abc123")
+        .containsEntry("Size", 1234567890L)
+        .doesNotContainKey("VirtualSize");
   }
 
   @Test
@@ -63,14 +67,19 @@ class V144AdapterTest {
 
     Map<String, Object> adapted = adapter.adaptImageResponse(response);
 
-    assertThat(adapted.get("Size")).isEqualTo(1234567890L);
-    assertThat(adapted.containsKey("VirtualSize")).isFalse();
+    assertThat(adapted)
+        .hasSize(2)
+        .containsEntry("Id", "sha256:abc123")
+        .containsEntry("Size", 1234567890L)
+        .doesNotContainKey("VirtualSize");
   }
 
   @Test
-  void shouldHandleNullImageResponse() {
-    Map<String, Object> adapted = adapter.adaptImageResponse(null);
-    assertThat(adapted).isNull();
+  @SuppressWarnings("DataFlowIssue")
+  void nullImageResponseNotAllowed() {
+    assertThatThrownBy(() -> adapter.adaptImageResponse(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Image response must be set");
   }
 
   @Test
@@ -83,9 +92,11 @@ class V144AdapterTest {
   }
 
   @Test
-  void shouldHandleNullContainerCreateRequest() {
-    Map<String, Object> adapted = adapter.adaptContainerCreateRequest(null);
-    assertThat(adapted).isNull();
+  @SuppressWarnings("DataFlowIssue")
+  void nullContainerCreateRequestNotAllowed() {
+    assertThatThrownBy(() -> adapter.adaptContainerCreateRequest(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Container Create Request must be set");
   }
 
   @Test
@@ -127,9 +138,11 @@ class V144AdapterTest {
   }
 
   @Test
-  void shouldHandleNullContainerInspectResponse() {
-    Map<String, Object> adapted = adapter.adaptContainerInspectResponse(null);
-    assertThat(adapted).isNull();
+  @SuppressWarnings("DataFlowIssue")
+  void nullContainerInspectResponseNotAllowed() {
+    assertThatThrownBy(() -> adapter.adaptContainerInspectResponse(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Container Inspect Response must be set");
   }
 
   @Test

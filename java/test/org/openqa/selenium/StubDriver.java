@@ -19,10 +19,14 @@ package org.openqa.selenium;
 
 import java.util.List;
 import java.util.Set;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.logging.Logs;
 
 public class StubDriver implements WebDriver, JavascriptExecutor {
 
+  @NullMarked
   @Override
   public void get(String url) {
     throw new UnsupportedOperationException("get");
@@ -38,11 +42,13 @@ public class StubDriver implements WebDriver, JavascriptExecutor {
     throw new UnsupportedOperationException("getTitle");
   }
 
+  @NullMarked
   @Override
   public List<WebElement> findElements(By by) {
     throw new UnsupportedOperationException("findElements");
   }
 
+  @NullMarked
   @Override
   public WebElement findElement(By by) {
     throw new UnsupportedOperationException("findElement");
@@ -92,13 +98,15 @@ public class StubDriver implements WebDriver, JavascriptExecutor {
     throw new UnsupportedOperationException("logs");
   }
 
+  @Nullable
   @Override
-  public Object executeScript(String script, Object... args) {
+  public Object executeScript(@NonNull String script, @Nullable Object @NonNull ... args) {
     throw new UnsupportedOperationException("executeScript");
   }
 
+  @Nullable
   @Override
-  public Object executeAsyncScript(String script, Object... args) {
+  public Object executeAsyncScript(@NonNull String script, @Nullable Object @NonNull ... args) {
     throw new UnsupportedOperationException("executeAsyncScript");
   }
 }

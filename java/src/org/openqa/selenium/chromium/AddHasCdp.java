@@ -51,8 +51,7 @@ public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, Additional
       Require.nonNull("Command name", commandName);
       Require.nonNull("Parameters", parameters);
 
-      return executeMethod.executeRequired(
-          EXECUTE_CDP, Map.of("cmd", commandName, "params", parameters));
+      return executeMethod.executeAs(EXECUTE_CDP, Map.of("cmd", commandName, "params", parameters));
     };
   }
 }

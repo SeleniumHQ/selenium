@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import org.jspecify.annotations.NullMarked;
-
-@NullMarked
 public interface Locatable {
   Coordinates getCoordinates();
 }

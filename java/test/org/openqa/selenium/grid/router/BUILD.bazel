@@ -116,6 +116,7 @@ java_selenium_test_suite(
         "//java/src/org/openqa/selenium/bidi/log",
         "//java/src/org/openqa/selenium/bidi/module",
         "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/environment",

@@ -233,6 +233,7 @@ py_library(
         "selenium/__init__.py",
         "selenium/webdriver/__init__.py",
     ] + glob(["selenium/common/**/*.py"]),
+    data = ["selenium/webdriver/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
 )
@@ -277,9 +278,7 @@ py_library(
     name = "common",
     srcs = glob(
         ["selenium/webdriver/common/**/*.py"],
-        exclude = [
-            "selenium/webdriver/common/bidi/**",
-        ],
+        exclude = ["selenium/webdriver/common/bidi/**"],
     ),
     data = [
         ":manager-linux",
@@ -325,6 +324,7 @@ py_library(
 py_library(
     name = "chrome",
     srcs = glob(["selenium/webdriver/chrome/**/*.py"]),
+    data = ["selenium/webdriver/chrome/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [":chromium"],
@@ -334,6 +334,7 @@ py_library(
 py_library(
     name = "edge",
     srcs = glob(["selenium/webdriver/edge/**/*.py"]),
+    data = ["selenium/webdriver/edge/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [":chromium"],
@@ -343,7 +344,10 @@ py_library(
 py_library(
     name = "firefox",
     srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
-    data = [":firefox-driver-prefs"],
+    data = [
+        "selenium/webdriver/firefox/__init__.pyi",
+        ":firefox-driver-prefs",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -356,6 +360,7 @@ py_library(
 py_library(
     name = "safari",
     srcs = glob(["selenium/webdriver/safari/**/*.py"]),
+    data = ["selenium/webdriver/safari/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -368,6 +373,7 @@ py_library(
 py_library(
     name = "ie",
     srcs = glob(["selenium/webdriver/ie/**/*.py"]),
+    data = ["selenium/webdriver/ie/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -380,6 +386,7 @@ py_library(
 py_library(
     name = "webkitgtk",
     srcs = glob(["selenium/webdriver/webkitgtk/**/*.py"]),
+    data = ["selenium/webdriver/webkitgtk/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -392,6 +399,7 @@ py_library(
 py_library(
     name = "wpewebkit",
     srcs = glob(["selenium/webdriver/wpewebkit/**/*.py"]),
+    data = ["selenium/webdriver/wpewebkit/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [

@@ -19,6 +19,7 @@ package org.openqa.selenium.logging;
 
 import java.util.Set;
 import java.util.TreeSet;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * LocalLogs implementation that holds two other local logs. NOTE: The two local logs are not equal.
@@ -42,6 +43,7 @@ class CompositeLocalLogs extends LocalLogs {
   }
 
   @Override
+  @NullMarked
   public LogEntries get(String logType) {
     if (predefinedTypeLogger.getAvailableLogTypes().contains(logType)) {
       return predefinedTypeLogger.get(logType);

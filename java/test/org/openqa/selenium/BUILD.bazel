@@ -35,6 +35,7 @@ java_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -52,6 +53,7 @@ java_library(
         "//java/src/org/openqa/selenium/support",
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -86,5 +88,6 @@ java_selenium_test_suite(
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

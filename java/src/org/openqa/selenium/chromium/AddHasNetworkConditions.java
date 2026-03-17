@@ -75,8 +75,7 @@ public class AddHasNetworkConditions
     return new HasNetworkConditions() {
       @Override
       public ChromiumNetworkConditions getNetworkConditions() {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = executeMethod.executeRequired(GET_NETWORK_CONDITIONS, null);
+        Map<String, Object> result = executeMethod.execute(GET_NETWORK_CONDITIONS);
         return new ChromiumNetworkConditions()
             .setOffline((Boolean) result.getOrDefault(OFFLINE, false))
             .setLatency(Duration.ofMillis((Long) result.getOrDefault(LATENCY, 0)))
