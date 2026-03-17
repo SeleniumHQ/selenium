@@ -27,6 +27,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -128,11 +130,20 @@ class DockerSessionTest {
   @Test
   void stop_logsWrittenBeforeBrowserContainerStopped() throws Exception {
     byte[] logBytes = "INFO: Session started\nINFO: Session ended\n".getBytes();
+    // Docker multiplexed stream format: [stream-type(1)][padding(3)][payload-size(4)][payload]
+    ByteArrayOutputStream buf = new ByteArrayOutputStream();
+    DataOutputStream header = new DataOutputStream(buf);
+    header.writeByte(1); // stdout
+    header.write(new byte[3]); // padding
+    header.writeInt(logBytes.length);
+    header.flush();
+    buf.write(logBytes);
+    byte[] multiplexed = buf.toByteArray();
     when(browserContainer.getLogs())
         .thenReturn(
             new ContainerLogs(
                 new ContainerId("browser-id"),
-                Contents.fromStream(new ByteArrayInputStream(logBytes), logBytes.length)));
+                Contents.fromStream(new ByteArrayInputStream(multiplexed), multiplexed.length)));
 
     // saveLogs() writes to sessionAssetsPath/selenium-server.log; parent dir must exist
     Path sessionDir = tempDir.resolve(sessionId.toString());
