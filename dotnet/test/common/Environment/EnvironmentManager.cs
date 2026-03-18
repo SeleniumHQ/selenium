@@ -80,6 +80,7 @@ public class EnvironmentManager
         // Search for the driver type in the all assemblies,
         // bazel uses unpredictable assembly names to execute tests
         driverType = AppDomain.CurrentDomain.GetAssemblies()
+            .AsEnumerable()
             .Reverse()
             .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
             .FirstOrDefault(t => t != null);
