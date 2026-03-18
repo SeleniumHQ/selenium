@@ -59,7 +59,7 @@ def import_devtools(ver):
         # Attempt to parse and load the 'most recent' devtools module. This is likely
         # because cdp has been updated but selenium python has not been released yet.
         devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
-        versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
+        versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir() and f.name != "latest")
         latest = max(int(x[1:]) for x in versions)
         selenium_logger = logging.getLogger(__name__)
         selenium_logger.debug("Falling back to loading `devtools`: v%s", latest)
