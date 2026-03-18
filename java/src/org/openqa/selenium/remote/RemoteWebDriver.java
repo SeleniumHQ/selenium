@@ -61,6 +61,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
@@ -372,7 +373,7 @@ public class RemoteWebDriver
 
   @Override
   public void get(String url) {
-    if (getCapabilities().getCapability("webSocketUrl") != null) {
+    if (isBiDiEnabled()) {
       new BrowsingContext(this, getWindowHandle())
           .navigate(url, getReadinessState());
     } else {
@@ -380,11 +381,24 @@ public class RemoteWebDriver
     }
   }
 
+  // BiDi is active when the driver implements HasBiDi and the session returned a WebSocket URL
+  // (a String), not just the boolean request capability that was sent at session creation.
+  private boolean isBiDiEnabled() {
+    return this instanceof HasBiDi
+        && getCapabilities().getCapability("webSocketUrl") instanceof String;
+  }
+
   private ReadinessState getReadinessState() {
-    Object strategy = getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY);
-    if ("eager".equals(strategy)) {
+    Object raw = getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY);
+    // The capability may be a PageLoadStrategy enum (set locally) or a String (deserialized from
+    // JSON), so normalise to the enum via toString() before comparing.
+    PageLoadStrategy strategy =
+        raw instanceof PageLoadStrategy
+            ? (PageLoadStrategy) raw
+            : PageLoadStrategy.fromString(raw == null ? null : raw.toString());
+    if (PageLoadStrategy.EAGER.equals(strategy)) {
       return ReadinessState.INTERACTIVE;
-    } else if ("none".equals(strategy)) {
+    } else if (PageLoadStrategy.NONE.equals(strategy)) {
       return ReadinessState.NONE;
     }
     return ReadinessState.COMPLETE;
@@ -1231,7 +1245,7 @@ public class RemoteWebDriver
 
     @Override
     public void back() {
-      if (getCapabilities().getCapability("webSocketUrl") != null) {
+      if (isBiDiEnabled()) {
         new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).back();
       } else {
         execute(DriverCommand.GO_BACK);
@@ -1240,7 +1254,7 @@ public class RemoteWebDriver
 
     @Override
     public void forward() {
-      if (getCapabilities().getCapability("webSocketUrl") != null) {
+      if (isBiDiEnabled()) {
         new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).forward();
       } else {
         execute(DriverCommand.GO_FORWARD);
@@ -1259,7 +1273,7 @@ public class RemoteWebDriver
 
     @Override
     public void refresh() {
-      if (getCapabilities().getCapability("webSocketUrl") != null) {
+      if (isBiDiEnabled()) {
         new BrowsingContext(RemoteWebDriver.this, getWindowHandle())
             .reload(getReadinessState());
       } else {
