@@ -48,7 +48,8 @@
     "output": "../../build/docs/api/dotnet",
     "template": [
       "default",
-      "modern"
+      "modern",
+      "templates/selenium"
     ],
     "globalMetadata": {
       "_appName": "Selenium .NET API",

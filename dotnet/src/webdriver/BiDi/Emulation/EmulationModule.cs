@@ -76,6 +76,13 @@ public sealed class EmulationModule : Module, IEmulationModule
         return await ExecuteCommandAsync(new SetScreenSettingsOverrideCommand(@params), options, _jsonContext.SetScreenSettingsOverrideCommand, _jsonContext.SetScreenSettingsOverrideResult, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetScrollbarTypeOverrideParameters(scrollbarType, options?.Contexts, options?.UserContexts);
+
+        return await ExecuteCommandAsync(new SetScrollbarTypeOverrideCommand(@params), options, _jsonContext.SetScrollbarTypeOverrideCommand, _jsonContext.SetScrollbarTypeOverrideResult, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
@@ -136,6 +143,8 @@ public sealed class EmulationModule : Module, IEmulationModule
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideCommand))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
+[JsonSerializable(typeof(SetScrollbarTypeOverrideCommand))]
+[JsonSerializable(typeof(SetScrollbarTypeOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
 [JsonSerializable(typeof(SetTouchOverrideCommand))]

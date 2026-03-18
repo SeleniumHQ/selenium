@@ -25,6 +25,7 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.docker.client.DockerClient;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -62,7 +63,7 @@ class VersionCommand {
    * @param requestedVersion The API version to use (e.g., "1.40" or "1.44")
    * @return Optional containing the DockerProtocol implementation if the version is supported
    */
-  public Optional<DockerProtocol> getDockerProtocol(String requestedVersion) {
+  public Optional<DockerProtocol> getDockerProtocol(@Nullable String requestedVersion) {
     if (requestedVersion == null || requestedVersion.isEmpty()) {
       return getDockerProtocol();
     }

@@ -50,6 +50,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -448,6 +449,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     return result.right();
   }
 
+  @Nullable
   private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
     // Use read lock for slot selection to allow concurrent reads
     // This reduces contention compared to using write lock for the entire operation
@@ -679,6 +681,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
+  @Nullable
   protected Node getNodeFromURI(URI uri) {
     Lock readLock = this.lock.readLock();
     readLock.lock();

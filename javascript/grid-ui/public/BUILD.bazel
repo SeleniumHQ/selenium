@@ -1,3 +1,4 @@
+load("@rules_java//java:java_import.bzl", "java_import")
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 load("//java:defs.bzl", "java_import")
 

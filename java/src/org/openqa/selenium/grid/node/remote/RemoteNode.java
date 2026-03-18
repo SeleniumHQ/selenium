@@ -243,7 +243,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    return Values.get(res, Session.class);
+    return Require.nonNull("Session", Values.get(res, Session.class));
   }
 
   @Override
@@ -299,7 +299,7 @@ public class RemoteNode extends Node implements Closeable {
 
           while (in.hasNext()) {
             if ("node".equals(in.nextName())) {
-              return in.read(NodeStatus.class);
+              return in.readNonNull(NodeStatus.class);
             } else {
               in.skipValue();
             }

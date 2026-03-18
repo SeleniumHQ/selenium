@@ -16,8 +16,8 @@
 # under the License.
 
 
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.client_config import ClientConfig
 
 

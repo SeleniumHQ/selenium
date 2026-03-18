@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.docker.client;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -37,7 +36,6 @@ import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -69,12 +67,8 @@ class CreateContainer {
     String url = String.format("/v%s/containers/create", apiVersion);
     if (info.getName() != null && !info.getName().trim().isEmpty()) {
       String containerName = info.getName().trim();
-      try {
-        String encodedName = URLEncoder.encode(containerName, StandardCharsets.UTF_8.toString());
-        url += "?name=" + encodedName;
-      } catch (UnsupportedEncodingException e) {
-        throw new DockerException("Failed to encode container name: " + containerName, e);
-      }
+      String encodedName = URLEncoder.encode(containerName, UTF_8);
+      url += "?name=" + encodedName;
     }
 
     HttpResponse res =
@@ -87,7 +81,7 @@ class CreateContainer {
             info);
 
     try {
-      Map<String, Object> rawContainer = JSON.toType(Contents.string(res), MAP_TYPE);
+      Map<String, Object> rawContainer = JSON.toType(res.contentAsString(), MAP_TYPE);
 
       if (!(rawContainer.get("Id") instanceof String)) {
         throw new DockerException("Unable to read container id: " + rawContainer);

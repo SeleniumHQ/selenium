@@ -17,8 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * Thrown when attempting to add a cookie under a different domain than the current URL.
  *
@@ -27,15 +25,15 @@ import org.jspecify.annotations.Nullable;
 public class InvalidCookieDomainException extends WebDriverException {
   public InvalidCookieDomainException() {}
 
-  public InvalidCookieDomainException(@Nullable String message) {
+  public InvalidCookieDomainException(String message) {
     super(message);
   }
 
-  public InvalidCookieDomainException(@Nullable Throwable cause) {
+  public InvalidCookieDomainException(Throwable cause) {
     super(cause);
   }
 
-  public InvalidCookieDomainException(@Nullable String message, @Nullable Throwable cause) {
+  public InvalidCookieDomainException(String message, Throwable cause) {
     super(message, cause);
   }
 }

@@ -180,6 +180,26 @@ def pytest_generate_tests(metafunc):
 selenium_driver = None
 
 
+def _resolve_bazel_path(path):
+    """Resolve a path through Bazel Rlocation if the given path does not exist on disk.
+
+    When running under Bazel, paths from ctx.expand_location are relative to
+    the execroot (e.g. 'external/+ext+repo/binary') which may not resolve from
+    the test process CWD. Rlocation maps them to their absolute runfiles location.
+    """
+    if not path:
+        return path
+    cleaned = path.strip("'")
+    if Path(cleaned).exists():
+        return path
+    if Runfiles is not None and cleaned.startswith("external/"):
+        r = Runfiles.Create()
+        resolved = r.Rlocation(cleaned.removeprefix("external/"))
+        if resolved:
+            return resolved
+    return path
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
@@ -280,7 +300,7 @@ class Driver:
     @property
     def browser_path(self):
         if self._request.config.option.binary:
-            return self._request.config.option.binary
+            return _resolve_bazel_path(self._request.config.option.binary)
         return None
 
     @property
@@ -292,7 +312,7 @@ class Driver:
     @property
     def driver_path(self):
         if self._request.config.option.executable:
-            return self._request.config.option.executable
+            return _resolve_bazel_path(self._request.config.option.executable)
         return None
 
     @property
@@ -570,7 +590,7 @@ def edge_service():
 
 @pytest.fixture
 def driver_executable(request):
-    return request.config.option.executable
+    return _resolve_bazel_path(request.config.option.executable)
 
 
 @pytest.fixture

@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -324,6 +325,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
     return new PersistentCapabilities(caps).setCapability(key, value);
   }
 
+  @Nullable
   private String getHost() {
     try {
       return new NetworkUtils().getNonLoopbackAddressOfThisMachine();

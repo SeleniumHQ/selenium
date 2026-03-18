@@ -18,7 +18,7 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Text.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.BiDi.Session;
@@ -32,124 +32,85 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Func<ISessionModule> _sessionProvider;
 
-    private readonly ConcurrentDictionary<string, EventRegistration> _events = new();
+    private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
 
-    private readonly Channel<EventItem> _pendingEvents = Channel.CreateUnbounded<EventItem>(new()
+    private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
+
+    private readonly Channel<PendingEvent> _pendingEvents = Channel.CreateUnbounded<PendingEvent>(new()
     {
         SingleReader = true,
         SingleWriter = true
     });
 
-    private readonly Task _processEventsTask;
+    private readonly Task _eventEmitterTask;
 
     public EventDispatcher(Func<ISessionModule> sessionProvider)
     {
         _sessionProvider = sessionProvider;
-        _processEventsTask = Task.Run(ProcessEventsAsync);
+        _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var registration = _events.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
+        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
+
+        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
         registration.AddHandler(eventHandler);
 
-        try
-        {
-            var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        catch
-        {
-            registration.RemoveHandler(eventHandler);
-            throw;
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        if (_events.TryGetValue(subscription.EventHandler.EventName, out var registration))
+        if (_eventRegistrations.TryGetValue(subscription.EventHandler.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-
-            // Wait until all pending events for this method are dispatched
-            try
-            {
-                await registration.DrainAsync(cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                registration.RemoveHandler(subscription.EventHandler);
-            }
+            registration.RemoveHandler(subscription.EventHandler);
         }
     }
 
-    public void EnqueueEvent(string method, ReadOnlyMemory<byte> jsonUtf8Bytes, IBiDi bidi)
+    public void EnqueueEvent(string method, EventArgs eventArgs)
     {
-        if (_events.TryGetValue(method, out var registration))
-        {
-            if (_pendingEvents.Writer.TryWrite(new EventItem(jsonUtf8Bytes, bidi, registration)))
-            {
-                registration.IncrementEnqueued();
-            }
-            else
-            {
-                if (_logger.IsEnabled(LogEventLevel.Warn))
-                {
-                    _logger.Warn($"Failed to enqueue BiDi event with method '{method}' for processing. Event will be ignored.");
-                }
-            }
-        }
-        else
-        {
-            if (_logger.IsEnabled(LogEventLevel.Warn))
-            {
-                _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored.");
-            }
-        }
+        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
     }
 
-    private async Task ProcessEventsAsync()
+    private async Task ProcessEventsAwaiterAsync()
     {
         var reader = _pendingEvents.Reader;
-
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            while (reader.TryRead(out var evt))
+            while (reader.TryRead(out var result))
             {
-                try
+                if (_eventRegistrations.TryGetValue(result.Method, out var registration))
                 {
-                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(evt.JsonUtf8Bytes.Span, evt.Registration.TypeInfo)!;
-                    eventArgs.BiDi = evt.BiDi;
+                    foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
+                    {
+                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs);
+                        if (!runningHandlerTask.IsCompleted)
+                        {
+                            _runningHandlers.TryAdd(runningHandlerTask, 0);
+                            _ = runningHandlerTask.ContinueWith(static (t, state) => ((ConcurrentDictionary<Task, byte>)state!).TryRemove(t, out _),
+                                _runningHandlers, TaskContinuationOptions.ExecuteSynchronously);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-                    foreach (var handler in evt.Registration.GetHandlersSnapshot())
-                    {
-                        try
-                        {
-                            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (_logger.IsEnabled(LogEventLevel.Error))
-                            {
-                                _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error($"Unhandled error deserializing BiDi event: {ex}");
-                    }
-                }
-                finally
-                {
-                    evt.Registration.IncrementProcessed();
-                }
+    private async Task InvokeHandlerAsync(EventHandler handler, EventArgs eventArgs)
+    {
+        try
+        {
+            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
             }
         }
     }
@@ -158,88 +119,44 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         _pendingEvents.Writer.Complete();
 
-        await _processEventsTask.ConfigureAwait(false);
+        await _eventEmitterTask.ConfigureAwait(false);
+
+        await Task.WhenAll(_runningHandlers.Keys).ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
     }
 
-    private sealed record EventItem(ReadOnlyMemory<byte> JsonUtf8Bytes, IBiDi BiDi, EventRegistration Registration);
+    public bool TryGetJsonTypeInfo(string eventName, [NotNullWhen(true)] out JsonTypeInfo? jsonTypeInfo)
+    {
+        if (_eventRegistrations.TryGetValue(eventName, out var registration))
+        {
+            jsonTypeInfo = registration.TypeInfo;
+            return true;
+        }
+
+        jsonTypeInfo = null;
+        return false;
+    }
+
+    private readonly record struct PendingEvent(string Method, EventArgs EventArgs);
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {
-        private long _enqueueSeq;
-        private long _processedSeq;
-        private readonly object _drainLock = new();
-        private readonly List<EventHandler> _handlers = [];
-        private List<(long TargetSeq, TaskCompletionSource<bool> Tcs)>? _drainWaiters;
+        private readonly object _lock = new();
+        private volatile EventHandler[] _handlers = [];
 
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
 
+        public EventHandler[] GetHandlers() => _handlers;
+
         public void AddHandler(EventHandler handler)
         {
-            lock (_drainLock) _handlers.Add(handler);
+            lock (_lock) _handlers = [.. _handlers, handler];
         }
 
         public void RemoveHandler(EventHandler handler)
         {
-            lock (_drainLock) _handlers.Remove(handler);
-        }
-
-        public EventHandler[] GetHandlersSnapshot()
-        {
-            lock (_drainLock) return [.. _handlers];
-        }
-
-        public void IncrementEnqueued() => Interlocked.Increment(ref _enqueueSeq);
-
-        public void IncrementProcessed()
-        {
-            var processed = Interlocked.Increment(ref _processedSeq);
-
-            lock (_drainLock)
-            {
-                if (_drainWaiters is null) return;
-
-                for (var i = _drainWaiters.Count - 1; i >= 0; i--)
-                {
-                    if (_drainWaiters[i].TargetSeq <= processed)
-                    {
-                        _drainWaiters[i].Tcs.TrySetResult(true);
-                        _drainWaiters.RemoveAt(i);
-                    }
-                }
-
-                if (_drainWaiters.Count == 0) _drainWaiters = null;
-            }
-        }
-
-        public Task DrainAsync(CancellationToken cancellationToken)
-        {
-            lock (_drainLock)
-            {
-                var target = Volatile.Read(ref _enqueueSeq);
-                if (Volatile.Read(ref _processedSeq) >= target) return Task.CompletedTask;
-
-                var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                _drainWaiters ??= [];
-                _drainWaiters.Add((target, tcs));
-
-                // Double-check: processing may have caught up between the read and adding the waiter
-                if (Volatile.Read(ref _processedSeq) >= target)
-                {
-                    _drainWaiters.Remove((target, tcs));
-                    if (_drainWaiters.Count == 0) _drainWaiters = null;
-                    return Task.CompletedTask;
-                }
-
-                if (!cancellationToken.CanBeCanceled) return tcs.Task;
-
-                return tcs.Task.ContinueWith(
-                    static _ => { },
-                    cancellationToken,
-                    TaskContinuationOptions.None,
-                    TaskScheduler.Default);
-            }
+            lock (_lock) _handlers = Array.FindAll(_handlers, h => h != handler);
         }
     }
 }

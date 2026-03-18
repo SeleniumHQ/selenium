@@ -38,6 +38,7 @@ java_export(
         artifact("io.fabric8:kubernetes-client-api"),
         artifact("io.fabric8:kubernetes-model-batch"),
         artifact("io.fabric8:kubernetes-model-core"),
+        artifact("org.jspecify:jspecify"),
     ],
 )
 

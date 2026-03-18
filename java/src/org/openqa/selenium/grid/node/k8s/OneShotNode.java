@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -106,10 +107,10 @@ public class OneShotNode extends Node {
   private final UUID slotId = UUID.randomUUID();
   private final int connectionLimitPerSession;
   private final AtomicInteger connectionCounter = new AtomicInteger();
-  private RemoteWebDriver driver;
-  private SessionId sessionId;
-  private HttpClient client;
-  private Capabilities capabilities;
+  private @Nullable RemoteWebDriver driver;
+  private @Nullable SessionId sessionId;
+  private @Nullable HttpClient client;
+  private @Nullable Capabilities capabilities;
   private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
@@ -264,6 +265,7 @@ public class OneShotNode extends Node {
     }
   }
 
+  @Nullable
   private Field findClientField(Class<?> clazz) {
     try {
       return clazz.getDeclaredField("client");
@@ -334,11 +336,13 @@ public class OneShotNode extends Node {
     return new Session(sessionId, getUri(), stereotype, capabilities, sessionStart);
   }
 
+  @Nullable
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
     return null;
   }
 
+  @Nullable
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
     return null;

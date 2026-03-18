@@ -60,24 +60,25 @@ class AdapterFactoryTest {
   }
 
   @Test
+  @SuppressWarnings("DataFlowIssue")
   void shouldThrowExceptionForNullVersion() {
     assertThatThrownBy(() -> AdapterFactory.createAdapter(null))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("API version cannot be null or empty");
+        .hasMessageContaining("API version must be set");
   }
 
   @Test
   void shouldThrowExceptionForEmptyVersion() {
     assertThatThrownBy(() -> AdapterFactory.createAdapter(""))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("API version cannot be null or empty");
+        .hasMessageContaining("API version must not be blank");
   }
 
   @Test
   void shouldThrowExceptionForWhitespaceVersion() {
     assertThatThrownBy(() -> AdapterFactory.createAdapter("   "))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("API version cannot be null or empty");
+        .hasMessageContaining("API version must not be blank");
   }
 
   @Test

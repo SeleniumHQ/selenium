@@ -21,6 +21,7 @@ import static java.util.Locale.ROOT;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.internal.Require;
@@ -34,12 +35,12 @@ public class Reference {
 
   private final String domain;
   private final String name;
-  private final String tag;
-  private final String digest;
+  private final @Nullable String tag;
+  private final @Nullable String digest;
   private final String platform;
 
   @VisibleForTesting
-  Reference(String domain, String name, String tag, String digest) {
+  Reference(String domain, String name, @Nullable String tag, @Nullable String digest) {
     this.domain = Require.nonNull("Domain", domain);
     this.name = Require.nonNull("Name", name);
     this.tag = tag;
@@ -48,7 +49,8 @@ public class Reference {
   }
 
   @VisibleForTesting
-  Reference(String domain, String name, String tag, String digest, String platform) {
+  Reference(
+      String domain, String name, @Nullable String tag, @Nullable String digest, String platform) {
     this.domain = Require.nonNull("Domain", domain);
     this.name = Require.nonNull("Name", name);
     this.tag = tag;
@@ -85,7 +87,7 @@ public class Reference {
     return new Reference(docker.domain, name, tag, digest, docker.platform);
   }
 
-  private static class DockerDomain {
+  private static final class DockerDomain {
     private final String domain;
     private final String remainder;
     private final String platform;
@@ -147,10 +149,12 @@ public class Reference {
     return name;
   }
 
+  @Nullable
   public String getTag() {
     return tag;
   }
 
+  @Nullable
   public String getDigest() {
     return digest;
   }
