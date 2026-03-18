@@ -46,10 +46,9 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
 
   @Override
   public Capabilities apply(Capabilities capabilities) {
-    if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
-      return capabilities;
-    }
-
+    // Always propagate VNC capabilities from the stereotype, regardless of whether the session
+    // request included a browserName. Requests without browserName (e.g. proxy-only caps) are
+    // still routed to a slot that has VNC enabled, so the VNC address must be present.
     Object vncEnabled = slotStereotype.getCapability(SE_VNC_ENABLED);
     if (vncEnabled != null) {
       Object vncPort = slotStereotype.getCapability(SE_NO_VNC_PORT);
@@ -57,6 +56,10 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
           new PersistentCapabilities(capabilities)
               .setCapability(SE_VNC_ENABLED, vncEnabled)
               .setCapability(SE_NO_VNC_PORT, Require.nonNull(SE_NO_VNC_PORT, vncPort));
+    }
+
+    if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
+      return capabilities;
     }
 
     String browserName = capabilities.getBrowserName().toLowerCase(Locale.ENGLISH);
