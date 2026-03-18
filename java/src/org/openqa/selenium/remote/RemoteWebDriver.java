@@ -61,10 +61,10 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Pdf;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -374,8 +374,7 @@ public class RemoteWebDriver
   @Override
   public void get(String url) {
     if (isBiDiEnabled()) {
-      new BrowsingContext(this, getWindowHandle())
-          .navigate(url, getReadinessState());
+      new BrowsingContext(this, getWindowHandle()).navigate(url, getReadinessState());
     } else {
       execute(DriverCommand.GET(url));
     }
@@ -1274,8 +1273,7 @@ public class RemoteWebDriver
     @Override
     public void refresh() {
       if (isBiDiEnabled()) {
-        new BrowsingContext(RemoteWebDriver.this, getWindowHandle())
-            .reload(getReadinessState());
+        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).reload(getReadinessState());
       } else {
         execute(DriverCommand.REFRESH);
       }
