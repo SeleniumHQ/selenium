@@ -35,12 +35,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 [JsonConverter(typeof(RealmInfoEventArgsConverter))]
 public abstract record RealmInfoEventArgs(Realm Realm, string Origin) : EventArgs;
 
-public sealed record WindowRealmInfoEventArgs(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfoEventArgs(Realm, Origin)
-{
-    public Browser.UserContext? UserContext { get; init; }
-
-    public string? Sandbox { get; init; }
-}
+public sealed record WindowRealmInfoEventArgs(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context, Browser.UserContext? UserContext, string? Sandbox) : RealmInfoEventArgs(Realm, Origin);
 
 public sealed record DedicatedWorkerRealmInfoEventArgs(Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmInfoEventArgs(Realm, Origin);
 
