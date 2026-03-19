@@ -50,7 +50,7 @@ internal class ScriptEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenToRealmCreatedEvent()
     {
-        TaskCompletionSource<RealmInfo> tcs = new();
+        TaskCompletionSource<RealmInfoEventArgs> tcs = new();
 
         await bidi.Script.OnRealmCreatedAsync(tcs.SetResult);
 
@@ -59,7 +59,7 @@ internal class ScriptEventsTests : BiDiTestFixture
         var realmInfo = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(realmInfo, Is.Not.Null);
-        Assert.That(realmInfo, Is.AssignableFrom<WindowRealmInfo>());
+        Assert.That(realmInfo, Is.AssignableFrom<WindowRealmInfoEventArgs>());
         Assert.That(realmInfo.Realm, Is.Not.Null);
     }
 
