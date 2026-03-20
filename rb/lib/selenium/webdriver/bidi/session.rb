@@ -20,6 +20,10 @@
 module Selenium
   module WebDriver
     class BiDi
+      # Implements the Session Module of the WebDriver-BiDi specification
+      #
+      # @api private
+      #
       class Session
         Status = Struct.new(:ready, :message)
 

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-
 import java.util.stream.Collectors;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
@@ -56,7 +54,7 @@ class AddNode implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    NodeStatus status = json.toType(string(req), NodeStatus.class);
+    NodeStatus status = json.toType(req.contentAsString(), NodeStatus.class);
 
     Node node =
         new RemoteNode(

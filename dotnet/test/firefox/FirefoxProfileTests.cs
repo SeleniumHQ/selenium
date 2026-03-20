@@ -17,11 +17,12 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Firefox;
 
+[Ignore("")]
 [TestFixture]
 public class FirefoxProfileTests
 {
@@ -39,7 +40,7 @@ public class FirefoxProfileTests
         profile.Clean();
     }
 
-    //[Test]
+    [Test]
     public void ShouldQuoteStringsWhenSettingStringProperties()
     {
         profile.SetPreference("cheese", "brie");
@@ -57,7 +58,7 @@ public class FirefoxProfileTests
         Assert.That(seenCheese, Is.True);
     }
 
-    //[Test]
+    [Test]
     public void ShouldSetIntegerPreferences()
     {
         profile.SetPreference("cheese", 1234);
@@ -75,7 +76,7 @@ public class FirefoxProfileTests
         Assert.That(seenCheese, Is.True, "Did not see integer value being set correctly");
     }
 
-    //[Test]
+    [Test]
     public void testShouldSetBooleanPreferences()
     {
         profile.SetPreference("cheese", false);

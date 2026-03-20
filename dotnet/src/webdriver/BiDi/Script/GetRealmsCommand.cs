@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class GetRealmsCommand(GetRealmsParameters @params)
@@ -28,27 +24,23 @@ internal sealed class GetRealmsCommand(GetRealmsParameters @params)
 
 internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 
-public sealed class GetRealmsOptions : CommandOptions
+public sealed record GetRealmsOptions : CommandOptions
 {
-    public BrowsingContext.BrowsingContext? Context { get; set; }
+    public BrowsingContext.BrowsingContext? Context { get; init; }
 
-    public RealmType? Type { get; set; }
+    public RealmType? Type { get; init; }
 }
 
-public sealed record GetRealmsResult : EmptyResult, IReadOnlyList<RealmInfo>
+public sealed record ContextGetRealmsOptions : CommandOptions
 {
-    private readonly IReadOnlyList<RealmInfo> _realms;
+    public RealmType? Type { get; init; }
 
-    internal GetRealmsResult(IReadOnlyList<RealmInfo> realms)
+    internal static GetRealmsOptions WithContext(ContextGetRealmsOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        _realms = realms;
-    }
-
-    public RealmInfo this[int index] => _realms[index];
-
-    public int Count => _realms.Count;
-
-    public IEnumerator<RealmInfo> GetEnumerator() => _realms.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_realms as IEnumerable).GetEnumerator();
+        Context = context,
+        Type = options?.Type,
+        Timeout = options?.Timeout
+    };
 }
+
+public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;

@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.Input;
 
+[JsonConverter(typeof(InputOriginConverter))]
 public abstract record Origin;
 
 public sealed record ViewportOrigin() : Origin;

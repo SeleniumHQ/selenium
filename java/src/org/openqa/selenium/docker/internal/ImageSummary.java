@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.docker.internal;
 
-import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +37,7 @@ public class ImageSummary {
 
   public ImageSummary(ImageId id, Collection<String> repoTags) {
     this.id = Require.nonNull("Image id", id);
-    this.repoTags = ImmutableSet.copyOf(Require.nonNull("Repo tags", repoTags));
+    this.repoTags = Set.copyOf(Require.nonNull("Repo tags", repoTags));
   }
 
   public ImageId getId() {
@@ -49,6 +48,7 @@ public class ImageSummary {
     return repoTags;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   static ImageSummary fromJson(JsonInput input) {
     input.beginObject();
 

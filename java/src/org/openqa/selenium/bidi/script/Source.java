@@ -17,6 +17,7 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Optional;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Source {
@@ -51,7 +52,7 @@ public class Source {
 
     input.endObject();
 
-    return new Source(realm, browsingContext);
+    return new Source(Require.nonNull("realm", realm), browsingContext);
   }
 
   public String getRealm() {

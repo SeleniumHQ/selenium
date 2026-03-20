@@ -28,7 +28,7 @@ public interface HasCasting {
   /**
    * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
    *
-   * @return array of ID / Name pairs of available cast sink targets
+   * @return list of ID / Name pairs of available cast sink targets
    */
   List<Map<String, String>> getCastSinks();
 

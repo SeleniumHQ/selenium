@@ -17,7 +17,7 @@
 """Exceptions that may happen in all the webdriver code."""
 
 from collections.abc import Sequence
-from typing import Optional
+from typing import Any
 
 SUPPORT_MSG = "For documentation on this error, please visit:"
 ERROR_URL = "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors"
@@ -27,7 +27,7 @@ class WebDriverException(Exception):
     """Base webdriver exception."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         super().__init__()
         self.msg = msg
@@ -73,7 +73,7 @@ class NoSuchElementException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#nosuchelementexception"
 
@@ -91,8 +91,7 @@ class NoSuchAttributeException(WebDriverException):
 
 
 class NoSuchShadowRootException(WebDriverException):
-    """Thrown when trying to access the shadow root of an element when it does
-    not have a shadow root attached."""
+    """Thrown when trying to access the shadow root of an element when it does not have a shadow root attached."""
 
 
 class StaleElementReferenceException(WebDriverException):
@@ -112,7 +111,7 @@ class StaleElementReferenceException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#staleelementreferenceexception"
 
@@ -120,11 +119,9 @@ class StaleElementReferenceException(WebDriverException):
 
 
 class InvalidElementStateException(WebDriverException):
-    """Thrown when a command could not be completed because the element is in
-    an invalid state.
+    """Thrown when a command could not be completed because the element is in an invalid state.
 
-    This can be caused by attempting to clear an element that isn't both
-    editable and resettable.
+    This can be caused by attempting to clear an element that isn't both editable and resettable.
     """
 
 
@@ -137,10 +134,10 @@ class UnexpectedAlertPresentException(WebDriverException):
 
     def __init__(
         self,
-        msg: Optional[str] = None,
-        screen: Optional[str] = None,
-        stacktrace: Optional[Sequence[str]] = None,
-        alert_text: Optional[str] = None,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
+        alert_text: str | None = None,
     ) -> None:
         super().__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
@@ -158,15 +155,13 @@ class NoAlertPresentException(WebDriverException):
 
 
 class ElementNotVisibleException(InvalidElementStateException):
-    """Thrown when an element is present on the DOM, but it is not visible, and
-    so is not able to be interacted with.
+    """Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.
 
-    Most commonly encountered when trying to click or read text of an
-    element that is hidden from view.
+    Most commonly encountered when trying to click or read text of an element that is hidden from view.
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotvisibleexception"
 
@@ -174,11 +169,10 @@ class ElementNotVisibleException(InvalidElementStateException):
 
 
 class ElementNotInteractableException(InvalidElementStateException):
-    """Thrown when an element is present in the DOM but interactions with that
-    element will hit another element due to paint order."""
+    """Thrown when element interactions will hit another element due to paint order."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotinteractableexception"
 
@@ -193,8 +187,7 @@ class ElementNotSelectableException(InvalidElementStateException):
 
 
 class InvalidCookieDomainException(WebDriverException):
-    """Thrown when attempting to add a cookie under a different domain than the
-    current URL."""
+    """Thrown when attempting to add a cookie under a different domain."""
 
 
 class UnableToSetCookieException(WebDriverException):
@@ -206,8 +199,7 @@ class TimeoutException(WebDriverException):
 
 
 class MoveTargetOutOfBoundsException(WebDriverException):
-    """Thrown when the target provided to the `ActionsChains` move() method is
-    invalid, i.e. out of document."""
+    """Thrown when the target provided to the `ActionsChains` move() method is invalid, i.e. out of document."""
 
 
 class UnexpectedTagNameException(WebDriverException):
@@ -215,17 +207,13 @@ class UnexpectedTagNameException(WebDriverException):
 
 
 class InvalidSelectorException(WebDriverException):
-    """Thrown when the selector which is used to find an element does not
-    return a WebElement.
+    """Thrown when the selector used to find an element does not return a WebElement.
 
-    Currently this only happens when the selector is an xpath expression
-    and it is either syntactically invalid (i.e. it is not a xpath
-    expression) or the expression does not select WebElements (e.g.
-    "count(//input)").
+    Currently this only happens when the XPath expression is syntactically invalid or does not select WebElements.
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidselectorexception"
 
@@ -253,8 +241,7 @@ class JavascriptException(WebDriverException):
 
 
 class NoSuchCookieException(WebDriverException):
-    """No cookie matching the given path name was found amongst the associated
-    cookies of the current browsing context's active document."""
+    """Thrown when no cookie matching the given path name was found."""
 
 
 class ScreenshotException(WebDriverException):
@@ -262,12 +249,10 @@ class ScreenshotException(WebDriverException):
 
 
 class ElementClickInterceptedException(WebDriverException):
-    """The Element Click command could not be completed because the element
-    receiving the events is obscuring the element that was requested to be
-    clicked."""
+    """Thrown when element click fails because another element obscures it."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementclickinterceptedexception"
 
@@ -275,8 +260,7 @@ class ElementClickInterceptedException(WebDriverException):
 
 
 class InsecureCertificateException(WebDriverException):
-    """Navigation caused the user agent to hit a certificate warning, which is
-    usually the result of an expired or invalid TLS certificate."""
+    """Thrown when the user agent hits a certificate warning (expired or invalid TLS certificate)."""
 
 
 class InvalidCoordinatesException(WebDriverException):
@@ -284,11 +268,10 @@ class InvalidCoordinatesException(WebDriverException):
 
 
 class InvalidSessionIdException(WebDriverException):
-    """Occurs if the given session id is not in the list of active sessions,
-    meaning the session either does not exist or that it's not active."""
+    """Thrown when the given session id is not in the list of active sessions."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidsessionidexception"
 
@@ -299,7 +282,7 @@ class SessionNotCreatedException(WebDriverException):
     """A new session could not be created."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#sessionnotcreatedexception"
 
@@ -307,15 +290,14 @@ class SessionNotCreatedException(WebDriverException):
 
 
 class UnknownMethodException(WebDriverException):
-    """The requested command matched a known URL but did not match any methods
-    for that URL."""
+    """The requested command matched a known URL but did not match any methods for that URL."""
 
 
 class NoSuchDriverException(WebDriverException):
     """Raised when driver is not specified and cannot be located."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}/driver_location"
 

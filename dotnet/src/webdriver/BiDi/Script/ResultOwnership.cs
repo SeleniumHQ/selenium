@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ResultOwnership>))]
 public enum ResultOwnership
 {
     Root,

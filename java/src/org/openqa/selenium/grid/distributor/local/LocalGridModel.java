@@ -21,7 +21,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableSet;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
@@ -71,7 +71,7 @@ public class LocalGridModel extends GridModel {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    this.events.addListener(SessionClosedEvent.listener(this::release));
+    this.events.addListener(SessionClosedEvent.sessionListener(this::release));
   }
 
   public static LocalGridModel create(Config config) {
@@ -83,6 +83,8 @@ public class LocalGridModel extends GridModel {
   @Override
   public void add(NodeStatus node) {
     Require.nonNull("Node", node);
+
+    NodeStatus restartedNode = null;
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -116,9 +118,9 @@ public class LocalGridModel extends GridModel {
                   "Re-adding node with id %s and URI %s.",
                   node.getNodeId(), node.getExternalUri()));
 
-          // Send the previous state to allow cleaning up the old node related resources.
+          // Save the previous state to allow cleaning up the old node related resources.
           // Nodes are initially added in the "down" state, so the new state must be ignored.
-          events.fire(new NodeRestartedEvent(next));
+          restartedNode = next;
           iterator.remove();
           break;
         }
@@ -148,6 +150,10 @@ public class LocalGridModel extends GridModel {
     } finally {
       writeLock.unlock();
     }
+
+    if (restartedNode != null) {
+      events.fire(new NodeRestartedEvent(restartedNode));
+    }
   }
 
   @Override
@@ -164,7 +170,7 @@ public class LocalGridModel extends GridModel {
         if (node.getNodeId().equals(status.getNodeId())) {
           iterator.remove();
 
-          // if the node was marked as "down", keep it down until a healthcheck passes:
+          // if the node was marked as "down", keep it down until a health check passes:
           // just because the node can hit the event bus doesn't mean it's reachable
           if (node.getAvailability() == DOWN) {
             nodes.add(rewrite(status, DOWN));
@@ -223,12 +229,12 @@ public class LocalGridModel extends GridModel {
 
   @Override
   public void purgeDeadNodes() {
+    Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
+    Set<NodeStatus> toRemove = new HashSet<>();
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Map<NodeStatus, NodeStatus> replacements = new HashMap<>();
-      Set<NodeStatus> toRemove = new HashSet<>();
-
       for (NodeStatus node : nodes) {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
@@ -274,11 +280,12 @@ public class LocalGridModel extends GridModel {
             nodes.remove(node);
             nodePurgeTimes.remove(node.getNodeId());
             nodeHealthCount.remove(node.getNodeId());
-            events.fire(new NodeRemovedEvent(node));
           });
     } finally {
       writeLock.unlock();
     }
+
+    toRemove.forEach(node -> events.fire(new NodeRemovedEvent(node)));
   }
 
   @Override
@@ -338,13 +345,16 @@ public class LocalGridModel extends GridModel {
       }
 
       Optional<Slot> maybeSlot =
-          node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
+          node.getSlots().stream()
+              .filter(slot -> slotId.equals(slot.getId()))
+              .filter(slot -> slot.getSession() == null)
+              .findFirst();
 
-      if (!maybeSlot.isPresent()) {
-        LOG.warning(
+      if (maybeSlot.isEmpty()) {
+        LOG.fine(
             String.format(
-                "Asked to reserve slot on node %s, but no slot with id %s found",
-                node.getNodeId(), slotId));
+                "Asked to reserve slot %s on node %s, but slot not found or already reserved",
+                slotId, node.getNodeId()));
         return false;
       }
 
@@ -360,12 +370,13 @@ public class LocalGridModel extends GridModel {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      return ImmutableSet.copyOf(nodes);
+      return Set.copyOf(nodes);
     } finally {
       readLock.unlock();
     }
   }
 
+  @Nullable
   private NodeStatus getNode(NodeId id) {
     Require.nonNull("Node ID", id);
 
@@ -392,7 +403,7 @@ public class LocalGridModel extends GridModel {
   }
 
   @Override
-  public void release(SessionId id) {
+  public void release(@Nullable SessionId id) {
     if (id == null) {
       return;
     }
@@ -421,7 +432,7 @@ public class LocalGridModel extends GridModel {
   }
 
   @Override
-  public void setSession(SlotId slotId, Session session) {
+  public void setSession(SlotId slotId, @Nullable Session session) {
     Require.nonNull("Slot ID", slotId);
 
     Lock writeLock = lock.writeLock();
@@ -438,7 +449,7 @@ public class LocalGridModel extends GridModel {
       Optional<Slot> maybeSlot =
           node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
 
-      if (!maybeSlot.isPresent()) {
+      if (maybeSlot.isEmpty()) {
         LOG.warning("Grid model and reality have diverged. Unable to find slot " + slotId);
         return;
       }

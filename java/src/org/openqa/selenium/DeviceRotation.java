@@ -17,10 +17,9 @@
 
 package org.openqa.selenium;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Defines an object which represents the three dimensional plane and how a device can be rotated
@@ -48,7 +47,8 @@ public class DeviceRotation {
    * and z respectively: x : xVal y : yVal z : zVal
    */
   public DeviceRotation(Map<String, Number> map) {
-    if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
+    Require.nonNull("Map", map);
+    if (!map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
       throw new IllegalArgumentException(
           "Could not initialize DeviceRotation with map given: " + map);
     }
@@ -96,11 +96,7 @@ public class DeviceRotation {
    * @return All axes mapped to a Map.
    */
   public Map<String, Integer> parameters() {
-    HashMap<String, Integer> values = new HashMap<>();
-    values.put("x", this.x);
-    values.put("y", this.y);
-    values.put("z", this.z);
-    return Collections.unmodifiableMap(values);
+    return Map.of("x", this.x, "y", this.y, "z", this.z);
   }
 
   @Override

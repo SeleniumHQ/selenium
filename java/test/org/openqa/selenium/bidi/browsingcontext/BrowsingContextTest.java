@@ -17,16 +17,24 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.data.Offset.offset;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import javax.imageio.ImageIO;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -136,9 +144,9 @@ class BrowsingContextTest extends JupiterTestBase {
 
     List<BrowsingContextInfo> contextInfoList = parentWindow.getTree();
 
-    assertThat(contextInfoList.size()).isEqualTo(1);
+    assertThat(contextInfoList).hasSize(1);
     BrowsingContextInfo info = contextInfoList.get(0);
-    assertThat(info.getChildren().size()).isEqualTo(1);
+    assertThat(info.getChildren()).hasSize(1);
     assertThat(info.getId()).isEqualTo(referenceContextId);
     assertThat(info.getChildren().get(0).getUrl()).contains("formPage.html");
   }
@@ -155,7 +163,7 @@ class BrowsingContextTest extends JupiterTestBase {
 
     List<BrowsingContextInfo> contextInfoList = parentWindow.getTree(0);
 
-    assertThat(contextInfoList.size()).isEqualTo(1);
+    assertThat(contextInfoList).hasSize(1);
     BrowsingContextInfo info = contextInfoList.get(0);
     assertThat(info.getChildren()).isNull(); // since depth is 0
     assertThat(info.getId()).isEqualTo(referenceContextId);
@@ -176,7 +184,7 @@ class BrowsingContextTest extends JupiterTestBase {
 
     List<BrowsingContextInfo> contextInfoList = parentWindow.getTree(referenceContextId, 1);
 
-    assertThat(contextInfoList.size()).isEqualTo(1);
+    assertThat(contextInfoList).hasSize(1);
     BrowsingContextInfo info = contextInfoList.get(0);
     assertThat(info.getChildren()).isNotNull(); // since depth is 1
     assertThat(info.getId()).isEqualTo(referenceContextId);
@@ -199,7 +207,7 @@ class BrowsingContextTest extends JupiterTestBase {
 
     List<BrowsingContextInfo> contextInfoList = parentWindow.getTree(tab.getId());
 
-    assertThat(contextInfoList.size()).isEqualTo(1);
+    assertThat(contextInfoList).hasSize(1);
     BrowsingContextInfo info = contextInfoList.get(0);
     assertThat(info.getId()).isEqualTo(tab.getId());
     assertThat(info.getOriginalOpener()).isNull();
@@ -215,7 +223,7 @@ class BrowsingContextTest extends JupiterTestBase {
 
     List<BrowsingContextInfo> contextInfoList = window1.getTopLevelContexts();
 
-    assertThat(contextInfoList.size()).isEqualTo(2);
+    assertThat(contextInfoList).hasSize(2);
   }
 
   @Test
@@ -226,7 +234,9 @@ class BrowsingContextTest extends JupiterTestBase {
 
     window2.close();
 
-    assertThatExceptionOfType(BiDiException.class).isThrownBy(window2::getTree);
+    assertThatThrownBy(window2::getTree)
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("not found");
   }
 
   @Test
@@ -237,7 +247,9 @@ class BrowsingContextTest extends JupiterTestBase {
 
     tab2.close();
 
-    assertThatExceptionOfType(BiDiException.class).isThrownBy(tab2::getTree);
+    assertThatThrownBy(tab2::getTree)
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("not found");
   }
 
   @Test
@@ -248,11 +260,11 @@ class BrowsingContextTest extends JupiterTestBase {
     BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
 
     // We did not switch the driver, so we are running the script to check focus on 1st window
-    assertThat(getDocumentFocus()).isFalse();
+    assertThat(isDocumentFocused()).isFalse();
 
     window1.activate();
 
-    assertThat(getDocumentFocus()).isTrue();
+    assertThat(isDocumentFocused()).isTrue();
   }
 
   // TODO: Add a test for closing the last tab once the behavior is finalized
@@ -390,14 +402,29 @@ class BrowsingContextTest extends JupiterTestBase {
   // Meanwhile, trusting the browsers to do the right thing.
   @Test
   @NeedsFreshDriver
-  void canCaptureScreenshot() {
+  void canCaptureScreenshot() throws IOException {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
     driver.get(pages.simpleTestPage);
 
     String screenshot = browsingContext.captureScreenshot();
 
-    assertThat(screenshot.length()).isPositive();
+    verifyScreenshot(screenshot);
+  }
+
+  private void verifyScreenshot(String screenshotBase64) throws IOException {
+    byte[] screenshotBytes = Base64.getDecoder().decode(screenshotBase64);
+    BufferedImage screenshot = ImageIO.read(new ByteArrayInputStream(screenshotBytes));
+    Dimension expectedSize = getViewportSize();
+
+    assertLength(screenshot.getWidth(), expectedSize.getWidth());
+    assertLength(screenshot.getHeight(), expectedSize.getHeight());
+  }
+
+  private void assertLength(int length, int expected) {
+    int expectedLength = (int) (expected * getDevicePixelRatio());
+    Offset<Integer> tolerance = offset(20);
+    assertThat(length).isCloseTo(expectedLength, tolerance);
   }
 
   @Test
@@ -423,7 +450,7 @@ class BrowsingContextTest extends JupiterTestBase {
                 .origin(CaptureScreenshotParameters.Origin.DOCUMENT)
                 .clipRectangle(clipRectangle));
 
-    assertThat(screenshot.length()).isPositive();
+    assertThat(screenshot).isNotEmpty();
   }
 
   @Test
@@ -440,7 +467,7 @@ class BrowsingContextTest extends JupiterTestBase {
         browsingContext.captureBoxScreenshot(
             elementRectangle.getX(), elementRectangle.getY(), 5, 5);
 
-    assertThat(screenshot.length()).isPositive();
+    assertThat(screenshot).isNotEmpty();
   }
 
   @Test
@@ -455,64 +482,61 @@ class BrowsingContextTest extends JupiterTestBase {
     String screenshot =
         browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId());
 
-    assertThat(screenshot.length()).isPositive();
+    assertThat(screenshot).isNotEmpty();
   }
 
   @Test
   @NeedsFreshDriver
   void canSetViewport() {
+    Dimension initialViewportSize = getViewportSize();
+
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     driver.get(appServer.whereIs("formPage.html"));
 
     browsingContext.setViewport(250, 300);
+    assertThat(getViewportSize()).isEqualTo(new Dimension(250, 300));
 
-    List<Long> newViewportSize =
-        (List<Long>)
-            ((JavascriptExecutor) driver)
-                .executeScript("return [window.innerWidth, window.innerHeight];");
-
-    assertThat(newViewportSize.get(0)).isEqualTo(250);
-    assertThat(newViewportSize.get(1)).isEqualTo(300);
+    browsingContext.setViewport(null, null);
+    assertThat(getViewportSize()).isEqualTo(initialViewportSize);
   }
 
   @Test
   @NeedsFreshDriver
   void canSetViewportWithDevicePixelRatio() {
+    Dimension initialViewportSize = getViewportSize();
+    double initialPixelRation = getDevicePixelRatio();
+
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     driver.get(appServer.whereIs("formPage.html"));
 
-    browsingContext.setViewport(250, 300, 5);
+    browsingContext.setViewport(250, 300, 5.5);
 
-    List<Long> newViewportSize =
-        (List<Long>)
-            ((JavascriptExecutor) driver)
-                .executeScript("return [window.innerWidth, window.innerHeight];");
+    assertThat(getViewportSize()).isEqualTo(new Dimension(250, 300));
+    assertThat(getDevicePixelRatio()).isEqualTo(5.5);
 
-    assertThat(newViewportSize.get(0)).isEqualTo(250);
-    assertThat(newViewportSize.get(1)).isEqualTo(300);
-
-    Long newDevicePixelRatio =
-        (Long) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
-
-    assertThat(newDevicePixelRatio).isEqualTo(5);
+    browsingContext.setViewport(null, null, null);
+    assertThat(getViewportSize()).isEqualTo(initialViewportSize);
+    assertThat(getDevicePixelRatio()).isEqualTo(initialPixelRation);
   }
 
   @Test
   @NeedsFreshDriver
   void canPrintPage() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-
     driver.get(appServer.whereIs("formPage.html"));
-    PrintOptions printOptions = new PrintOptions();
 
-    String printPage = browsingContext.print(printOptions);
+    String printPage = browsingContext.print(new PrintOptions());
 
-    assertThat(printPage.length()).isPositive();
+    assertThat(printPage).isNotEmpty();
     // Comparing expected PDF is a hard problem.
     // As long as we are sending the parameters correctly it should be fine.
     // Trusting the browsers to do the right thing.
-    // Hence, just checking if the response is base64 encoded string.
+    // Hence, just checking if the response is base64 encoded string looking like PDF.
     assertThat(printPage).contains("JVBER");
+    byte[] pdf = Base64.getDecoder().decode(printPage);
+    assertThat(pdf)
+        .containsSequence("%PDF-".getBytes(US_ASCII))
+        .containsSequence("%%EOF".getBytes(US_ASCII));
   }
 
   @Test
@@ -568,7 +592,16 @@ class BrowsingContextTest extends JupiterTestBase {
                 "<p id=\"result\"></p>"));
   }
 
-  private boolean getDocumentFocus() {
-    return (boolean) ((JavascriptExecutor) driver).executeScript("return document.hasFocus();");
+  private boolean isDocumentFocused() {
+    return executeJavaScript("return document.hasFocus();");
+  }
+
+  private Dimension getViewportSize() {
+    List<Number> dimensions = executeJavaScript("return [window.innerWidth, window.innerHeight];");
+    return new Dimension(dimensions.get(0).intValue(), dimensions.get(1).intValue());
+  }
+
+  private double getDevicePixelRatio() {
+    return ((Number) executeJavaScript("return window.devicePixelRatio")).doubleValue();
   }
 }

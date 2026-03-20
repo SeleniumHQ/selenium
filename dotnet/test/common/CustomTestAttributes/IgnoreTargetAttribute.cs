@@ -17,31 +17,26 @@
 // under the License.
 // </copyright>
 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium.Environment;
-using System;
 
 #nullable enable
 
 namespace OpenQA.Selenium;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-public class IgnoreTargetAttribute : NUnitAttribute, IApplyToTest
+public class IgnoreTargetAttribute(string target) : NUnitAttribute, IApplyToTest
 {
-    public IgnoreTargetAttribute(string target)
-    {
-        this.Value = target.ToLower();
-    }
-
     public IgnoreTargetAttribute(string target, string reason)
         : this(target)
     {
         this.Reason = reason;
     }
 
-    public string Value { get; }
+    public string Value { get; } = target.ToLower();
 
     public string Reason { get; } = string.Empty;
 

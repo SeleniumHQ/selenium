@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium;
 
@@ -28,34 +29,19 @@ public class StubDriver : IWebDriver
 
     public string Url
     {
-        get
-        {
-            throw new NotImplementedException();
-        }
+        get => throw new NotImplementedException();
         set
         {
         }
     }
 
-    public string Title
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public string Title => throw new NotImplementedException();
 
-    public string PageSource
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public string PageSource => throw new NotImplementedException();
 
-    public string CurrentWindowHandle
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public string CurrentWindowHandle => throw new NotImplementedException();
 
-    public ReadOnlyCollection<string> WindowHandles
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public ReadOnlyCollection<string> WindowHandles => throw new NotImplementedException();
 
     public void Close()
     {
@@ -82,7 +68,7 @@ public class StubDriver : IWebDriver
         throw new NotImplementedException();
     }
 
-    public System.Collections.ObjectModel.ReadOnlyCollection<string> GetWindowHandles()
+    public ReadOnlyCollection<string> GetWindowHandles()
     {
         throw new NotImplementedException();
     }
@@ -101,7 +87,7 @@ public class StubDriver : IWebDriver
         throw new NotImplementedException();
     }
 
-    public System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> FindElements(By by)
+    public ReadOnlyCollection<IWebElement> FindElements(By by)
     {
         throw new NotImplementedException();
     }
@@ -111,6 +97,15 @@ public class StubDriver : IWebDriver
     #region IDisposable Members
 
     public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region IAsyncDisposable Members
+
+    public ValueTask DisposeAsync()
     {
         throw new NotImplementedException();
     }

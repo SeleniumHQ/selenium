@@ -18,16 +18,16 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
-using System;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record ResponseCompletedEventArgs(BiDi BiDi,
+public sealed record ResponseCompletedEventArgs(
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
     DateTimeOffset Timestamp,
-    ResponseData Response)
-    : BaseParametersEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp);
+    ResponseData Response,
+    IReadOnlyList<Intercept>? Intercepts)
+    : BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

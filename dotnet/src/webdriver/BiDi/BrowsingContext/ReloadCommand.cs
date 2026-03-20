@@ -17,18 +17,18 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class ReloadCommand(ReloadParameters @params)
-    : Command<ReloadParameters, NavigateResult>(@params, "browsingContext.reload");
+    : Command<ReloadParameters, ReloadResult>(@params, "browsingContext.reload");
 
 internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 
-public sealed class ReloadOptions : CommandOptions
+public sealed record ReloadOptions : CommandOptions
 {
-    public bool? IgnoreCache { get; set; }
+    public bool? IgnoreCache { get; init; }
 
-    public ReadinessState? Wait { get; set; }
+    public ReadinessState? Wait { get; init; }
 }
+
+public sealed record ReloadResult(Navigation? Navigation, string Url) : NavigateResult(Navigation, Url);

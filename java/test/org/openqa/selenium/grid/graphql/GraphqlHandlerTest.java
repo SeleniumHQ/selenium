@@ -27,7 +27,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -413,7 +412,7 @@ class GraphqlHandlerTest {
                   "data",
                   singletonMap(
                       "session",
-                      ImmutableMap.of(
+                      Map.of(
                           "id", sessionId,
                           "capabilities", graphqlSession.getCapabilities(),
                           "startTime", graphqlSession.getStartTime(),
@@ -491,7 +490,7 @@ class GraphqlHandlerTest {
                   "data",
                   singletonMap(
                       "session",
-                      ImmutableMap.of(
+                      Map.of(
                           "nodeId", graphqlSession.getNodeId(),
                           "nodeUri", graphqlSession.getNodeUri().toString()))));
     } else {
@@ -574,7 +573,7 @@ class GraphqlHandlerTest {
                       "session",
                       singletonMap(
                           "slot",
-                          ImmutableMap.of(
+                          Map.of(
                               "id", graphqlSlot.getId(),
                               "stereotype", graphqlSlot.getStereotype(),
                               "lastStarted", graphqlSlot.getLastStarted())))));

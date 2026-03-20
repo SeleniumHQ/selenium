@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
@@ -44,12 +46,12 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     extends MutableCapabilities {
   public DO setBrowserVersion(String browserVersion) {
     setCapability(BROWSER_VERSION, Require.nonNull("Browser version", browserVersion));
-    return (DO) this;
+    return self();
   }
 
   public DO setPlatformName(String platformName) {
     setCapability(PLATFORM_NAME, Require.nonNull("Platform Name", platformName));
-    return (DO) this;
+    return self();
   }
 
   public DO setImplicitWaitTimeout(Duration timeout) {
@@ -57,7 +59,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     timeouts.put("implicit", timeout.toMillis());
 
     setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    return self();
   }
 
   public DO setPageLoadTimeout(Duration timeout) {
@@ -65,7 +67,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     timeouts.put("pageLoad", timeout.toMillis());
 
     setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    return self();
   }
 
   public DO setScriptTimeout(Duration timeout) {
@@ -73,37 +75,43 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     timeouts.put("script", timeout.toMillis());
 
     setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    return self();
   }
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(PAGE_LOAD_STRATEGY, Require.nonNull("Page load strategy", strategy));
-    return (DO) this;
+    return self();
   }
 
   public DO setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
         UNHANDLED_PROMPT_BEHAVIOUR, Require.nonNull("Unhandled prompt behavior", behaviour));
-    return (DO) this;
+    return self();
   }
 
   public DO setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
-    return (DO) this;
+    return self();
   }
 
   public DO setStrictFileInteractability(boolean strictFileInteractability) {
     setCapability(STRICT_FILE_INTERACTABILITY, strictFileInteractability);
-    return (DO) this;
+    return self();
   }
 
   public DO setProxy(Proxy proxy) {
     setCapability(PROXY, Require.nonNull("Proxy", proxy));
-    return (DO) this;
+    return self();
   }
 
   public DO setEnableDownloads(boolean enableDownloads) {
     setCapability(ENABLE_DOWNLOADS, enableDownloads);
+    return self();
+  }
+
+  @NonNull
+  @SuppressWarnings("unchecked")
+  private DO self() {
     return (DO) this;
   }
 
@@ -126,6 +134,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     return super.getCapability(capabilityName);
   }
 
+  @Nullable
   protected abstract Object getExtraCapability(String capabilityName);
 
   @Override

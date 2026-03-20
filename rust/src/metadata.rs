@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::stats::Props;
 use crate::Logger;
+use crate::stats::Props;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;

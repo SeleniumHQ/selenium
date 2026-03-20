@@ -17,10 +17,17 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static java.lang.System.currentTimeMillis;
+import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +35,12 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -57,19 +67,23 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canListenToBrowsingContextDestroyedEvent()
-      throws ExecutionException, InterruptedException, TimeoutException {
-    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
+  void canListenToBrowsingContextDestroyedEvent() {
+    Map<String, BrowsingContextInfo> closedWindows = new HashMap<>();
 
-      inspector.onBrowsingContextDestroyed(future::complete);
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      inspector.onBrowsingContextDestroyed(
+          context -> {
+            // here may arrive events from the previous tests
+            closedWindows.put(context.getId(), context);
+          });
 
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
       driver.close();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
+      wait.until(d -> closedWindows.containsKey(windowHandle));
 
+      BrowsingContextInfo browsingContextInfo = closedWindows.get(windowHandle);
       assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
       assertThat(browsingContextInfo.getChildren()).isIn(null, List.of());
@@ -209,8 +223,7 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       UserPromptClosed userPromptClosed = future.get(5, TimeUnit.SECONDS);
       assertThat(userPromptClosed.getBrowsingContextId()).isEqualTo(context.getId());
-      assertThat(userPromptClosed.getUserText().isPresent()).isTrue();
-      assertThat(userPromptClosed.getUserText().get()).isEqualTo("selenium");
+      assertThat(userPromptClosed.getUserText()).hasValue("selenium");
       assertThat(userPromptClosed.getAccepted()).isTrue();
     }
   }
@@ -229,6 +242,102 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToDownloadWillBeginEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadInfo> future = new CompletableFuture<>();
+
+      inspector.onDownloadWillBegin(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadInfo downloadInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(downloadInfo.getUrl()).contains("/downloads/file_1.txt");
+      // actual filename depends on no. of downloads tried - file_1.txt, file_1(1).txt, etc
+      assertThat(downloadInfo.getSuggestedFilename()).contains("file_1");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToDownloadEnd() throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadEnded> future = new CompletableFuture<>();
+
+      inspector.onDownloadEnd(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadEnded downloadEnded = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadEnded.getDownloadParams().getBrowsingContextId())
+          .isEqualTo(context.getId());
+      assertThat(downloadEnded.isCompleted()).isTrue();
+      assertThat(downloadEnded.getDownloadParams().getUrl()).contains("/downloads/file_1.txt");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  void canListenToNavigationFailedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+      inspector.onNavigationFailed(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+
+      assertThatThrownBy(
+              () ->
+                  context.navigate(
+                      "http://invalid-domain-that-does-not-exist.test/",
+                      ReadinessState.COMPLETE,
+                      ofSeconds(1)))
+          .as("Expect an exception due to navigation failure")
+          .isInstanceOf(BiDiException.class);
+
+      NavigationInfo navigationInfo = future.get(100, MILLISECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl())
+          .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
+      assertThat(navigationInfo.getTimestamp())
+          .isBetween(currentTimeMillis() - 1000, currentTimeMillis());
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToHistoryUpdatedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver);
+        Script script = new Script(driver)) {
+      CompletableFuture<HistoryUpdated> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      inspector.onHistoryUpdated(future::complete);
+
+      // Use history.pushState to trigger history updated event
+      script.evaluateFunctionInBrowsingContext(
+          context.getId(), "history.pushState({}, '', '/new-path')", false, Optional.empty());
+
+      HistoryUpdated historyUpdated = future.get(5, TimeUnit.SECONDS);
+      assertThat(historyUpdated.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(historyUpdated.getUrl()).contains("/new-path");
     }
   }
 }

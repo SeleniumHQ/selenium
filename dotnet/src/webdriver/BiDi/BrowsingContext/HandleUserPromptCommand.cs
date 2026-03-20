@@ -17,18 +17,18 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params)
-    : Command<HandleUserPromptParameters, EmptyResult>(@params, "browsingContext.handleUserPrompt");
+    : Command<HandleUserPromptParameters, HandleUserPromptResult>(@params, "browsingContext.handleUserPrompt");
 
 internal sealed record HandleUserPromptParameters(BrowsingContext Context, bool? Accept, string? UserText) : Parameters;
 
-public sealed class HandleUserPromptOptions : CommandOptions
+public sealed record HandleUserPromptOptions : CommandOptions
 {
-    public bool? Accept { get; set; }
+    public bool? Accept { get; init; }
 
-    public string? UserText { get; set; }
+    public string? UserText { get; init; }
 }
+
+public sealed record HandleUserPromptResult : EmptyResult;

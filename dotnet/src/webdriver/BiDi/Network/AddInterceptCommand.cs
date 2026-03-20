@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using OpenQA.Selenium.BiDi.Communication;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -27,27 +27,27 @@ internal sealed class AddInterceptCommand(AddInterceptParameters @params)
 
 internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
-public class AddInterceptOptions : CommandOptions
+public record AddInterceptOptions() : CommandOptions
 {
-    public AddInterceptOptions() { }
-
-    internal AddInterceptOptions(BrowsingContextAddInterceptOptions? options)
+    internal AddInterceptOptions(ContextAddInterceptOptions? options) : this()
     {
         UrlPatterns = options?.UrlPatterns;
+        Timeout = options?.Timeout;
     }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
-public record BrowsingContextAddInterceptOptions
+public record ContextAddInterceptOptions : CommandOptions
 {
-    public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
+    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;
 
+[JsonConverter(typeof(CamelCaseEnumConverter<InterceptPhase>))]
 public enum InterceptPhase
 {
     BeforeRequestSent,

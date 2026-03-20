@@ -20,11 +20,12 @@ package org.openqa.selenium.grid.node;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -53,8 +54,8 @@ public class ProxyNodeWebsockets
   private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
-  private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
-      ImmutableSet.of("goog:chromeOptions", "ms:edgeOptions");
+  private static final Set<String> CDP_ENDPOINT_CAPS =
+      Set.of("goog:chromeOptions", "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
   private final String gridSubPath;
@@ -101,34 +102,44 @@ public class ProxyNodeWebsockets
       return Optional.empty();
     }
 
-    Session session = node.getSession(id);
-    Capabilities caps = session.getCapabilities();
-    LOG.fine("Scanning for endpoint: " + caps);
+    try {
+      Session session = node.getSession(id);
+      Capabilities caps = session.getCapabilities();
+      LOG.fine("Scanning for endpoint: " + caps);
 
-    // Used by the ForwardingListener to notify the node that the session is still active
-    Consumer<SessionId> sessionConsumer = node::isSessionOwner;
+      // Used by the ForwardingListener to notify the node that the session is still active
+      Consumer<SessionId> sessionConsumer = node::isSessionOwner;
 
-    if (bidiMatch != null) {
-      return findBiDiEndpoint(downstream, caps, sessionConsumer, id);
-    }
+      Optional<Consumer<Message>> endpoint;
+      if (bidiMatch != null) {
+        endpoint = findBiDiEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (vncMatch != null) {
+        // Passing a fake consumer to the ForwardingListener to avoid sending a session notification
+        // when VNC is used.
+        sessionConsumer = fakeConsumer -> {};
+        endpoint = findVncEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (fwdMatch != null) {
+        // This match happens when a user wants to do CDP over Dynamic Grid
+        LOG.info("Matched endpoint where CDP connection is being forwarded");
+        endpoint = findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      } else if (caps.getCapabilityNames().contains("se:forwardCdp")) {
+        LOG.info("Found endpoint where CDP connection needs to be forwarded");
+        endpoint = findForwardCdpEndpoint(downstream, caps, sessionConsumer, id);
+      } else {
+        endpoint = findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      }
 
-    if (vncMatch != null) {
-      // Passing a fake consumer to the ForwardingListener to avoid sending a session notification
-      // when VNC is used.
-      sessionConsumer = fakeConsumer -> {};
-      return findVncEndpoint(downstream, caps, sessionConsumer, id);
-    }
+      // If no endpoint could be established the connection slot must be released;
+      if (endpoint.isEmpty()) {
+        node.releaseConnection(id);
+      }
 
-    // This match happens when a user wants to do CDP over Dynamic Grid
-    if (fwdMatch != null) {
-      LOG.info("Matched endpoint where CDP connection is being forwarded");
-      return findCdpEndpoint(downstream, caps, sessionConsumer, id);
+      return endpoint;
+    } catch (Exception e) {
+      node.releaseConnection(id);
+      LOG.log(Level.WARNING, "Failed to establish WebSocket endpoint for session " + id, e);
+      return Optional.empty();
     }
-    if (caps.getCapabilityNames().contains("se:forwardCdp")) {
-      LOG.info("Found endpoint where CDP connection needs to be forwarded");
-      return findForwardCdpEndpoint(downstream, caps, sessionConsumer, id);
-    }
-    return findCdpEndpoint(downstream, caps, sessionConsumer, id);
   }
 
   private Optional<Consumer<Message>> findCdpEndpoint(
@@ -140,7 +151,10 @@ public class ProxyNodeWebsockets
     for (String cdpEndpointCap : CDP_ENDPOINT_CAPS) {
       Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps);
       Optional<HttpClient> client =
-          reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(clientFactory, uri));
+          reportedUri.map(
+              uri ->
+                  CdpEndpointFinder.getHttpClient(
+                      clientFactory, uri, ClientConfig.defaultConfig()));
       Optional<URI> cdpUri;
 
       try {
@@ -209,6 +223,10 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     String vncLocalAddress = (String) caps.getCapability("se:vncLocalAddress");
+    if (vncLocalAddress == null || vncLocalAddress.trim().isEmpty()) {
+      LOG.warning("No VNC endpoint address in capabilities");
+      return Optional.empty();
+    }
     Optional<URI> vncUri;
     try {
       vncUri = Optional.of(new URI(vncLocalAddress));
@@ -232,23 +250,76 @@ public class ProxyNodeWebsockets
 
     LOG.info("Establishing connection to " + uri);
 
+    AtomicBoolean connectionReleased = new AtomicBoolean(false);
+    // Set to true as soon as the browser signals it is closing so the send lambda can stop
+    // forwarding data frames without racing against the JDK WebSocket output stream being closed.
+    AtomicBoolean upstreamClosing = new AtomicBoolean(false);
+
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
     try {
       WebSocket upstream =
           client.openSocket(
               new HttpRequest(GET, uri.toString()),
-              new ForwardingListener(node, downstream, sessionConsumer, sessionId));
+              new ForwardingListener(
+                  node,
+                  downstream,
+                  sessionConsumer,
+                  sessionId,
+                  connectionReleased,
+                  client,
+                  upstreamClosing));
 
       return (msg) -> {
+        // Fast path: once the browser has signalled close, there is no point sending further
+        // data frames — the JDK WebSocket output is already closing and the send would either
+        // be dropped or throw "Output closed".  For the CloseMessage echo we skip the actual
+        // network write (the JDK stack handles the protocol-level echo internally when it fires
+        // onClose) and go straight to resource cleanup.
+        if (upstreamClosing.get()) {
+          if (msg instanceof CloseMessage) {
+            if (connectionReleased.compareAndSet(false, true)) {
+              node.releaseConnection(sessionId);
+              try {
+                client.close();
+              } catch (Exception e) {
+                LOG.log(Level.FINE, "Failed to close client after upstream close for " + uri, e);
+              }
+            }
+          } else {
+            LOG.log(Level.FINE, "Dropping in-flight data frame for closing session " + sessionId);
+          }
+          return;
+        }
+
+        // Slow path: upstream is (was) open — attempt the send and catch the narrow race where
+        // the browser closes between the upstreamClosing check above and the actual write.
         try {
           upstream.send(msg);
-        } finally {
-          if (msg instanceof CloseMessage) {
+        } catch (Exception e) {
+          LOG.log(
+              Level.FINE,
+              "Could not forward message to browser WebSocket for session "
+                  + sessionId
+                  + " (connection likely closed concurrently)",
+              e);
+          if (connectionReleased.compareAndSet(false, true)) {
+            node.releaseConnection(sessionId);
             try {
               client.close();
-            } catch (Exception e) {
-              LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
+            } catch (Exception ce) {
+              LOG.log(Level.FINE, "Failed to close client after send error for " + uri, ce);
             }
+          }
+          return;
+        }
+        if (msg instanceof CloseMessage) {
+          if (connectionReleased.compareAndSet(false, true)) {
+            node.releaseConnection(sessionId);
+          }
+          try {
+            client.close();
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
           }
         }
       };
@@ -264,16 +335,25 @@ public class ProxyNodeWebsockets
     private final Consumer<Message> downstream;
     private final Consumer<SessionId> sessionConsumer;
     private final SessionId sessionId;
+    private final AtomicBoolean connectionReleased;
+    private final HttpClient client;
+    private final AtomicBoolean upstreamClosing;
 
     public ForwardingListener(
         Node node,
         Consumer<Message> downstream,
         Consumer<SessionId> sessionConsumer,
-        SessionId sessionId) {
+        SessionId sessionId,
+        AtomicBoolean connectionReleased,
+        HttpClient client,
+        AtomicBoolean upstreamClosing) {
       this.node = node;
       this.downstream = Objects.requireNonNull(downstream);
       this.sessionConsumer = Objects.requireNonNull(sessionConsumer);
       this.sessionId = Objects.requireNonNull(sessionId);
+      this.connectionReleased = Objects.requireNonNull(connectionReleased);
+      this.client = Objects.requireNonNull(client);
+      this.upstreamClosing = Objects.requireNonNull(upstreamClosing);
     }
 
     @Override
@@ -284,8 +364,20 @@ public class ProxyNodeWebsockets
 
     @Override
     public void onClose(int code, String reason) {
+      // Signal the send lambda before forwarding the close downstream so that any data frames
+      // still queued in the Netty pipeline are discarded rather than attempted on a closing stream.
+      upstreamClosing.set(true);
       downstream.accept(new CloseMessage(code, reason));
-      node.releaseConnection(sessionId);
+      if (connectionReleased.compareAndSet(false, true)) {
+        node.releaseConnection(sessionId);
+        // Close the HttpClient eagerly so the connection slot is freed even if the client-side
+        // Close echo never arrives (e.g. the client dropped the TCP connection).
+        try {
+          client.close();
+        } catch (Exception e) {
+          LOG.log(Level.FINE, "Failed to close client on upstream WebSocket close", e);
+        }
+      }
     }
 
     @Override
@@ -296,7 +388,16 @@ public class ProxyNodeWebsockets
 
     @Override
     public void onError(Throwable cause) {
+      upstreamClosing.set(true);
       LOG.log(Level.WARNING, "Error proxying websocket command", cause);
+      if (connectionReleased.compareAndSet(false, true)) {
+        node.releaseConnection(sessionId);
+        try {
+          client.close();
+        } catch (Exception e) {
+          LOG.log(Level.FINE, "Failed to close client after WebSocket error", e);
+        }
+      }
     }
   }
 }

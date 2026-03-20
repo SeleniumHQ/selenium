@@ -21,6 +21,12 @@ require_relative 'network/url_pattern'
 module Selenium
   module WebDriver
     class BiDi
+      # Implements the Navigation Module of the WebDriver-BiDi specification
+      # Continue to use functionality from existing `driver.navigate` method
+      #
+      # @api private
+      #
+
       class Network
         EVENTS = {
           before_request: 'network.beforeRequestSent',
@@ -82,15 +88,16 @@ module Selenium
         end
 
         def continue_request(**args)
-          @bidi.send_cmd(
-            'network.continueRequest',
+          args = {
             request: args[:id],
             body: args[:body],
             cookies: args[:cookies],
             headers: args[:headers],
             method: args[:method],
             url: args[:url]
-          )
+          }.compact
+
+          @bidi.send_cmd('network.continueRequest', **args)
         end
 
         def fail_request(request_id)
@@ -101,27 +108,29 @@ module Selenium
         end
 
         def continue_response(**args)
-          @bidi.send_cmd(
-            'network.continueResponse',
+          args = {
             request: args[:id],
             cookies: args[:cookies],
             credentials: args[:credentials],
             headers: args[:headers],
             reasonPhrase: args[:reason],
             statusCode: args[:status]
-          )
+          }.compact
+
+          @bidi.send_cmd('network.continueResponse', **args)
         end
 
         def provide_response(**args)
-          @bidi.send_cmd(
-            'network.provideResponse',
+          args = {
             request: args[:id],
             body: args[:body],
             cookies: args[:cookies],
             headers: args[:headers],
             reasonPhrase: args[:reason],
             statusCode: args[:status]
-          )
+          }.compact
+
+          @bidi.send_cmd('network.provideResponse', **args)
         end
 
         def set_cache_behavior(behavior, *contexts)

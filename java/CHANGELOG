@@ -1,3 +1,140 @@
+v4.41.0
+======
+* Support CDP versions: v143, v144, v145
+* Improve error message for died grid (#16938)
+* fix JSON parsing of numbers with exponent (#16961)
+* SE_DEBUG warns only when overriding user settings (#17009)
+* mark `wait.until` as non-nullable (#17007)
+* restore BiDi constructor without timeout parameter (#17014)
+* [grid] Preventing potential deadlock in Distributor (#17022)
+* Report exactly which JSON value was incorrect (#17003)
+* [Java] JSpecify annotations for `LoadableComponent` , `SlowLoadableComponent` (#16798)
+* parse all JSON numbers the same way (#17038)
+* [grid] Add session event API for server-side event bus integration (#17015)
+* specify nullability in package `org.openqa.selenium.bidi.browser` (#17036)
+* [BiDi] implement `emulation.setScreenSettingsOverride` (#17028)
+* specify nullability in package `org.openqa.selenium.bidi.browsingcontext` (#17040)
+* Nullability annotations in package `org.openqa.selenium.bidi.emulation` (#17055)
+* specify nullability in package `org.openqa.selenium.bidi.module` (#17058)
+* specify nullability in package `org.openqa.selenium.bidi.log` (#17059)
+* [grid] Revert default standalone config (#17060)
+* specify nullability in package `org.openqa.selenium.bidi.network` (#17061)
+* specify nullability in package `org.openqa.selenium.bidi.script` (#17062)
+* Nullability in all BiDi packages (#17064)
+* Remove unneeded protection from BiDi Connection constructor (#17067)
+* [grid] Dynamic Grid standalone support passing basic auth credential (#17072)
+* [grid] Restore stereotype capabilities merging in RelaySessionFactory (#17097)
+* [grid] Support Dynamic Grid in Kubernetes cluster (#17092)
+* [grid] Fix Distributor thread exhaustion in node health-check cycle (#17104)
+* [grid] Fix WebSocket connection counter leaks in ProxyNodeWebsockets (#17106)
+* [grid] Distributor retry session when RemoteNode executor shutting down (#17109)
+
+v4.40.0
+======
+* [BiDi] implement `emulation.setScreenOrientationOverride` (#16705)
+* #16720 avoid failing because of temporary Chrome internal files (#16722)
+* Create target directories before copying file (#16739)
+* Avoid sleep in tests (#16713)
+* [refactor] call WebDriverException constructor instead of using reflection (#16763)
+* [refactor] replace JUnit assertions by AssertJ (#16765)
+* Fix bug in FileHandler: it always failed on MacOS (#16771)
+* #16753 workaround for JDK bug JDK-8228970 (#16793)
+* [BiDi] implement `emulation.setNetworkConditions` (#16794)
+* [refactor] replace most of Guava collections by Java built-in collections (#16776)
+* Be more tolerant to remote responses (#16797)
+* several packages marks jspecify nullmarked (#16802)
+* fix NPE in FirefoxOptions (#16833)
+* Mark obsolete variables deprecated in DriverCommand and W3CHttpCommandCodec  (#16013)
+* remove usages of Guava collections (sets and maps) (#16835)
+* simplify several statements with isEmpty function call (#16836)
+* JSpecify annotations for `org.openqa.selenium.json` (#16799)
+* use SE_DEBUG to enable debugging (#16816)
+* Allow downloading files from old Grid server (#16839)
+* Speed up tests, improve test logging and build script (#16843)
+* [Java] check wildcard imports as part of the build (#16846)
+* rework downloading files from Grid (#16844)
+* configurable timeout for BiDi commands (#16796)
+* Unify error message format for all Expected Conditions & add tests (#16831)
+* Fix flaky tests (#16862)
+* fixes for running on windows (#16852)
+* add readable `toString()` to `org.openqa.selenium.remote.Browser` (#16873)
+* restore ClientConfig constructor used by Appium (for backward compatibility) (#16874)
+* deprecate unused logging implementation (#16889)
+* remove Apache Commons dependency (#16865)
+* SE_DEBUG dumps all log output to stderr (#16900)
+* Use ClientConfig provided by user instead of the default one (#16882)
+* [grid] Improve Node handling concurrent sessions creation (#16913)
+* Change BiDi "internalId" type from Long to String (#16918)
+* create fewer objects while parsing JSON (#16926)
+* preserve original file's modification time when uploading to Grid (#16935)
+* [grid] Improve race conditions in Grid session distribution (#16939)
+
+v4.39.0
+======
+* Add CDP for Chrome 143 and remove 140
+* [BiDi] implement `browsingContext.downloadEnd` event (#16347)
+* [BiDi] implement `emulation.setTimezoneOverride` (#16530)
+* [grid] Minimum Docker API 1.44 for Docker Engine v29+ in Dynamic Grid (#16591)
+* Show file modification time (#16589)
+* [grid] Improve Docker client for Dynamic Grid (#16596)
+* [grid] Improve browser container labels and naming in Dynamic Grid (#16599)
+* [BiDi] emulation: allow passing null to GeolocationOverride (#16594)
+* [grid] Update container label `compose.oneoff` in Dynamic Grid (#16613)
+* [grid] Dynamic Grid group dynamic containers in compose stack (#16620)
+* [BiDi] implement `emulation.setScriptingEnabled` (#16631)
+* Avoid logging debug logs with INFO level (either in RUN or DEBUG mode) (#16584)
+* Add JSpecify nullable annotations to exception classes (#16026)
+* annotate with `@NullMarked` the whole package `org.openqa.selenium.net` (#16494)
+* [bidi]: add BiDi method `BrowsingContext.setViewport(null, null)` to reset the mobile emulation mode (#16524)
+* Replace Maven dependency references with artifact() for org.jspecify.jspecify (#16635)
+* 16612 download large files (#16627)
+* #16573 unwrap double-wrapped webdriver (#16575)
+
+v4.38.0
+======
+* Add CDP for Chrome 142 and remove 139
+* JSpecify annotations for `ExecuteMethod` (#16464)
+* JSpecify annotations for `org.openqa.selenium.federatedcredent… (#16461)
+* JSpecify annotations for `org.openqa.selenium.interactions` (#16462)
+* JSpecify annotations for `org.openqa.selenium.net` (#16463)
+* JSpecify annotations for `Credential` and `MBean` (#16481)
+* JSpecify annotations for `ScriptKey` and `UnpinnedScriptKey` (#16483)
+* JSpecify annotations for `FileDetector` (#16482)
+* JSpecify annotations for `ExpectedCondition` (#16489)
+* JSpecify annotations for `Response` `SessionId` `HttpSessionId` (#16490)
+* [java][bidi]: add test for onHistoryUpdated event (#16293)
+
+v4.37.0
+======
+* Add CDP for Chrome 141 and remove 138
+* Linux ARM "os.arch" system property is "aarch64" (#16381)
+* Rescuing the remote cause for session creation errors (#16418)
+* feat: Add native Java 11 HTTP client methods to HttpClient interface (#16412)
+* refactor(remote/command): Merge overload's business logic (#14469)
+* make augmentation of HasBiDi/HasDevTools lazy-loaded (#16338)
+* [grid] Add event bus heartbeat to prevent steal connection (#16444)
+* JSpecify annotations for `org.openqa.selenium.grid.jmx` (#16431)
+* JSpecify annotations for `org.openqa.selenium.bidi.permissions` (#16430)
+
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [grid] close the HttpClient after the session is gone
+* extend the scope of the properties of the HttpCommandExecutor class (#16186)
+* [grid] Improve readTimeout in handle session between Router and Node (#16163)
+* Unifying select class (#16220)
+* Add hooks around getScreenshotAs in WebDriverListener #16232 (#16233)
+* [grid] Simplify node status response handling in Router
+* Refactored selectByContainsVisibleText and selectByVisibleText methods to remove code duplication (#16257)
+* [bidi]: add `DownloadInfo` class and test for `onDownloadWillBegin` (#16267)
+* [grid] update to netty 4.2.4 (#16194)
+* Fix links to exception documentation on website (#16305)
+* Fix concurrency issue in Selenium Manager (#16315)
+* Fix falsy Spotbugs warning about not closed resource (#16318)
+* [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
+* Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+* [grid] UI Light/Dark Mode Toggle (#16364)
+
 v4.35.0
 ======
 * Add CDP for Chrome 139 and remove 136

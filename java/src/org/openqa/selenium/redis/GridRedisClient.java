@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -71,6 +72,7 @@ public class GridRedisClient implements Closeable {
     return connection.sync().mget(keys);
   }
 
+  @Nullable
   public String get(String key) {
     return connection.sync().get(key);
   }
@@ -159,8 +161,9 @@ public class GridRedisClient implements Closeable {
 
   public Set<NodeStatus> getNodes(Set<NodeId> nodeIds) {
     return nodeIds.stream()
-        .filter(nodeId -> getNode(nodeId).isPresent())
-        .map(nodeId -> getNode(nodeId).get())
+        .map(nodeId -> getNode(nodeId))
+        .filter(nodeStatus -> nodeStatus.isPresent())
+        .map(nodeStatus -> nodeStatus.get())
         .collect(Collectors.toSet());
   }
 

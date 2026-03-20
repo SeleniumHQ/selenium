@@ -17,11 +17,11 @@
 
 from __future__ import annotations
 
-from ..utils import keys_to_typing
-from .interaction import KEY, POINTER, WHEEL, Interaction
-from .key_input import KeyInput
-from .pointer_input import PointerInput
-from .wheel_input import WheelInput
+from selenium.webdriver.common.actions.interaction import KEY, Interaction
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_input import WheelInput
+from selenium.webdriver.common.utils import keys_to_typing
 
 
 class KeyActions(Interaction):
@@ -29,18 +29,7 @@ class KeyActions(Interaction):
         if source is None:
             source = KeyInput(KEY)
         self.input_source = source
-
-        # Determine the correct source type string based on the input object
-        if isinstance(source, KeyInput):
-            source_type = KEY
-        elif isinstance(source, PointerInput):
-            source_type = POINTER
-        elif isinstance(source, WheelInput):
-            source_type = WHEEL
-        else:
-            source_type = KEY
-
-        super().__init__(source_type)
+        super().__init__(source)
 
     def key_down(self, letter: str) -> KeyActions:
         return self._key_action("create_key_down", letter)
@@ -60,6 +49,6 @@ class KeyActions(Interaction):
         return self
 
     def _key_action(self, action: str, letter) -> KeyActions:
-        meth = getattr(self.input_source, action)
+        meth = getattr(self.source, action)
         meth(letter)
         return self

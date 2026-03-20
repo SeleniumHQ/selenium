@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
+import static java.util.Collections.emptyList;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
@@ -32,6 +33,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -86,17 +89,30 @@ public class ChromiumDriver extends RemoteWebDriver
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
-  private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
-  protected HasCasting casting;
-  protected HasCdp cdp;
+
+  /**
+   * May be null when the driver does not support casting; initialized during setup if available.
+   */
+  protected @Nullable HasCasting casting;
+
+  /** May be null when CDP is unavailable for the current browser/session. */
+  protected @Nullable HasCdp cdp;
+
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
 
   protected ChromiumDriver(
       CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
-    super(commandExecutor, capabilities);
+    this(commandExecutor, capabilities, capabilityKey, ClientConfig.defaultConfig());
+  }
+
+  protected ChromiumDriver(
+      CommandExecutor commandExecutor,
+      Capabilities capabilities,
+      String capabilityKey,
+      ClientConfig clientConfig) {
+    super(commandExecutor, capabilities, clientConfig);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
         new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
@@ -108,7 +124,7 @@ public class ChromiumDriver extends RemoteWebDriver
     Optional<String> webSocketUrl =
         Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
 
-    this.biDiUri =
+    Optional<URI> biDiUri =
         webSocketUrl.map(
             uri -> {
               try {
@@ -119,14 +135,15 @@ public class ChromiumDriver extends RemoteWebDriver
               return null;
             });
 
-    this.biDi = createBiDi(biDiUri);
+    this.biDi = createBiDi(biDiUri, clientConfig);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
     Optional<HttpClient> client =
-        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri, clientConfig));
     Optional<URI> cdpUri;
 
+    Optional<Connection> connection;
     try {
       try {
         cdpUri = client.flatMap(CdpEndpointFinder::getCdpEndPoint);
@@ -138,7 +155,7 @@ public class ChromiumDriver extends RemoteWebDriver
         }
         throw e;
       }
-      connection = cdpUri.map(uri -> new Connection(client.get(), uri.toString()));
+      connection = cdpUri.map(uri -> new Connection(client.get(), uri.toString(), clientConfig));
     } catch (ConnectionFailedException e) {
       cdpUri = Optional.empty();
       LOG.log(Level.WARNING, "Unable to establish websocket connection to " + reportedUri.get(), e);
@@ -229,12 +246,13 @@ public class ChromiumDriver extends RemoteWebDriver
 
     DevTools devTools = getDevTools();
     devTools.send(
-        new org.openqa.selenium.devtools.Command(
+        new org.openqa.selenium.devtools.Command<>(
             "Page.removeScriptToEvaluateOnNewDocument", Map.of("identifier", key.getIdentifier())));
   }
 
+  @Nullable
   @Override
-  public Object executeScript(ScriptKey key, Object... args) {
+  public Object executeScript(ScriptKey key, @Nullable Object... args) {
     int hashCode = getScriptId(key);
 
     String scriptToUse =
@@ -260,6 +278,7 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   @Override
+  @NullMarked
   public <X> void onLogEvent(EventType<X> kind) {
     Require.nonNull("Event type", kind);
     kind.initializeListener(this);
@@ -295,7 +314,7 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -308,13 +327,13 @@ public class ChromiumDriver extends RemoteWebDriver
                         + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =
         new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
-    return Optional.of(new BiDi(biDiConnection));
+    return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
   }
 
   @Override
@@ -325,7 +344,7 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public List<Map<String, String>> getCastSinks() {
     if (this.casting == null) {
-      return List.of();
+      return emptyList();
     }
 
     return casting.getCastSinks();
@@ -397,10 +416,5 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public void deleteNetworkConditions() {
     networkConditions.deleteNetworkConditions();
-  }
-
-  @Override
-  public void quit() {
-    super.quit();
   }
 }

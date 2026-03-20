@@ -46,8 +46,8 @@ class QuotesTest {
   }
 
   /**
-   * Tests that Quotes.escape returns concatenated strings when the given string contains a tick and
-   * and ends with a quote.
+   * Tests that {@link Quotes#escape(String)} returns concatenated strings when the given string
+   * contains a tick and ends with a quote.
    */
   @Test
   void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {

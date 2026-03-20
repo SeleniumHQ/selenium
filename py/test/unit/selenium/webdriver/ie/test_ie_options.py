@@ -26,7 +26,7 @@ TIMEOUT = 30
 
 @pytest.fixture
 def opts():
-    yield Options()
+    return Options()
 
 
 def test_arguments(opts):

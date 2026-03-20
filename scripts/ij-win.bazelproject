@@ -10,4 +10,4 @@ derive_targets_from_directories: true
 additional_languages:
   python
 
-java_language_level: 17
+java_language_level: 11

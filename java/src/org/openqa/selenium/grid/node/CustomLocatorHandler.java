@@ -21,9 +21,6 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +69,7 @@ class CustomLocatorHandler implements Routable {
       new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
   // These are derived from the w3c webdriver spec
   private static final Set<String> W3C_STRATEGIES =
-      ImmutableSet.of("css selector", "link text", "partial link text", "tag name", "xpath");
+      Set.of("css selector", "link text", "partial link text", "tag name", "xpath");
   private final HttpHandler toNode;
   private final Map<String, Function<Object, By>> extraLocators;
 
@@ -119,9 +116,9 @@ class CustomLocatorHandler implements Routable {
           .setStatus(HTTP_BAD_REQUEST)
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "invalid argument",
                           "message", "Unable to determine element locating strategy",
                           "stacktrace", ""))));
@@ -138,9 +135,9 @@ class CustomLocatorHandler implements Routable {
           .setStatus(HTTP_BAD_REQUEST)
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "invalid argument",
                           "message", "Unable to determine element locator arguments",
                           "stacktrace", ""))));
@@ -224,7 +221,7 @@ class CustomLocatorHandler implements Routable {
       toReturn = context.findElement(by);
     }
 
-    return new HttpResponse().setContent(Contents.asJson(ImmutableMap.of("value", toReturn)));
+    return new HttpResponse().setContent(Contents.asJson(Map.of("value", toReturn)));
   }
 
   private static class NodeWrappingExecutor implements CommandExecutor {
@@ -239,7 +236,7 @@ class CustomLocatorHandler implements Routable {
     }
 
     @Override
-    public Response execute(Command command) throws IOException {
+    public Response execute(Command command) {
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {
         Response response = new Response();
         response.setState("session not created");

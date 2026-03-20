@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
@@ -29,6 +28,16 @@ public abstract record BytesValue
 {
     public static implicit operator BytesValue(string value) => new StringBytesValue(value);
     public static implicit operator BytesValue(byte[] value) => new Base64BytesValue(value);
+
+    public static explicit operator string(BytesValue value)
+    {
+        if (value is StringBytesValue stringBytesValue)
+        {
+            return stringBytesValue.Value;
+        }
+
+        throw new InvalidCastException($"Cannot cast '{value.GetType()}' to '{typeof(string)}'.");
+    }
 }
 
 public sealed record StringBytesValue(string Value) : BytesValue;

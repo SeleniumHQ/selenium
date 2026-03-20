@@ -46,5 +46,5 @@ platform(
         "dockerUseEntrypoint": "True",
         "sandboxAllowed": "False",
     },
-    parents = ["@local_config_platform//:host"],
+    parents = ["@platforms//host"],
 )

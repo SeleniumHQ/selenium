@@ -1051,6 +1051,30 @@ class EventFiringDecoratorTest {
   }
 
   @Test
+  void shouldReThrowExceptionInBeforeAnyCall() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void beforeAnyCall(Object target, Method method, Object[] args) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessage("beforeAnyCall");
+  }
+
+  @Test
   void shouldSuppressExceptionInBeforeClassMethodCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener =
@@ -1064,6 +1088,30 @@ class EventFiringDecoratorTest {
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
     assertThatNoException().isThrownBy(decorated::getWindowHandle);
+  }
+
+  @Test
+  void shouldReThrowExceptionInBeforeClassMethodCall() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void beforeAnyWebDriverCall(WebDriver driver, Method method, Object[] args) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessageStartingWith("Exception executing listener method ");
   }
 
   @Test
@@ -1083,6 +1131,30 @@ class EventFiringDecoratorTest {
   }
 
   @Test
+  void shouldReThrowExceptionInBeforeMethod() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void beforeGetWindowHandle(WebDriver driver) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessageStartingWith("Exception executing listener method ");
+  }
+
+  @Test
   void shouldSuppressExceptionInAfterAnyCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener =
@@ -1096,6 +1168,30 @@ class EventFiringDecoratorTest {
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
     assertThatNoException().isThrownBy(decorated::getWindowHandle);
+  }
+
+  @Test
+  void shouldReThrowExceptionInAfterAnyCall() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessage("afterAnyCall");
   }
 
   @Test
@@ -1116,6 +1212,31 @@ class EventFiringDecoratorTest {
   }
 
   @Test
+  void shouldReThrowExceptionInAfterClassMethodCall() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void afterAnyWebDriverCall(
+              WebDriver driver, Method method, Object[] args, Object result) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessageStartingWith("Exception executing listener method ");
+  }
+
+  @Test
   void shouldSuppressExceptionInAfterMethod() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener =
@@ -1129,6 +1250,30 @@ class EventFiringDecoratorTest {
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
     assertThatNoException().isThrownBy(decorated::getWindowHandle);
+  }
+
+  @Test
+  void shouldReThrowExceptionInAfterMethod() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriverListener listener =
+        new WebDriverListener() {
+
+          @Override
+          public boolean throwsExceptions() {
+            return true;
+          }
+
+          @Override
+          public void afterGetWindowHandle(WebDriver driver, String result) {
+            throw new RuntimeException("listener");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    assertThatExceptionOfType(WebDriverListenerException.class)
+        .isThrownBy(decorated::getWindowHandle)
+        .withMessageStartingWith("Exception executing listener method ");
   }
 
   @Test
@@ -1206,6 +1351,6 @@ class EventFiringDecoratorTest {
     RemoteWebDriver rem =
         new EventFiringDecorator<>(RemoteWebDriver.class, listener).decorate(originalDriver);
     rem.get("http://localhost:4444");
-    assertThat(invocationCount.get()).isEqualTo(1);
+    assertThat(invocationCount).hasValue(1);
   }
 }

@@ -20,6 +20,7 @@ package org.openqa.selenium.events.zeromq;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -43,7 +44,11 @@ class BoundZmqEventBus implements EventBus {
   private final ExecutorService executor;
 
   BoundZmqEventBus(
-      ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+      ZContext context,
+      String publishConnection,
+      String subscribeConnection,
+      Secret secret,
+      Duration heartbeatPeriod) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -53,11 +58,13 @@ class BoundZmqEventBus implements EventBus {
     xpub = context.createSocket(SocketType.XPUB);
     xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
+    ZmqUtils.configureHeartbeat(xpub, heartbeatPeriod, "XPUB");
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
     xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
+    ZmqUtils.configureHeartbeat(xsub, heartbeatPeriod, "XSUB");
     xsub.bind(xsubAddr.bindTo);
 
     executor =
@@ -68,8 +75,9 @@ class BoundZmqEventBus implements EventBus {
               return thread;
             });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
-
-    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
+    delegate =
+        new UnboundZmqEventBus(
+            context, xpubAddr.advertise, xsubAddr.advertise, secret, heartbeatPeriod);
   }
 
   @Override

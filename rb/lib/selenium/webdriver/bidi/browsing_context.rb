@@ -20,7 +20,8 @@
 module Selenium
   module WebDriver
     class BiDi
-      # Implements the browsingContext Module of the WebDriver-BiDi specification
+      # Implements the BrowsingContext Module of the WebDriver-BiDi specification
+      # Continue to use functionality from existing `driver.navigate` method
       #
       # @api private
       #
@@ -109,7 +110,7 @@ module Selenium
           context_id ||= @bridge.window_handle
           @bidi.send_cmd('browsingContext.activate', context: context_id)
         end
-      end
+      end # BrowsingContext
     end # BiDi
   end # WebDriver
 end # Selenium

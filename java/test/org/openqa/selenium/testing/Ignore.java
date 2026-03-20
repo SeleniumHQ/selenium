@@ -35,7 +35,5 @@ public @interface Ignore {
 
   String issue() default "";
 
-  boolean travis() default false;
-
   boolean gitHubActions() default false;
 }

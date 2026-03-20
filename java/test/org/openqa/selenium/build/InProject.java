@@ -102,4 +102,39 @@ public class InProject {
     }
     return null;
   }
+
+  /**
+   * Resolves a Bazel rootpath to an absolute path using the runfiles tree.
+   *
+   * <p>In Bazel 8, $(location) in jvm_flags expands external targets to relative paths like
+   * "../+repo+name/path" (relative to _main). This method resolves such paths against the runfiles
+   * root so they become absolute and usable by subprocesses (e.g. geckodriver).
+   *
+   * @param path the path to resolve, may be null
+   * @return the resolved absolute path, or the original path if resolution is not needed/possible
+   */
+  public static String resolveRunfilesPath(String path) {
+    if (path == null || path.isEmpty()) {
+      return path;
+    }
+
+    Path asPath = Paths.get(path);
+    if (asPath.isAbsolute()) {
+      return path;
+    }
+    if (Files.exists(asPath)) {
+      return asPath.toAbsolutePath().normalize().toString();
+    }
+
+    Path runfilesRoot = findRunfilesRoot();
+    if (runfilesRoot != null) {
+      // rootpaths from $(location) are relative to _main/ in the runfiles tree
+      Path resolved = runfilesRoot.resolve("_main").resolve(path).normalize();
+      if (Files.exists(resolved)) {
+        return resolved.toString();
+      }
+    }
+
+    return path;
+  }
 }

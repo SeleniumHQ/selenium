@@ -80,7 +80,13 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
-        @io ||= WebDriver.logger.io if WebDriver.logger.debug?
+        if ENV.key?('SE_DEBUG')
+          if @io && @io != WebDriver.logger.io
+            WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver log output to use stderr',
+                                  id: :se_debug)
+          end
+          @io = WebDriver.logger.io
+        end
         @process.io = @io if @io
 
         @process
@@ -127,10 +133,36 @@ module Selenium
       end
 
       def connect_until_stable
-        socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
-        return if socket_poller.connected?
+        deadline = current_time + START_TIMEOUT
 
-        raise Error::WebDriverError, cannot_connect_error_text
+        loop do
+          error = check_connection_error
+          return unless error
+
+          raise Error::WebDriverError, "#{cannot_connect_error_text}: #{error}" if current_time > deadline
+
+          sleep 0.1
+        end
+      end
+
+      def check_connection_error
+        response = Net::HTTP.start(@host, @port, open_timeout: 0.5, read_timeout: 1) do |http|
+          http.get('/status', {'Connection' => 'close'})
+        end
+
+        return "status returned #{response.code}\n#{response.body}" unless response.is_a?(Net::HTTPSuccess)
+
+        status = JSON.parse(response.body)
+        ready = status['ready'] || status.dig('value', 'ready')
+        "driver not ready: #{response.body}" unless ready
+      rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE, Errno::ETIMEDOUT,
+             Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
+             EOFError, SocketError, Net::HTTPBadResponse, JSON::ParserError => e
+        "#{e.class}: #{e.message}"
+      end
+
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
 
       def cannot_connect_error_text

@@ -18,6 +18,7 @@
 package org.openqa.selenium.print;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,8 @@ class PrintOptionsTest {
 
   @Test
   void setsValuesAsPassed() {
-    PrintOptions printOptions = new PrintOptions();
-
-    printOptions.setBackground(true);
-    printOptions.setScale(1.5);
-    printOptions.setShrinkToFit(false);
+    PrintOptions printOptions =
+        new PrintOptions().setBackground(true).setScale(1.5).setShrinkToFit(false);
 
     assertThat(printOptions.getScale()).isEqualTo(1.5);
     assertThat(printOptions.getBackground()).isTrue();
@@ -54,7 +52,7 @@ class PrintOptionsTest {
     PrintOptions printOptions = new PrintOptions();
 
     printOptions.setPageRanges(List.of("1-2", "6-7"));
-    assertThat(printOptions.getPageRanges().length).isEqualTo(2);
+    assertThat(printOptions.getPageRanges()).containsExactly("1-2", "6-7");
   }
 
   @Test
@@ -64,18 +62,13 @@ class PrintOptionsTest {
     printOptions.setPageRanges("1-2");
 
     Map<String, Object> map = printOptions.toMap();
-    assertThat(map.size()).isEqualTo(7);
-    assertThat(map.containsKey("page")).isTrue();
-    assertThat(map.containsKey("orientation")).isTrue();
-    assertThat(map.containsKey("scale")).isTrue();
-    assertThat(map.containsKey("shrinkToFit")).isTrue();
-    assertThat(map.containsKey("background")).isTrue();
-    assertThat(map.containsKey("pageRanges")).isTrue();
-    assertThat(map.containsKey("margin")).isTrue();
-
-    Map<String, Double> margin = (Map<String, Double>) map.get("margin");
-    assertThat(margin.size()).isEqualTo(4);
-    Map<String, Double> page = (Map<String, Double>) map.get("page");
-    assertThat(page.size()).isEqualTo(2);
+    assertThat(map).hasSize(7);
+    assertThat(map)
+        .containsOnlyKeys(
+            "page", "orientation", "scale", "shrinkToFit", "background", "pageRanges", "margin");
+    assertThat(map.get("margin"))
+        .asInstanceOf(MAP)
+        .containsOnlyKeys("top", "left", "bottom", "right");
+    assertThat(map.get("page")).asInstanceOf(MAP).containsOnlyKeys("width", "height");
   }
 }

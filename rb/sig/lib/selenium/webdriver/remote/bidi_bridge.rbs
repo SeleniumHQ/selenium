@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module Remote
-      class BiDiBridge
+      class BiDiBridge < Bridge
         @browsing_context: BiDi::BrowsingContext
 
         attr_reader bidi: BiDi

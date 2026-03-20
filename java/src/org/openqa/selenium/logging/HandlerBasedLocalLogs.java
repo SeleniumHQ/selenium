@@ -20,8 +20,15 @@ package org.openqa.selenium.logging;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import org.jspecify.annotations.NullMarked;
 
-/** LocalLogs instance that extracts entries from a logging handler. */
+/**
+ * LocalLogs instance that extracts entries from a logging handler.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 class HandlerBasedLocalLogs extends LocalLogs {
   private final LoggingHandler loggingHandler;
   private final Set<String> logTypesToInclude;
@@ -33,6 +40,7 @@ class HandlerBasedLocalLogs extends LocalLogs {
   }
 
   @Override
+  @NullMarked
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType) && logTypesToInclude.contains(logType)) {
       Collection<LogEntry> entries = loggingHandler.getRecords();

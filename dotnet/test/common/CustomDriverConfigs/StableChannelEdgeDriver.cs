@@ -37,8 +37,5 @@ public class StableChannelEdgeDriver : EdgeDriver
         : base(service, options)
     {
     }
-    public static EdgeOptions DefaultOptions
-    {
-        get { return new EdgeOptions(); }
-    }
+    public static EdgeOptions DefaultOptions => new EdgeOptions();
 }

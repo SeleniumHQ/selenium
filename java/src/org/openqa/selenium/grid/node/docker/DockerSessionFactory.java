@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.node.docker;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.docker.ContainerConfig.image;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
@@ -34,16 +33,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -51,6 +51,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
@@ -97,13 +98,15 @@ public class DockerSessionFactory implements SessionFactory {
   private final Image browserImage;
   private final Capabilities stereotype;
   private final List<Device> devices;
-  private final Image videoImage;
-  private final DockerAssetsPath assetsPath;
+  private final @Nullable Image videoImage;
+  private final @Nullable DockerAssetsPath assetsPath;
   private final String networkName;
   private final boolean runningInDocker;
   private final Predicate<Capabilities> predicate;
   private final Map<String, Object> hostConfig;
   private final List<String> hostConfigKeys;
+  private final Map<String, String> groupingLabels;
+  private final Duration stopGracePeriod;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -115,13 +118,15 @@ public class DockerSessionFactory implements SessionFactory {
       Image browserImage,
       Capabilities stereotype,
       List<Device> devices,
-      Image videoImage,
-      DockerAssetsPath assetsPath,
+      @Nullable Image videoImage,
+      @Nullable DockerAssetsPath assetsPath,
       String networkName,
       boolean runningInDocker,
       Predicate<Capabilities> predicate,
       Map<String, Object> hostConfig,
-      List<String> hostConfigKeys) {
+      List<String> hostConfigKeys,
+      Map<String, String> groupingLabels,
+      Duration stopGracePeriod) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -138,6 +143,8 @@ public class DockerSessionFactory implements SessionFactory {
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
+    this.groupingLabels = Require.nonNull("Container grouping labels", groupingLabels);
+    this.stopGracePeriod = Require.nonNull("Container stop grace period", stopGracePeriod);
   }
 
   @Override
@@ -155,6 +162,17 @@ public class DockerSessionFactory implements SessionFactory {
     LOG.info("Starting session for " + sessionRequest.getDesiredCapabilities());
 
     int port = runningInDocker ? 4444 : PortProber.findFreePort();
+    // Generate unique identifier for consistent naming between browser and recorder containers
+    // Using browserName-timestamp-UUID to avoid conflicts in concurrent session creation
+    String browserName = sessionRequest.getDesiredCapabilities().getBrowserName();
+    if (!browserName.isEmpty()) {
+      browserName = browserName.toLowerCase();
+    } else {
+      browserName = "unknown";
+    }
+    long timestamp = System.currentTimeMillis();
+    String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+    String sessionIdentifier = String.format("%s-%d-%s", browserName, timestamp, uniqueId);
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
@@ -163,7 +181,8 @@ public class DockerSessionFactory implements SessionFactory {
               ? "Creating container..."
               : "Creating container, mapping container port 4444 to " + port;
       LOG.info(logMessage);
-      Container container = createBrowserContainer(port, sessionRequest.getDesiredCapabilities());
+      Container container =
+          createBrowserContainer(port, sessionRequest.getDesiredCapabilities(), sessionIdentifier);
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
@@ -171,6 +190,7 @@ public class DockerSessionFactory implements SessionFactory {
       URL remoteAddress = getUrl(port, containerIp);
       ClientConfig clientConfig =
           ClientConfig.defaultConfig().baseUrl(remoteAddress).readTimeout(sessionTimeout);
+      clientConfig = applyBasicAuth(clientConfig);
       HttpClient client = clientFactory.createClient(clientConfig);
 
       attributeMap.put("docker.browser.image", browserImage.toString());
@@ -243,7 +263,8 @@ public class DockerSessionFactory implements SessionFactory {
         String containerPath = path.get().getContainerPath(id);
         saveSessionCapabilities(mergedCapabilities, containerPath);
         String hostPath = path.get().getHostPath(id);
-        videoContainer = startVideoContainer(mergedCapabilities, containerIp, hostPath);
+        videoContainer =
+            startVideoContainer(mergedCapabilities, containerIp, hostPath, sessionIdentifier);
       }
 
       Dialect downstream =
@@ -271,7 +292,9 @@ public class DockerSessionFactory implements SessionFactory {
               downstream,
               result.getDialect(),
               Instant.now(),
-              assetsPath));
+              assetsPath,
+              stopGracePeriod,
+              stopGracePeriod));
     }
   }
 
@@ -288,7 +311,8 @@ public class DockerSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
+  private Container createBrowserContainer(
+      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
     Map<String, String> browserContainerEnvVars = new HashMap<>();
     // Enable env var to trigger video recording if session capabilities request and external video
     // container is disabled
@@ -299,16 +323,23 @@ public class DockerSessionFactory implements SessionFactory {
     }
     browserContainerEnvVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
     long browserContainerShmMemorySize = 2147483648L; // 2GB
+
+    // Generate container name: browser-<browserName>-<timestamp>-<uuid>
+    String containerName = String.format("browser-%s", sessionIdentifier);
+
     ContainerConfig containerConfig =
         image(browserImage)
             .env(browserContainerEnvVars)
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
             .devices(devices)
-            .applyHostConfig(hostConfig, hostConfigKeys);
+            .applyHostConfig(hostConfig, hostConfigKeys)
+            .labels(groupingLabels)
+            .name(containerName);
     Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);
     if (path.isPresent() && videoImage == null && recordVideoForSession(sessionCapabilities)) {
-      containerConfig.bind(Collections.singletonMap(this.assetsPath.getHostPath(), "/videos"));
+      containerConfig =
+          containerConfig.bind(Collections.singletonMap(this.assetsPath.getHostPath(), "/videos"));
     }
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
@@ -348,16 +379,29 @@ public class DockerSessionFactory implements SessionFactory {
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
   }
 
+  @Nullable
   private Container startVideoContainer(
-      Capabilities sessionCapabilities, String browserContainerIp, String hostPath) {
+      Capabilities sessionCapabilities,
+      String browserContainerIp,
+      String hostPath,
+      String sessionIdentifier) {
     if (videoImage == null || !recordVideoForSession(sessionCapabilities)) {
       return null;
     }
     int videoPort = 9000;
     Map<String, String> envVars = getVideoContainerEnvVars(sessionCapabilities, browserContainerIp);
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
+
+    // Generate container name: recorder-<browserName>-<timestamp>-<uuid>
+    String containerName = String.format("recorder-%s", sessionIdentifier);
+
     ContainerConfig containerConfig =
-        image(videoImage).env(envVars).bind(volumeBinds).network(networkName);
+        image(videoImage)
+            .env(envVars)
+            .bind(volumeBinds)
+            .network(networkName)
+            .labels(groupingLabels)
+            .name(containerName);
     if (!runningInDocker) {
       videoPort = PortProber.findFreePort();
       containerConfig = containerConfig.map(Port.tcp(9000), Port.tcp(videoPort));
@@ -400,6 +444,7 @@ public class DockerSessionFactory implements SessionFactory {
     return envVars;
   }
 
+  @Nullable
   private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
     Optional<Object> testName =
         ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
@@ -416,25 +461,27 @@ public class DockerSessionFactory implements SessionFactory {
     return null;
   }
 
+  @Nullable
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {
     Optional<Object> timeZone = ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
       String tz = timeZone.get().toString();
-      if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
+      if (List.of(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
     }
     String envTz = System.getenv("TZ");
-    if (Arrays.asList(TimeZone.getAvailableIDs()).contains(envTz)) {
+    if (envTz != null && List.of(TimeZone.getAvailableIDs()).contains(envTz)) {
       return TimeZone.getTimeZone(envTz);
     }
     return null;
   }
 
+  @Nullable
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
         ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
-    if (!screenResolution.isPresent()) {
+    if (screenResolution.isEmpty()) {
       return null;
     }
     try {
@@ -483,9 +530,27 @@ public class DockerSessionFactory implements SessionFactory {
     wait.until(
         obj -> {
           HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-          LOG.fine(string(response));
+          LOG.fine(response::contentAsString);
+          if (401 == response.getStatus()) {
+            LOG.warning(
+                "Server requires basic authentication. "
+                    + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
+                    + "to provide credentials.");
+          }
           return 200 == response.getStatus();
         });
+  }
+
+  private ClientConfig applyBasicAuth(ClientConfig clientConfig) {
+    String routerUsername = System.getenv("SE_ROUTER_USERNAME");
+    String routerPassword = System.getenv("SE_ROUTER_PASSWORD");
+    if (routerUsername != null
+        && !routerUsername.isEmpty()
+        && routerPassword != null
+        && !routerPassword.isEmpty()) {
+      return clientConfig.authenticateAs(new UsernameAndPassword(routerUsername, routerPassword));
+    }
+    return clientConfig;
   }
 
   private URL getUrl(int port, String containerIp) {

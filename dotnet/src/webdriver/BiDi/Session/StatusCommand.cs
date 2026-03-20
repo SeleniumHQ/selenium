@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class StatusCommand()
@@ -26,4 +24,4 @@ internal sealed class StatusCommand()
 
 public sealed record StatusResult(bool Ready, string Message) : EmptyResult;
 
-public sealed class StatusOptions : CommandOptions;
+public sealed record StatusOptions : CommandOptions;

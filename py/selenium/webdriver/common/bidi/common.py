@@ -16,19 +16,16 @@
 # under the License.
 
 from collections.abc import Generator
-from typing import Optional
 
 
-def command_builder(method: str, params: Optional[dict] = None) -> Generator[dict, dict, dict]:
+def command_builder(method: str, params: dict | None = None) -> Generator[dict, dict, dict]:
     """Build a command iterator to send to the BiDi protocol.
 
-    Parameters:
-    -----------
+    Args:
         method: The method to execute.
         params: The parameters to pass to the method. Default is None.
 
     Returns:
-    --------
         The response from the command execution.
     """
     if params is None:

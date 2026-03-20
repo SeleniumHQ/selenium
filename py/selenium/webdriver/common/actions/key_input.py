@@ -14,9 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from . import interaction
-from .input_device import InputDevice
-from .interaction import Interaction, Pause
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.input_device import InputDevice
+from selenium.webdriver.common.actions.interaction import Interaction, Pause
 
 
 class KeyInput(InputDevice):

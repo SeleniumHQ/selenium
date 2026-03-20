@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
@@ -30,53 +26,46 @@ internal sealed class GetCookiesCommand(GetCookiesParameters @params)
 
 internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public sealed class GetCookiesOptions : CommandOptions
+public sealed record GetCookiesOptions : CommandOptions
 {
-    public CookieFilter? Filter { get; set; }
+    public CookieFilter? Filter { get; init; }
 
-    public PartitionDescriptor? Partition { get; set; }
+    public PartitionDescriptor? Partition { get; init; }
 }
 
-public sealed record GetCookiesResult : EmptyResult, IReadOnlyList<Network.Cookie>
+public sealed record ContextGetCookiesOptions : CommandOptions
 {
-    internal GetCookiesResult(IReadOnlyList<Network.Cookie> cookies, PartitionKey partitionKey)
+    public CookieFilter? Filter { get; init; }
+
+    internal static GetCookiesOptions WithContext(ContextGetCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        Cookies = cookies;
-        PartitionKey = partitionKey;
-    }
-
-    public IReadOnlyList<Network.Cookie> Cookies { get; }
-
-    public PartitionKey PartitionKey { get; init; }
-
-    public Network.Cookie this[int index] => Cookies[index];
-
-    public int Count => Cookies.Count;
-
-    public IEnumerator<Network.Cookie> GetEnumerator() => Cookies.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (Cookies as IEnumerable).GetEnumerator();
+        Filter = options?.Filter,
+        Partition = new ContextPartitionDescriptor(context),
+        Timeout = options?.Timeout
+    };
 }
+
+public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
 public sealed record CookieFilter
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public Network.BytesValue? Value { get; set; }
+    public Network.BytesValue? Value { get; init; }
 
-    public string? Domain { get; set; }
+    public string? Domain { get; init; }
 
-    public string? Path { get; set; }
+    public string? Path { get; init; }
 
-    public long? Size { get; set; }
+    public long? Size { get; init; }
 
-    public bool? HttpOnly { get; set; }
+    public bool? HttpOnly { get; init; }
 
-    public bool? Secure { get; set; }
+    public bool? Secure { get; init; }
 
-    public Network.SameSite? SameSite { get; set; }
+    public Network.SameSite? SameSite { get; init; }
 
-    public DateTimeOffset? Expiry { get; set; }
+    public DateTimeOffset? Expiry { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -88,7 +77,7 @@ public sealed record ContextPartitionDescriptor(BrowsingContext.BrowsingContext 
 
 public sealed record StorageKeyPartitionDescriptor : PartitionDescriptor
 {
-    public string? UserContext { get; set; }
+    public string? UserContext { get; init; }
 
-    public string? SourceOrigin { get; set; }
+    public string? SourceOrigin { get; init; }
 }

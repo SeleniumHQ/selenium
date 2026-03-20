@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params)
-    : Command<ContinueWithAuthParameters, EmptyResult>(@params, "network.continueWithAuth");
+    : Command<ContinueWithAuthParameters, ContinueWithAuthResult>(@params, "network.continueWithAuth");
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "action")]
 [JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]
@@ -39,13 +38,14 @@ internal sealed record ContinueWithAuthDefaultCredentials(Request Request) : Con
 
 internal sealed record ContinueWithAuthCancelCredentials(Request Request) : ContinueWithAuthNoCredentials(Request);
 
-public abstract class ContinueWithAuthOptions : CommandOptions;
+public abstract record ContinueWithAuthOptions : CommandOptions;
 
-public sealed class ContinueWithAuthCredentialsOptions : ContinueWithAuthOptions;
+public sealed record ContinueWithAuthCredentialsOptions : ContinueWithAuthOptions;
 
-public abstract class ContinueWithAuthNoCredentialsOptions : ContinueWithAuthOptions;
+public abstract record ContinueWithAuthNoCredentialsOptions : ContinueWithAuthOptions;
 
-public sealed class ContinueWithAuthDefaultCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
+public sealed record ContinueWithAuthDefaultCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
 
-public sealed class ContinueWithAuthCancelCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
+public sealed record ContinueWithAuthCancelCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
 
+public sealed record ContinueWithAuthResult : EmptyResult;

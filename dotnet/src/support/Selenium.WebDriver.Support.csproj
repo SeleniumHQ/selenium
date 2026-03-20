@@ -5,7 +5,7 @@
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -38,6 +38,12 @@
 
   <ItemGroup>
     <ProjectReference Include="$(CsprojIncludePath)\Selenium.WebDriver.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--Workaround for being unable to have two different types of the same name in WebDriver and in Support, despite both being internal-->
+    <Compile Include="$(CsprojIncludePath)\Properties\StringSyntaxAttribute.cs" Link="Properties\StringSyntaxAttribute.cs" />
+    <Compile Include="$(CsprojIncludePath)\Properties\StringSyntaxConstants.cs" Link="Properties\StringSyntaxConstants.cs" />
   </ItemGroup>
 
 </Project>

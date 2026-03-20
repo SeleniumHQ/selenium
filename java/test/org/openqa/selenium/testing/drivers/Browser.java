@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriverInfo;
@@ -44,7 +45,8 @@ public enum Browser {
     public Capabilities getCapabilities() {
       ChromeOptions options = new ChromeOptions();
 
-      String binary = System.getProperty("webdriver.chrome.binary");
+      resolveDriverPath("webdriver.chrome.driver");
+      String binary = InProject.resolveRunfilesPath(System.getProperty("webdriver.chrome.binary"));
       if (binary != null) {
         options.setBinary(binary);
       }
@@ -81,7 +83,8 @@ public enum Browser {
     public Capabilities getCapabilities() {
       EdgeOptions options = new EdgeOptions();
 
-      String binary = System.getProperty("webdriver.edge.binary");
+      resolveDriverPath("webdriver.edge.driver");
+      String binary = InProject.resolveRunfilesPath(System.getProperty("webdriver.edge.binary"));
       if (binary != null) {
         options.setBinary(binary);
       }
@@ -133,7 +136,8 @@ public enum Browser {
     public Capabilities getCapabilities() {
       FirefoxOptions options = new FirefoxOptions().configureFromEnv();
 
-      String binary = System.getProperty("webdriver.firefox.bin");
+      resolveDriverPath("webdriver.gecko.driver");
+      String binary = InProject.resolveRunfilesPath(System.getProperty("webdriver.firefox.bin"));
       if (binary != null) {
         options.setBinary(binary);
       }
@@ -206,5 +210,15 @@ public enum Browser {
       }
     }
     return false;
+  }
+
+  private static void resolveDriverPath(String propertyName) {
+    String path = System.getProperty(propertyName);
+    if (path != null) {
+      String resolved = InProject.resolveRunfilesPath(path);
+      if (!resolved.equals(path)) {
+        System.setProperty(propertyName, resolved);
+      }
+    }
   }
 }

@@ -17,56 +17,34 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
-public class SetGeolocationOverrideParameters {
-  private final Map<String, Object> map = new HashMap<>();
+public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
 
-  // Constructor for coordinates - must specify either contexts or userContexts later
-  public SetGeolocationOverrideParameters(GeolocationCoordinates coordinates) {
+  public SetGeolocationOverrideParameters(@Nullable GeolocationCoordinates coordinates) {
     if (coordinates == null) {
-      throw new IllegalArgumentException("GeolocationCoordinates cannot be null");
+      map.put("coordinates", null);
+    } else {
+      map.put("coordinates", coordinates.toMap());
     }
-    map.put("coordinates", coordinates.toMap());
   }
 
-  // Constructor for error - must specify either contexts or userContexts later
   public SetGeolocationOverrideParameters(GeolocationPositionError error) {
-    if (error == null) {
-      throw new IllegalArgumentException("GeolocationPositionError cannot be null");
-    }
+    Require.nonNull("GeolocationPositionError", error);
     map.put("error", error.toMap());
   }
 
+  @Override
   public SetGeolocationOverrideParameters contexts(List<String> contexts) {
-    if (contexts == null || contexts.isEmpty()) {
-      throw new IllegalArgumentException("Contexts cannot be null or empty");
-    }
-    if (map.containsKey("userContexts")) {
-      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
-    }
-    map.put("contexts", contexts);
+    super.contexts(contexts);
     return this;
   }
 
+  @Override
   public SetGeolocationOverrideParameters userContexts(List<String> userContexts) {
-    if (userContexts == null || userContexts.isEmpty()) {
-      throw new IllegalArgumentException("User contexts cannot be null or empty");
-    }
-    if (map.containsKey("contexts")) {
-      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
-    }
-    map.put("userContexts", userContexts);
+    super.userContexts(userContexts);
     return this;
-  }
-
-  public Map<String, Object> toMap() {
-    // Validate that either contexts or userContexts is set
-    if (!map.containsKey("contexts") && !map.containsKey("userContexts")) {
-      throw new IllegalStateException("Must specify either contexts or userContexts");
-    }
-    return Map.copyOf(map);
   }
 }

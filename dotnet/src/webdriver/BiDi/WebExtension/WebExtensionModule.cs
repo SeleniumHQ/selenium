@@ -17,24 +17,41 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule(Broker broker) : Module(broker)
+public sealed class WebExtensionModule : Module, IWebExtensionModule
 {
-    public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
+    private WebExtensionJsonSerializerContext _jsonContext = null!;
+
+    public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new InstallParameters(extensionData);
 
-        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new InstallCommand(@params), options, _jsonContext.InstallCommand, _jsonContext.InstallResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
+    public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UninstallParameters(extension);
 
-        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    {
+        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
+
+        _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
     }
 }
+
+[JsonSerializable(typeof(InstallCommand))]
+[JsonSerializable(typeof(InstallResult))]
+[JsonSerializable(typeof(UninstallCommand))]
+[JsonSerializable(typeof(UninstallResult))]
+
+internal partial class WebExtensionJsonSerializerContext : JsonSerializerContext;

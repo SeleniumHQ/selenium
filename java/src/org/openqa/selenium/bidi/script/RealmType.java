@@ -39,13 +39,11 @@ public enum RealmType {
   }
 
   public static RealmType findByName(String name) {
-    RealmType result = null;
     for (RealmType type : values()) {
       if (type.toString().equalsIgnoreCase(name)) {
-        result = type;
-        break;
+        return type;
       }
     }
-    return result;
+    throw new IllegalArgumentException("Unsupported realm type: " + name);
   }
 }

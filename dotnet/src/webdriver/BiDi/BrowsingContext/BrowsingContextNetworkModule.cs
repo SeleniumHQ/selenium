@@ -17,126 +17,259 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using System;
 using OpenQA.Selenium.BiDi.Network;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)
+public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetworkModule networkModule) : IBrowsingContextNetworkModule
 {
-    public async Task<Intercept> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null)
+    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnBeforeRequestSentAsync(
-            async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+        Interception interception = new(networkModule, interceptResult.Intercept);
 
-        return intercept;
+        await interception.OnBeforeRequestSentAsync(
+            async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts)),
+            new() { Contexts = [context] }).ConfigureAwait(false);
+
+        return interception;
     }
 
-    public async Task<Intercept> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null)
+    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnResponseStartedAsync(
-            async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+        Interception interception = new(networkModule, interceptResult.Intercept);
 
-        return intercept;
+        await interception.OnResponseStartedAsync(
+            async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts)),
+            new() { Contexts = [context] }).ConfigureAwait(false);
+
+        return interception;
     }
 
-    public async Task<Intercept> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null)
+    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null, CancellationToken cancellationToken = default)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnAuthRequiredAsync(
-            async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+        Interception interception = new(networkModule, interceptResult.Intercept);
 
-        return intercept;
+        await interception.OnAuthRequiredAsync(
+            async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts)),
+            new() { Contexts = [context] }).ConfigureAwait(false);
+
+        return interception;
     }
 
-    public Task<EmptyResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
+    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
-        SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
+        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context), cancellationToken);
+    }
+
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
+    }
+
+    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnBeforeRequestSentAsync(
+            e => HandleBeforeRequestSentAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnBeforeRequestSentAsync(
+            e => HandleBeforeRequestSent(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnResponseStartedAsync(e
+         => HandleResponseStartedAsync(e, handler),
+         ContextSubscriptionOptions.WithContext(options, context),
+         cancellationToken);
+    }
+
+    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnResponseStartedAsync(
+            e => HandleResponseStarted(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnResponseCompletedAsync(
+            e => HandleResponseCompletedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnResponseCompletedAsync(
+            e => HandleResponseCompleted(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnFetchErrorAsync(
+            e => HandleFetchErrorAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnFetchErrorAsync(
+            e => HandleFetchError(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnAuthRequiredAsync(
+            e => HandleAuthRequiredAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return networkModule.OnAuthRequiredAsync(
+            e => HandleAuthRequired(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    private async Task HandleBeforeRequestSentAsync(BeforeRequestSentEventArgs e, Func<BeforeRequestSentEventArgs, Task> handler)
+    {
+        if (context.Equals(e.Context))
         {
-            Contexts = [context]
-        };
-
-        return networkModule.SetCacheBehaviorAsync(behavior, setCacheBehaviorOptions);
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
+    private void HandleBeforeRequestSent(BeforeRequestSentEventArgs e, Action<BeforeRequestSentEventArgs> handler)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null)
+    private async Task HandleResponseStartedAsync(ResponseStartedEventArgs e, Func<ResponseStartedEventArgs, Task> handler)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    private void HandleResponseStarted(ResponseStartedEventArgs e, Action<ResponseStartedEventArgs> handler)
     {
-        return networkModule.OnResponseStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null)
+    private async Task HandleResponseCompletedAsync(ResponseCompletedEventArgs e, Func<ResponseCompletedEventArgs, Task> handler)
     {
-        return networkModule.OnResponseStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    private void HandleResponseCompleted(ResponseCompletedEventArgs e, Action<ResponseCompletedEventArgs> handler)
     {
-        return networkModule.OnResponseCompletedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null)
+    private async Task HandleFetchErrorAsync(FetchErrorEventArgs e, Func<FetchErrorEventArgs, Task> handler)
     {
-        return networkModule.OnResponseCompletedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null)
+    private void HandleFetchError(FetchErrorEventArgs e, Action<FetchErrorEventArgs> handler)
     {
-        return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null)
+    private async Task HandleAuthRequiredAsync(AuthRequiredEventArgs e, Func<AuthRequiredEventArgs, Task> handler)
     {
-        return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            await handler(e).ConfigureAwait(false);
+        }
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    private void HandleAuthRequired(AuthRequiredEventArgs e, Action<AuthRequiredEventArgs> handler)
     {
-        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
-    }
-
-    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
-    {
-        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        if (context.Equals(e.Context))
+        {
+            handler(e);
+        }
     }
 }
 
-public sealed record InterceptRequestOptions : BrowsingContextAddInterceptOptions;
+public sealed record InterceptRequestOptions : ContextAddInterceptOptions;
 
-public sealed record InterceptResponseOptions : BrowsingContextAddInterceptOptions;
+public sealed record InterceptResponseOptions : ContextAddInterceptOptions;
 
-public sealed record InterceptAuthOptions : BrowsingContextAddInterceptOptions;
+public sealed record InterceptAuthOptions : ContextAddInterceptOptions;

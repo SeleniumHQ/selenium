@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_selenium_test_suite", "java_test_suite")
 load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 LARGE_TESTS = [
@@ -10,11 +10,7 @@ java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = LARGE_TESTS,
-    browsers = [
-        "chrome",
-        "firefox",
-        "edge",
-    ],
+    browsers = SINGLE_BROWSER,
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,
@@ -41,6 +37,7 @@ java_selenium_test_suite(
         artifact("org.assertj:assertj-core"),
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote/http",
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -84,5 +81,6 @@ java_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.zeromq:jeromq"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.client_config import ClientConfig
 
 
@@ -29,8 +28,8 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: Optional[bool] = False,
-        client_config: Optional[ClientConfig] = None,
+        ignore_proxy: bool = False,
+        client_config: ClientConfig | None = None,
     ) -> None:
         super().__init__(
             remote_server_addr=remote_server_addr,

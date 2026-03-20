@@ -17,90 +17,185 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
 public partial class NetworkModule
 {
-    public async Task<Intercept> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null)
+    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var intercept = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], options).ConfigureAwait(false);
+        var interceptResult = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], options, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnBeforeRequestSentAsync(async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator))).ConfigureAwait(false);
+        Interception interception = new(this, interceptResult.Intercept);
 
-        return intercept;
+        await interception.OnBeforeRequestSentAsync(async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts)), null, cancellationToken).ConfigureAwait(false);
+
+        return interception;
     }
 
-    public async Task<Intercept> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null)
+    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var intercept = await AddInterceptAsync([InterceptPhase.ResponseStarted], options).ConfigureAwait(false);
+        var interceptResult = await AddInterceptAsync([InterceptPhase.ResponseStarted], options, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnResponseStartedAsync(async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response))).ConfigureAwait(false);
+        Interception interception = new(this, interceptResult.Intercept);
 
-        return intercept;
+        await interception.OnResponseStartedAsync(async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts)), null, cancellationToken).ConfigureAwait(false);
+
+        return interception;
     }
 
-    public async Task<Intercept> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null)
+    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], options).ConfigureAwait(false);
+        var interceptResult = await AddInterceptAsync([InterceptPhase.AuthRequired], options, cancellationToken).ConfigureAwait(false);
 
-        await intercept.OnAuthRequiredAsync(async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response))).ConfigureAwait(false);
+        Interception interception = new(this, interceptResult.Intercept);
 
-        return intercept;
-    }
-}
+        await interception.OnAuthRequiredAsync(async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts)), null, cancellationToken).ConfigureAwait(false);
 
-public sealed class InterceptRequestOptions : AddInterceptOptions;
-
-public sealed class InterceptResponseOptions : AddInterceptOptions;
-
-public sealed class InterceptAuthOptions : AddInterceptOptions;
-
-public sealed record InterceptedRequest(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator)
-    : BeforeRequestSentEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Initiator)
-{
-    public Task ContinueAsync(ContinueRequestOptions? options = null)
-    {
-        return BiDi.Network.ContinueRequestAsync(Request.Request, options);
-    }
-
-    public Task FailAsync()
-    {
-        return BiDi.Network.FailRequestAsync(Request.Request);
-    }
-
-    public Task ProvideResponseAsync(ProvideResponseOptions? options = null)
-    {
-        return BiDi.Network.ProvideResponseAsync(Request.Request, options);
+        return interception;
     }
 }
 
-public sealed record InterceptedResponse(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response)
-    : ResponseStartedEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response)
+public sealed record InterceptRequestOptions : AddInterceptOptions;
+
+public sealed record InterceptResponseOptions : AddInterceptOptions;
+
+public sealed record InterceptAuthOptions : AddInterceptOptions;
+
+public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 {
-    public Task ContinueAsync(ContinueResponseOptions? options = null)
+    internal InterceptedRequest(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, Initiator initiator, IReadOnlyList<Intercept>? intercepts)
+        : base(context, isBlocked, navigation, redirectCount, request, timestamp, initiator, intercepts)
     {
-        return BiDi.Network.ContinueResponseAsync(Request.Request, options);
+        BiDi = bidi;
+    }
+
+    public Task ContinueAsync(ContinueRequestOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.Network.ContinueRequestAsync(Request.Request, options, cancellationToken);
+    }
+
+    public Task FailAsync(FailRequestOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.Network.FailRequestAsync(Request.Request, options, cancellationToken);
+    }
+
+    public Task ProvideResponseAsync(ProvideResponseOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.Network.ProvideResponseAsync(Request.Request, options, cancellationToken);
     }
 }
 
-public sealed record InterceptedAuth(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response)
-    : AuthRequiredEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response)
+public sealed record InterceptedResponse : ResponseStartedEventArgs
 {
-    public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
+    internal InterceptedResponse(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+        : base(context, isBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
     {
-        return BiDi.Network.ContinueWithAuthAsync(Request.Request, credentials, options);
+        BiDi = bidi;
     }
 
-    public Task ContinueAsync(ContinueWithAuthDefaultCredentialsOptions? options = null)
+    public Task ContinueAsync(ContinueResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.Network.ContinueWithAuthAsync(Request.Request, options);
+        return BiDi.Network.ContinueResponseAsync(Request.Request, options, cancellationToken);
+    }
+}
+
+public sealed record InterceptedAuth : AuthRequiredEventArgs
+{
+    internal InterceptedAuth(IBiDi bidi, BrowsingContext.BrowsingContext? context, bool IsBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+        : base(context, IsBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
+    {
+        BiDi = bidi;
     }
 
-    public Task ContinueAsync(ContinueWithAuthCancelCredentialsOptions? options = null)
+    public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return BiDi.Network.ContinueWithAuthAsync(Request.Request, options);
+        return BiDi.Network.ContinueWithAuthAsync(Request.Request, credentials, options, cancellationToken);
+    }
+
+    public Task ContinueAsync(ContinueWithAuthDefaultCredentialsOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.Network.ContinueWithAuthAsync(Request.Request, options, cancellationToken);
+    }
+
+    public Task ContinueAsync(ContinueWithAuthCancelCredentialsOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.Network.ContinueWithAuthAsync(Request.Request, options, cancellationToken);
+    }
+}
+
+public sealed record Interception(INetworkModule Network, Intercept Intercept) : IAsyncDisposable
+{
+    IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
+    IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
+    IList<Subscription> OnAuthRequiredSubscriptions { get; } = [];
+
+    public async Task RemoveAsync(RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await Network.RemoveInterceptAsync(Intercept, options, cancellationToken).ConfigureAwait(false);
+
+        foreach (var subscription in OnBeforeRequestSentSubscriptions)
+        {
+            await subscription.UnsubscribeAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        foreach (var subscription in OnResponseStartedSubscriptions)
+        {
+            await subscription.UnsubscribeAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        foreach (var subscription in OnAuthRequiredSubscriptions)
+        {
+            await subscription.UnsubscribeAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    public async Task OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var subscription = await Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options, cancellationToken).ConfigureAwait(false);
+
+        OnBeforeRequestSentSubscriptions.Add(subscription);
+    }
+
+    public async Task OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var subscription = await Network.OnResponseStartedAsync(async args => await Filter(args, handler), options, cancellationToken).ConfigureAwait(false);
+
+        OnResponseStartedSubscriptions.Add(subscription);
+    }
+
+    public async Task OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var subscription = await Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options, cancellationToken).ConfigureAwait(false);
+
+        OnAuthRequiredSubscriptions.Add(subscription);
+    }
+
+    private async Task Filter(BeforeRequestSentEventArgs args, Func<BeforeRequestSentEventArgs, Task> handler)
+    {
+        if (args.Intercepts?.Contains(Intercept) is true && args.IsBlocked)
+        {
+            await handler(args).ConfigureAwait(false);
+        }
+    }
+
+    private async Task Filter(ResponseStartedEventArgs args, Func<ResponseStartedEventArgs, Task> handler)
+    {
+        if (args.Intercepts?.Contains(Intercept) is true && args.IsBlocked)
+        {
+            await handler(args).ConfigureAwait(false);
+        }
+    }
+
+    private async Task Filter(AuthRequiredEventArgs args, Func<AuthRequiredEventArgs, Task> handler)
+    {
+        if (args.Intercepts?.Contains(Intercept) is true && args.IsBlocked)
+        {
+            await handler(args).ConfigureAwait(false);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await RemoveAsync().ConfigureAwait(false);
     }
 }

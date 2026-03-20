@@ -1,4 +1,6 @@
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
+load("//dotnet:defs.bzl", "dotnet_format", "nuget_push", "paket_deps")
+load("//dotnet/private:docfx.bzl", "docfx")
 
 exports_files([
     "AssemblyInfo.cs.template",
@@ -25,4 +27,41 @@ pkg_zip(
     tags = [
         "release-artifact",
     ],
+)
+
+filegroup(
+    name = "source_files_support_needs_from_core",
+    srcs = [
+        "//dotnet/src/webdriver:Properties/StringSyntaxAttribute.cs",
+        "//dotnet/src/webdriver:Properties/StringSyntaxConstants.cs",
+    ],
+    visibility = ["__subpackages__"],
+)
+
+docfx(
+    name = "docs",
+    docfx_dll = "@docfx//:docfx_dll",
+    docfx_json = "docs/docfx.json",
+)
+
+nuget_push(
+    name = "publish",
+    packages = [
+        "//dotnet/src/support:support-pack",
+        "//dotnet/src/webdriver:webdriver-pack",
+    ],
+)
+
+paket_deps(
+    name = "paket-update",
+    mode = "update",
+)
+
+paket_deps(
+    name = "paket-install",
+    mode = "install",
+)
+
+dotnet_format(
+    name = "format",
 )

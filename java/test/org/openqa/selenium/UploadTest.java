@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +83,7 @@ class UploadTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testMultipleFileUploading() {
-    List<String> multiContent = Arrays.asList(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
+    List<String> multiContent = List.of(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
     String fileNames =
         multiContent.stream()
             .map(text -> "<div>" + text + "</div>")

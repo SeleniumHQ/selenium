@@ -55,6 +55,14 @@ public class DockerFlags implements HasRoles {
   private Integer dockerPort;
 
   @Parameter(
+      names = {"--docker-api-version"},
+      description =
+          "Docker API version to use. Pin an API version instead of auto-detecting by"
+              + " implementation")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.40")
+  private String apiVersion;
+
+  @Parameter(
       names = {"--docker-server-start-timeout"},
       description =
           "Max time (in seconds) to wait for the server to successfully start up, before cancelling"
@@ -108,6 +116,17 @@ public class DockerFlags implements HasRoles {
   private List<String> devices;
 
   @Parameter(
+      names = {"--docker-grouping-labels"},
+      description =
+          "Users to specify custom labels for grouping dynamic containers. This will make the"
+              + " system more flexible for different platforms and use cases")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "grouping-labels",
+      example = "[\"azure.container.group\", \"aws.ecs.cluster\"]")
+  private List<String> groupingLabels;
+
+  @Parameter(
       names = {"--docker-video-image"},
       description = "Docker image to be used when video recording is enabled")
   @ConfigValue(
@@ -124,6 +143,17 @@ public class DockerFlags implements HasRoles {
       name = "assets-path",
       example = "\"" + DockerOptions.DEFAULT_ASSETS_PATH + "\"")
   private String assetsPath;
+
+  @Parameter(
+      names = {"--docker-stop-grace-period"},
+      description =
+          "Grace period (in seconds) to wait for browser and video containers to stop gracefully"
+              + " before they are forcibly terminated.")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "stop-grace-period",
+      example = "" + DockerOptions.DEFAULT_STOP_GRACE_PERIOD)
+  private Integer stopGracePeriod;
 
   @Override
   public Set<Role> getRoles() {

@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class EndCommand()
-    : Command<Parameters, EmptyResult>(Parameters.Empty, "session.end");
+    : Command<Parameters, EndResult>(Parameters.Empty, "session.end");
 
-public sealed class EndOptions : CommandOptions;
+public sealed record EndOptions : CommandOptions;
+
+public sealed record EndResult : EmptyResult;

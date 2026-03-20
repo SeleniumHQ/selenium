@@ -90,6 +90,7 @@ public class Session implements Serializable {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static Session fromJson(JsonInput input) {
     SessionId id = null;
     URI uri = null;
@@ -101,7 +102,7 @@ public class Session implements Serializable {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "capabilities":
-          caps = ImmutableCapabilities.copyOf(input.read(Capabilities.class));
+          caps = ImmutableCapabilities.copyOf(input.readNonNull(Capabilities.class));
           break;
 
         case "sessionId":
@@ -143,5 +144,10 @@ public class Session implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(id, uri);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Session(id:%s, url:%s, started at: %s)", id, uri, getStartTime());
   }
 }

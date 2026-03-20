@@ -1,63 +1,70 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>HTML5 storage with nested frames</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.frame');
     goog.require('bot.html5');
     goog.require('bot.storage');
-    goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
     var frameWin;
 
-    function setUpPage() {
-      frameWin = bot.frame.findFrameByNameOrId('frame_a');
-    }
+    frameWin = bot.frame.findFrameByNameOrId('frame_a');
 
-    function testNestedFrameLocalStorage() {
+    QUnit.test('nestedFrameLocalStorage', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE, frameWin)) {
+        assert.ok(true, 'Skipping: local storage not supported');
         return;
       }
 
       var localStorage = bot.storage.getLocalStorage(frameWin);
-      assertEquals('bar11', localStorage.getItem('foo1'));
-    }
+      assert.strictEqual(localStorage.getItem('foo1'), 'bar11');
+    });
 
-    function testUniqueWindowLocalStorage() {
+    QUnit.test('uniqueWindowLocalStorage', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE, frameWin)) {
+        assert.ok(true, 'Skipping: local storage not supported');
         return;
       }
 
       var localStorage = bot.storage.getLocalStorage();
-      assertEquals('bar11', localStorage.getItem('foo1'));
-      assertEquals('bar_b11', localStorage.getItem('foo_b1'));
-    }
+      assert.strictEqual(localStorage.getItem('foo1'), 'bar11');
+      assert.strictEqual(localStorage.getItem('foo_b1'), 'bar_b11');
+    });
 
-    function testNestedFrameSessionStorage() {
+    QUnit.test('nestedFrameSessionStorage', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE, frameWin)) {
+        assert.ok(true, 'Skipping: session storage not supported');
         return;
       }
 
       var sessionStorage = bot.storage.getSessionStorage(frameWin);
-      assertEquals('bar22', sessionStorage.getItem('foo2'));
-    }
+      assert.strictEqual(sessionStorage.getItem('foo2'), 'bar22');
+    });
 
-    function testUniqueWindowSessionStorage() {
+    QUnit.test('uniqueWindowSessionStorage', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE, frameWin)) {
+        assert.ok(true, 'Skipping: session storage not supported');
         return;
       }
 
       var sessionStorage = bot.storage.getSessionStorage();
-      assertEquals('bar22', sessionStorage.getItem('foo2'));
-      assertEquals('bar_b22', sessionStorage.getItem('foo_b2'));
-    }
+      assert.strictEqual(sessionStorage.getItem('foo2'), 'bar22');
+      assert.strictEqual(sessionStorage.getItem('foo_b2'), 'bar_b22');
+    });
   </script>
 </head>
 <body>
-<iframe id="frame_a" src="testdata/frame_a.html"></iframe>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <iframe id="frame_a" src="testdata/frame_a.html"></iframe>
 </body>
 </html>

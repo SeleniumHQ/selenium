@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -53,53 +51,140 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(HtmlCollectionRemoteValue), "htmlcollection")]
 //[JsonDerivedType(typeof(NodeRemoteValue), "node")]
 //[JsonDerivedType(typeof(WindowProxyRemoteValue), "window")]
+[JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
-    public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;
+    public static implicit operator bool(RemoteValue remoteValue) => remoteValue.ConvertTo<bool>();
+    public static implicit operator double(RemoteValue remoteValue) => remoteValue.ConvertTo<double>();
+    public static implicit operator float(RemoteValue remoteValue) => remoteValue.ConvertTo<float>();
+    public static implicit operator int(RemoteValue remoteValue) => remoteValue.ConvertTo<int>();
+    public static implicit operator long(RemoteValue remoteValue) => remoteValue.ConvertTo<long>();
+    public static implicit operator string?(RemoteValue remoteValue) => remoteValue.ConvertTo<string>();
 
-    public static implicit operator int(RemoteValue remoteValue) => (int)(double)remoteValue;
-    public static implicit operator long(RemoteValue remoteValue) => (long)(double)remoteValue;
-
-    public static implicit operator string?(RemoteValue remoteValue)
-    {
-        return remoteValue switch
+    public TResult? ConvertTo<TResult>()
+        => (this, typeof(TResult)) switch
         {
-            StringRemoteValue stringValue => stringValue.Value,
-            NullRemoteValue => null,
-            _ => throw new InvalidCastException($"Cannot convert {remoteValue} to string")
+            (_, Type t) when t.IsAssignableFrom(GetType())
+                => (TResult)(object)this,
+            (BooleanRemoteValue b, Type t) when t == typeof(bool)
+                => (TResult)(object)b.Value,
+            (NullRemoteValue, Type t) when !t.IsValueType || Nullable.GetUnderlyingType(t) is not null
+                => default,
+            (NumberRemoteValue n, Type t) when t == typeof(byte)
+                => (TResult)(object)Convert.ToByte(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(sbyte)
+                => (TResult)(object)Convert.ToSByte(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(short)
+                => (TResult)(object)Convert.ToInt16(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(ushort)
+                => (TResult)(object)Convert.ToUInt16(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(int)
+                => (TResult)(object)Convert.ToInt32(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(uint)
+                => (TResult)(object)Convert.ToUInt32(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(long)
+                => (TResult)(object)Convert.ToInt64(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(ulong)
+                => (TResult)(object)Convert.ToUInt64(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(double)
+                => (TResult)(object)n.Value,
+            (NumberRemoteValue n, Type t) when t == typeof(float)
+                => (TResult)(object)Convert.ToSingle(n.Value),
+            (NumberRemoteValue n, Type t) when t == typeof(decimal)
+                => (TResult)(object)Convert.ToDecimal(n.Value),
+            (StringRemoteValue s, Type t) when t == typeof(string)
+                => (TResult)(object)s.Value,
+            (ArrayRemoteValue a, Type t) when t.IsArray
+                => ConvertRemoteValuesToArray<TResult>(a.Value, t.GetElementType()!),
+            (ArrayRemoteValue a, Type t) when t.IsGenericType && t.IsAssignableFrom(typeof(List<>).MakeGenericType(t.GetGenericArguments()[0]))
+                => ConvertRemoteValuesToGenericList<TResult>(a.Value, typeof(List<>).MakeGenericType(t.GetGenericArguments()[0])),
+            (MapRemoteValue m, Type t) when t.IsGenericType && t.GetGenericArguments().Length == 2 && t.IsAssignableFrom(typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments()))
+                => ConvertRemoteValuesToDictionary<TResult>(m.Value, typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments())),
+            (ObjectRemoteValue o, Type t) when t.IsGenericType && t.GetGenericArguments().Length == 2 && t.IsAssignableFrom(typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments()))
+                => ConvertRemoteValuesToDictionary<TResult>(o.Value, typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments())),
+
+            (_, Type t) when Nullable.GetUnderlyingType(t) is { } underlying
+                => ConvertToNullable<TResult>(underlying),
+
+            _ => throw new InvalidCastException($"Cannot convert {GetType().Name} to {typeof(TResult).FullName}")
         };
+
+    private TResult ConvertToNullable<TResult>(Type underlyingType)
+    {
+        var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(underlyingType);
+        var value = convertMethod.Invoke(this, null);
+        return (TResult)value!;
     }
 
-    // TODO: extend types
-    public TResult? ConvertTo<TResult>()
+    private static TResult ConvertRemoteValuesToArray<TResult>(IEnumerable<RemoteValue>? remoteValues, Type elementType)
     {
-        var type = typeof(TResult);
-
-        if (type == typeof(bool))
+        if (remoteValues is null)
         {
-            return (TResult)(Convert.ToBoolean(((BooleanRemoteValue)this).Value) as object);
-        }
-        if (type == typeof(int))
-        {
-            return (TResult)(Convert.ToInt32(((NumberRemoteValue)this).Value) as object);
-        }
-        else if (type == typeof(string))
-        {
-            return (TResult)(((StringRemoteValue)this).Value as object);
-        }
-        else if (type is object)
-        {
-            // :)
-            return (TResult)new object();
+            return (TResult)(object)Array.CreateInstance(elementType, 0);
         }
 
-        throw new BiDiException("Cannot convert .....");
+        var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
+        var items = remoteValues.ToList();
+        var array = Array.CreateInstance(elementType, items.Count);
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            var convertedItem = convertMethod.Invoke(items[i], null);
+            array.SetValue(convertedItem, i);
+        }
+
+        return (TResult)(object)array;
+    }
+
+    private static TResult ConvertRemoteValuesToGenericList<TResult>(IEnumerable<RemoteValue>? remoteValues, Type listType)
+    {
+        var elementType = listType.GetGenericArguments()[0];
+        var list = (System.Collections.IList)Activator.CreateInstance(listType)!;
+
+        if (remoteValues is not null)
+        {
+            var convertMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(elementType);
+
+            foreach (var item in remoteValues)
+            {
+                var convertedItem = convertMethod.Invoke(item, null);
+                list.Add(convertedItem);
+            }
+        }
+
+        return (TResult)list;
+    }
+
+    private static TResult ConvertRemoteValuesToDictionary<TResult>(IReadOnlyList<IReadOnlyList<RemoteValue>>? remoteValues, Type dictionaryType)
+    {
+        var typeArgs = dictionaryType.GetGenericArguments();
+        var dict = (System.Collections.IDictionary)Activator.CreateInstance(dictionaryType)!;
+
+        if (remoteValues is not null)
+        {
+            var convertKeyMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[0]);
+            var convertValueMethod = typeof(RemoteValue).GetMethod(nameof(ConvertTo))!.MakeGenericMethod(typeArgs[1]);
+
+            foreach (var pair in remoteValues)
+            {
+                if (pair.Count != 2)
+                {
+                    throw new FormatException($"Expected a pair of RemoteValues for dictionary entry, but got {pair.Count} values.");
+                }
+
+                var convertedKey = convertKeyMethod.Invoke(pair[0], null)!;
+                var convertedValue = convertValueMethod.Invoke(pair[1], null);
+                dict.Add(convertedKey, convertedValue);
+            }
+        }
+
+        return (TResult)dict;
     }
 }
 
 public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
-public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
 
@@ -113,162 +198,157 @@ public sealed record UndefinedRemoteValue : PrimitiveProtocolRemoteValue;
 
 public sealed record SymbolRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record ArrayRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
+    public IReadOnlyList<RemoteValue>? Value { get; init; }
 }
 
 public sealed record ObjectRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
+    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; init; }
 }
 
 public sealed record FunctionRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record RegExpRemoteValue(RegExpValue Value) : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record DateRemoteValue(string Value) : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record MapRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
+    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; init; }
 }
 
 public sealed record SetRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
+    public IReadOnlyList<RemoteValue>? Value { get; init; }
 }
 
 public sealed record WeakMapRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record WeakSetRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record GeneratorRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record ErrorRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record ProxyRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record PromiseRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record TypedArrayRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record ArrayBufferRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record NodeListRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
+    public IReadOnlyList<RemoteValue>? Value { get; init; }
 }
 
 public sealed record HtmlCollectionRemoteValue : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
+    public IReadOnlyList<RemoteValue>? Value { get; init; }
 }
 
-public sealed record NodeRemoteValue : RemoteValue, ISharedReference
+public sealed record NodeRemoteValue(string SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
 {
-    [JsonInclude]
-    public string? SharedId { get; internal set; }
+    public Handle? Handle { get; init; }
 
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    [JsonInclude]
-    public NodeProperties? Value { get; internal set; }
+    public InternalId? InternalId { get; init; }
 }
 
 public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : RemoteValue
 {
-    public Handle? Handle { get; set; }
+    public Handle? Handle { get; init; }
 
-    public InternalId? InternalId { get; set; }
+    public InternalId? InternalId { get; init; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<Mode>))]
 public enum Mode
 {
     Open,

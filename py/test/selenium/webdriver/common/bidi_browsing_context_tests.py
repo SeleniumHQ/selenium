@@ -348,12 +348,15 @@ def test_set_viewport(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(context=context_id, viewport={"width": 250, "height": 300})
+    try:
+        driver.browsing_context.set_viewport(context=context_id, viewport={"width": 251, "height": 301})
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 251
+        assert viewport_size[1] == 301
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_set_viewport_with_device_pixel_ratio(driver, pages):
@@ -361,18 +364,70 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(
-        context=context_id, viewport={"width": 250, "height": 300}, device_pixel_ratio=5
-    )
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 252, "height": 302}, device_pixel_ratio=5
+        )
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 252
+        assert viewport_size[1] == 302
 
-    device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
-    assert device_pixel_ratio == 5
+        assert device_pixel_ratio == 5
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
+    """Test setting the viewport with no args doesn't change viewport or device pixel ratio."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 253, "height": 303}, device_pixel_ratio=6
+        )
+
+        driver.browsing_context.set_viewport(context=context_id)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+
+        assert viewport_size[0] == 253
+        assert viewport_size[1] == 303
+
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        assert device_pixel_ratio == 6
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+def test_set_viewport_back_to_default(driver, pages):
+    """Test resetting the viewport and device pixel ratio to defaults."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    default_viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+    default_device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id, viewport={"width": 254, "height": 304}, device_pixel_ratio=10
+        )
+
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        assert viewport_size[0] == default_viewport_size[0]
+        assert viewport_size[1] == default_viewport_size[1]
+        assert device_pixel_ratio == default_device_pixel_ratio
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_print_page(driver, pages):
@@ -721,6 +776,7 @@ def test_add_event_handler_user_prompt_opened(driver, pages):
     create_alert_page(driver, pages)
     driver.find_element(By.ID, "alert").click()
     WebDriverWait(driver, 5).until(EC.alert_is_present())
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
     assert events_received[0].type == "alert"
@@ -781,7 +837,6 @@ def test_add_event_handler_history_updated(driver, pages):
     driver.browsing_context.remove_event_handler("history_updated", callback_id)
 
 
-@pytest.mark.xfail_firefox
 def test_add_event_handler_download_will_begin(driver, pages):
     """Test adding event handler for download_will_begin event."""
     events_received = []
@@ -802,9 +857,52 @@ def test_add_event_handler_download_will_begin(driver, pages):
     WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
-    assert events_received[0].suggested_filename == "file_1.txt"
+    # filename maybe file_1.txt or file_1(1).txt depending on existing files in download dir
+    assert "file_1" in events_received[0].suggested_filename
 
     driver.browsing_context.remove_event_handler("download_will_begin", callback_id)
+
+
+def test_add_event_handler_download_end(driver, pages):
+    """Test adding event handler for download_end event."""
+    events_received = []
+
+    def on_download_end(info):
+        events_received.append(info)
+
+    callback_id = driver.browsing_context.add_event_handler("download_end", on_download_end)
+    assert callback_id is not None
+
+    context_id = driver.current_window_handle
+    url = pages.url("downloads/download.html")
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+    driver.find_element(By.ID, "file-1").click()
+
+    driver.find_element(By.ID, "file-2").click()
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) == 2)
+
+    assert len(events_received) == 2
+
+    for ev in events_received:
+        assert ev.download_params is not None
+        assert ev.download_params.status == "complete"
+        assert ev.download_params.context == context_id
+        assert ev.download_params.timestamp is not None
+
+    # we assert that atleast "file_1" is present in the downloaded file since multiple downloads
+    # will have numbered suffix like file_1 (1)
+    assert any(
+        "downloads/file_1.txt" in ev.download_params.url and "file_1" in ev.download_params.filepath
+        for ev in events_received
+    )
+
+    assert any(
+        "downloads/file_2.jpg" in ev.download_params.url and "file_2" in ev.download_params.filepath
+        for ev in events_received
+    )
+
+    driver.browsing_context.remove_event_handler("download_end", callback_id)
 
 
 def test_add_event_handler_with_specific_contexts(driver):

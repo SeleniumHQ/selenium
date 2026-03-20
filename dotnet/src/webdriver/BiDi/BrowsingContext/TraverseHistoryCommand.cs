@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class TraverseHistoryCommand(TraverseHistoryParameters @params)
@@ -26,6 +24,6 @@ internal sealed class TraverseHistoryCommand(TraverseHistoryParameters @params)
 
 internal sealed record TraverseHistoryParameters(BrowsingContext Context, long Delta) : Parameters;
 
-public sealed class TraverseHistoryOptions : CommandOptions;
+public sealed record TraverseHistoryOptions : CommandOptions;
 
 public sealed record TraverseHistoryResult : EmptyResult;

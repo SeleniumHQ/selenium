@@ -19,8 +19,8 @@ package org.openqa.selenium.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -35,9 +35,7 @@ class W3CHandshakeResponseTest {
   void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
-        ImmutableMap.of(
-            "value",
-            ImmutableMap.of("capabilities", caps.asMap(), "sessionId", "cheese is opaque"));
+        Map.of("value", Map.of("capabilities", caps.asMap(), "sessionId", "cheese is opaque"));
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
@@ -48,16 +46,17 @@ class W3CHandshakeResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat((int) response.getStatus()).isZero();
-
-    assertThat(response.getValue()).isEqualTo(caps.asMap());
+    assertThat(response.getStatus()).isEqualTo(0);
+    assertThat(response.getValue())
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(caps.asMap());
   }
 
   @Test
   void shouldIgnoreAJsonWireProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
-        ImmutableMap.of("status", 0, "value", caps.asMap(), "sessionId", "cheese is opaque");
+        Map.of("status", 0, "value", caps.asMap(), "sessionId", "cheese is opaque");
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
@@ -69,8 +68,7 @@ class W3CHandshakeResponseTest {
   @Test
   void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    Map<String, ?> payload =
-        ImmutableMap.of("value", caps.asMap(), "sessionId", "cheese is opaque");
+    Map<String, ?> payload = Map.of("value", caps.asMap(), "sessionId", "cheese is opaque");
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
@@ -82,9 +80,9 @@ class W3CHandshakeResponseTest {
   @Test
   void shouldProperlyPopulateAnError() {
     Map<String, ?> payload =
-        ImmutableMap.of(
+        Map.of(
             "value",
-            ImmutableMap.of(
+            Map.of(
                 "error", "session not created",
                 "message", "me no likey",
                 "stacktrace", "I have no idea what went wrong"));

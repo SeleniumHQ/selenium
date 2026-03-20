@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
@@ -31,7 +30,6 @@ import org.openqa.selenium.internal.Require;
  * request or when trying to access another frame. Most times when troubleshooting failure it's best
  * to view the browser's console after executing the WebDriver request.
  */
-@NullMarked
 public interface JavascriptExecutor {
   /**
    * Executes JavaScript in the context of the currently selected frame or window. The script

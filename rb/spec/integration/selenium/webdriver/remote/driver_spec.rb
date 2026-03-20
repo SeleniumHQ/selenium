@@ -83,8 +83,7 @@ module Selenium
           end
         end
 
-        it 'errors when not set', {except: {browser: :firefox, reason: 'grid always sets true and firefox returns it'},
-                                   exclude: {browser: :safari, reason: 'grid hangs'}} do
+        it 'errors when not set', exclude: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: false) do |driver|
             expect {
               driver.downloadable_files

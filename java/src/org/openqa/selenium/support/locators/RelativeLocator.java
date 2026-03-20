@@ -288,6 +288,7 @@ public class RelativeLocator {
     return Map.of((String) raw.get("using"), raw.get("value"));
   }
 
+  @SuppressWarnings("CheckReturnValue")
   private static void assertLocatorCanBeSerialized(Object locator) {
     Require.nonNull("Locator", locator);
 

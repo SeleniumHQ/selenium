@@ -29,13 +29,12 @@ def test_should_be_able_to_determine_the_location_of_an_element(driver, pages):
 
 @pytest.mark.parametrize(
     "page",
-    (
-        "coordinates_tests/simple_page.html",
-        "coordinates_tests/page_with_empty_element.html",
-        "coordinates_tests/page_with_transparent_element.html",
-        "coordinates_tests/page_with_hidden_element.html",
-    ),
-    ids=("basic", "empty", "transparent", "hidden"),
+    [
+        ("coordinates_tests/simple_page.html"),
+        ("coordinates_tests/page_with_empty_element.html"),
+        ("coordinates_tests/page_with_transparent_element.html"),
+        ("coordinates_tests/page_with_hidden_element.html"),
+    ],
 )
 @pytest.mark.xfail_safari
 def test_should_get_coordinates_of_an_element(page, driver, pages):

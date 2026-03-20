@@ -60,7 +60,7 @@ class RelayOptionsTest {
             .findFirst()
             .orElseThrow(() -> new AssertionError("No value returned"));
 
-    assertThat(sessionFactories.get(chrome).size()).isEqualTo(2);
+    assertThat(sessionFactories.get(chrome)).hasSize(2);
     assertThat(relayOptions.getServiceUri().toString()).isEqualTo("http://localhost:9999");
   }
 

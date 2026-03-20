@@ -17,12 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -193,9 +191,26 @@ public sealed class FirefoxDriverService : DriverService
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --host \"{0}\"", this.Host);
             }
 
-            if (this.LogLevel != FirefoxDriverLogLevel.Default)
+            if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log {0}", this.LogLevel.ToString().ToLowerInvariant()));
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LogLevel != FirefoxDriverLogLevel.Default && this.LogLevel != FirefoxDriverLogLevel.Debug))
+                {
+                    Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing GeckoDriver log level to DEBUG and overriding configured log level.");
+                }
+                argsBuilder.Append(" --log debug");
+            }
+            else if (this.LogLevel == FirefoxDriverLogLevel.Debug)
+            {
+                argsBuilder.Append(" --log debug");
+            }
+            else if (this.SuppressInitialDiagnosticInformation)
+            {
+                argsBuilder.Append(" --log fatal");
+            }
+            else if (this.LogLevel != FirefoxDriverLogLevel.Default)
+            {
+                argsBuilder.Append($" --log {this.LogLevel.ToString().ToLowerInvariant()}");
             }
 
             if (this.OpenBrowserToolbox)
@@ -221,6 +236,11 @@ public sealed class FirefoxDriverService : DriverService
             return argsBuilder.ToString().Trim();
         }
     }
+
+    /// <summary>
+    /// Gets a value indicating whether process output redirection is required.
+    /// </summary>
+    protected internal override bool EnableProcessRedirection => base.EnableProcessRedirection || LogPath is not null;
 
     /// <summary>
     /// Called when the driver process is starting. This method sets up log file writing if a log path is specified.

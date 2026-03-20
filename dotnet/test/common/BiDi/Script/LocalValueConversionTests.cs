@@ -17,15 +17,15 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class LocalValueConversionTests
+internal class LocalValueConversionTests
 {
     [Test]
     public void CanConvertNullBoolToLocalValue()

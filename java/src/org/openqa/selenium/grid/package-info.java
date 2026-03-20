@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid;
-
 /**
  * The Selenium Grid is composed of a number of moving pieces, all of which are designed to be used
  * either locally or across an HTTP boundary.
@@ -37,3 +35,7 @@ package org.openqa.selenium.grid;
  * which the {@code Node} is running. Conversely, when the session comes to an end, the {@code Node}
  * is responsible for ensuring that the session is removed from the {@code SessionMap}.
  */
+@NullMarked
+package org.openqa.selenium.grid;
+
+import org.jspecify.annotations.NullMarked;

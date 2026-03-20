@@ -18,19 +18,22 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class RegExpValue extends LocalValue {
 
   private final String pattern;
-  private String flags;
+
+  @Nullable private final String flags;
 
   public RegExpValue(String pattern) {
-    this.pattern = pattern;
+    this(pattern, null);
   }
 
-  public RegExpValue(String pattern, String flags) {
+  public RegExpValue(String pattern, @Nullable String flags) {
     this.pattern = pattern;
     this.flags = flags;
   }
@@ -58,27 +61,40 @@ public class RegExpValue extends LocalValue {
 
     input.endObject();
 
-    return new RegExpValue(pattern, flags);
+    return new RegExpValue(Require.nonNull("pattern", pattern), flags);
   }
 
   @Override
   public Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
+    Map<String, Object> value =
+        flags == null ? Map.of("pattern", pattern) : Map.of("pattern", pattern, "flags", flags);
 
-    toReturn.put("pattern", this.pattern);
-
-    if (flags != null) {
-      toReturn.put("flags", this.flags);
-    }
-
-    return Map.of("type", "regexp", "value", toReturn);
+    return Map.of("type", "regexp", "value", value);
   }
 
   public String getPattern() {
     return pattern;
   }
 
+  @Nullable
   public String getFlags() {
     return flags;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof RegExpValue)) return false;
+    RegExpValue other = (RegExpValue) object;
+    return Objects.equals(pattern, other.pattern) && Objects.equals(flags, other.flags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(pattern, flags);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s{pattern:%s, flags:%s}", getClass().getSimpleName(), pattern, flags);
   }
 }

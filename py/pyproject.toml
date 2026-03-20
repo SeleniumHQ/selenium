@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.36.0.202508121825"
+version = "4.42.0.202602192150"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
-requires-python = "~=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -19,20 +19,20 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Software Development :: Libraries",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    ]
+    "Programming Language :: Python :: 3.14",
+]
 dependencies = [
-    "urllib3[socks]>=2.5.0,<3.0",
-    "trio>=0.30.0,<1.0",
+    "certifi>=2026.1.4",
+    "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
-    "certifi>=2025.6.15",
-    "typing_extensions>=4.14.0,<5.0",
+    "typing_extensions>=4.15.0,<5.0",
+    "urllib3[socks]>=2.6.3,<3.0",
     "websocket-client>=1.8.0,<2.0",
-    ]
+]
 
 [project.urls]
 homepage = "https://www.selenium.dev"
@@ -41,6 +41,15 @@ download = "https://pypi.org/project/selenium"
 changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
 documentation = "https://www.selenium.dev/documentation/webdriver"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
+
+[dependency-groups]
+lint = [
+    "ruff==0.15.6",
+]
+validate = [
+    "validate-pyproject==0.25",
+    "packaging==26.0",
+]
 
 [tool.setuptools]
 zip-safe = false
@@ -58,6 +67,7 @@ binding = "Exec"
 [tool.setuptools.package-data]
 "*" = [
     "*.py",
+    "*.pyi",
     "*.rst",
     "*.json",
     "*.xpi",
@@ -72,11 +82,15 @@ binding = "Exec"
     "NOTICE",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 console_output_style = "progress"
-faulthandler_timeout = 60
+faulthandler_timeout = "60"
 log_cli = true
 trio_mode = true
+addopts = ["-s", "--tb=no"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
 markers = [
     "xfail_chrome: Tests expected to fail in Chrome",
     "xfail_edge: Tests expected to fail in Edge",
@@ -86,7 +100,8 @@ markers = [
     "xfail_safari: Tests expected to fail in Safari",
     "xfail_webkitgtk: Tests expected to fail in WebKitGTK",
     "xfail_wpewebkit: Tests expected to fail in WPEWebKit",
-    "no_driver_after_test: If there are no drivers after the test it will create a new one."
+    "no_driver_after_test: If there are no drivers after the test it will create a new one.",
+    "needs_fresh_driver: Mark tests that may need a fresh driver instance for proper isolation."
 ]
 python_files = ["test_*.py", "*_test.py", "*_tests.py"]
 testpaths = ["test"]
@@ -94,14 +109,11 @@ testpaths = ["test"]
 # mypy global options
 [tool.mypy]
 exclude = "selenium/webdriver/common/devtools"
-# The aim in future here is we would be able to turn (most) of these flags on, however the typing technical
-# debt is quite colossal right now.  For now we should maybe get everything working with the config here
-# then look at going after partially or completely untyped defs as a phase-2.
-files = "selenium"
+# The aim in future is we would be able to turn (most) of these flags on
 # warn about per-module sections in the config file that do not match any files processed.
 warn_unused_configs = true
 # disallows subclassing of typing.Any.
-disallow_subclassing_any = false
+disallow_subclassing_any = true
 # disallow usage of generic types that do not specify explicit type parameters.
 disallow_any_generics = false
 # disallow calling functions without type annotations from functions that have type annotations.
@@ -115,7 +127,7 @@ check_untyped_defs = false
 # reports an error whenever a function with type annotations is decorated with a decorator without annotations.
 disallow_untyped_decorators = false
 # changes the treatment of arguments with a default value of None by not implicitly making their type `typing.Optional`.
-no_implicit_optional = false
+no_implicit_optional = true
 # warns about casting an expression to it's inferred type.
 warn_redundant_casts = true
 # warns about unneeded `# type: ignore` comments.
@@ -125,28 +137,41 @@ warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
 warn_unreachable = false
 
-# mypy module specific options
-[[tool.mypy.trio_websocket]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
-
-[[tool.mypy._winreg]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
-
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
-    "generate.py",
 ]
 line-length = 120
 respect-gitignore = true
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022"]
+extend-select = ["D", "E", "F", "I", "PT", "UP", "RUF", "TID252"]
 fixable = ["ALL"]
+extend-ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
+    "D212", # Multi-line docstring summary should start at the first line
+    "PT011", # Use of `pytest.raises({exception})` is too broad
+    "PT012", # `pytest.raises()` block should contain a single simple statement
+    "RUF005", # Uses of the + operator to concatenate collections
+    "RUF012", # Mutable default values in class attributes
+    "RUF059", # Unpacked variable is never used
+]
 
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = 120
+
+[tool.ruff.lint.isort]
+known-first-party = ["selenium", "test"]
+known-third-party = []
+known-local-folder = ["conftest"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,11 +52,10 @@ class BaseServerOptionsTest {
     BaseServerOptions options =
         new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-url", "not a URL"))));
 
-    Exception exception = assertThrows(RuntimeException.class, options::getExternalUri);
-
-    assertThat(exception.getMessage())
+    assertThatThrownBy(options::getExternalUri)
         .as("External URI must be parseable as URI.")
-        .isEqualTo(
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage(
             "Supplied external URI is invalid: Illegal character in path at index 3: not a URL");
   }
 

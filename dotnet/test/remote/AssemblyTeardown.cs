@@ -17,15 +17,15 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
-
-namespace OpenQA.Selenium.Remote;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Environment;
 
 [SetUpFixture]
-// Outside a namespace to affect the entire assembly
-public class MySetUpClass
+#pragma warning disable // Outside a namespace to affect the entire assembly
+public class AssemblyTeardown
+#pragma warning restore
 {
     [OneTimeSetUp]
     public async Task RunBeforeAnyTestAsync()

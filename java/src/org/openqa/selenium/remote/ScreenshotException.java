@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.remote;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 public class ScreenshotException extends WebDriverException {
 
-  public ScreenshotException(String message) {
+  public ScreenshotException(@Nullable String message) {
     super(message);
   }
 
-  public ScreenshotException(Throwable cause) {
+  public ScreenshotException(@Nullable Throwable cause) {
     super(cause);
   }
 
-  public ScreenshotException(String message, Throwable cause) {
+  public ScreenshotException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

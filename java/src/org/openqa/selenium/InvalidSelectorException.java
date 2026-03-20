@@ -27,7 +27,7 @@ package org.openqa.selenium;
  */
 public class InvalidSelectorException extends WebDriverException {
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#invalid-selector-exception";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#invalidselectorexception";
 
   public InvalidSelectorException(String reason) {
     super(reason);

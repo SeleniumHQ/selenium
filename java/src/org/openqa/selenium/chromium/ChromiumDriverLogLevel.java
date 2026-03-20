@@ -20,6 +20,7 @@ package org.openqa.selenium.chromium;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jspecify.annotations.Nullable;
 
 /**
  * <a
@@ -50,7 +51,8 @@ public enum ChromiumDriverLogLevel {
     return super.toString().toLowerCase(Locale.ENGLISH);
   }
 
-  public static ChromiumDriverLogLevel fromString(String text) {
+  @Nullable
+  public static ChromiumDriverLogLevel fromString(@Nullable String text) {
     if (text != null) {
       for (ChromiumDriverLogLevel b : ChromiumDriverLogLevel.values()) {
         if (text.equalsIgnoreCase(b.toString())) {
