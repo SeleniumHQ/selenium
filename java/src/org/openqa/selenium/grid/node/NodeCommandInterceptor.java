@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -30,6 +32,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
  *
  * <p>Interceptors are called in the order they are loaded. Each interceptor receives a {@code next}
  * callable that, when invoked, advances to the next interceptor or executes the actual command.
+ *
+ * <p>The lifecycle of an enabled interceptor mirrors the {@code LocalNode} that hosts it: {@link
+ * #initialize} is called once at node startup and {@link #close} is called once when the node shuts
+ * down. Implementations that hold resources (thread pools, file handles, network connections)
+ * should release them in {@code close()}.
  *
  * <p>Typical usage — subscribe to session-lifecycle events in {@link #initialize} (via the {@code
  * bus}), then annotate or observe each command in {@link #intercept}:
@@ -49,7 +56,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
  * }
  * }</pre>
  */
-public interface NodeCommandInterceptor {
+public interface NodeCommandInterceptor extends Closeable {
 
   /** Returns {@code true} when this interceptor should be activated for the given config. */
   boolean isEnabled(Config config);
@@ -59,6 +66,15 @@ public interface NodeCommandInterceptor {
    * should subscribe to session-lifecycle events on the {@code bus} here.
    */
   void initialize(Config config, EventBus bus);
+
+  /**
+   * Called once when the {@code LocalNode} shuts down. Implementations should release any resources
+   * acquired in {@link #initialize} (thread pools, open files, network connections).
+   *
+   * <p>The default implementation is a no-op; override only when cleanup is needed.
+   */
+  @Override
+  default void close() throws IOException {}
 
   /**
    * Wraps execution of a single WebDriver HTTP command. Implementations MUST call {@code

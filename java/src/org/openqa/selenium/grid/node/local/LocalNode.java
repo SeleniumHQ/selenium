@@ -325,6 +325,18 @@ public class LocalNode extends Node implements Closeable {
           // ensure we do not leak running browsers
           currentSessions.invalidateAll();
           currentSessions.cleanUp();
+
+          // Give each interceptor a chance to release its resources.
+          for (NodeCommandInterceptor interceptor : interceptors) {
+            try {
+              interceptor.close();
+            } catch (Exception e) {
+              LOG.log(
+                  Level.WARNING,
+                  "Error closing interceptor " + interceptor.getClass().getName(),
+                  e);
+            }
+          }
         };
 
     Runtime.getRuntime()
@@ -841,26 +853,25 @@ public class LocalNode extends Node implements Closeable {
 
   private HttpResponse executeWithInterceptors(
       SessionId id, HttpRequest req, Callable<HttpResponse> command) {
-    if (interceptors.isEmpty()) {
-      try {
-        return command.call();
-      } catch (RuntimeException e) {
-        throw e;
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-    // Build interceptor chain from last to first so the first interceptor in the list is outermost
+    // Build interceptor chain from last to first so the first interceptor in the list is outermost.
     Callable<HttpResponse> chain = command;
     for (int i = interceptors.size() - 1; i >= 0; i--) {
       final NodeCommandInterceptor interceptor = interceptors.get(i);
       final Callable<HttpResponse> next = chain;
       chain = () -> interceptor.intercept(id, req, next);
     }
+    return callUnchecked(chain);
+  }
+
+  private static HttpResponse callUnchecked(Callable<HttpResponse> callable) {
     try {
-      return chain.call();
+      return callable.call();
     } catch (RuntimeException e) {
       throw e;
+    } catch (InterruptedException e) {
+      // Restore the interrupted status so callers and shutdown logic can observe it.
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
