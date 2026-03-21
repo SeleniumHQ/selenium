@@ -26,6 +26,7 @@ import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -72,14 +73,19 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
+import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
@@ -374,7 +380,10 @@ public class RemoteWebDriver
   @Override
   public void get(String url) {
     if (isBiDiEnabled()) {
-      new BrowsingContext(this, getWindowHandle()).navigate(url, getReadinessState());
+      String contextId = getWindowHandle();
+      navigateViaBiDi(
+          contextId,
+          () -> new BrowsingContext(this, contextId).navigate(url, getReadinessState()));
     } else {
       execute(DriverCommand.GET(url));
     }
@@ -401,6 +410,68 @@ public class RemoteWebDriver
       return ReadinessState.NONE;
     }
     return ReadinessState.COMPLETE;
+  }
+
+  private static final Json BIDI_JSON = new Json();
+
+  // Shared event definition for browsingContext.userPromptOpened used during navigation.
+  private static final Event<UserPromptOpened> USER_PROMPT_OPENED_EVENT =
+      new Event<>(
+          "browsingContext.userPromptOpened",
+          params -> {
+            try (StringReader reader = new StringReader(BIDI_JSON.toJson(params));
+                JsonInput input = BIDI_JSON.newInput(reader)) {
+              return input.readNonNull(UserPromptOpened.class);
+            }
+          });
+
+  private UnexpectedAlertBehaviour getUnhandledPromptBehaviour() {
+    Object raw = getCapabilities().getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);
+    if (raw instanceof UnexpectedAlertBehaviour) {
+      return (UnexpectedAlertBehaviour) raw;
+    }
+    if (raw instanceof String) {
+      return UnexpectedAlertBehaviour.fromString((String) raw);
+    }
+    // W3C WebDriver spec default is "dismiss and notify"
+    return UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+  }
+
+  // Wraps a BiDi navigation call with a userPromptOpened listener that handles any alerts
+  // according to the unhandledPromptBehavior capability. This replicates, for BiDi navigation,
+  // the automatic prompt handling that classic WebDriver delegates to the browser via the
+  // capability.
+  private void navigateViaBiDi(String contextId, Runnable navigation) {
+    UnexpectedAlertBehaviour behaviour = getUnhandledPromptBehaviour();
+    if (behaviour == UnexpectedAlertBehaviour.IGNORE) {
+      navigation.run();
+      return;
+    }
+
+    boolean accept =
+        behaviour == UnexpectedAlertBehaviour.ACCEPT
+            || behaviour == UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY;
+
+    BiDi bidi = ((HasBiDi) this).getBiDi();
+    long listenerId =
+        bidi.addListener(
+            contextId,
+            USER_PROMPT_OPENED_EVENT,
+            prompt -> {
+              if (contextId.equals(prompt.getBrowsingContextId())) {
+                LOG.fine(
+                    () ->
+                        String.format(
+                            "Handling %s user prompt during BiDi navigation (%s)",
+                            prompt.getType(), accept ? "accept" : "dismiss"));
+                new BrowsingContext(this, contextId).handleUserPrompt(accept);
+              }
+            });
+    try {
+      navigation.run();
+    } finally {
+      bidi.removeListener(listenerId);
+    }
   }
 
   @Override
@@ -1245,7 +1316,9 @@ public class RemoteWebDriver
     @Override
     public void back() {
       if (isBiDiEnabled()) {
-        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).back();
+        String contextId = getWindowHandle();
+        navigateViaBiDi(
+            contextId, () -> new BrowsingContext(RemoteWebDriver.this, contextId).back());
       } else {
         execute(DriverCommand.GO_BACK);
       }
@@ -1254,7 +1327,9 @@ public class RemoteWebDriver
     @Override
     public void forward() {
       if (isBiDiEnabled()) {
-        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).forward();
+        String contextId = getWindowHandle();
+        navigateViaBiDi(
+            contextId, () -> new BrowsingContext(RemoteWebDriver.this, contextId).forward());
       } else {
         execute(DriverCommand.GO_FORWARD);
       }
@@ -1273,7 +1348,11 @@ public class RemoteWebDriver
     @Override
     public void refresh() {
       if (isBiDiEnabled()) {
-        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).reload(getReadinessState());
+        String contextId = getWindowHandle();
+        navigateViaBiDi(
+            contextId,
+            () ->
+                new BrowsingContext(RemoteWebDriver.this, contextId).reload(getReadinessState()));
       } else {
         execute(DriverCommand.REFRESH);
       }
