@@ -344,6 +344,26 @@ public class SessionCapabilitiesMutatorTest {
   }
 
   @Test
+  void shouldPropagateVncCapsWhenRequestHasNoBrowserName() {
+    // Requests without browserName (e.g. proxy-only caps) are still routed to a VNC-enabled slot;
+    // the VNC address must be present in the merged capabilities.
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            "browserName", "chrome", "se:vncEnabled", true, "se:noVncPort", 7900);
+
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
+
+    Capabilities capabilities = new ImmutableCapabilities("proxy", Map.of("proxyType", "direct"));
+
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
+
+    assertThat(modifiedCapabilities.get("se:vncEnabled")).isEqualTo(true);
+    assertThat(modifiedCapabilities.get("se:noVncPort")).isEqualTo(7900);
+  }
+
+  @Test
   void shouldAllowUnknownBrowserNames() {
     Capabilities stereotype = new ImmutableCapabilities("browserName", "safari");
 

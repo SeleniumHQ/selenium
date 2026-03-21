@@ -18,11 +18,13 @@
 package org.openqa.selenium;
 
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A WebElement that wraps another WebElement, for purposes of testing that JSON converters
  * serialized wrapped elements correctly.
  */
+@NullMarked
 public class WrappedWebElement implements WebElement, WrapsElement {
 
   private final WebElement wrappedElement;

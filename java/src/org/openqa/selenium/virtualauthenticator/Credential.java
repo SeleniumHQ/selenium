@@ -23,7 +23,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
@@ -33,7 +32,6 @@ import org.openqa.selenium.internal.Require;
  * @see <a
  *     href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
-@NullMarked
 public class Credential {
 
   private final byte[] id;
@@ -121,7 +119,7 @@ public class Credential {
 
   public Map<String, @Nullable Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
-    Map<String, Object> map = new HashMap<>();
+    Map<String, @Nullable Object> map = new HashMap<>();
     map.put("credentialId", encoder.encodeToString(id));
     map.put("isResidentCredential", isResidentCredential);
     map.put("rpId", rpId);

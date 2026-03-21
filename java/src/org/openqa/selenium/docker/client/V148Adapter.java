@@ -20,6 +20,7 @@ package org.openqa.selenium.docker.client;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Adapter for Docker API version 1.48 and later.
@@ -49,9 +50,7 @@ class V148Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptImageResponse(Map<String, Object> response) {
-    if (response == null) {
-      return response;
-    }
+    Require.nonNull("Image response", response);
 
     Map<String, Object> adapted = new HashMap<>(response);
 
@@ -109,9 +108,7 @@ class V148Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptContainerCreateRequest(Map<String, Object> request) {
-    if (request == null) {
-      return request;
-    }
+    Require.nonNull("Container Create Request", request);
 
     Map<String, Object> adapted = new HashMap<>(request);
 
@@ -121,7 +118,6 @@ class V148Adapter implements ApiVersionAdapter {
     Map<String, Object> hostConfig = (Map<String, Object>) adapted.get("HostConfig");
 
     if (hostConfig != null) {
-      @SuppressWarnings("unchecked")
       Object mounts = hostConfig.get("Mounts");
 
       if (mounts instanceof Iterable) {
@@ -206,9 +202,7 @@ class V148Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptContainerInspectResponse(Map<String, Object> response) {
-    if (response == null) {
-      return response;
-    }
+    Require.nonNull("Container Inspect Response", response);
 
     Map<String, Object> adapted = new HashMap<>(response);
 

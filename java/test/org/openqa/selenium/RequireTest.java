@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Tag;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.internal.Require;
 
 @Tag("UnitTests")
+@SuppressWarnings({"DataFlowIssue", "RedundantCast", "ConstantValue"})
 class RequireTest {
 
   @Test
@@ -198,8 +200,8 @@ class RequireTest {
         .withMessage("Timeout must be greater than 0");
     assertThat(Require.positive("Timeout", 5L)).isEqualTo(5L);
 
-    assertThat(Require.nonNegative("Redirect count", 0L));
-    assertThat(Require.nonNegative("Redirect count", 1L));
+    assertThat(Require.nonNegative("Redirect count", 0L)).isEqualTo(0L);
+    assertThat(Require.nonNegative("Redirect count", 1L)).isEqualTo(1L);
     assertThatThrownBy(() -> Require.nonNegative("Redirect count", -1L))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Redirect count must be 0 or greater");
@@ -406,7 +408,7 @@ class RequireTest {
   @Test
   void canCheckThatCollectionIsNotEmpty() {
     Require.nonEmpty("Capabilities", List.of(1, 2, 3));
-    assertThatThrownBy(() -> Require.nonEmpty("Capabilities", null))
+    assertThatThrownBy(() -> Require.nonEmpty("Capabilities", (Collection<Integer>) null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Capabilities must be set");
     assertThatThrownBy(() -> Require.nonEmpty("Capabilities", List.of()))

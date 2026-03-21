@@ -146,6 +146,7 @@ public class ZeroMqEventBus {
       this.data = data;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     private static RejectedEvent fromJson(JsonInput input) {
       EventName name = null;
       Object data = null;

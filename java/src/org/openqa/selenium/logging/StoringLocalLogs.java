@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * LocalLogs instance that has its own storage. This should be used for explicit storing of logs,
@@ -40,6 +41,7 @@ class StoringLocalLogs extends LocalLogs {
   }
 
   @Override
+  @NullMarked
   public LogEntries get(String logType) {
     return new LogEntries(getLocalLogs(logType));
   }

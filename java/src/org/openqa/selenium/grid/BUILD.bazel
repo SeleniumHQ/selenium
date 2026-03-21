@@ -143,6 +143,7 @@ java_export(
         "org.openqa.selenium.remote.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
         "org.openqa.selenium.grid.config.HasRoles",
+        "org.openqa.selenium.grid.node.NodeCommandInterceptor",
         "org.openqa.selenium.grid.node.NodeSessionFactoryProvider",
         "org.openqa.selenium.remote.locators.CustomLocator",
         "org.openqa.selenium.remote.service.DriverService$Builder",

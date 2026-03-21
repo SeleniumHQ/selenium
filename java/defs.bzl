@@ -16,8 +16,8 @@ load("//java/private:module.bzl", _java_module = "java_module")
 load("//java/private:selenium_test.bzl", _selenium_test = "selenium_test")
 load("//java/private:suite.bzl", _java_selenium_test_suite = "java_selenium_test_suite")
 
-def java_test_suite(name, runner = "junit5", **kwargs):
-    _java_test_suite(name = name, runner = runner, **kwargs)
+def java_test_suite(name, **kwargs):
+    _java_test_suite(name = name, **kwargs)
 
 SINGLE_BROWSER = ["chrome"]
 
