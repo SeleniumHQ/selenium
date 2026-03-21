@@ -130,7 +130,7 @@ python.toolchain(
 python.toolchain(python_version = "3.11.14")
 python.toolchain(python_version = "3.12.12")
 python.toolchain(python_version = "3.13.11")
-python.toolchain(python_version = "3.14.1")
+python.toolchain(python_version = "3.14.2")
 use_repo(python, "pythons_hub")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
@@ -146,7 +146,7 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         "3.11.14",
         "3.12.12",
         "3.13.11",
-        "3.14.1",
+        "3.14.2",
     ]
 ]
 

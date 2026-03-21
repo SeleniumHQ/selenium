@@ -94,14 +94,14 @@ public sealed class ScriptModule : Module, IScriptModule
         return await SubscribeAsync("script.message", handler, options, _jsonContext.MessageEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfoEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfoEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfoEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, options, _jsonContext.RealmInfoEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -182,6 +182,17 @@ public sealed class ScriptModule : Module, IScriptModule
 [JsonSerializable(typeof(RemovePreloadScriptResult))]
 
 [JsonSerializable(typeof(MessageEventArgs))]
+[JsonSerializable(typeof(RealmInfoEventArgs))]
 [JsonSerializable(typeof(RealmDestroyedEventArgs))]
+#region https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(WindowRealmInfoEventArgs))]
+[JsonSerializable(typeof(DedicatedWorkerRealmInfoEventArgs))]
+[JsonSerializable(typeof(SharedWorkerRealmInfoEventArgs))]
+[JsonSerializable(typeof(ServiceWorkerRealmInfoEventArgs))]
+[JsonSerializable(typeof(WorkerRealmInfoEventArgs))]
+[JsonSerializable(typeof(PaintWorkletRealmInfoEventArgs))]
+[JsonSerializable(typeof(AudioWorkletRealmInfoEventArgs))]
+[JsonSerializable(typeof(WorkletRealmInfoEventArgs))]
+#endregion
 
 internal partial class ScriptJsonSerializerContext : JsonSerializerContext;
