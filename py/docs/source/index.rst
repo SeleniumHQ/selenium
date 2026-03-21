@@ -62,7 +62,7 @@ Documentation
 =============
 
 - `Getting Started <https://www.selenium.dev/documentation/webdriver/getting_started/>`_
-- `Python API Docs <https://www.selenium.dev/selenium/docs/api/py/>`_
+- `Python API Docs <https://www.selenium.dev/selenium/docs/api/py/api.html>`_
 - `Selenium Grid <https://www.selenium.dev/documentation/grid/>`_
 
 Contributing

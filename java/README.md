@@ -11,15 +11,17 @@ Selenium automates browsers for testing and web-based task automation.
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
-    <version>LATEST</version>
+    <version>${selenium.version}</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'org.seleniumhq.selenium:selenium-java:LATEST'
+implementation 'org.seleniumhq.selenium:selenium-java:${selenium.version}'
 ```
+
+Replace `${selenium.version}` with the latest version from [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java).
 
 ## Quick Start
 
