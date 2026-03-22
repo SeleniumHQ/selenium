@@ -18,6 +18,7 @@
 package org.openqa.selenium.docker.client;
 
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Factory for creating API version-specific adapters.
@@ -45,9 +46,7 @@ class AdapterFactory {
    * @throws IllegalArgumentException if apiVersion is null or empty
    */
   public static ApiVersionAdapter createAdapter(String apiVersion) {
-    if (apiVersion == null || apiVersion.trim().isEmpty()) {
-      throw new IllegalArgumentException("API version cannot be null or empty");
-    }
+    Require.nonBlank("API version", apiVersion);
 
     // API v1.48+ uses the latest adapter with multi-platform and gateway priority support
     if (compareVersions(apiVersion, "1.48") >= 0) {

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
@@ -44,7 +45,7 @@ public class ContainerConfig {
   private final long shmSize;
   private final Map<String, Object> hostConfig;
   private final Map<String, String> labels;
-  private final String name;
+  private final @Nullable String name;
 
   public ContainerConfig(
       Image image,
@@ -120,7 +121,7 @@ public class ContainerConfig {
       long shmSize,
       Map<String, Object> hostConfig,
       Map<String, String> labels,
-      String name) {
+      @Nullable String name) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
@@ -134,6 +135,7 @@ public class ContainerConfig {
     this.name = name;
   }
 
+  @Nullable
   public String getName() {
     return this.name;
   }

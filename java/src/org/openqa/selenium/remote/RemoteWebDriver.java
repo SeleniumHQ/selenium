@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
@@ -836,6 +837,7 @@ public class RemoteWebDriver
   }
 
   @Override
+  @NullMarked
   public void perform(Collection<Sequence> actions) {
     execute(DriverCommand.ACTIONS(actions));
   }
@@ -845,6 +847,7 @@ public class RemoteWebDriver
     execute(DriverCommand.CLEAR_ACTIONS_STATE);
   }
 
+  @NullMarked
   @Override
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId =
@@ -852,6 +855,7 @@ public class RemoteWebDriver
     return new RemoteVirtualAuthenticator(authenticatorId);
   }
 
+  @NullMarked
   @Override
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(
@@ -1541,6 +1545,7 @@ public class RemoteWebDriver
       return id;
     }
 
+    @NullMarked
     @Override
     public void addCredential(Credential credential) {
       execute(
@@ -1559,11 +1564,13 @@ public class RemoteWebDriver
       return response.stream().map(Credential::fromMap).collect(Collectors.toList());
     }
 
+    @NullMarked
     @Override
     public void removeCredential(byte[] credentialId) {
       removeCredential(Base64.getUrlEncoder().encodeToString(credentialId));
     }
 
+    @NullMarked
     @Override
     public void removeCredential(String credentialId) {
       execute(

@@ -55,7 +55,8 @@ jobs:
         ./go format
         # Fail if there were changes (triggers commit-fixes job)
         if ! git diff --quiet; then
-          echo "Format made changes"
+          echo "Format made changes:"
+          git diff
           exit 1
         fi
       artifact-name: format-changes

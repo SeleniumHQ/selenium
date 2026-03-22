@@ -65,6 +65,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -76,6 +77,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -107,6 +109,7 @@ import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.docker.DockerSession;
@@ -152,6 +155,7 @@ public class LocalNode extends Node implements Closeable {
 
   private final boolean bidiEnabled;
   private final boolean drainAfterSessions;
+  private final List<NodeCommandInterceptor> interceptors;
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> uploadsTempFileSystem;
@@ -171,7 +175,7 @@ public class LocalNode extends Node implements Closeable {
       EventBus bus,
       URI uri,
       URI gridUri,
-      HealthCheck healthCheck,
+      @Nullable HealthCheck healthCheck,
       int maxSessionCount,
       int drainAfterSessionCount,
       boolean cdpEnabled,
@@ -183,7 +187,8 @@ public class LocalNode extends Node implements Closeable {
       Secret registrationSecret,
       boolean managedDownloadsEnabled,
       int connectionLimitPerSession,
-      int nodeDownFailureThreshold) {
+      int nodeDownFailureThreshold,
+      List<NodeCommandInterceptor> interceptors) {
     super(
         tracer,
         new NodeId(UUID.randomUUID()),
@@ -209,6 +214,7 @@ public class LocalNode extends Node implements Closeable {
     this.connectionLimitPerSession = connectionLimitPerSession;
     // Use 0 to disable the failure threshold feature (unlimited retries)
     this.nodeDownFailureThreshold = nodeDownFailureThreshold;
+    this.interceptors = List.copyOf(interceptors);
 
     this.healthCheck =
         healthCheck == null
@@ -319,6 +325,18 @@ public class LocalNode extends Node implements Closeable {
           // ensure we do not leak running browsers
           currentSessions.invalidateAll();
           currentSessions.cleanUp();
+
+          // Give each interceptor a chance to release its resources.
+          for (NodeCommandInterceptor interceptor : interceptors) {
+            try {
+              interceptor.close();
+            } catch (Exception e) {
+              LOG.log(
+                  Level.WARNING,
+                  "Error closing interceptor " + interceptor.getClass().getName(),
+                  e);
+            }
+          }
         };
 
     Runtime.getRuntime()
@@ -337,7 +355,8 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
+  private void stopTimedOutSession(
+      @Nullable SessionId id, @Nullable SessionSlot slot, RemovalCause cause) {
     try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
@@ -825,11 +844,37 @@ public class LocalNode extends Node implements Closeable {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
 
-    HttpResponse toReturn = slot.execute(req);
+    HttpResponse toReturn = executeWithInterceptors(id, req, () -> slot.execute(req));
     if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
       stop(id);
     }
     return toReturn;
+  }
+
+  private HttpResponse executeWithInterceptors(
+      SessionId id, HttpRequest req, Callable<HttpResponse> command) {
+    // Build interceptor chain from last to first so the first interceptor in the list is outermost.
+    Callable<HttpResponse> chain = command;
+    for (int i = interceptors.size() - 1; i >= 0; i--) {
+      final NodeCommandInterceptor interceptor = interceptors.get(i);
+      final Callable<HttpResponse> next = chain;
+      chain = () -> interceptor.intercept(id, req, next);
+    }
+    return callUnchecked(chain);
+  }
+
+  private static HttpResponse callUnchecked(Callable<HttpResponse> callable) {
+    try {
+      return callable.call();
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (InterruptedException e) {
+      // Restore the interrupted status so callers and shutdown logic can observe it.
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -1013,7 +1058,7 @@ public class LocalNode extends Node implements Closeable {
     for (File file : files) {
       FileHandler.delete(file);
     }
-    Map<String, Object> toReturn = new HashMap<>();
+    Map<String, @Nullable Object> toReturn = new HashMap<>();
     toReturn.put("value", null);
     return new HttpResponse().setContent(asJson(toReturn));
   }
@@ -1371,6 +1416,7 @@ public class LocalNode extends Node implements Closeable {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final List<SessionSlot> factories;
+    private final List<NodeCommandInterceptor> interceptors = new ArrayList<>();
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1456,6 +1502,12 @@ public class LocalNode extends Node implements Closeable {
       return this;
     }
 
+    public Builder addInterceptor(NodeCommandInterceptor interceptor) {
+      Require.nonNull("Command interceptor", interceptor);
+      interceptors.add(interceptor);
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
@@ -1474,7 +1526,8 @@ public class LocalNode extends Node implements Closeable {
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession,
-          nodeDownFailureThreshold);
+          nodeDownFailureThreshold,
+          List.copyOf(interceptors));
     }
 
     public Advanced advanced() {

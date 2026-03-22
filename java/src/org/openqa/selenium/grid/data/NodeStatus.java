@@ -69,7 +69,8 @@ public class NodeStatus {
     this.osInfo = Require.nonNull("Node host OS info", osInfo);
   }
 
-  public static NodeStatus fromJson(JsonInput input) {
+  @SuppressWarnings({"unused", "DataFlowIssue"})
+  private static NodeStatus fromJson(JsonInput input) {
     NodeId nodeId = null;
     URI externalUri = null;
     int maxSessions = 0;

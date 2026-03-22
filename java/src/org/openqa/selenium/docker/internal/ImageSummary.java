@@ -48,6 +48,7 @@ public class ImageSummary {
     return repoTags;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   static ImageSummary fromJson(JsonInput input) {
     input.beginObject();
 

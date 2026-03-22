@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -83,7 +84,7 @@ class AddingNodesTest {
   private static final Secret registrationSecret = new Secret("caerphilly");
   private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
 
-  private Distributor distributor;
+  private @Nullable Distributor distributor;
   private Tracer tracer;
   private EventBus bus;
   private Wait<Object> wait;
@@ -384,7 +385,7 @@ class AddingNodesTest {
 
     private final EventBus bus;
     private final Function<Capabilities, Session> factory;
-    private Session running;
+    private @Nullable Session running;
 
     protected CustomNode(
         EventBus bus,

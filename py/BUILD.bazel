@@ -8,7 +8,7 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
 load("//common:defs.bzl", "copy_file")
-load("//py:defs.bzl", "generate_devtools", "py_test_suite")
+load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
@@ -233,6 +233,7 @@ py_library(
         "selenium/__init__.py",
         "selenium/webdriver/__init__.py",
     ] + glob(["selenium/common/**/*.py"]),
+    data = ["selenium/webdriver/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
 )
@@ -279,6 +280,7 @@ py_library(
         ["selenium/webdriver/common/**/*.py"],
         exclude = [
             "selenium/webdriver/common/bidi/**",
+            "selenium/webdriver/common/devtools/**",
         ],
     ),
     data = [
@@ -291,9 +293,18 @@ py_library(
     deps = [
         ":bidi",
         ":exceptions",
+        ":latest",
         ":remote",
         requirement("typing_extensions"),
     ],
+)
+
+# Module that points to the latest devtools module
+py_library(
+    name = "latest",
+    srcs = [":create-latest-devtools"],
+    imports = ["selenium.webdriver.common.devtools"],
+    visibility = ["//visibility:public"],
 )
 
 # Support utilities (wait conditions, event listeners, etc.)
@@ -325,6 +336,7 @@ py_library(
 py_library(
     name = "chrome",
     srcs = glob(["selenium/webdriver/chrome/**/*.py"]),
+    data = ["selenium/webdriver/chrome/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [":chromium"],
@@ -334,6 +346,7 @@ py_library(
 py_library(
     name = "edge",
     srcs = glob(["selenium/webdriver/edge/**/*.py"]),
+    data = ["selenium/webdriver/edge/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [":chromium"],
@@ -343,7 +356,10 @@ py_library(
 py_library(
     name = "firefox",
     srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
-    data = [":firefox-driver-prefs"],
+    data = [
+        "selenium/webdriver/firefox/__init__.pyi",
+        ":firefox-driver-prefs",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -356,6 +372,7 @@ py_library(
 py_library(
     name = "safari",
     srcs = glob(["selenium/webdriver/safari/**/*.py"]),
+    data = ["selenium/webdriver/safari/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -368,6 +385,7 @@ py_library(
 py_library(
     name = "ie",
     srcs = glob(["selenium/webdriver/ie/**/*.py"]),
+    data = ["selenium/webdriver/ie/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -380,6 +398,7 @@ py_library(
 py_library(
     name = "webkitgtk",
     srcs = glob(["selenium/webdriver/webkitgtk/**/*.py"]),
+    data = ["selenium/webdriver/webkitgtk/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -392,6 +411,7 @@ py_library(
 py_library(
     name = "wpewebkit",
     srcs = glob(["selenium/webdriver/wpewebkit/**/*.py"]),
+    data = ["selenium/webdriver/wpewebkit/__init__.pyi"],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -438,6 +458,7 @@ py_package(
         "py.selenium.webdriver.common",
         "py.selenium.webdriver.common.bidi",
         "py.selenium.webdriver.common.devtools",
+        "py.selenium.webdriver.common.devtools.latest",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -582,6 +603,11 @@ py_binary(
     outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
     protocol_version = devtools_version,
 ) for devtools_version in BROWSER_VERSIONS]
+
+generate_devtools_latest(
+    name = "create-latest-devtools",
+    browser_versions = BROWSER_VERSIONS,
+)
 
 py_test_suite(
     name = "unit",

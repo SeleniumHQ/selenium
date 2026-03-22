@@ -26,6 +26,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
+@SuppressWarnings("EqualsWithItself")
 class DefaultSlotMatcherTest {
 
   private final DefaultSlotMatcher slotMatcher = new DefaultSlotMatcher();

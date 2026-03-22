@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.emulation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 class SetScreenSettingsOverrideTest extends JupiterTestBase {
@@ -48,7 +46,6 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canSetScreenSettingsOverrideInContext() {
     if (org.openqa.selenium.testing.drivers.Browser.detect() == CHROME) {
       assumeThat(TestUtilities.getChromeVersion(driver)).isGreaterThanOrEqualTo(146);
@@ -82,7 +79,6 @@ class SetScreenSettingsOverrideTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canSetScreenSettingsOverrideInUserContext() {
     if (org.openqa.selenium.testing.drivers.Browser.detect() == CHROME) {
       assumeThat(TestUtilities.getChromeVersion(driver)).isGreaterThanOrEqualTo(146);

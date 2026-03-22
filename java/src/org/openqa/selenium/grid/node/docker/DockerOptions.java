@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -65,6 +66,7 @@ public class DockerOptions {
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   static final int DEFAULT_SERVER_START_TIMEOUT = 60;
+  static final int DEFAULT_STOP_GRACE_PERIOD = 60;
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -115,6 +117,17 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private Duration getStopGracePeriod() {
+    int seconds =
+        config.getInt(DOCKER_SECTION, "stop-grace-period").orElse(DEFAULT_STOP_GRACE_PERIOD);
+    if (seconds < 0) {
+      throw new ConfigException(
+          "stop-grace-period must be a non-negative integer, but was: " + seconds);
+    }
+    return Duration.ofSeconds(seconds);
+  }
+
+  @Nullable
   private String getApiVersion() {
     return config.get(DOCKER_SECTION, "api-version").orElse(null);
   }
@@ -187,6 +200,7 @@ public class DockerOptions {
             config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
             DEFAULT_MAX_SESSIONS);
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
+    Duration stopGracePeriod = getStopGracePeriod();
     kinds.forEach(
         (name, caps) -> {
           Image image = docker.getImage(name);
@@ -210,7 +224,8 @@ public class DockerOptions {
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
                     hostConfigKeys,
-                    groupingLabels));
+                    groupingLabels,
+                    stopGracePeriod));
           }
           LOG.info(
               String.format(
@@ -238,6 +253,7 @@ public class DockerOptions {
     return deviceMapping;
   }
 
+  @Nullable
   private Image getVideoImage(Docker docker) {
     String videoImage = config.get(DOCKER_SECTION, "video-image").orElse(DEFAULT_VIDEO_IMAGE);
     if (videoImage.equalsIgnoreCase("false")) {
@@ -280,6 +296,7 @@ public class DockerOptions {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  @Nullable
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private DockerAssetsPath getAssetsPath(Optional<ContainerInfo> info) {
     if (info.isPresent()) {

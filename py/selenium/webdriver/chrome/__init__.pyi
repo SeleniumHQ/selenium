@@ -4,7 +4,7 @@
 # regarding copyright ownership.  The SFC licenses this file
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# with the License.
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -15,15 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import logging
-import re
-import types
+"""Type stub with lazy import mapping from __init__.py.
 
-from selenium.webdriver.common.bidi.cdp import import_devtools
+This stub file is necessary for type checkers and IDEs to automatically have
+visibility into lazy modules since they are not imported immediately at runtime.
+"""
 
+from . import options, remote_connection, service, webdriver
 
-def test_missing_cdp_devtools_version_falls_back(caplog):
-    with caplog.at_level(logging.DEBUG, logger="selenium"):
-        assert isinstance(import_devtools("will_never_exist"), types.ModuleType)
-    # assert the fallback occurred successfully offered up a v{n} option.
-    assert re.match(r"Falling back to loading `devtools`: v\d+", caplog.records[-1].getMessage()) is not None
+__all__ = ["options", "remote_connection", "service", "webdriver"]

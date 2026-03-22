@@ -64,10 +64,10 @@ class InspectContainer {
     if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to inspect container " + id);
     }
-    Map<String, Object> rawInspectInfo = JSON.toType(Contents.string(res), MAP_TYPE);
+    Map<String, Object> inspectInfoMap = JSON.toType(Contents.string(res), MAP_TYPE);
 
     // Adapt response to handle API version differences (e.g., deprecated fields in v1.44+)
-    rawInspectInfo = adapter.adaptContainerInspectResponse(rawInspectInfo);
+    Map<String, Object> rawInspectInfo = adapter.adaptContainerInspectResponse(inspectInfoMap);
     Map<String, Object> networkSettings =
         (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
     Map<String, Object> networks = (Map<String, Object>) networkSettings.get("Networks");

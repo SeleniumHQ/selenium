@@ -17,8 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.Nullable;
-
 /**
  * Thrown when a driver fails to set a cookie.
  *
@@ -27,15 +25,15 @@ import org.jspecify.annotations.Nullable;
 public class UnableToSetCookieException extends WebDriverException {
   public UnableToSetCookieException() {}
 
-  public UnableToSetCookieException(@Nullable String message) {
+  public UnableToSetCookieException(String message) {
     super(message);
   }
 
-  public UnableToSetCookieException(@Nullable Throwable cause) {
+  public UnableToSetCookieException(Throwable cause) {
     super(cause);
   }
 
-  public UnableToSetCookieException(@Nullable String message, @Nullable Throwable cause) {
+  public UnableToSetCookieException(String message, Throwable cause) {
     super(message, cause);
   }
 }

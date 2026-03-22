@@ -1,9 +1,4 @@
-load("@aspect_rules_js//js:defs.bzl", "js_binary")
-load("@npm//:defs.bzl", "npm_link_all_packages")
-load("@npm//javascript/atoms:google-closure-deps/package_json.bzl", closure_bin = "bin")
 load("@rules_python//python:defs.bzl", "py_binary")
-
-npm_link_all_packages(name = "node_modules")
 
 py_binary(
     name = "gen_file",
@@ -15,21 +10,9 @@ py_binary(
     ],
 )
 
-js_binary(
-    name = "closure_make_deps_wrapper",
-    data = [
-        "closure_make_deps_wrapper.js",
-        ":node_modules/google-closure-deps",
-    ],
-    entry_point = ":closure_make_deps_wrapper.js",
-    visibility = [
-        "//javascript:__subpackages__",
-        "//third_party/closure/goog:__pkg__",
-    ],
-)
-
-closure_bin.closure_make_deps_binary(
+py_binary(
     name = "closure_make_deps",
+    srcs = ["closure_make_deps.py"],
     visibility = [
         "//javascript:__subpackages__",
         "//third_party/closure/goog:__pkg__",
