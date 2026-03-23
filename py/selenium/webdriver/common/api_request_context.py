@@ -214,7 +214,7 @@ def _parse_set_cookie(header_value: str) -> dict:
     return cookie
 
 
-def _get_set_cookie_headers(resp: urllib3.HTTPResponse) -> list[str]:
+def _get_set_cookie_headers(resp: urllib3.BaseHTTPResponse) -> list[str]:
     """Extract all Set-Cookie header values from a urllib3 response.
 
     Args:
@@ -392,7 +392,7 @@ class _BaseRequestContext:
 
     def _execute_request(
         self, method: str, url: str, headers: dict[str, str], body: bytes | None, kwargs: dict[str, Any]
-    ) -> urllib3.HTTPResponse:
+    ) -> urllib3.BaseHTTPResponse:
         """Execute the HTTP request via urllib3."""
         timeout = kwargs.get("timeout", self._timeout)
         max_redirects = kwargs.get("max_redirects", self._max_redirects)
@@ -418,7 +418,7 @@ class _BaseRequestContext:
             preload_content=True,
         )
 
-    def _build_response(self, resp: urllib3.HTTPResponse, url: str) -> APIResponse:
+    def _build_response(self, resp: urllib3.BaseHTTPResponse, url: str) -> APIResponse:
         """Build an APIResponse from a urllib3 response."""
         # Merge duplicate headers per RFC 7230 §3.2.2 (combine with ", ")
         resp_headers: dict[str, str] = {}
