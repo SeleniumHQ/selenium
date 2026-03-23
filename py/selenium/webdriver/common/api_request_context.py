@@ -564,7 +564,7 @@ class APIRequestContext(_BaseRequestContext):
             fail_on_status_code=fail_on_status_code,
         )
 
-    def storage_state(self, path: str | pathlib.Path | None = None) -> dict[str, Any]:
+    def get_storage_state(self, path: str | pathlib.Path | None = None) -> dict[str, Any]:
         """Export the current browser cookies as a storage state dict.
 
         Args:
@@ -651,7 +651,7 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
         )
         self._cookies: list[dict] = cookies or []
 
-    def storage_state(self) -> dict[str, Any]:
+    def get_storage_state(self) -> dict[str, Any]:
         """Return the current cookies as a storage state dict."""
         return {"cookies": list(self._cookies)}
 

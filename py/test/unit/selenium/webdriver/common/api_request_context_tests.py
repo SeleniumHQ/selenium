@@ -889,7 +889,7 @@ def test_same_name_different_domain_not_deduped():
 def test_storage_state_returns_copy():
     cookies = [{"name": "a", "value": "1", "domain": "x", "path": "/"}]
     ctx = _IsolatedAPIRequestContext(cookies=cookies)
-    state = ctx.storage_state()
+    state = ctx.get_storage_state()
     assert state == {"cookies": cookies}
     # Mutating returned state shouldn't affect internal jar
     state["cookies"].append({"name": "b"})
@@ -898,7 +898,7 @@ def test_storage_state_returns_copy():
 
 def test_storage_state_empty():
     ctx = _IsolatedAPIRequestContext()
-    assert ctx.storage_state() == {"cookies": []}
+    assert ctx.get_storage_state() == {"cookies": []}
 
 
 def test_malformed_set_cookie_skipped():
@@ -980,7 +980,7 @@ def test_handle_response_cookies_add_cookie_failure():
 def test_mocked_storage_state():
     driver = _make_mock_driver([{"name": "x", "value": "y"}])
     ctx = APIRequestContext(driver)
-    state = ctx.storage_state()
+    state = ctx.get_storage_state()
     assert state == {"cookies": [{"name": "x", "value": "y"}]}
 
 
@@ -990,7 +990,7 @@ def test_mocked_storage_state_to_file():
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
         tmp = f.name
     try:
-        ctx.storage_state(path=tmp)
+        ctx.get_storage_state(path=tmp)
         data = json.loads(Path(tmp).read_text())
         assert data["cookies"][0]["name"] == "x"
     finally:
@@ -1003,7 +1003,7 @@ def test_storage_state_with_pathlib():
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
         tmp = Path(f.name)
     try:
-        ctx.storage_state(path=tmp)
+        ctx.get_storage_state(path=tmp)
         data = json.loads(tmp.read_text())
         assert data["cookies"][0]["name"] == "x"
     finally:
@@ -1022,7 +1022,7 @@ def test_new_context_with_storage_state_dict():
     driver = _make_mock_driver()
     ctx = APIRequestContext(driver)
     isolated = ctx.new_context(storage_state={"cookies": [{"name": "a", "value": "1"}]})
-    state = isolated.storage_state()
+    state = isolated.get_storage_state()
     assert len(state["cookies"]) == 1
     assert state["cookies"][0]["name"] == "a"
     isolated.dispose()
@@ -1036,7 +1036,7 @@ def test_new_context_with_storage_state_file():
         tmp = f.name
     try:
         isolated = ctx.new_context(storage_state=tmp)
-        state = isolated.storage_state()
+        state = isolated.get_storage_state()
         assert state["cookies"][0]["name"] == "b"
         isolated.dispose()
     finally:
@@ -1051,7 +1051,7 @@ def test_new_context_with_storage_state_pathlib():
         tmp = Path(f.name)
     try:
         isolated = ctx.new_context(storage_state=tmp)
-        state = isolated.storage_state()
+        state = isolated.get_storage_state()
         assert state["cookies"][0]["name"] == "c"
         isolated.dispose()
     finally:
@@ -1062,7 +1062,7 @@ def test_new_context_empty_storage_state():
     driver = _make_mock_driver()
     ctx = APIRequestContext(driver)
     isolated = ctx.new_context(storage_state={"cookies": []})
-    assert isolated.storage_state() == {"cookies": []}
+    assert isolated.get_storage_state() == {"cookies": []}
     isolated.dispose()
 
 
@@ -1144,7 +1144,7 @@ def test_storage_state_unwritable_path():
     driver = _make_mock_driver([{"name": "x", "value": "y"}])
     ctx = APIRequestContext(driver)
     with pytest.raises(OSError, match="Cannot write"):
-        ctx.storage_state(path="/nonexistent_dir_abc123/state.json")
+        ctx.get_storage_state(path="/nonexistent_dir_abc123/state.json")
 
 
 def test_host_only_cookie_skipped_when_current_url_unavailable():
@@ -1261,7 +1261,7 @@ def test_new_context_storage_state_dict_no_cookies_key():
     driver = _make_mock_driver()
     ctx = APIRequestContext(driver)
     isolated = ctx.new_context(storage_state={"other": "data"})
-    state = isolated.storage_state()
+    state = isolated.get_storage_state()
     assert state["cookies"] == []
     isolated.dispose()
 
@@ -1595,7 +1595,7 @@ def test_e2e_isolated_storage_state_roundtrip(base_url):
     """Save isolated context state to file, load into new context, verify cookies work."""
     ctx1 = _IsolatedAPIRequestContext(base_url=base_url)
     ctx1.get("/set_cookie?name=rt&value=roundtrip")
-    state = ctx1.storage_state()
+    state = ctx1.get_storage_state()
     ctx1.dispose()
 
     # Create new context from saved state

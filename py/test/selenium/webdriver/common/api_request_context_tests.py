@@ -173,7 +173,7 @@ def test_isolated_context_no_browser_sync(driver, pages):
 
 def test_storage_state_export(driver):
     driver.add_cookie({"name": "export_cookie", "value": "export_val"})
-    state = driver.request.storage_state()
+    state = driver.request.get_storage_state()
     assert "cookies" in state
     names = [c["name"] for c in state["cookies"]]
     assert "export_cookie" in names
@@ -184,7 +184,7 @@ def test_storage_state_to_file(driver):
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
         tmp_path = f.name
     try:
-        driver.request.storage_state(path=tmp_path)
+        driver.request.get_storage_state(path=tmp_path)
         data = json.loads(Path(tmp_path).read_text())
         assert "cookies" in data
         names = [c["name"] for c in data["cookies"]]
@@ -198,9 +198,9 @@ def test_new_context_with_storage_state(driver):
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
         tmp_path = f.name
     try:
-        driver.request.storage_state(path=tmp_path)
+        driver.request.get_storage_state(path=tmp_path)
         isolated = driver.request.new_context(storage_state=tmp_path)
-        state = isolated.storage_state()
+        state = isolated.get_storage_state()
         names = [c["name"] for c in state["cookies"]]
         assert "state_cookie" in names
         isolated.dispose()
