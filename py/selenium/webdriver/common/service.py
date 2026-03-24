@@ -74,6 +74,8 @@ class Service(ABC):
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
+        # Handle process_group parameter for Python 3.11+ compatibility
+        self.process_group = self.popen_kw.pop("process_group", None)
         self.env = env or os.environ
         self.DRIVER_PATH_ENV_KEY = driver_path_env_key
         self._path = self.env_path() or executable_path
@@ -220,17 +222,22 @@ class Service(ABC):
                 start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
                 start_info.wShowWindow = subprocess.SW_HIDE
 
-            self.process = subprocess.Popen(
-                cmd,
-                env=self.env,
-                close_fds=close_file_descriptors,
-                stdout=self.log_output,
-                stderr=self.log_output,
-                stdin=PIPE,
-                creationflags=self.creation_flags,
-                startupinfo=start_info,
+            # Build Popen kwargs with process_group support for Python 3.11+
+            popen_kwargs = {
+                "env": self.env,
+                "close_fds": close_file_descriptors,
+                "stdout": self.log_output,
+                "stderr": self.log_output,
+                "stdin": PIPE,
+                "creationflags": self.creation_flags,
+                "startupinfo": start_info,
                 **self.popen_kw,
-            )
+            }
+            # Add process_group only for Python 3.11+ and only if explicitly set
+            if self.process_group is not None and sys.version_info >= (3, 11):
+                popen_kwargs["process_group"] = self.process_group
+
+            self.process = subprocess.Popen(cmd, **popen_kwargs)
             logger.debug(
                 "Started executable: `%s` in a child process with pid: %s using %s to output %s",
                 self._path,
