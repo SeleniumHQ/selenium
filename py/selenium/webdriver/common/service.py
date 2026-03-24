@@ -148,7 +148,7 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_output not in {PIPE, subprocess.DEVNULL}:
+        if self.log_output is not None and self.log_output not in {PIPE, subprocess.DEVNULL}:
             if isinstance(self.log_output, IOBase) and self._owns_log_output:
                 self.log_output.close()
             elif isinstance(self.log_output, int):

@@ -40,6 +40,13 @@ class WebDriver(LocalWebDriver):
         options: Options | None = None,
         service: Service | None = None,
         keep_alive: bool = True,
+        # Backward compatibility parameters
+        executable_path: str | None = None,
+        port: int = 0,
+        service_args: list[str] | None = None,
+        desired_capabilities: dict | None = None,
+        service_log_path: str | None = None,
+        firefox_options: Options | None = None,
     ) -> None:
         """Create a new instance of the Firefox driver, start the service, and create new instance.
 
@@ -47,7 +54,32 @@ class WebDriver(LocalWebDriver):
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
+            executable_path: Deprecated: Path to the GeckoDriver executable. Use service instead.
+            port: Deprecated: Port to run the GeckoDriver on. Use service instead.
+            service_args: Deprecated: List of args to pass to GeckoDriver. Use service instead.
+            desired_capabilities: Deprecated: Dictionary of desired capabilities. Use options instead.
+            service_log_path: Deprecated: Path to the log file. Use service instead.
+            firefox_options: Deprecated: Alias for options. Use options instead.
         """
+        # Handle deprecated firefox_options alias
+        if firefox_options is not None:
+            options = firefox_options
+
+        # Handle deprecated desired_capabilities
+        if desired_capabilities:
+            if options is None:
+                options = Options()
+            options.set_capability("cloud:options", desired_capabilities)
+
+        # Create service from deprecated parameters if provided
+        if service is None:
+            service = Service(
+                executable_path=executable_path,
+                port=port,
+                service_args=service_args,
+                log_output=service_log_path,
+            )
+
         self.service = service if service else Service()
         self.options = options if options else Options()
 
