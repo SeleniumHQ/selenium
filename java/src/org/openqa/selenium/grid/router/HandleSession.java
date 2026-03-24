@@ -33,6 +33,9 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -42,10 +45,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.ExecutorServices;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
@@ -67,6 +72,36 @@ import org.openqa.selenium.remote.tracing.Tracer;
 class HandleSession implements HttpHandler, Closeable {
 
   private static final Logger LOG = Logger.getLogger(HandleSession.class.getName());
+
+  static final Duration READ_TIMEOUT_BUFFER = Duration.ofSeconds(30);
+
+  /**
+   * Cache key combining the Node URI and the effective read-timeout. Sessions that target the same
+   * Node and have the same effective timeout share a connection-pooled {@link HttpClient}, while
+   * sessions with a longer {@code pageLoad} timeout get their own client so the Router never cuts
+   * off a legitimate long-running navigation.
+   */
+  private static final class NodeClientKey {
+    private final URI uri;
+    private final Duration readTimeout;
+
+    NodeClientKey(URI uri, Duration readTimeout) {
+      this.uri = uri;
+      this.readTimeout = readTimeout;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (!(o instanceof NodeClientKey)) return false;
+      NodeClientKey k = (NodeClientKey) o;
+      return Objects.equals(uri, k.uri) && Objects.equals(readTimeout, k.readTimeout);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uri, readTimeout);
+    }
+  }
 
   private static class CacheEntry {
     private final HttpClient httpClient;
@@ -104,7 +139,13 @@ class HandleSession implements HttpHandler, Closeable {
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final ConcurrentMap<URI, CacheEntry> httpClients;
+  // Caches the Node's own session-timeout (from /se/grid/node/status) so the HTTP
+  // call is made at most once per Node URI rather than once per session.
+  private final ConcurrentMap<URI, Duration> nodeTimeoutCache;
+  // Keyed by (nodeUri, effectiveReadTimeout) so sessions with the same timeout on
+  // the same Node share a pooled HttpClient while sessions with a longer pageLoad
+  // timeout get a client sized to their actual value.
+  private final ConcurrentMap<NodeClientKey, CacheEntry> httpClients;
   private final ScheduledExecutorService cleanUpHttpClientsCacheService;
 
   HandleSession(Tracer tracer, HttpClient.Factory httpClientFactory, SessionMap sessions) {
@@ -112,6 +153,7 @@ class HandleSession implements HttpHandler, Closeable {
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.sessions = Require.nonNull("Sessions", sessions);
 
+    this.nodeTimeoutCache = new ConcurrentHashMap<>();
     this.httpClients = new ConcurrentHashMap<>();
 
     Runnable cleanUpHttpClients =
@@ -226,19 +268,56 @@ class HandleSession implements HttpHandler, Closeable {
       Tracer tracer, Span span, SessionId id) {
     return span.wrap(
         () -> {
+          // Retrieve the full Session so we can read the WebDriver timeouts from capabilities.
+          // SessionMap.get() is the same call that getUri() delegates to internally, so there is
+          // no extra network round-trip compared to the previous getUri()-only approach.
+          Session session = sessions.get(id);
+          URI sessionUri = session.getUri();
+
+          // Use the pageLoad timeout (plus a buffer) so the Router never cuts off a legitimate
+          // long-running navigation. Fall back to the Node's own sessionTimeout when it is larger,
+          // as it represents the Grid operator's upper bound for command duration.
+          Duration pageLoadTimeout = sessionReadTimeout(session.getCapabilities());
+          // Only cache successful fetches so that a transient error on the first command
+          // does not permanently lock in the fallback default for the node's timeout.
+          // computeIfAbsent skips storing when the mapping function returns null, so a
+          // failed fetch is retried on the next command rather than cached forever.
+          Duration fetchedNodeTimeout =
+              nodeTimeoutCache.computeIfAbsent(
+                  sessionUri, uri -> fetchNodeTimeout(uri).orElse(null));
+          Duration nodeTimeout =
+              fetchedNodeTimeout != null
+                  ? fetchedNodeTimeout
+                  : ClientConfig.defaultConfig().readTimeout();
+          Duration base =
+              pageLoadTimeout.compareTo(nodeTimeout) >= 0 ? pageLoadTimeout : nodeTimeout;
+          Duration effectiveTimeout = base.plus(READ_TIMEOUT_BUFFER);
+
+          LOG.fine(
+              () ->
+                  String.format(
+                      "Session %s: pageLoad=%ds, node=%ds → read timeout=%ds",
+                      id,
+                      pageLoadTimeout.toSeconds(),
+                      nodeTimeout.toSeconds(),
+                      effectiveTimeout.toSeconds()));
+
+          NodeClientKey key = new NodeClientKey(sessionUri, effectiveTimeout);
           CacheEntry cacheEntry =
               httpClients.compute(
-                  sessions.getUri(id),
-                  (sessionUri, entry) -> {
+                  key,
+                  (k, entry) -> {
                     if (entry != null) {
                       entry.inUse.incrementAndGet();
                       return entry;
                     }
 
-                    ClientConfig config = fetchNodeSessionTimeout(sessionUri).withRetries();
-                    HttpClient httpClient = httpClientFactory.createClient(config);
-
-                    return new CacheEntry(httpClient, 1);
+                    ClientConfig config =
+                        ClientConfig.defaultConfig()
+                            .baseUri(sessionUri)
+                            .readTimeout(effectiveTimeout)
+                            .withRetries();
+                    return new CacheEntry(httpClientFactory.createClient(config), 1);
                   });
 
           try {
@@ -251,23 +330,46 @@ class HandleSession implements HttpHandler, Closeable {
         });
   }
 
-  private ClientConfig fetchNodeSessionTimeout(URI uri) {
+  /**
+   * Returns the effective read-timeout derived from the session's WebDriver timeouts. Only {@code
+   * pageLoad} (navigation) is considered — it is the command type that can block the Router for
+   * extended periods. Falls back to {@link ClientConfig#defaultConfig()}'s read timeout when the
+   * value is absent.
+   */
+  static Duration sessionReadTimeout(Capabilities caps) {
+    Object timeoutsObj = caps.getCapability("timeouts");
+    if (timeoutsObj instanceof Map) {
+      Map<?, ?> timeouts = (Map<?, ?>) timeoutsObj;
+      long pageLoadMs = longFrom(timeouts.get("pageLoad"));
+      if (pageLoadMs > 0) {
+        return Duration.ofMillis(pageLoadMs);
+      }
+    }
+    return ClientConfig.defaultConfig().readTimeout();
+  }
+
+  private static long longFrom(Object value) {
+    if (value instanceof Long) return (Long) value;
+    if (value instanceof Number) return ((Number) value).longValue();
+    return 0L;
+  }
+
+  /**
+   * Fetches the Node's own session-timeout from {@code /se/grid/node/status}. Returns empty on any
+   * failure so the caller can skip caching and retry on the next command.
+   */
+  private Optional<Duration> fetchNodeTimeout(URI uri) {
     ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
-    Duration sessionTimeout = config.readTimeout();
     try (HttpClient httpClient = httpClientFactory.createClient(config)) {
-      HttpRequest statusRequest = new HttpRequest(GET, "/se/grid/node/status");
-      HttpResponse res = httpClient.execute(statusRequest);
-      Json json = new Json();
-      NodeStatus nodeStatus = json.toType(string(res), NodeStatus.class);
+      HttpResponse res = httpClient.execute(new HttpRequest(GET, "/se/grid/node/status"));
+      NodeStatus nodeStatus = new Json().toType(string(res), NodeStatus.class);
       if (nodeStatus != null) {
-        sessionTimeout = nodeStatus.getSessionTimeout();
+        return Optional.of(nodeStatus.getSessionTimeout());
       }
     } catch (Exception e) {
-      LOG.fine("Unable to fetch status for " + uri);
+      LOG.fine("Unable to fetch node status for " + uri);
     }
-    LOG.fine("Set read timeout: " + sessionTimeout.toSeconds() + " seconds for " + uri);
-    config = config.readTimeout(sessionTimeout);
-    return config;
+    return Optional.empty();
   }
 
   @Override

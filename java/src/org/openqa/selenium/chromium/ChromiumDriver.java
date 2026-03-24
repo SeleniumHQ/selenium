@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
@@ -277,6 +278,7 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   @Override
+  @NullMarked
   public <X> void onLogEvent(EventType<X> kind) {
     Require.nonNull("Event type", kind);
     kind.initializeListener(this);

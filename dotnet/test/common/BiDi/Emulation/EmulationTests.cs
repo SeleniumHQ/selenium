@@ -132,6 +132,32 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScrollbarTypeOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScrollbarTypeOverrideAsync(ScrollbarType.Overlay, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScrollbarTypeOverrideToDefault()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScrollbarTypeOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);

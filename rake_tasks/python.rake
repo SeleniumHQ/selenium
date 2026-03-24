@@ -90,7 +90,9 @@ task :local_dev, [:all] do |_task, arguments|
     end
 
     %w[getAttribute.js isDisplayed.js findElements.js].each do |atom|
-      FileUtils.cp("#{bazel_bin}/remote/#{atom}", "#{lib_path}/remote/#{atom}")
+      dest = "#{lib_path}/remote/#{atom}"
+      FileUtils.rm_f(dest)
+      FileUtils.cp("#{bazel_bin}/remote/#{atom}", dest)
     end
   end
 end
