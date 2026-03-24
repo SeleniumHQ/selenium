@@ -487,7 +487,7 @@ async def open_cdp(url) -> AsyncIterator[CdpConnection]:
     you want to use multiple connections concurrently, it is recommended
     to open each on in a separate task.
     """
-    async with trio.open_nursery() as nursery:
+    async with trio.open_nursery(strict_exception_groups=False) as nursery:
         conn = await connect_cdp(nursery, url)
         try:
             with connection_context(conn):
