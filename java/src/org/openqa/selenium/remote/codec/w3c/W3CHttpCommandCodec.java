@@ -363,7 +363,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               atomFileName,
               (fileName) -> {
                 String rawFunction =
-                    resourceAsString("/org/openqa/selenium/remote/" + atomFileName);
+                    resourceAsString(getClass(), "/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");
                 return String.format(
                     "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
