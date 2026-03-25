@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class CloseCommand()
-    : Command<Parameters, CloseResult>(Parameters.Empty, "browser.close");
+internal sealed class CloseCommand(JsonObject? extensionData)
+    : Command<Parameters, CloseResult>(Parameters.Empty, "browser.close", extensionData);
 
 public sealed record CloseOptions : CommandOptions;
 

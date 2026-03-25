@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetGeolocationOverrideCommand(SetGeolocationOverrideParameters @params)
-    : Command<SetGeolocationOverrideParameters, SetGeolocationOverrideResult>(@params, "emulation.setGeolocationOverride");
+internal sealed class SetGeolocationOverrideCommand(SetGeolocationOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetGeolocationOverrideParameters, SetGeolocationOverrideResult>(@params, "emulation.setGeolocationOverride", extensionData);
 
 [JsonDerivedType(typeof(SetGeolocationOverrideCoordinatesParameters))]
 [JsonDerivedType(typeof(SetGeolocationOverridePositionErrorParameters))]

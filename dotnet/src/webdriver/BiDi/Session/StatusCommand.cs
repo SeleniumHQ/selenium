@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class StatusCommand()
-    : Command<Parameters, StatusResult>(Parameters.Empty, "session.status");
+internal sealed class StatusCommand(JsonObject? extensionData)
+    : Command<Parameters, StatusResult>(Parameters.Empty, "session.status", extensionData);
 
 public sealed record StatusResult(bool Ready, string Message) : EmptyResult;
 

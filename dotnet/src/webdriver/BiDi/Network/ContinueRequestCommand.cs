@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class ContinueRequestCommand(ContinueRequestParameters @params)
-    : Command<ContinueRequestParameters, ContinueRequestResult>(@params, "network.continueRequest");
+internal sealed class ContinueRequestCommand(ContinueRequestParameters @params, JsonObject? extensionData)
+    : Command<ContinueRequestParameters, ContinueRequestResult>(@params, "network.continueRequest", extensionData);
 
 internal sealed record ContinueRequestParameters(Request Request, BytesValue? Body, IEnumerable<CookieHeader>? Cookies, IEnumerable<Header>? Headers, string? Method, string? Url) : Parameters;
 

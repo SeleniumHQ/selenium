@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class FailRequestCommand(FailRequestParameters @params)
-    : Command<FailRequestParameters, FailRequestResult>(@params, "network.failRequest");
+internal sealed class FailRequestCommand(FailRequestParameters @params, JsonObject? extensionData)
+    : Command<FailRequestParameters, FailRequestResult>(@params, "network.failRequest", extensionData);
 
 internal sealed record FailRequestParameters(Request Request) : Parameters;
 

@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class TraverseHistoryCommand(TraverseHistoryParameters @params)
-    : Command<TraverseHistoryParameters, TraverseHistoryResult>(@params, "browsingContext.traverseHistory");
+internal sealed class TraverseHistoryCommand(TraverseHistoryParameters @params, JsonObject? extensionData)
+    : Command<TraverseHistoryParameters, TraverseHistoryResult>(@params, "browsingContext.traverseHistory", extensionData);
 
 internal sealed record TraverseHistoryParameters(BrowsingContext Context, long Delta) : Parameters;
 

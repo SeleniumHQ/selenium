@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class SetDownloadBehaviorCommand(SetDownloadBehaviorParameters @params)
-    : Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult>(@params, "browser.setDownloadBehavior");
+internal sealed class SetDownloadBehaviorCommand(SetDownloadBehaviorParameters @params, JsonObject? extensionData)
+    : Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult>(@params, "browser.setDownloadBehavior", extensionData);
 
 internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] DownloadBehavior? DownloadBehavior, IEnumerable<UserContext>? UserContexts) : Parameters;
 

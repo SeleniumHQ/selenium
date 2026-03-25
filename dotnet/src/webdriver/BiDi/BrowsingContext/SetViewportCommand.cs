@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class SetViewportCommand(SetViewportParameters @params)
-    : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
+internal sealed class SetViewportCommand(SetViewportParameters @params, JsonObject? extensionData)
+    : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport", extensionData);
 
 internal sealed record SetViewportParameters(
     BrowsingContext? Context,

@@ -17,9 +17,13 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi;
 
 public abstract record CommandOptions
 {
     public TimeSpan? Timeout { get; init; }
+
+    public JsonObject? ExtensionData { get; init; } = [];
 }

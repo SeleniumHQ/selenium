@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class GetRealmsCommand(GetRealmsParameters @params)
-    : Command<GetRealmsParameters, GetRealmsResult>(@params, "script.getRealms");
+internal sealed class GetRealmsCommand(GetRealmsParameters @params, JsonObject? extensionData)
+    : Command<GetRealmsParameters, GetRealmsResult>(@params, "script.getRealms", extensionData);
 
 internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 

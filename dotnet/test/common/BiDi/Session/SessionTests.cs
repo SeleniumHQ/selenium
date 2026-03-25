@@ -52,4 +52,25 @@ internal class SessionTests : BiDiTestFixture
             () => bidi.StatusAsync(cancellationToken: cts.Token),
             Throws.InstanceOf<TaskCanceledException>());
     }
+
+    [Test]
+    public async Task ShouldAllowExtensionData()
+    {
+        // Verifies that extension data can be sent with a command without error.
+        // No infrastructure to assert the server received it, but the serialized output can be inspected.
+        
+        // Quick
+        await bidi.StatusAsync(new()
+        {
+            ExtensionData = { { "extra", 1 } }
+        });
+
+        // Inject
+        StatusOptions options = new();
+        options.ExtensionData["extra"] = 2;
+        await bidi.StatusAsync(options);
+
+        // Reassign?
+        // options.ExtensionData = new() { ["extra"] = 1 };
+    }
 }

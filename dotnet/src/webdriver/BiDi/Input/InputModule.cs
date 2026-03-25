@@ -31,21 +31,21 @@ public sealed class InputModule : Module, IInputModule
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new PerformActionsCommand(@params, options?.ExtensionData), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params, options?.ExtensionData), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetFilesCommand(@params, options?.ExtensionData), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

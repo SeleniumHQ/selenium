@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
-    : Command<UnsubscribeByIdParameters, UnsubscribeResult>(@params, "session.unsubscribe");
+internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params, JsonObject? extensionData)
+    : Command<UnsubscribeByIdParameters, UnsubscribeResult>(@params, "session.unsubscribe", extensionData);
 
 internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 

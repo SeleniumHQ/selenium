@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class GetDataCommand(GetDataParameters @params)
-    : Command<GetDataParameters, GetDataResult>(@params, "network.getData");
+internal sealed class GetDataCommand(GetDataParameters @params, JsonObject? extensionData)
+    : Command<GetDataParameters, GetDataResult>(@params, "network.getData", extensionData);
 
 internal sealed record GetDataParameters(DataType DataType, Request Request, Collector? Collector, bool? Disown) : Parameters;
 

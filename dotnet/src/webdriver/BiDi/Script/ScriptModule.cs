@@ -32,7 +32,7 @@ public sealed class ScriptModule : Module, IScriptModule
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
 
-        return await ExecuteCommandAsync(new EvaluateCommand(@params), options, _jsonContext.EvaluateCommand, _jsonContext.EvaluateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new EvaluateCommand(@params, options?.ExtensionData), options, _jsonContext.EvaluateCommand, _jsonContext.EvaluateResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)
@@ -46,7 +46,7 @@ public sealed class ScriptModule : Module, IScriptModule
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await ExecuteCommandAsync(new CallFunctionCommand(@params), options, _jsonContext.CallFunctionCommand, _jsonContext.EvaluateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CallFunctionCommand(@params, options?.ExtensionData), options, _jsonContext.CallFunctionCommand, _jsonContext.EvaluateResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default)
@@ -60,28 +60,28 @@ public sealed class ScriptModule : Module, IScriptModule
     {
         var @params = new DisownParameters(handles, target);
 
-        return await ExecuteCommandAsync(new DisownCommand(@params), options, _jsonContext.DisownCommand, _jsonContext.DisownResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new DisownCommand(@params, options?.ExtensionData), options, _jsonContext.DisownCommand, _jsonContext.DisownResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
 
-        return await ExecuteCommandAsync(new GetRealmsCommand(@params), options, _jsonContext.GetRealmsCommand, _jsonContext.GetRealmsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new GetRealmsCommand(@params, options?.ExtensionData), options, _jsonContext.GetRealmsCommand, _jsonContext.GetRealmsResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, AddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.UserContexts, options?.Sandbox);
 
-        return await ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, _jsonContext.AddPreloadScriptCommand, _jsonContext.AddPreloadScriptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new AddPreloadScriptCommand(@params, options?.ExtensionData), options, _jsonContext.AddPreloadScriptCommand, _jsonContext.AddPreloadScriptResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, _jsonContext.RemovePreloadScriptCommand, _jsonContext.RemovePreloadScriptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new RemovePreloadScriptCommand(@params, options?.ExtensionData), options, _jsonContext.RemovePreloadScriptCommand, _jsonContext.RemovePreloadScriptResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

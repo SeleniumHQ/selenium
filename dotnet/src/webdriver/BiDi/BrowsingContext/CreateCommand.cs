@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CreateCommand(CreateParameters @params)
-    : Command<CreateParameters, CreateResult>(@params, "browsingContext.create");
+internal sealed class CreateCommand(CreateParameters @params, JsonObject? extensionData)
+    : Command<CreateParameters, CreateResult>(@params, "browsingContext.create", extensionData);
 
 internal sealed record CreateParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : Parameters;
 

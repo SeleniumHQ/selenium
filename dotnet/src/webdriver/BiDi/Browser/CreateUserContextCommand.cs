@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class CreateUserContextCommand(CreateUserContextParameters @params)
-    : Command<CreateUserContextParameters, CreateUserContextResult>(@params, "browser.createUserContext");
+internal sealed class CreateUserContextCommand(CreateUserContextParameters @params, JsonObject? extensionData)
+    : Command<CreateUserContextParameters, CreateUserContextResult>(@params, "browser.createUserContext", extensionData);
 
 internal sealed record CreateUserContextParameters(bool? AcceptInsecureCerts, Session.ProxyConfiguration? Proxy, Session.UserPromptHandler? UnhandledPromptBehavior) : Parameters;
 

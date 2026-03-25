@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class AddInterceptCommand(AddInterceptParameters @params)
-    : Command<AddInterceptParameters, AddInterceptResult>(@params, "network.addIntercept");
+internal sealed class AddInterceptCommand(AddInterceptParameters @params, JsonObject? extensionData)
+    : Command<AddInterceptParameters, AddInterceptResult>(@params, "network.addIntercept", extensionData);
 
 internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 

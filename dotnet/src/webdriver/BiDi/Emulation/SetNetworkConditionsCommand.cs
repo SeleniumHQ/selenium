@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetNetworkConditionsCommand(SetNetworkConditionsParameters @params)
-    : Command<SetNetworkConditionsParameters, SetNetworkConditionsResult>(@params, "emulation.setNetworkConditions");
+internal sealed class SetNetworkConditionsCommand(SetNetworkConditionsParameters @params, JsonObject? extensionData)
+    : Command<SetNetworkConditionsParameters, SetNetworkConditionsResult>(@params, "emulation.setNetworkConditions", extensionData);
 
 internal sealed record SetNetworkConditionsParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] NetworkConditions? NetworkConditions, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

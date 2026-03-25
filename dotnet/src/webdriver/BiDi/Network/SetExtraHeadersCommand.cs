@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class SetExtraHeadersCommand(SetExtraHeadersParameters @params)
-    : Command<SetExtraHeadersParameters, SetExtraHeadersResult>(@params, "network.setExtraHeaders");
+internal sealed class SetExtraHeadersCommand(SetExtraHeadersParameters @params, JsonObject? extensionData)
+    : Command<SetExtraHeadersParameters, SetExtraHeadersResult>(@params, "network.setExtraHeaders", extensionData);
 
 internal sealed record SetExtraHeadersParameters(IEnumerable<Header> Headers, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

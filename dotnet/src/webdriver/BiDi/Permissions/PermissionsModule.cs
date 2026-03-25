@@ -31,7 +31,7 @@ public sealed class PermissionsModule : Module, IPermissionsModule
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetPermissionCommand(@params, options?.ExtensionData), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

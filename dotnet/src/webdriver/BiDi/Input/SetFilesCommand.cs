@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed class SetFilesCommand(SetFilesParameters @params)
-    : Command<SetFilesParameters, SetFilesResult>(@params, "input.setFiles");
+internal sealed class SetFilesCommand(SetFilesParameters @params, JsonObject? extensionData)
+    : Command<SetFilesParameters, SetFilesResult>(@params, "input.setFiles", extensionData);
 
 internal sealed record SetFilesParameters(BrowsingContext.BrowsingContext Context, Script.ISharedReference Element, IEnumerable<string> Files) : Parameters;
 

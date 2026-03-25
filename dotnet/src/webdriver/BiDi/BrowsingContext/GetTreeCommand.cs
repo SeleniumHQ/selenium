@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class GetTreeCommand(GetTreeParameters @params)
-    : Command<GetTreeParameters, GetTreeResult>(@params, "browsingContext.getTree");
+internal sealed class GetTreeCommand(GetTreeParameters @params, JsonObject? extensionData)
+    : Command<GetTreeParameters, GetTreeResult>(@params, "browsingContext.getTree", extensionData);
 
 internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 

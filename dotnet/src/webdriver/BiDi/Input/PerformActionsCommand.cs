@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed class PerformActionsCommand(PerformActionsParameters @params)
-    : Command<PerformActionsParameters, PerformActionsResult>(@params, "input.performActions");
+internal sealed class PerformActionsCommand(PerformActionsParameters @params, JsonObject? extensionData)
+    : Command<PerformActionsParameters, PerformActionsResult>(@params, "input.performActions", extensionData);
 
 internal sealed record PerformActionsParameters(BrowsingContext.BrowsingContext Context, IEnumerable<SourceActions> Actions) : Parameters;
 

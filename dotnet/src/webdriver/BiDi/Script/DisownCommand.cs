@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class DisownCommand(DisownParameters @params)
-    : Command<DisownParameters, DisownResult>(@params, "script.disown");
+internal sealed class DisownCommand(DisownParameters @params, JsonObject? extensionData)
+    : Command<DisownParameters, DisownResult>(@params, "script.disown", extensionData);
 
 internal sealed record DisownParameters(IEnumerable<Handle> Handles, Target Target) : Parameters;
 

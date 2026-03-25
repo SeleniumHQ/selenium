@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params)
-    : Command<DeleteCookiesParameters, DeleteCookiesResult>(@params, "storage.deleteCookies");
+internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params, JsonObject? extensionData)
+    : Command<DeleteCookiesParameters, DeleteCookiesResult>(@params, "storage.deleteCookies", extensionData);
 
 internal sealed record DeleteCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 

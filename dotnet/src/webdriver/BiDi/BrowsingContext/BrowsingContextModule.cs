@@ -31,84 +31,84 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        return await ExecuteCommandAsync(new CreateCommand(@params), options, _jsonContext.CreateCommand, _jsonContext.CreateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CreateCommand(@params, options?.ExtensionData), options, _jsonContext.CreateCommand, _jsonContext.CreateResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NavigateParameters(context, url, options?.Wait);
 
-        return await ExecuteCommandAsync(new NavigateCommand(@params), options, _jsonContext.NavigateCommand, _jsonContext.NavigateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new NavigateCommand(@params, options?.ExtensionData), options, _jsonContext.NavigateCommand, _jsonContext.NavigateResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ActivateResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ActivateParameters(context);
 
-        return await ExecuteCommandAsync(new ActivateCommand(@params), options, _jsonContext.ActivateCommand, _jsonContext.ActivateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ActivateCommand(@params, options?.ExtensionData), options, _jsonContext.ActivateCommand, _jsonContext.ActivateResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new LocateNodesParameters(context, locator, options?.MaxNodeCount, options?.SerializationOptions, options?.StartNodes);
 
-        return await ExecuteCommandAsync(new LocateNodesCommand(@params), options, _jsonContext.LocateNodesCommand, _jsonContext.LocateNodesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new LocateNodesCommand(@params, options?.ExtensionData), options, _jsonContext.LocateNodesCommand, _jsonContext.LocateNodesResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
 
-        return await ExecuteCommandAsync(new CaptureScreenshotCommand(@params), options, _jsonContext.CaptureScreenshotCommand, _jsonContext.CaptureScreenshotResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CaptureScreenshotCommand(@params, options?.ExtensionData), options, _jsonContext.CaptureScreenshotCommand, _jsonContext.CaptureScreenshotResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CloseResult> CloseAsync(BrowsingContext context, CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await ExecuteCommandAsync(new CloseCommand(@params), options, _jsonContext.CloseCommand, _jsonContext.CloseResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CloseCommand(@params, options?.ExtensionData), options, _jsonContext.CloseCommand, _jsonContext.CloseResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new TraverseHistoryParameters(context, delta);
 
-        return await ExecuteCommandAsync(new TraverseHistoryCommand(@params), options, _jsonContext.TraverseHistoryCommand, _jsonContext.TraverseHistoryResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new TraverseHistoryCommand(@params, options?.ExtensionData), options, _jsonContext.TraverseHistoryCommand, _jsonContext.TraverseHistoryResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReloadResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReloadParameters(context, options?.IgnoreCache, options?.Wait);
 
-        return await ExecuteCommandAsync(new ReloadCommand(@params), options, _jsonContext.ReloadCommand, _jsonContext.ReloadResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ReloadCommand(@params, options?.ExtensionData), options, _jsonContext.ReloadCommand, _jsonContext.ReloadResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetViewportParameters(options?.Context, options?.Viewport, options?.DevicePixelRatio, options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetViewportCommand(@params), options, _jsonContext.SetViewportCommand, _jsonContext.SetViewportResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetViewportCommand(@params, options?.ExtensionData), options, _jsonContext.SetViewportCommand, _jsonContext.SetViewportResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        return await ExecuteCommandAsync(new GetTreeCommand(@params), options, _jsonContext.GetTreeCommand, _jsonContext.GetTreeResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new GetTreeCommand(@params, options?.ExtensionData), options, _jsonContext.GetTreeCommand, _jsonContext.GetTreeResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PrintParameters(context, options?.Background, options?.Margin, options?.Orientation, options?.Page, options?.PageRanges, options?.Scale, options?.ShrinkToFit);
 
-        return await ExecuteCommandAsync(new PrintCommand(@params), options, _jsonContext.PrintCommand, _jsonContext.PrintResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new PrintCommand(@params, options?.ExtensionData), options, _jsonContext.PrintCommand, _jsonContext.PrintResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<HandleUserPromptResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new HandleUserPromptParameters(context, options?.Accept, options?.UserText);
 
-        return await ExecuteCommandAsync(new HandleUserPromptCommand(@params), options, _jsonContext.HandleUserPromptCommand, _jsonContext.HandleUserPromptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new HandleUserPromptCommand(@params, options?.ExtensionData), options, _jsonContext.HandleUserPromptCommand, _jsonContext.HandleUserPromptResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Func<NavigationEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

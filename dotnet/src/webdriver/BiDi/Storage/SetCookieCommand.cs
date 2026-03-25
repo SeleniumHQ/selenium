@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class SetCookieCommand(SetCookieParameters @params)
-    : Command<SetCookieParameters, SetCookieResult>(@params, "storage.setCookie");
+internal sealed class SetCookieCommand(SetCookieParameters @params, JsonObject? extensionData)
+    : Command<SetCookieParameters, SetCookieResult>(@params, "storage.setCookie", extensionData);
 
 internal sealed record SetCookieParameters(PartialCookie Cookie, PartitionDescriptor? Partition) : Parameters;
 

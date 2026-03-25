@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetTouchOverrideCommand(SetTouchOverrideParameters @params)
-    : Command<SetTouchOverrideParameters, SetTouchOverrideResult>(@params, "emulation.setTouchOverride");
+internal sealed class SetTouchOverrideCommand(SetTouchOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetTouchOverrideParameters, SetTouchOverrideResult>(@params, "emulation.setTouchOverride", extensionData);
 
 internal sealed record SetTouchOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] long? MaxTouchPoints, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

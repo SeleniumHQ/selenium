@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class LocateNodesCommand(LocateNodesParameters @params)
-    : Command<LocateNodesParameters, LocateNodesResult>(@params, "browsingContext.locateNodes");
+internal sealed class LocateNodesCommand(LocateNodesParameters @params, JsonObject? extensionData)
+    : Command<LocateNodesParameters, LocateNodesResult>(@params, "browsingContext.locateNodes", extensionData);
 
 internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : Parameters;
 

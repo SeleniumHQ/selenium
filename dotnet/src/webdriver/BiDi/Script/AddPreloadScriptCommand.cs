@@ -19,10 +19,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params)
-    : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
+internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params, JsonObject? extensionData)
+    : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript", extensionData);
 
 internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts, string? Sandbox) : Parameters;
 

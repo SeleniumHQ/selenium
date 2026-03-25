@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetScreenSettingsOverrideCommand(SetScreenSettingsOverrideParameters @params)
-    : Command<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult>(@params, "emulation.setScreenSettingsOverride");
+internal sealed class SetScreenSettingsOverrideCommand(SetScreenSettingsOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult>(@params, "emulation.setScreenSettingsOverride", extensionData);
 
 internal sealed record SetScreenSettingsOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScreenArea? ScreenArea, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

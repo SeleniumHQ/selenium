@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class EndCommand()
-    : Command<Parameters, EndResult>(Parameters.Empty, "session.end");
+internal sealed class EndCommand(JsonObject? extensionData)
+    : Command<Parameters, EndResult>(Parameters.Empty, "session.end", extensionData);
 
 public sealed record EndOptions : CommandOptions;
 

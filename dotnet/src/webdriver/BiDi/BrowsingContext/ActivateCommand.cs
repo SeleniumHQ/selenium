@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class ActivateCommand(ActivateParameters @params)
-    : Command<ActivateParameters, ActivateResult>(@params, "browsingContext.activate");
+internal sealed class ActivateCommand(ActivateParameters @params, JsonObject? extensionData)
+    : Command<ActivateParameters, ActivateResult>(@params, "browsingContext.activate", extensionData);
 
 internal sealed record ActivateParameters(BrowsingContext Context) : Parameters;
 

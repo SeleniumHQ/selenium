@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class UninstallCommand(UninstallParameters @params)
-    : Command<UninstallParameters, UninstallResult>(@params, "webExtension.uninstall");
+internal sealed class UninstallCommand(UninstallParameters @params, JsonObject? extensionData)
+    : Command<UninstallParameters, UninstallResult>(@params, "webExtension.uninstall", extensionData);
 
 internal sealed record UninstallParameters(Extension Extension) : Parameters;
 

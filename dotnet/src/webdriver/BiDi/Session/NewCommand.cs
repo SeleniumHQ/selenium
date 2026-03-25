@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
+internal sealed class NewCommand(NewParameters @params, JsonObject? extensionData)
+    : Command<NewParameters, NewResult>(@params, "session.new", extensionData);
 
 internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
 

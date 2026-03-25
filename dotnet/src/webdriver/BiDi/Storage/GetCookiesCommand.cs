@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class GetCookiesCommand(GetCookiesParameters @params)
-    : Command<GetCookiesParameters, GetCookiesResult>(@params, "storage.getCookies");
+internal sealed class GetCookiesCommand(GetCookiesParameters @params, JsonObject? extensionData)
+    : Command<GetCookiesParameters, GetCookiesResult>(@params, "storage.getCookies", extensionData);
 
 internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 

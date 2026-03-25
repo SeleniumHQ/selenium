@@ -31,21 +31,21 @@ public sealed class StorageModule : Module, IStorageModule
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(new GetCookiesCommand(@params), options, _jsonContext.GetCookiesCommand, _jsonContext.GetCookiesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new GetCookiesCommand(@params, options?.ExtensionData), options, _jsonContext.GetCookiesCommand, _jsonContext.GetCookiesResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(new DeleteCookiesCommand(@params), options, _jsonContext.DeleteCookiesCommand, _jsonContext.DeleteCookiesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new DeleteCookiesCommand(@params, options?.ExtensionData), options, _jsonContext.DeleteCookiesCommand, _jsonContext.DeleteCookiesResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await ExecuteCommandAsync(new SetCookieCommand(@params), options, _jsonContext.SetCookieCommand, _jsonContext.SetCookieResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetCookieCommand(@params, options?.ExtensionData), options, _jsonContext.SetCookieCommand, _jsonContext.SetCookieResult, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

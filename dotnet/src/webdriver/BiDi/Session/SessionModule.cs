@@ -29,33 +29,33 @@ internal sealed class SessionModule : Module, ISessionModule
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new StatusCommand(), options, _jsonContext.StatusCommand, _jsonContext.StatusResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new StatusCommand(options?.ExtensionData), options, _jsonContext.StatusCommand, _jsonContext.StatusResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await ExecuteCommandAsync(new(@params), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new(@params, options?.ExtensionData), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new UnsubscribeByIdCommand(@params, options?.ExtensionData), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NewParameters(capabilities);
 
-        return await ExecuteCommandAsync(new NewCommand(@params), options, _jsonContext.NewCommand, _jsonContext.NewResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new NewCommand(@params, options?.ExtensionData), options, _jsonContext.NewCommand, _jsonContext.NewResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new EndCommand(options?.ExtensionData), options, _jsonContext.EndCommand, _jsonContext.EndResult, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

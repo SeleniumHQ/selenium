@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CloseCommand(CloseParameters @params)
-    : Command<CloseParameters, CloseResult>(@params, "browsingContext.close");
+internal sealed class CloseCommand(CloseParameters @params, JsonObject? extensionData)
+    : Command<CloseParameters, CloseResult>(@params, "browsingContext.close", extensionData);
 
 internal sealed record CloseParameters(BrowsingContext Context, bool? PromptUnload) : Parameters;
 

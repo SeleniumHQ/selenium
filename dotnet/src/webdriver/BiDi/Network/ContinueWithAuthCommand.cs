@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params)
-    : Command<ContinueWithAuthParameters, ContinueWithAuthResult>(@params, "network.continueWithAuth");
+internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params, JsonObject? extensionData)
+    : Command<ContinueWithAuthParameters, ContinueWithAuthResult>(@params, "network.continueWithAuth", extensionData);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "action")]
 [JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]

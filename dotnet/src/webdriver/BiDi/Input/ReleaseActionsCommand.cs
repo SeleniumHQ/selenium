@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed class ReleaseActionsCommand(ReleaseActionsParameters @params)
-    : Command<ReleaseActionsParameters, ReleaseActionsResult>(@params, "input.releaseActions");
+internal sealed class ReleaseActionsCommand(ReleaseActionsParameters @params, JsonObject? extensionData)
+    : Command<ReleaseActionsParameters, ReleaseActionsResult>(@params, "input.releaseActions", extensionData);
 
 internal sealed record ReleaseActionsParameters(BrowsingContext.BrowsingContext Context) : Parameters;
 

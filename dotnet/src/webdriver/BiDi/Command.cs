@@ -17,30 +17,32 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class Command
+public abstract class Command(string method, IDictionary<string, JsonElement>? extensionData)
 {
-    protected Command(string method)
-    {
-        Method = method;
-    }
-
-    [JsonPropertyOrder(1)]
-    public string Method { get; }
-
     [JsonPropertyOrder(0)]
     public long Id { get; internal set; }
+
+    [JsonPropertyOrder(1)]
+    public string Method { get; } = method;
+
+    [JsonExtensionData]
+    // IMPORTANT: The name is different from ctor parameter to avoid collision with the JsonExtensionData attribute.
+    public IDictionary<string, JsonElement>? JsonExtensionData { get; } = extensionData;
 }
 
-internal abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
+internal abstract class Command<TParameters, TResult>(TParameters parameters, string method, JsonObject? extensionData)
+    : Command(method, extensionData?.Deserialize<Dictionary<string, JsonElement>>())
     where TParameters : Parameters
     where TResult : EmptyResult
 {
     [JsonPropertyOrder(2)]
-    public TParameters Params { get; } = @params;
+    public TParameters Params { get; } = parameters;
 }
 
 internal record Parameters

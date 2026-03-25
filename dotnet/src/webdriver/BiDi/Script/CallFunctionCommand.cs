@@ -19,10 +19,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class CallFunctionCommand(CallFunctionParameters @params)
-    : Command<CallFunctionParameters, EvaluateResult>(@params, "script.callFunction");
+internal sealed class CallFunctionCommand(CallFunctionParameters @params, JsonObject? extensionData)
+    : Command<CallFunctionParameters, EvaluateResult>(@params, "script.callFunction", extensionData);
 
 internal sealed record CallFunctionParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 

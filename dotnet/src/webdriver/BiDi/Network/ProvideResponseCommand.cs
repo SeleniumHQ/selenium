@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class ProvideResponseCommand(ProvideResponseParameters @params)
-    : Command<ProvideResponseParameters, ProvideResponseResult>(@params, "network.provideResponse");
+internal sealed class ProvideResponseCommand(ProvideResponseParameters @params, JsonObject? extensionData)
+    : Command<ProvideResponseParameters, ProvideResponseResult>(@params, "network.provideResponse", extensionData);
 
 internal sealed record ProvideResponseParameters(Request Request, BytesValue? Body, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 

@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetForcedColorsModeThemeOverrideCommand(SetForcedColorsModeThemeOverrideParameters @params)
-    : Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult>(@params, "emulation.setForcedColorsModeThemeOverride");
+internal sealed class SetForcedColorsModeThemeOverrideCommand(SetForcedColorsModeThemeOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult>(@params, "emulation.setForcedColorsModeThemeOverride", extensionData);
 
 internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

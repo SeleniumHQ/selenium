@@ -31,14 +31,14 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
     {
         var @params = new InstallParameters(extensionData);
 
-        return await ExecuteCommandAsync(new InstallCommand(@params), options, _jsonContext.InstallCommand, _jsonContext.InstallResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new InstallCommand(@params, options?.ExtensionData), options, _jsonContext.InstallCommand, _jsonContext.InstallResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UninstallParameters(extension);
 
-        return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new UninstallCommand(@params, options?.ExtensionData), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

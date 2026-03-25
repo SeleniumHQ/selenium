@@ -21,10 +21,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class EvaluateCommand(EvaluateParameters @params)
-    : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate");
+internal sealed class EvaluateCommand(EvaluateParameters @params, JsonObject? extensionData)
+    : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate", extensionData);
 
 internal sealed record EvaluateParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 

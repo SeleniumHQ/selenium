@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class RemovePreloadScriptCommand(RemovePreloadScriptParameters @params)
-    : Command<RemovePreloadScriptParameters, RemovePreloadScriptResult>(@params, "script.removePreloadScript");
+internal sealed class RemovePreloadScriptCommand(RemovePreloadScriptParameters @params, JsonObject? extensionData)
+    : Command<RemovePreloadScriptParameters, RemovePreloadScriptResult>(@params, "script.removePreloadScript", extensionData);
 
 internal sealed record RemovePreloadScriptParameters(PreloadScript Script) : Parameters;
 

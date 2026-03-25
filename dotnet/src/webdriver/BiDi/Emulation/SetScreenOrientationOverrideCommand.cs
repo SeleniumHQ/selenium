@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetScreenOrientationOverrideCommand(SetScreenOrientationOverrideParameters @params)
-    : Command<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult>(@params, "emulation.setScreenOrientationOverride");
+internal sealed class SetScreenOrientationOverrideCommand(SetScreenOrientationOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult>(@params, "emulation.setScreenOrientationOverride", extensionData);
 
 internal sealed record SetScreenOrientationOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScreenOrientation? ScreenOrientation, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

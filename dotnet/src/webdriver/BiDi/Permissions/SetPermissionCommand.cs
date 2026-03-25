@@ -19,10 +19,12 @@
 
 using OpenQA.Selenium.BiDi.Browser;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-internal class SetPermissionCommand(SetPermissionCommandParameters @params)
-    : Command<SetPermissionCommandParameters, SetPermissionResult>(@params, "permissions.setPermission");
+internal class SetPermissionCommand(SetPermissionCommandParameters @params, JsonObject? extensionData)
+    : Command<SetPermissionCommandParameters, SetPermissionResult>(@params, "permissions.setPermission", extensionData);
 
 internal record SetPermissionCommandParameters(PermissionDescriptor Descriptor, PermissionState State, string Origin, string? EmbeddedOrigin, UserContext? UserContext) : Parameters;
 

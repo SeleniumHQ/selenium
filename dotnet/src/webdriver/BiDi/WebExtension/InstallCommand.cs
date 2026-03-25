@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class InstallCommand(InstallParameters @params)
-    : Command<InstallParameters, InstallResult>(@params, "webExtension.install");
+internal sealed class InstallCommand(InstallParameters @params, JsonObject? extensionData)
+    : Command<InstallParameters, InstallResult>(@params, "webExtension.install", extensionData);
 
 internal sealed record InstallParameters(ExtensionData ExtensionData) : Parameters;
 

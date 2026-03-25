@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class GetClientWindowsCommand()
-    : Command<Parameters, GetClientWindowsResult>(Parameters.Empty, "browser.getClientWindows");
+internal sealed class GetClientWindowsCommand(JsonObject? extensionData)
+    : Command<Parameters, GetClientWindowsResult>(Parameters.Empty, "browser.getClientWindows", extensionData);
 
 public sealed record GetClientWindowsOptions : CommandOptions;
 

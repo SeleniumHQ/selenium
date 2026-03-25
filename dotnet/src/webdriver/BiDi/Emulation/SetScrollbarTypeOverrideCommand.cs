@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetScrollbarTypeOverrideCommand(SetScrollbarTypeOverrideParameters @params)
-    : Command<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult>(@params, "emulation.setScrollbarTypeOverride");
+internal sealed class SetScrollbarTypeOverrideCommand(SetScrollbarTypeOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult>(@params, "emulation.setScrollbarTypeOverride", extensionData);
 
 internal sealed record SetScrollbarTypeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScrollbarType? ScrollbarType, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

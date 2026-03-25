@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class AddDataCollectorCommand(AddDataCollectorParameters @params)
-    : Command<AddDataCollectorParameters, AddDataCollectorResult>(@params, "network.addDataCollector");
+internal sealed class AddDataCollectorCommand(AddDataCollectorParameters @params, JsonObject? extensionData)
+    : Command<AddDataCollectorParameters, AddDataCollectorResult>(@params, "network.addDataCollector", extensionData);
 
 internal sealed record AddDataCollectorParameters(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, CollectorType? CollectorType, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

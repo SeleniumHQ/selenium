@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class ReloadCommand(ReloadParameters @params)
-    : Command<ReloadParameters, ReloadResult>(@params, "browsingContext.reload");
+internal sealed class ReloadCommand(ReloadParameters @params, JsonObject? extensionData)
+    : Command<ReloadParameters, ReloadResult>(@params, "browsingContext.reload", extensionData);
 
 internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 

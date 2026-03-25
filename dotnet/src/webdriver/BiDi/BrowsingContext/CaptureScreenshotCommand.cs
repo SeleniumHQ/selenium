@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @params)
-    : Command<CaptureScreenshotParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
+internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @params, JsonObject? extensionData)
+    : Command<CaptureScreenshotParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot", extensionData);
 
 internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 

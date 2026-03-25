@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class SetCacheBehaviorCommand(SetCacheBehaviorParameters @params)
-    : Command<SetCacheBehaviorParameters, SetCacheBehaviorResult>(@params, "network.setCacheBehavior");
+internal sealed class SetCacheBehaviorCommand(SetCacheBehaviorParameters @params, JsonObject? extensionData)
+    : Command<SetCacheBehaviorParameters, SetCacheBehaviorResult>(@params, "network.setCacheBehavior", extensionData);
 
 internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 

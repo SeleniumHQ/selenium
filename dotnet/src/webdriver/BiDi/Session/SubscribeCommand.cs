@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SubscribeCommand(SubscribeParameters @params)
-    : Command<SubscribeParameters, SubscribeResult>(@params, "session.subscribe");
+internal sealed class SubscribeCommand(SubscribeParameters @params, JsonObject? extensionData)
+    : Command<SubscribeParameters, SubscribeResult>(@params, "session.subscribe", extensionData);
 
 internal sealed record SubscribeParameters(IEnumerable<string> Events, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 

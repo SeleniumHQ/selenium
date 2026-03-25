@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetLocaleOverrideCommand(SetLocaleOverrideParameters @params)
-    : Command<SetLocaleOverrideParameters, SetLocaleOverrideResult>(@params, "emulation.setLocaleOverride");
+internal sealed class SetLocaleOverrideCommand(SetLocaleOverrideParameters @params, JsonObject? extensionData)
+    : Command<SetLocaleOverrideParameters, SetLocaleOverrideResult>(@params, "emulation.setLocaleOverride", extensionData);
 
 internal sealed record SetLocaleOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Locale, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

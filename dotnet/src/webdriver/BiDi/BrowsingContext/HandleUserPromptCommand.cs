@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params)
-    : Command<HandleUserPromptParameters, HandleUserPromptResult>(@params, "browsingContext.handleUserPrompt");
+internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params, JsonObject? extensionData)
+    : Command<HandleUserPromptParameters, HandleUserPromptResult>(@params, "browsingContext.handleUserPrompt", extensionData);
 
 internal sealed record HandleUserPromptParameters(BrowsingContext Context, bool? Accept, string? UserText) : Parameters;
 

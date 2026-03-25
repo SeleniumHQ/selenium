@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class RemoveUserContextCommand(RemoveUserContextParameters @params)
-    : Command<RemoveUserContextParameters, RemoveUserContextResult>(@params, "browser.removeUserContext");
+internal sealed class RemoveUserContextCommand(RemoveUserContextParameters @params, JsonObject? extensionData)
+    : Command<RemoveUserContextParameters, RemoveUserContextResult>(@params, "browser.removeUserContext", extensionData);
 
 internal sealed record RemoveUserContextParameters(UserContext UserContext) : Parameters;
 

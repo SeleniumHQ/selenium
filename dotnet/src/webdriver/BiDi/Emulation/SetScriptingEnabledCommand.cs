@@ -19,10 +19,12 @@
 
 using System.Text.Json.Serialization;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed class SetScriptingEnabledCommand(SetScriptingEnabledParameters @params)
-    : Command<SetScriptingEnabledParameters, SetScriptingEnabledResult>(@params, "emulation.setScriptingEnabled");
+internal sealed class SetScriptingEnabledCommand(SetScriptingEnabledParameters @params, JsonObject? extensionData)
+    : Command<SetScriptingEnabledParameters, SetScriptingEnabledResult>(@params, "emulation.setScriptingEnabled", extensionData);
 
 internal sealed record SetScriptingEnabledParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] bool? Enabled, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 

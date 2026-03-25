@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class NavigateCommand(NavigateParameters @params)
-    : Command<NavigateParameters, NavigateResult>(@params, "browsingContext.navigate");
+internal sealed class NavigateCommand(NavigateParameters @params, JsonObject? extensionData)
+    : Command<NavigateParameters, NavigateResult>(@params, "browsingContext.navigate", extensionData);
 
 internal sealed record NavigateParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : Parameters;
 

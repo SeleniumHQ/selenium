@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class RemoveInterceptCommand(RemoveInterceptParameters @params)
-    : Command<RemoveInterceptParameters, RemoveInterceptResult>(@params, "network.removeIntercept");
+internal sealed class RemoveInterceptCommand(RemoveInterceptParameters @params, JsonObject? extensionData)
+    : Command<RemoveInterceptParameters, RemoveInterceptResult>(@params, "network.removeIntercept", extensionData);
 
 internal sealed record RemoveInterceptParameters(Intercept Intercept) : Parameters;
 

@@ -20,10 +20,12 @@
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class PrintCommand(PrintParameters @params)
-    : Command<PrintParameters, PrintResult>(@params, "browsingContext.print");
+internal sealed class PrintCommand(PrintParameters @params, JsonObject? extensionData)
+    : Command<PrintParameters, PrintResult>(@params, "browsingContext.print", extensionData);
 
 internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 

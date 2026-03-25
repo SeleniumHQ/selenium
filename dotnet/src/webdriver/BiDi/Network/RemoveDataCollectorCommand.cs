@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class RemoveDataCollectorCommand(RemoveDataCollectorParameters @params)
-    : Command<RemoveDataCollectorParameters, RemoveDataCollectorResult>(@params, "network.removeDataCollector");
+internal sealed class RemoveDataCollectorCommand(RemoveDataCollectorParameters @params, JsonObject? extensionData)
+    : Command<RemoveDataCollectorParameters, RemoveDataCollectorResult>(@params, "network.removeDataCollector", extensionData);
 
 internal sealed record RemoveDataCollectorParameters(Collector Collector) : Parameters;
 

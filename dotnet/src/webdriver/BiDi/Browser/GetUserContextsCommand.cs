@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Nodes;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed class GetUserContextsCommand()
-    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
+internal sealed class GetUserContextsCommand(JsonObject? extensionData)
+    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts", extensionData);
 
 public record GetUserContextsOptions : CommandOptions;
 
