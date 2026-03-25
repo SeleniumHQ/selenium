@@ -2,6 +2,8 @@
 
 This document captures best practices for contributors and coding agents working in the Selenium monorepo.
 
+See also: [AGENTS.md](AGENTS.md) and language-specific guides such as `<language>/AGENTS.md` for per-language agent usage details. Those files are the authoritative source of truth; this guide is a consolidated companion.
+
 ## Purpose
 
 Use this guide to make safe, focused changes across Selenium's multi-language bindings while staying aligned with Bazel-based workflows and project invariants.
@@ -44,7 +46,7 @@ bazel build //path/to/area:target
 3. Run the smallest meaningful tests first:
 
 ```bash
-bazel test //path/to/area:target --test_output=all --cache_test_results=no
+bazel test //path/to/area:target --test_output=all
 ```
 
 4. Expand test scope only when the focused tests pass.
@@ -212,4 +214,4 @@ Update this guide when any of the following changes:
 - Logging, deprecation, or public documentation conventions
 - High-risk area definitions
 
-Treat the language-specific AGENTS files as source of truth and keep this file synchronized with them.
+The language-specific AGENTS files and the root `AGENTS.md` are the authoritative source of truth. This guide is a consolidated summary and must not contradict them. When a language-specific AGENTS file changes, update the corresponding section here to stay consistent.
