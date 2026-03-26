@@ -98,6 +98,10 @@ class _TestHandler(BaseHTTPRequestHandler):
             self.send_response(302)
             self.send_header("Location", "/ok")
             self.end_headers()
+        elif path == "/redirect_with_cookies":
+            self.send_response(302)
+            self.send_header("Location", "/set_cookie?name=redirected&value=yes")
+            self.end_headers()
         elif path == "/redirect_chain":
             import urllib.parse
 
@@ -1471,6 +1475,22 @@ def test_e2e_redirect_chain_exceeds_limit(base_url):
     r = ctx.get("/redirect_chain?n=5")
     # Should get a 302 (stopped mid-chain) instead of following all the way to 200
     assert r.status == 302
+    ctx.dispose()
+
+
+def test_e2e_redirect_cookies_associated_with_final_url(base_url):
+    """Cookies from a redirected response must be associated with the final URL's origin."""
+    ctx = _IsolatedAPIRequestContext(base_url=base_url)
+    r = ctx.get("/redirect_with_cookies")
+    assert r.status == 200
+    assert r.text() == "cookie set"
+    # The response URL should be the final destination, not the redirect source
+    assert "/set_cookie" in r.url
+    assert "/redirect_with_cookies" not in r.url
+    # The cookie should be stored with the correct domain (from the final URL)
+    assert len(ctx._cookies) == 1
+    assert ctx._cookies[0]["name"] == "redirected"
+    assert ctx._cookies[0]["value"] == "yes"
     ctx.dispose()
 
 

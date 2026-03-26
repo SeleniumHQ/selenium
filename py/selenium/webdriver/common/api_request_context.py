@@ -231,6 +231,22 @@ def _get_set_cookie_headers(resp: urllib3.BaseHTTPResponse) -> list[str]:
     return [sc] if sc else []
 
 
+def _resolve_redirect_url(resp: urllib3.BaseHTTPResponse, original_url: str) -> str:
+    """Return the final URL after any redirects.
+
+    urllib3's retry history records each hop.  When redirects occurred,
+    the last entry's redirect_location resolved against its URL gives
+    the final destination.  When no redirects occurred, the original
+    request URL is returned unchanged.
+    """
+    history = resp.retries.history if resp.retries else ()
+    if history:
+        last = history[-1]
+        if last.url and last.redirect_location:
+            return urllib.parse.urljoin(last.url, last.redirect_location)
+    return original_url
+
+
 class _BaseRequestContext:
     """Base class with shared HTTP request logic for API request contexts."""
 
@@ -473,12 +489,16 @@ class _BaseRequestContext:
         url = self._append_params(url, kwargs)
         resp = self._execute_request(method, url, headers, body, kwargs)
 
+        # After redirects, associate cookies with the final destination's
+        # origin, not the initial request URL.
+        final_url = _resolve_redirect_url(resp, url)
+
         # Process response cookies
         set_cookie_headers = _get_set_cookie_headers(resp)
         if set_cookie_headers:
-            self._handle_response_cookies(set_cookie_headers, url)
+            self._handle_response_cookies(set_cookie_headers, final_url)
 
-        response = self._build_response(resp, url)
+        response = self._build_response(resp, final_url)
 
         fail = kwargs.get("fail_on_status_code", self._fail_on_status_code)
         if fail and not response.ok:
