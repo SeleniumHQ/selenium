@@ -22,7 +22,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 _VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}
 

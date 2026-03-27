@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 
 def transform_download_params(
@@ -140,13 +140,6 @@ class RemoveUserContextParameters:
 
 
 @dataclass
-class SetClientWindowStateParameters:
-    """SetClientWindowStateParameters."""
-
-    client_window: Any | None = None
-
-
-@dataclass
 class ClientWindowRectState:
     """ClientWindowRectState."""
 
@@ -187,6 +180,19 @@ class ClientWindowNamedState:
     MAXIMIZED = "maximized"
     MINIMIZED = "minimized"
     NORMAL = "normal"
+
+@dataclass
+class SetClientWindowStateParameters:
+    """SetClientWindowStateParameters.
+
+    The ``state`` field is required and must be either a named-state string
+    (e.g. ``ClientWindowNamedState.MAXIMIZED``) or a
+    :class:`ClientWindowRectState` instance.  ``client_window`` is the ID of
+    the window to affect.
+    """
+
+    client_window: Any | None = None
+    state: Any | None = None
 
 class Browser:
     """WebDriver BiDi browser module."""
@@ -272,7 +278,7 @@ class Browser:
     def remove_user_context(self, user_context: Any | None = None):
         """Execute browser.removeUserContext."""
         if user_context is None:
-            raise TypeError("remove_user_context() missing required argument: {{snake_param!r}}")
+            raise TypeError("remove_user_context() missing required argument: 'user_context'")
 
         params = {
             "userContext": user_context,

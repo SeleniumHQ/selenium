@@ -101,8 +101,10 @@ def test_raises_exception_when_removing_default_user_context(driver):
 
 def test_client_window_state_constants(driver):
     """Test ClientWindowNamedState constants."""
+    assert ClientWindowNamedState.FULLSCREEN == "fullscreen"
     assert ClientWindowNamedState.MAXIMIZED == "maximized"
     assert ClientWindowNamedState.MINIMIZED == "minimized"
+    assert ClientWindowNamedState.NORMAL == "normal"
 
 
 def test_create_user_context_with_accept_insecure_certs(driver):

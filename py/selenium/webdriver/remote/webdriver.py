@@ -29,6 +29,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
+from collections.abc import Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, cast
@@ -436,14 +437,17 @@ class WebDriver(BaseWebDriver):
         ]
 
     def execute(
-        self, driver_command: str, params: dict[str, Any] | None = None
-    ) -> dict[str, Any]:
+        self,
+        driver_command: str | Generator[dict[str, Any], Any, Any],
+        params: dict[str, Any] | None = None,
+    ) -> Any:
         """Sends a command to be executed by a command.CommandExecutor.
 
         Args:
-            driver_command: The name of the command to execute as a string. Can also be a generator
-                for BiDi protocol commands.
+            driver_command: The name of the command to execute as a string.
+                Can also be a BiDi protocol command generator.
             params: A dictionary of named parameters to send with the command.
+                Ignored when ``driver_command`` is a BiDi generator.
 
         Returns:
             The command's JSON response loaded into a dictionary object.

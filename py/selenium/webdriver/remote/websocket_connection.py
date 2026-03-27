@@ -56,7 +56,10 @@ class _BiDiEncoder(json.JSONEncoder):
             result = {}
             for f in dataclasses.fields(o):
                 value = getattr(o, f.name)
-                if value is None:
+                # Skip None values unless the field is explicitly marked
+                # retain_none=True in its metadata (e.g. for required-but-nullable
+                # BiDi fields that must be sent as JSON null rather than omitted).
+                if value is None and not f.metadata.get("retain_none"):
                     continue
                 camel_key = _snake_to_camel(f.name)
                 # Flatten PointerCommonProperties fields inline into the parent

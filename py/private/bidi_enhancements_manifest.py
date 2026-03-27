@@ -86,7 +86,7 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
         # convenience NORMAL constant.  In the BiDi spec "normal" is the state
         # represented by ClientWindowRectState, but exposing it here keeps the
         # Python API consistent with the old ClientWindowState enum.
-        "exclude_types": ["ClientWindowNamedState"],
+        "exclude_types": ["ClientWindowNamedState", "SetClientWindowStateParameters"],
         "extra_dataclasses": [
             '''class ClientWindowNamedState:
     """Named states for a browser client window."""
@@ -95,6 +95,18 @@ ENHANCEMENTS: dict[str, dict[str, Any]] = {
     MAXIMIZED = "maximized"
     MINIMIZED = "minimized"
     NORMAL = "normal"''',
+            '''@dataclass
+class SetClientWindowStateParameters:
+    """SetClientWindowStateParameters.
+
+    The ``state`` field is required and must be either a named-state string
+    (e.g. ``ClientWindowNamedState.MAXIMIZED``) or a
+    :class:`ClientWindowRectState` instance.  ``client_window`` is the ID of
+    the window to affect.
+    """
+
+    client_window: Any | None = None
+    state: Any | None = None''',
         ],
         # Override the generator-produced set_download_behavior so that
         # downloadBehavior is never stripped by the generic None filter.
@@ -239,10 +251,10 @@ class DownloadParams:
 class DownloadEndParams:
     """DownloadEndParams - params for browsingContext.downloadEnd event."""
 
-    download_params: "DownloadParams | None" = None
+    download_params: DownloadParams | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "DownloadEndParams":
+    def from_json(cls, params: dict) -> DownloadEndParams:
         """Deserialize from BiDi wire-level params dict."""
         dp = DownloadParams(
             status=params.get("status"),
@@ -277,7 +289,7 @@ class ConsoleLogEntry:
     stack_trace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "ConsoleLogEntry":
+    def from_json(cls, params: dict) -> ConsoleLogEntry:
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),
@@ -301,7 +313,7 @@ class JavascriptLogEntry:
     stacktrace: Any | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "JavascriptLogEntry":
+    def from_json(cls, params: dict) -> JavascriptLogEntry:
         """Deserialize from BiDi params dict."""
         return cls(
             type_=params.get("type"),
@@ -322,6 +334,20 @@ class JavascriptLogEntry:
     },
 
     "emulation": {
+        "exclude_types": ["setNetworkConditionsParameters"],
+        "extra_dataclasses": [
+            '''@dataclass
+class SetNetworkConditionsParameters:
+    """SetNetworkConditionsParameters."""
+
+    network_conditions: Any | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+# Backward-compatible alias for existing imports
+setNetworkConditionsParameters = SetNetworkConditionsParameters''',
+        ],
         "extra_methods": [
             '''    def set_geolocation_override(
         self,
@@ -897,6 +923,7 @@ class JavascriptLogEntry:
     },
 
     "network": {
+        "exclude_types": ["disownDataParameters"],
         # Initialize intercepts tracking list and per-handler intercept map
         "extra_init_code": [
             "self.intercepts: list[Any] = []",
@@ -904,6 +931,17 @@ class JavascriptLogEntry:
         ],
         # Request class wraps a beforeRequestSent event params and provides actions
         "extra_dataclasses": [
+            '''@dataclass
+class DisownDataParameters:
+    """DisownDataParameters."""
+
+    data_type: Any | None = None
+    collector: Any | None = None
+    request: Any | None = None
+
+
+# Backward-compatible alias for existing imports
+disownDataParameters = DisownDataParameters''',
             '''class BytesValue:
     """A string or base64-encoded bytes value used in cookie operations.
 
@@ -1115,7 +1153,11 @@ class JavascriptLogEntry:
         self.value = value
 
     def to_bidi_dict(self) -> dict:
-        return {"type": self.type, "value": self.value}''',
+        return {"type": self.type, "value": self.value}
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
             '''class SameSite:
     """SameSite cookie attribute values."""
 
@@ -1139,7 +1181,7 @@ class StorageCookie:
     expiry: Any | None = None
 
     @classmethod
-    def from_bidi_dict(cls, raw: dict) -> "StorageCookie":
+    def from_bidi_dict(cls, raw: dict) -> StorageCookie:
         """Deserialize a wire-level cookie dict to a StorageCookie."""
         value_raw = raw.get("value")
         if isinstance(value_raw, dict):
@@ -1193,7 +1235,11 @@ class CookieFilter:
             result["sameSite"] = self.same_site
         if self.expiry is not None:
             result["expiry"] = self.expiry
-        return result''',
+        return result
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
             # Custom PartialCookie with camelCase serialization
             '''@dataclass
 class PartialCookie:
@@ -1227,7 +1273,11 @@ class PartialCookie:
             result["sameSite"] = self.same_site
         if self.expiry is not None:
             result["expiry"] = self.expiry
-        return result''',
+        return result
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
             # BrowsingContextPartitionDescriptor: first positional arg is *context*
             # (the auto-generated dataclass had `type` first, breaking positional
             # usage like BrowsingContextPartitionDescriptor(driver.current_window_handle))
@@ -1244,7 +1294,12 @@ class PartialCookie:
         self.type = type
 
     def to_bidi_dict(self) -> dict:
-        return {"type": "context", "context": self.context}''',
+        return {"type": "context", "context": self.context}
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
+
             # StorageKeyPartitionDescriptor with camelCase serialization
             '''@dataclass
 class StorageKeyPartitionDescriptor:
@@ -1261,7 +1316,11 @@ class StorageKeyPartitionDescriptor:
             result["userContext"] = self.user_context
         if self.source_origin is not None:
             result["sourceOrigin"] = self.source_origin
-        return result''',
+        return result
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
         ],
         # Override the generated Storage class methods (Python's last-definition-
         # wins semantics means these extra_methods shadow the generated ones).
@@ -1309,7 +1368,19 @@ class StorageKeyPartitionDescriptor:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.setCookie", params)
         result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return SetCookieResult(partition_key=pk)
         return result''',
+
             '''    def delete_cookies(self, filter=None, partition=None):
         """Execute storage.deleteCookies."""
         if filter and hasattr(filter, "to_bidi_dict"):
@@ -1323,6 +1394,17 @@ class StorageKeyPartitionDescriptor:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.deleteCookies", params)
         result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return DeleteCookiesResult(partition_key=pk)
         return result''',
         ],
     },
@@ -1357,7 +1439,11 @@ class UserPromptHandler:
             result["file"] = self.file
         if self.prompt is not None:
             result["prompt"] = self.prompt
-        return result''',
+        return result
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()''',
         ],
     },
 
@@ -1406,7 +1492,17 @@ class UserPromptHandler:
             extension_data = {"type": "base64", "value": base64_value}
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
-        return self._conn.execute(cmd)''',
+        try:
+            return self._conn.execute(cmd)
+        except Exception as e:
+            if "Method not available" in str(e):
+                raise RuntimeError(
+                    "webExtension.install failed with 'Method not available'. "
+                    "This likely means that web extension support is disabled. "
+                    "Enable unsafe extension debugging and/or set options.enable_webextensions "
+                    "in your WebDriver configuration."
+                ) from e
+            raise''',
             '''    def uninstall(self, extension: str | dict):
         """Uninstall a web extension.
 
@@ -1445,7 +1541,7 @@ class FileDialogInfo:
     multiple: bool | None = None
 
     @classmethod
-    def from_json(cls, params: dict) -> "FileDialogInfo":
+    def from_json(cls, params: dict) -> FileDialogInfo:
         """Deserialize event params into FileDialogInfo."""
         return cls(
             context=params.get("context"),

@@ -24,13 +24,14 @@ from typing import Any
 
 
 def command_builder(
-    method: str, params: dict[str, Any]
+    method: str, params: dict[str, Any] | None = None
 ) -> Generator[dict[str, Any], Any, Any]:
     """Build a BiDi command generator.
 
     Args:
         method: The BiDi method name (e.g., "session.status", "browser.close")
-        params: The parameters for the command
+        params: The parameters for the command. If omitted, an empty
+            dictionary is sent.
 
     Yields:
         A dictionary representing the BiDi command
@@ -38,5 +39,7 @@ def command_builder(
     Returns:
         The result from the BiDi command execution
     """
+    if params is None:
+        params = {}
     result = yield {"method": method, "params": params}
     return result

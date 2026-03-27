@@ -60,6 +60,19 @@ task :local_dev, [:all] do |_task, arguments|
     FileUtils.rm_rf("#{lib_path}/common/devtools")
     FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
   else
+    bidi_src = "#{bazel_bin}/common/bidi"
+    bidi_dest = "#{lib_path}/common/bidi"
+    if Dir.exist?(bidi_src)
+      FileUtils.mkdir_p(bidi_dest)
+      Dir.children(bidi_src).sort.each do |entry|
+        src = File.join(bidi_src, entry)
+        next unless File.file?(src) || File.symlink?(src)
+
+        resolved_src = File.symlink?(src) ? File.realpath(src) : src
+        FileUtils.cp(resolved_src, File.join(bidi_dest, entry))
+      end
+    end
+
     %w[common/devtools common/linux common/mac common/windows].each do |dir|
       src = "#{bazel_bin}/#{dir}"
       dest = "#{lib_path}/#{dir}"

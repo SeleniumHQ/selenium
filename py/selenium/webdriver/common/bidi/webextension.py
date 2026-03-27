@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 
 @dataclass
@@ -104,7 +104,17 @@ class WebExtension:
             extension_data = {"type": "base64", "value": base64_value}
         params = {"extensionData": extension_data}
         cmd = command_builder("webExtension.install", params)
-        return self._conn.execute(cmd)
+        try:
+            return self._conn.execute(cmd)
+        except Exception as e:
+            if "Method not available" in str(e):
+                raise RuntimeError(
+                    "webExtension.install failed with 'Method not available'. "
+                    "This likely means that web extension support is disabled. "
+                    "Enable unsafe extension debugging and/or set options.enable_webextensions "
+                    "in your WebDriver configuration."
+                ) from e
+            raise
     def uninstall(self, extension: str | dict):
         """Uninstall a web extension.
 
