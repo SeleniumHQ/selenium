@@ -87,21 +87,24 @@ class SeleniumManager:
         elif compiled_path.is_file():
             path = compiled_path
         else:
-            allowed = {
-                ("darwin", "any"): "macos/selenium-manager",
-                ("win32", "any"): "windows/selenium-manager.exe",
-                ("cygwin", "any"): "windows/selenium-manager.exe",
-                ("linux", "x86_64"): "linux/selenium-manager",
-                ("freebsd", "x86_64"): "linux/selenium-manager",
-                ("openbsd", "x86_64"): "linux/selenium-manager",
-            }
+            arch = platform.machine()
 
-            arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
-            if sys.platform in ["freebsd", "openbsd"]:
-                logger.warning(f"Selenium Manager binary may not be compatible with {sys.platform}; verify settings")
-
-            location = allowed.get((sys.platform, arch))
-            if location is None:
+            if sys.platform == "darwin":
+                location = "macos/selenium-manager"
+            elif sys.platform in ("win32", "cygwin") and arch == "AMD64":
+                location = "windows/selenium-manager.exe"
+            elif sys.platform == "linux" and arch == "x86_64":
+                location = "linux/selenium-manager"
+            elif sys.platform.startswith("freebsd") and arch == "amd64":
+                logger.warning(
+                    "Selenium Manager binary may not be compatible with FreeBSD; you may need to run "
+                    "'brandelf -t linux' on it and load linux64.ko"
+                )
+                location = "linux/selenium-manager"
+            elif sys.platform.startswith("openbsd") and arch == "amd64":
+                logger.warning("Selenium Manager binary may not be compatible with OpenBSD")
+                location = "linux/selenium-manager"
+            else:
                 raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
             path = Path(__file__).parent.joinpath(location)
