@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 
 class UserPromptHandlerType:
@@ -176,6 +176,10 @@ class UserPromptHandler:
             result["prompt"] = self.prompt
         return result
 
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
+
 class Session:
     """WebDriver BiDi session module."""
 
@@ -194,7 +198,7 @@ class Session:
     def new(self, capabilities: Any | None = None):
         """Execute session.new."""
         if capabilities is None:
-            raise TypeError("new() missing required argument: {{snake_param!r}}")
+            raise TypeError("new() missing required argument: 'capabilities'")
 
         params = {
             "capabilities": capabilities,
@@ -221,7 +225,7 @@ class Session:
     ):
         """Execute session.subscribe."""
         if events is None:
-            raise TypeError("subscribe() missing required argument: {{snake_param!r}}")
+            raise TypeError("subscribe() missing required argument: 'events'")
 
         params = {
             "events": events,

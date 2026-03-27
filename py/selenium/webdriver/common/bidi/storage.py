@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 
 @dataclass
@@ -82,6 +82,10 @@ class BytesValue:
 
     def to_bidi_dict(self) -> dict:
         return {"type": self.type, "value": self.value}
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 class SameSite:
     """SameSite cookie attribute values."""
@@ -162,6 +166,10 @@ class CookieFilter:
             result["expiry"] = self.expiry
         return result
 
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
+
 @dataclass
 class PartialCookie:
     """PartialCookie."""
@@ -196,6 +204,10 @@ class PartialCookie:
             result["expiry"] = self.expiry
         return result
 
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
+
 class BrowsingContextPartitionDescriptor:
     """BrowsingContextPartitionDescriptor.
 
@@ -210,6 +222,10 @@ class BrowsingContextPartitionDescriptor:
 
     def to_bidi_dict(self) -> dict:
         return {"type": "context", "context": self.context}
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 @dataclass
 class StorageKeyPartitionDescriptor:
@@ -227,6 +243,10 @@ class StorageKeyPartitionDescriptor:
         if self.source_origin is not None:
             result["sourceOrigin"] = self.source_origin
         return result
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 class Storage:
     """WebDriver BiDi storage module."""
@@ -277,6 +297,17 @@ class Storage:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.setCookie", params)
         result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return SetCookieResult(partition_key=pk)
         return result
     def delete_cookies(self, filter=None, partition=None):
         """Execute storage.deleteCookies."""
@@ -291,4 +322,15 @@ class Storage:
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("storage.deleteCookies", params)
         result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return DeleteCookiesResult(partition_key=pk)
         return result

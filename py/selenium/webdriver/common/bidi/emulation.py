@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .common import command_builder
+from selenium.webdriver.common.bidi.common import command_builder
 
 
 class ForcedColorsModeTheme:
@@ -77,15 +77,6 @@ class SetLocaleOverrideParameters:
     """SetLocaleOverrideParameters."""
 
     locale: Any | None = None
-    contexts: list[Any] = field(default_factory=list)
-    user_contexts: list[Any] = field(default_factory=list)
-
-
-@dataclass
-class setNetworkConditionsParameters:
-    """setNetworkConditionsParameters."""
-
-    network_conditions: Any | None = None
     contexts: list[Any] = field(default_factory=list)
     user_contexts: list[Any] = field(default_factory=list)
 
@@ -184,6 +175,18 @@ class SetTouchOverrideParameters:
     user_contexts: list[Any] = field(default_factory=list)
 
 
+@dataclass
+class SetNetworkConditionsParameters:
+    """SetNetworkConditionsParameters."""
+
+    network_conditions: Any | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+# Backward-compatible alias for existing imports
+setNetworkConditionsParameters = SetNetworkConditionsParameters
+
 class Emulation:
     """WebDriver BiDi emulation module."""
 
@@ -198,7 +201,7 @@ class Emulation:
     ):
         """Execute emulation.setForcedColorsModeThemeOverride."""
         if theme is None:
-            raise TypeError("set_forced_colors_mode_theme_override() missing required argument: {{snake_param!r}}")
+            raise TypeError("set_forced_colors_mode_theme_override() missing required argument: 'theme'")
 
         params = {
             "theme": theme,
@@ -218,7 +221,7 @@ class Emulation:
     ):
         """Execute emulation.setLocaleOverride."""
         if locale is None:
-            raise TypeError("set_locale_override() missing required argument: {{snake_param!r}}")
+            raise TypeError("set_locale_override() missing required argument: 'locale'")
 
         params = {
             "locale": locale,
@@ -238,7 +241,7 @@ class Emulation:
     ):
         """Execute emulation.setScreenSettingsOverride."""
         if screen_area is None:
-            raise TypeError("set_screen_settings_override() missing required argument: {{snake_param!r}}")
+            raise TypeError("set_screen_settings_override() missing required argument: 'screen_area'")
 
         params = {
             "screenArea": screen_area,
@@ -258,7 +261,7 @@ class Emulation:
     ):
         """Execute emulation.setViewportMetaOverride."""
         if viewport_meta is None:
-            raise TypeError("set_viewport_meta_override() missing required argument: {{snake_param!r}}")
+            raise TypeError("set_viewport_meta_override() missing required argument: 'viewport_meta'")
 
         params = {
             "viewportMeta": viewport_meta,
@@ -278,7 +281,7 @@ class Emulation:
     ):
         """Execute emulation.setScrollbarTypeOverride."""
         if scrollbar_type is None:
-            raise TypeError("set_scrollbar_type_override() missing required argument: {{snake_param!r}}")
+            raise TypeError("set_scrollbar_type_override() missing required argument: 'scrollbar_type'")
 
         params = {
             "scrollbarType": scrollbar_type,

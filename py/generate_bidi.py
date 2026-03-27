@@ -42,7 +42,6 @@ MODULE_HEADER = f"""{SHARED_HEADER}
 # WebDriver BiDi module: {{}}
 from __future__ import annotations
 
-from typing import Any
 """
 
 
@@ -198,8 +197,9 @@ class CddlCommand:
                 if param_name in self.required_params:
                     body += f"        if {snake_param} is None:\n"
                     msg = f"{method_snake}() missing required argument:"
+                    error_message = f"{msg} {snake_param!r}"
                     body += (
-                        f'            raise TypeError("{msg} {{{{snake_param!r}}}}")\n'
+                        f"            raise TypeError({error_message!r})\n"
                     )
             body += "\n"
 
@@ -591,23 +591,32 @@ class CddlModule:
         # Collect needed imports to avoid duplicates
         needs_command_builder = bool(self.commands)
         needs_dataclass = self.commands or self.types or self.events
-        needs_threading = self.events
         needs_callable = self.events
-        needs_session = self.events
+
+        stdlib_imports = []
+        local_imports = []
 
         # Add imports (field import will be added conditionally after code generation)
-        if needs_command_builder:
-            code += "from .common import command_builder\n"
-        if needs_dataclass:
-            code += "from dataclasses import dataclass\n"
-        if needs_threading:
-            code += "import threading\n"
         if needs_callable:
-            code += "from collections.abc import Callable\n"
-        if needs_session:
-            code += "from selenium.webdriver.common.bidi.session import Session\n"
+            stdlib_imports.append("from collections.abc import Callable")
+        if needs_dataclass:
+            stdlib_imports.append("from dataclasses import dataclass")
+        stdlib_imports.append("from typing import Any")
 
-        code += "\n\n"
+        if needs_command_builder:
+            local_imports.append(
+                "from selenium.webdriver.common.bidi.common import command_builder"
+            )
+        if self.events:
+            local_imports.append(
+                "from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager"
+            )
+
+        code += "\n".join(stdlib_imports) + "\n"
+        if local_imports:
+            code += "\n" + "\n".join(local_imports) + "\n"
+
+        code += "\n"
 
         # Add helper function definitions from enhancements
         # Collect all referenced helper functions (validate, transform)
@@ -784,165 +793,11 @@ class CddlModule:
 """
             code += "\n\n"
 
-        # Generate EventConfig and _EventManager for modules with events
-        if self.events:
-            # Generate EventConfig dataclass
-            code += """@dataclass
-class EventConfig:
-    \"\"\"Configuration for a BiDi event.\"\"\"
-    event_key: str
-    bidi_event: str
-    event_class: type
-
-
-"""
-
-            # Generate _EventManager class
-            code += """class _EventWrapper:
-    \"\"\"Wrapper to provide event_class attribute for WebSocketConnection callbacks.\"\"\"
-    def __init__(self, bidi_event: str, event_class: type):
-        self.event_class = bidi_event  # WebSocket expects the BiDi event name as event_class
-        self._python_class = event_class  # Keep reference to Python dataclass for deserialization
-
-    def from_json(self, params: dict) -> Any:
-        \"\"\"Deserialize event params into the wrapped Python dataclass.
-
-        Args:
-            params: Raw BiDi event params with camelCase keys.
-
-        Returns:
-            An instance of the dataclass, or the raw dict on failure.
-        \"\"\"
-        if self._python_class is None or self._python_class is dict:
-            return params
-        try:
-            # Delegate to a classmethod from_json if the class defines one
-            if hasattr(self._python_class, \"from_json\") and callable(
-                self._python_class.from_json
-            ):
-                return self._python_class.from_json(params)
-            import dataclasses as dc
-
-            snake_params = {self._camel_to_snake(k): v for k, v in params.items()}
-            if dc.is_dataclass(self._python_class):
-                valid_fields = {f.name for f in dc.fields(self._python_class)}
-                filtered = {k: v for k, v in snake_params.items() if k in valid_fields}
-                return self._python_class(**filtered)
-            return self._python_class(**snake_params)
-        except Exception:
-            return params
-
-    @staticmethod
-    def _camel_to_snake(name: str) -> str:
-        result = [name[0].lower()]
-        for char in name[1:]:
-            if char.isupper():
-                result.extend([\"_\", char.lower()])
-            else:
-                result.append(char)
-        return \"\".join(result)
-
-
-class _EventManager:
-    \"\"\"Manages event subscriptions and callbacks.\"\"\"
-
-    def __init__(self, conn, event_configs: dict[str, EventConfig]):
-        self.conn = conn
-        self.event_configs = event_configs
-        self.subscriptions: dict = {}
-        self._event_wrappers = {}  # Cache of _EventWrapper objects
-        self._bidi_to_class = {config.bidi_event: config.event_class for config in event_configs.values()}
-        self._available_events = ", ".join(sorted(event_configs.keys()))
-        self._subscription_lock = threading.Lock()
-
-        # Create event wrappers for each event
-        for config in event_configs.values():
-            wrapper = _EventWrapper(config.bidi_event, config.event_class)
-            self._event_wrappers[config.bidi_event] = wrapper
-
-    def validate_event(self, event: str) -> EventConfig:
-        event_config = self.event_configs.get(event)
-        if not event_config:
-            raise ValueError(f"Event '{event}' not found. Available events: {self._available_events}")
-        return event_config
-
-    def subscribe_to_event(self, bidi_event: str, contexts: list[str] | None = None) -> None:
-        \"\"\"Subscribe to a BiDi event if not already subscribed.\"\"\"
-        with self._subscription_lock:
-            if bidi_event not in self.subscriptions:
-                session = Session(self.conn)
-                result = session.subscribe([bidi_event], contexts=contexts)
-                sub_id = (
-                    result.get(\"subscription\") if isinstance(result, dict) else None
-                )
-                self.subscriptions[bidi_event] = {
-                    \"callbacks\": [],
-                    \"subscription_id\": sub_id,
-                }
-
-    def unsubscribe_from_event(self, bidi_event: str) -> None:
-        \"\"\"Unsubscribe from a BiDi event if no more callbacks exist.\"\"\"
-        with self._subscription_lock:
-            entry = self.subscriptions.get(bidi_event)
-            if entry is not None and not entry[\"callbacks\"]:
-                session = Session(self.conn)
-                sub_id = entry.get(\"subscription_id\")
-                if sub_id:
-                    session.unsubscribe(subscriptions=[sub_id])
-                else:
-                    session.unsubscribe(events=[bidi_event])
-                del self.subscriptions[bidi_event]
-
-    def add_callback_to_tracking(self, bidi_event: str, callback_id: int) -> None:
-        with self._subscription_lock:
-            self.subscriptions[bidi_event][\"callbacks\"].append(callback_id)
-
-    def remove_callback_from_tracking(self, bidi_event: str, callback_id: int) -> None:
-        with self._subscription_lock:
-            entry = self.subscriptions.get(bidi_event)
-            if entry and callback_id in entry[\"callbacks\"]:
-                entry[\"callbacks\"].remove(callback_id)
-
-    def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
-        event_config = self.validate_event(event)
-        # Use the event wrapper for add_callback
-        event_wrapper = self._event_wrappers.get(event_config.bidi_event)
-        callback_id = self.conn.add_callback(event_wrapper, callback)
-        self.subscribe_to_event(event_config.bidi_event, contexts)
-        self.add_callback_to_tracking(event_config.bidi_event, callback_id)
-        return callback_id
-
-    def remove_event_handler(self, event: str, callback_id: int) -> None:
-        event_config = self.validate_event(event)
-        event_wrapper = self._event_wrappers.get(event_config.bidi_event)
-        self.conn.remove_callback(event_wrapper, callback_id)
-        self.remove_callback_from_tracking(event_config.bidi_event, callback_id)
-        self.unsubscribe_from_event(event_config.bidi_event)
-
-    def clear_event_handlers(self) -> None:
-        \"\"\"Clear all event handlers.\"\"\"
-        with self._subscription_lock:
-            if not self.subscriptions:
-                return
-            session = Session(self.conn)
-            for bidi_event, entry in list(self.subscriptions.items()):
-                event_wrapper = self._event_wrappers.get(bidi_event)
-                callbacks = entry[\"callbacks\"] if isinstance(entry, dict) else entry
-                if event_wrapper:
-                    for callback_id in callbacks:
-                        self.conn.remove_callback(event_wrapper, callback_id)
-                sub_id = (
-                    entry.get(\"subscription_id\") if isinstance(entry, dict) else None
-                )
-                if sub_id:
-                    session.unsubscribe(subscriptions=[sub_id])
-                else:
-                    session.unsubscribe(events=[bidi_event])
-            self.subscriptions.clear()
-
-
-"""
-            code += "\n\n"
+        # EventConfig, _EventWrapper, and _EventManager are imported from
+        # selenium.webdriver.common.bidi._event_manager (see import section above)
+        # rather than being duplicated inline in every generated module.
+        if False:  # placeholder to preserve indentation structure
+            pass
 
         # Generate class
         # Convert module name (camelCase or snake_case) to proper class name (PascalCase)
@@ -1103,15 +958,15 @@ class _EventManager:
             if re.search(dataclass_import_pattern, code):
                 code = re.sub(
                     dataclass_import_pattern,
-                    "from dataclasses import dataclass\nfrom dataclasses import field\n",
+                    "from dataclasses import dataclass, field\n",
                     code,
-                    count=1
+                    count=1,
                 )
             elif "from dataclasses import" not in code:
                 # If there's no dataclasses import yet, add field import after typing
                 code = code.replace(
                     "from typing import Any\n",
-                    "from typing import Any\nfrom dataclasses import field\n"
+                    "from dataclasses import field\nfrom typing import Any\n",
                 )
 
         return code
@@ -1615,7 +1470,9 @@ from __future__ import annotations
     for module_name in sorted(modules.keys()):
         class_name = module_name_to_class_name(module_name)
         filename = module_name_to_filename(module_name)
-        code += f"from .{filename} import {class_name}\n"
+        code += (
+            f"from selenium.webdriver.common.bidi.{filename} import {class_name}\n"
+        )
 
     code += "\n__all__ = [\n"
     for module_name in sorted(modules.keys()):
@@ -1660,13 +1517,14 @@ def generate_common_file(output_path: Path) -> None:
         "\n"
         "\n"
         "def command_builder(\n"
-        "    method: str, params: dict[str, Any]\n"
+        "    method: str, params: dict[str, Any] | None = None\n"
         ") -> Generator[dict[str, Any], Any, Any]:\n"
         '    """Build a BiDi command generator.\n'
         "\n"
         "    Args:\n"
         '        method: The BiDi method name (e.g., "session.status", "browser.close")\n'
-        "        params: The parameters for the command\n"
+        "        params: The parameters for the command. If omitted, an empty\n"
+        "            dictionary is sent.\n"
         "\n"
         "    Yields:\n"
         "        A dictionary representing the BiDi command\n"
@@ -1674,6 +1532,8 @@ def generate_common_file(output_path: Path) -> None:
         "    Returns:\n"
         "        The result from the BiDi command execution\n"
         '    """\n'
+        "    if params is None:\n"
+        "        params = {}\n"
         '    result = yield {"method": method, "params": params}\n'
         "    return result\n"
     )
@@ -1750,7 +1610,7 @@ def generate_permissions_file(output_path: Path) -> None:
         "from enum import Enum\n"
         "from typing import Any\n"
         "\n"
-        "from .common import command_builder\n"
+        "from selenium.webdriver.common.bidi.common import command_builder\n"
         "\n"
         '_VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}\n'
         "\n"

@@ -5,16 +5,16 @@
 
 from __future__ import annotations
 
-from .browser import Browser
-from .browsing_context import BrowsingContext
-from .emulation import Emulation
-from .input import Input
-from .log import Log
-from .network import Network
-from .script import Script
-from .session import Session
-from .storage import Storage
-from .webextension import WebExtension
+from selenium.webdriver.common.bidi.browser import Browser
+from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
+from selenium.webdriver.common.bidi.emulation import Emulation
+from selenium.webdriver.common.bidi.input import Input
+from selenium.webdriver.common.bidi.log import Log
+from selenium.webdriver.common.bidi.network import Network
+from selenium.webdriver.common.bidi.script import Script
+from selenium.webdriver.common.bidi.session import Session
+from selenium.webdriver.common.bidi.storage import Storage
+from selenium.webdriver.common.bidi.webextension import WebExtension
 
 __all__ = [
     "Browser",
