@@ -262,8 +262,11 @@ py_library(
 # BiDi protocol support
 py_library(
     name = "bidi",
-    srcs = glob(["selenium/webdriver/common/bidi/**/*.py"]),
-    data = [":mutation-listener"],
+    srcs = [],
+    data = [
+        ":create-bidi-src",
+        ":mutation-listener",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -617,7 +620,7 @@ generate_devtools_latest(
     browser_versions = BROWSER_VERSIONS,
 )
 
-# Pilot BiDi code generation from CDDL specification
+# Generate BiDi source files from CDDL specification
 generate_bidi(
     name = "create-bidi-src",
     cddl_file = "//common/bidi/spec:all.cddl",
