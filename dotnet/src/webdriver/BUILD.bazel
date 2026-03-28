@@ -46,7 +46,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
         "WebDriver.Common.Tests",
@@ -79,7 +79,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
         "WebDriver.Common.Tests",
@@ -113,7 +113,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
@@ -140,7 +140,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
@@ -171,7 +171,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
@@ -203,7 +203,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     defines = [
         "NET8_0_OR_GREATER",

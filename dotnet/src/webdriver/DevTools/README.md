@@ -18,10 +18,10 @@ add an entry for version `<N>` to the `SupportedDevToolsVersions` dictionary ini
 add the following block (substituting the proper value for `<N>`):
 
 ```bash
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v<N>\DevToolsSessionDomains.cs" (
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\v<N>\DevToolsSessionDomains.cs" (
   echo Generating CDP code for version <N>
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v<N>
+  bazel build //dotnet/src/webdriver/DevTools:generate-v<N>
   popd
 )
 ```
@@ -30,10 +30,10 @@ if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v<N>\DevToolsSessio
 add the following block (substituting the proper value for `<N>`):
 
 ```bash
-if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v<N>/DevToolsSessionDomains.cs" ]]
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/DevTools/v<N>/DevToolsSessionDomains.cs" ]]
 then
   echo "Generating CDP code for version <N>"
-  bazel build //dotnet/src/webdriver/cdp:generate-v<N>
+  bazel build //dotnet/src/webdriver/DevTools:generate-v<N>
 fi
 ```
 
