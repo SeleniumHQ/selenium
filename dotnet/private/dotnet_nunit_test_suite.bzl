@@ -110,11 +110,7 @@ _HEADLESS_ARGS = select({
     "//conditions:default": [],
 })
 
-def _is_test(src, test_suffixes):
-    for suffix in test_suffixes:
-        if src.endswith(suffix):
-            return True
-    return False
+_TEST_SUFFIXES = ("Test.cs", "Tests.cs")
 
 _NUNIT_ARGS = [
     "--workers=1",  # Bazel tests share a single driver instance; prevent NUnit parallelism
@@ -152,31 +148,27 @@ _test_wrapper_test = rule(
     },
 )
 
+def _is_test(src):
+    return src.endswith(_TEST_SUFFIXES)
+
 def dotnet_nunit_test_suite(
         name,
         srcs,
         deps = [],
         target_frameworks = None,
-        test_suffixes = ["Test.cs", "Tests.cs"],
         size = None,
         tags = [],
         data = [],
         browsers = None,
         **kwargs):
-    test_srcs = [src for src in srcs if _is_test(src, test_suffixes)]
-    lib_srcs = [src for src in srcs if not _is_test(src, test_suffixes)]
-    all_srcs = lib_srcs + test_srcs + [_NUNIT_SHIM]
-
-    extra_deps = [
-        "@paket.nuget//nunitlite",
-    ]
+    test_srcs = [src for src in srcs if _is_test(src)]
 
     # Compile all tests into a single binary once,
     # then create wrapper tests that execute it with --where filters.
     csharp_test(
         name = name,
-        srcs = all_srcs,
-        deps = deps + extra_deps,
+        srcs = srcs + [_NUNIT_SHIM],
+        deps = deps + ["@paket.nuget//nunitlite"],
         target_frameworks = target_frameworks,
         data = data,
         tags = ["manual"] + tags,
@@ -188,19 +180,15 @@ def dotnet_nunit_test_suite(
     default_browser = browsers[0]
 
     for src in test_srcs:
-        suffix = src.rfind(".")
-        test_name = src[:suffix]
-
-        # Extract class name from path (e.g., "BiDi/BrowsingContext/BrowsingContextTests" -> "BrowsingContextTests")
-        slash = test_name.rfind("/")
-        class_name = test_name[slash + 1:] if slash >= 0 else test_name
+        test_name = src[:src.rfind(".")]
+        class_name = test_name.rsplit("/", 1)[-1]
 
         for browser in browsers:
             browser_test_name = "%s-%s" % (test_name, browser) if browser else test_name
-            where_filter = "--where=class==%s" % class_name
-            browser_args = _BROWSERS[browser]["args"] + _HEADLESS_ARGS if browser else []
-            browser_data = _BROWSERS[browser]["data"] if browser else []
-            browser_tags = [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"] if browser else []
+            browser_cfg = _BROWSERS[browser] if browser else None
+            browser_args = browser_cfg["args"] + _HEADLESS_ARGS if browser_cfg else []
+            browser_data = browser_cfg["data"] if browser_cfg else []
+            browser_tags = [browser] + COMMON_TAGS + browser_cfg["tags"] if browser_cfg else []
 
             if browser and browser == default_browser:
                 native.test_suite(
@@ -211,7 +199,7 @@ def dotnet_nunit_test_suite(
             _test_wrapper_test(
                 name = browser_test_name,
                 test_binary = ":" + name,
-                args = _NUNIT_ARGS + [where_filter] + browser_args,
+                args = _NUNIT_ARGS + ["--where=class==%s" % class_name] + browser_args,
                 data = data + browser_data,
                 tags = tags + browser_tags,
                 size = size,
