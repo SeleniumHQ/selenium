@@ -28,7 +28,7 @@ filegroup(
 )
 
 dotnet_nunit_test_suite(
-    name = "tests",
+    name = "common",
     size = "small",
     srcs = glob(["**/*.cs"]),
     out = "WebDriver.Common.Tests",
