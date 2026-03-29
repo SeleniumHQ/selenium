@@ -171,72 +171,48 @@ def dotnet_nunit_test_suite(
         "@paket.nuget//nunitlite",
     ]
 
-    if not browsers or not len(browsers):
-        # No browsers: one test target per file (unit tests, small suites)
-        tests = []
-        for src in test_srcs:
-            suffix = src.rfind(".")
-            test_name = src[:suffix]
+    # Compile all tests into a single binary once,
+    # then create wrapper tests that execute it with --where filters.
+    csharp_test(
+        name = name,
+        srcs = all_srcs,
+        deps = deps + extra_deps,
+        target_frameworks = target_frameworks,
+        data = data,
+        tags = ["manual"] + tags,
+        size = size,
+        **kwargs
+    )
 
-            csharp_test(
-                name = test_name,
-                srcs = lib_srcs + [src] + [_NUNIT_SHIM],
-                deps = deps + extra_deps,
-                target_frameworks = target_frameworks,
-                data = data,
-                tags = tags,
-                size = size,
-                **kwargs
-            )
-            tests.append(test_name)
+    browsers = browsers or [None]
+    default_browser = browsers[0]
 
-        native.test_suite(
-            name = name,
-            tests = tests,
-            tags = ["manual"] + tags,
-        )
-    else:
-        # With browsers: compile all tests into a single binary once,
-        # then create wrapper tests that execute it with --where filters.
-        bin_kwargs = dict(**kwargs)
+    for src in test_srcs:
+        suffix = src.rfind(".")
+        test_name = src[:suffix]
 
-        csharp_test(
-            name = name,
-            srcs = all_srcs,
-            deps = deps + extra_deps,
-            target_frameworks = target_frameworks,
-            data = data,
-            tags = ["manual"] + tags,
-            size = size,
-            **bin_kwargs
-        )
+        # Extract class name from path (e.g., "BiDi/BrowsingContext/BrowsingContextTests" -> "BrowsingContextTests")
+        slash = test_name.rfind("/")
+        class_name = test_name[slash + 1:] if slash >= 0 else test_name
 
-        default_browser = browsers[0]
+        for browser in browsers:
+            browser_test_name = "%s-%s" % (test_name, browser) if browser else test_name
+            where_filter = "--where=class==%s" % class_name
+            browser_args = _BROWSERS[browser]["args"] + _HEADLESS_ARGS if browser else []
+            browser_data = _BROWSERS[browser]["data"] if browser else []
+            browser_tags = [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"] if browser else []
 
-        tests = []
-        for src in test_srcs:
-            suffix = src.rfind(".")
-            test_name = src[:suffix]
-
-            # Extract class name from path (e.g., "BiDi/BrowsingContext/BrowsingContextTests" -> "BrowsingContextTests")
-            slash = test_name.rfind("/")
-            class_name = test_name[slash + 1:] if slash >= 0 else test_name
-
-            for browser in browsers:
-                browser_test_name = "%s-%s" % (test_name, browser)
-                where_filter = "--where=class==%s" % class_name
-
-                if browser == default_browser:
-                    native.test_suite(
-                        name = test_name,
-                        tests = [browser_test_name],
-                    )
-
-                _test_wrapper_test(
-                    name = browser_test_name,
-                    test_binary = ":" + name,
-                    args = _NUNIT_ARGS + [where_filter] + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
-                    data = data + _BROWSERS[browser]["data"],
-                    tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
-                    size = size,
+            if browser and browser == default_browser:
+                native.test_suite(
+                    name = test_name,
+                    tests = [browser_test_name],
                 )
+
+            _test_wrapper_test(
+                name = browser_test_name,
+                test_binary = ":" + name,
+                args = _NUNIT_ARGS + [where_filter] + browser_args,
+                data = data + browser_data,
+                tags = tags + browser_tags,
+                size = size,
+            )
