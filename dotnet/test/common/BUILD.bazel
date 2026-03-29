@@ -38,7 +38,6 @@ dotnet_nunit_test_suite(
     ],
     data = [
         ":test-data",
-        "//common/manager:selenium-manager-macos",
     ],
     target_frameworks = ["net8.0"],
     visibility = ["//dotnet/test:__subpackages__"],
