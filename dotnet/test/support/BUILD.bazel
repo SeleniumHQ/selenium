@@ -29,9 +29,7 @@ dotnet_nunit_test_suite(
 dotnet_nunit_test_suite(
     name = "LargeTests",
     size = "large",
-    srcs = glob(["**/*Tests.cs"], exclude = SMALL_TESTS) + [
-        "//dotnet/test/common:AssemblyFixture.cs",
-    ],
+    srcs = glob(["**/*Tests.cs"], exclude = SMALL_TESTS),
     browsers = [
         "firefox",
     ],

@@ -1,10 +1,5 @@
 load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 
-exports_files(
-    ["AssemblyFixture.cs"],
-    visibility = ["//dotnet/test:__subpackages__"],
-)
-
 filegroup(
     name = "test-data",
     testonly = True,
