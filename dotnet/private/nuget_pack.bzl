@@ -7,7 +7,6 @@ _CSPROJ_TEMPLATE = """\
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>{id}</AssemblyName>
-        <RootNamespace>OpenQA.Selenium</RootNamespace>
     </PropertyGroup>
 </Project>
 """
