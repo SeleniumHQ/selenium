@@ -167,6 +167,15 @@ def dotnet_nunit_test_suite(
         **kwargs):
     test_srcs = [src for src in srcs if _is_test(src)]
 
+    browsers = browsers or [None]
+    default_browser = browsers[0]
+
+    # Collect all browser data deps so the compiled binary has everything.
+    all_browser_data = []
+    for browser in browsers:
+        if browser:
+            all_browser_data += _BROWSERS[browser]["data"]
+
     # Compile all tests into a single binary once,
     # then create wrapper tests that execute it with --where filters.
     csharp_test(
@@ -174,14 +183,11 @@ def dotnet_nunit_test_suite(
         srcs = srcs + [_NUNIT_SHIM],
         deps = deps + ["@paket.nuget//nunitlite"],
         target_frameworks = target_frameworks,
-        data = data,
+        data = data + all_browser_data,
         tags = ["manual"] + tags,
         size = size,
         **kwargs
     )
-
-    browsers = browsers or [None]
-    default_browser = browsers[0]
 
     for src in test_srcs:
         test_name = src[:src.rfind(".")]
@@ -204,7 +210,7 @@ def dotnet_nunit_test_suite(
                 name = browser_test_name,
                 test_binary = ":" + name,
                 args = _NUNIT_ARGS + ["--where=class=~\\.%s$$" % class_name] + browser_args,
-                data = data + browser_data,
+                data = browser_data,
                 tags = tags + browser_tags,
                 size = size,
             )
