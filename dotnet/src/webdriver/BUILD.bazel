@@ -305,10 +305,6 @@ nuget_pack(
         ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "Selenium.WebDriver.StrongNamed.nuspec",
-    property_group_vars = {
-        "BaseImagePath": "images",
-        "BaseSeleniumManagerPath": "manager",
-    },
     tags = [
         "block-network",
     ],
