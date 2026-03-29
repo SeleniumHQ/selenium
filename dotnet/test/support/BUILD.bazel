@@ -1,12 +1,14 @@
 load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 
 SMALL_TESTS = [
-    "DefaultWaitTests.cs",
-    "HandCrankClock.cs",
-    "LoadableComponentTests.cs",
-    "SelectTests.cs",
-    "SlowLoadableComponentTests.cs",
-    "WebDriverWaitTests.cs",
+    "Events/EventFiringWebDriverTests.cs",
+    "Extensions/ExecuteJavaScriptTests.cs",
+    "UI/DefaultWaitTests.cs",
+    "UI/HandCrankClock.cs",
+    "UI/LoadableComponentTests.cs",
+    "UI/SelectTests.cs",
+    "UI/SlowLoadableComponentTests.cs",
+    "UI/WebDriverWaitTests.cs",
 ]
 
 dotnet_nunit_test_suite(
@@ -18,21 +20,17 @@ dotnet_nunit_test_suite(
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
-        nuget_package("NUnit"),
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("Moq"),
+        nuget_package("NUnit"),
     ],
 )
 
 dotnet_nunit_test_suite(
     name = "LargeTests",
     size = "large",
-    srcs = glob(
-        [
-            "**/*Tests.cs",
-        ],
-        exclude = SMALL_TESTS,
-    ) + [
-        "//dotnet/test/common:assembly-fixtures",
+    srcs = glob(["**/*Tests.cs"], exclude = SMALL_TESTS) + [
+        "//dotnet/test/common:AssemblyFixture.cs",
     ],
     browsers = [
         "firefox",

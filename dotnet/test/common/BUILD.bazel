@@ -1,14 +1,8 @@
 load("//dotnet:defs.bzl", "csharp_library", "dotnet_nunit_test_suite", "nuget_package")
 
-filegroup(
-    name = "assembly-fixtures",
-    testonly = True,
-    srcs = [
-        "AssemblyFixture.cs",
-    ],
-    visibility = [
-        "//dotnet/test:__subpackages__",
-    ],
+exports_files(
+    ["AssemblyFixture.cs"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 filegroup(
@@ -40,6 +34,7 @@ csharp_library(
         ["**/*.cs"],
         exclude = [
             "**/*Tests.cs",
+            "AssemblyFixture.cs",
         ],
     ),
     data = [
@@ -68,7 +63,7 @@ dotnet_nunit_test_suite(
     srcs = glob([
         "**/*Tests.cs",
     ]) + [
-        ":assembly-fixtures",
+        "AssemblyFixture.cs",
     ],
     out = "WebDriver.Common.Tests",
     browsers = [

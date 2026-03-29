@@ -120,6 +120,38 @@ _NUNIT_ARGS = [
     "--workers=1",  # Bazel tests share a single driver instance; prevent NUnit parallelism
 ]
 
+_NUNIT_SHIM = "@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"
+
+def _test_wrapper_impl(ctx):
+    binary = ctx.executable.test_binary
+
+    # Symlink the test binary as this rule's executable
+    symlink = ctx.actions.declare_file(ctx.label.name)
+    ctx.actions.symlink(output = symlink, target_file = binary, is_executable = True)
+
+    runfiles = ctx.runfiles(files = ctx.files.data)
+    runfiles = runfiles.merge(ctx.attr.test_binary[DefaultInfo].default_runfiles)
+    for d in ctx.attr.data:
+        runfiles = runfiles.merge(d[DefaultInfo].default_runfiles)
+
+    return [DefaultInfo(
+        executable = symlink,
+        runfiles = runfiles,
+    )]
+
+_test_wrapper_test = rule(
+    implementation = _test_wrapper_impl,
+    test = True,
+    attrs = {
+        "test_binary": attr.label(
+            executable = True,
+            cfg = "target",
+            mandatory = True,
+        ),
+        "data": attr.label_list(allow_files = True),
+    },
+)
+
 def dotnet_nunit_test_suite(
         name,
         srcs,
@@ -133,25 +165,22 @@ def dotnet_nunit_test_suite(
         **kwargs):
     test_srcs = [src for src in srcs if _is_test(src, test_suffixes)]
     lib_srcs = [src for src in srcs if not _is_test(src, test_suffixes)]
+    all_srcs = lib_srcs + test_srcs + [_NUNIT_SHIM]
 
     extra_deps = [
         "@paket.nuget//nunitlite",
     ]
 
-    if browsers and len(browsers):
-        default_browser = browsers[0]
-    else:
-        default_browser = None
+    if not browsers or not len(browsers):
+        # No browsers: one test target per file (unit tests, small suites)
+        tests = []
+        for src in test_srcs:
+            suffix = src.rfind(".")
+            test_name = src[:suffix]
 
-    tests = []
-    for src in test_srcs:
-        suffix = src.rfind(".")
-        test_name = src[:suffix]
-
-        if not browsers or not len(browsers):
             csharp_test(
                 name = test_name,
-                srcs = lib_srcs + [src] + ["@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"],
+                srcs = lib_srcs + [src] + [_NUNIT_SHIM],
                 deps = deps + extra_deps,
                 target_frameworks = target_frameworks,
                 data = data,
@@ -160,9 +189,43 @@ def dotnet_nunit_test_suite(
                 **kwargs
             )
             tests.append(test_name)
-        else:
+
+        native.test_suite(
+            name = name,
+            tests = tests,
+            tags = ["manual"] + tags,
+        )
+    else:
+        # With browsers: compile all tests into a single binary once,
+        # then create sh_test wrappers that execute it with --where filters.
+        bin_name = name + "-bin"
+        bin_kwargs = dict(**kwargs)
+
+        csharp_test(
+            name = bin_name,
+            srcs = all_srcs,
+            deps = deps + extra_deps,
+            target_frameworks = target_frameworks,
+            data = data,
+            tags = ["manual"] + tags,
+            size = size,
+            **bin_kwargs
+        )
+
+        default_browser = browsers[0]
+
+        tests = []
+        for src in test_srcs:
+            suffix = src.rfind(".")
+            test_name = src[:suffix]
+
+            # Extract class name from path (e.g., "BiDi/BrowsingContext/BrowsingContextTests" -> "BrowsingContextTests")
+            slash = test_name.rfind("/")
+            class_name = test_name[slash + 1:] if slash >= 0 else test_name
+
             for browser in browsers:
                 browser_test_name = "%s-%s" % (test_name, browser)
+                where_filter = "--where=class==%s" % class_name
 
                 if browser == default_browser:
                     native.test_suite(
@@ -170,21 +233,18 @@ def dotnet_nunit_test_suite(
                         tests = [browser_test_name],
                     )
 
-                csharp_test(
+                _test_wrapper_test(
                     name = browser_test_name,
-                    srcs = lib_srcs + [src] + ["@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"],
-                    deps = deps + extra_deps,
-                    target_frameworks = target_frameworks,
-                    args = _NUNIT_ARGS + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
+                    test_binary = ":" + bin_name,
+                    args = _NUNIT_ARGS + [where_filter] + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
                     data = data + _BROWSERS[browser]["data"],
                     tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
                     size = size,
-                    **kwargs
                 )
                 tests.append(browser_test_name)
 
-    native.test_suite(
-        name = name,
-        tests = tests,
-        tags = ["manual"] + tags,
-    )
+        native.test_suite(
+            name = name,
+            tests = tests,
+            tags = ["manual"] + tags,
+        )
