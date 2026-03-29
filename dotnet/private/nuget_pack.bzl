@@ -124,9 +124,8 @@ def nuget_pack_impl(ctx):
     ctx.actions.run_shell(
         outputs = [pkg, symbols_pkg],
         inputs = list(layout.keys()) + [nuspec, csproj_file, dotnet, packages],
-        tools = [
-            dotnet,
-        ] + toolchain.default.files.to_list() +
+        tools = [dotnet] +
+            toolchain.default.files.to_list() +
             toolchain.runtime.default_runfiles.files.to_list() +
             toolchain.runtime.data_runfiles.files.to_list(),
         command = cmd,
