@@ -99,6 +99,7 @@ def nuget_pack_impl(ctx):
             "$DOTNET pack --no-build --include-symbols",
             "-p:NuspecFile=project.nuspec",
             "-p:SymbolPackageFormat=snupkg",
+            "-p:NoWarn=NU5048",  # suppress 'iconUrl is deprecated, use icon' warning since nuspec uses both
             "-p:Configuration=" + build_flavor,
             "-p:PackageId=" + ctx.attr.id,
             "-p:Version=" + ctx.attr.version,
