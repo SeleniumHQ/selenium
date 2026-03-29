@@ -52,6 +52,7 @@ def test_uses_environment_variable(monkeypatch):
 
 def test_uses_windows(monkeypatch):
     monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr("platform.machine", lambda: "AMD64")
     binary = SeleniumManager()._get_binary()
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
