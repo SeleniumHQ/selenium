@@ -56,9 +56,9 @@ def nuget_pack_impl(ctx):
     package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs if lib.nuget_info]).to_list()
 
     packages = ctx.actions.declare_directory("%s-nuget-packages" % ctx.label.name)
-    packages_cmd = "mkdir -p " + packages.path
+    packages_cmd = "mkdir -p '%s'" % packages.path
     if package_files:
-        packages_cmd += " && cp " + " ".join([f.path for f in package_files]) + " " + packages.path
+        packages_cmd += " && cp " + " ".join(["'%s'" % f.path for f in package_files]) + " '%s'" % packages.path
 
     ctx.actions.run_shell(
         outputs = [packages],
@@ -80,18 +80,18 @@ def nuget_pack_impl(ctx):
     copy_cmds = []
     for (file, rel_path) in layout.items():
         dest = working_dir + "/" + rel_path
-        copy_cmds.append("mkdir -p $(dirname {dest}) && cp {src} {dest}".format(
+        copy_cmds.append("mkdir -p \"$(dirname '{dest}')\" && cp '{src}' '{dest}'".format(
             dest = dest,
             src = file.path,
         ))
 
     cmd_parts = [
-        "rm -rf " + working_dir,
-        "mkdir -p " + working_dir,
+        "rm -rf '%s'" % working_dir,
+        "mkdir -p '%s'" % working_dir,
     ] + copy_cmds + [
-        "cp {src} {dir}/project.nuspec".format(src = nuspec.path, dir = working_dir),
-        "cp {src} {dir}/project.csproj".format(src = csproj_file.path, dir = working_dir),
-        "cd " + working_dir,
+        "cp '{src}' '{dir}/project.nuspec'".format(src = nuspec.path, dir = working_dir),
+        "cp '{src}' '{dir}/project.csproj'".format(src = csproj_file.path, dir = working_dir),
+        "cd '%s'" % working_dir,
         "echo '<configuration><packageSources><clear /><add key=\"local\" value=\"%CWD%/{packages}\" /></packageSources></configuration>' >nuget.config".format(
             packages = packages.path,
         ),
@@ -107,12 +107,12 @@ def nuget_pack_impl(ctx):
             "-p:PackageVersion=" + ctx.attr.version,
             "-p:NuspecProperties=\"version=" + ctx.attr.version + "\"",
         ]),
-        "cp bin/{flavor}/{stem}.nupkg ../{pkg}".format(
+        "cp 'bin/{flavor}/{stem}.nupkg' '../{pkg}'".format(
             flavor = build_flavor,
             stem = nupkg_stem,
             pkg = pkg.path,
         ),
-        "cp bin/{flavor}/{stem}.snupkg ../{symbols}".format(
+        "cp 'bin/{flavor}/{stem}.snupkg' '../{symbols}'".format(
             flavor = build_flavor,
             stem = nupkg_stem,
             symbols = symbols_pkg.path,
