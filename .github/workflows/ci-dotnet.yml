@@ -40,4 +40,4 @@ jobs:
       name: Remote Tests
       os: windows
       run: |
-        bazel test //dotnet/test/remote:AllTests --flaky_test_attempts=3
+        bazel test //dotnet/test/remote --flaky_test_attempts=3
