@@ -131,7 +131,8 @@ def _test_wrapper_impl(ctx):
     runfiles = ctx.runfiles(files = ctx.files.data)
     runfiles = runfiles.merge(ctx.attr.test_binary[DefaultInfo].default_runfiles)
     for d in ctx.attr.data:
-        runfiles = runfiles.merge(d[DefaultInfo].default_runfiles)
+        if DefaultInfo in d:
+            runfiles = runfiles.merge(d[DefaultInfo].default_runfiles)
 
     return [DefaultInfo(
         executable = symlink,
