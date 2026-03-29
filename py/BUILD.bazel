@@ -103,6 +103,12 @@ copy_file(
 )
 
 copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "selenium/webdriver/common/linux/selenium-manager-arm64",
+)
+
+copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "selenium/webdriver/common/macos/selenium-manager",
@@ -112,6 +118,12 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-windows-arm64",
+    src = "//common/manager:selenium-manager-windows-arm64",
+    out = "selenium/webdriver/common/windows/selenium-manager-arm64.exe",
 )
 
 copy_file(

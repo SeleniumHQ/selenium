@@ -54,10 +54,20 @@ def test_uses_environment_variable(monkeypatch):
 
 def test_uses_windows(monkeypatch):
     monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr("platform.machine", lambda: "AMD64")
     binary = SeleniumManager()._get_binary()
 
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
+
+
+def test_uses_windows_arm(monkeypatch):
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr("platform.machine", lambda: "arm64")
+    binary = SeleniumManager()._get_binary()
+
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager-arm64.exe")
 
 
 def test_uses_linux(monkeypatch):
@@ -69,12 +79,13 @@ def test_uses_linux(monkeypatch):
     assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager")
 
 
-def test_uses_linux_arm64(monkeypatch):
+def test_uses_linux_arm(monkeypatch):
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr("platform.machine", lambda: "arm64")
 
-    with pytest.raises(WebDriverException, match="Unsupported platform/architecture combination: linux/arm64"):
-        SeleniumManager()._get_binary()
+    binary = SeleniumManager()._get_binary()
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager-arm64")
 
 
 def test_uses_mac(monkeypatch):
@@ -99,7 +110,7 @@ def test_errors_if_invalid_os(monkeypatch):
 
     with pytest.raises(WebDriverException) as excinfo:
         SeleniumManager()._get_binary()
-    assert "Unsupported platform/architecture combination" in str(excinfo.value)
+    assert "Unsupported platform" in str(excinfo.value)
 
 
 def test_error_if_invalid_env_path(monkeypatch):
