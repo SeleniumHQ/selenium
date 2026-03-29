@@ -86,6 +86,7 @@ def nuget_pack_impl(ctx):
         ))
 
     cmd_parts = [
+        "rm -rf " + working_dir,
         "mkdir -p " + working_dir,
     ] + copy_cmds + [
         "cp {src} {dir}/project.nuspec".format(src = nuspec.path, dir = working_dir),
