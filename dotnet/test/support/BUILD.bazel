@@ -19,7 +19,7 @@ dotnet_nunit_test_suite(
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
-        "//dotnet/test/common:fixtures",
+        "//dotnet/test/common:AllTests-bin",
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("Moq"),
         nuget_package("NUnit"),
@@ -42,7 +42,7 @@ dotnet_nunit_test_suite(
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
-        "//dotnet/test/common:fixtures",
+        "//dotnet/test/common:AllTests-bin",
         nuget_package("NUnit"),
     ],
 )
