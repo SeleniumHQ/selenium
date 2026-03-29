@@ -199,7 +199,7 @@ def dotnet_nunit_test_suite(
             _test_wrapper_test(
                 name = browser_test_name,
                 test_binary = ":" + name,
-                args = _NUNIT_ARGS + ["--where=class==%s" % class_name] + browser_args,
+                args = _NUNIT_ARGS + ["--where=class=~\\.%s$$" % class_name] + browser_args,
                 data = data + browser_data,
                 tags = tags + browser_tags,
                 size = size,
