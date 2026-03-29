@@ -197,12 +197,11 @@ def dotnet_nunit_test_suite(
         )
     else:
         # With browsers: compile all tests into a single binary once,
-        # then create sh_test wrappers that execute it with --where filters.
-        bin_name = name + "-bin"
+        # then create wrapper tests that execute it with --where filters.
         bin_kwargs = dict(**kwargs)
 
         csharp_test(
-            name = bin_name,
+            name = name,
             srcs = all_srcs,
             deps = deps + extra_deps,
             target_frameworks = target_frameworks,
@@ -235,16 +234,9 @@ def dotnet_nunit_test_suite(
 
                 _test_wrapper_test(
                     name = browser_test_name,
-                    test_binary = ":" + bin_name,
+                    test_binary = ":" + name,
                     args = _NUNIT_ARGS + [where_filter] + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
                     data = data + _BROWSERS[browser]["data"],
                     tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
                     size = size,
                 )
-                tests.append(browser_test_name)
-
-        native.test_suite(
-            name = name,
-            tests = tests,
-            tags = ["manual"] + tags,
-        )
