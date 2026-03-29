@@ -94,10 +94,10 @@
   </Target>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
 
     <ItemGroup>
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
     </ItemGroup>
   </Target>
 

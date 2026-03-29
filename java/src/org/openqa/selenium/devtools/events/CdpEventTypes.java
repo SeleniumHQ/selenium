@@ -66,7 +66,9 @@ public class CdpEventTypes {
   public static EventType<Void> domMutation(Consumer<@Nullable DomMutationEvent> handler) {
     Require.nonNull("Handler", handler);
 
-    String script = Read.resourceAsString("/org/openqa/selenium/devtools/mutation-listener.js");
+    String script =
+        Read.resourceAsString(
+            CdpEventTypes.class, "/org/openqa/selenium/devtools/mutation-listener.js");
 
     return new EventType<>() {
       @Override
