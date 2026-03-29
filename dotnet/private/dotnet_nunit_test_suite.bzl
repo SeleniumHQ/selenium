@@ -120,9 +120,12 @@ _NUNIT_SHIM = "@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"
 
 def _test_wrapper_impl(ctx):
     binary = ctx.executable.test_binary
+    is_windows = ctx.target_platform_has_constraint(ctx.attr._windows_constraint[platform_common.ConstraintValueInfo])
 
-    # Symlink the test binary as this rule's executable
-    symlink = ctx.actions.declare_file(ctx.label.name)
+    # On Windows, the test binary is a .bat launcher; preserve the extension
+    # so Bazel's test runner invokes it through cmd.exe instead of CreateProcessW.
+    ext = ".bat" if is_windows else ""
+    symlink = ctx.actions.declare_file(ctx.label.name + ext)
     ctx.actions.symlink(output = symlink, target_file = binary, is_executable = True)
 
     runfiles = ctx.runfiles(files = ctx.files.data)
@@ -145,6 +148,7 @@ _test_wrapper_test = rule(
             mandatory = True,
         ),
         "data": attr.label_list(allow_files = True),
+        "_windows_constraint": attr.label(default = "@platforms//os:windows"),
     },
 )
 
