@@ -56,8 +56,14 @@ public class RemoteSeleniumServer
 
     public async Task StartAsync()
     {
-        if (autoStartServer && (webserverProcess == null || webserverProcess.HasExited))
+        if (webserverProcess == null || webserverProcess.HasExited)
         {
+            if (!autoStartServer)
+            {
+                serverPort = FindAvailablePort();
+                UpdateServerUri(serverPort);
+            }
+
             const int maxAttempts = 5;
             Exception? lastStartException = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
@@ -166,7 +172,7 @@ public class RemoteSeleniumServer
 
     public async Task StopAsync()
     {
-        if (autoStartServer && webserverProcess != null && !webserverProcess.HasExited)
+        if (webserverProcess != null && !webserverProcess.HasExited)
         {
             using (var httpClient = new HttpClient())
             {

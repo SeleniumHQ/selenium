@@ -31,10 +31,7 @@ public class AssemblyTeardown
     public async Task RunBeforeAnyTestAsync()
     {
         await EnvironmentManager.Instance.WebServer.StartAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StartAsync();
-        }
+        await EnvironmentManager.Instance.RemoteServer.StartAsync();
     }
 
     [OneTimeTearDown]
@@ -42,9 +39,6 @@ public class AssemblyTeardown
     {
         EnvironmentManager.Instance.CloseCurrentDriver();
         await EnvironmentManager.Instance.WebServer.StopAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StopAsync();
-        }
+        await EnvironmentManager.Instance.RemoteServer.StopAsync();
     }
 }
