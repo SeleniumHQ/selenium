@@ -61,7 +61,7 @@
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
 
-  <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="BeforeBuild">
+  <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
     <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
   </Target>
 
@@ -85,17 +85,21 @@
     <None Update="assets/nuget/buildTransitive/Selenium.WebDriver.props" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
 
-  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
+  <Target Name="GenerateResources" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
     <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
+  </Target>
 
+  <Target Name="IncludeResources" BeforeTargets="CoreCompile">
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
     </ItemGroup>
   </Target>
 
-  <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
+  <Target Name="GenerateCdp" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
     <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
+  </Target>
 
+  <Target Name="IncludeCdp" BeforeTargets="CoreCompile">
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
     </ItemGroup>
