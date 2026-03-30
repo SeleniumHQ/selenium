@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Support.UI;
 
