@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium.Common.Tests;
 using OpenQA.Selenium.Common.Tests.Infrastructure;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Support.UI;
 

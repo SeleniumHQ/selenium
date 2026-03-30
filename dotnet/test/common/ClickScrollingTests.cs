@@ -19,7 +19,6 @@
 
 using System.Drawing;
 using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Common.Tests;
 

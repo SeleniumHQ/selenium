@@ -21,7 +21,6 @@ using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Permissions;
 using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Common.Tests.BiDi.Permissions;
 
