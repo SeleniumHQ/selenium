@@ -92,41 +92,41 @@
     "binaries": [
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.6/ruff-aarch64-unknown-linux-musl.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-aarch64-unknown-linux-musl.tar.gz",
         "file": "ruff-aarch64-unknown-linux-musl/ruff",
-        "sha256": "750164384c78e208b5e5bf764916f23270844c6a6ea0057dec1f7951bce02fca",
+        "sha256": "15e6a6c21696bbe59c56d0f1c437452b960bcdfe81ecc3bc19fa89e6a7d70eb6",
         "os": "linux",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.6/ruff-x86_64-unknown-linux-musl.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-x86_64-unknown-linux-musl.tar.gz",
         "file": "ruff-x86_64-unknown-linux-musl/ruff",
-        "sha256": "7ca0d590da2274429e8033cdaae1d923229ad19b2df7d8c2c3b94451527ab45c",
+        "sha256": "d541beae99d550ed4abb3a1d026b907886c7cdf44a533b24624871e3d8c81330",
         "os": "linux",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.6/ruff-aarch64-apple-darwin.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-aarch64-apple-darwin.tar.gz",
         "file": "ruff-aarch64-apple-darwin/ruff",
-        "sha256": "e90a351ddc2e5e411168b5cbfc7d694231e793948d0a29aa82618ea6f17225f1",
+        "sha256": "94fc061f928c8f2b04c4b3a98aad2b1b04f38b4c808839bc5b33a2f0a63a47a3",
         "os": "macos",
         "cpu": "arm64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.6/ruff-x86_64-apple-darwin.tar.gz",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-x86_64-apple-darwin.tar.gz",
         "file": "ruff-x86_64-apple-darwin/ruff",
-        "sha256": "aef752bd803e58a732651d7ecd8434288f2ce7f252e415ecfa5b4a1518aea218",
+        "sha256": "153d1801068df606290e832058ce2e5601584ac302788a055d0390adf6c772ce",
         "os": "macos",
         "cpu": "x86_64"
       },
       {
         "kind": "archive",
-        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.6/ruff-x86_64-pc-windows-msvc.zip",
+        "url": "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-x86_64-pc-windows-msvc.zip",
         "file": "ruff-x86_64-pc-windows-msvc/ruff.exe",
-        "sha256": "34548ff94a9f52c96c75672d34eee6068a4bf4fdcb3ca12d10e9f4b8abedad96",
+        "sha256": "1e6ebd021dc9cefa8b9f15b5d6500c275ec49a0f2da968824845c34f30060c78",
         "os": "windows",
         "cpu": "x86_64"
       }
