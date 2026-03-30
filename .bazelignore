@@ -3,8 +3,8 @@ dotnet/test/firefox/bin
 dotnet/test/firefox/obj
 dotnet/test/edge/bin
 dotnet/test/edge/obj
-dotnet/test/common/bin
-dotnet/test/common/obj
+dotnet/test/webdriver/bin
+dotnet/test/webdriver/obj
 dotnet/test/support/bin
 dotnet/test/support/obj
 dotnet/test/safari/bin
