@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
-    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" />
   </Target>
 
   <ItemGroup>
@@ -86,7 +86,7 @@
   </ItemGroup>
 
   <Target Name="GenerateResources" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
-    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" />
   </Target>
 
   <Target Name="IncludeResources" BeforeTargets="CoreCompile">
@@ -96,7 +96,7 @@
   </Target>
 
   <Target Name="GenerateDevTools" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
-    <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." />
   </Target>
 
   <Target Name="IncludeDevTools" BeforeTargets="CoreCompile">
