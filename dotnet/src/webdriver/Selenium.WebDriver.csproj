@@ -95,11 +95,11 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GenerateCdp" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
+  <Target Name="GenerateDevTools" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == ''">
     <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
   </Target>
 
-  <Target Name="IncludeCdp" BeforeTargets="CoreCompile">
+  <Target Name="IncludeDevTools" BeforeTargets="CoreCompile">
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
     </ItemGroup>
