@@ -18,8 +18,8 @@
 // </copyright>
 
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
 

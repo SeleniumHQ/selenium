@@ -19,8 +19,8 @@
 
 using System.Collections.ObjectModel;
 using System.Text;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 

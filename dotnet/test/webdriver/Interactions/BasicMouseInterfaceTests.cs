@@ -18,8 +18,8 @@
 // </copyright>
 
 using System.Drawing;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.Interactions;
 

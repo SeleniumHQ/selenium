@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium.Tests;
