@@ -26,20 +26,6 @@ namespace OpenQA.Selenium.Support.UI;
 [TestFixture]
 public class PopupWindowFinderTests : DriverTestFixture
 {
-    //TODO: Move these to a standalone class when more tests rely on the server being up
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
-    {
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-    }
-
     [Test]
     public void ShouldFindPopupWindowUsingAction()
     {
