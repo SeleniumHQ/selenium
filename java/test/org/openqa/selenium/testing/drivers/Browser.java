@@ -135,6 +135,7 @@ public enum Browser {
     @Override
     public Capabilities getCapabilities() {
       FirefoxOptions options = new FirefoxOptions().configureFromEnv();
+      options.setCapability("unhandledPromptBehavior", "ignore");
 
       resolveDriverPath("webdriver.gecko.driver");
       String binary = InProject.resolveRunfilesPath(System.getProperty("webdriver.firefox.bin"));
