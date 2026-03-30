@@ -47,7 +47,6 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowserCommandsTest extends JupiterTestBase {
 
@@ -133,7 +132,6 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorAllowed() {
     browser.setDownloadBehavior(new SetDownloadBehaviorParameters(allowed(tmpDir)));
 
@@ -148,7 +146,6 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorDenied() throws InterruptedException {
     browser.setDownloadBehavior(new SetDownloadBehaviorParameters(denied()));
 
@@ -168,7 +165,6 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
