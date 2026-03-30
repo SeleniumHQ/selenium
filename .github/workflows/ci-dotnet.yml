@@ -31,7 +31,7 @@ jobs:
       name: Browser Tests
       os: windows
       run: |
-        bazel test //dotnet/test/common:ElementFindingTests-firefox //dotnet/test/common:ElementFindingTests-chrome
+        bazel test //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
 
   remote-tests:
     name: Remote Tests

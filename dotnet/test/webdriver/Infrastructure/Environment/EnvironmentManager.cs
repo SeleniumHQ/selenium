@@ -39,7 +39,7 @@ public class EnvironmentManager
         try
         {
             runfiles = Runfiles.Create();
-            dataFilePath = runfiles.Rlocation("_main/dotnet/test/common/appconfig.json");
+            dataFilePath = runfiles.Rlocation("_main/dotnet/test/webdriver/appconfig.json");
         }
         catch (FileNotFoundException)
         {
