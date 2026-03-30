@@ -19,7 +19,7 @@
 
 using System.Threading.Tasks;
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly

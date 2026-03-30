@@ -20,10 +20,10 @@
 using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Common.Tests;
-using OpenQA.Selenium.Common.Tests.Infrastructure;
+using OpenQA.Selenium.Tests;
+using OpenQA.Selenium.Tests.Infrastructure;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Remote;
 

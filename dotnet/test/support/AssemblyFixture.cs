@@ -19,8 +19,8 @@
 
 using System.Threading.Tasks;
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests.Infrastructure;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Tests.Infrastructure;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Support;
 

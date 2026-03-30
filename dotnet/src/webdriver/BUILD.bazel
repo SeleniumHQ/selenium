@@ -49,7 +49,7 @@ csharp_library(
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",
@@ -82,7 +82,7 @@ csharp_library(
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",
@@ -119,7 +119,7 @@ csharp_library(
         "NET8_0_OR_GREATER",
     ],
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",

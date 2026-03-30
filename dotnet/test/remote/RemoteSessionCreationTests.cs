@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests;
+using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Remote;
 

@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests;
+using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Remote;
 

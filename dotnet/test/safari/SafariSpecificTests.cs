@@ -18,7 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests;
+using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Safari;
 

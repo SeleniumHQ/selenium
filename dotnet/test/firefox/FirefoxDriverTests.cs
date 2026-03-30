@@ -22,9 +22,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using NUnit.Framework;
-using OpenQA.Selenium.Common.Tests;
-using OpenQA.Selenium.Common.Tests.Infrastructure;
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Tests;
+using OpenQA.Selenium.Tests.Infrastructure;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Firefox;
 

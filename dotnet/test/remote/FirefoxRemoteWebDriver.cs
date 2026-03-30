@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Firefox;
 
 namespace OpenQA.Selenium.Remote;

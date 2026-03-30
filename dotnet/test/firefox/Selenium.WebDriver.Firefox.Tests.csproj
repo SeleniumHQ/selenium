@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\common\Selenium.WebDriver.Common.Tests.csproj" />
+    <ProjectReference Include="..\common\Selenium.WebDriver.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

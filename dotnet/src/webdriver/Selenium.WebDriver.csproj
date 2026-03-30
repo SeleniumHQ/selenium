@@ -53,7 +53,7 @@
   </PropertyGroup>-->
 
   <ItemGroup>
-    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
+    <InternalsVisibleTo Include="WebDriver.Tests" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">

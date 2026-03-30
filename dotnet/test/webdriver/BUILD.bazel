@@ -1,0 +1,50 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
+
+filegroup(
+    name = "test-data",
+    testonly = True,
+    srcs = [],
+    data = [
+        "appconfig.json",
+        "//common/extensions",
+        "//common/src/web",
+        "//dotnet/src/webdriver:manager-linux",
+        "//dotnet/src/webdriver:manager-macos",
+        "//dotnet/src/webdriver:manager-windows",
+        "//java/test/org/openqa/selenium/environment:appserver",
+        "//java/test/org/openqa/selenium/environment:keystore",
+        "//javascript/atoms",
+        "//third_party/closure/goog",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+)
+
+dotnet_nunit_test_suite(
+    name = "webdriver",
+    size = "small",
+    srcs = glob(["**/*.cs"]),
+    out = "WebDriver.Tests",
+    browsers = [
+        # The first browser in this list is assumed to be the one that should
+        # be used by default.
+        "firefox",
+        # "safari",  # Skipping safari for now
+        "ie",
+        "edge",
+        "chrome",
+    ],
+    data = [
+        ":test-data",
+    ],
+    target_frameworks = ["net8.0"],
+    visibility = ["//dotnet/test:__subpackages__"],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net8.0",
+        nuget_package("BenderProxy"),
+        nuget_package("NUnit"),
+        nuget_package("Runfiles"),
+    ],
+)
