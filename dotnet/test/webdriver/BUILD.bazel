@@ -31,7 +31,7 @@ dotnet_nunit_test_suite(
         # The first browser in this list is assumed to be the one that should
         # be used by default.
         "firefox",
-        # "safari",  # Skipping safari for now
+        "safari",
         "ie",
         "edge",
         "chrome",
