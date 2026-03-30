@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
+using OpenQA.Selenium.Firefox;
 
-namespace OpenQA.Selenium.Firefox;
+namespace OpenQA.Selenium.Tests.Firefox;
 
 [Ignore("")]
 [TestFixture]

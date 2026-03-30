@@ -17,14 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using NUnit.Framework;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Internal.Logging;
 
-namespace OpenQA.Selenium.Firefox;
+namespace OpenQA.Selenium.Tests.Firefox;
 
 [TestFixture]
 public class FirefoxDriverServiceTests

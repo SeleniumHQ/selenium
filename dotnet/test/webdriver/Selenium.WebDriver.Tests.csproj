@@ -32,6 +32,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IE/" />
+  </ItemGroup>
+
   <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
     <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver" WorkingDirectory="../../.." />
   </Target>

@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using NUnit.Framework;
+using OpenQA.Selenium.Firefox;
 
-namespace OpenQA.Selenium.Firefox;
+namespace OpenQA.Selenium.Tests.Firefox;
 
 [Ignore("")]
 [TestFixture]

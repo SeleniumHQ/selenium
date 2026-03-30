@@ -4,12 +4,7 @@
     <Project Path="src/webdriver/Selenium.WebDriver.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/chrome/Selenium.WebDriver.Chrome.Tests.csproj" />
-    <Project Path="test/edge/Selenium.WebDriver.Edge.Tests.csproj" />
-    <Project Path="test/firefox/Selenium.WebDriver.Firefox.Tests.csproj" />
-    <Project Path="test/ie/Selenium.WebDriver.IE.Tests.csproj" />
     <Project Path="test/remote/Selenium.WebDriver.Remote.Tests.csproj" />
-    <Project Path="test/safari/Selenium.WebDriver.Safari.Tests.csproj" />
     <Project Path="test/support/Selenium.WebDriver.Support.Tests.csproj" />
     <Project Path="test/webdriver/Selenium.WebDriver.Tests.csproj" />
   </Folder>
