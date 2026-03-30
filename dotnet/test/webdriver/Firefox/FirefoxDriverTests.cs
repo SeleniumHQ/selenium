@@ -24,6 +24,9 @@ using OpenQA.Selenium.Tests.Infrastructure.Environment;
 namespace OpenQA.Selenium.Tests.Firefox;
 
 [TestFixture]
+[IgnoreBrowser(Browser.Chrome)]
+[IgnoreBrowser(Browser.Edge)]
+[IgnoreBrowser(Browser.Safari)]
 public class FirefoxDriverTests : DriverTestFixture
 {
     [Ignore("")]
