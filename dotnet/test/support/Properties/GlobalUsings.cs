@@ -1,4 +1,4 @@
-// <copyright file="EventFiringWebDriverElementTests.cs" company="Selenium Committers">
+// <copyright file="GlobalUsings.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Support.Events;
-using OpenQA.Selenium.Tests;
-
-namespace OpenQA.Selenium.Support.Tests.Events;
-
-[TestFixture]
-public class EventFiringWebDriverElementTests : DriverTestFixture
-{
-    [SetUp]
-    public void Setup()
-    {
-        driver.Url = formsPage;
-    }
-
-    [Test]
-    public void CanTakeEventFiringWebElementScreenshot()
-    {
-        var firingDriver = new EventFiringWebDriver(driver);
-        IWebElement element = firingDriver.FindElement(By.Name("checky"));
-        Screenshot screenshot = ((ITakesScreenshot)element).GetScreenshot();
-
-        Assert.That(screenshot, Is.Not.Null);
-    }
-}
+global using global::NUnit.Framework;
+global using global::OpenQA.Selenium.Tests.Infrastructure;
+global using global::System;
+global using global::System.Collections.Generic;
+global using global::System.Threading.Tasks;

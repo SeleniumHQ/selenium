@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Tests;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class PopupWindowFinderTests : DriverTestFixture

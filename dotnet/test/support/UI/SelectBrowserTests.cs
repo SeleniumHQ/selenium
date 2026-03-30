@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Tests;
-using OpenQA.Selenium.Tests.Infrastructure;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class SelectBrowserTests : DriverTestFixture

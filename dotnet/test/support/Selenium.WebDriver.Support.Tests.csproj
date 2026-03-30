@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support.Tests</AssemblyName>
+    <RootNamespace>OpenQA.Selenium.Support.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
