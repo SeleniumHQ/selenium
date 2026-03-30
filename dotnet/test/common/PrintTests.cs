@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
-
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class PrintTests : DriverTestFixture

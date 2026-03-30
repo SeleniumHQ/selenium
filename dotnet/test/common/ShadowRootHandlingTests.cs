@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [IgnoreBrowser(Browser.IE, "IE does not support Shadow DOM natively")]
 [IgnoreBrowser(Browser.Safari, "Safari driver does not support Shadow DOM end points")]

@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+using OpenQA.Selenium.Interactions;
 
-namespace OpenQA.Selenium.Interactions;
+namespace OpenQA.Selenium.Common.Tests.Interactions;
 
 [TestFixture]
 public class ActionBuilderTests

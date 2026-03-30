@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Emulation;
 
-namespace OpenQA.Selenium.BiDi.Emulation;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Emulation;
 
 internal class EmulationTests : BiDiTestFixture
 {
@@ -84,9 +84,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverride()
     {
         Assert.That(async () =>
@@ -97,9 +97,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverrideToDefault()
     {
         Assert.That(async () =>
@@ -110,7 +110,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetScriptingEnabled()
     {
         Assert.That(async () =>
@@ -121,7 +121,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetScriptingEnabledToDefault()
     {
         Assert.That(async () =>
@@ -132,9 +132,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverride()
     {
         Assert.That(async () =>
@@ -145,9 +145,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverrideToDefault()
     {
         Assert.That(async () =>
@@ -160,7 +160,7 @@ internal class EmulationTests : BiDiTestFixture
     [Test]
     public void CanSetScreenOrientationOverride()
     {
-        var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
+        var orientation = new OpenQA.Selenium.BiDi.Emulation.ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
 
         Assert.That(async () =>
         {
@@ -180,8 +180,8 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
     public void CanSetScreenSettingsOverride()
     {
         var screenArea = new ScreenArea(300, 200);
@@ -214,7 +214,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "invalid argument: Expected \"coordinates\" to be an object, got [object Undefined] undefined")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "invalid argument: Expected \"coordinates\" to be an object, got [object Undefined] undefined")]
     public void CanSetGeolocationPositionErrorOverride()
     {
         Assert.That(async () =>
@@ -225,9 +225,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverride()
     {
         Assert.That(async () =>
@@ -238,9 +238,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverrideToDefault()
     {
         Assert.That(async () =>
@@ -251,7 +251,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsOffline()
     {
         Assert.That(async () =>
@@ -262,7 +262,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsToDefault()
     {
         Assert.That(async () =>

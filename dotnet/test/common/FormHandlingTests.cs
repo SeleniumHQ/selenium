@@ -17,11 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class FormHandlingTests : DriverTestFixture

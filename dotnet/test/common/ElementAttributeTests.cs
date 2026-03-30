@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ElementAttributeTests : DriverTestFixture
@@ -64,7 +61,6 @@ public class ElementAttributeTests : DriverTestFixture
         Assert.That(attribute, Is.EqualTo(EnvironmentManager.Instance.UrlBuilder.WhereIs("icon.gif")));
     }
 
-
     [Test]
     public void ShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty()
     {
@@ -95,7 +91,6 @@ public class ElementAttributeTests : DriverTestFixture
         ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
         Assert.That(options[1].GetAttribute("index"), Is.EqualTo("1"));
     }
-
 
     [Test]
     public void ShouldIndicateTheElementsThatAreDisabledAreNotEnabled()

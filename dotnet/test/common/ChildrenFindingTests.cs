@@ -18,9 +18,8 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using NUnit.Framework;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ChildrenFindingTests : DriverTestFixture
@@ -116,7 +115,6 @@ public class ChildrenFindingTests : DriverTestFixture
         Assert.That(child.GetAttribute("name"), Is.EqualTo("selectomatic"));
     }
 
-
     [Test]
     public void FindElementByIdWhenMultipleMatchesExist()
     {
@@ -180,7 +178,6 @@ public class ChildrenFindingTests : DriverTestFixture
         Assert.That(child.GetAttribute("name"), Is.EqualTo("link1"));
     }
 
-
     [Test]
     public void FindElementsByLinkText()
     {
@@ -237,7 +234,6 @@ public class ChildrenFindingTests : DriverTestFixture
         Assert.That(elements, Has.Exactly(2).Items);
     }
 
-
     [Test]
     public void ShouldFindChildElementsByTagName()
     {
@@ -248,7 +244,6 @@ public class ChildrenFindingTests : DriverTestFixture
 
         Assert.That(element.GetAttribute("name"), Is.EqualTo("link1"));
     }
-
 
     [Test]
     public void ShouldFindChildrenByTagName()

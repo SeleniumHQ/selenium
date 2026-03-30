@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using NUnit.Framework;
-
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ProxyTests
@@ -128,7 +125,6 @@ public class ProxyTests
         Assert.That(proxy.BypassProxyAddresses, Is.Null);
         Assert.That(proxy.ProxyAutoConfigUrl, Is.Null);
     }
-
 
     [Test]
     public void ManualProxyFromDictionary()

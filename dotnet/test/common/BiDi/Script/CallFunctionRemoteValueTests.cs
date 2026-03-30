@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 public class CallFunctionRemoteValueTests : BiDiTestFixture
 {
@@ -57,7 +56,6 @@ public class CallFunctionRemoteValueTests : BiDiTestFixture
         Assert.That(response.AsSuccessResult(), Is.AssignableTo<BooleanRemoteValue>());
         Assert.That(((BooleanRemoteValue)response.AsSuccessResult()).Value, Is.False);
     }
-
 
     [Test]
     public async Task CanCallFunctionAndReturnEmptyString()

@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class EvaluateParametersTests : BiDiTestFixture
 {
@@ -112,7 +112,7 @@ internal class EvaluateParametersTests : BiDiTestFixture
     [Test]
     public async Task CanEvaluateInARealm()
     {
-        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
+        await bidi.BrowsingContext.CreateAsync(ContextType.Tab);
 
         var realmsResult = await bidi.Script.GetRealmsAsync();
 

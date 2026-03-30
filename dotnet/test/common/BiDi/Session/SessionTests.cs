@@ -17,12 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using NUnit.Framework;
-
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Session;
 
 internal class SessionTests : BiDiTestFixture
 {

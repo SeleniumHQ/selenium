@@ -17,12 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Drawing;
-using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class JavascriptEnabledBrowserTests : DriverTestFixture
@@ -152,7 +150,6 @@ public class JavascriptEnabledBrowserTests : DriverTestFixture
         driver.FindElement(By.Id("clickField")).Click(); // move focus
         EqualConstraint firstConstraint = new EqualConstraint("focus change blur");
         EqualConstraint secondConstraint = new EqualConstraint("focus change blur");
-
 
         Assert.That(driver.FindElement(By.Id("result")).Text.Trim(), firstConstraint | secondConstraint);
 

@@ -17,10 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
-
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class TargetLocatorTests : DriverTestFixture
@@ -123,7 +120,6 @@ public class TargetLocatorTests : DriverTestFixture
         Assert.That(
             () => driver.FindElement(By.Id("pageNumber")),
             Throws.TypeOf<NoSuchElementException>());
-
 
         driver.SwitchTo().Frame(1);
         Assert.That(driver.FindElement(By.Id("pageNumber")).Text, Is.EqualTo("2"));

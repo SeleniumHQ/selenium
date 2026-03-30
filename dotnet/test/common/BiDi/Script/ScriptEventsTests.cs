@@ -17,11 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class ScriptEventsTests : BiDiTestFixture
 {
@@ -54,7 +53,7 @@ internal class ScriptEventsTests : BiDiTestFixture
 
         await bidi.Script.OnRealmCreatedAsync(tcs.SetResult);
 
-        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
+        await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
         var realmInfo = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -70,7 +69,7 @@ internal class ScriptEventsTests : BiDiTestFixture
 
         await bidi.Script.OnRealmDestroyedAsync(tcs.SetResult);
 
-        var ctx = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
+        var ctx = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
         await ctx.Context.CloseAsync();
 
         var args = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));

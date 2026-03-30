@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Permissions;
 using OpenQA.Selenium.BiDi.Script;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium.BiDi.Permissions;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Permissions;
 
 internal class PermissionsTests : BiDiTestFixture
 {

@@ -17,13 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 [IgnoreBrowser(Browser.IE, "IE does not like this JS")]
@@ -78,7 +76,6 @@ public class RelativeLocatorTests : DriverTestFixture
         var elementIds = seen.Select(element => element.GetDomAttribute("id"));
         Assert.That(elementIds, Is.EquivalentTo(new List<string>() { "topRight" }));
     }
-
 
     [Test]
     public void ShouldBeAbleToCombineFiltersWithXpath()

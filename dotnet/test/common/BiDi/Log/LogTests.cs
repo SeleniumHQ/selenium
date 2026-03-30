@@ -17,11 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Log;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Log;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Log;
 
 internal class LogTests : BiDiTestFixture
 {
@@ -51,7 +50,7 @@ internal class LogTests : BiDiTestFixture
 
         Assert.That(consoleLogEntry.Args, Is.Not.Null);
         Assert.That(consoleLogEntry.Args, Has.Count.EqualTo(1));
-        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<Script.StringRemoteValue>());
+        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<StringRemoteValue>());
     }
 
     [Test]

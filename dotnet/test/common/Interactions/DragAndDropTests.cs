@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Interactions;
 
-namespace OpenQA.Selenium.Interactions;
+namespace OpenQA.Selenium.Common.Tests.Interactions;
 
 [TestFixture]
 public class DragAndDropTests : DriverTestFixture

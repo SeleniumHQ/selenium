@@ -22,7 +22,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium.IE;

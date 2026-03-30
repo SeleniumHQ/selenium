@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.BiDi;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi;
+namespace OpenQA.Selenium.Common.Tests.BiDi;
 
 [Parallelizable(ParallelScope.All)]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
@@ -29,7 +29,7 @@ public class BiDiTestFixture
 {
     protected IWebDriver driver;
     protected IBiDi bidi;
-    protected BrowsingContext.BrowsingContext context;
+    protected BiDiBrowsingContext context;
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
 

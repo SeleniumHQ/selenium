@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class CallFunctionLocalValueTests : BiDiTestFixture
 {
@@ -370,7 +370,7 @@ internal class CallFunctionLocalValueTests : BiDiTestFixture
         // Navigate to a page with a known element
         driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
 
-        var node = (await context.LocateNodesAsync(new BrowsingContext.CssLocator("#consoleLog"))).Nodes[0];
+        var node = (await context.LocateNodesAsync(new CssLocator("#consoleLog"))).Nodes[0];
 
         var arg = new SharedReferenceLocalValue(node.SharedId);
 

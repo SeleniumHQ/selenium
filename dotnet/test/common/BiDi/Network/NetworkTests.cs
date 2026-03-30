@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Network;
 
-namespace OpenQA.Selenium.BiDi.Network;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Network;
 
 internal class NetworkTests : BiDiTestFixture
 {
@@ -188,7 +187,7 @@ internal class NetworkTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox)]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
         await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
@@ -202,7 +201,7 @@ internal class NetworkTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox)]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
         await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>

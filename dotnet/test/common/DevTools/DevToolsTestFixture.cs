@@ -18,10 +18,10 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.DevTools;
 
-namespace OpenQA.Selenium.DevTools;
+namespace OpenQA.Selenium.Common.Tests.DevTools;
 
 public class DevToolsTestFixture : DriverTestFixture
 {

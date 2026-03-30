@@ -17,22 +17,18 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V145;
 
-namespace OpenQA.Selenium.DevTools;
+namespace OpenQA.Selenium.Common.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsNetworkTests : DevToolsTestFixture
 {
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     public void GetSetDeleteAndClearAllCookies()
     {
         //var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -77,10 +73,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task SendRequestWithUrlFiltersAndExtraHeadersAndVerifyRequests()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -136,10 +132,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task EmulateNetworkConditionOffline()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -179,10 +175,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
 
     [Test]
     [Ignore("The request ID is not getting added to cache")]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyRequestReceivedFromCacheAndResponseBody()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -224,10 +220,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifySearchInResponseBody()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -261,10 +257,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyCacheDisabledAndClearCache()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -295,10 +291,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
 
     [Test]
     [Ignore("Unable to open secure url")]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyCertificatesAndOverrideUserAgent()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -330,10 +326,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyResponseReceivedEventAndNetworkDisable()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -352,10 +348,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyWebSocketOperations()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -395,10 +391,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task VerifyRequestPostData()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -433,10 +429,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task ByPassServiceWorker()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -449,9 +445,9 @@ public class DevToolsNetworkTests : DevToolsTestFixture
 
     [Test]
     [Ignore("Unable to open secure url")]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     public async Task VerifySignedExchangeReceived()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -470,10 +466,10 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task InterceptRequestAndContinue()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();

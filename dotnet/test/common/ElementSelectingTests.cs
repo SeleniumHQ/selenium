@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ElementSelectingTests : DriverTestFixture
@@ -267,7 +265,6 @@ public class ElementSelectingTests : DriverTestFixture
 
     //TODO: Test disabled multi-selects
     //TODO: Test selecting options
-
 
     private IWebElement EnabledUnselectedCheckbox => driver.FindElement(By.Id("checky"));
 

@@ -18,9 +18,8 @@
 // </copyright>
 
 using System.Drawing;
-using NUnit.Framework;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class StaleElementReferenceTests : DriverTestFixture

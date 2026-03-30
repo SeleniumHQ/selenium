@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.DevTools;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class NetworkInterceptionTests : DriverTestFixture
@@ -83,7 +81,7 @@ public class NetworkInterceptionTests : DriverTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     public async Task TransformNetworkResponse()
     {
         if (driver is IDevTools)

@@ -17,16 +17,13 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
 using static OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions;
 
-namespace OpenQA.Selenium.VirtualAuth;
+namespace OpenQA.Selenium.Common.Tests.VirtualAuth;
 
 [TestFixture]
 public class VirtualAuthenticatorTests : DriverTestFixture
@@ -162,9 +159,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldCreateAuthenticator()
     {
         // Register a credential on the Virtual Authenticator.
@@ -182,9 +179,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldRemoveAuthenticator()
     {
         VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
@@ -198,9 +195,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldSupportMultipleVirtualAuthenticatorsAtOnce()
     {
         VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
@@ -218,9 +215,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldAddNonResidentCredential()
     {
         CreateRKDisabledCTAP2Authenticator();
@@ -243,13 +240,12 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldAddNonResidentCredentialWhenAuthenticatorUsesU2FProtocol()
     {
         CreateRKDisabledU2FAuthenticator();
-
 
         // A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
         string base64EncodedEC256PK =
@@ -275,9 +271,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldAddResidentCredential()
     {
         // Add a resident credential using the testing API.
@@ -306,9 +302,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void AddResidentCredentialNotSupportedWhenAuthenticatorUsesU2FProtocol()
     {
         // Add a resident credential using the testing API.
@@ -331,9 +327,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldGetCredential()
     {
         CreateRKEnabledCTAP2Authenticator();
@@ -386,9 +382,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldRemoveCredentialByRawId()
     {
         CreateRKDisabledU2FAuthenticator();
@@ -413,9 +409,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldRemoveCredentialByBase64UrlId()
     {
         CreateRKDisabledU2FAuthenticator();
@@ -439,9 +435,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldRemoveAllCredentials()
     {
         CreateRKDisabledU2FAuthenticator();
@@ -478,9 +474,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void TestSetUserVerified()
     {
         CreateRKEnabledCTAP2Authenticator();
@@ -519,9 +515,9 @@ public class VirtualAuthenticatorTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Virtual Authenticator")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Virtual Authenticator")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Virtual Authenticator")]
     public void ShouldThrowOnInvalidArguments()
     {
         Assert.That(

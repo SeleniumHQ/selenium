@@ -17,13 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using NUnit.Framework;
 
-namespace OpenQA.Selenium.BiDi.Script;
+using OpenQA.Selenium.BiDi.Script;
+
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class LocalValueConversionTests
 {

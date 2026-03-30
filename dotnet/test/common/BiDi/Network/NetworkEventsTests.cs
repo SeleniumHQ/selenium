@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi.Network;
+using OpenQA.Selenium.BiDi.Network;
+
+namespace OpenQA.Selenium.Common.Tests.BiDi.Network;
 
 internal class NetworkEventsTests : BiDiTestFixture
 {
@@ -104,8 +103,8 @@ internal class NetworkEventsTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome)]
-    [IgnoreBrowser(Selenium.Browser.Edge)]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome)]
+    [IgnoreBrowser(Infrastructure.Browser.Edge)]
     public async Task CanListenToOnAuthRequiredEvent()
     {
         TaskCompletionSource<AuthRequiredEventArgs> tcs = new();

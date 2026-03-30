@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Drawing;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ClickScrollingTests : DriverTestFixture
@@ -112,7 +111,6 @@ public class ClickScrollingTests : DriverTestFixture
         long yOffset = (long)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list);
         Assert.That(yOffset, Is.Zero, "Should not have scrolled");
     }
-
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE is scrolling Button2 to top of screen instead of bottom of screen as per spec")]

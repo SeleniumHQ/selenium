@@ -17,18 +17,16 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.BiDi.Speculation;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium.BiDi.Speculation;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Speculation;
 
 internal class SpeculationTests : BiDiTestFixture
 {
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenToPrefetchStatusUpdatedEvent()
     {
         var tcs = new TaskCompletionSource<PrefetchStatusUpdatedEventArgs>();

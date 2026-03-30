@@ -18,6 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
+using OpenQA.Selenium.Common.Tests;
 
 namespace OpenQA.Selenium.Chrome;
 

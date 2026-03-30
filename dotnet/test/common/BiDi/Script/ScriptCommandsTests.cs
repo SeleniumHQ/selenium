@@ -17,18 +17,18 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Log;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class ScriptCommandsTests : BiDiTestFixture
 {
     [Test]
     public async Task CanGetAllRealms()
     {
-        _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
+        _ = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
         var realmsResult = await bidi.Script.GetRealmsAsync();
 
@@ -45,7 +45,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
     [Test]
     public async Task CanGetAllRealmsByType()
     {
-        _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
+        _ = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
         var realmsResult = await bidi.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
@@ -62,7 +62,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
     [Test]
     public async Task CanGetRealmInBrowsingContext()
     {
-        var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
+        var tab = await bidi.BrowsingContext.CreateAsync(ContextType.Tab);
 
         var realms = await tab.Context.Script.GetRealmsAsync();
 
@@ -75,7 +75,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
     [Test]
     public async Task CanGetRealmInBrowsingContextByType()
     {
-        var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
+        var tab = await bidi.BrowsingContext.CreateAsync(ContextType.Tab);
 
         var realms = await tab.Context.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
@@ -92,15 +92,15 @@ internal class ScriptCommandsTests : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        TaskCompletionSource<Log.LogEntryEventArgs> tcs = new();
+        TaskCompletionSource<LogEntryEventArgs> tcs = new();
 
         await context.Log.OnEntryAddedAsync(tcs.SetResult);
 
-        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = ReadinessState.Interactive });
 
         var entry = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.That(entry.Level, Is.EqualTo(Log.Level.Info));
+        Assert.That(entry.Level, Is.EqualTo(Level.Info));
         Assert.That(entry.Text, Is.EqualTo("preload_script_console_text"));
     }
 
@@ -114,7 +114,6 @@ internal class ScriptCommandsTests : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
     }
-
 
     [Test]
     public async Task CanAddPreloadScriptWithChannelOptions()
@@ -141,7 +140,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 
@@ -153,7 +152,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
     {
         var preloadScript = await context.Script.AddPreloadScriptAsync("() => { window.bar = 2; }");
 
-        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true);
 

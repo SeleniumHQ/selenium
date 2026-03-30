@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
+using OpenQA.Selenium.Internal.Logging;
 
-namespace OpenQA.Selenium.Internal.Logging;
+namespace OpenQA.Selenium.Common.Tests.Internal.Logging;
 
 public class FileLogHandlerTests
 {

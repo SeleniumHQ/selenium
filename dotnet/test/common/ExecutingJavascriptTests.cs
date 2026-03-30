@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class ExecutingJavascriptTests : DriverTestFixture
@@ -463,7 +460,7 @@ public class ExecutingJavascriptTests : DriverTestFixture
     public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
     {
         driver.Url = javascriptPage;
-        string path = System.IO.Path.Combine(Environment.EnvironmentManager.Instance.CurrentDirectory, ".." + System.IO.Path.DirectorySeparatorChar + "..");
+        string path = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, ".." + System.IO.Path.DirectorySeparatorChar + "..");
         string[] fileList = System.IO.Directory.GetFiles(path, "jquery-1.2.6.min.js", System.IO.SearchOption.AllDirectories);
         if (fileList.Length > 0)
         {
@@ -474,9 +471,9 @@ public class ExecutingJavascriptTests : DriverTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     public async Task ShouldBeAbleToPinJavascriptCodeAndExecuteRepeatedly()
     {
         using IJavaScriptEngine jsEngine = new JavaScriptEngine(driver);
@@ -501,9 +498,9 @@ public class ExecutingJavascriptTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     public async Task ShouldBeAbleToAddInitializationScriptAndExecuteOnNewDocument()
     {
         const string ScriptValue = "alert('notice')";
@@ -555,9 +552,9 @@ public class ExecutingJavascriptTests : DriverTestFixture
 
     [Test]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     public async Task ShouldBeAbleToAddAndRemoveScriptCallbackBinding()
     {
         const string ScriptValue = "alert('Hello world')";

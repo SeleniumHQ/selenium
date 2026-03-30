@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi.Input;
+using OpenQA.Selenium.BiDi.Input;
+
+namespace OpenQA.Selenium.Common.Tests.BiDi.Input;
 
 internal class InputEventsTests : BiDiTestFixture
 {

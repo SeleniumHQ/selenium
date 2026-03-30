@@ -17,21 +17,19 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
 using CurrentCdpVersion = OpenQA.Selenium.DevTools.V145;
 
-namespace OpenQA.Selenium.DevTools;
+namespace OpenQA.Selenium.Common.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTabsTests : DevToolsTestFixture
 {
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task ClosingTabDoesNotBreakDevToolsSession()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();

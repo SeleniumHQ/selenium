@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using Moq;
 using NUnit.Framework;
+using OpenQA.Selenium.Common.Tests.Infrastructure;
 
 namespace OpenQA.Selenium.Support.Events;
 

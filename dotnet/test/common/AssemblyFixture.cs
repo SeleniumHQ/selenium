@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Internal.Logging;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [SetUpFixture]
-// Outside a namespace to affect the entire assembly
 public class AssemblyFixture
 {
     public AssemblyFixture()
@@ -34,7 +32,7 @@ public class AssemblyFixture
     [OneTimeSetUp]
     public async Task RunBeforeAnyTestAsync()
     {
-        Internal.Logging.Log.SetLevel(Internal.Logging.LogEventLevel.Trace);
+        Log.SetLevel(LogEventLevel.Trace);
 
         await EnvironmentManager.Instance.WebServer.StartAsync();
         if (EnvironmentManager.Instance.Browser == Browser.Remote)

@@ -17,20 +17,16 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using BenderProxy;
 using BenderProxy.Writers;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.IE;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [Ignore("Proxy Tests are not working")]
 [TestFixture]

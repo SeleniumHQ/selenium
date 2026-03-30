@@ -17,15 +17,12 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 using OpenQA.Selenium.Interactions;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class CorrectEventFiringTests : DriverTestFixture
@@ -258,7 +255,6 @@ public class CorrectEventFiringTests : DriverTestFixture
         IWebElement result = driver.FindElement(By.Id("result"));
         Assert.That(() => WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text), Throws.Nothing);
     }
-
 
     [Test]
     public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()

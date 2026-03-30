@@ -20,7 +20,7 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 public class WebElementWrapper(IWebElement element) : IWebElement, IWrapsElement
 {

@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
+using OpenQA.Selenium.Interactions;
 
-namespace OpenQA.Selenium.Interactions;
+namespace OpenQA.Selenium.Common.Tests.Interactions;
 
 [TestFixture]
 [IgnoreBrowser(Browser.IE, "IE does not support scrolling")]

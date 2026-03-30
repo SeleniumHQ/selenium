@@ -17,12 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using OpenQA.Selenium.BiDi.Network;
 
-namespace OpenQA.Selenium.BiDi.Storage;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Storage;
 
 internal class StorageTests : BiDiTestFixture
 {
@@ -76,7 +73,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanAddAndGetCookie()
     {
         driver.Url = UrlBuilder.WhereIs("animals");
@@ -110,7 +107,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanGetAllCookies()
     {
         driver.Url = UrlBuilder.WhereIs("animals");
@@ -145,7 +142,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanDeleteCookieWithName()
     {
         driver.Url = UrlBuilder.WhereIs("animals");

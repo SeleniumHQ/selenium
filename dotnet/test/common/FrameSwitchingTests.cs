@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class FrameSwitchingTests : DriverTestFixture
@@ -304,7 +302,6 @@ public class FrameSwitchingTests : DriverTestFixture
         driver.FindElement(By.Id("iframe_page_heading"));
     }
 
-
     [Test]
     public void ShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
     {
@@ -388,7 +385,6 @@ public class FrameSwitchingTests : DriverTestFixture
     {
         driver.Url = iframePage;
         Assert.That(driver.Url, Is.EqualTo(iframePage));
-
 
         driver.SwitchTo().Frame("iframe1");
         Assert.That(driver.Url, Is.EqualTo(iframePage));

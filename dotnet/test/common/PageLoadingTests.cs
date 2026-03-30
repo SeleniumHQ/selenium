@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Common.Tests.Infrastructure.Environment;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class PageLoadingTests : DriverTestFixture
@@ -60,7 +58,6 @@ public class PageLoadingTests : DriverTestFixture
         // but with 'none' page loading strategy 'get' operation should not wait.
         Assert.That(duration.TotalMilliseconds, Is.LessThan(1000), "Took too long to load page: " + duration.TotalMilliseconds);
     }
-
 
     [Test]
     public void NoneStrategyShouldNotWaitForPageToRefresh()

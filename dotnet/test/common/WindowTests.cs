@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Drawing;
-using NUnit.Framework;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [TestFixture]
 public class WindowTests : DriverTestFixture
@@ -78,7 +76,6 @@ public class WindowTests : DriverTestFixture
             Size targetSize = new Size(size.Width - 20, size.Height - 20);
             window.Size = targetSize;
 
-
             Size newSize = window.Size;
             Assert.That(newSize.Width, Is.EqualTo(targetSize.Width));
             Assert.That(newSize.Height, Is.EqualTo(targetSize.Height));
@@ -102,7 +99,6 @@ public class WindowTests : DriverTestFixture
             // resize relative to the initial size, since we don't know what it is
             Size targetSize = new Size(size.Width - 20, size.Height - 20);
             window.Size = targetSize;
-
 
             Size newSize = window.Size;
             Assert.That(newSize.Width, Is.EqualTo(targetSize.Width));

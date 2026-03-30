@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.Common.Tests.BiDi.Script;
 
 internal class RemoteValueConversionTests
 {

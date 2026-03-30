@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.Common.Tests.BiDi.BrowsingContext;
 
 internal class BrowsingContextEventsTests : BiDiTestFixture
 {

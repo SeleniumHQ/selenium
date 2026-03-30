@@ -17,12 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
 
-namespace OpenQA.Selenium;
+namespace OpenQA.Selenium.Common.Tests;
 
 [Ignore("")]
 [TestFixture]
