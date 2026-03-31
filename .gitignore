@@ -67,6 +67,7 @@ __pycache__
 .tox
 *.pyc
 dist/
+py/selenium/webdriver/common/bidi/
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
 py/selenium/webdriver/common/linux/
