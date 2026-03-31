@@ -140,6 +140,7 @@ warn_unreachable = false
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
+    "selenium/webdriver/common/bidi/",
 ]
 line-length = 120
 respect-gitignore = true
