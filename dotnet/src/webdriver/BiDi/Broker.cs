@@ -21,6 +21,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using System.Threading.Channels;
 using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -38,7 +39,13 @@ internal sealed class Broker : IAsyncDisposable
 
     private long _currentCommandId;
 
-    private readonly Task _receivingMessageTask;
+    private readonly Channel<PooledBufferWriter> _receivedMessages = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(16) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
+
+    private readonly ConcurrentBag<PooledBufferWriter> _bufferPool = [];
+
+    private readonly Task _receivingTask;
+    private readonly Task _processingTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
     public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
@@ -48,7 +55,8 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = Task.Run(() => ReceiveMessagesLoopAsync(_receiveMessagesCancellationTokenSource.Token));
+        _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
+        _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -118,16 +126,23 @@ internal sealed class Broker : IAsyncDisposable
 
         try
         {
-            await _receivingMessageTask.ConfigureAwait(false);
+            await _receivingTask.ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
         {
             // Expected when cancellation is requested, ignore.
         }
 
+        await _processingTask.ConfigureAwait(false);
+
         _receiveMessagesCancellationTokenSource.Dispose();
 
         await _transport.DisposeAsync().ConfigureAwait(false);
+
+        while (_bufferPool.TryTake(out var buffer))
+        {
+            buffer.Dispose();
+        }
 
         GC.SuppressFinalize(this);
     }
@@ -281,37 +296,33 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
+    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        using var receiveBufferWriter = new PooledBufferWriter();
-
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                receiveBufferWriter.Reset();
-
-                await _transport.ReceiveAsync(receiveBufferWriter, cancellationToken).ConfigureAwait(false);
-
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
-#if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.Span)}");
-#else
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.ToArray())}");
-#endif
-                }
+                var buffer = RentBuffer();
 
                 try
                 {
-                    ProcessReceivedMessage(receiveBufferWriter.WrittenMemory.Span);
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    await _transport.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+
+                    if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
-                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+#if NET8_0_OR_GREATER
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.Span)}");
+#else
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.ToArray())}");
+#endif
                     }
+
+                    await _receivedMessages.Writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    ReturnBuffer(buffer);
+                    throw;
                 }
             }
         }
@@ -333,6 +344,48 @@ internal sealed class Broker : IAsyncDisposable
 
             throw;
         }
+        finally
+        {
+            _receivedMessages.Writer.TryComplete();
+        }
+    }
+
+    private async Task ProcessMessagesAsync()
+    {
+        var reader = _receivedMessages.Reader;
+
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
+        {
+            while (reader.TryRead(out var buffer))
+            {
+                try
+                {
+                    ProcessReceivedMessage(buffer.WrittenMemory.Span);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+                    }
+                }
+                finally
+                {
+                    ReturnBuffer(buffer);
+                }
+            }
+        }
+    }
+
+    private PooledBufferWriter RentBuffer()
+    {
+        return _bufferPool.TryTake(out var buffer) ? buffer : new PooledBufferWriter();
+    }
+
+    private void ReturnBuffer(PooledBufferWriter buffer)
+    {
+        buffer.Reset();
+        _bufferPool.Add(buffer);
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
