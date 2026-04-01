@@ -84,15 +84,11 @@ public interface INoneSourceAction : ISourceAction;
 public sealed record NoneActions(string Id, IList<INoneSourceAction> Actions)
     : SourceActions<INoneSourceAction>(Id, Actions ?? []);
 
-public abstract record KeySourceAction : IKeySourceAction;
+public sealed record KeyDownAction(char Value) : IKeySourceAction;
 
-public sealed record KeyDownAction(char Value) : KeySourceAction;
+public sealed record KeyUpAction(char Value) : IKeySourceAction;
 
-public sealed record KeyUpAction(char Value) : KeySourceAction;
-
-public abstract record PointerSourceAction : IPointerSourceAction;
-
-public sealed record PointerDownAction(int Button) : PointerSourceAction, IPointerCommonProperties
+public sealed record PointerDownAction(int Button) : IPointerSourceAction, IPointerCommonProperties
 {
     public int? Width { get; init; }
     public int? Height { get; init; }
@@ -103,9 +99,9 @@ public sealed record PointerDownAction(int Button) : PointerSourceAction, IPoint
     public double? AzimuthAngle { get; init; }
 }
 
-public sealed record PointerUpAction(int Button) : PointerSourceAction;
+public sealed record PointerUpAction(int Button) : IPointerSourceAction;
 
-public sealed record PointerMoveAction(double X, double Y) : PointerSourceAction, IPointerCommonProperties
+public sealed record PointerMoveAction(double X, double Y) : IPointerSourceAction, IPointerCommonProperties
 {
     public int? Duration { get; init; }
 
@@ -120,16 +116,12 @@ public sealed record PointerMoveAction(double X, double Y) : PointerSourceAction
     public double? AzimuthAngle { get; init; }
 }
 
-public abstract record WheelSourceAction : IWheelSourceAction;
-
-public sealed record WheelScrollAction(int X, int Y, int DeltaX, int DeltaY) : WheelSourceAction
+public sealed record WheelScrollAction(int X, int Y, int DeltaX, int DeltaY) : IWheelSourceAction
 {
     public int? Duration { get; init; }
 
     public Origin? Origin { get; init; }
 }
-
-public abstract record NoneSourceAction : INoneSourceAction;
 
 public sealed record PauseAction : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
 {
