@@ -164,7 +164,10 @@ public class RelaySessionFactory implements SessionFactory {
               "New session request capabilities do not " + "match the stereotype."));
     }
 
-    capabilities = capabilities.merge(filterRelayCapabilities(stereotype));
+    capabilities = capabilities.merge(stereotype);
+    System.out.println(capabilities);
+    capabilities = filterRelayCapabilities(capabilities);
+    System.out.println(capabilities);
 
     LOG.info("Starting session for " + capabilities);
 
