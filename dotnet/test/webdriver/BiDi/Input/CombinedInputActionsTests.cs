@@ -32,20 +32,20 @@ internal class CombinedInputActionsTests : BiDiTestFixture
 
         await Task.Delay(3000);
 
-        await context.Input.PerformActionsAsync([new PointerActions("id0", [
+        await context.Input.PerformActionsAsync([new PointerSourceActions("id0", [
             new PointerMoveAction(300, 300),
             new PointerDownAction(0),
             new PointerMoveAction(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
             new PointerUpAction(0),
         ])]);
 
-        await context.Input.PerformActionsAsync([new KeyActions("id1", [
+        await context.Input.PerformActionsAsync([new KeySourceActions("id1", [
             new KeyDownAction('U'),
             new KeyUpAction('U'),
             new PauseAction { Duration = 3000 }
         ])]);
 
-        await context.Input.PerformActionsAsync([new PointerActions("id2", [
+        await context.Input.PerformActionsAsync([new PointerSourceActions("id2", [
             new PointerMoveAction(300, 300),
             new PointerDownAction(0),
             new PointerMoveAction(400, 400) { Duration = 2000 },
@@ -63,7 +63,7 @@ internal class CombinedInputActionsTests : BiDiTestFixture
         var options = (await context.LocateNodesAsync(new CssLocator("option"))).Nodes;
 
         await context.Input.PerformActionsAsync([
-            new PointerActions("pointer", [
+            new PointerSourceActions("pointer", [
                 new PointerMoveAction(0, 0) { Origin = new ElementOrigin(options[1]) },
                 new PointerDownAction(0),
                 new PointerUpAction(0),
@@ -72,7 +72,7 @@ internal class CombinedInputActionsTests : BiDiTestFixture
                 new PointerDownAction(0),
                 new PointerUpAction(0),
             ]),
-            new KeyActions("key", [
+            new KeySourceActions("key", [
                 new PauseAction(),  // align with first click (no modifier)
                 new PauseAction(),
                 new PauseAction(),
@@ -85,7 +85,7 @@ internal class CombinedInputActionsTests : BiDiTestFixture
 
         var showButton = (await context.LocateNodesAsync(new CssLocator("[name='showselected']"))).Nodes[0];
         await context.Input.PerformActionsAsync([
-            new PointerActions("pointer", [
+            new PointerSourceActions("pointer", [
                 new PointerMoveAction(0, 0) { Origin = new ElementOrigin(showButton) },
                 new PointerDownAction(0),
                 new PointerUpAction(0),

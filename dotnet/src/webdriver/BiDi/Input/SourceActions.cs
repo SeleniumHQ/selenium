@@ -23,16 +23,16 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 namespace OpenQA.Selenium.BiDi.Input;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(KeyActions), "key")]
-[JsonDerivedType(typeof(PointerActions), "pointer")]
-[JsonDerivedType(typeof(WheelActions), "wheel")]
-[JsonDerivedType(typeof(NoneActions), "none")]
-public abstract record SourceActions(string Id);
-
-public interface ISourceAction;
+[JsonDerivedType(typeof(KeySourceActions), "key")]
+[JsonDerivedType(typeof(PointerSourceActions), "pointer")]
+[JsonDerivedType(typeof(WheelSourceActions), "wheel")]
+[JsonDerivedType(typeof(NoneSourceActions), "none")]
+public abstract record SourceActions;
 
 public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSourceAction> Actions)
-    : SourceActions(Id) where TSourceAction : ISourceAction;
+    : SourceActions where TSourceAction : ISourceAction;
+
+public interface ISourceAction;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]
@@ -40,11 +40,11 @@ public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSour
 [JsonDerivedType(typeof(KeyUpAction), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public sealed record KeyActions(string Id, IEnumerable<IKeySourceAction> Actions)
+public sealed record KeySourceActions(string Id, IEnumerable<IKeySourceAction> Actions)
     : SourceActions<IKeySourceAction>(Id, Actions)
 {
     // TODO move out as extension method
-    public KeyActions Type(string text) => this with
+    public KeySourceActions Type(string text) => this with
     {
         Actions = [.. Actions, .. text.SelectMany<char, IKeySourceAction>(c => [new KeyDownAction(c), new KeyUpAction(c)])]
     };
@@ -57,7 +57,7 @@ public sealed record KeyActions(string Id, IEnumerable<IKeySourceAction> Actions
 [JsonDerivedType(typeof(PointerMoveAction), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public sealed record PointerActions(string Id, IEnumerable<IPointerSourceAction> Actions)
+public sealed record PointerSourceActions(string Id, IEnumerable<IPointerSourceAction> Actions)
     : SourceActions<IPointerSourceAction>(Id, Actions)
 {
     public PointerParameters? Parameters { get; init; }
@@ -68,14 +68,14 @@ public sealed record PointerActions(string Id, IEnumerable<IPointerSourceAction>
 [JsonDerivedType(typeof(WheelScrollAction), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public sealed record WheelActions(string Id, IEnumerable<IWheelSourceAction> Actions)
+public sealed record WheelSourceActions(string Id, IEnumerable<IWheelSourceAction> Actions)
     : SourceActions<IWheelSourceAction>(Id, Actions);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneActions(string Id, IEnumerable<INoneSourceAction> Actions)
+public sealed record NoneSourceActions(string Id, IEnumerable<INoneSourceAction> Actions)
     : SourceActions<INoneSourceAction>(Id, Actions);
 
 public sealed record KeyDownAction(char Value) : IKeySourceAction;
