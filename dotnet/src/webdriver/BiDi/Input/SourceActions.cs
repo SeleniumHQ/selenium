@@ -31,7 +31,7 @@ public abstract record SourceActions(string Id);
 
 public interface ISourceAction;
 
-public abstract record SourceActions<TSourceAction>(string Id, IList<TSourceAction> Actions)
+public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSourceAction> Actions)
     : SourceActions(Id) where TSourceAction : ISourceAction;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -40,20 +40,14 @@ public abstract record SourceActions<TSourceAction>(string Id, IList<TSourceActi
 [JsonDerivedType(typeof(KeyUpAction), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public sealed record KeyActions(string Id, IList<IKeySourceAction> Actions)
+public sealed record KeyActions(string Id, IEnumerable<IKeySourceAction> Actions)
     : SourceActions<IKeySourceAction>(Id, Actions ?? [])
 {
     // TODO move out as extension method
-    public KeyActions Type(string text)
+    public KeyActions Type(string text) => this with
     {
-        foreach (var character in text)
-        {
-            Actions.Add(new KeyDownAction(character));
-            Actions.Add(new KeyUpAction(character));
-        }
-
-        return this;
-    }
+        Actions = [.. Actions, .. text.SelectMany<char, IKeySourceAction>(c => [new KeyDownAction(c), new KeyUpAction(c)])]
+    };
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -63,7 +57,7 @@ public sealed record KeyActions(string Id, IList<IKeySourceAction> Actions)
 [JsonDerivedType(typeof(PointerMoveAction), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public sealed record PointerActions(string Id, IList<IPointerSourceAction> Actions)
+public sealed record PointerActions(string Id, IEnumerable<IPointerSourceAction> Actions)
     : SourceActions<IPointerSourceAction>(Id, Actions ?? [])
 {
     public PointerParameters? Parameters { get; init; }
@@ -74,14 +68,14 @@ public sealed record PointerActions(string Id, IList<IPointerSourceAction> Actio
 [JsonDerivedType(typeof(WheelScrollAction), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public sealed record WheelActions(string Id, IList<IWheelSourceAction> Actions)
+public sealed record WheelActions(string Id, IEnumerable<IWheelSourceAction> Actions)
     : SourceActions<IWheelSourceAction>(Id, Actions ?? []);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneActions(string Id, IList<INoneSourceAction> Actions)
+public sealed record NoneActions(string Id, IEnumerable<INoneSourceAction> Actions)
     : SourceActions<INoneSourceAction>(Id, Actions ?? []);
 
 public sealed record KeyDownAction(char Value) : IKeySourceAction;
