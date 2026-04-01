@@ -124,26 +124,31 @@ internal sealed class Broker : IAsyncDisposable
     {
         _receiveMessagesCancellationTokenSource.Cancel();
 
-        await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
-
         try
         {
-            await _receivingTask.ConfigureAwait(false);
+            try
+            {
+                await _receivingTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+            {
+                // Expected when cancellation is requested, ignore.
+            }
+
+            await _transport.DisposeAsync().ConfigureAwait(false);
+
+            await _processingTask.ConfigureAwait(false);
+
+            await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+        finally
         {
-            // Expected when cancellation is requested, ignore.
-        }
+            _receiveMessagesCancellationTokenSource.Dispose();
 
-        await _processingTask.ConfigureAwait(false);
-
-        _receiveMessagesCancellationTokenSource.Dispose();
-
-        await _transport.DisposeAsync().ConfigureAwait(false);
-
-        while (_bufferPool.TryTake(out var buffer))
-        {
-            buffer.Dispose();
+            while (_bufferPool.TryTake(out var buffer))
+            {
+                buffer.Dispose();
+            }
         }
 
         GC.SuppressFinalize(this);
@@ -373,15 +378,20 @@ internal sealed class Broker : IAsyncDisposable
             }
         }
 
-        // Channel is fully drained. Fail any commands that didn't get a response.
+        // Channel is fully drained. Fail any commands that didn't get a response:
+        // either with the transport error or cancellation for clean shutdown.
         var terminalException = _terminalReceiveException;
-        if (terminalException is not null)
+        foreach (var id in _pendingCommands.Keys)
         {
-            foreach (var id in _pendingCommands.Keys)
+            if (_pendingCommands.TryRemove(id, out var pendingCommand))
             {
-                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                if (terminalException is not null)
                 {
                     pendingCommand.TaskCompletionSource.TrySetException(terminalException);
+                }
+                else
+                {
+                    pendingCommand.TaskCompletionSource.TrySetCanceled();
                 }
             }
         }
