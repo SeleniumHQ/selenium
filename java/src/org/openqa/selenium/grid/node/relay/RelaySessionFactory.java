@@ -165,9 +165,7 @@ public class RelaySessionFactory implements SessionFactory {
     }
 
     capabilities = capabilities.merge(stereotype);
-    System.out.println(capabilities);
     capabilities = filterRelayCapabilities(capabilities);
-    System.out.println(capabilities);
 
     LOG.info("Starting session for " + capabilities);
 
