@@ -491,19 +491,19 @@ echo '<X.Y.Z>' > rb/.ruby-version
 Run all tests with:
 
 ```shell
-bazel test //dotnet/test/common:AllTests
+bazel test //dotnet/test/common
 ```
 
 You can run specific tests by specifying the class name:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest
+bazel test //dotnet/test/common:ElementFindingTests
 ```
 
 If the module supports multiple browsers:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest-edge
+bazel test //dotnet/test/common:ElementFindingTests-edge
 ```
 
 </details>
