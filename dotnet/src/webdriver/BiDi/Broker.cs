@@ -44,6 +44,8 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly ConcurrentBag<PooledBufferWriter> _bufferPool = [];
 
+    private volatile Exception? _terminalReceiveException;
+
     private readonly Task _receivingTask;
     private readonly Task _processingTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
@@ -333,14 +335,9 @@ internal sealed class Broker : IAsyncDisposable
                 _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
-            // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
-            foreach (var id in _pendingCommands.Keys)
-            {
-                if (_pendingCommands.TryRemove(id, out var pendingCommand))
-                {
-                    pendingCommand.TaskCompletionSource.TrySetException(ex);
-                }
-            }
+            // Record the exception so the processing task can fail remaining commands
+            // after draining already-received responses from the channel.
+            _terminalReceiveException = ex;
 
             throw;
         }
@@ -372,6 +369,19 @@ internal sealed class Broker : IAsyncDisposable
                 finally
                 {
                     ReturnBuffer(buffer);
+                }
+            }
+        }
+
+        // Channel is fully drained. Fail any commands that didn't get a response.
+        var terminalException = _terminalReceiveException;
+        if (terminalException is not null)
+        {
+            foreach (var id in _pendingCommands.Keys)
+            {
+                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                {
+                    pendingCommand.TaskCompletionSource.TrySetException(terminalException);
                 }
             }
         }
