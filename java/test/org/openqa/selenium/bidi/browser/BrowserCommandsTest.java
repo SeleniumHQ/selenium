@@ -22,8 +22,6 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.bidi.browser.DownloadBehavior.allowed;
 import static org.openqa.selenium.bidi.browser.DownloadBehavior.denied;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.detect;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -61,9 +59,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @AfterEach
   final void resetDownloadBehavior() {
-    if (detect() != FIREFOX) {
-      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
-    }
+    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
   }
 
   @AfterEach
