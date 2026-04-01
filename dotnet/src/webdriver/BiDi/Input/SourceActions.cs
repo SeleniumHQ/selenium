@@ -82,37 +82,37 @@ public sealed record KeyDownAction(char Value) : IKeySourceAction;
 
 public sealed record KeyUpAction(char Value) : IKeySourceAction;
 
-public sealed record PointerDownAction(int Button) : IPointerSourceAction, IPointerCommonProperties
+public sealed record PointerDownAction(long Button) : IPointerSourceAction, IPointerCommonProperties
 {
-    public int? Width { get; init; }
-    public int? Height { get; init; }
+    public long? Width { get; init; }
+    public long? Height { get; init; }
     public double? Pressure { get; init; }
     public double? TangentialPressure { get; init; }
-    public int? Twist { get; init; }
+    public long? Twist { get; init; }
     public double? AltitudeAngle { get; init; }
     public double? AzimuthAngle { get; init; }
 }
 
-public sealed record PointerUpAction(int Button) : IPointerSourceAction;
+public sealed record PointerUpAction(long Button) : IPointerSourceAction;
 
 public sealed record PointerMoveAction(double X, double Y) : IPointerSourceAction, IPointerCommonProperties
 {
-    public int? Duration { get; init; }
+    public long? Duration { get; init; }
 
     public Origin? Origin { get; init; }
 
-    public int? Width { get; init; }
-    public int? Height { get; init; }
+    public long? Width { get; init; }
+    public long? Height { get; init; }
     public double? Pressure { get; init; }
     public double? TangentialPressure { get; init; }
-    public int? Twist { get; init; }
+    public long? Twist { get; init; }
     public double? AltitudeAngle { get; init; }
     public double? AzimuthAngle { get; init; }
 }
 
-public sealed record WheelScrollAction(int X, int Y, int DeltaX, int DeltaY) : IWheelSourceAction
+public sealed record WheelScrollAction(long X, long Y, long DeltaX, long DeltaY) : IWheelSourceAction
 {
-    public int? Duration { get; init; }
+    public long? Duration { get; init; }
 
     public Origin? Origin { get; init; }
 }
@@ -137,15 +137,15 @@ public enum PointerType
 
 public interface IPointerCommonProperties
 {
-    public int? Width { get; init; }
+    public long? Width { get; init; }
 
-    public int? Height { get; init; }
+    public long? Height { get; init; }
 
     public double? Pressure { get; init; }
 
     public double? TangentialPressure { get; init; }
 
-    public int? Twist { get; init; }
+    public long? Twist { get; init; }
 
     public double? AltitudeAngle { get; init; }
 
