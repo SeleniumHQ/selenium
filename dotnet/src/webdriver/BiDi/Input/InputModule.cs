@@ -75,9 +75,5 @@ public sealed class InputModule : Module, IInputModule
 [JsonSerializable(typeof(SetFilesCommand))]
 [JsonSerializable(typeof(SetFilesResult))]
 [JsonSerializable(typeof(FileDialogEventArgs))]
-[JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
-[JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
 
 internal partial class InputJsonSerializerContext : JsonSerializerContext;

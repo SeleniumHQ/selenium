@@ -32,25 +32,25 @@ internal class CombinedInputActionsTests : BiDiTestFixture
 
         await Task.Delay(3000);
 
-        await context.Input.PerformActionsAsync([new PointerActions("id0") {
+        await context.Input.PerformActionsAsync([new PointerActions("id0", [
             new PointerMoveAction(300, 300),
             new PointerDownAction(0),
             new PointerMoveAction(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
             new PointerUpAction(0),
-        }]);
+        ])]);
 
-        await context.Input.PerformActionsAsync([new KeyActions("id1") {
+        await context.Input.PerformActionsAsync([new KeyActions("id1", [
             new KeyDownAction('U'),
             new KeyUpAction('U'),
             new PauseAction { Duration = 3000 }
-        }]);
+        ])]);
 
-        await context.Input.PerformActionsAsync([new PointerActions("id2") {
+        await context.Input.PerformActionsAsync([new PointerActions("id2", [
             new PointerMoveAction(300, 300),
             new PointerDownAction(0),
             new PointerMoveAction(400, 400) { Duration = 2000 },
             new PointerUpAction(0),
-        }]);
+        ])]);
 
         await Task.Delay(3000);
     }
@@ -63,11 +63,10 @@ internal class CombinedInputActionsTests : BiDiTestFixture
         var options = await context.LocateNodesAsync(new CssLocator("option"));
 
         await context.Input.PerformActionsAsync([
-            new PointerActions("id0")
-            {
+            new PointerActions("id0", [
                 new PointerDownAction(1),
                 new PointerUpAction(1),
-            }
+            ])
             ]);
     }
 }
