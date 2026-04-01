@@ -41,7 +41,7 @@ public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSour
 public interface IKeySourceAction : ISourceAction;
 
 public sealed record KeyActions(string Id, IEnumerable<IKeySourceAction> Actions)
-    : SourceActions<IKeySourceAction>(Id, Actions ?? [])
+    : SourceActions<IKeySourceAction>(Id, Actions)
 {
     // TODO move out as extension method
     public KeyActions Type(string text) => this with
@@ -58,7 +58,7 @@ public sealed record KeyActions(string Id, IEnumerable<IKeySourceAction> Actions
 public interface IPointerSourceAction : ISourceAction;
 
 public sealed record PointerActions(string Id, IEnumerable<IPointerSourceAction> Actions)
-    : SourceActions<IPointerSourceAction>(Id, Actions ?? [])
+    : SourceActions<IPointerSourceAction>(Id, Actions)
 {
     public PointerParameters? Parameters { get; init; }
 }
@@ -69,14 +69,14 @@ public sealed record PointerActions(string Id, IEnumerable<IPointerSourceAction>
 public interface IWheelSourceAction : ISourceAction;
 
 public sealed record WheelActions(string Id, IEnumerable<IWheelSourceAction> Actions)
-    : SourceActions<IWheelSourceAction>(Id, Actions ?? []);
+    : SourceActions<IWheelSourceAction>(Id, Actions);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
 public sealed record NoneActions(string Id, IEnumerable<INoneSourceAction> Actions)
-    : SourceActions<INoneSourceAction>(Id, Actions ?? []);
+    : SourceActions<INoneSourceAction>(Id, Actions);
 
 public sealed record KeyDownAction(char Value) : IKeySourceAction;
 
