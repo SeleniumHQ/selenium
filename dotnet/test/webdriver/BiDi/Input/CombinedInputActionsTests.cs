@@ -60,13 +60,40 @@ internal class CombinedInputActionsTests : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("formSelectionPage.html");
 
-        var options = await context.LocateNodesAsync(new CssLocator("option"));
+        var options = (await context.LocateNodesAsync(new CssLocator("option"))).Nodes;
 
         await context.Input.PerformActionsAsync([
-            new PointerActions("id0", [
-                new PointerDownAction(1),
-                new PointerUpAction(1),
-            ])
-            ]);
+            new PointerActions("pointer", [
+                new PointerMoveAction(0, 0) { Origin = new ElementOrigin(options[1]) },
+                new PointerDownAction(0),
+                new PointerUpAction(0),
+                new PauseAction(),  // align with shift key down
+                new PointerMoveAction(0, 0) { Origin = new ElementOrigin(options[3]) },
+                new PointerDownAction(0),
+                new PointerUpAction(0),
+            ]),
+            new KeyActions("key", [
+                new PauseAction(),  // align with first click (no modifier)
+                new PauseAction(),
+                new PauseAction(),
+                new KeyDownAction('\uE008'),  // Shift down
+                new PauseAction(),
+                new PauseAction(),
+                new KeyUpAction('\uE008'),  // Shift up
+            ]),
+        ]);
+
+        var showButton = (await context.LocateNodesAsync(new CssLocator("[name='showselected']"))).Nodes[0];
+        await context.Input.PerformActionsAsync([
+            new PointerActions("pointer", [
+                new PointerMoveAction(0, 0) { Origin = new ElementOrigin(showButton) },
+                new PointerDownAction(0),
+                new PointerUpAction(0),
+            ]),
+        ]);
+
+        var resultText = driver.FindElement(By.Id("result")).Text;
+
+        Assert.That(resultText, Is.EqualTo("roquefort parmigiano cheddar"));
     }
 }
