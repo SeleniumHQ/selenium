@@ -131,9 +131,9 @@ internal class NetworkTests : BiDiTestFixture
     {
         int times = 0;
 
-        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.ResponseStarted]);
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await bidi.Network.OnResponseStartedAsync(async e =>
+        await bidi.Network.OnBeforeRequestSentAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
