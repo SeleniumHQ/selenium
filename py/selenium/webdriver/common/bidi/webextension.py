@@ -11,7 +11,6 @@ from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
-
 @dataclass
 class InstallParameters:
     """InstallParameters."""
