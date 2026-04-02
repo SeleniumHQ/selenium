@@ -351,11 +351,8 @@ internal sealed class Broker : IAsyncDisposable
                 _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
-            // Record the exception so the processing task can fail remaining commands
-            // after draining already-received responses from the channel.
+            // Propagated via _terminalReceiveException; not rethrown to keep disposal orderly.
             _terminalReceiveException = ex;
-
-            throw;
         }
         finally
         {
