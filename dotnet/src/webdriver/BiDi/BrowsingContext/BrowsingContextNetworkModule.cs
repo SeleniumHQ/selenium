@@ -23,60 +23,6 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetworkModule networkModule) : IBrowsingContextNetworkModule
 {
-    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        AddInterceptOptions addInterceptOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions, cancellationToken).ConfigureAwait(false);
-
-        Interception interception = new(networkModule, interceptResult.Intercept);
-
-        await interception.OnBeforeRequestSentAsync(
-            async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts)),
-            new() { Contexts = [context] }).ConfigureAwait(false);
-
-        return interception;
-    }
-
-    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        AddInterceptOptions addInterceptOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions, cancellationToken).ConfigureAwait(false);
-
-        Interception interception = new(networkModule, interceptResult.Intercept);
-
-        await interception.OnResponseStartedAsync(
-            async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts)),
-            new() { Contexts = [context] }).ConfigureAwait(false);
-
-        return interception;
-    }
-
-    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        AddInterceptOptions addInterceptOptions = new(options)
-        {
-            Contexts = [context]
-        };
-
-        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions, cancellationToken).ConfigureAwait(false);
-
-        Interception interception = new(networkModule, interceptResult.Intercept);
-
-        await interception.OnAuthRequiredAsync(
-            async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts)),
-            new() { Contexts = [context] }).ConfigureAwait(false);
-
-        return interception;
-    }
-
     public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, ContextAddDataCollectorOptions.WithContext(options, context), cancellationToken);
@@ -267,9 +213,3 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetwo
         }
     }
 }
-
-public sealed record InterceptRequestOptions : ContextAddInterceptOptions;
-
-public sealed record InterceptResponseOptions : ContextAddInterceptOptions;
-
-public sealed record InterceptAuthOptions : ContextAddInterceptOptions;
