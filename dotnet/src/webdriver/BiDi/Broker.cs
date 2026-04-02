@@ -94,39 +94,46 @@ internal sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? DefaultCommandTimeout;
         cts.CancelAfter(timeout);
 
-        using var sendBuffer = new PooledBufferWriter();
-
-        using (var writer = new Utf8JsonWriter(sendBuffer))
-        {
-            JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
-        }
-
-        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
-
-        using var ctsRegistration = cts.Token.Register(() =>
-        {
-            tcs.TrySetCanceled(cts.Token);
-            _pendingCommands.TryRemove(command.Id, out _);
-        });
+        var sendBuffer = RentBuffer();
 
         try
         {
-            if (_logger.IsEnabled(LogEventLevel.Trace))
+            using (var writer = new Utf8JsonWriter(sendBuffer))
             {
-#if NET8_0_OR_GREATER
-                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
-#else
-                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
-#endif
+                JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+            _pendingCommands[command.Id] = commandInfo;
+
+            using var ctsRegistration = cts.Token.Register(() =>
+            {
+                tcs.TrySetCanceled(cts.Token);
+                _pendingCommands.TryRemove(command.Id, out _);
+            });
+
+            try
+            {
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+#if NET8_0_OR_GREATER
+                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
+#else
+                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
+#endif
+                }
+
+                await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            }
+            catch
+            {
+                _pendingCommands.TryRemove(command.Id, out _);
+                throw;
+            }
         }
-        catch
+        finally
         {
-            _pendingCommands.TryRemove(command.Id, out _);
-            throw;
+            ReturnBuffer(sendBuffer);
         }
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
