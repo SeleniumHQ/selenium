@@ -24,4 +24,6 @@
 -//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextInspectorTest-firefox-beta-remote
 -//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-firefox-beta
 -//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-firefox-beta-remote
+-//java/test/org/openqa/selenium/bidi/emulation:SetNetworkConditionsTest-firefox-beta
+-//java/test/org/openqa/selenium/bidi/emulation:SetNetworkConditionsTest-firefox-beta-remote
 -//rb/spec/integration/selenium/webdriver/bidi:browsing_context-firefox-beta-bidi
