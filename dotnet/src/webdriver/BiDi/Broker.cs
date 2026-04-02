@@ -77,6 +77,11 @@ internal sealed class Broker : IAsyncDisposable
         where TCommand : Command
         where TResult : EmptyResult
     {
+        if (_terminalReceiveException is { } terminalException)
+        {
+            throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
+        }
+
         command.Id = Interlocked.Increment(ref _currentCommandId);
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
