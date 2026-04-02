@@ -48,7 +48,8 @@ internal sealed class Broker : IAsyncDisposable
     private readonly Channel<PooledBufferWriter> _receivedMessages = Channel.CreateBounded<PooledBufferWriter>(
         new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
 
-    private readonly ConcurrentBag<PooledBufferWriter> _bufferPool = [];
+    private readonly Channel<PooledBufferWriter> _bufferPool = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = false, SingleWriter = false });
 
     private volatile Exception? _terminalReceiveException;
 
@@ -156,7 +157,7 @@ internal sealed class Broker : IAsyncDisposable
         {
             _receiveMessagesCancellationTokenSource.Dispose();
 
-            while (_bufferPool.TryTake(out var buffer))
+            while (_bufferPool.Reader.TryRead(out var buffer))
             {
                 buffer.Dispose();
             }
@@ -407,13 +408,16 @@ internal sealed class Broker : IAsyncDisposable
 
     private PooledBufferWriter RentBuffer()
     {
-        return _bufferPool.TryTake(out var buffer) ? buffer : new PooledBufferWriter();
+        return _bufferPool.Reader.TryRead(out var buffer) ? buffer : new PooledBufferWriter();
     }
 
     private void ReturnBuffer(PooledBufferWriter buffer)
     {
         buffer.Reset();
-        _bufferPool.Add(buffer);
+        if (!_bufferPool.Writer.TryWrite(buffer))
+        {
+            buffer.Dispose();
+        }
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
@@ -440,7 +444,13 @@ internal sealed class Broker : IAsyncDisposable
             _written = 0;
         }
 
-        public void Advance(int count) => _written += count;
+        public void Advance(int count)
+        {
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (_written + count > (_buffer?.Length ?? 0)) throw new InvalidOperationException("Cannot advance past the end of the buffer.");
+
+            _written += count;
+        }
 
         public Memory<byte> GetMemory(int sizeHint = 0)
         {
