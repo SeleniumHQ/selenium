@@ -29,6 +29,12 @@ namespace OpenQA.Selenium.BiDi;
 
 internal sealed class Broker : IAsyncDisposable
 {
+    // Limits how many received messages can be buffered before backpressure is applied to the transport.
+    private const int ReceivedMessageQueueCapacity = 16;
+
+    // How long to wait for a command response before cancelling.
+    private static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(30);
+
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
@@ -40,7 +46,7 @@ internal sealed class Broker : IAsyncDisposable
     private long _currentCommandId;
 
     private readonly Channel<PooledBufferWriter> _receivedMessages = Channel.CreateBounded<PooledBufferWriter>(
-        new BoundedChannelOptions(16) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
 
     private readonly ConcurrentBag<PooledBufferWriter> _bufferPool = [];
 
@@ -79,7 +85,7 @@ internal sealed class Broker : IAsyncDisposable
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             : new CancellationTokenSource();
 
-        var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
+        var timeout = options?.Timeout ?? DefaultCommandTimeout;
         cts.CancelAfter(timeout);
 
         using var sendBuffer = new PooledBufferWriter();
