@@ -162,8 +162,6 @@ internal sealed class Broker : IAsyncDisposable
                 buffer.Dispose();
             }
         }
-
-        GC.SuppressFinalize(this);
     }
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
@@ -468,8 +466,10 @@ internal sealed class Broker : IAsyncDisposable
         {
             var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
 
-            if (sizeHint <= 0) sizeHint = buffer.Length - _written;
-            if (sizeHint <= 0) sizeHint = buffer.Length;
+            if (sizeHint <= 0)
+            {
+                sizeHint = Math.Max(1, buffer.Length - _written);
+            }
 
             if (_written + sizeHint > buffer.Length)
             {
