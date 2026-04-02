@@ -139,20 +139,24 @@ suite(
       })
 
       it('can unpin script', async function () {
-        const id = await driver.script().pin("() => { console.log('Hello!'); }")
+        const id = await driver.script().pin("() => { console.log('Hello'); }")
+        await driver.script().pin("() => { console.log('World'); }")
 
-        let count = 0
+        const logs = []
         await driver.script().addConsoleMessageHandler((logEntry) => {
-          count++
+          logs.push(logEntry.text)
         })
 
         await driver.get(Pages.logEntryAdded)
+        assert.ok(logs.includes('Hello'), `[${logs}] should contain "Hello"`)
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
 
         await driver.script().unpin(id)
 
+        logs.length = 0
         await driver.get(Pages.logEntryAdded)
-
-        assert.equal(count, 1)
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
+        assert.ok(!logs.includes('Hello'), `[${logs}] should not contain "Hello"`)
       })
     })
   },
