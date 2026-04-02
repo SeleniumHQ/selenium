@@ -45,15 +45,16 @@ internal class NetworkTests : BiDiTestFixture
     [Test]
     public async Task CanAddIntercept()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask);
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        Assert.That(intercept, Is.Not.Null);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Intercept, Is.Not.Null);
     }
 
     [Test]
     public async Task CanAddInterceptStringUrlPattern()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, new()
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent], new()
         {
             UrlPatterns = [
                 new StringUrlPattern("http://localhost:4444"),
@@ -61,13 +62,14 @@ internal class NetworkTests : BiDiTestFixture
                 ]
         });
 
-        Assert.That(intercept, Is.Not.Null);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Intercept, Is.Not.Null);
     }
 
     [Test]
     public async Task CanAddInterceptUrlPattern()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, options: new()
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent], options: new()
         {
             UrlPatterns = [new PatternUrlPattern()
             {
@@ -76,23 +78,29 @@ internal class NetworkTests : BiDiTestFixture
             }]
         });
 
-        Assert.That(intercept, Is.Not.Null);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Intercept, Is.Not.Null);
     }
 
     [Test]
     public async Task CanContinueRequest()
     {
         int times = 0;
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
-        {
-            times++;
 
-            await req.ContinueAsync();
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
+
+        await context.Network.OnBeforeRequestSentAsync(async e =>
+        {
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                times++;
+
+                await bidi.Network.ContinueRequestAsync(e.Request.Request);
+            }
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
     }
 
@@ -101,16 +109,20 @@ internal class NetworkTests : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptResponseAsync(async res =>
-        {
-            times++;
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.ResponseStarted]);
 
-            await res.ContinueAsync();
+        await bidi.Network.OnResponseStartedAsync(async e =>
+        {
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                times++;
+
+                await bidi.Network.ContinueResponseAsync(e.Request.Request);
+            }
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
     }
 
@@ -119,16 +131,20 @@ internal class NetworkTests : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
-        {
-            times++;
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-            await req.ProvideResponseAsync();
+        await bidi.Network.OnBeforeRequestSentAsync(async e =>
+        {
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                times++;
+
+                await bidi.Network.ProvideResponseAsync(e.Request.Request);
+            }
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
     }
 
@@ -137,24 +153,28 @@ internal class NetworkTests : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
-        {
-            times++;
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-            await req.ProvideResponseAsync(new() { Body = """
-                <html>
-                    <head>
-                        <title>Hello</title>
-                    </head>
-                    <boody>
-                    </body>
-                </html>
-                """ });
+        await bidi.Network.OnBeforeRequestSentAsync(async e =>
+        {
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                times++;
+
+                await bidi.Network.ProvideResponseAsync(e.Request.Request, new() { Body = """
+                    <html>
+                        <head>
+                            <title>Hello</title>
+                        </head>
+                        <body>
+                        </body>
+                    </html>
+                    """ });
+            }
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
         Assert.That(driver.Title, Is.EqualTo("Hello"));
     }
@@ -162,23 +182,24 @@ internal class NetworkTests : BiDiTestFixture
     [Test]
     public async Task CanRemoveIntercept()
     {
-        var intercept = await bidi.Network.InterceptRequestAsync(_ => Task.CompletedTask);
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await intercept.RemoveAsync();
-
-        // or
-
-        intercept = await context.Network.InterceptRequestAsync(_ => Task.CompletedTask);
-
-        await intercept.DisposeAsync();
+        Assert.That(
+            async () => await bidi.Network.RemoveInterceptAsync(result.Intercept),
+            Throws.Nothing);
     }
 
     [Test]
     public async Task CanContinueWithAuthCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
+
+        await bidi.Network.OnAuthRequiredAsync(async e =>
         {
-            await auth.ContinueAsync(new AuthCredentials("test", "test"));
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new AuthCredentials("test", "test"));
+            }
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -190,41 +211,56 @@ internal class NetworkTests : BiDiTestFixture
     [IgnoreBrowser(Infrastructure.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
+
+        await bidi.Network.OnAuthRequiredAsync(async e =>
         {
-            await auth.ContinueAsync(new ContinueWithAuthDefaultCredentialsOptions());
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthDefaultCredentialsOptions());
+            }
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
-
-        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
+        Assert.That(
+            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
     }
 
     [Test]
     [IgnoreBrowser(Infrastructure.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
+
+        await bidi.Network.OnAuthRequiredAsync(async e =>
         {
-            await auth.ContinueAsync(new ContinueWithAuthCancelCredentialsOptions());
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthCancelCredentialsOptions());
+            }
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
-
-        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
+        Assert.That(
+            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
     }
 
     [Test]
     public async Task CanFailRequest()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
+        var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
+
+        await context.Network.OnBeforeRequestSentAsync(async e =>
         {
-            await req.FailAsync();
+            if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
+            {
+                await bidi.Network.FailRequestAsync(e.Request.Request);
+            }
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
-
-        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
+        Assert.That(
+            async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete }),
+            Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
     }
 
     [Test]
@@ -254,14 +290,22 @@ internal class NetworkTests : BiDiTestFixture
     [Test]
     public void CanSetCacheBehavior()
     {
-        Assert.That(async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
-        Assert.That(async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default),
+            Throws.Nothing);
+
+        Assert.That(
+            async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default),
+            Throws.Nothing);
     }
 
     [Test]
     public async Task CanSetExtraHeaders()
     {
-        var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);
+        var result = await bidi.Network.SetExtraHeadersAsync(
+            [
+                new Header("x-test-header", "test-value")
+            ]);
 
         Assert.That(result, Is.Not.Null);
     }
