@@ -57,7 +57,10 @@ public class BiDiTestFixture
             await bidi.DisposeAsync();
         }
 
-        driver?.Dispose();
+        if (driver is not null)
+        {
+            await driver.DisposeAsync();
+        }
     }
 
     public class BiDiEnabledDriverOptions : DriverOptions
