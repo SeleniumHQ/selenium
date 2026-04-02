@@ -201,11 +201,11 @@ jobs:
           bazelrc: common --color=yes
       # Workaround for rules_ruby MSYS2 "infinite symlink expansion detected" on Windows
       - name: Remove MSYS2 recursive symlink
-          if: inputs.os == 'windows'
-          shell: bash
-          run: |
-            [ -L "D:/b/external/rules_ruby++ruby+ruby/dist/msys64/etc/mtab-" ] && \
-            rm "D:/b/external/rules_ruby++ruby+ruby/dist/msys64/etc/mtab-"
+        if: ${{ inputs.os == 'windows' }}
+        shell: bash
+        run: |
+          [ -L "D:/b/external/rules_ruby++ruby+ruby/dist/msys64/etc/mtab-" ] && \
+          rm "D:/b/external/rules_ruby++ruby+ruby/dist/msys64/etc/mtab-"
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
