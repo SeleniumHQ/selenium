@@ -83,7 +83,7 @@ impl ManagerConfig {
                     _architecture = get_win_os_architecture();
                 }
             }
-            if _architecture.contains("32") {
+            if _architecture.contains("x86") {
                 ARCH_X86.to_string()
             } else if _architecture.contains("ARM") {
                 ARCH_ARM64.to_string()
@@ -316,8 +316,8 @@ fn get_win_os_architecture() -> String {
         GetNativeSystemInfo(&mut system_info);
 
         match system_info.u.s() {
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 => "64-bit",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => "32-bit",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 => "AMD64",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => "x86",
             si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM => "ARM",
             si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 => "ARM64",
             si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 => "Itanium-based",
