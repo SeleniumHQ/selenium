@@ -46,10 +46,10 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",
@@ -79,10 +79,10 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",
@@ -113,13 +113,13 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
     ],
     internals_visible_to = [
-        "WebDriver.Common.Tests",
+        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",
@@ -140,7 +140,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
@@ -171,7 +171,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
@@ -203,7 +203,7 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     defines = [
         "NET8_0_OR_GREATER",
@@ -243,21 +243,21 @@ copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",
     out = "manager/linux/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 nuget_pack(
@@ -305,10 +305,6 @@ nuget_pack(
         ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "Selenium.WebDriver.StrongNamed.nuspec",
-    property_group_vars = {
-        "BaseImagePath": "images",
-        "BaseSeleniumManagerPath": "manager",
-    },
     tags = [
         "block-network",
     ],

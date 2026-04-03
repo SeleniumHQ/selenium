@@ -18,12 +18,11 @@
 // </copyright>
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Moq;
-using NUnit.Framework;
+using OpenQA.Selenium.Support.Extensions;
 
-namespace OpenQA.Selenium.Support.Extensions;
+namespace OpenQA.Selenium.Support.Tests.Extensions;
 
 public interface IJavaScriptExecutingWebDriver : IWebDriver, IJavaScriptExecutor
 {
