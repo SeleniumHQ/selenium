@@ -22,6 +22,13 @@ namespace OpenQA.Selenium.Tests.BiDi.Session;
 internal class SessionTests : BiDiTestFixture
 {
     [Test]
+    public async Task ShouldHaveIdempotentDisposal()
+    {
+        await bidi.DisposeAsync();
+        await bidi.DisposeAsync();
+    }
+
+    [Test]
     public async Task CanGetStatus()
     {
         var status = await bidi.StatusAsync();

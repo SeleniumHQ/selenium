@@ -21,6 +21,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using System.Threading.Channels;
 using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -28,6 +29,12 @@ namespace OpenQA.Selenium.BiDi;
 
 internal sealed class Broker : IAsyncDisposable
 {
+    // Limits how many received messages can be buffered before backpressure is applied to the transport.
+    private const int ReceivedMessageQueueCapacity = 16;
+
+    // How long to wait for a command response before cancelling.
+    private static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(30);
+
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
@@ -38,7 +45,16 @@ internal sealed class Broker : IAsyncDisposable
 
     private long _currentCommandId;
 
-    private readonly Task _receivingMessageTask;
+    private readonly Channel<PooledBufferWriter> _receivedMessages = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
+
+    private readonly Channel<PooledBufferWriter> _bufferPool = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = false, SingleWriter = false });
+
+    private volatile Exception? _terminalReceiveException;
+
+    private readonly Task _receivingTask;
+    private readonly Task _processingTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
     public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
@@ -48,7 +64,8 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = Task.Run(() => ReceiveMessagesLoopAsync(_receiveMessagesCancellationTokenSource.Token));
+        _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
+        _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
     public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
@@ -61,6 +78,11 @@ internal sealed class Broker : IAsyncDisposable
         where TCommand : Command
         where TResult : EmptyResult
     {
+        if (_terminalReceiveException is { } terminalException)
+        {
+            throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
+        }
+
         command.Id = Interlocked.Increment(ref _currentCommandId);
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -69,42 +91,49 @@ internal sealed class Broker : IAsyncDisposable
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             : new CancellationTokenSource();
 
-        var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
+        var timeout = options?.Timeout ?? DefaultCommandTimeout;
         cts.CancelAfter(timeout);
 
-        using var sendBuffer = new PooledBufferWriter();
-
-        using (var writer = new Utf8JsonWriter(sendBuffer))
-        {
-            JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
-        }
-
-        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
-
-        using var ctsRegistration = cts.Token.Register(() =>
-        {
-            tcs.TrySetCanceled(cts.Token);
-            _pendingCommands.TryRemove(command.Id, out _);
-        });
+        var sendBuffer = RentBuffer();
 
         try
         {
-            if (_logger.IsEnabled(LogEventLevel.Trace))
+            using (var writer = new Utf8JsonWriter(sendBuffer))
             {
-#if NET8_0_OR_GREATER
-                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
-#else
-                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
-#endif
+                JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+            _pendingCommands[command.Id] = commandInfo;
+
+            using var ctsRegistration = cts.Token.Register(() =>
+            {
+                tcs.TrySetCanceled(cts.Token);
+                _pendingCommands.TryRemove(command.Id, out _);
+            });
+
+            try
+            {
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+#if NET8_0_OR_GREATER
+                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
+#else
+                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
+#endif
+                }
+
+                await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            }
+            catch
+            {
+                _pendingCommands.TryRemove(command.Id, out _);
+                throw;
+            }
         }
-        catch
+        finally
         {
-            _pendingCommands.TryRemove(command.Id, out _);
-            throw;
+            ReturnBuffer(sendBuffer);
         }
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
@@ -114,22 +143,32 @@ internal sealed class Broker : IAsyncDisposable
     {
         _receiveMessagesCancellationTokenSource.Cancel();
 
-        await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
-
         try
         {
-            await _receivingMessageTask.ConfigureAwait(false);
+            try
+            {
+                await _receivingTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+            {
+                // Expected when cancellation is requested, ignore.
+            }
+
+            await _transport.DisposeAsync().ConfigureAwait(false);
+
+            await _processingTask.ConfigureAwait(false);
+
+            await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+        finally
         {
-            // Expected when cancellation is requested, ignore.
+            _receiveMessagesCancellationTokenSource.Dispose();
+
+            while (_bufferPool.Reader.TryRead(out var buffer))
+            {
+                buffer.Dispose();
+            }
         }
-
-        _receiveMessagesCancellationTokenSource.Dispose();
-
-        await _transport.DisposeAsync().ConfigureAwait(false);
-
-        GC.SuppressFinalize(this);
     }
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
@@ -281,37 +320,33 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
+    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        using var receiveBufferWriter = new PooledBufferWriter();
-
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                receiveBufferWriter.Reset();
-
-                await _transport.ReceiveAsync(receiveBufferWriter, cancellationToken).ConfigureAwait(false);
-
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
-#if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.Span)}");
-#else
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.ToArray())}");
-#endif
-                }
+                var buffer = RentBuffer();
 
                 try
                 {
-                    ProcessReceivedMessage(receiveBufferWriter.WrittenMemory.Span);
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    await _transport.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+
+                    if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
-                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+#if NET8_0_OR_GREATER
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.Span)}");
+#else
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.ToArray())}");
+#endif
                     }
+
+                    await _receivedMessages.Writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    ReturnBuffer(buffer);
+                    throw;
                 }
             }
         }
@@ -322,16 +357,71 @@ internal sealed class Broker : IAsyncDisposable
                 _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
-            // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
-            foreach (var id in _pendingCommands.Keys)
+            // Propagated via _terminalReceiveException; not rethrown to keep disposal orderly.
+            _terminalReceiveException = ex;
+        }
+        finally
+        {
+            _receivedMessages.Writer.TryComplete();
+        }
+    }
+
+    private async Task ProcessMessagesAsync()
+    {
+        var reader = _receivedMessages.Reader;
+
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
+        {
+            while (reader.TryRead(out var buffer))
             {
-                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                try
                 {
-                    pendingCommand.TaskCompletionSource.TrySetException(ex);
+                    ProcessReceivedMessage(buffer.WrittenMemory.Span);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+                    }
+                }
+                finally
+                {
+                    ReturnBuffer(buffer);
                 }
             }
+        }
 
-            throw;
+        // Channel is fully drained. Fail any commands that didn't get a response:
+        // either with the transport error or cancellation for clean shutdown.
+        var terminalException = _terminalReceiveException;
+        foreach (var id in _pendingCommands.Keys)
+        {
+            if (_pendingCommands.TryRemove(id, out var pendingCommand))
+            {
+                if (terminalException is not null)
+                {
+                    pendingCommand.TaskCompletionSource.TrySetException(terminalException);
+                }
+                else
+                {
+                    pendingCommand.TaskCompletionSource.TrySetCanceled();
+                }
+            }
+        }
+    }
+
+    private PooledBufferWriter RentBuffer()
+    {
+        return _bufferPool.Reader.TryRead(out var buffer) ? buffer : new PooledBufferWriter();
+    }
+
+    private void ReturnBuffer(PooledBufferWriter buffer)
+    {
+        buffer.Reset();
+        if (!_bufferPool.Writer.TryWrite(buffer))
+        {
+            buffer.Dispose();
         }
     }
 
@@ -359,7 +449,13 @@ internal sealed class Broker : IAsyncDisposable
             _written = 0;
         }
 
-        public void Advance(int count) => _written += count;
+        public void Advance(int count)
+        {
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (_written + count > (_buffer?.Length ?? 0)) throw new InvalidOperationException("Cannot advance past the end of the buffer.");
+
+            _written += count;
+        }
 
         public Memory<byte> GetMemory(int sizeHint = 0)
         {
@@ -377,8 +473,10 @@ internal sealed class Broker : IAsyncDisposable
         {
             var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
 
-            if (sizeHint <= 0) sizeHint = buffer.Length - _written;
-            if (sizeHint <= 0) sizeHint = buffer.Length;
+            if (sizeHint <= 0)
+            {
+                sizeHint = Math.Max(1, buffer.Length - _written);
+            }
 
             if (_written + sizeHint > buffer.Length)
             {
