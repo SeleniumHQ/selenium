@@ -1,4 +1,4 @@
-// <copyright file="UserPromptOpenedEventArgs.cs" company="Selenium Committers">
+// <copyright file="ResponseStartedEventParams.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,19 +17,17 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record UserPromptOpenedEventArgs(BrowsingContext Context, Session.UserPromptHandlerType Handler, string Message, UserPromptType Type, Browser.UserContext? UserContext, string? DefaultValue)
-    : EventArgs;
-
-[JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]
-public enum UserPromptType
-{
-    Alert,
-    Confirm,
-    Prompt,
-    BeforeUnload
-}
+public record ResponseStartedEventParams(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    ResponseData Response,
+    IReadOnlyList<Intercept>? Intercepts)
+    : BaseParametersEventParams(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

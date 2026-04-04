@@ -29,13 +29,21 @@ public sealed class LogModule : Module, ILogModule
 
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateLogEntryEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntryEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateLogEntryEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
     }
+
+    private static LogEntryEventArgs CreateLogEntryEventArgs(LogEntryEventParams p) => p switch
+    {
+        ConsoleLogEntryEventParams c => new ConsoleLogEntryEventArgs(c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
+        JavascriptLogEntryEventParams j => new JavascriptLogEntryEventArgs(j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
+        GenericLogEntryEventParams g => new GenericLogEntryEventArgs(g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
+        _ => throw new InvalidOperationException($"Unknown LogEntryEventParams type: {p.GetType()}")
+    };
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
@@ -78,12 +86,12 @@ public sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
 #endregion
 
-[JsonSerializable(typeof(LogEntryEventArgs))]
+[JsonSerializable(typeof(LogEntryEventParams))]
 
 #region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(GenericLogEntryEventArgs))]
-[JsonSerializable(typeof(ConsoleLogEntryEventArgs))]
-[JsonSerializable(typeof(JavascriptLogEntryEventArgs))]
+[JsonSerializable(typeof(GenericLogEntryEventParams))]
+[JsonSerializable(typeof(ConsoleLogEntryEventParams))]
+[JsonSerializable(typeof(JavascriptLogEntryEventParams))]
 #endregion
 
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

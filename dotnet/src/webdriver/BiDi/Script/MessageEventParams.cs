@@ -1,4 +1,4 @@
-// <copyright file="UserPromptOpenedEventArgs.cs" company="Selenium Committers">
+// <copyright file="MessageEventParams.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,19 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+namespace OpenQA.Selenium.BiDi.Script;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
-
-public sealed record UserPromptOpenedEventArgs(BrowsingContext Context, Session.UserPromptHandlerType Handler, string Message, UserPromptType Type, Browser.UserContext? UserContext, string? DefaultValue)
-    : EventArgs;
-
-[JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]
-public enum UserPromptType
-{
-    Alert,
-    Confirm,
-    Prompt,
-    BeforeUnload
-}
+public sealed record MessageEventParams(Channel Channel, RemoteValue Data, Source Source) : EventParams;

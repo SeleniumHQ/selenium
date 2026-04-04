@@ -20,4 +20,4 @@
 namespace OpenQA.Selenium.BiDi.Speculation;
 
 public sealed record PrefetchStatusUpdatedEventArgs(BrowsingContext.BrowsingContext Context, string Url, PreloadingStatus Status)
-    : EventParams;
+    : EventArgs;

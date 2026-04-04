@@ -17,23 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
-
 namespace OpenQA.Selenium.BiDi.Script;
 
-// https://github.com/dotnet/runtime/issues/72604
-// [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-// [JsonDerivedType(typeof(WindowRealmInfoEventArgs), "window")]
-// [JsonDerivedType(typeof(DedicatedWorkerRealmInfoEventArgs), "dedicated-worker")]
-// [JsonDerivedType(typeof(SharedWorkerRealmInfoEventArgs), "shared-worker")]
-// [JsonDerivedType(typeof(ServiceWorkerRealmInfoEventArgs), "service-worker")]
-// [JsonDerivedType(typeof(WorkerRealmInfoEventArgs), "worker")]
-// [JsonDerivedType(typeof(PaintWorkletRealmInfoEventArgs), "paint-worklet")]
-// [JsonDerivedType(typeof(AudioWorkletRealmInfoEventArgs), "audio-worklet")]
-// [JsonDerivedType(typeof(WorkletRealmInfoEventArgs), "worklet")]
-[JsonConverter(typeof(RealmInfoEventArgsConverter))]
-public abstract record RealmInfoEventArgs(Realm Realm, string Origin) : EventParams;
+public abstract record RealmInfoEventArgs(Realm Realm, string Origin) : EventArgs;
 
 public sealed record WindowRealmInfoEventArgs(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context, Browser.UserContext? UserContext, string? Sandbox) : RealmInfoEventArgs(Realm, Origin);
 

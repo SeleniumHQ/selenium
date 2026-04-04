@@ -19,18 +19,11 @@
 
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-// https://github.com/dotnet/runtime/issues/72604
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(GenericLogEntryEventArgs))]
-//[JsonDerivedType(typeof(ConsoleLogEntryEventArgs), "console")]
-//[JsonDerivedType(typeof(JavascriptLogEntryEventArgs), "javascript")]
-[JsonConverter(typeof(LogEntryEventArgsConverter))]
 public abstract record LogEntryEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EventParams
+    : EventArgs
 {
     public Script.StackTrace? StackTrace { get; init; }
 }

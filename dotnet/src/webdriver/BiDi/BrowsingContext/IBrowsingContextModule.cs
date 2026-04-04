@@ -29,10 +29,10 @@ public interface IBrowsingContextModule
     Task<HandleUserPromptResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default);
     Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default);
     Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnContextCreatedAsync(Func<BrowsingContextEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnContextCreatedAsync(Action<BrowsingContextEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnContextDestroyedAsync(Func<BrowsingContextEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnContextDestroyedAsync(Action<BrowsingContextEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnContextCreatedAsync(Func<ContextCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnContextCreatedAsync(Action<ContextCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnContextDestroyedAsync(Func<ContextDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnContextDestroyedAsync(Action<ContextDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnDomContentLoadedAsync(Func<NavigationEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnDomContentLoadedAsync(Action<NavigationEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);

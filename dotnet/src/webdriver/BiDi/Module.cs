@@ -33,17 +33,19 @@ public abstract class Module
         return Broker.ExecuteCommandAsync(command, options, jsonCommandTypeInfo, jsonResultTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Action<TEventParams> action, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventParams : EventParams
+        where TEventArgs : EventArgs
     {
-        var eventHandler = new SyncEventHandler<TEventParams>(eventName, action);
+        var eventHandler = new SyncEventHandler<TEventArgs, TEventParams>(eventName, action, factory);
         return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<TEventParams, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventParams : EventParams
+        where TEventArgs : EventArgs
     {
-        var eventHandler = new AsyncEventHandler<TEventParams>(eventName, func);
+        var eventHandler = new AsyncEventHandler<TEventArgs, TEventParams>(eventName, func, factory);
         return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 

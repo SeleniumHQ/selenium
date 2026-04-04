@@ -1,4 +1,4 @@
-// <copyright file="DownloadEndEventArgsConverter.cs" company="Selenium Committers">
+// <copyright file="DownloadEndEventParamsConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -24,19 +24,19 @@ using OpenQA.Selenium.BiDi.BrowsingContext;
 namespace OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 // https://github.com/dotnet/runtime/issues/72604
-internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArgs>
+internal class DownloadEndEventParamsConverter : JsonConverter<DownloadEndEventParams>
 {
-    public override DownloadEndEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DownloadEndEventParams? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetDiscriminator("status") switch
         {
-            "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventArgs>()),
-            "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventArgs>()),
+            "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventParams>()),
+            "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventParams>()),
             _ => null,
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, DownloadEndEventArgs value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DownloadEndEventParams value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

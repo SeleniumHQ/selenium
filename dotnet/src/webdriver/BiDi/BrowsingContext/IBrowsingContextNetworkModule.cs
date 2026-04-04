@@ -26,8 +26,8 @@ public interface IBrowsingContextNetworkModule
     Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventParams, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventParams> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
     Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);

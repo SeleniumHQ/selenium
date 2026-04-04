@@ -50,12 +50,17 @@ public sealed class InputModule : Module, IInputModule
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogEventArgs, options, _jsonContext.FileDialogEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, options, _jsonContext.FileDialogEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogEventArgs, options, _jsonContext.FileDialogEventParams, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static FileDialogEventArgs CreateFileDialogEventArgs(FileDialogEventParams p)
+    {
+        return new FileDialogEventArgs(p.Context, p.UserContext, p.Multiple, p.Element);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
@@ -74,6 +79,6 @@ public sealed class InputModule : Module, IInputModule
 [JsonSerializable(typeof(ReleaseActionsResult))]
 [JsonSerializable(typeof(SetFilesCommand))]
 [JsonSerializable(typeof(SetFilesResult))]
-[JsonSerializable(typeof(FileDialogEventArgs))]
+[JsonSerializable(typeof(FileDialogEventParams))]
 
 internal partial class InputJsonSerializerContext : JsonSerializerContext;

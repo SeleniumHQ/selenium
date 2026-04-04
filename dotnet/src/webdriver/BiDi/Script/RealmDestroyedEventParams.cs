@@ -1,4 +1,4 @@
-// <copyright file="BrowsingContextInfo.cs" company="Selenium Committers">
+// <copyright file="RealmDestroyedEventParams.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,6 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed record BrowsingContextInfo(IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent);
+public sealed record RealmDestroyedEventParams(Realm Realm) : EventParams;

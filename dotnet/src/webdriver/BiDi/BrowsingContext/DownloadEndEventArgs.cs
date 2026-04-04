@@ -17,18 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-// https://github.com/dotnet/runtime/issues/72604
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "status")]
-//[JsonDerivedType(typeof(DownloadCanceledEventArgs), "canceled")]
-//[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
-[JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(BrowsingContext Context)
-    : EventParams;
+    : EventArgs;
 
 public sealed record DownloadCanceledEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
     : DownloadEndEventArgs(Context), IBaseNavigationInfo;

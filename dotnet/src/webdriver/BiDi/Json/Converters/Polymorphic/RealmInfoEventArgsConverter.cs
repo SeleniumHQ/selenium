@@ -1,4 +1,4 @@
-// <copyright file="RealmInfoEventArgsConverter.cs" company="Selenium Committers">
+// <copyright file="RealmInfoEventParamsConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -24,25 +24,25 @@ using OpenQA.Selenium.BiDi.Script;
 namespace OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 // https://github.com/dotnet/runtime/issues/72604
-internal class RealmInfoEventArgsConverter : JsonConverter<RealmInfoEventArgs>
+internal class RealmInfoEventParamsConverter : JsonConverter<RealmInfoEventParams>
 {
-    public override RealmInfoEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override RealmInfoEventParams? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetDiscriminator("type") switch
         {
-            "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowRealmInfoEventArgs>()),
-            "dedicated-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DedicatedWorkerRealmInfoEventArgs>()),
-            "shared-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SharedWorkerRealmInfoEventArgs>()),
-            "service-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ServiceWorkerRealmInfoEventArgs>()),
-            "worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkerRealmInfoEventArgs>()),
-            "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmInfoEventArgs>()),
-            "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmInfoEventArgs>()),
-            "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmInfoEventArgs>()),
+            "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowRealmInfoEventParams>()),
+            "dedicated-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DedicatedWorkerRealmInfoEventParams>()),
+            "shared-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SharedWorkerRealmInfoEventParams>()),
+            "service-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ServiceWorkerRealmInfoEventParams>()),
+            "worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkerRealmInfoEventParams>()),
+            "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmInfoEventParams>()),
+            "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmInfoEventParams>()),
+            "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmInfoEventParams>()),
             _ => null,
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, RealmInfoEventArgs value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, RealmInfoEventParams value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

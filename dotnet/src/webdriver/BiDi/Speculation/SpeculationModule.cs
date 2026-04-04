@@ -29,12 +29,17 @@ public sealed class SpeculationModule : Module, ISpeculationModule
 
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, _jsonContext.PrefetchStatusUpdatedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, _jsonContext.PrefetchStatusUpdatedEventParams, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static PrefetchStatusUpdatedEventArgs CreatePrefetchStatusUpdatedEventArgs(PrefetchStatusUpdatedEventParams p)
+    {
+        return new PrefetchStatusUpdatedEventArgs(p.Context, p.Url, p.Status);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
@@ -45,5 +50,5 @@ public sealed class SpeculationModule : Module, ISpeculationModule
     }
 }
 
-[JsonSerializable(typeof(PrefetchStatusUpdatedEventArgs))]
+[JsonSerializable(typeof(PrefetchStatusUpdatedEventParams))]
 internal partial class SpeculationJsonSerializerContext : JsonSerializerContext;

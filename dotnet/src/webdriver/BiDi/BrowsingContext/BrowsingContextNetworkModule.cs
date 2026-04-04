@@ -33,7 +33,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetwo
         return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventParams, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -43,7 +43,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetwo
             cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventParams> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -133,7 +133,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetwo
             cancellationToken);
     }
 
-    private async Task HandleBeforeRequestSentAsync(BeforeRequestSentEventParams e, Func<BeforeRequestSentEventParams, Task> handler)
+    private async Task HandleBeforeRequestSentAsync(BeforeRequestSentEventArgs e, Func<BeforeRequestSentEventArgs, Task> handler)
     {
         if (context.Equals(e.Context))
         {
@@ -141,7 +141,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, INetwo
         }
     }
 
-    private void HandleBeforeRequestSent(BeforeRequestSentEventParams e, Action<BeforeRequestSentEventParams> handler)
+    private void HandleBeforeRequestSent(BeforeRequestSentEventArgs e, Action<BeforeRequestSentEventArgs> handler)
     {
         if (context.Equals(e.Context))
         {

@@ -121,55 +121,65 @@ public sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, _jsonContext.ResponseStartedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, options, _jsonContext.ResponseStartedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, _jsonContext.ResponseStartedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, _jsonContext.ResponseCompletedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, options, _jsonContext.ResponseCompletedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, _jsonContext.ResponseCompletedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, _jsonContext.FetchErrorEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, options, _jsonContext.FetchErrorEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, _jsonContext.FetchErrorEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, _jsonContext.AuthRequiredEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, options, _jsonContext.AuthRequiredEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, _jsonContext.AuthRequiredEventParams, cancellationToken).ConfigureAwait(false);
     }
+
+    private static BeforeRequestSentEventArgs CreateBeforeRequestSentEventArgs(BeforeRequestSentEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.Intercepts);
+
+    private static ResponseStartedEventArgs CreateResponseStartedEventArgs(ResponseStartedEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
+
+    private static ResponseCompletedEventArgs CreateResponseCompletedEventArgs(ResponseCompletedEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
+
+    private static FetchErrorEventArgs CreateFetchErrorEventArgs(FetchErrorEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.Intercepts);
+
+    private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(AuthRequiredEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
@@ -208,9 +218,9 @@ public sealed partial class NetworkModule : Module, INetworkModule
 [JsonSerializable(typeof(SetExtraHeadersResult))]
 
 [JsonSerializable(typeof(BeforeRequestSentEventParams))]
-[JsonSerializable(typeof(ResponseStartedEventArgs))]
-[JsonSerializable(typeof(ResponseCompletedEventArgs))]
-[JsonSerializable(typeof(FetchErrorEventArgs))]
-[JsonSerializable(typeof(AuthRequiredEventArgs))]
+[JsonSerializable(typeof(ResponseStartedEventParams))]
+[JsonSerializable(typeof(ResponseCompletedEventParams))]
+[JsonSerializable(typeof(FetchErrorEventParams))]
+[JsonSerializable(typeof(AuthRequiredEventParams))]
 
 internal partial class NetworkJsonSerializerContext : JsonSerializerContext;
