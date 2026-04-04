@@ -287,9 +287,7 @@ internal sealed class Broker : IAsyncDisposable
                 var eventParams = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventParams
                     ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
 
-                eventParams.BiDi = _bidi;
-
-                _eventDispatcher.EnqueueEvent(method, eventParams);
+                _eventDispatcher.EnqueueEvent(method, eventParams, _bidi);
                 break;
 
             case TypeError:

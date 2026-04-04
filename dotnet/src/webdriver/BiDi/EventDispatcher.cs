@@ -71,9 +71,9 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    public void EnqueueEvent(string method, EventParams eventParams)
+    public void EnqueueEvent(string method, EventParams eventParams, IBiDi bidi)
     {
-        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventParams));
+        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventParams, bidi));
     }
 
     private async Task ProcessEventsAwaiterAsync()
@@ -87,7 +87,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
                 {
                     foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                     {
-                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs);
+                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs, result.BiDi);
                         if (!runningHandlerTask.IsCompleted)
                         {
                             _runningHandlers.TryAdd(runningHandlerTask, 0);
@@ -100,11 +100,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    private async Task InvokeHandlerAsync(EventHandler handler, EventParams eventParams)
+    private async Task InvokeHandlerAsync(EventHandler handler, EventParams eventParams, IBiDi bidi)
     {
         try
         {
-            await handler.InvokeAsync(eventParams).ConfigureAwait(false);
+            await handler.InvokeAsync(eventParams, bidi).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -138,7 +138,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return false;
     }
 
-    private readonly record struct PendingEvent(string Method, EventParams EventArgs);
+    private readonly record struct PendingEvent(string Method, EventParams EventArgs, IBiDi BiDi);
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {

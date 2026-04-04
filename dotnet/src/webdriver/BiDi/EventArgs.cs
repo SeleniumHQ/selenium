@@ -19,13 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs
-{
-    private IBiDi? _bidi;
-
-    public IBiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
-}
+public abstract record EventArgs(IBiDi BiDi);

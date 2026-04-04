@@ -58,9 +58,9 @@ public sealed class InputModule : Module, IInputModule
         return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, _jsonContext.FileDialogOpenedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static FileDialogOpenedEventArgs CreateFileDialogOpenedEventArgs(FileDialogOpenedEventParams p)
+    private static FileDialogOpenedEventArgs CreateFileDialogOpenedEventArgs(IBiDi bidi, FileDialogOpenedEventParams p)
     {
-        return new FileDialogOpenedEventArgs(p.Context, p.UserContext, p.Multiple, p.Element);
+        return new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

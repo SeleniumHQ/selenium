@@ -171,15 +171,15 @@ public sealed partial class NetworkModule : Module, INetworkModule
         return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, _jsonContext.AuthRequiredEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static BeforeRequestSentEventArgs CreateBeforeRequestSentEventArgs(BeforeRequestSentEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.Intercepts);
+    private static BeforeRequestSentEventArgs CreateBeforeRequestSentEventArgs(IBiDi bidi, BeforeRequestSentEventParams p) => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.Intercepts);
 
-    private static ResponseStartedEventArgs CreateResponseStartedEventArgs(ResponseStartedEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
+    private static ResponseStartedEventArgs CreateResponseStartedEventArgs(IBiDi bidi, ResponseStartedEventParams p) => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
 
-    private static ResponseCompletedEventArgs CreateResponseCompletedEventArgs(ResponseCompletedEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
+    private static ResponseCompletedEventArgs CreateResponseCompletedEventArgs(IBiDi bidi, ResponseCompletedEventParams p) => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
 
-    private static FetchErrorEventArgs CreateFetchErrorEventArgs(FetchErrorEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.Intercepts);
+    private static FetchErrorEventArgs CreateFetchErrorEventArgs(IBiDi bidi, FetchErrorEventParams p) => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.Intercepts);
 
-    private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(AuthRequiredEventParams p) => new(p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
+    private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(IBiDi bidi, AuthRequiredEventParams p) => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.Intercepts);
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {

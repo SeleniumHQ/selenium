@@ -22,20 +22,20 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public abstract record EntryAddedEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EventArgs
+public abstract record EntryAddedEventArgs(IBiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : EventArgs(BiDi)
 {
     public Script.StackTrace? StackTrace { get; init; }
 }
 
-public sealed record GenericEntryAddedEventArgs(string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
+public sealed record GenericEntryAddedEventArgs(IBiDi BiDi, string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
 
-public sealed record ConsoleEntryAddedEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
-    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
+public sealed record ConsoleEntryAddedEventArgs(IBiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
+    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
 
-public sealed record JavascriptEntryAddedEventArgs(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EntryAddedEventArgs(Level, Source, Text, Timestamp);
+public sealed record JavascriptEntryAddedEventArgs(IBiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : EntryAddedEventArgs(BiDi, Level, Source, Text, Timestamp);
 
 [JsonConverter(typeof(CamelCaseEnumConverter<Level>))]
 public enum Level

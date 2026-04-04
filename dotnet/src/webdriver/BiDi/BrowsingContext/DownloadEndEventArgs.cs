@@ -19,11 +19,11 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public abstract record DownloadEndEventArgs(BrowsingContext Context)
-    : EventArgs;
+public abstract record DownloadEndEventArgs(IBiDi BiDi, BrowsingContext Context)
+    : EventArgs(BiDi);
 
-public sealed record DownloadCanceledEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+public sealed record DownloadCanceledEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
 
-public sealed record DownloadCompleteEventArgs(string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+public sealed record DownloadCompleteEventArgs(IBiDi BiDi, string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;

@@ -114,20 +114,20 @@ public sealed class ScriptModule : Module, IScriptModule
         return await SubscribeAsync("script.realmDestroyed", handler, CreateRealmDestroyedEventArgs, options, _jsonContext.RealmDestroyedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static MessageEventArgs CreateMessageEventArgs(MessageEventParams p) => new(p.Channel, p.Data, p.Source);
+    private static MessageEventArgs CreateMessageEventArgs(IBiDi bidi, MessageEventParams p) => new(bidi, p.Channel, p.Data, p.Source);
 
-    private static RealmDestroyedEventArgs CreateRealmDestroyedEventArgs(RealmDestroyedEventParams p) => new(p.Realm);
+    private static RealmDestroyedEventArgs CreateRealmDestroyedEventArgs(IBiDi bidi, RealmDestroyedEventParams p) => new(bidi, p.Realm);
 
-    private static RealmCreatedEventArgs CreateRealmCreatedEventArgs(RealmInfoEventParams p) => p switch
+    private static RealmCreatedEventArgs CreateRealmCreatedEventArgs(IBiDi bidi, RealmInfoEventParams p) => p switch
     {
-        WindowRealmInfoEventParams w => new WindowRealmCreatedEventArgs(w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
-        DedicatedWorkerRealmInfoEventParams d => new DedicatedWorkerRealmCreatedEventArgs(d.Realm, d.Origin, d.Owners),
-        SharedWorkerRealmInfoEventParams s => new SharedWorkerRealmCreatedEventArgs(s.Realm, s.Origin),
-        ServiceWorkerRealmInfoEventParams s => new ServiceWorkerRealmCreatedEventArgs(s.Realm, s.Origin),
-        WorkerRealmInfoEventParams w => new WorkerRealmCreatedEventArgs(w.Realm, w.Origin),
-        PaintWorkletRealmInfoEventParams p2 => new PaintWorkletRealmCreatedEventArgs(p2.Realm, p2.Origin),
-        AudioWorkletRealmInfoEventParams a => new AudioWorkletRealmCreatedEventArgs(a.Realm, a.Origin),
-        WorkletRealmInfoEventParams w => new WorkletRealmCreatedEventArgs(w.Realm, w.Origin),
+        WindowRealmInfoEventParams w => new WindowRealmCreatedEventArgs(bidi, w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
+        DedicatedWorkerRealmInfoEventParams d => new DedicatedWorkerRealmCreatedEventArgs(bidi, d.Realm, d.Origin, d.Owners),
+        SharedWorkerRealmInfoEventParams s => new SharedWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+        ServiceWorkerRealmInfoEventParams s => new ServiceWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+        WorkerRealmInfoEventParams w => new WorkerRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
+        PaintWorkletRealmInfoEventParams p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
+        AudioWorkletRealmInfoEventParams a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
+        WorkletRealmInfoEventParams w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
         _ => throw new InvalidOperationException($"Unknown RealmInfoEventParams type: {p.GetType()}")
     };
 

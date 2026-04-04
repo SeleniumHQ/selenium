@@ -37,9 +37,9 @@ public sealed class SpeculationModule : Module, ISpeculationModule
         return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, _jsonContext.PrefetchStatusUpdatedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static PrefetchStatusUpdatedEventArgs CreatePrefetchStatusUpdatedEventArgs(PrefetchStatusUpdatedEventParams p)
+    private static PrefetchStatusUpdatedEventArgs CreatePrefetchStatusUpdatedEventArgs(IBiDi bidi, PrefetchStatusUpdatedEventParams p)
     {
-        return new PrefetchStatusUpdatedEventArgs(p.Context, p.Url, p.Status);
+        return new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status);
     }
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

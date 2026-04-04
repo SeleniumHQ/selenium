@@ -37,11 +37,11 @@ public sealed class LogModule : Module, ILogModule
         return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static EntryAddedEventArgs CreateEntryAddedEventArgs(LogEntryEventParams p) => p switch
+    private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntryEventParams p) => p switch
     {
-        ConsoleLogEntryEventParams c => new ConsoleEntryAddedEventArgs(c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
-        JavascriptLogEntryEventParams j => new JavascriptEntryAddedEventArgs(j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
-        GenericLogEntryEventParams g => new GenericEntryAddedEventArgs(g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
+        ConsoleLogEntryEventParams c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
+        JavascriptLogEntryEventParams j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
+        GenericLogEntryEventParams g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
         _ => throw new InvalidOperationException($"Unknown LogEntryEventParams type: {p.GetType()}")
     };
 

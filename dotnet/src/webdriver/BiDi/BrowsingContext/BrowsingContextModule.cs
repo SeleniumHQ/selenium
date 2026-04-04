@@ -251,38 +251,38 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
         return await SubscribeAsync("browsingContext.userPromptClosed", handler, CreateUserPromptClosedEventArgs, options, _jsonContext.UserPromptClosedEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static NavigationStartedEventArgs CreateNavigationStartedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static NavigationStartedEventArgs CreateNavigationStartedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static FragmentNavigatedEventArgs CreateFragmentNavigatedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static FragmentNavigatedEventArgs CreateFragmentNavigatedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static DomContentLoadedEventArgs CreateDomContentLoadedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static DomContentLoadedEventArgs CreateDomContentLoadedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static LoadEventArgs CreateLoadEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static LoadEventArgs CreateLoadEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static NavigationAbortedEventArgs CreateNavigationAbortedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static NavigationAbortedEventArgs CreateNavigationAbortedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static NavigationFailedEventArgs CreateNavigationFailedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static NavigationFailedEventArgs CreateNavigationFailedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static NavigationCommittedEventArgs CreateNavigationCommittedEventArgs(NavigationEventParams p) => new(p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
+    private static NavigationCommittedEventArgs CreateNavigationCommittedEventArgs(IBiDi bidi, NavigationEventParams p) => new(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext);
 
-    private static HistoryUpdatedEventArgs CreateHistoryUpdatedEventArgs(HistoryUpdatedEventParams p) => new(p.Context, p.Timestamp, p.Url, p.UserContext);
+    private static HistoryUpdatedEventArgs CreateHistoryUpdatedEventArgs(IBiDi bidi, HistoryUpdatedEventParams p) => new(bidi, p.Context, p.Timestamp, p.Url, p.UserContext);
 
-    private static DownloadWillBeginEventArgs CreateDownloadWillBeginEventArgs(DownloadWillBeginEventParams p) => new(p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url);
+    private static DownloadWillBeginEventArgs CreateDownloadWillBeginEventArgs(IBiDi bidi, DownloadWillBeginEventParams p) => new(bidi, p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url);
 
-    private static DownloadEndEventArgs CreateDownloadEndEventArgs(DownloadEndEventParams p) => p switch
+    private static DownloadEndEventArgs CreateDownloadEndEventArgs(IBiDi bidi, DownloadEndEventParams p) => p switch
     {
-        DownloadCanceledEventParams c => new DownloadCanceledEventArgs(c.Context, c.Navigation, c.Timestamp, c.Url),
-        DownloadCompleteEventParams c => new DownloadCompleteEventArgs(c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
+        DownloadCanceledEventParams c => new DownloadCanceledEventArgs(bidi, c.Context, c.Navigation, c.Timestamp, c.Url),
+        DownloadCompleteEventParams c => new DownloadCompleteEventArgs(bidi, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
         _ => throw new InvalidOperationException($"Unknown DownloadEndEventParams type: {p.GetType()}")
     };
 
-    private static ContextCreatedEventArgs CreateContextCreatedEventArgs(BrowsingContextEventParams p) => new(p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent);
+    private static ContextCreatedEventArgs CreateContextCreatedEventArgs(IBiDi bidi, BrowsingContextEventParams p) => new(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent);
 
-    private static ContextDestroyedEventArgs CreateContextDestroyedEventArgs(BrowsingContextEventParams p) => new(p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent);
+    private static ContextDestroyedEventArgs CreateContextDestroyedEventArgs(IBiDi bidi, BrowsingContextEventParams p) => new(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent);
 
-    private static UserPromptOpenedEventArgs CreateUserPromptOpenedEventArgs(UserPromptOpenedEventParams p) => new(p.Context, p.Handler, p.Message, p.Type, p.UserContext, p.DefaultValue);
+    private static UserPromptOpenedEventArgs CreateUserPromptOpenedEventArgs(IBiDi bidi, UserPromptOpenedEventParams p) => new(bidi, p.Context, p.Handler, p.Message, p.Type, p.UserContext, p.DefaultValue);
 
-    private static UserPromptClosedEventArgs CreateUserPromptClosedEventArgs(UserPromptClosedEventParams p) => new(p.Context, p.Accepted, p.Type, p.UserContext, p.UserText);
+    private static UserPromptClosedEventArgs CreateUserPromptClosedEventArgs(IBiDi bidi, UserPromptClosedEventParams p) => new(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText);
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {

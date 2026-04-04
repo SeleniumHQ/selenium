@@ -23,37 +23,35 @@ internal abstract class EventHandler(string eventName)
 {
     public string EventName { get; } = eventName;
 
-    public abstract ValueTask InvokeAsync(EventParams args);
+    public abstract ValueTask InvokeAsync(EventParams args, IBiDi bidi);
 }
 
-internal class AsyncEventHandler<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<TEventParams, TEventArgs> factory)
+internal class AsyncEventHandler<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory)
     : EventHandler(eventName)
     where TEventParams : EventParams
     where TEventArgs : EventArgs
 {
     private readonly Func<TEventArgs, Task> _func = func ?? throw new ArgumentNullException(nameof(func), "Async event handler function cannot be null.");
-    private readonly Func<TEventParams, TEventArgs> _factory = factory ?? throw new ArgumentNullException(nameof(factory), "Event args factory function cannot be null.");
+    private readonly Func<IBiDi, TEventParams, TEventArgs> _factory = factory ?? throw new ArgumentNullException(nameof(factory), "Event args factory function cannot be null.");
 
-    public override async ValueTask InvokeAsync(EventParams args)
+    public override async ValueTask InvokeAsync(EventParams args, IBiDi bidi)
     {
-        var eventArgs = _factory((TEventParams)args);
-        eventArgs.BiDi = args.BiDi;
+        var eventArgs = _factory(bidi, (TEventParams)args);
         await _func(eventArgs).ConfigureAwait(false);
     }
 }
 
-internal class SyncEventHandler<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<TEventParams, TEventArgs> factory)
+internal class SyncEventHandler<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory)
     : EventHandler(eventName)
     where TEventParams : EventParams
     where TEventArgs : EventArgs
 {
     private readonly Action<TEventArgs> _action = action ?? throw new ArgumentNullException(nameof(action), "Sync event handler action cannot be null.");
-    private readonly Func<TEventParams, TEventArgs> _factory = factory ?? throw new ArgumentNullException(nameof(factory), "Event args factory function cannot be null.");
+    private readonly Func<IBiDi, TEventParams, TEventArgs> _factory = factory ?? throw new ArgumentNullException(nameof(factory), "Event args factory function cannot be null.");
 
-    public override ValueTask InvokeAsync(EventParams args)
+    public override ValueTask InvokeAsync(EventParams args, IBiDi bidi)
     {
-        var eventArgs = _factory((TEventParams)args);
-        eventArgs.BiDi = args.BiDi;
+        var eventArgs = _factory(bidi, (TEventParams)args);
         _action(eventArgs);
 
         return default;
