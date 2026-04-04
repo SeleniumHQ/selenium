@@ -29,7 +29,7 @@ public sealed record UserPromptOpenedEventArgs(
     string? DefaultValue)
     : EventArgs(BiDi);
 
-public sealed record UserPromptOpenedParameters(
+internal sealed record UserPromptOpenedParameters(
     BrowsingContext Context,
     Session.UserPromptHandlerType Handler,
     string Message,
