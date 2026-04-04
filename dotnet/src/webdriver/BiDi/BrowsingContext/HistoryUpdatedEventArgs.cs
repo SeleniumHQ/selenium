@@ -19,5 +19,16 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record HistoryUpdatedEventArgs(IBiDi BiDi, BrowsingContext Context, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+public sealed record HistoryUpdatedEventArgs(
+    IBiDi BiDi,
+    BrowsingContext Context,
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
     : EventArgs(BiDi);
+
+public sealed record HistoryUpdatedParameters(
+    BrowsingContext Context,
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext);

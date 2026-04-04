@@ -1,4 +1,4 @@
-// <copyright file="HistoryUpdatedEventParams.cs" company="Selenium Committers">
+// <copyright file="UserPromptType.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,16 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record HistoryUpdatedEventParams(BrowsingContext Context, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext);
+[JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]
+public enum UserPromptType
+{
+    Alert,
+    Confirm,
+    Prompt,
+    BeforeUnload
+}
