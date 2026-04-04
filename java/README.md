@@ -58,6 +58,11 @@ Selenium Manager automatically handles browser driver installation — no manual
 Contributions are welcome via [GitHub](https://github.com/SeleniumHQ/selenium/) pull requests.
 See the [source code](https://github.com/SeleniumHQ/selenium/tree/trunk/java) for this binding.
 
+## Links
+
+- [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java)
+- [Documentation](https://www.selenium.dev/documentation/?tab=java)
+
 ## License
 
 Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

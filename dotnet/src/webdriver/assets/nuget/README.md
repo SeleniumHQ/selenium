@@ -38,6 +38,11 @@ Selenium Manager automatically handles browser driver installation — no manual
 Contributions are welcome via [GitHub](https://github.com/SeleniumHQ/selenium/) pull requests.
 See the [source code](https://github.com/SeleniumHQ/selenium/tree/trunk/dotnet) for this binding.
 
+## Links
+
+- [NuGet](https://www.nuget.org/packages/Selenium.WebDriver)
+- [Documentation](https://www.selenium.dev/documentation/?tab=dotnet)
+
 ## License
 
 Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
