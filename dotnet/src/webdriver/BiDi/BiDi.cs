@@ -62,7 +62,7 @@ public sealed class BiDi : IBiDi
 
         BiDi bidi = new();
 
-        bidi.Broker = new Broker(transport, bidi, () => bidi.Session);
+        bidi.Broker = new Broker(transport, bidi);
 
         return bidi;
     }

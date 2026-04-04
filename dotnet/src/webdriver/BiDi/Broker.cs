@@ -39,7 +39,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly ITransport _transport;
     private readonly EventDispatcher _eventDispatcher;
-    private readonly IBiDi _bidi;
+    private readonly BiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -57,29 +57,43 @@ internal sealed class Broker : IAsyncDisposable
     private readonly Task _processingTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
-    public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
+    public Broker(ITransport transport, BiDi bidi)
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = new EventDispatcher(sessionProvider);
+        _eventDispatcher = new EventDispatcher();
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        return _eventDispatcher.SubscribeAsync(eventName, action, factory, options, jsonTypeInfo, cancellationToken);
+        var handler = _eventDispatcher.AddHandler(eventName, action, factory, jsonTypeInfo);
+
+        var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
+
+        return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        return _eventDispatcher.SubscribeAsync(eventName, func, factory, options, jsonTypeInfo, cancellationToken);
+        var handler = _eventDispatcher.AddHandler(eventName, func, factory, jsonTypeInfo);
+
+        var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
+
+        return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
+    }
+
+    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
+    {
+        await _bidi.Session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
+        _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
     }
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)

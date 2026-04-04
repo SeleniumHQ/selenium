@@ -21,7 +21,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
-using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
@@ -29,8 +28,6 @@ namespace OpenQA.Selenium.BiDi;
 internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
-
-    private readonly Func<ISessionModule> _sessionProvider;
 
     private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
 
@@ -44,46 +41,39 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Task _eventEmitterTask;
 
-    public EventDispatcher(Func<ISessionModule> sessionProvider)
+    public EventDispatcher()
     {
-        _sessionProvider = sessionProvider;
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public Func<EventArgs, ValueTask> AddHandler<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, JsonTypeInfo<TEventParams> jsonTypeInfo)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
         ValueTask InvokeEventHandler(EventArgs args) { action((TEventArgs)args); return default; }
-        return SubscribeAsync(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+        return AddHandler(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public Func<EventArgs, ValueTask> AddHandler<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, JsonTypeInfo<TEventParams> jsonTypeInfo)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
         ValueTask InvokeEventHandler(EventArgs args) => new(func((TEventArgs)args));
-        return SubscribeAsync(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+        return AddHandler(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo);
     }
 
-    private async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventParams : EventParams
+    private Func<EventArgs, ValueTask> AddHandler(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo)
     {
         var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo, argsFactory));
-
-        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
         registration.AddHandler(handler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventName, handler);
+        return handler;
     }
 
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
+    public void RemoveHandler(string eventName, Func<EventArgs, ValueTask> handler)
     {
-        if (_eventRegistrations.TryGetValue(subscription.EventName, out var registration))
+        if (_eventRegistrations.TryGetValue(eventName, out var registration))
         {
-            await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.RemoveHandler(subscription.Handler);
+            registration.RemoveHandler(handler);
         }
     }
 
