@@ -50,8 +50,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
+    public async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventParams : EventParams
     {
         var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
 
@@ -71,9 +71,9 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    public void EnqueueEvent(string method, EventArgs eventArgs)
+    public void EnqueueEvent(string method, EventParams eventParams)
     {
-        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
+        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventParams));
     }
 
     private async Task ProcessEventsAwaiterAsync()
@@ -100,11 +100,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    private async Task InvokeHandlerAsync(EventHandler handler, EventArgs eventArgs)
+    private async Task InvokeHandlerAsync(EventHandler handler, EventParams eventParams)
     {
         try
         {
-            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+            await handler.InvokeAsync(eventParams).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -138,7 +138,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return false;
     }
 
-    private readonly record struct PendingEvent(string Method, EventArgs EventArgs);
+    private readonly record struct PendingEvent(string Method, EventParams EventArgs);
 
     private sealed class EventRegistration(JsonTypeInfo typeInfo)
     {

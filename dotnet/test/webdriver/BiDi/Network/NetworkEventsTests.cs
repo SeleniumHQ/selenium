@@ -28,7 +28,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenToBeforeRequestSentEvent()
     {
-        TaskCompletionSource<BeforeRequestSentEventArgs> tcs = new();
+        TaskCompletionSource<BeforeRequestSentEventParams> tcs = new();
 
         await using var subscription = await context.Network.OnBeforeRequestSentAsync(tcs.SetResult);
 
@@ -85,7 +85,7 @@ internal class NetworkEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenToBeforeRequestSentEventWithCookie()
     {
-        TaskCompletionSource<BeforeRequestSentEventArgs> tcs = new();
+        TaskCompletionSource<BeforeRequestSentEventParams> tcs = new();
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 

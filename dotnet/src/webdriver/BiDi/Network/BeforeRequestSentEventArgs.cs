@@ -1,4 +1,4 @@
-// <copyright file="BeforeRequestSentEventArgs.cs" company="Selenium Committers">
+// <copyright file="BeforeRequestSentEventParams.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,5 +21,5 @@ using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record BeforeRequestSentEventArgs(BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList<Intercept>? Intercepts)
+public record BeforeRequestSentEventParams(BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList<Intercept>? Intercepts)
     : BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

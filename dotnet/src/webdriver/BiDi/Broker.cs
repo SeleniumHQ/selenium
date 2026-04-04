@@ -68,8 +68,8 @@ internal sealed class Broker : IAsyncDisposable
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
+    public Task<Subscription> SubscribeAsync<TEventParams>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventParams : EventParams
     {
         return _eventDispatcher.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
@@ -284,12 +284,12 @@ internal sealed class Broker : IAsyncDisposable
                     break;
                 }
 
-                var eventArgs = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventArgs
+                var eventParams = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventParams
                     ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
 
-                eventArgs.BiDi = _bidi;
+                eventParams.BiDi = _bidi;
 
-                _eventDispatcher.EnqueueEvent(method, eventArgs);
+                _eventDispatcher.EnqueueEvent(method, eventParams);
                 break;
 
             case TypeError:

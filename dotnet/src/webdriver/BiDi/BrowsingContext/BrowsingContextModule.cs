@@ -211,24 +211,24 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
         return await SubscribeAsync("browsingContext.navigationCommitted", handler, options, _jsonContext.NavigationEventArgs, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnContextCreatedAsync(Func<BrowsingContextEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnContextCreatedAsync(Func<BrowsingContextEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("browsingContext.contextCreated", handler, options, _jsonContext.BrowsingContextEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("browsingContext.contextCreated", handler, options, _jsonContext.BrowsingContextEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnContextCreatedAsync(Action<BrowsingContextEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnContextCreatedAsync(Action<BrowsingContextEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("browsingContext.contextCreated", handler, options, _jsonContext.BrowsingContextEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("browsingContext.contextCreated", handler, options, _jsonContext.BrowsingContextEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnContextDestroyedAsync(Func<BrowsingContextEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnContextDestroyedAsync(Func<BrowsingContextEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("browsingContext.contextDestroyed", handler, options, _jsonContext.BrowsingContextEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("browsingContext.contextDestroyed", handler, options, _jsonContext.BrowsingContextEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnContextDestroyedAsync(Action<BrowsingContextEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnContextDestroyedAsync(Action<BrowsingContextEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("browsingContext.contextDestroyed", handler, options, _jsonContext.BrowsingContextEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("browsingContext.contextDestroyed", handler, options, _jsonContext.BrowsingContextEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnUserPromptOpenedAsync(Func<UserPromptOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -287,7 +287,7 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
 [JsonSerializable(typeof(TraverseHistoryCommand))]
 [JsonSerializable(typeof(TraverseHistoryResult))]
 
-[JsonSerializable(typeof(BrowsingContextEventArgs))]
+[JsonSerializable(typeof(BrowsingContextEventParams))]
 [JsonSerializable(typeof(DownloadWillBeginEventArgs))]
 [JsonSerializable(typeof(DownloadEndEventArgs))]
 [JsonSerializable(typeof(DownloadCanceledEventArgs))]

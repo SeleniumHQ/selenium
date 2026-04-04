@@ -1,4 +1,4 @@
-// <copyright file="UserPromptClosedEventArgs.cs" company="Selenium Committers">
+// <copyright file="EventParams.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,7 +17,18 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+using System.Text.Json.Serialization;
 
-public sealed record UserPromptClosedEventArgs(BrowsingContext Context, bool Accepted, UserPromptType Type, Browser.UserContext? UserContext, string? UserText)
-    : EventParams;
+namespace OpenQA.Selenium.BiDi;
+
+public abstract record EventParams
+{
+    private IBiDi? _bidi;
+
+    [JsonIgnore]
+    public IBiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
+}

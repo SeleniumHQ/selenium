@@ -121,14 +121,14 @@ public sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventParams, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventParams> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, options, _jsonContext.BeforeRequestSentEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -207,7 +207,7 @@ public sealed partial class NetworkModule : Module, INetworkModule
 [JsonSerializable(typeof(SetExtraHeadersCommand))]
 [JsonSerializable(typeof(SetExtraHeadersResult))]
 
-[JsonSerializable(typeof(BeforeRequestSentEventArgs))]
+[JsonSerializable(typeof(BeforeRequestSentEventParams))]
 [JsonSerializable(typeof(ResponseStartedEventArgs))]
 [JsonSerializable(typeof(ResponseCompletedEventArgs))]
 [JsonSerializable(typeof(FetchErrorEventArgs))]

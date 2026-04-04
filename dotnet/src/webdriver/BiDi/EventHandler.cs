@@ -23,28 +23,28 @@ internal abstract class EventHandler(string eventName)
 {
     public string EventName { get; } = eventName;
 
-    public abstract ValueTask InvokeAsync(EventArgs args);
+    public abstract ValueTask InvokeAsync(EventParams args);
 }
 
-internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, Task> func)
-    : EventHandler(eventName) where TEventArgs : EventArgs
+internal class AsyncEventHandler<TEventParams>(string eventName, Func<TEventParams, Task> func)
+    : EventHandler(eventName) where TEventParams : EventParams
 {
-    private readonly Func<TEventArgs, Task> _func = func ?? throw new ArgumentNullException(nameof(func), "Async event handler function cannot be null.");
+    private readonly Func<TEventParams, Task> _func = func ?? throw new ArgumentNullException(nameof(func), "Async event handler function cannot be null.");
 
-    public override async ValueTask InvokeAsync(EventArgs args)
+    public override async ValueTask InvokeAsync(EventParams args)
     {
-        await _func((TEventArgs)args).ConfigureAwait(false);
+        await _func((TEventParams)args).ConfigureAwait(false);
     }
 }
 
-internal class SyncEventHandler<TEventArgs>(string eventName, Action<TEventArgs> action)
-    : EventHandler(eventName) where TEventArgs : EventArgs
+internal class SyncEventHandler<TEventParams>(string eventName, Action<TEventParams> action)
+    : EventHandler(eventName) where TEventParams : EventParams
 {
-    private readonly Action<TEventArgs> _action = action ?? throw new ArgumentNullException(nameof(action), "Sync event handler action cannot be null.");
+    private readonly Action<TEventParams> _action = action ?? throw new ArgumentNullException(nameof(action), "Sync event handler action cannot be null.");
 
-    public override ValueTask InvokeAsync(EventArgs args)
+    public override ValueTask InvokeAsync(EventParams args)
     {
-        _action((TEventArgs)args);
+        _action((TEventParams)args);
 
         return default;
     }

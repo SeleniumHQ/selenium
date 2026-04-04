@@ -33,17 +33,17 @@ public abstract class Module
         return Broker.ExecuteCommandAsync(command, options, jsonCommandTypeInfo, jsonResultTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
+    protected Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Action<TEventParams> action, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventParams : EventParams
     {
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
+        var eventHandler = new SyncEventHandler<TEventParams>(eventName, action);
         return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
+    protected Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<TEventParams, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventParams : EventParams
     {
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
+        var eventHandler = new AsyncEventHandler<TEventParams>(eventName, func);
         return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
     }
 
