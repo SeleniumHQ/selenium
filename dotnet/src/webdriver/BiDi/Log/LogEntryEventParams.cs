@@ -29,7 +29,6 @@ namespace OpenQA.Selenium.BiDi.Log;
 //[JsonDerivedType(typeof(JavascriptLogEntryEventParams), "javascript")]
 [JsonConverter(typeof(LogEntryEventParamsConverter))]
 public abstract record LogEntryEventParams(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EventParams
 {
     public Script.StackTrace? StackTrace { get; init; }
 }

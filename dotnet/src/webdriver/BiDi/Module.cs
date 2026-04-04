@@ -35,14 +35,12 @@ public abstract class Module
 
     protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
-        where TEventParams : EventParams
     {
         return Broker.SubscribeAsync(name, action, factory, options, jsonTypeInfo, cancellationToken);
     }
 
     protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
-        where TEventParams : EventParams
     {
         return Broker.SubscribeAsync(name, func, factory, options, jsonTypeInfo, cancellationToken);
     }

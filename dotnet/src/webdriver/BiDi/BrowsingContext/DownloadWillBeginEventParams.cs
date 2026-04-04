@@ -20,4 +20,4 @@
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed record DownloadWillBeginEventParams(string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : EventParams, IBaseNavigationInfo;
+    : IBaseNavigationInfo;

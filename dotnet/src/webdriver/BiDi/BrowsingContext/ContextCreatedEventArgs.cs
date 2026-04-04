@@ -19,7 +19,9 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record ContextCreatedEventArgs(IBiDi BiDi, IReadOnlyList<Info>? Children,
+public sealed record ContextCreatedEventArgs(
+    IBiDi BiDi,
+    IReadOnlyList<Info>? Children,
     Browser.ClientWindow ClientWindow,
     BrowsingContext Context,
     BrowsingContext? OriginalOpener,

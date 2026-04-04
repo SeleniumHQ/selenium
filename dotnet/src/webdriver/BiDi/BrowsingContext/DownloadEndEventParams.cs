@@ -27,8 +27,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 //[JsonDerivedType(typeof(DownloadCanceledEventParams), "canceled")]
 //[JsonDerivedType(typeof(DownloadCompleteEventParams), "complete")]
 [JsonConverter(typeof(DownloadEndEventParamsConverter))]
-public abstract record DownloadEndEventParams(BrowsingContext Context)
-    : EventParams;
+public abstract record DownloadEndEventParams(BrowsingContext Context);
 
 public sealed record DownloadCanceledEventParams(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
     : DownloadEndEventParams(Context), IBaseNavigationInfo;

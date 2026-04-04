@@ -19,5 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public abstract record BaseParametersEventParams(BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, IReadOnlyList<Intercept>? Intercepts)
-    : EventParams;
+public abstract record BaseParametersEventParams(BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, IReadOnlyList<Intercept>? Intercepts);

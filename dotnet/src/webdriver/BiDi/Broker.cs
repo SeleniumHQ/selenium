@@ -71,7 +71,6 @@ internal sealed class Broker : IAsyncDisposable
 
     public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
-        where TEventParams : EventParams
     {
         ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
         return await SubscribeAsync(eventName, InvokeAction, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
@@ -79,13 +78,12 @@ internal sealed class Broker : IAsyncDisposable
 
     public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
-        where TEventParams : EventParams
     {
         ValueTask InvokeFunc(EventArgs args) => new(func((TEventArgs)args));
         return await SubscribeAsync(eventName, InvokeFunc, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
+    private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
     {
         _eventMetadata.GetOrAdd(eventName, _ => new EventMetadata(jsonTypeInfo, argsFactory));
 
@@ -312,7 +310,7 @@ internal sealed class Broker : IAsyncDisposable
                     break;
                 }
 
-                var eventParams = JsonSerializer.Deserialize(ref paramsReader, metadata.JsonTypeInfo) as EventParams
+                var eventParams = JsonSerializer.Deserialize(ref paramsReader, metadata.JsonTypeInfo)
                     ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
 
                 var eventArgs = metadata.CreateEventArgs(_bidi, eventParams);
@@ -455,11 +453,9 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
 
-    private sealed class EventMetadata(JsonTypeInfo jsonTypeInfo, Func<IBiDi, EventParams, EventArgs> argsFactory)
+    private readonly record struct EventMetadata(JsonTypeInfo JsonTypeInfo, Func<IBiDi, object, EventArgs> ArgsFactory)
     {
-        public JsonTypeInfo JsonTypeInfo { get; } = jsonTypeInfo;
-
-        public EventArgs CreateEventArgs(IBiDi bidi, EventParams eventParams) => argsFactory(bidi, eventParams);
+        public EventArgs CreateEventArgs(IBiDi bidi, object eventParams) => ArgsFactory(bidi, eventParams);
     }
 
     private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable

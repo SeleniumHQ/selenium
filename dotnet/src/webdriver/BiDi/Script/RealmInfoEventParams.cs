@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 // [JsonDerivedType(typeof(AudioWorkletRealmInfoEventParams), "audio-worklet")]
 // [JsonDerivedType(typeof(WorkletRealmInfoEventParams), "worklet")]
 [JsonConverter(typeof(RealmInfoEventParamsConverter))]
-public abstract record RealmInfoEventParams(Realm Realm, string Origin) : EventParams;
+public abstract record RealmInfoEventParams(Realm Realm, string Origin);
 
 public sealed record WindowRealmInfoEventParams(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context, Browser.UserContext? UserContext, string? Sandbox) : RealmInfoEventParams(Realm, Origin);
 
