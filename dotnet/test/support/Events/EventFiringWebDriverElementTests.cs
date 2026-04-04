@@ -17,9 +17,10 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
+using OpenQA.Selenium.Support.Events;
+using OpenQA.Selenium.Tests;
 
-namespace OpenQA.Selenium.Support.Events;
+namespace OpenQA.Selenium.Support.Tests.Events;
 
 [TestFixture]
 public class EventFiringWebDriverElementTests : DriverTestFixture
