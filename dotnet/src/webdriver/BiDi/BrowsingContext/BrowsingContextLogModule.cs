@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -33,7 +33,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule
             cancellationToken);
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (handler is null) throw new ArgumentNullException(nameof(handler));
 
@@ -43,7 +43,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule
             cancellationToken);
     }
 
-    private async Task HandleEntryAddedAsync(LogEntryEventArgs e, Func<LogEntryEventArgs, Task> handler)
+    private async Task HandleEntryAddedAsync(EntryAddedEventArgs e, Func<EntryAddedEventArgs, Task> handler)
     {
         if (context.Equals(e.Source.Context))
         {
@@ -51,7 +51,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule
         }
     }
 
-    private void HandleEntryAdded(LogEntryEventArgs e, Action<LogEntryEventArgs> handler)
+    private void HandleEntryAdded(EntryAddedEventArgs e, Action<EntryAddedEventArgs> handler)
     {
         if (context.Equals(e.Source.Context))
         {

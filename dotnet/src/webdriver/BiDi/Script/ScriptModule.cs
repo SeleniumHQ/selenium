@@ -94,14 +94,14 @@ public sealed class ScriptModule : Module, IScriptModule
         return await SubscribeAsync("script.message", handler, CreateMessageEventArgs, options, _jsonContext.MessageEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfoEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnRealmCreatedAsync(Func<RealmCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, CreateRealmInfoEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfoEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnRealmCreatedAsync(Action<RealmCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, CreateRealmInfoEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -118,16 +118,16 @@ public sealed class ScriptModule : Module, IScriptModule
 
     private static RealmDestroyedEventArgs CreateRealmDestroyedEventArgs(RealmDestroyedEventParams p) => new(p.Realm);
 
-    private static RealmInfoEventArgs CreateRealmInfoEventArgs(RealmInfoEventParams p) => p switch
+    private static RealmCreatedEventArgs CreateRealmCreatedEventArgs(RealmInfoEventParams p) => p switch
     {
-        WindowRealmInfoEventParams w => new WindowRealmInfoEventArgs(w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
-        DedicatedWorkerRealmInfoEventParams d => new DedicatedWorkerRealmInfoEventArgs(d.Realm, d.Origin, d.Owners),
-        SharedWorkerRealmInfoEventParams s => new SharedWorkerRealmInfoEventArgs(s.Realm, s.Origin),
-        ServiceWorkerRealmInfoEventParams s => new ServiceWorkerRealmInfoEventArgs(s.Realm, s.Origin),
-        WorkerRealmInfoEventParams w => new WorkerRealmInfoEventArgs(w.Realm, w.Origin),
-        PaintWorkletRealmInfoEventParams p2 => new PaintWorkletRealmInfoEventArgs(p2.Realm, p2.Origin),
-        AudioWorkletRealmInfoEventParams a => new AudioWorkletRealmInfoEventArgs(a.Realm, a.Origin),
-        WorkletRealmInfoEventParams w => new WorkletRealmInfoEventArgs(w.Realm, w.Origin),
+        WindowRealmInfoEventParams w => new WindowRealmCreatedEventArgs(w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
+        DedicatedWorkerRealmInfoEventParams d => new DedicatedWorkerRealmCreatedEventArgs(d.Realm, d.Origin, d.Owners),
+        SharedWorkerRealmInfoEventParams s => new SharedWorkerRealmCreatedEventArgs(s.Realm, s.Origin),
+        ServiceWorkerRealmInfoEventParams s => new ServiceWorkerRealmCreatedEventArgs(s.Realm, s.Origin),
+        WorkerRealmInfoEventParams w => new WorkerRealmCreatedEventArgs(w.Realm, w.Origin),
+        PaintWorkletRealmInfoEventParams p2 => new PaintWorkletRealmCreatedEventArgs(p2.Realm, p2.Origin),
+        AudioWorkletRealmInfoEventParams a => new AudioWorkletRealmCreatedEventArgs(a.Realm, a.Origin),
+        WorkletRealmInfoEventParams w => new WorkletRealmCreatedEventArgs(w.Realm, w.Origin),
         _ => throw new InvalidOperationException($"Unknown RealmInfoEventParams type: {p.GetType()}")
     };
 

@@ -1,4 +1,4 @@
-// <copyright file="IBrowsingContextLogModule.cs" company="Selenium Committers">
+// <copyright file="LoadEventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,12 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Log;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public interface IBrowsingContextLogModule
-{
-    Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-}
+public sealed record LoadEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+    : NavigationEventArgs(Context, Navigation, Timestamp, Url, UserContext);

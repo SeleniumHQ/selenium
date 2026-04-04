@@ -27,21 +27,21 @@ public sealed class LogModule : Module, ILogModule
 {
     private LogJsonSerializerContext _jsonContext = null!;
 
-    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntryEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateLogEntryEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntryEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateLogEntryEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
     }
 
-    private static LogEntryEventArgs CreateLogEntryEventArgs(LogEntryEventParams p) => p switch
+    private static EntryAddedEventArgs CreateEntryAddedEventArgs(LogEntryEventParams p) => p switch
     {
-        ConsoleLogEntryEventParams c => new ConsoleLogEntryEventArgs(c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
-        JavascriptLogEntryEventParams j => new JavascriptLogEntryEventArgs(j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
-        GenericLogEntryEventParams g => new GenericLogEntryEventArgs(g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
+        ConsoleLogEntryEventParams c => new ConsoleEntryAddedEventArgs(c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
+        JavascriptLogEntryEventParams j => new JavascriptEntryAddedEventArgs(j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
+        GenericLogEntryEventParams g => new GenericEntryAddedEventArgs(g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
         _ => throw new InvalidOperationException($"Unknown LogEntryEventParams type: {p.GetType()}")
     };
 
