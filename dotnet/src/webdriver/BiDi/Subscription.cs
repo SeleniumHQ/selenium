@@ -23,16 +23,19 @@ public class Subscription : IAsyncDisposable
 {
     private readonly EventDispatcher _eventDispatcher;
 
-    internal Subscription(Session.Subscription subscription, EventDispatcher eventDispatcher, EventHandler eventHandler)
+    internal Subscription(Session.Subscription subscription, EventDispatcher eventDispatcher, string eventName, Func<EventArgs, ValueTask> handler)
     {
         SubscriptionId = subscription;
         _eventDispatcher = eventDispatcher;
-        EventHandler = eventHandler;
+        EventName = eventName;
+        Handler = handler;
     }
 
     internal Session.Subscription SubscriptionId { get; }
 
-    internal EventHandler EventHandler { get; }
+    internal string EventName { get; }
+
+    internal Func<EventArgs, ValueTask> Handler { get; }
 
     public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {

@@ -50,24 +50,24 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventParams : EventParams
     {
-        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
+        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo, argsFactory));
 
         var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
 
-        registration.AddHandler(eventHandler);
+        registration.AddHandler(handler);
 
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
+        return new Subscription(subscribeResult.Subscription, this, eventName, handler);
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        if (_eventRegistrations.TryGetValue(subscription.EventHandler.EventName, out var registration))
+        if (_eventRegistrations.TryGetValue(subscription.EventName, out var registration))
         {
             await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.RemoveHandler(subscription.EventHandler);
+            registration.RemoveHandler(subscription.Handler);
         }
     }
 
@@ -85,9 +85,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 if (_eventRegistrations.TryGetValue(result.Method, out var registration))
                 {
+                    var eventArgs = registration.CreateEventArgs(result.BiDi, result.EventParams);
+
                     foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                     {
-                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs, result.BiDi);
+                        var runningHandlerTask = InvokeHandlerAsync(handler, eventArgs);
                         if (!runningHandlerTask.IsCompleted)
                         {
                             _runningHandlers.TryAdd(runningHandlerTask, 0);
@@ -100,11 +102,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    private async Task InvokeHandlerAsync(EventHandler handler, EventParams eventParams, IBiDi bidi)
+    private async Task InvokeHandlerAsync(Func<EventArgs, ValueTask> handler, EventArgs eventArgs)
     {
         try
         {
-            await handler.InvokeAsync(eventParams, bidi).ConfigureAwait(false);
+            await handler(eventArgs).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -138,23 +140,25 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return false;
     }
 
-    private readonly record struct PendingEvent(string Method, EventParams EventArgs, IBiDi BiDi);
+    private readonly record struct PendingEvent(string Method, EventParams EventParams, IBiDi BiDi);
 
-    private sealed class EventRegistration(JsonTypeInfo typeInfo)
+    private sealed class EventRegistration(JsonTypeInfo typeInfo, Func<IBiDi, EventParams, EventArgs> argsFactory)
     {
         private readonly object _lock = new();
-        private volatile EventHandler[] _handlers = [];
+        private volatile Func<EventArgs, ValueTask>[] _handlers = [];
 
         public JsonTypeInfo TypeInfo { get; } = typeInfo;
 
-        public EventHandler[] GetHandlers() => _handlers;
+        public Func<EventArgs, ValueTask>[] GetHandlers() => _handlers;
 
-        public void AddHandler(EventHandler handler)
+        public EventArgs CreateEventArgs(IBiDi bidi, EventParams eventParams) => argsFactory(bidi, eventParams);
+
+        public void AddHandler(Func<EventArgs, ValueTask> handler)
         {
             lock (_lock) _handlers = [.. _handlers, handler];
         }
 
-        public void RemoveHandler(EventHandler handler)
+        public void RemoveHandler(Func<EventArgs, ValueTask> handler)
         {
             lock (_lock) _handlers = Array.FindAll(_handlers, h => h != handler);
         }

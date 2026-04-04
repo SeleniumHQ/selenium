@@ -37,16 +37,16 @@ public abstract class Module
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        var eventHandler = new SyncEventHandler<TEventArgs, TEventParams>(eventName, action, factory);
-        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
+        ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
+        return Broker.SubscribeAsync(eventName, InvokeAction, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
     }
 
     protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        var eventHandler = new AsyncEventHandler<TEventArgs, TEventParams>(eventName, func, factory);
-        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
+        async ValueTask InvokeFunc(EventArgs args) => await func((TEventArgs)args).ConfigureAwait(false);
+        return Broker.SubscribeAsync(eventName, InvokeFunc, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
     }
 
     protected abstract void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions);
