@@ -18,10 +18,10 @@ Selenium automates browsers for testing and web-based task automation.
 ### Gradle
 
 ```groovy
-implementation "org.seleniumhq.selenium:selenium-java:${selenium.version}"
+implementation "org.seleniumhq.selenium:selenium-java:4.x.x"
 ```
 
-Replace `${selenium.version}` with the latest version from [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java).
+Replace `4.x.x` with the latest version from [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java).
 
 ## Quick Start
 
