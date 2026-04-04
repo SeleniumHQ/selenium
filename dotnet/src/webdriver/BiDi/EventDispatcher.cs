@@ -50,7 +50,23 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+        where TEventParams : EventParams
+    {
+        ValueTask InvokeEventHandler(EventArgs args) { action((TEventArgs)args); return default; }
+        return SubscribeAsync(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+    }
+
+    public Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+        where TEventParams : EventParams
+    {
+        ValueTask InvokeEventHandler(EventArgs args) => new(func((TEventArgs)args));
+        return SubscribeAsync(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+    }
+
+    private async Task<Subscription> SubscribeAsync<TEventParams>(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventParams : EventParams
     {
         var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo, argsFactory));

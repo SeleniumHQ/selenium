@@ -33,20 +33,18 @@ public abstract class Module
         return Broker.ExecuteCommandAsync(command, options, jsonCommandTypeInfo, jsonResultTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
-        return Broker.SubscribeAsync(eventName, InvokeAction, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+        return Broker.SubscribeAsync(name, action, factory, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
         where TEventParams : EventParams
     {
-        async ValueTask InvokeFunc(EventArgs args) => await func((TEventArgs)args).ConfigureAwait(false);
-        return Broker.SubscribeAsync(eventName, InvokeFunc, (bidi, ep) => factory(bidi, (TEventParams)ep), options, jsonTypeInfo, cancellationToken);
+        return Broker.SubscribeAsync(name, func, factory, options, jsonTypeInfo, cancellationToken);
     }
 
     protected abstract void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions);
