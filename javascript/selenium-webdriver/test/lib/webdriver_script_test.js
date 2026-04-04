@@ -35,10 +35,6 @@ suite(
       await driver.quit()
     })
 
-    function delay(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms))
-    }
-
     describe('script()', function () {
       it('can listen to console log', async function () {
         let log = null
@@ -48,8 +44,6 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'consoleLog' }).click()
-
-        await delay(3000)
 
         assert.equal(log.text, 'Hello, world!')
         assert.equal(log.realm, null)
@@ -68,8 +62,6 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'jsException' }).click()
-
-        await delay(3000)
 
         assert.equal(log.text, 'Error: Not working')
         assert.equal(log.type, 'javascript')
@@ -133,26 +125,28 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
 
-        await delay(3000)
-
         assert.equal(log.text, 'Hello!')
       })
 
       it('can unpin script', async function () {
-        const id = await driver.script().pin("() => { console.log('Hello!'); }")
+        const id = await driver.script().pin("() => { console.log('Hello'); }")
+        await driver.script().pin("() => { console.log('World'); }")
 
-        let count = 0
+        const logs = []
         await driver.script().addConsoleMessageHandler((logEntry) => {
-          count++
+          logs.push(logEntry.text)
         })
 
         await driver.get(Pages.logEntryAdded)
+        assert.ok(logs.includes('Hello'), `[${logs}] should contain "Hello"`)
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
 
         await driver.script().unpin(id)
 
+        logs.length = 0
         await driver.get(Pages.logEntryAdded)
-
-        assert.equal(count, 1)
+        assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
+        assert.ok(!logs.includes('Hello'), `[${logs}] should not contain "Hello"`)
       })
     })
   },

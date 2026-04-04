@@ -17,29 +17,14 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Tests;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class PopupWindowFinderTests : DriverTestFixture
 {
-    //TODO: Move these to a standalone class when more tests rely on the server being up
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
-    {
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-    }
-
     [Test]
     public void ShouldFindPopupWindowUsingAction()
     {

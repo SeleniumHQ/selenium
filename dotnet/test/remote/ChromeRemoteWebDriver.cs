@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
