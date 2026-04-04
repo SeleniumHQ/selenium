@@ -14,7 +14,7 @@ dotnet add package Selenium.WebDriver
 ```csharp
 using OpenQA.Selenium.Chrome;
 
-await using var driver = new ChromeDriver();
+using var driver = new ChromeDriver();
 driver.Url = "https://www.selenium.dev";
 Console.WriteLine(driver.Title);
 ```
