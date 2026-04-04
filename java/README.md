@@ -1,6 +1,6 @@
 # Selenium WebDriver — Java
 
-Java language bindings for [Selenium WebDriver](https://selenium.dev).
+Java language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
 
 ## Installation
