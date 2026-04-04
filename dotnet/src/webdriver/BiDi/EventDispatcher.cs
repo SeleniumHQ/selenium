@@ -18,8 +18,6 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -29,7 +27,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
+    private readonly ConcurrentDictionary<string, HandlerRegistration> _handlerRegistrations = new();
 
     private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
 
@@ -46,40 +44,23 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public Func<EventArgs, ValueTask> AddHandler<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, JsonTypeInfo<TEventParams> jsonTypeInfo)
-        where TEventArgs : EventArgs
-        where TEventParams : EventParams
+    public void AddHandler(string eventName, Func<EventArgs, ValueTask> handler)
     {
-        ValueTask InvokeEventHandler(EventArgs args) { action((TEventArgs)args); return default; }
-        return AddHandler(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo);
-    }
-
-    public Func<EventArgs, ValueTask> AddHandler<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, JsonTypeInfo<TEventParams> jsonTypeInfo)
-        where TEventArgs : EventArgs
-        where TEventParams : EventParams
-    {
-        ValueTask InvokeEventHandler(EventArgs args) => new(func((TEventArgs)args));
-        return AddHandler(eventName, InvokeEventHandler, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo);
-    }
-
-    private Func<EventArgs, ValueTask> AddHandler(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, EventParams, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo)
-    {
-        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo, argsFactory));
+        var registration = _handlerRegistrations.GetOrAdd(eventName, _ => new HandlerRegistration());
         registration.AddHandler(handler);
-        return handler;
     }
 
     public void RemoveHandler(string eventName, Func<EventArgs, ValueTask> handler)
     {
-        if (_eventRegistrations.TryGetValue(eventName, out var registration))
+        if (_handlerRegistrations.TryGetValue(eventName, out var registration))
         {
             registration.RemoveHandler(handler);
         }
     }
 
-    public void EnqueueEvent(string method, EventParams eventParams, IBiDi bidi)
+    public void EnqueueEvent(string eventName, EventArgs eventArgs)
     {
-        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventParams, bidi));
+        _pendingEvents.Writer.TryWrite(new PendingEvent(eventName, eventArgs));
     }
 
     private async Task ProcessEventsAwaiterAsync()
@@ -89,13 +70,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         {
             while (reader.TryRead(out var result))
             {
-                if (_eventRegistrations.TryGetValue(result.Method, out var registration))
+                if (_handlerRegistrations.TryGetValue(result.EventName, out var registration))
                 {
-                    var eventArgs = registration.CreateEventArgs(result.BiDi, result.EventParams);
-
                     foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                     {
-                        var runningHandlerTask = InvokeHandlerAsync(handler, eventArgs);
+                        var runningHandlerTask = InvokeHandlerAsync(handler, result.EventArgs);
                         if (!runningHandlerTask.IsCompleted)
                         {
                             _runningHandlers.TryAdd(runningHandlerTask, 0);
@@ -134,30 +113,14 @@ internal sealed class EventDispatcher : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    public bool TryGetJsonTypeInfo(string eventName, [NotNullWhen(true)] out JsonTypeInfo? jsonTypeInfo)
-    {
-        if (_eventRegistrations.TryGetValue(eventName, out var registration))
-        {
-            jsonTypeInfo = registration.TypeInfo;
-            return true;
-        }
+    private readonly record struct PendingEvent(string EventName, EventArgs EventArgs);
 
-        jsonTypeInfo = null;
-        return false;
-    }
-
-    private readonly record struct PendingEvent(string Method, EventParams EventParams, IBiDi BiDi);
-
-    private sealed class EventRegistration(JsonTypeInfo typeInfo, Func<IBiDi, EventParams, EventArgs> argsFactory)
+    private sealed class HandlerRegistration
     {
         private readonly object _lock = new();
         private volatile Func<EventArgs, ValueTask>[] _handlers = [];
 
-        public JsonTypeInfo TypeInfo { get; } = typeInfo;
-
         public Func<EventArgs, ValueTask>[] GetHandlers() => _handlers;
-
-        public EventArgs CreateEventArgs(IBiDi bidi, EventParams eventParams) => argsFactory(bidi, eventParams);
 
         public void AddHandler(Func<EventArgs, ValueTask> handler)
         {
