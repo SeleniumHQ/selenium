@@ -85,7 +85,12 @@ internal sealed class Broker : IAsyncDisposable
 
     private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
     {
-        _eventMetadata.GetOrAdd(eventName, _ => new EventMetadata(jsonTypeInfo, argsFactory));
+        var metadata = _eventMetadata.GetOrAdd(eventName, new EventMetadata(jsonTypeInfo, argsFactory));
+
+        if (metadata.JsonTypeInfo != jsonTypeInfo)
+        {
+            throw new ArgumentException($"Event '{eventName}' is already registered with different metadata.", nameof(eventName));
+        }
 
         _eventDispatcher.AddHandler(eventName, handler);
 
