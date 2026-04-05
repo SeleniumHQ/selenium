@@ -29,20 +29,20 @@ public sealed class LogModule : Module, ILogModule
 
     public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntryEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
-    private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntryEventParams p) => p switch
+    private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntry p) => p switch
     {
-        ConsoleLogEntryEventParams c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
-        JavascriptLogEntryEventParams j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
-        GenericLogEntryEventParams g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
-        _ => throw new InvalidOperationException($"Unknown LogEntryEventParams type: {p.GetType()}")
+        ConsoleLogEntry c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
+        JavascriptLogEntry j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
+        GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
+        _ => throw new InvalidOperationException($"Unknown LogEntry type: {p.GetType()}")
     };
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
@@ -86,12 +86,10 @@ public sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
 #endregion
 
-[JsonSerializable(typeof(LogEntryEventParams))]
-
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(GenericLogEntryEventParams))]
-[JsonSerializable(typeof(ConsoleLogEntryEventParams))]
-[JsonSerializable(typeof(JavascriptLogEntryEventParams))]
-#endregion
+[JsonSerializable(typeof(LogEntry))]
+// https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
 
 internal partial class LogJsonSerializerContext : JsonSerializerContext;
