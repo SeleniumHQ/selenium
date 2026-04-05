@@ -19,20 +19,51 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public abstract record RealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : EventArgs(BiDi);
+public abstract record RealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : EventArgs(BiDi);
 
-public sealed record WindowRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin, BrowsingContext.BrowsingContext Context, Browser.UserContext? UserContext, string? Sandbox) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record WindowRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin,
+    BrowsingContext.BrowsingContext Context,
+    Browser.UserContext? UserContext,
+    string? Sandbox) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record DedicatedWorkerRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record DedicatedWorkerRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin,
+    IReadOnlyList<Realm> Owners) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record SharedWorkerRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record SharedWorkerRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record ServiceWorkerRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record ServiceWorkerRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record WorkerRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record WorkerRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record PaintWorkletRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record PaintWorkletRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record AudioWorkletRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record AudioWorkletRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
 
-public sealed record WorkletRealmCreatedEventArgs(IBiDi BiDi, Realm Realm, string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);
+public sealed record WorkletRealmCreatedEventArgs(
+    IBiDi BiDi,
+    Realm Realm,
+    string Origin) : RealmCreatedEventArgs(BiDi, Realm, Origin);

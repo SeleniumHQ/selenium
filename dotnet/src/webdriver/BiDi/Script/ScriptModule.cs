@@ -86,48 +86,50 @@ public sealed class ScriptModule : Module, IScriptModule
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.message", handler, CreateMessageEventArgs, options, _jsonContext.MessageEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.message", handler, CreateMessageEventArgs, options, _jsonContext.MessageParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.message", handler, CreateMessageEventArgs, options, _jsonContext.MessageEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.message", handler, CreateMessageEventArgs, options, _jsonContext.MessageParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Func<RealmCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfo, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Action<RealmCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfoEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmCreated", handler, CreateRealmCreatedEventArgs, options, _jsonContext.RealmInfo, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmDestroyed", handler, CreateRealmDestroyedEventArgs, options, _jsonContext.RealmDestroyedEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmDestroyed", handler, CreateRealmDestroyedEventArgs, options, _jsonContext.RealmDestroyedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("script.realmDestroyed", handler, CreateRealmDestroyedEventArgs, options, _jsonContext.RealmDestroyedEventParams, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("script.realmDestroyed", handler, CreateRealmDestroyedEventArgs, options, _jsonContext.RealmDestroyedParameters, cancellationToken).ConfigureAwait(false);
     }
 
-    private static MessageEventArgs CreateMessageEventArgs(IBiDi bidi, MessageEventParams p) => new(bidi, p.Channel, p.Data, p.Source);
+    private static MessageEventArgs CreateMessageEventArgs(IBiDi bidi, MessageParameters p)
+        => new(bidi, p.Channel, p.Data, p.Source);
 
-    private static RealmDestroyedEventArgs CreateRealmDestroyedEventArgs(IBiDi bidi, RealmDestroyedEventParams p) => new(bidi, p.Realm);
+    private static RealmDestroyedEventArgs CreateRealmDestroyedEventArgs(IBiDi bidi, RealmDestroyedParameters p)
+        => new(bidi, p.Realm);
 
-    private static RealmCreatedEventArgs CreateRealmCreatedEventArgs(IBiDi bidi, RealmInfoEventParams p) => p switch
+    private static RealmCreatedEventArgs CreateRealmCreatedEventArgs(IBiDi bidi, RealmInfo p) => p switch
     {
-        WindowRealmInfoEventParams w => new WindowRealmCreatedEventArgs(bidi, w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
-        DedicatedWorkerRealmInfoEventParams d => new DedicatedWorkerRealmCreatedEventArgs(bidi, d.Realm, d.Origin, d.Owners),
-        SharedWorkerRealmInfoEventParams s => new SharedWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
-        ServiceWorkerRealmInfoEventParams s => new ServiceWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
-        WorkerRealmInfoEventParams w => new WorkerRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
-        PaintWorkletRealmInfoEventParams p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
-        AudioWorkletRealmInfoEventParams a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
-        WorkletRealmInfoEventParams w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
+        WindowRealmInfo w => new WindowRealmCreatedEventArgs(bidi, w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
+        DedicatedWorkerRealmInfo d => new DedicatedWorkerRealmCreatedEventArgs(bidi, d.Realm, d.Origin, d.Owners),
+        SharedWorkerRealmInfo s => new SharedWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+        ServiceWorkerRealmInfo s => new ServiceWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+        WorkerRealmInfo w => new WorkerRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
+        PaintWorkletRealmInfo p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
+        AudioWorkletRealmInfo a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
+        WorkletRealmInfo w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
         _ => throw new InvalidOperationException($"Unknown RealmInfoEventParams type: {p.GetType()}")
     };
 
@@ -198,18 +200,7 @@ public sealed class ScriptModule : Module, IScriptModule
 [JsonSerializable(typeof(RemovePreloadScriptCommand))]
 [JsonSerializable(typeof(RemovePreloadScriptResult))]
 
-[JsonSerializable(typeof(MessageEventParams))]
-[JsonSerializable(typeof(RealmInfoEventParams))]
-[JsonSerializable(typeof(RealmDestroyedEventParams))]
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(WindowRealmInfoEventParams))]
-[JsonSerializable(typeof(DedicatedWorkerRealmInfoEventParams))]
-[JsonSerializable(typeof(SharedWorkerRealmInfoEventParams))]
-[JsonSerializable(typeof(ServiceWorkerRealmInfoEventParams))]
-[JsonSerializable(typeof(WorkerRealmInfoEventParams))]
-[JsonSerializable(typeof(PaintWorkletRealmInfoEventParams))]
-[JsonSerializable(typeof(AudioWorkletRealmInfoEventParams))]
-[JsonSerializable(typeof(WorkletRealmInfoEventParams))]
-#endregion
+[JsonSerializable(typeof(MessageParameters))]
+[JsonSerializable(typeof(RealmDestroyedParameters))]
 
 internal partial class ScriptJsonSerializerContext : JsonSerializerContext;
