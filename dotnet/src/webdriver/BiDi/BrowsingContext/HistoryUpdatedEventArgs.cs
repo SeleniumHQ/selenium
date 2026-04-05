@@ -27,7 +27,7 @@ public sealed record HistoryUpdatedEventArgs(
     Browser.UserContext? UserContext)
     : EventArgs(BiDi);
 
-public sealed record HistoryUpdatedParameters(
+internal sealed record HistoryUpdatedParameters(
     BrowsingContext Context,
     DateTimeOffset Timestamp,
     string Url,
