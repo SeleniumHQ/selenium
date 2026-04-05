@@ -42,7 +42,7 @@ public sealed class LogModule : Module, ILogModule
         ConsoleLogEntry c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
         JavascriptLogEntry j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
         GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
-        _ => throw new InvalidOperationException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
+        _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
     };
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
