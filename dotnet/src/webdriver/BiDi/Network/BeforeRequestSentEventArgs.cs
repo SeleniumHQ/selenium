@@ -31,7 +31,7 @@ public record BeforeRequestSentEventArgs(
     DateTimeOffset Timestamp,
     Initiator Initiator,
     Browser.UserContext? UserContext,
-     IReadOnlyList<Intercept>? Intercepts) : EventArgs(BiDi);
+    IReadOnlyList<Intercept>? Intercepts) : EventArgs(BiDi);
 
 internal record BeforeRequestSentParameters(
     BrowsingContext.BrowsingContext? Context,

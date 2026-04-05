@@ -130,7 +130,7 @@ public sealed class ScriptModule : Module, IScriptModule
         PaintWorkletRealmInfo p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
         AudioWorkletRealmInfo a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
         WorkletRealmInfo w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
-        _ => throw new InvalidOperationException($"Unknown {nameof(RealmCreatedEventArgs)} type: {p.GetType()}")
+        _ => throw new InvalidOperationException($"Unknown {nameof(RealmInfo)} type: {p.GetType()}")
     };
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)

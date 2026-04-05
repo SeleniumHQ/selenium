@@ -82,7 +82,9 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
 {
     public override RealmInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return reader.GetDiscriminator("type") switch
+        var type = reader.GetDiscriminator("type");
+
+        return type switch
         {
             "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowRealmInfo>()),
             "dedicated-worker" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DedicatedWorkerRealmInfo>()),
@@ -92,7 +94,7 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
             "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmInfo>()),
             "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmInfo>()),
             "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmInfo>()),
-            _ => throw new BiDiException("Unknown realm type")
+            _ => throw new BiDiException($"Unknown realm type '{type}'")
         };
     }
 
