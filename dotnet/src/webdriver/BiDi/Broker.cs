@@ -89,9 +89,18 @@ internal sealed class Broker : IAsyncDisposable
 
         _eventDispatcher.AddHandler(eventName, handler);
 
-        var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
+                .ConfigureAwait(false);
 
-        return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
+            return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
+        }
+        catch
+        {
+            _eventDispatcher.RemoveHandler(eventName, handler);
+            throw;
+        }
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
