@@ -273,7 +273,7 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
     {
         DownloadCanceledParams c => new DownloadCanceledEventArgs(bidi, c.Context, c.Navigation, c.Timestamp, c.Url),
         DownloadCompleteParams c => new DownloadCompleteEventArgs(bidi, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
-        _ => throw new InvalidOperationException($"Unknown DownloadEndParams type: {p.GetType()}")
+        _ => throw new InvalidOperationException($"Unknown {nameof(DownloadEndParams)} type: {p.GetType()}")
     };
 
     private static ContextCreatedEventArgs CreateContextCreatedEventArgs(IBiDi bidi, Info p) => new(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent);
