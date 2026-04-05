@@ -1,4 +1,4 @@
-// <copyright file="ResponseStartedEventParams.cs" company="Selenium Committers">
+// <copyright file="BaseParameters.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.BrowsingContext;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record ResponseStartedEventParams(
+internal abstract record BaseParameters(
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
-    Navigation? Navigation,
+    BrowsingContext.Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
     DateTimeOffset Timestamp,
-    ResponseData Response,
-    IReadOnlyList<Intercept>? Intercepts)
-    : BaseParametersEventParams(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts);
