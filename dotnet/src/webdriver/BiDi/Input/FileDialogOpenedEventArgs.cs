@@ -1,4 +1,4 @@
-// <copyright file="FileDialogEventParams.cs" company="Selenium Committers">
+// <copyright file="FileDialogOpenedEventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,4 +19,16 @@
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed record FileDialogOpenedEventParams(BrowsingContext.BrowsingContext Context, Browser.UserContext? UserContext, bool Multiple, Script.SharedReference? Element);
+public sealed record FileDialogOpenedEventArgs(
+    IBiDi BiDi,
+    BrowsingContext.BrowsingContext Context,
+    Browser.UserContext? UserContext,
+    bool Multiple,
+    Script.SharedReference? Element)
+    : EventArgs(BiDi);
+
+internal sealed record FileDialogInfo(
+    BrowsingContext.BrowsingContext Context,
+    Browser.UserContext? UserContext,
+    bool Multiple,
+    Script.SharedReference? Element);
