@@ -25,6 +25,10 @@ namespace OpenQA.Selenium.DevTools.V143;
 public class V143Domains : DevToolsDomains
 {
     private readonly DevToolsSessionDomains domains;
+    private readonly Lazy<V143Network> network;
+    private readonly Lazy<V143JavaScript> javaScript;
+    private readonly Lazy<V143Target> target;
+    private readonly Lazy<V143Log> log;
 
     /// <summary>
     /// Initializes a new instance of the V143Domains class.
@@ -34,6 +38,10 @@ public class V143Domains : DevToolsDomains
     public V143Domains(DevToolsSession session)
     {
         this.domains = new DevToolsSessionDomains(session ?? throw new ArgumentNullException(nameof(session)));
+        this.network = new Lazy<V143Network>(() => new V143Network(domains.Network, domains.Fetch));
+        this.javaScript = new Lazy<V143JavaScript>(() => new V143JavaScript(domains.Runtime, domains.Page));
+        this.target = new Lazy<V143Target>(() => new V143Target(domains.Target));
+        this.log = new Lazy<V143Log>(() => new V143Log(domains.Log));
     }
 
     /// <summary>
@@ -49,20 +57,20 @@ public class V143Domains : DevToolsDomains
     /// <summary>
     /// Gets the object used for manipulating network information in the browser.
     /// </summary>
-    public override DevTools.Network Network => new V143Network(domains.Network, domains.Fetch);
+    public override DevTools.Network Network => this.network.Value;
 
     /// <summary>
     /// Gets the object used for manipulating the browser's JavaScript execution.
     /// </summary>
-    public override JavaScript JavaScript => new V143JavaScript(domains.Runtime, domains.Page);
+    public override JavaScript JavaScript => this.javaScript.Value;
 
     /// <summary>
     /// Gets the object used for manipulating DevTools Protocol targets.
     /// </summary>
-    public override DevTools.Target Target => new V143Target(domains.Target);
+    public override DevTools.Target Target => this.target.Value;
 
     /// <summary>
     /// Gets the object used for manipulating the browser's logs.
     /// </summary>
-    public override DevTools.Log Log => new V143Log(domains.Log);
+    public override DevTools.Log Log => this.log.Value;
 }
