@@ -169,6 +169,7 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
+              "rules_ruby++ruby+ruby": false
               "+pin_browsers_extension+linux_beta_chrome": false
               "+pin_browsers_extension+linux_beta_chromedriver": true
               "+pin_browsers_extension+linux_beta_firefox": false
