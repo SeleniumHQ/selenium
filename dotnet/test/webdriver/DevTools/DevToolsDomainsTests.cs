@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V145;
+using OpenQA.Selenium.DevTools;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -29,14 +29,13 @@ public class DevToolsDomainsTests : DevToolsTestFixture
     [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
-    public async Task VerifyDomainsAccessors()
+    public async Task VerifyVersionSpecificDomainsAccessors()
     {
-        var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
+        var domains = ((DevToolsSession)session).Domains;
 
         Assert.That(domains.Log, Is.SameAs(domains.Log));
         Assert.That(domains.Network, Is.SameAs(domains.Network));
-        Assert.That(domains.Runtime, Is.SameAs(domains.Runtime));
-        Assert.That(domains.Page, Is.SameAs(domains.Page));
         Assert.That(domains.Target, Is.SameAs(domains.Target));
+        Assert.That(domains.JavaScript, Is.SameAs(domains.JavaScript));
     }
 }
