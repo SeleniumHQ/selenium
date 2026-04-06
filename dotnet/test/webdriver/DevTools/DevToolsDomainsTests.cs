@@ -32,7 +32,7 @@ public class DevToolsDomainsTests : DevToolsTestFixture
     public async Task VerifyDomainsAccessors()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        
+
         Assert.That(domains.Log, Is.SameAs(domains.Log));
         Assert.That(domains.Network, Is.SameAs(domains.Network));
         Assert.That(domains.Runtime, Is.SameAs(domains.Runtime));
