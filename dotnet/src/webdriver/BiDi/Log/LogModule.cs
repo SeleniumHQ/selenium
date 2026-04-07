@@ -47,11 +47,12 @@ public sealed class LogModule : Module, ILogModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .Register((b, id) => new Browser.UserContext(b, id))
+            .Register((b, id) => new Script.Realm(b, id))
+            .Register((b, id) => new Script.InternalId(b, id))
+            .Register((b, id) => new Script.Handle(b, id));
 
         _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }

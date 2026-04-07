@@ -22,30 +22,18 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record Intercept
+public sealed record Intercept : IIdentifiable
 {
     public Intercept(IBiDi bidi, string id)
-        : this(id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
-    }
-
-    [JsonConstructor]
-    internal Intercept(string id)
-    {
         Id = id;
     }
 
-    internal string Id { get; }
-
-    private IBiDi? _bidi;
+    public string Id { get; }
 
     [JsonIgnore]
-    public IBiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
+    public IBiDi BiDi { get; }
 
     public bool Equals(Intercept? other)
     {

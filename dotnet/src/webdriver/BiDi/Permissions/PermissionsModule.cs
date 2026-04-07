@@ -36,7 +36,8 @@ public sealed class PermissionsModule : Module, IPermissionsModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new Browser.UserContext(b, id));
 
         _jsonContext = new PermissionsJsonSerializerContext(jsonSerializerOptions);
     }

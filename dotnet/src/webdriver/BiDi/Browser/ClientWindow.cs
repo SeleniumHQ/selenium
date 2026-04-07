@@ -18,17 +18,19 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-[JsonConverter(typeof(BrowserClientWindowConverter))]
-public sealed record ClientWindow
+public sealed record ClientWindow : IIdentifiable
 {
-    internal ClientWindow(string id)
+    public ClientWindow(IBiDi bidi, string id)
     {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    internal string Id { get; }
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
 }

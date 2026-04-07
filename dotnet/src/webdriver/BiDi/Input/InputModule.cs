@@ -65,9 +65,10 @@ public sealed class InputModule : Module, IInputModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .Register((b, id) => new Browser.UserContext(b, id))
+            .Register((b, id) => new Script.Handle(b, id));
 
         _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);
     }

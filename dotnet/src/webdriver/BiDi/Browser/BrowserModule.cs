@@ -79,7 +79,9 @@ public sealed class BrowserModule : Module, IBrowserModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new UserContext(b, id))
+            .Register((b, id) => new ClientWindow(b, id));
 
         _jsonContext = new BrowserJsonSerializerContext(jsonSerializerOptions);
     }

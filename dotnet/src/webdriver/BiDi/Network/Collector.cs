@@ -22,29 +22,18 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record Collector
+public sealed record Collector : IIdentifiable
 {
     public Collector(IBiDi bidi, string id)
-        : this(id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
-    }
-
-    [JsonConstructor]
-    internal Collector(string id)
-    {
         Id = id;
     }
-    internal string Id { get; }
 
-    private IBiDi? _bidi;
+    public string Id { get; }
 
     [JsonIgnore]
-    public IBiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
+    public IBiDi BiDi { get; }
 
     public bool Equals(Collector? other)
     {

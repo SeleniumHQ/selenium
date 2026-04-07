@@ -43,7 +43,8 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new Extension(b, id));
 
         _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
     }

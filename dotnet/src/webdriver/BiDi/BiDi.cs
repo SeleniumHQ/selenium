@@ -100,7 +100,7 @@ public sealed class BiDi : IBiDi
         return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, CreateDefaultJsonOptions()));
     }
 
-    private static JsonSerializerOptions CreateDefaultJsonOptions()
+    private JsonSerializerOptions CreateDefaultJsonOptions()
     {
         return new JsonSerializerOptions
         {
@@ -110,6 +110,7 @@ public sealed class BiDi : IBiDi
             Converters =
             {
                 new Json.Converters.DateTimeOffsetConverter(),
+                new Json.Converters.IdentifiableConverterFactory(this),
             }
         };
     }

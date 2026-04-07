@@ -1,4 +1,4 @@
-// <copyright file="InternalIdConverter.cs" company="Selenium Committers">
+// <copyright file="IdentifiableConverterFactory.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,21 +19,32 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InternalIdConverter(IBiDi bidi) : JsonConverter<InternalId>
+internal sealed class IdentifiableConverterFactory(IBiDi bidi) : JsonConverterFactory
 {
-    public override InternalId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        var id = reader.GetString();
+    private readonly Dictionary<Type, JsonConverter> _converters = new();
 
-        return new InternalId(id!) { BiDi = bidi };
+    internal IdentifiableConverterFactory Register<T>(Func<IBiDi, string, T> factory)
+        where T : class, IIdentifiable
+    {
+        _converters[typeof(T)] = new IdentifiableConverter<T>(factory, bidi);
+        return this;
     }
 
-    public override void Write(Utf8JsonWriter writer, InternalId value, JsonSerializerOptions options)
+    public override bool CanConvert(Type typeToConvert)
     {
-        writer.WriteStringValue(value.Id);
+        return _converters.ContainsKey(typeToConvert);
+    }
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        return _converters[typeToConvert];
+    }
+
+    internal static IdentifiableConverterFactory GetFrom(JsonSerializerOptions options)
+    {
+        return options.Converters.OfType<IdentifiableConverterFactory>().First();
     }
 }

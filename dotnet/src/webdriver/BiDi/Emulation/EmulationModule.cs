@@ -122,8 +122,9 @@ public sealed class EmulationModule : Module, IEmulationModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
+        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
+            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .Register((b, id) => new Browser.UserContext(b, id));
 
         _jsonContext = new EmulationJsonSerializerContext(jsonSerializerOptions);
     }

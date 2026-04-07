@@ -22,17 +22,11 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record BrowsingContext
+public sealed record BrowsingContext : IIdentifiable
 {
     public BrowsingContext(IBiDi bidi, string id)
-        : this(id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
-    }
-
-    [JsonConstructor]
-    internal BrowsingContext(string id)
-    {
         Id = id;
     }
 
@@ -42,16 +36,10 @@ public sealed record BrowsingContext
     private IBrowsingContextStorageModule? _storageModule;
     private IBrowsingContextInputModule? _inputModule;
 
-    internal string Id { get; }
-
-    private IBiDi? _bidi;
+    public string Id { get; }
 
     [JsonIgnore]
-    public IBiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
+    public IBiDi BiDi { get; }
 
     [JsonIgnore]
     public IBrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;
