@@ -25,28 +25,39 @@ using System;
 namespace OpenQA.Selenium.Remote
 {
     [SetUpFixture]
-    // Outside a namespace to affect the entire assembly
     public class MySetUpClass
     {
+        private EnvironmentManager Env => EnvironmentManager.Instance;
+        
         [OneTimeSetUp]
         public async Task RunBeforeAnyTestAsync()
         {
-            await EnvironmentManager.Instance.WebServer.StartAsync();
-            if (EnvironmentManager.Instance.Browser == Browser.Remote)
-            {
-                await EnvironmentManager.Instance.RemoteServer.StartAsync();
+            try{
+                await Env.WebServer.StartAsync();
+                if(IsRemoteBrowser()){
+                    await Env.RemoteServer.StartAsync();
+                }
+            }
+            catch(Exception ex){
+                Console.WriteLine($"[Setup Error] {ex.Message}");
+                throw;
             }
         }
 
         [OneTimeTearDown]
         public async Task RunAfterAnyTestsAsync()
         {
-            EnvironmentManager.Instance.CloseCurrentDriver();
-            await EnvironmentManager.Instance.WebServer.StopAsync();
-            if (EnvironmentManager.Instance.Browser == Browser.Remote)
-            {
-                await EnvironmentManager.Instance.RemoteServer.StopAsync();
-            }
+            try{
+                Env.CloseCurrentDriver();
+                await Env.RemoteServer.StopAsync();
+        }
+        
+        catch(Exception ex){
+             Console.WriteLine($"[Teardown Error] {ex.Message}");
+        }
+    }
+        private bool IsRemoteBrowser(){
+            return Env.Browser == Browser.Remote;
         }
     }
 }
