@@ -10,8 +10,9 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
 from selenium.webdriver.common.bidi.common import command_builder
-from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager
+
 
 class SpecialNumber:
     """SpecialNumber."""
@@ -791,8 +792,9 @@ class Script:
         Returns:
             The inner RemoteValue result dict, or raises WebDriverException on exception.
         """
-        import math as _math
         import datetime as _datetime
+        import math as _math
+
         from selenium.common.exceptions import WebDriverException as _WebDriverException
 
         def _serialize_arg(value):
@@ -1033,8 +1035,9 @@ class Script:
     def _subscribe_log_entry(self, callback, entry_type_filter=None):
         """Subscribe to log.entryAdded BiDi events with optional type filtering."""
         import threading as _threading
-        from selenium.webdriver.common.bidi.session import Session as _Session
+
         from selenium.webdriver.common.bidi import log as _log_mod
+        from selenium.webdriver.common.bidi.session import Session as _Session
 
         bidi_event = "log.entryAdded"
 
