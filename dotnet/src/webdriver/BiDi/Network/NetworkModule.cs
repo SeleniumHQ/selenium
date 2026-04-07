@@ -192,7 +192,9 @@ public sealed partial class NetworkModule : Module, INetworkModule
             .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
             .Register((b, id) => new Collector(b, id))
             .Register((b, id) => new Intercept(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id));
+            .Register((b, id) => new Browser.UserContext(b, id))
+            .Register((b, id) => new Request(b, id))
+            .Register((b, id) => new BrowsingContext.Navigation(b, id));
 
         _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
     }

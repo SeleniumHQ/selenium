@@ -18,17 +18,19 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-[JsonConverter(typeof(RequestConverter))]
-public sealed class Request
+public sealed class Request : IIdentifiable
 {
-    internal Request(string id)
+    public Request(IBiDi bidi, string id)
     {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    public string Id { get; private set; }
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
 }

@@ -291,7 +291,8 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
             .Register((b, id) => new Script.InternalId(b, id))
             .Register((b, id) => new Script.Handle(b, id))
             .Register((b, id) => new Browser.UserContext(b, id))
-            .Register((b, id) => new Browser.ClientWindow(b, id));
+            .Register((b, id) => new Browser.ClientWindow(b, id))
+            .Register((b, id) => new Navigation(b, id));
 
         _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }
