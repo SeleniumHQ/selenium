@@ -141,7 +141,8 @@ public sealed class ScriptModule : Module, IScriptModule
             .Register((b, id) => new PreloadScript(b, id))
             .Register((b, id) => new Realm(b, id))
             .Register((b, id) => new InternalId(b, id))
-            .Register((b, id) => new Handle(b, id));
+            .Register((b, id) => new Handle(b, id))
+            .Register((b, id) => new Channel(b, id));
 
         _jsonContext = new ScriptJsonSerializerContext(jsonSerializerOptions);
     }
