@@ -67,7 +67,7 @@ public static class JsonExtensions
     public static IList<JsonConverter> RegisterIdentifiable<T>(this IList<JsonConverter> converters, Func<string, T> factory)
         where T : class, IIdentifiable
     {
-        converters.OfType<IdentifiableConverterFactory>().First().Register(factory);
+        converters.Add(new IdentifiableConverter<T>(factory));
         return converters;
     }
 }

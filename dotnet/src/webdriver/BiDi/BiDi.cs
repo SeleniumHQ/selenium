@@ -110,7 +110,6 @@ public sealed class BiDi : IBiDi
             Converters =
             {
                 new Json.Converters.DateTimeOffsetConverter(),
-                new Json.Converters.IdentifiableConverterFactory(),
             }
         };
     }
