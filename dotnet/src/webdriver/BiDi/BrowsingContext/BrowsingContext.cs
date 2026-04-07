@@ -469,7 +469,7 @@ public sealed record BrowsingContext : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<BrowsingContext>
+    public sealed class Converter : IdentifiableConverter<BrowsingContext>
     {
         protected override BrowsingContext Create(IBiDi bidi, string id) => new(bidi, id);
     }

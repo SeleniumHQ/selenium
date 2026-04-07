@@ -36,7 +36,7 @@ public sealed record ClientWindow : IIdentifiable
     [JsonIgnore]
     public IBiDi BiDi { get; }
 
-    internal sealed class Converter : IdentifiableConverter<ClientWindow>
+    public sealed class Converter : IdentifiableConverter<ClientWindow>
     {
         protected override ClientWindow Create(IBiDi bidi, string id) => new(bidi, id);
     }

@@ -54,7 +54,7 @@ public sealed record Collector : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<Collector>
+    public sealed class Converter : IdentifiableConverter<Collector>
     {
         protected override Collector Create(IBiDi bidi, string id) => new(bidi, id);
     }

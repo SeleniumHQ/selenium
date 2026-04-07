@@ -36,7 +36,7 @@ public sealed class Subscription : IIdentifiable
     [JsonIgnore]
     public IBiDi BiDi { get; }
 
-    internal sealed class Converter : IdentifiableConverter<Subscription>
+    public sealed class Converter : IdentifiableConverter<Subscription>
     {
         protected override Subscription Create(IBiDi bidi, string id) => new(bidi, id);
     }

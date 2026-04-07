@@ -54,7 +54,7 @@ public sealed record Intercept : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<Intercept>
+    public sealed class Converter : IdentifiableConverter<Intercept>
     {
         protected override Intercept Create(IBiDi bidi, string id) => new(bidi, id);
     }

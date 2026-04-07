@@ -54,7 +54,7 @@ public sealed record UserContext : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<UserContext>
+    public sealed class Converter : IdentifiableConverter<UserContext>
     {
         protected override UserContext Create(IBiDi bidi, string id) => new(bidi, id);
     }

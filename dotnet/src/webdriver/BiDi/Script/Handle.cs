@@ -54,7 +54,7 @@ public sealed record Handle : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<Handle>
+    public sealed class Converter : IdentifiableConverter<Handle>
     {
         protected override Handle Create(IBiDi bidi, string id) => new(bidi, id);
     }

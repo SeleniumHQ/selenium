@@ -36,7 +36,7 @@ public sealed record Navigation : IIdentifiable
     [JsonIgnore]
     public IBiDi BiDi { get; }
 
-    internal sealed class Converter : IdentifiableConverter<Navigation>
+    public sealed class Converter : IdentifiableConverter<Navigation>
     {
         protected override Navigation Create(IBiDi bidi, string id) => new(bidi, id);
     }

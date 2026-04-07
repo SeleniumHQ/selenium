@@ -54,7 +54,7 @@ public sealed record Realm : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<Realm>
+    public sealed class Converter : IdentifiableConverter<Realm>
     {
         protected override Realm Create(IBiDi bidi, string id) => new(bidi, id);
     }

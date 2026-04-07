@@ -54,7 +54,7 @@ public sealed record PreloadScript : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<PreloadScript>
+    public sealed class Converter : IdentifiableConverter<PreloadScript>
     {
         protected override PreloadScript Create(IBiDi bidi, string id) => new(bidi, id);
     }

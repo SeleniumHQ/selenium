@@ -54,7 +54,7 @@ public sealed record InternalId : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<InternalId>
+    public sealed class Converter : IdentifiableConverter<InternalId>
     {
         protected override InternalId Create(IBiDi bidi, string id) => new(bidi, id);
     }

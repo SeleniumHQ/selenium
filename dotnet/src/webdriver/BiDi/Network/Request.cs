@@ -36,7 +36,7 @@ public sealed class Request : IIdentifiable
     [JsonIgnore]
     public IBiDi BiDi { get; }
 
-    internal sealed class Converter : IdentifiableConverter<Request>
+    public sealed class Converter : IdentifiableConverter<Request>
     {
         protected override Request Create(IBiDi bidi, string id) => new(bidi, id);
     }

@@ -54,7 +54,7 @@ public sealed record Extension : IIdentifiable
         return true;
     }
 
-    internal sealed class Converter : IdentifiableConverter<Extension>
+    public sealed class Converter : IdentifiableConverter<Extension>
     {
         protected override Extension Create(IBiDi bidi, string id) => new(bidi, id);
     }

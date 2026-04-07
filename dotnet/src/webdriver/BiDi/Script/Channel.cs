@@ -36,7 +36,7 @@ public sealed record Channel : IIdentifiable
     [JsonIgnore]
     public IBiDi BiDi { get; }
 
-    internal sealed class Converter : IdentifiableConverter<Channel>
+    public sealed class Converter : IdentifiableConverter<Channel>
     {
         protected override Channel Create(IBiDi bidi, string id) => new(bidi, id);
     }

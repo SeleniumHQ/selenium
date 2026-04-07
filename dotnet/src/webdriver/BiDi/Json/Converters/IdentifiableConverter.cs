@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal abstract class IdentifiableConverter<T> : JsonConverter<T>
+public abstract class IdentifiableConverter<T> : JsonConverter<T>
     where T : class, IIdentifiable
 {
     protected abstract T Create(IBiDi bidi, string id);
