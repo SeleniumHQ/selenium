@@ -11,6 +11,7 @@ from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
+
 def transform_download_params(
     allowed: bool | None,
     destination_folder: str | None,

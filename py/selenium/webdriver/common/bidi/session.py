@@ -11,6 +11,7 @@ from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
+
 class UserPromptHandlerType:
     """UserPromptHandlerType."""
 
