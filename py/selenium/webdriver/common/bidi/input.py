@@ -10,9 +10,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
 from selenium.webdriver.common.bidi.common import command_builder
-
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager
 
 class PointerType:
     """PointerType."""

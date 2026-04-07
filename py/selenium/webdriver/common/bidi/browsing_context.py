@@ -10,9 +10,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
 from selenium.webdriver.common.bidi.common import command_builder
-
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager
 
 class ReadinessState:
     """ReadinessState."""
@@ -109,6 +108,7 @@ class BaseNavigationInfo:
     navigation: Any | None = None
     timestamp: Any | None = None
     url: str | None = None
+    user_context: Any | None = None
 
 
 @dataclass
@@ -184,6 +184,7 @@ class CreateResult:
     """CreateResult."""
 
     context: Any | None = None
+    user_context: Any | None = None
 
 
 @dataclass
@@ -291,6 +292,15 @@ class ReloadParameters:
 
 
 @dataclass
+class SetBypassCSPParameters:
+    """SetBypassCSPParameters."""
+
+    bypass: Any | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+@dataclass
 class SetViewportParameters:
     """SetViewportParameters."""
 
@@ -323,6 +333,7 @@ class HistoryUpdatedParameters:
     context: Any | None = None
     timestamp: Any | None = None
     url: str | None = None
+    user_context: Any | None = None
 
 
 @dataclass
@@ -332,6 +343,7 @@ class UserPromptClosedParameters:
     context: Any | None = None
     accepted: bool | None = None
     type: Any | None = None
+    user_context: Any | None = None
     user_text: str | None = None
 
 
@@ -343,6 +355,7 @@ class UserPromptOpenedParameters:
     handler: Any | None = None
     message: str | None = None
     type: Any | None = None
+    user_context: Any | None = None
     default_value: str | None = None
 
 
@@ -653,6 +666,26 @@ class BrowsingContext:
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browsingContext.reload", params)
+        result = self._conn.execute(cmd)
+        return result
+
+    def set_bypass_csp(
+        self,
+        bypass: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
+        """Execute browsingContext.setBypassCSP."""
+        if bypass is None:
+            raise TypeError("set_bypass_csp() missing required argument: 'bypass'")
+
+        params = {
+            "bypass": bypass,
+            "contexts": contexts,
+            "userContexts": user_contexts,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.setBypassCSP", params)
         result = self._conn.execute(cmd)
         return result
 
