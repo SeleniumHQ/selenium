@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
@@ -79,9 +79,9 @@ public sealed class BrowserModule : Module, IBrowserModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new UserContext(b, id))
-            .Register((b, id) => new ClientWindow(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new UserContext(b, id))
+            .RegisterIdentifiable((b, id) => new ClientWindow(b, id));
 
         _jsonContext = new BrowserJsonSerializerContext(jsonSerializerOptions);
     }

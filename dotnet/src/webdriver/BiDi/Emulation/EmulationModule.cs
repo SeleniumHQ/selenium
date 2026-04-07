@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
@@ -122,9 +122,9 @@ public sealed class EmulationModule : Module, IEmulationModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id));
 
         _jsonContext = new EmulationJsonSerializerContext(jsonSerializerOptions);
     }

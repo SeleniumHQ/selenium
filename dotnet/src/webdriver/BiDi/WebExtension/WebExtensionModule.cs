@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
@@ -43,8 +43,8 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new Extension(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new Extension(b, id));
 
         _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
     }

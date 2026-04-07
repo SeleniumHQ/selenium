@@ -42,9 +42,4 @@ internal sealed class IdentifiableConverterFactory(IBiDi bidi) : JsonConverterFa
     {
         return _converters[typeToConvert];
     }
-
-    internal static IdentifiableConverterFactory GetFrom(JsonSerializerOptions options)
-    {
-        return options.Converters.OfType<IdentifiableConverterFactory>().First();
-    }
 }

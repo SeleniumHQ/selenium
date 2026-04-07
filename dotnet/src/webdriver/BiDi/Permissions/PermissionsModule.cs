@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
@@ -36,8 +36,8 @@ public sealed class PermissionsModule : Module, IPermissionsModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new Browser.UserContext(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id));
 
         _jsonContext = new PermissionsJsonSerializerContext(jsonSerializerOptions);
     }

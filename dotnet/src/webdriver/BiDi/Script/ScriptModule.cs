@@ -20,7 +20,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -135,14 +135,14 @@ public sealed class ScriptModule : Module, IScriptModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id))
-            .Register((b, id) => new PreloadScript(b, id))
-            .Register((b, id) => new Realm(b, id))
-            .Register((b, id) => new InternalId(b, id))
-            .Register((b, id) => new Handle(b, id))
-            .Register((b, id) => new Channel(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
+            .RegisterIdentifiable((b, id) => new PreloadScript(b, id))
+            .RegisterIdentifiable((b, id) => new Realm(b, id))
+            .RegisterIdentifiable((b, id) => new InternalId(b, id))
+            .RegisterIdentifiable((b, id) => new Handle(b, id))
+            .RegisterIdentifiable((b, id) => new Channel(b, id));
 
         _jsonContext = new ScriptJsonSerializerContext(jsonSerializerOptions);
     }

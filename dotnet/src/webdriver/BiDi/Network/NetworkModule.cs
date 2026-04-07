@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -188,13 +188,13 @@ public sealed partial class NetworkModule : Module, INetworkModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .Register((b, id) => new Collector(b, id))
-            .Register((b, id) => new Intercept(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id))
-            .Register((b, id) => new Request(b, id))
-            .Register((b, id) => new BrowsingContext.Navigation(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
+            .RegisterIdentifiable((b, id) => new Collector(b, id))
+            .RegisterIdentifiable((b, id) => new Intercept(b, id))
+            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
+            .RegisterIdentifiable((b, id) => new Request(b, id))
+            .RegisterIdentifiable((b, id) => new BrowsingContext.Navigation(b, id));
 
         _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
     }

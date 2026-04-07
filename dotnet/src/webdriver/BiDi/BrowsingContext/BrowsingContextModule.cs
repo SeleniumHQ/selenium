@@ -19,7 +19,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -286,13 +286,13 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
 
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
-        IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
-            .Register((b, id) => new BrowsingContext(b, id))
-            .Register((b, id) => new Script.InternalId(b, id))
-            .Register((b, id) => new Script.Handle(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id))
-            .Register((b, id) => new Browser.ClientWindow(b, id))
-            .Register((b, id) => new Navigation(b, id));
+        jsonSerializerOptions.Converters
+            .RegisterIdentifiable((b, id) => new BrowsingContext(b, id))
+            .RegisterIdentifiable((b, id) => new Script.InternalId(b, id))
+            .RegisterIdentifiable((b, id) => new Script.Handle(b, id))
+            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
+            .RegisterIdentifiable((b, id) => new Browser.ClientWindow(b, id))
+            .RegisterIdentifiable((b, id) => new Navigation(b, id));
 
         _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }

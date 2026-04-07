@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Json;
 
@@ -60,5 +64,12 @@ internal static class JsonExtensions
         }
 
         throw new JsonException($"Type info for '{typeof(T).FullName}' is not available in the serializer context. Ensure the type is included in the JsonSerializerContext.");
+    }
+
+    public static IList<JsonConverter> RegisterIdentifiable<T>(this IList<JsonConverter> converters, Func<IBiDi, string, T> factory)
+        where T : class, IIdentifiable
+    {
+        converters.OfType<IdentifiableConverterFactory>().First().Register(factory);
+        return converters;
     }
 }
