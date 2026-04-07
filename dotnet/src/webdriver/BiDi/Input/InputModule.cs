@@ -77,6 +77,5 @@ public sealed class InputModule : Module, IInputModule
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class InputJsonSerializerContext : JsonSerializerContext;

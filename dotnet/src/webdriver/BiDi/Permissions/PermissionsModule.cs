@@ -42,6 +42,5 @@ public sealed class PermissionsModule : Module, IPermissionsModule
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class PermissionsJsonSerializerContext : JsonSerializerContext;

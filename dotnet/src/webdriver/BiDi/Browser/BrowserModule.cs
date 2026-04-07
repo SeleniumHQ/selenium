@@ -95,6 +95,5 @@ public sealed class BrowserModule : Module, IBrowserModule
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class BrowserJsonSerializerContext : JsonSerializerContext;

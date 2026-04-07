@@ -85,6 +85,5 @@ public sealed class LogModule : Module, ILogModule
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

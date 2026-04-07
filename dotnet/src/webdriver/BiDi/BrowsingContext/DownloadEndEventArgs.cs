@@ -20,6 +20,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -55,7 +56,7 @@ internal abstract record DownloadEndParams(BrowsingContext Context);
 internal sealed record DownloadCanceledParams(
     BrowsingContext Context,
     Navigation? Navigation,
-    DateTimeOffset Timestamp,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     string Url)
     : DownloadEndParams(Context), IBaseNavigationInfo;
 
@@ -63,7 +64,7 @@ internal sealed record DownloadCompleteParams(
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,
-    DateTimeOffset Timestamp,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     string Url)
     : DownloadEndParams(Context), IBaseNavigationInfo;
 

@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal abstract record BaseParameters(
@@ -25,6 +28,6 @@ internal abstract record BaseParameters(
     BrowsingContext.Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
-    DateTimeOffset Timestamp,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
     IReadOnlyList<Intercept>? Intercepts);

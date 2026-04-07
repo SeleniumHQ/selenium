@@ -81,7 +81,7 @@ internal abstract record LogEntry(
     Level Level,
     Script.Source Source,
     string? Text,
-    DateTimeOffset Timestamp)
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp)
 {
     public Script.StackTrace? StackTrace { get; init; }
 }

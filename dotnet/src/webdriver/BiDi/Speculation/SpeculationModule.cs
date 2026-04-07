@@ -46,6 +46,5 @@ public sealed class SpeculationModule : Module, ISpeculationModule
 [JsonSerializable(typeof(PrefetchStatusUpdatedParameters))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class SpeculationJsonSerializerContext : JsonSerializerContext;
