@@ -62,7 +62,8 @@ internal sealed class SessionModule : Module, ISessionModule
     {
         IdentifiableConverterFactory.GetFrom(jsonSerializerOptions)
             .Register((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .Register((b, id) => new Browser.UserContext(b, id));
+            .Register((b, id) => new Browser.UserContext(b, id))
+            .Register((b, id) => new Subscription(b, id));
 
         _jsonContext = new SessionJsonSerializerContext(jsonSerializerOptions);
     }

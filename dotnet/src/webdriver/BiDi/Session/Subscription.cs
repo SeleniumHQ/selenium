@@ -18,17 +18,19 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-[JsonConverter(typeof(SubscriptionConverter))]
-public sealed class Subscription
+public sealed class Subscription : IIdentifiable
 {
-    internal Subscription(string id)
+    public Subscription(IBiDi bidi, string id)
     {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    internal string Id { get; }
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
 }
