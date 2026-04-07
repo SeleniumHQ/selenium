@@ -11,7 +11,6 @@ from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
-
 class ForcedColorsModeTheme:
     """ForcedColorsModeTheme."""
 
@@ -132,15 +131,6 @@ class SetUserAgentOverrideParameters:
 
 
 @dataclass
-class SetViewportMetaOverrideParameters:
-    """SetViewportMetaOverrideParameters."""
-
-    viewport_meta: Any | None = None
-    contexts: list[Any] = field(default_factory=list)
-    user_contexts: list[Any] = field(default_factory=list)
-
-
-@dataclass
 class SetScriptingEnabledParameters:
     """SetScriptingEnabledParameters."""
 
@@ -250,26 +240,6 @@ class Emulation:
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("emulation.setScreenSettingsOverride", params)
-        result = self._conn.execute(cmd)
-        return result
-
-    def set_viewport_meta_override(
-        self,
-        viewport_meta: Any | None = None,
-        contexts: list[Any] | None = None,
-        user_contexts: list[Any] | None = None,
-    ):
-        """Execute emulation.setViewportMetaOverride."""
-        if viewport_meta is None:
-            raise TypeError("set_viewport_meta_override() missing required argument: 'viewport_meta'")
-
-        params = {
-            "viewportMeta": viewport_meta,
-            "contexts": contexts,
-            "userContexts": user_contexts,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("emulation.setViewportMetaOverride", params)
         result = self._conn.execute(cmd)
         return result
 
