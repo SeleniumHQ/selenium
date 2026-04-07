@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
@@ -44,10 +45,10 @@ public sealed record InternalId : IIdentifiable
 
     public override int GetHashCode()
     {
-        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+        return StringComparer.Ordinal.GetHashCode(Id);
     }
 
-    // Includes Id only for brevity
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
     private bool PrintMembers(StringBuilder builder)
     {
         builder.Append($"Id = {Id}");

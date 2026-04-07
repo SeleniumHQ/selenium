@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
@@ -35,6 +37,23 @@ public sealed record ClientWindow : IIdentifiable
 
     [JsonIgnore]
     public IBiDi BiDi { get; }
+
+    public bool Equals(ClientWindow? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
 
     public sealed class Converter : IdentifiableConverter<ClientWindow>
     {
