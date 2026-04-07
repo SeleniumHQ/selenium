@@ -80,8 +80,8 @@ public sealed class BrowserModule : Module, IBrowserModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new UserContext(b, id))
-            .RegisterIdentifiable((b, id) => new ClientWindow(b, id));
+            .RegisterIdentifiable(id => new UserContext(bidi, id))
+            .RegisterIdentifiable(id => new ClientWindow(bidi, id));
 
         _jsonContext = new BrowserJsonSerializerContext(jsonSerializerOptions);
     }

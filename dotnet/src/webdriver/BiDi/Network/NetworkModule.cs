@@ -189,12 +189,12 @@ public sealed partial class NetworkModule : Module, INetworkModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .RegisterIdentifiable((b, id) => new Collector(b, id))
-            .RegisterIdentifiable((b, id) => new Intercept(b, id))
-            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
-            .RegisterIdentifiable((b, id) => new Request(b, id))
-            .RegisterIdentifiable((b, id) => new BrowsingContext.Navigation(b, id));
+            .RegisterIdentifiable(id => new BrowsingContext.BrowsingContext(bidi, id))
+            .RegisterIdentifiable(id => new Collector(bidi, id))
+            .RegisterIdentifiable(id => new Intercept(bidi, id))
+            .RegisterIdentifiable(id => new Browser.UserContext(bidi, id))
+            .RegisterIdentifiable(id => new Request(bidi, id))
+            .RegisterIdentifiable(id => new BrowsingContext.Navigation(bidi, id));
 
         _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
     }

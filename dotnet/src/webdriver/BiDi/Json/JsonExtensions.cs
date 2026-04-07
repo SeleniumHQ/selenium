@@ -64,7 +64,7 @@ public static class JsonExtensions
         throw new JsonException($"Type info for '{typeof(T).FullName}' is not available in the serializer context. Ensure the type is included in the JsonSerializerContext.");
     }
 
-    public static IList<JsonConverter> RegisterIdentifiable<T>(this IList<JsonConverter> converters, Func<IBiDi, string, T> factory)
+    public static IList<JsonConverter> RegisterIdentifiable<T>(this IList<JsonConverter> converters, Func<string, T> factory)
         where T : class, IIdentifiable
     {
         converters.OfType<IdentifiableConverterFactory>().First().Register(factory);

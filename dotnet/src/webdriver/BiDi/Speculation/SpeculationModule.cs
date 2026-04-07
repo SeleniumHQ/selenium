@@ -43,7 +43,7 @@ public sealed class SpeculationModule : Module, ISpeculationModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id));
+            .RegisterIdentifiable(id => new BrowsingContext.BrowsingContext(bidi, id));
 
         _jsonContext = new SpeculationJsonSerializerContext(jsonSerializerOptions);
     }

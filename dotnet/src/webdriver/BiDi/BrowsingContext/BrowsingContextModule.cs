@@ -287,12 +287,12 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new BrowsingContext(b, id))
-            .RegisterIdentifiable((b, id) => new Script.InternalId(b, id))
-            .RegisterIdentifiable((b, id) => new Script.Handle(b, id))
-            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
-            .RegisterIdentifiable((b, id) => new Browser.ClientWindow(b, id))
-            .RegisterIdentifiable((b, id) => new Navigation(b, id));
+            .RegisterIdentifiable(id => new BrowsingContext(bidi, id))
+            .RegisterIdentifiable(id => new Script.InternalId(bidi, id))
+            .RegisterIdentifiable(id => new Script.Handle(bidi, id))
+            .RegisterIdentifiable(id => new Browser.UserContext(bidi, id))
+            .RegisterIdentifiable(id => new Browser.ClientWindow(bidi, id))
+            .RegisterIdentifiable(id => new Navigation(bidi, id));
 
         _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }

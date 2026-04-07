@@ -61,9 +61,9 @@ internal sealed class SessionModule : Module, ISessionModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
-            .RegisterIdentifiable((b, id) => new Subscription(b, id));
+            .RegisterIdentifiable(id => new BrowsingContext.BrowsingContext(bidi, id))
+            .RegisterIdentifiable(id => new Browser.UserContext(bidi, id))
+            .RegisterIdentifiable(id => new Subscription(bidi, id));
 
         _jsonContext = new SessionJsonSerializerContext(jsonSerializerOptions);
     }

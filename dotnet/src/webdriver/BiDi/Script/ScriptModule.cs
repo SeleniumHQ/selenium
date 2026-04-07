@@ -136,13 +136,13 @@ public sealed class ScriptModule : Module, IScriptModule
     protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
     {
         jsonSerializerOptions.Converters
-            .RegisterIdentifiable((b, id) => new BrowsingContext.BrowsingContext(b, id))
-            .RegisterIdentifiable((b, id) => new Browser.UserContext(b, id))
-            .RegisterIdentifiable((b, id) => new PreloadScript(b, id))
-            .RegisterIdentifiable((b, id) => new Realm(b, id))
-            .RegisterIdentifiable((b, id) => new InternalId(b, id))
-            .RegisterIdentifiable((b, id) => new Handle(b, id))
-            .RegisterIdentifiable((b, id) => new Channel(b, id));
+            .RegisterIdentifiable(id => new BrowsingContext.BrowsingContext(bidi, id))
+            .RegisterIdentifiable(id => new Browser.UserContext(bidi, id))
+            .RegisterIdentifiable(id => new PreloadScript(bidi, id))
+            .RegisterIdentifiable(id => new Realm(bidi, id))
+            .RegisterIdentifiable(id => new InternalId(bidi, id))
+            .RegisterIdentifiable(id => new Handle(bidi, id))
+            .RegisterIdentifiable(id => new Channel(bidi, id));
 
         _jsonContext = new ScriptJsonSerializerContext(jsonSerializerOptions);
     }

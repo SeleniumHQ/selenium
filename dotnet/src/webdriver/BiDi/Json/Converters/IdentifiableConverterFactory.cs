@@ -22,14 +22,14 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal sealed class IdentifiableConverterFactory(IBiDi bidi) : JsonConverterFactory
+internal sealed class IdentifiableConverterFactory : JsonConverterFactory
 {
     private readonly Dictionary<Type, JsonConverter> _converters = new();
 
-    internal IdentifiableConverterFactory Register<T>(Func<IBiDi, string, T> factory)
+    internal IdentifiableConverterFactory Register<T>(Func<string, T> factory)
         where T : class, IIdentifiable
     {
-        _converters[typeof(T)] = new IdentifiableConverter<T>(factory, bidi);
+        _converters[typeof(T)] = new IdentifiableConverter<T>(factory);
         return this;
     }
 
