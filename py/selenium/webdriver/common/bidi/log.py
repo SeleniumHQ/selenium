@@ -10,7 +10,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
+
 
 class Level:
     """Level."""
