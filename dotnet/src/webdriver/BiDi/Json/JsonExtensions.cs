@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -26,7 +24,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Json;
 
-internal static class JsonExtensions
+public static class JsonExtensions
 {
     public static string GetDiscriminator(this ref Utf8JsonReader reader, string name)
     {
