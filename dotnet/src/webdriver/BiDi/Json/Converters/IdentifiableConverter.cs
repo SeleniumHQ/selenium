@@ -29,7 +29,7 @@ public abstract class IdentifiableConverter<T> : JsonConverter<T>
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        var id = reader.GetString()!;
+        var id = reader.GetString() ?? throw new JsonException($"Expected a non-null string for {typeof(T).Name}.");
 
         return Create(BiDiContext.Current.BiDi, id);
     }
