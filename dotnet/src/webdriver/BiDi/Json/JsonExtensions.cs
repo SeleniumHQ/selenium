@@ -22,7 +22,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi.Json;
 
-public static class JsonExtensions
+internal static class JsonExtensions
 {
     public static string GetDiscriminator(this ref Utf8JsonReader reader, string name)
     {
