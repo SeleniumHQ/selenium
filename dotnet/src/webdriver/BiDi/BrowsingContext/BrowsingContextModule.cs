@@ -281,10 +281,6 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
     private static UserPromptOpenedEventArgs CreateUserPromptOpenedEventArgs(IBiDi bidi, UserPromptOpenedParameters p) => new(bidi, p.Context, p.Handler, p.Message, p.Type, p.UserContext, p.DefaultValue);
 
     private static UserPromptClosedEventArgs CreateUserPromptClosedEventArgs(IBiDi bidi, UserPromptClosedParameters p) => new(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText);
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(ActivateCommand))]

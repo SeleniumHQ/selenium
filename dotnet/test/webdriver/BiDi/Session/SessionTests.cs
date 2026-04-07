@@ -84,10 +84,6 @@ class CustomModule : Module
     {
         return await ExecuteCommandAsync(new DoSomethingCommand(), options, JsonContext.DoSomethingCommand, JsonContext.DoSomethingResult, CancellationToken.None);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSourceGenerationOptions(

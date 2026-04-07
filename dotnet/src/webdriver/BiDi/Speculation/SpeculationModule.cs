@@ -37,10 +37,6 @@ public sealed class SpeculationModule : Module, ISpeculationModule
 
     private static PrefetchStatusUpdatedEventArgs CreatePrefetchStatusUpdatedEventArgs(IBiDi bidi, PrefetchStatusUpdatedParameters p)
     => new(bidi, p.Context, p.Url, p.Status);
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(PrefetchStatusUpdatedParameters))]

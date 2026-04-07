@@ -38,10 +38,6 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
 
         return await ExecuteCommandAsync(new UninstallCommand(@params), options, JsonContext.UninstallCommand, JsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(InstallCommand))]

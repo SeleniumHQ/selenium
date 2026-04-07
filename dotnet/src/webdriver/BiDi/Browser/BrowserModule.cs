@@ -74,10 +74,6 @@ public sealed class BrowserModule : Module, IBrowserModule
 
         return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(CloseCommand))]

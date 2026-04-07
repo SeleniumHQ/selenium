@@ -117,10 +117,6 @@ public sealed class EmulationModule : Module, IEmulationModule
 
         return await ExecuteCommandAsync(new SetNetworkConditionsCommand(@params), options, JsonContext.SetNetworkConditionsCommand, JsonContext.SetNetworkConditionsResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(SetTimezoneOverrideCommand))]

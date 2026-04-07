@@ -31,10 +31,6 @@ public sealed class PermissionsModule : Module, IPermissionsModule
 
         return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(SetPermissionCommand))]

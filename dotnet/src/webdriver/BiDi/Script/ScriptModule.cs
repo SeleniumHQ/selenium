@@ -130,10 +130,6 @@ public sealed class ScriptModule : Module, IScriptModule
         WorkletRealmInfo w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
         _ => throw new BiDiException($"Unknown {nameof(RealmInfo)} type: {p.GetType()}")
     };
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 #region https://github.com/dotnet/runtime/issues/72604

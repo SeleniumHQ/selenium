@@ -45,10 +45,6 @@ public sealed class StorageModule : Module, IStorageModule
 
         return await ExecuteCommandAsync(new SetCookieCommand(@params), options, JsonContext.SetCookieCommand, JsonContext.SetCookieResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(GetCookiesCommand))]

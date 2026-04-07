@@ -183,10 +183,6 @@ public sealed partial class NetworkModule : Module, INetworkModule
 
     private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(IBiDi bidi, AuthRequiredParameters p)
         => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response);
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(AddDataCollectorCommand))]

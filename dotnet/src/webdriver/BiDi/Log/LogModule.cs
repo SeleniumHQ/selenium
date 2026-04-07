@@ -42,10 +42,6 @@ public sealed class LogModule : Module, ILogModule
         GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
         _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
     };
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 #region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency

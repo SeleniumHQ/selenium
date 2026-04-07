@@ -60,10 +60,6 @@ public sealed class InputModule : Module, IInputModule
     {
         return new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(PerformActionsCommand))]

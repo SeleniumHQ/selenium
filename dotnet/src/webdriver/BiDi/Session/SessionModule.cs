@@ -55,10 +55,6 @@ internal sealed class SessionModule : Module, ISessionModule
     {
         return await ExecuteCommandAsync(new EndCommand(), options, JsonContext.EndCommand, JsonContext.EndResult, cancellationToken).ConfigureAwait(false);
     }
-
-    protected override void Initialize(IBiDi bidi)
-    {
-    }
 }
 
 [JsonSerializable(typeof(StatusCommand))]

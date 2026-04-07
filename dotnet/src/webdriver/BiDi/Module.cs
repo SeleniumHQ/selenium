@@ -44,8 +44,6 @@ public abstract class Module
         return Broker.SubscribeAsync(name, func, factory, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected abstract void Initialize(IBiDi bidi);
-
     internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
         where TModule : Module, new()
     {
@@ -53,8 +51,6 @@ public abstract class Module
         {
             Broker = broker
         };
-
-        module.Initialize(bidi);
 
         return module;
     }
