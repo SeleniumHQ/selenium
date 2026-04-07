@@ -17,24 +17,22 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module, ILogModule
 {
-    private LogJsonSerializerContext _jsonContext = null!;
+    private static readonly LogJsonSerializerContext JsonContext = LogJsonSerializerContext.Default;
 
     public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntry p) => p switch
@@ -45,16 +43,8 @@ public sealed class LogModule : Module, ILogModule
         _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
     };
 
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi)
     {
-        jsonSerializerOptions.Converters
-            .RegisterIdentifiable(id => new BrowsingContext.BrowsingContext(bidi, id))
-            .RegisterIdentifiable(id => new Browser.UserContext(bidi, id))
-            .RegisterIdentifiable(id => new Script.Realm(bidi, id))
-            .RegisterIdentifiable(id => new Script.InternalId(bidi, id))
-            .RegisterIdentifiable(id => new Script.Handle(bidi, id));
-
-        _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -93,4 +83,8 @@ public sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(ConsoleLogEntry))]
 [JsonSerializable(typeof(JavascriptLogEntry))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    Converters = [typeof(Json.Converters.DateTimeOffsetConverter)])]
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

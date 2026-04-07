@@ -19,9 +19,11 @@
 
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
+[JsonConverter(typeof(Converter))]
 public sealed record BrowsingContext : IIdentifiable
 {
     public BrowsingContext(IBiDi bidi, string id)
@@ -465,5 +467,10 @@ public sealed record BrowsingContext : IIdentifiable
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    internal sealed class Converter : IdentifiableConverter<BrowsingContext>
+    {
+        protected override BrowsingContext Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

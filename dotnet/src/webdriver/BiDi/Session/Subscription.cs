@@ -18,9 +18,11 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
+[JsonConverter(typeof(Converter))]
 public sealed class Subscription : IIdentifiable
 {
     public Subscription(IBiDi bidi, string id)
@@ -33,4 +35,9 @@ public sealed class Subscription : IIdentifiable
 
     [JsonIgnore]
     public IBiDi BiDi { get; }
+
+    internal sealed class Converter : IdentifiableConverter<Subscription>
+    {
+        protected override Subscription Create(IBiDi bidi, string id) => new(bidi, id);
+    }
 }

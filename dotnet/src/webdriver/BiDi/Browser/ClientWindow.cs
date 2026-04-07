@@ -18,9 +18,11 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
+[JsonConverter(typeof(Converter))]
 public sealed record ClientWindow : IIdentifiable
 {
     public ClientWindow(IBiDi bidi, string id)
@@ -33,4 +35,9 @@ public sealed record ClientWindow : IIdentifiable
 
     [JsonIgnore]
     public IBiDi BiDi { get; }
+
+    internal sealed class Converter : IdentifiableConverter<ClientWindow>
+    {
+        protected override ClientWindow Create(IBiDi bidi, string id) => new(bidi, id);
+    }
 }

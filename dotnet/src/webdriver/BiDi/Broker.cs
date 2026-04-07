@@ -138,6 +138,7 @@ internal sealed class Broker : IAsyncDisposable
 
         try
         {
+            using (BiDiContext.Use(_bidi))
             using (var writer = new Utf8JsonWriter(sendBuffer))
             {
                 JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
@@ -213,6 +214,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
+        using var scope = BiDiContext.Use(_bidi);
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
         const int TypeError = 3;

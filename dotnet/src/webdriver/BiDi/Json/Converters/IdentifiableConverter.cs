@@ -22,14 +22,16 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal sealed class IdentifiableConverter<T>(Func<string, T> factory) : JsonConverter<T>
+internal abstract class IdentifiableConverter<T> : JsonConverter<T>
     where T : class, IIdentifiable
 {
+    protected abstract T Create(IBiDi bidi, string id);
+
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString()!;
 
-        return factory(id);
+        return Create(BiDiContext.Current.BiDi, id);
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)

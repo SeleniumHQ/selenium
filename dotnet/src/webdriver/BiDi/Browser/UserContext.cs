@@ -19,9 +19,11 @@
 
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
+[JsonConverter(typeof(Converter))]
 public sealed record UserContext : IIdentifiable
 {
     public UserContext(IBiDi bidi, string id)
@@ -50,5 +52,10 @@ public sealed record UserContext : IIdentifiable
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    internal sealed class Converter : IdentifiableConverter<UserContext>
+    {
+        protected override UserContext Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

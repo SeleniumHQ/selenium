@@ -19,9 +19,11 @@
 
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
+[JsonConverter(typeof(Converter))]
 public sealed record Extension : IIdentifiable
 {
     public Extension(IBiDi bidi, string id)
@@ -50,5 +52,10 @@ public sealed record Extension : IIdentifiable
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    internal sealed class Converter : IdentifiableConverter<Extension>
+    {
+        protected override Extension Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

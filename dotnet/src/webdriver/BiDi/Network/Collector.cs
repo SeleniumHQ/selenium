@@ -19,9 +19,11 @@
 
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
+[JsonConverter(typeof(Converter))]
 public sealed record Collector : IIdentifiable
 {
     public Collector(IBiDi bidi, string id)
@@ -50,5 +52,10 @@ public sealed record Collector : IIdentifiable
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    internal sealed class Converter : IdentifiableConverter<Collector>
+    {
+        protected override Collector Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

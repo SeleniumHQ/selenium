@@ -18,9 +18,11 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(Converter))]
 public sealed record Channel : IIdentifiable
 {
     public Channel(IBiDi bidi, string id)
@@ -33,4 +35,9 @@ public sealed record Channel : IIdentifiable
 
     [JsonIgnore]
     public IBiDi BiDi { get; }
+
+    internal sealed class Converter : IdentifiableConverter<Channel>
+    {
+        protected override Channel Create(IBiDi bidi, string id) => new(bidi, id);
+    }
 }

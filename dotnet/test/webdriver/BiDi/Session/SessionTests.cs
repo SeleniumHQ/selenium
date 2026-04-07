@@ -78,19 +78,21 @@ internal class SessionTests : BiDiTestFixture
 
 class CustomModule : Module
 {
-    private CustomModuleJsonSerializerContext _jsonContext = null!;
+    private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteCommandAsync(new DoSomethingCommand(), options, _jsonContext.DoSomethingCommand, _jsonContext.DoSomethingResult, CancellationToken.None);
+        return await ExecuteCommandAsync(new DoSomethingCommand(), options, JsonContext.DoSomethingCommand, JsonContext.DoSomethingResult, CancellationToken.None);
     }
 
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
+    protected override void Initialize(IBiDi bidi)
     {
-        _jsonContext = new CustomModuleJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(DoSomethingCommand))]
 [JsonSerializable(typeof(DoSomethingResult))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;

@@ -19,9 +19,11 @@
 
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(Converter))]
 public sealed record Realm : IIdentifiable
 {
     public Realm(IBiDi bidi, string id)
@@ -50,5 +52,10 @@ public sealed record Realm : IIdentifiable
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    internal sealed class Converter : IdentifiableConverter<Realm>
+    {
+        protected override Realm Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }
