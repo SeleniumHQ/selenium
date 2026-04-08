@@ -24,6 +24,7 @@ class Level:
 
 LogLevel = Level
 
+
 @dataclass
 class BaseLogEntry:
     """BaseLogEntry."""
@@ -69,6 +70,7 @@ class ConsoleLogEntry:
             stack_trace=params.get("stackTrace"),
         )
 
+
 @dataclass
 class JavascriptLogEntry:
     """JavascriptLogEntry - a JavaScript error log entry from the browser."""
@@ -92,6 +94,7 @@ class JavascriptLogEntry:
             stacktrace=params.get("stackTrace"),
         )
 
+
 Entry = GenericLogEntry | ConsoleLogEntry | JavascriptLogEntry
 
 # BiDi Event Name to Parameter Type Mapping
@@ -99,14 +102,15 @@ EVENT_NAME_MAPPING = {
     "entry_added": "log.entryAdded",
 }
 
+
 class Log:
     """WebDriver BiDi log module."""
 
     EVENT_CONFIGS: dict[str, EventConfig] = {}
+
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
-
 
     def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
         """Add an event handler.
@@ -133,6 +137,7 @@ class Log:
     def clear_event_handlers(self) -> None:
         """Clear all event handlers."""
         return self._event_manager.clear_event_handlers()
+
 
 # Event Info Type Aliases
 # Event: log.entryAdded

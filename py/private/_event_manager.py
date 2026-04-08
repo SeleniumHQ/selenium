@@ -62,9 +62,7 @@ class _EventWrapper:
             return params
         try:
             # Delegate to a classmethod from_json if the class defines one
-            if hasattr(self._python_class, "from_json") and callable(
-                self._python_class.from_json
-            ):
+            if hasattr(self._python_class, "from_json") and callable(self._python_class.from_json):
                 return self._python_class.from_json(params)
             import dataclasses as dc
 
@@ -117,9 +115,7 @@ class _EventManager:
             if bidi_event not in self.subscriptions:
                 session = Session(self.conn)
                 result = session.subscribe([bidi_event], contexts=contexts)
-                sub_id = (
-                    result.get("subscription") if isinstance(result, dict) else None
-                )
+                sub_id = result.get("subscription") if isinstance(result, dict) else None
                 self.subscriptions[bidi_event] = {
                     "callbacks": [],
                     "subscription_id": sub_id,
@@ -176,9 +172,7 @@ class _EventManager:
                 if event_wrapper:
                     for callback_id in callbacks:
                         self.conn.remove_callback(event_wrapper, callback_id)
-                sub_id = (
-                    entry.get("subscription_id") if isinstance(entry, dict) else None
-                )
+                sub_id = entry.get("subscription_id") if isinstance(entry, dict) else None
                 if sub_id:
                     session.unsubscribe(subscriptions=[sub_id])
                 else:

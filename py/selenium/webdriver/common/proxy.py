@@ -35,23 +35,13 @@ class ProxyType:
     profile preference, 'string' is id of proxy type.
     """
 
-    DIRECT = ProxyTypeFactory.make(
-        0, "DIRECT"
-    )  # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(
-        1, "MANUAL"
-    )  # Manual proxy settings (e.g., for httpProxy).
+    DIRECT = ProxyTypeFactory.make(0, "DIRECT")  # Direct connection, no proxy (default on Windows).
+    MANUAL = ProxyTypeFactory.make(1, "MANUAL")  # Manual proxy settings (e.g., for httpProxy).
     PAC = ProxyTypeFactory.make(2, "PAC")  # Proxy autoconfiguration from URL.
     RESERVED_1 = ProxyTypeFactory.make(3, "RESERVED1")  # Never used.
-    AUTODETECT = ProxyTypeFactory.make(
-        4, "AUTODETECT"
-    )  # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(
-        5, "SYSTEM"
-    )  # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(
-        6, "UNSPECIFIED"
-    )  # Not initialized (for internal use).
+    AUTODETECT = ProxyTypeFactory.make(4, "AUTODETECT")  # Proxy autodetection (presumably with WPAD).
+    SYSTEM = ProxyTypeFactory.make(5, "SYSTEM")  # Use system settings (default on Linux).
+    UNSPECIFIED = ProxyTypeFactory.make(6, "UNSPECIFIED")  # Not initialized (for internal use).
 
     @classmethod
     def load(cls, value):
@@ -60,11 +50,7 @@ class ProxyType:
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if (
-                isinstance(attr_value, dict)
-                and "string" in attr_value
-                and attr_value["string"] == value
-            ):
+            if isinstance(attr_value, dict) and "string" in attr_value and attr_value["string"] == value:
                 return attr_value
         raise Exception(f"No proxy type is found for {value}")
 
@@ -219,17 +205,13 @@ class Proxy:
             if self.noProxy:
                 # Convert comma-separated string to list
                 if isinstance(self.noProxy, str):
-                    result["noProxy"] = [
-                        host.strip() for host in self.noProxy.split(",") if host.strip()
-                    ]
+                    result["noProxy"] = [host.strip() for host in self.noProxy.split(",") if host.strip()]
                 elif isinstance(self.noProxy, list):
                     if not all(isinstance(h, str) for h in self.noProxy):
                         raise TypeError("no_proxy list must contain only strings")
                     result["noProxy"] = self.noProxy
                 else:
-                    raise TypeError(
-                        "no_proxy must be a comma-separated string or a list of strings"
-                    )
+                    raise TypeError("no_proxy must be a comma-separated string or a list of strings")
 
         elif proxy_type == "pac":
             if self.proxyAutoconfigUrl:

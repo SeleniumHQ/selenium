@@ -37,7 +37,6 @@ from typing import Any
 # ============================================================================
 
 ENHANCEMENTS: dict[str, dict[str, Any]] = {
-
     "browser": {
         # Dataclass custom methods
         "__dataclass_methods__": {
@@ -183,7 +182,6 @@ class SetClientWindowStateParameters:
         return self._conn.execute(cmd)''',
         ],
     },
-
     "browsingContext": {
         # Method enhancements
         "create": {
@@ -268,7 +266,6 @@ class DownloadEndParams:
         ],
         # Download events are now in the CDDL spec, so no extra_events needed
     },
-
     "log": {
         # Make LogLevel an alias for Level so existing code using LogLevel works
         "aliases": {"LogLevel": "Level"},
@@ -332,7 +329,6 @@ class JavascriptLogEntry:
             "entry_added": "Entry",
         },
     },
-
     "emulation": {
         "exclude_types": ["setNetworkConditionsParameters"],
         "extra_dataclasses": [
@@ -545,7 +541,6 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         return self._conn.execute(cmd)''',
         ],
     },
-
     "script": {
         "extra_methods": [
             '''    def execute(self, function_declaration: str, *args, context_id: str | None = None) -> Any:
@@ -921,7 +916,6 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         self._unsubscribe_log_entry(callback_id)''',
         ],
     },
-
     "network": {
         "exclude_types": ["disownDataParameters"],
         # Initialize intercepts tracking list and per-handler intercept map
@@ -1124,7 +1118,6 @@ disownDataParameters = DisownDataParameters''',
             self._remove_intercept(intercept_id)''',
         ],
     },
-
     "storage": {
         # Exclude auto-generated dataclasses that need custom to_bidi_dict()
         # for JSON-over-WebSocket serialization, or custom constructors.
@@ -1299,7 +1292,6 @@ class PartialCookie:
     def to_dict(self) -> dict:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()''',
-
             # StorageKeyPartitionDescriptor with camelCase serialization
             '''@dataclass
 class StorageKeyPartitionDescriptor:
@@ -1380,7 +1372,6 @@ class StorageKeyPartitionDescriptor:
             )
             return SetCookieResult(partition_key=pk)
         return result''',
-
             '''    def delete_cookies(self, filter=None, partition=None):
         """Execute storage.deleteCookies."""
         if filter and hasattr(filter, "to_bidi_dict"):
@@ -1408,7 +1399,6 @@ class StorageKeyPartitionDescriptor:
         return result''',
         ],
     },
-
     "session": {
         # Override UserPromptHandler to add to_bidi_dict() for JSON serialization
         "exclude_types": ["UserPromptHandler"],
@@ -1446,7 +1436,6 @@ class UserPromptHandler:
         return self.to_bidi_dict()''',
         ],
     },
-
     "webExtension": {
         # Suppress the raw generated stubs; hand-written versions follow below
         "exclude_methods": ["install", "uninstall"],
@@ -1527,7 +1516,6 @@ class UserPromptHandler:
         return self._conn.execute(cmd)''',
         ],
     },
-
     "input": {
         # FileDialogInfo needs from_json for event deserialization
         "exclude_types": ["FileDialogInfo", "PointerMoveAction", "PointerDownAction"],
@@ -1651,9 +1639,7 @@ def transform_download_params(
             "type": "allowed",
             # Convert pathlib.Path (or any path-like) to str so the BiDi
             # protocol always receives a plain JSON string.
-            "destinationFolder": (
-                str(destination_folder) if destination_folder is not None else None
-            ),
+            "destinationFolder": (str(destination_folder) if destination_folder is not None else None),
         }
     elif allowed is False:
         return {"type": "denied"}

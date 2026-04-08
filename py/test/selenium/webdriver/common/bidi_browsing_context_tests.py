@@ -60,9 +60,7 @@ def test_create_window(driver):
 def test_create_window_with_reference_context(driver):
     """Test creating a window with a reference context."""
     reference_context = driver.current_window_handle
-    context_id = driver.browsing_context.create(
-        type=WindowTypes.WINDOW, reference_context=reference_context
-    )
+    context_id = driver.browsing_context.create(type=WindowTypes.WINDOW, reference_context=reference_context)
     assert context_id is not None
 
     # Clean up
@@ -81,9 +79,7 @@ def test_create_tab(driver):
 def test_create_tab_with_reference_context(driver):
     """Test creating a tab with a reference context."""
     reference_context = driver.current_window_handle
-    context_id = driver.browsing_context.create(
-        type=WindowTypes.TAB, reference_context=reference_context
-    )
+    context_id = driver.browsing_context.create(type=WindowTypes.TAB, reference_context=reference_context)
     assert context_id is not None
 
     # Clean up
@@ -128,9 +124,7 @@ def test_navigate_to_url_with_readiness_state(driver, pages):
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
     url = pages.url("bidi/logEntryAdded.html")
-    result = driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    result = driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     assert context_id is not None
     assert "/bidi/logEntryAdded.html" in result["url"]
@@ -144,9 +138,7 @@ def test_get_tree_with_child(driver, pages):
     reference_context = driver.current_window_handle
 
     url = pages.url("iframes.html")
-    driver.browsing_context.navigate(
-        context=reference_context, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=reference_context, url=url, wait=ReadinessState.COMPLETE)
 
     context_info_list = driver.browsing_context.get_tree(root=reference_context)
 
@@ -162,13 +154,9 @@ def test_get_tree_with_depth(driver, pages):
     reference_context = driver.current_window_handle
 
     url = pages.url("iframes.html")
-    driver.browsing_context.navigate(
-        context=reference_context, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=reference_context, url=url, wait=ReadinessState.COMPLETE)
 
-    context_info_list = driver.browsing_context.get_tree(
-        root=reference_context, max_depth=0
-    )
+    context_info_list = driver.browsing_context.get_tree(root=reference_context, max_depth=0)
 
     assert len(context_info_list) == 1
     info = context_info_list[0]
@@ -239,9 +227,7 @@ def test_reload_browsing_context(driver, pages):
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
     url = pages.url("bidi/logEntryAdded.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     reload_info = driver.browsing_context.reload(context=context_id)
 
@@ -256,13 +242,9 @@ def test_reload_with_readiness_state(driver, pages):
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
 
     url = pages.url("bidi/logEntryAdded.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
-    reload_info = driver.browsing_context.reload(
-        context=context_id, wait=ReadinessState.COMPLETE
-    )
+    reload_info = driver.browsing_context.reload(context=context_id, wait=ReadinessState.COMPLETE)
 
     assert reload_info["navigation"] is not None
     assert "/bidi/logEntryAdded.html" in reload_info["url"]
@@ -359,9 +341,7 @@ def test_capture_screenshot_with_parameters(driver, pages):
 
     clip = {"type": "box", "x": rect["x"], "y": rect["y"], "width": 5, "height": 5}
 
-    screenshot = driver.browsing_context.capture_screenshot(
-        context=context_id, origin="document", clip=clip
-    )
+    screenshot = driver.browsing_context.capture_screenshot(context=context_id, origin="document", clip=clip)
 
     assert len(screenshot) > 0
 
@@ -372,20 +352,14 @@ def test_set_viewport(driver, pages):
     driver.get(pages.url("formPage.html"))
 
     try:
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport={"width": 251, "height": 301}
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport={"width": 251, "height": 301})
 
-        viewport_size = driver.execute_script(
-            "return [window.innerWidth, window.innerHeight];"
-        )
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
         assert viewport_size[0] == 251
         assert viewport_size[1] == 301
     finally:
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport=None, device_pixel_ratio=None
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_set_viewport_with_device_pixel_ratio(driver, pages):
@@ -400,9 +374,7 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
             device_pixel_ratio=5,
         )
 
-        viewport_size = driver.execute_script(
-            "return [window.innerWidth, window.innerHeight];"
-        )
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
         assert viewport_size[0] == 252
         assert viewport_size[1] == 302
@@ -411,9 +383,7 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
 
         assert device_pixel_ratio == 5
     finally:
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport=None, device_pixel_ratio=None
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
@@ -430,9 +400,7 @@ def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
 
         driver.browsing_context.set_viewport(context=context_id)
 
-        viewport_size = driver.execute_script(
-            "return [window.innerWidth, window.innerHeight];"
-        )
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
         assert viewport_size[0] == 253
         assert viewport_size[1] == 303
@@ -441,9 +409,7 @@ def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
 
         assert device_pixel_ratio == 6
     finally:
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport=None, device_pixel_ratio=None
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 @pytest.mark.xfail_chrome
@@ -452,9 +418,7 @@ def test_set_viewport_back_to_default(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    default_viewport_size = driver.execute_script(
-        "return [window.innerWidth, window.innerHeight];"
-    )
+    default_viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
     default_device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
     try:
@@ -464,13 +428,9 @@ def test_set_viewport_back_to_default(driver, pages):
             device_pixel_ratio=10,
         )
 
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport=None, device_pixel_ratio=None
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
-        viewport_size = driver.execute_script(
-            "return [window.innerWidth, window.innerHeight];"
-        )
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
         device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
         # Allow some tolerance since some window managers might not put it to the exact value
@@ -478,9 +438,7 @@ def test_set_viewport_back_to_default(driver, pages):
         assert abs(viewport_size[1] - default_viewport_size[1]) <= 5
         assert device_pixel_ratio == default_device_pixel_ratio
     finally:
-        driver.browsing_context.set_viewport(
-            context=context_id, viewport=None, device_pixel_ratio=None
-        )
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_print_page(driver, pages):
@@ -499,9 +457,7 @@ def test_print_page(driver, pages):
 def test_navigate_back_in_browser_history(driver, pages):
     """Test navigating back in the browser history."""
     context_id = driver.current_window_handle
-    driver.browsing_context.navigate(
-        context=context_id, url=pages.url("formPage.html"), wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=pages.url("formPage.html"), wait=ReadinessState.COMPLETE)
 
     # Navigate to another page by submitting a form
     driver.find_element(By.ID, "imageButton").submit()
@@ -514,9 +470,7 @@ def test_navigate_back_in_browser_history(driver, pages):
 def test_navigate_forward_in_browser_history(driver, pages):
     """Test navigating forward in the browser history."""
     context_id = driver.current_window_handle
-    driver.browsing_context.navigate(
-        context=context_id, url=pages.url("formPage.html"), wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=pages.url("formPage.html"), wait=ReadinessState.COMPLETE)
 
     # Navigate to another page by submitting a form
     driver.find_element(By.ID, "imageButton").submit()
@@ -538,9 +492,7 @@ def test_locate_nodes(driver, pages):
 
     driver.get(pages.url("xhtmlTest.html"))
 
-    elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "css", "value": "div"}
-    )
+    elements = driver.browsing_context.locate_nodes(context=context_id, locator={"type": "css", "value": "div"})
 
     assert len(elements) > 0
 
@@ -660,9 +612,7 @@ def test_add_event_handler_context_created(driver):
     def on_context_created(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created
-    )
+    callback_id = driver.browsing_context.add_event_handler("context_created", on_context_created)
     assert callback_id is not None
 
     # Create a new context to trigger the event
@@ -670,10 +620,7 @@ def test_add_event_handler_context_created(driver):
 
     # Verify the event was received (might be > 1 since default context is also included)
     assert len(events_received) >= 1
-    assert (
-        events_received[0].context == context_id
-        or events_received[1].context == context_id
-    )
+    assert events_received[0].context == context_id or events_received[1].context == context_id
 
     driver.browsing_context.close(context_id)
     driver.browsing_context.remove_event_handler("context_created", callback_id)
@@ -686,9 +633,7 @@ def test_add_event_handler_context_destroyed(driver):
     def on_context_destroyed(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "context_destroyed", on_context_destroyed
-    )
+    callback_id = driver.browsing_context.add_event_handler("context_destroyed", on_context_destroyed)
     assert callback_id is not None
 
     # Create and then close a context to trigger the event
@@ -708,17 +653,13 @@ def test_add_event_handler_navigation_committed(driver, pages):
     def on_navigation_committed(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "navigation_committed", on_navigation_committed
-    )
+    callback_id = driver.browsing_context.add_event_handler("navigation_committed", on_navigation_committed)
     assert callback_id is not None
 
     # Navigate to trigger the event
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     assert len(events_received) >= 1
     assert any(url in event.url for event in events_received)
@@ -733,17 +674,13 @@ def test_add_event_handler_dom_content_loaded(driver, pages):
     def on_dom_content_loaded(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "dom_content_loaded", on_dom_content_loaded
-    )
+    callback_id = driver.browsing_context.add_event_handler("dom_content_loaded", on_dom_content_loaded)
     assert callback_id is not None
 
     # Navigate to trigger the event
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
@@ -763,9 +700,7 @@ def test_add_event_handler_load(driver, pages):
 
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
@@ -780,16 +715,12 @@ def test_add_event_handler_navigation_started(driver, pages):
     def on_navigation_started(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "navigation_started", on_navigation_started
-    )
+    callback_id = driver.browsing_context.add_event_handler("navigation_started", on_navigation_started)
     assert callback_id is not None
 
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     assert len(events_received) == 1
     assert any("simpleTest" in event.url for event in events_received)
@@ -804,23 +735,17 @@ def test_add_event_handler_fragment_navigated(driver, pages):
     def on_fragment_navigated(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "fragment_navigated", on_fragment_navigated
-    )
+    callback_id = driver.browsing_context.add_event_handler("fragment_navigated", on_fragment_navigated)
     assert callback_id is not None
 
     # First navigate to a page
     context_id = driver.current_window_handle
     url = pages.url("linked_image.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     # Then navigate to the same page with a fragment to trigger the event
     fragment_url = url + "#link"
-    driver.browsing_context.navigate(
-        context=context_id, url=fragment_url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=fragment_url, wait=ReadinessState.COMPLETE)
 
     assert len(events_received) == 1
     assert any("link" in event.url for event in events_received)
@@ -836,17 +761,13 @@ def test_add_event_handler_navigation_failed(driver):
     def on_navigation_failed(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "navigation_failed", on_navigation_failed
-    )
+    callback_id = driver.browsing_context.add_event_handler("navigation_failed", on_navigation_failed)
     assert callback_id is not None
 
     # Navigate to an invalid URL to trigger the event
     context_id = driver.current_window_handle
     try:
-        driver.browsing_context.navigate(
-            context=context_id, url="http://invalid-domain-that-does-not-exist.test/"
-        )
+        driver.browsing_context.navigate(context=context_id, url="http://invalid-domain-that-does-not-exist.test/")
     except Exception:
         # Expect an exception due to navigation failure
         pass
@@ -865,9 +786,7 @@ def test_add_event_handler_user_prompt_opened(driver, pages):
     def on_user_prompt_opened(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "user_prompt_opened", on_user_prompt_opened
-    )
+    callback_id = driver.browsing_context.add_event_handler("user_prompt_opened", on_user_prompt_opened)
     assert callback_id is not None
 
     # Create an alert to trigger the event
@@ -892,9 +811,7 @@ def test_add_event_handler_user_prompt_closed(driver, pages):
     def on_user_prompt_closed(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "user_prompt_closed", on_user_prompt_closed
-    )
+    callback_id = driver.browsing_context.add_event_handler("user_prompt_closed", on_user_prompt_closed)
     assert callback_id is not None
 
     create_prompt_page(driver, pages)
@@ -919,16 +836,12 @@ def test_add_event_handler_history_updated(driver, pages):
     def on_history_updated(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "history_updated", on_history_updated
-    )
+    callback_id = driver.browsing_context.add_event_handler("history_updated", on_history_updated)
     assert callback_id is not None
 
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     # Use history.pushState to trigger history updated event
     driver.script.execute("() => { history.pushState({}, '', '/new-path'); }")
@@ -948,17 +861,13 @@ def test_add_event_handler_download_will_begin(driver, pages):
     def on_download_will_begin(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "download_will_begin", on_download_will_begin
-    )
+    callback_id = driver.browsing_context.add_event_handler("download_will_begin", on_download_will_begin)
     assert callback_id is not None
 
     # click on a download link to trigger the event
     context_id = driver.current_window_handle
     url = pages.url("downloads/download.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     download_xpath_file_1_txt = '//*[@id="file-1"]'
     driver.find_element(By.XPATH, download_xpath_file_1_txt).click()
@@ -978,16 +887,12 @@ def test_add_event_handler_download_end(driver, pages):
     def on_download_end(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "download_end", on_download_end
-    )
+    callback_id = driver.browsing_context.add_event_handler("download_end", on_download_end)
     assert callback_id is not None
 
     context_id = driver.current_window_handle
     url = pages.url("downloads/download.html")
-    driver.browsing_context.navigate(
-        context=context_id, url=url, wait=ReadinessState.COMPLETE
-    )
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     driver.find_element(By.ID, "file-1").click()
 
@@ -1005,14 +910,12 @@ def test_add_event_handler_download_end(driver, pages):
     # we assert that atleast "file_1" is present in the downloaded file since multiple downloads
     # will have numbered suffix like file_1 (1)
     assert any(
-        "downloads/file_1.txt" in ev.download_params.url
-        and "file_1" in ev.download_params.filepath
+        "downloads/file_1.txt" in ev.download_params.url and "file_1" in ev.download_params.filepath
         for ev in events_received
     )
 
     assert any(
-        "downloads/file_2.jpg" in ev.download_params.url
-        and "file_2" in ev.download_params.filepath
+        "downloads/file_2.jpg" in ev.download_params.url and "file_2" in ev.download_params.filepath
         for ev in events_received
     )
 
@@ -1051,9 +954,7 @@ def test_remove_event_handler(driver):
     def on_context_created(info):
         events_received.append(info)
 
-    callback_id = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created
-    )
+    callback_id = driver.browsing_context.add_event_handler("context_created", on_context_created)
 
     # Create a context to trigger the event
     context_id_1 = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -1085,12 +986,8 @@ def test_multiple_event_handlers_same_event(driver):
         events_received_2.append(info)
 
     # Add multiple event handlers for the same event
-    callback_id_1 = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created_1
-    )
-    callback_id_2 = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created_2
-    )
+    callback_id_1 = driver.browsing_context.add_event_handler("context_created", on_context_created_1)
+    callback_id_2 = driver.browsing_context.add_event_handler("context_created", on_context_created_2)
 
     # Create a context to trigger both handlers
     context_id = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -1119,12 +1016,8 @@ def test_remove_specific_event_handler_multiple_handlers(driver):
         events_received_2.append(info)
 
     # Add multiple event handlers
-    callback_id_1 = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created_1
-    )
-    callback_id_2 = driver.browsing_context.add_event_handler(
-        "context_created", on_context_created_2
-    )
+    callback_id_1 = driver.browsing_context.add_event_handler("context_created", on_context_created_1)
+    callback_id_2 = driver.browsing_context.add_event_handler("context_created", on_context_created_2)
 
     # Create a context to trigger both handlers
     context_id_1 = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -1206,9 +1099,7 @@ class _EventHandlerTestHelper:
     def register_handler(self, thread_id):
         try:
             callback = self.make_callback()
-            callback_id = self.driver.browsing_context.add_event_handler(
-                "context_created", callback
-            )
+            callback_id = self.driver.browsing_context.add_event_handler("context_created", callback)
             with self.data_lock:
                 self.callback_ids.append(callback_id)
                 if len(self.callback_ids) == 5:
@@ -1216,16 +1107,12 @@ class _EventHandlerTestHelper:
             return callback_id
         except Exception as e:
             with self.data_lock:
-                self.thread_errors.append(
-                    f"Thread {thread_id}: Registration failed: {e}"
-                )
+                self.thread_errors.append(f"Thread {thread_id}: Registration failed: {e}")
             return None
 
     def remove_handler(self, callback_id, thread_id):
         try:
-            self.driver.browsing_context.remove_event_handler(
-                "context_created", callback_id
-            )
+            self.driver.browsing_context.remove_event_handler("context_created", callback_id)
         except Exception as e:
             with self.data_lock:
                 self.thread_errors.append(f"Thread {thread_id}: Removal failed: {e}")
@@ -1235,19 +1122,13 @@ def test_concurrent_event_handler_registration(driver):
     helper = _EventHandlerTestHelper(driver)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [
-            executor.submit(helper.register_handler, f"reg-{i}") for i in range(5)
-        ]
+        futures = [executor.submit(helper.register_handler, f"reg-{i}") for i in range(5)]
         for future in futures:
             future.result(timeout=15)
 
     helper.registration_complete.wait(timeout=5)
-    assert (
-        len(helper.callback_ids) == 5
-    ), f"Expected 5 handlers, got {len(helper.callback_ids)}"
-    assert not helper.thread_errors, "Errors during registration: \n" + "\n".join(
-        helper.thread_errors
-    )
+    assert len(helper.callback_ids) == 5, f"Expected 5 handlers, got {len(helper.callback_ids)}"
+    assert not helper.thread_errors, "Errors during registration: \n" + "\n".join(helper.thread_errors)
 
 
 def test_event_callback_data_consistency(driver):
@@ -1265,9 +1146,7 @@ def test_event_callback_data_consistency(driver):
         driver.browsing_context.close(ctx)
 
     with helper.data_lock:
-        assert not helper.consistency_errors, "Consistency errors: " + str(
-            helper.consistency_errors
-        )
+        assert not helper.consistency_errors, "Consistency errors: " + str(helper.consistency_errors)
         assert len(helper.events_received) > 0, "No events received"
         assert len(helper.events_received) == sum(helper.context_counts.values())
         assert len(helper.events_received) == sum(helper.event_type_counts.values())
@@ -1288,9 +1167,7 @@ def test_concurrent_event_handler_removal(driver):
         for future in futures:
             future.result(timeout=15)
 
-    assert not helper.thread_errors, "Errors during removal: \n" + "\n".join(
-        helper.thread_errors
-    )
+    assert not helper.thread_errors, "Errors during removal: \n" + "\n".join(helper.thread_errors)
 
 
 def test_no_event_after_handler_removal(driver):

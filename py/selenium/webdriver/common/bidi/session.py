@@ -180,6 +180,7 @@ class UserPromptHandler:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
 
+
 class Session:
     """WebDriver BiDi session module."""
 
@@ -188,8 +189,7 @@ class Session:
 
     def status(self):
         """Execute session.status."""
-        params = {
-        }
+        params = {}
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("session.status", params)
         result = self._conn.execute(cmd)
@@ -210,8 +210,7 @@ class Session:
 
     def end(self):
         """Execute session.end."""
-        params = {
-        }
+        params = {}
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("session.end", params)
         result = self._conn.execute(cmd)
@@ -247,4 +246,3 @@ class Session:
         cmd = command_builder("session.unsubscribe", params)
         result = self._conn.execute(cmd)
         return result
-

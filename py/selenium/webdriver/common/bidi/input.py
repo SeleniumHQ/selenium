@@ -180,6 +180,7 @@ class FileDialogInfo:
             multiple=params.get("multiple"),
         )
 
+
 @dataclass
 class PointerMoveAction:
     """PointerMoveAction."""
@@ -191,6 +192,7 @@ class PointerMoveAction:
     origin: Any | None = None
     properties: Any | None = None
 
+
 @dataclass
 class PointerDownAction:
     """PointerDownAction."""
@@ -199,15 +201,18 @@ class PointerDownAction:
     button: Any | None = None
     properties: Any | None = None
 
+
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
     "file_dialog_opened": "input.fileDialogOpened",
 }
 
+
 class Input:
     """WebDriver BiDi input module."""
 
     EVENT_CONFIGS: dict[str, EventConfig] = {}
+
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
@@ -305,9 +310,10 @@ class Input:
         """Clear all event handlers."""
         return self._event_manager.clear_event_handlers()
 
+
 # Event Info Type Aliases
 # Event: input.fileDialogOpened
-FileDialogOpened = globals().get('FileDialogInfo', dict)  # Fallback to dict if type not defined
+FileDialogOpened = globals().get("FileDialogInfo", dict)  # Fallback to dict if type not defined
 
 
 # Populate EVENT_CONFIGS with event configuration mappings

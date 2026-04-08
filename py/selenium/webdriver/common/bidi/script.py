@@ -620,10 +620,12 @@ EVENT_NAME_MAPPING = {
     "realm_destroyed": "script.realmDestroyed",
 }
 
+
 class Script:
     """WebDriver BiDi script module."""
 
     EVENT_CONFIGS: dict[str, EventConfig] = {}
+
     def __init__(self, conn, driver=None) -> None:
         self._conn = conn
         self._driver = driver
@@ -845,6 +847,7 @@ class Script:
             if raw.get("type") == "success":
                 return raw.get("result")
         return raw
+
     def _add_preload_script(
         self,
         function_declaration,
@@ -880,6 +883,7 @@ class Script:
         if isinstance(result, dict):
             return result.get("script")
         return result
+
     def _remove_preload_script(self, script_id):
         """Remove a preload script by ID.
 
@@ -887,6 +891,7 @@ class Script:
             script_id: The ID of the preload script to remove.
         """
         return self.remove_preload_script(script=script_id)
+
     def pin(self, function_declaration):
         """Pin (add) a preload script that runs on every page load.
 
@@ -897,6 +902,7 @@ class Script:
             script_id: The ID of the pinned script (str).
         """
         return self._add_preload_script(function_declaration)
+
     def unpin(self, script_id):
         """Unpin (remove) a previously pinned preload script.
 
@@ -904,6 +910,7 @@ class Script:
             script_id: The ID returned by pin().
         """
         return self._remove_preload_script(script_id=script_id)
+
     def _evaluate(
         self,
         expression,
@@ -926,6 +933,7 @@ class Script:
         Returns:
             An object with .realm, .result (dict or None), and .exception_details (or None).
         """
+
         class _EvalResult:
             def __init__(self2, realm, result, exception_details):
                 self2.realm = realm
@@ -947,6 +955,7 @@ class Script:
                 return _EvalResult(realm=realm, result=None, exception_details=exc)
             return _EvalResult(realm=realm, result=raw.get("result"), exception_details=None)
         return _EvalResult(realm=None, result=raw, exception_details=None)
+
     def _call_function(
         self,
         function_declaration,
@@ -973,6 +982,7 @@ class Script:
         Returns:
             An object with .result (dict or None) and .exception_details (or None).
         """
+
         class _CallResult:
             def __init__(self2, result, exception_details):
                 self2.result = result
@@ -995,6 +1005,7 @@ class Script:
             if raw.get("type") == "success":
                 return _CallResult(result=raw.get("result"), exception_details=None)
         return _CallResult(result=raw, exception_details=None)
+
     def _get_realms(self, context=None, type=None):
         """Get all realms, optionally filtered by context and type.
 
@@ -1005,6 +1016,7 @@ class Script:
         Returns:
             List of realm info objects with .realm, .origin, .type, .context attributes.
         """
+
         class _RealmInfo:
             def __init__(self2, realm, origin, type_, context):
                 self2.realm = realm
@@ -1017,13 +1029,16 @@ class Script:
         result = []
         for r in realms_list:
             if isinstance(r, dict):
-                result.append(_RealmInfo(
-                    realm=r.get("realm"),
-                    origin=r.get("origin"),
-                    type_=r.get("type"),
-                    context=r.get("context"),
-                ))
+                result.append(
+                    _RealmInfo(
+                        realm=r.get("realm"),
+                        origin=r.get("origin"),
+                        type_=r.get("type"),
+                        context=r.get("context"),
+                    )
+                )
         return result
+
     def _disown(self, handles, target):
         """Disown handles in a browsing context.
 
@@ -1032,6 +1047,7 @@ class Script:
             target: A dict like {"context": <id>}.
         """
         return self.disown(handles=handles, target=target)
+
     def _subscribe_log_entry(self, callback, entry_type_filter=None):
         """Subscribe to log.entryAdded BiDi events with optional type filtering."""
         import threading as _threading
@@ -1068,9 +1084,7 @@ class Script:
             if entry_type_filter is None:
                 callback(entry)
             else:
-                t = getattr(entry, "type_", None) or (
-                    entry.get("type") if isinstance(entry, dict) else None
-                )
+                t = getattr(entry, "type_", None) or (entry.get("type") if isinstance(entry, dict) else None)
                 if t == entry_type_filter:
                     callback(entry)
 
@@ -1086,15 +1100,14 @@ class Script:
             if bidi_event not in self._log_subscriptions:
                 session = _Session(self._conn)
                 result = session.subscribe([bidi_event])
-                sub_id = (
-                    result.get("subscription") if isinstance(result, dict) else None
-                )
+                sub_id = result.get("subscription") if isinstance(result, dict) else None
                 self._log_subscriptions[bidi_event] = {
                     "callbacks": [],
                     "subscription_id": sub_id,
                 }
             self._log_subscriptions[bidi_event]["callbacks"].append(callback_id)
         return callback_id
+
     def _unsubscribe_log_entry(self, callback_id):
         """Unsubscribe a log entry callback by ID."""
         from selenium.webdriver.common.bidi.session import Session as _Session
@@ -1123,6 +1136,7 @@ class Script:
                 else:
                     session.unsubscribe(events=[bidi_event])
                 del self._log_subscriptions[bidi_event]
+
     def add_console_message_handler(self, callback: Callable) -> int:
         """Add a handler for console log messages (log.entryAdded type=console).
 
@@ -1133,9 +1147,11 @@ class Script:
             callback_id for use with remove_console_message_handler.
         """
         return self._subscribe_log_entry(callback, entry_type_filter="console")
+
     def remove_console_message_handler(self, callback_id: int) -> None:
         """Remove a console message handler by callback ID."""
         self._unsubscribe_log_entry(callback_id)
+
     def add_javascript_error_handler(self, callback: Callable) -> int:
         """Add a handler for JavaScript error log messages (log.entryAdded type=javascript).
 
@@ -1146,6 +1162,7 @@ class Script:
             callback_id for use with remove_javascript_error_handler.
         """
         return self._subscribe_log_entry(callback, entry_type_filter="javascript")
+
     def remove_javascript_error_handler(self, callback_id: int) -> None:
         """Remove a JavaScript error handler by callback ID."""
         self._unsubscribe_log_entry(callback_id)
@@ -1176,12 +1193,13 @@ class Script:
         """Clear all event handlers."""
         return self._event_manager.clear_event_handlers()
 
+
 # Event Info Type Aliases
 # Event: script.realmCreated
-RealmCreated = globals().get('RealmInfo', dict)  # Fallback to dict if type not defined
+RealmCreated = globals().get("RealmInfo", dict)  # Fallback to dict if type not defined
 
 # Event: script.realmDestroyed
-RealmDestroyed = globals().get('RealmDestroyedParameters', dict)  # Fallback to dict if type not defined
+RealmDestroyed = globals().get("RealmDestroyedParameters", dict)  # Fallback to dict if type not defined
 
 
 # Populate EVENT_CONFIGS with event configuration mappings
