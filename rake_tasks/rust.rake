@@ -64,5 +64,9 @@ task :version, [:version] do |_task, arguments|
   # hasn't been updated yet) causes Bazel to detect a mid-evaluation file-hash
   # conflict and crash (rules_rust extensions.bzl reads the lockfile twice
   # within the same Bazel evaluation).
+  # reenable is required because Rake::Task#invoke is a no-op if the task has
+  # already run once in this Ruby process (e.g. when multiple tasks are chained
+  # in a single ./go invocation).
+  Rake::Task['rust:update'].reenable
   Rake::Task['rust:update'].invoke
 end
