@@ -11,6 +11,7 @@ filegroup(
         "**/*.js",
         "**/*.png",
         "**/*.svg",
+        "**/*.ts",
     ]),
     visibility = [
         "//dotnet/test:__subpackages__",
