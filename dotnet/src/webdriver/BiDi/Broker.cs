@@ -143,34 +143,39 @@ internal sealed class Broker : IAsyncDisposable
             {
                 JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
             }
+        }
+        catch
+        {
+            ReturnBuffer(sendBuffer);
+            throw;
+        }
 
-            var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-            _pendingCommands[command.Id] = commandInfo;
+        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+        _pendingCommands[command.Id] = commandInfo;
 
-            using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = cts.Token.Register(() =>
+        {
+            tcs.TrySetCanceled(cts.Token);
+            _pendingCommands.TryRemove(command.Id, out _);
+        });
+
+        try
+        {
+            if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                tcs.TrySetCanceled(cts.Token);
-                _pendingCommands.TryRemove(command.Id, out _);
-            });
-
-            try
-            {
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
 #if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
 #else
-                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
 #endif
-                }
+            }
 
-                await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
-            }
-            catch
-            {
-                _pendingCommands.TryRemove(command.Id, out _);
-                throw;
-            }
+            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+        }
+        catch
+        {
+            _pendingCommands.TryRemove(command.Id, out _);
+            throw;
         }
         finally
         {
