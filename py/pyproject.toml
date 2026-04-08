@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.42.0.202602192150"
+version = "4.42.0"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
