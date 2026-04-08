@@ -101,7 +101,6 @@ class ClientWindowInfo:
         return self.y
 
 
-
 @dataclass
 class UserContextInfo:
     """UserContextInfo."""
@@ -181,6 +180,7 @@ class ClientWindowNamedState:
     MINIMIZED = "minimized"
     NORMAL = "normal"
 
+
 @dataclass
 class SetClientWindowStateParameters:
     """SetClientWindowStateParameters.
@@ -194,6 +194,7 @@ class SetClientWindowStateParameters:
     client_window: Any | None = None
     state: Any | None = None
 
+
 class Browser:
     """WebDriver BiDi browser module."""
 
@@ -202,8 +203,7 @@ class Browser:
 
     def close(self):
         """Execute browser.close."""
-        params = {
-        }
+        params = {}
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browser.close", params)
         result = self._conn.execute(cmd)
@@ -216,10 +216,10 @@ class Browser:
         unhandled_prompt_behavior: Any | None = None,
     ):
         """Execute browser.createUserContext."""
-        if proxy and hasattr(proxy, 'to_bidi_dict'):
+        if proxy and hasattr(proxy, "to_bidi_dict"):
             proxy = proxy.to_bidi_dict()
 
-        if unhandled_prompt_behavior and hasattr(unhandled_prompt_behavior, 'to_bidi_dict'):
+        if unhandled_prompt_behavior and hasattr(unhandled_prompt_behavior, "to_bidi_dict"):
             unhandled_prompt_behavior = unhandled_prompt_behavior.to_bidi_dict()
 
         params = {
@@ -237,8 +237,7 @@ class Browser:
 
     def get_client_windows(self):
         """Execute browser.getClientWindows."""
-        params = {
-        }
+        params = {}
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browser.getClientWindows", params)
         result = self._conn.execute(cmd)
@@ -252,7 +251,7 @@ class Browser:
                     state=item.get("state"),
                     width=item.get("width"),
                     x=item.get("x"),
-                    y=item.get("y")
+                    y=item.get("y"),
                 )
                 for item in items
                 if isinstance(item, dict)
@@ -261,18 +260,13 @@ class Browser:
 
     def get_user_contexts(self):
         """Execute browser.getUserContexts."""
-        params = {
-        }
+        params = {}
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browser.getUserContexts", params)
         result = self._conn.execute(cmd)
         if result and "userContexts" in result:
             items = result.get("userContexts", [])
-            return [
-                item.get("userContext")
-                for item in items
-                if isinstance(item, dict)
-            ]
+            return [item.get("userContext") for item in items if isinstance(item, dict)]
         return []
 
     def remove_user_context(self, user_context: Any | None = None):
@@ -320,6 +314,7 @@ class Browser:
             params["userContexts"] = user_contexts
         cmd = command_builder("browser.setDownloadBehavior", params)
         return self._conn.execute(cmd)
+
     def set_client_window_state(
         self,
         client_window: Any | None = None,
@@ -344,12 +339,9 @@ class Browser:
 
         # Serialize ClientWindowRectState if needed
         state_param = state
-        if hasattr(state, '__dataclass_fields__'):
+        if hasattr(state, "__dataclass_fields__"):
             # It's a dataclass, convert to dict
-            state_param = {
-                k: v for k, v in state.__dict__.items()
-                if v is not None
-            }
+            state_param = {k: v for k, v in state.__dict__.items() if v is not None}
 
         params = {
             "clientWindow": client_window,

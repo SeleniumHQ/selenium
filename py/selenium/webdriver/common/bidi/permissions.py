@@ -82,8 +82,7 @@ class Permissions:
         state_value = state.value if isinstance(state, PermissionState) else state
         if state_value not in _VALID_PERMISSION_STATES:
             raise ValueError(
-                f"Invalid permission state: {state_value!r}. "
-                f"Must be one of {sorted(_VALID_PERMISSION_STATES)}"
+                f"Invalid permission state: {state_value!r}. Must be one of {sorted(_VALID_PERMISSION_STATES)}"
             )
 
         if isinstance(descriptor, str):

@@ -178,6 +178,7 @@ class SetNetworkConditionsParameters:
 # Backward-compatible alias for existing imports
 setNetworkConditionsParameters = SetNetworkConditionsParameters
 
+
 class Emulation:
     """WebDriver BiDi emulation module."""
 
@@ -319,9 +320,7 @@ class Emulation:
             if isinstance(error, dict):
                 params["error"] = error
             else:
-                params["error"] = {
-                    "type": error.type if error.type is not None else "positionUnavailable"
-                }
+                params["error"] = {"type": error.type if error.type is not None else "positionUnavailable"}
         if contexts is not None:
             params["contexts"] = contexts
         if user_contexts is not None:
@@ -329,6 +328,7 @@ class Emulation:
         cmd = command_builder("emulation.setGeolocationOverride", params)
         result = self._conn.execute(cmd)
         return result
+
     def set_timezone_override(
         self,
         timezone=None,
@@ -353,6 +353,7 @@ class Emulation:
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setTimezoneOverride", params)
         return self._conn.execute(cmd)
+
     def set_scripting_enabled(
         self,
         enabled=None,
@@ -377,6 +378,7 @@ class Emulation:
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setScriptingEnabled", params)
         return self._conn.execute(cmd)
+
     def set_user_agent_override(
         self,
         user_agent=None,
@@ -400,6 +402,7 @@ class Emulation:
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setUserAgentOverride", params)
         return self._conn.execute(cmd)
+
     def set_screen_orientation_override(
         self,
         screen_orientation=None,
@@ -436,6 +439,7 @@ class Emulation:
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setScreenOrientationOverride", params)
         return self._conn.execute(cmd)
+
     def set_network_conditions(
         self,
         network_conditions=None,

@@ -60,9 +60,7 @@ def import_devtools(ver):
         # because cdp has been updated but selenium python has not been released yet.
         devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
         versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
-        available_versions = tuple(
-            x for x in versions if x == "latest" or (x.startswith("v") and x[1:].isdigit())
-        )
+        available_versions = tuple(x for x in versions if x == "latest" or (x.startswith("v") and x[1:].isdigit()))
         numeric_versions = tuple(x[1:] for x in available_versions if x.startswith("v"))
         if not numeric_versions:
             raise

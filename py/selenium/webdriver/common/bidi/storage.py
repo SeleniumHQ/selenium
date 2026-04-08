@@ -87,6 +87,7 @@ class BytesValue:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
 
+
 class SameSite:
     """SameSite cookie attribute values."""
 
@@ -94,6 +95,7 @@ class SameSite:
     LAX = "lax"
     NONE = "none"
     DEFAULT = "default"
+
 
 @dataclass
 class StorageCookie:
@@ -128,6 +130,7 @@ class StorageCookie:
             same_site=raw.get("sameSite"),
             expiry=raw.get("expiry"),
         )
+
 
 @dataclass
 class CookieFilter:
@@ -170,6 +173,7 @@ class CookieFilter:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
 
+
 @dataclass
 class PartialCookie:
     """PartialCookie."""
@@ -208,6 +212,7 @@ class PartialCookie:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
 
+
 class BrowsingContextPartitionDescriptor:
     """BrowsingContextPartitionDescriptor.
 
@@ -226,6 +231,7 @@ class BrowsingContextPartitionDescriptor:
     def to_dict(self) -> dict:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
+
 
 @dataclass
 class StorageKeyPartitionDescriptor:
@@ -248,6 +254,7 @@ class StorageKeyPartitionDescriptor:
         """Backward-compatible alias for to_bidi_dict()."""
         return self.to_bidi_dict()
 
+
 class Storage:
     """WebDriver BiDi storage module."""
 
@@ -268,11 +275,7 @@ class Storage:
         cmd = command_builder("storage.getCookies", params)
         result = self._conn.execute(cmd)
         if result and "cookies" in result:
-            cookies = [
-                StorageCookie.from_bidi_dict(c)
-                for c in result.get("cookies", [])
-                if isinstance(c, dict)
-            ]
+            cookies = [StorageCookie.from_bidi_dict(c) for c in result.get("cookies", []) if isinstance(c, dict)]
             pk_raw = result.get("partitionKey")
             pk = (
                 PartitionKey(
@@ -284,6 +287,7 @@ class Storage:
             )
             return GetCookiesResult(cookies=cookies, partition_key=pk)
         return GetCookiesResult(cookies=[], partition_key=None)
+
     def set_cookie(self, cookie=None, partition=None):
         """Execute storage.setCookie."""
         if cookie and hasattr(cookie, "to_bidi_dict"):
@@ -309,6 +313,7 @@ class Storage:
             )
             return SetCookieResult(partition_key=pk)
         return result
+
     def delete_cookies(self, filter=None, partition=None):
         """Execute storage.deleteCookies."""
         if filter and hasattr(filter, "to_bidi_dict"):

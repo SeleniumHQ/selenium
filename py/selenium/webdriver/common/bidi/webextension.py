@@ -87,14 +87,16 @@ class WebExtension:
             ValueError: If more than one, or none, of the arguments is provided.
         """
         provided = [
-            k for k, v in {
-                "path": path, "archive_path": archive_path, "base64_value": base64_value,
-            }.items() if v is not None
+            k
+            for k, v in {
+                "path": path,
+                "archive_path": archive_path,
+                "base64_value": base64_value,
+            }.items()
+            if v is not None
         ]
         if len(provided) != 1:
-            raise ValueError(
-                f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}"
-            )
+            raise ValueError(f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}")
         if path is not None:
             extension_data = {"type": "path", "path": path}
         elif archive_path is not None:
@@ -115,6 +117,7 @@ class WebExtension:
                     "in your WebDriver configuration."
                 ) from e
             raise
+
     def uninstall(self, extension: str | dict):
         """Uninstall a web extension.
 

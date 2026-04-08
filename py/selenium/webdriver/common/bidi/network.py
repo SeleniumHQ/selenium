@@ -360,6 +360,7 @@ class DisownDataParameters:
 # Backward-compatible alias for existing imports
 disownDataParameters = DisownDataParameters
 
+
 class BytesValue:
     """A string or base64-encoded bytes value used in cookie operations.
 
@@ -376,6 +377,7 @@ class BytesValue:
 
     def to_bidi_dict(self) -> dict:
         return {"type": self.type, "value": self.value}
+
 
 class Request:
     """Wraps a BiDi network request event params and provides request action methods."""
@@ -395,16 +397,19 @@ class Request:
         params.update(kwargs)
         self._conn.execute(_cb("network.continueRequest", params))
 
+
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
     "auth_required": "network.authRequired",
     "before_request": "network.beforeRequestSent",
 }
 
+
 class Network:
     """WebDriver BiDi network module."""
 
     EVENT_CONFIGS: dict[str, EventConfig] = {}
+
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
@@ -755,6 +760,7 @@ class Network:
             if intercept_id and intercept_id not in self.intercepts:
                 self.intercepts.append(intercept_id)
         return result
+
     def _remove_intercept(self, intercept_id):
         """Remove a low-level network intercept."""
         from selenium.webdriver.common.bidi.common import command_builder as _cb
@@ -762,6 +768,7 @@ class Network:
         self._conn.execute(_cb("network.removeIntercept", {"intercept": intercept_id}))
         if intercept_id in self.intercepts:
             self.intercepts.remove(intercept_id)
+
     def add_request_handler(self, event, callback, url_patterns=None):
         """Add a handler for network requests at the specified phase.
 
@@ -784,11 +791,7 @@ class Network:
         intercept_id = intercept_result.get("intercept") if intercept_result else None
 
         def _request_callback(params):
-            raw = (
-                params
-                if isinstance(params, dict)
-                else (params.__dict__ if hasattr(params, "__dict__") else {})
-            )
+            raw = params if isinstance(params, dict) else (params.__dict__ if hasattr(params, "__dict__") else {})
             request = Request(self._conn, raw)
             callback(request)
 
@@ -796,6 +799,7 @@ class Network:
         if intercept_id:
             self._handler_intercepts[callback_id] = intercept_id
         return callback_id
+
     def remove_request_handler(self, event, callback_id):
         """Remove a network request handler and its associated network intercept.
 
@@ -807,11 +811,13 @@ class Network:
         intercept_id = self._handler_intercepts.pop(callback_id, None)
         if intercept_id:
             self._remove_intercept(intercept_id)
+
     def clear_request_handlers(self):
         """Clear all request handlers and remove all tracked intercepts."""
         self.clear_event_handlers()
         for intercept_id in list(self.intercepts):
             self._remove_intercept(intercept_id)
+
     def add_auth_handler(self, username, password):
         """Add an auth handler that automatically provides credentials.
 
@@ -829,16 +835,8 @@ class Network:
         intercept_id = intercept_result.get("intercept") if intercept_result else None
 
         def _auth_callback(params):
-            raw = (
-                params
-                if isinstance(params, dict)
-                else (params.__dict__ if hasattr(params, "__dict__") else {})
-            )
-            request_id = (
-                raw.get("request", {}).get("request")
-                if isinstance(raw, dict)
-                else None
-            )
+            raw = params if isinstance(params, dict) else (params.__dict__ if hasattr(params, "__dict__") else {})
+            request_id = raw.get("request", {}).get("request") if isinstance(raw, dict) else None
             if request_id:
                 self._conn.execute(
                     _cb(
@@ -859,6 +857,7 @@ class Network:
         if intercept_id:
             self._handler_intercepts[callback_id] = intercept_id
         return callback_id
+
     def remove_auth_handler(self, callback_id):
         """Remove an auth handler by callback ID and its associated network intercept.
 
@@ -896,9 +895,10 @@ class Network:
         """Clear all event handlers."""
         return self._event_manager.clear_event_handlers()
 
+
 # Event Info Type Aliases
 # Event: network.authRequired
-AuthRequired = globals().get('AuthRequiredParameters', dict)  # Fallback to dict if type not defined
+AuthRequired = globals().get("AuthRequiredParameters", dict)  # Fallback to dict if type not defined
 
 
 # Populate EVENT_CONFIGS with event configuration mappings

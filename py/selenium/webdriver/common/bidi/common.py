@@ -23,9 +23,7 @@ from collections.abc import Generator
 from typing import Any
 
 
-def command_builder(
-    method: str, params: dict[str, Any] | None = None
-) -> Generator[dict[str, Any], Any, Any]:
+def command_builder(method: str, params: dict[str, Any] | None = None) -> Generator[dict[str, Any], Any, Any]:
     """Build a BiDi command generator.
 
     Args:
