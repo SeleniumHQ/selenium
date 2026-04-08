@@ -171,13 +171,13 @@ internal sealed class Broker : IAsyncDisposable
                 _pendingCommands.TryRemove(command.Id, out _);
                 throw;
             }
+
+            return (TResult)await tcs.Task.ConfigureAwait(false);
         }
         finally
         {
             ReturnBuffer(sendBuffer);
         }
-
-        return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
