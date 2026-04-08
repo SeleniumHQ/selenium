@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
@@ -45,17 +44,13 @@ public abstract class Module
         return Broker.SubscribeAsync(name, func, factory, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected abstract void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions);
-
-    internal static TModule Create<TModule>(IBiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
         where TModule : Module, new()
     {
         TModule module = new()
         {
             Broker = broker
         };
-
-        module.Initialize(bidi, jsonSerializerOptions);
 
         return module;
     }

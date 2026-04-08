@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi;
 
@@ -78,19 +77,17 @@ internal class SessionTests : BiDiTestFixture
 
 class CustomModule : Module
 {
-    private CustomModuleJsonSerializerContext _jsonContext = null!;
+    private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteCommandAsync(new DoSomethingCommand(), options, _jsonContext.DoSomethingCommand, _jsonContext.DoSomethingResult, CancellationToken.None);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        _jsonContext = new CustomModuleJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteCommandAsync(new DoSomethingCommand(), options, JsonContext.DoSomethingCommand, JsonContext.DoSomethingResult, CancellationToken.None);
     }
 }
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(DoSomethingCommand))]
 [JsonSerializable(typeof(DoSomethingResult))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;

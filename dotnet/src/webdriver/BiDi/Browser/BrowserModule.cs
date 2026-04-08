@@ -17,71 +17,62 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed class BrowserModule : Module, IBrowserModule
 {
-    private BrowserJsonSerializerContext _jsonContext = null!;
+    private static readonly BrowserJsonSerializerContext JsonContext = BrowserJsonSerializerContext.Default;
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new CloseCommand(), options, _jsonContext.CloseCommand, _jsonContext.CloseResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CloseCommand(), options, JsonContext.CloseCommand, JsonContext.CloseResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
-        return await ExecuteCommandAsync(new CreateUserContextCommand(@params), options, _jsonContext.CreateUserContextCommand, _jsonContext.CreateUserContextResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new CreateUserContextCommand(@params), options, JsonContext.CreateUserContextCommand, JsonContext.CreateUserContextResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new GetUserContextsCommand(), options, _jsonContext.GetUserContextsCommand, _jsonContext.GetUserContextsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new GetUserContextsCommand(), options, JsonContext.GetUserContextsCommand, JsonContext.GetUserContextsResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveUserContextParameters(userContext);
 
-        return await ExecuteCommandAsync(new RemoveUserContextCommand(@params), options, _jsonContext.RemoveUserContextCommand, _jsonContext.RemoveUserContextResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new RemoveUserContextCommand(@params), options, JsonContext.RemoveUserContextCommand, JsonContext.RemoveUserContextResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new(), options, _jsonContext.GetClientWindowsCommand, _jsonContext.GetClientWindowsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new(), options, JsonContext.GetClientWindowsCommand, JsonContext.GetClientWindowsResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, _jsonContext.SetDownloadBehaviorCommand, _jsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, _jsonContext.SetDownloadBehaviorCommand, _jsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, _jsonContext.SetDownloadBehaviorCommand, _jsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-
-        _jsonContext = new BrowserJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult, cancellationToken).ConfigureAwait(false);
     }
 }
 
@@ -98,4 +89,7 @@ public sealed class BrowserModule : Module, IBrowserModule
 [JsonSerializable(typeof(SetDownloadBehaviorCommand))]
 [JsonSerializable(typeof(SetDownloadBehaviorResult))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class BrowserJsonSerializerContext : JsonSerializerContext;

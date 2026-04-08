@@ -44,7 +44,7 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.15.8",
+    "ruff==0.15.9",
 ]
 validate = [
     "validate-pyproject==0.25",

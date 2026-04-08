@@ -1,4 +1,4 @@
-// <copyright file="InternalIdConverter.cs" company="Selenium Committers">
+// <copyright file="IdentifiableConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,20 +19,22 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Script;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InternalIdConverter(IBiDi bidi) : JsonConverter<InternalId>
+public abstract class IdentifiableConverter<T> : JsonConverter<T>
+    where T : class, IIdentifiable
 {
-    public override InternalId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        var id = reader.GetString();
+    protected abstract T Create(IBiDi bidi, string id);
 
-        return new InternalId(id!) { BiDi = bidi };
+    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var id = reader.GetString() ?? throw new JsonException($"Expected a non-null string for {typeof(T).Name}.");
+
+        return Create(BiDiContext.Current.BiDi, id);
     }
 
-    public override void Write(Utf8JsonWriter writer, InternalId value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.Id);
     }

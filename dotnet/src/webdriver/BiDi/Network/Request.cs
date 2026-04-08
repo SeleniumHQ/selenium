@@ -17,18 +17,46 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-[JsonConverter(typeof(RequestConverter))]
-public sealed class Request
+[JsonConverter(typeof(Converter))]
+public sealed record Request : IIdentifiable
 {
-    internal Request(string id)
+    public Request(IBiDi bidi, string id)
     {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    public string Id { get; private set; }
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(Request? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Request>
+    {
+        protected override Request Create(IBiDi bidi, string id) => new(bidi, id);
+    }
 }

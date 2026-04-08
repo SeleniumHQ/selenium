@@ -17,24 +17,22 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module, ILogModule
 {
-    private LogJsonSerializerContext _jsonContext = null!;
+    private static readonly LogJsonSerializerContext JsonContext = LogJsonSerializerContext.Default;
 
     public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, _jsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntry p) => p switch
@@ -44,17 +42,6 @@ public sealed class LogModule : Module, ILogModule
         GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
         _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
     };
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new RealmConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new InternalIdConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new HandleConverter(bidi));
-
-        _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
-    }
 }
 
 #region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency
@@ -92,4 +79,7 @@ public sealed class LogModule : Module, ILogModule
 [JsonSerializable(typeof(ConsoleLogEntry))]
 [JsonSerializable(typeof(JavascriptLogEntry))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

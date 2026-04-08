@@ -17,84 +17,82 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed partial class NetworkModule : Module, INetworkModule
 {
-    private NetworkJsonSerializerContext _jsonContext = null!;
+    private static readonly NetworkJsonSerializerContext JsonContext = NetworkJsonSerializerContext.Default;
 
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteCommandAsync(new AddDataCollectorCommand(@params), options, _jsonContext.AddDataCollectorCommand, _jsonContext.AddDataCollectorResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new AddDataCollectorCommand(@params), options, JsonContext.AddDataCollectorCommand, JsonContext.AddDataCollectorResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
-        return await ExecuteCommandAsync(new AddInterceptCommand(@params), options, _jsonContext.AddInterceptCommand, _jsonContext.AddInterceptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new AddInterceptCommand(@params), options, JsonContext.AddInterceptCommand, JsonContext.AddInterceptResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveDataCollectorParameters(collector);
 
-        return await ExecuteCommandAsync(new RemoveDataCollectorCommand(@params), options, _jsonContext.RemoveDataCollectorCommand, _jsonContext.RemoveDataCollectorResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new RemoveDataCollectorCommand(@params), options, JsonContext.RemoveDataCollectorCommand, JsonContext.RemoveDataCollectorResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveInterceptResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveInterceptParameters(intercept);
 
-        return await ExecuteCommandAsync(new RemoveInterceptCommand(@params), options, _jsonContext.RemoveInterceptCommand, _jsonContext.RemoveInterceptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new RemoveInterceptCommand(@params), options, JsonContext.RemoveInterceptCommand, JsonContext.RemoveInterceptResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, SetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCacheBehaviorParameters(behavior, options?.Contexts);
 
-        return await ExecuteCommandAsync(new SetCacheBehaviorCommand(@params), options, _jsonContext.SetCacheBehaviorCommand, _jsonContext.SetCacheBehaviorResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetCacheBehaviorCommand(@params), options, JsonContext.SetCacheBehaviorCommand, JsonContext.SetCacheBehaviorResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetExtraHeadersResult> SetExtraHeadersAsync(IEnumerable<Header> headers, SetExtraHeadersOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetExtraHeadersCommand(@params), options, _jsonContext.SetExtraHeadersCommand, _jsonContext.SetExtraHeadersResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new SetExtraHeadersCommand(@params), options, JsonContext.SetExtraHeadersCommand, JsonContext.SetExtraHeadersResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueRequestResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueRequestParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);
 
-        return await ExecuteCommandAsync(new ContinueRequestCommand(@params), options, _jsonContext.ContinueRequestCommand, _jsonContext.ContinueRequestResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ContinueRequestCommand(@params), options, JsonContext.ContinueRequestCommand, JsonContext.ContinueRequestResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueResponseResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueResponseParameters(request, options?.Cookies, options?.Credentials, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteCommandAsync(new ContinueResponseCommand(@params), options, _jsonContext.ContinueResponseCommand, _jsonContext.ContinueResponseResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ContinueResponseCommand(@params), options, JsonContext.ContinueResponseCommand, JsonContext.ContinueResponseResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<FailRequestResult> FailRequestAsync(Request request, FailRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new FailRequestParameters(request);
 
-        return await ExecuteCommandAsync(new FailRequestCommand(@params), options, _jsonContext.FailRequestCommand, _jsonContext.FailRequestResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new FailRequestCommand(@params), options, JsonContext.FailRequestCommand, JsonContext.FailRequestResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
 
-        var result = await ExecuteCommandAsync(new GetDataCommand(@params), options, _jsonContext.GetDataCommand, _jsonContext.GetDataResult, cancellationToken).ConfigureAwait(false);
+        var result = await ExecuteCommandAsync(new GetDataCommand(@params), options, JsonContext.GetDataCommand, JsonContext.GetDataResult, cancellationToken).ConfigureAwait(false);
 
         return result.Bytes;
     }
@@ -103,72 +101,72 @@ public sealed partial class NetworkModule : Module, INetworkModule
     {
         var @params = new ProvideResponseParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteCommandAsync(new ProvideResponseCommand(@params), options, _jsonContext.ProvideResponseCommand, _jsonContext.ProvideResponseResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ProvideResponseCommand(@params), options, JsonContext.ProvideResponseCommand, JsonContext.ProvideResponseResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options, JsonContext.ContinueWithAuthCommand, JsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthDefaultCredentials(request)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthDefaultCredentials(request)), options, JsonContext.ContinueWithAuthCommand, JsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, _jsonContext.ContinueWithAuthCommand, _jsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, JsonContext.ContinueWithAuthCommand, JsonContext.ContinueWithAuthResult, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, _jsonContext.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, JsonContext.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, _jsonContext.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, JsonContext.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, _jsonContext.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, JsonContext.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, _jsonContext.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, JsonContext.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, _jsonContext.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, JsonContext.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, _jsonContext.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, JsonContext.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, _jsonContext.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, JsonContext.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, _jsonContext.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, JsonContext.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, _jsonContext.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, JsonContext.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, _jsonContext.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, JsonContext.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
     }
 
     private static BeforeRequestSentEventArgs CreateBeforeRequestSentEventArgs(IBiDi bidi, BeforeRequestSentParameters p)
@@ -185,16 +183,6 @@ public sealed partial class NetworkModule : Module, INetworkModule
 
     private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(IBiDi bidi, AuthRequiredParameters p)
         => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response);
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new CollectorConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new InterceptConverter(bidi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-
-        _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
-    }
 }
 
 [JsonSerializable(typeof(AddDataCollectorCommand))]
@@ -228,4 +216,7 @@ public sealed partial class NetworkModule : Module, INetworkModule
 [JsonSerializable(typeof(FetchErrorParameters))]
 [JsonSerializable(typeof(AuthRequiredParameters))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class NetworkJsonSerializerContext : JsonSerializerContext;

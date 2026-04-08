@@ -62,6 +62,7 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    extra_args = ["--no-strip-extras"],
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
     tags = [

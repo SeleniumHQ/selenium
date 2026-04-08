@@ -17,10 +17,46 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-[JsonConverter(typeof(NavigationConverter))]
-public sealed record Navigation(string Id);
+[JsonConverter(typeof(Converter))]
+public sealed record Navigation : IIdentifiable
+{
+    public Navigation(IBiDi bidi, string id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+        Id = id;
+    }
+
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(Navigation? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Navigation>
+    {
+        protected override Navigation Create(IBiDi bidi, string id) => new(bidi, id);
+    }
+}

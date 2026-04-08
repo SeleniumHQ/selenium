@@ -138,38 +138,44 @@ internal sealed class Broker : IAsyncDisposable
 
         try
         {
+            using (BiDiContext.Use(_bidi))
             using (var writer = new Utf8JsonWriter(sendBuffer))
             {
                 JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
             }
+        }
+        catch
+        {
+            ReturnBuffer(sendBuffer);
+            throw;
+        }
 
-            var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-            _pendingCommands[command.Id] = commandInfo;
+        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
+        _pendingCommands[command.Id] = commandInfo;
 
-            using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = cts.Token.Register(() =>
+        {
+            tcs.TrySetCanceled(cts.Token);
+            _pendingCommands.TryRemove(command.Id, out _);
+        });
+
+        try
+        {
+            if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                tcs.TrySetCanceled(cts.Token);
-                _pendingCommands.TryRemove(command.Id, out _);
-            });
-
-            try
-            {
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
 #if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.Span)}");
 #else
-                    _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
+                _logger.Trace($"BiDi SND --> {System.Text.Encoding.UTF8.GetString(sendBuffer.WrittenMemory.ToArray())}");
 #endif
-                }
+            }
 
-                await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
-            }
-            catch
-            {
-                _pendingCommands.TryRemove(command.Id, out _);
-                throw;
-            }
+            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+        }
+        catch
+        {
+            _pendingCommands.TryRemove(command.Id, out _);
+            throw;
         }
         finally
         {
@@ -213,6 +219,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
+        using var scope = BiDiContext.Use(_bidi);
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
         const int TypeError = 3;
