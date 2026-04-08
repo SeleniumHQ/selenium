@@ -1,7 +1,34 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
+
+js_run_binary(
+    name = "is-displayed-typescript-compiled",
+    srcs = ["typescript/is-displayed.ts"],
+    outs = ["typescript/is-displayed.compiled.js"],
+    args = [
+        "--target",
+        "ES2017",
+        "--module",
+        "none",
+        "--removeComments",
+        "--pretty",
+        "false",
+        "--outFile",
+        "$(rootpath :typescript/is-displayed.compiled.js)",
+        "$(rootpath typescript/is-displayed.ts)",
+    ],
+    tool = "@npm_typescript//:tsc",
+)
+
+genrule(
+    name = "is-displayed-typescript-generated",
+    srcs = [":is-displayed-typescript-compiled"],
+    outs = ["typescript/is-displayed.generated.js"],
+    cmd = "sed '$$ s/;[[:space:]]*$$//' $(location :is-displayed-typescript-compiled) > $@",
+)
 
 filegroup(
     name = "atoms",

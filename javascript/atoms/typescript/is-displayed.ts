@@ -24,7 +24,7 @@ interface Coordinate {
   y: number;
 }
 
-var isShown = (function (): (elem: Element, optIgnoreOpacity?: boolean) => boolean {
+(function (): (elem: Element, optIgnoreOpacity?: boolean) => boolean {
   function toUpperCaseTag(tagName?: string): string | undefined {
     return tagName ? tagName.toUpperCase() : undefined;
   }
@@ -105,13 +105,14 @@ var isShown = (function (): (elem: Element, optIgnoreOpacity?: boolean) => boole
       return imageMap.rect;
     }
 
-    if (isElement(elem, 'HTML')) {
-      var doc = elem.ownerDocument;
+    var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
+    if (elemTagName.toUpperCase() === 'HTML') {
+      var doc = (elem as Element).ownerDocument;
       return createRect(0, 0, doc.documentElement.clientWidth, doc.documentElement.clientHeight);
     }
 
     try {
-      var nativeRect = elem.getBoundingClientRect();
+      var nativeRect = (elem as Element).getBoundingClientRect();
       return {
         left: nativeRect.left,
         top: nativeRect.top,
@@ -335,7 +336,7 @@ var isShown = (function (): (elem: Element, optIgnoreOpacity?: boolean) => boole
     }
 
     if (isElement(elem, 'OPTION') || isElement(elem, 'OPTGROUP')) {
-      var select = elem.closest('select');
+      var select = (elem as Element).closest('select');
       return !!select && isShownInternal(select, true, displayedFn);
     }
 
@@ -462,5 +463,3 @@ var isShown = (function (): (elem: Element, optIgnoreOpacity?: boolean) => boole
     return isShownInternal(elem, !!optIgnoreOpacity, displayed);
   };
 })();
-
-export default isShown;

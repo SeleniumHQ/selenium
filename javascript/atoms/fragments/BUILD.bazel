@@ -133,7 +133,7 @@ closure_fragment(
 
 copy_file(
     name = "is-displayed-typescript",
-    src = "//javascript/atoms:typescript/is-displayed.js",
+    src = "//javascript/atoms:typescript/is-displayed.generated.js",
     out = "is-displayed-typescript.js",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
