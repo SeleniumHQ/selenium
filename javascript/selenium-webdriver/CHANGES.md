@@ -1,3 +1,9 @@
+## 4.42.0
+
+- Support CDP versions: v144, v145, v146
+- [nodejs] Color Class for Javascript library (#16944)
+- Fix failing javascript tests (#17293)
+
 ## 4.41.0
 
 - Support CDP versions: v143, v144, v145

@@ -1,3 +1,14 @@
+Selenium 4.42.0
+* Support CDP versions: v144, v145, v146
+* Add return type annotation to execute_script and execute_async_script (#17117)
+* Use Self as return type of __enter__ in remote.WebDriver (#17170)
+* Add type stubs for lazy imported classes and modules (#17165)
+* Do not close externally provided log_output streams (#17204)
+* Generate module for importing latest devtools (#17133)
+* Improve Selenium Manager platform/architecture detection (#17271)
+* Add APIRequestContext to make requests with browser auth/cookie state (#17228)
+* Update dev dependencies and multitool binaries (#17314)
+
 Selenium 4.41.0
 * Support CDP versions: v143, v144, v145
 * Fix return type hint for `alert_is_present` (#16975)

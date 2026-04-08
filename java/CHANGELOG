@@ -1,3 +1,36 @@
+v4.42.0
+======
+* Support CDP versions: v144, v145, v146
+* fix "or" condition (#17135)
+* Improve screenshot error message (#17120)
+* Catch exception on .contentAsString with binary content (#17139)
+* [grid] Router bypass WebSocket data path via transparent TCP tunnel (#17146)
+* Guard against NPE in Platform.extractFromSysProperty (#17151)
+* Deduplicate Unicode PUA mappings in Keys; make OPTION an alias of ALT and deprecate FN (#17147)
+* remove `@Nullable` from return value for `ExpectedConditions` that never return null (#17149)
+* Fluent setters in few classes like `PrintOptions` etc. (#17148)
+* Enhance ScriptKey.toString() and mask script content in UnpinnedScriptKey (#17159)
+* specify nullability in packages `org.openqa.selenium.chrom*` (#17152)
+* Nullability for browsers (#17167)
+* Keys: enforce CharSequence contract in charAt() (#17166)
+* [BiDi] implement `speculation` module (#17130)
+* specify nullability in `org.openqa.selenium.grid.*` packages (#17173)
+* make the signature change in `ExecuteMethod` backward compatible (#17183)
+* specify nullability in package `org.openqa.selenium.devtools` (#17185)
+* [grid] Router WebSocket handle dropped close frames, idle disconnects, high-latency proxying (#17197)
+* specify nullability in package `org.openqa.selenium.docker` (#17191)
+* [grid] Align Router-Node read timeout with session pageLoad capability (#17211)
+* specify nullability in other java packages (#17194)
+* Fix saving docker logs to a file (#17218)
+* Fix duplicate field name handling in InstanceCoercer#getFieldWriters (#17187)
+* [grid] Dynamic Grid Docker configure container stop-grace-period (#17222)
+* Add field names to JsonException "Duplicate JSON field name..." (#17225)
+* [build] Fix RBE tests (#17233)
+* [bazel] Update to Bazel 9 (#16757)
+* [grid] Fix VNC caps not propagated for sessions without browserName (#17235)
+* [grid] Add NodeCommandInterceptor for pluggable command interception via --ext (#17242)
+* fix loading "isDisplayed.js" and other resources in OSGI environment (#17257)
+
 v4.41.0
 ======
 * Support CDP versions: v143, v144, v145
