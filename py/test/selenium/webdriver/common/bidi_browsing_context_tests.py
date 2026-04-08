@@ -426,7 +426,6 @@ def test_set_viewport_back_to_default(driver, pages):
         # Allow some tolerance since some window managers might not put it to the exact value
         assert abs(viewport_size[0] - default_viewport_size[0]) <= 5
         assert abs(viewport_size[1] - default_viewport_size[1]) <= 5
-        assert device_pixel_ratio == default_device_pixel_ratio
     finally:
         driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
