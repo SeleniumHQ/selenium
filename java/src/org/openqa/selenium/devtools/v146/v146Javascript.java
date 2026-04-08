@@ -15,21 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v143;
+package org.openqa.selenium.devtools.v146;
 
 import java.util.Optional;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Javascript;
-import org.openqa.selenium.devtools.v143.page.Page;
-import org.openqa.selenium.devtools.v143.page.model.ScriptIdentifier;
-import org.openqa.selenium.devtools.v143.runtime.Runtime;
-import org.openqa.selenium.devtools.v143.runtime.model.BindingCalled;
+import org.openqa.selenium.devtools.v146.page.Page;
+import org.openqa.selenium.devtools.v146.page.model.ScriptIdentifier;
+import org.openqa.selenium.devtools.v146.runtime.Runtime;
+import org.openqa.selenium.devtools.v146.runtime.model.BindingCalled;
 
-public class v143Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
+public class v146Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 
-  public v143Javascript(DevTools devtools) {
+  public v146Javascript(DevTools devtools) {
     super(devtools);
   }
 

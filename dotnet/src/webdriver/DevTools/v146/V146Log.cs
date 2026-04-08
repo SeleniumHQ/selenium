@@ -1,4 +1,4 @@
-// <copyright file="V143Log.cs" company="Selenium Committers">
+// <copyright file="V146Log.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,23 +17,23 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V143.Log;
+using OpenQA.Selenium.DevTools.V146.Log;
 
-namespace OpenQA.Selenium.DevTools.V143;
+namespace OpenQA.Selenium.DevTools.V146;
 
 /// <summary>
-/// Class containing the browser's log as referenced by version 143 of the DevTools Protocol.
+/// Class containing the browser's log as referenced by version 146 of the DevTools Protocol.
 /// </summary>
-public class V143Log : DevTools.Log
+public class V146Log : DevTools.Log
 {
     private readonly LogAdapter adapter;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V143Log"/> class.
+    /// Initializes a new instance of the <see cref="V146Log"/> class.
     /// </summary>
     /// <param name="adapter">The adapter for the Log domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="adapter"/> is <see langword="null"/>.</exception>
-    public V143Log(LogAdapter adapter)
+    public V146Log(LogAdapter adapter)
     {
         this.adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
         this.adapter.EntryAdded += OnAdapterEntryAdded;
