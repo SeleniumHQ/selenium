@@ -28,7 +28,7 @@ jobs:
   # Do not need to lock trunk before Rust jobs since work is in a separate branch
   generate-rust-version:
     name: Generate Rust Version
-    needs: parse-tag
+    needs: [parse-tag, restrict-trunk]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
@@ -90,7 +90,7 @@ jobs:
 
   update-versions:
     name: Bump Versions
-    needs: [parse-tag, restrict-trunk]
+    needs: [parse-tag, restrict-trunk, cleanup-rust-branch]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Bump versions
@@ -148,7 +148,7 @@ jobs:
     with:
       name: Run dependency updates
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
       artifact-name: patch-dep-updates
 
   calculate-changelog-depth:
