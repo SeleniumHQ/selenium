@@ -27,7 +27,7 @@ def get_chrome_milestone():
 
     r = http.request(
         "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
+        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&milestone=146&platform=Mac,Linux",
     )
     all_versions = json.loads(r.data)
     # use the same milestone for all Chrome releases, so pick the lowest
