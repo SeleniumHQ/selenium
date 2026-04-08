@@ -57,4 +57,12 @@ task :version, [:version] do |_task, arguments|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
   end
+
+  # Repin cargo immediately after updating the version so Cargo.Bazel.lock is
+  # never left in a stale state between jobs.  Running CARGO_BAZEL_REPIN=true
+  # against a Cargo.toml whose version has already changed (but whose lockfile
+  # hasn't been updated yet) causes Bazel to detect a mid-evaluation file-hash
+  # conflict and crash (rules_rust extensions.bzl reads the lockfile twice
+  # within the same Bazel evaluation).
+  Rake::Task['rust:update'].invoke
 end
