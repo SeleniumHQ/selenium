@@ -295,7 +295,7 @@ internal sealed class Broker : IAsyncDisposable
             case TypeSuccess:
                 if (id is null) throw new BiDiException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var command))
+                if (_pendingCommands.TryRemove(id.Value, out var command))
                 {
                     try
                     {
@@ -307,10 +307,6 @@ internal sealed class Broker : IAsyncDisposable
                     catch (Exception ex)
                     {
                         command.TaskCompletionSource.TrySetException(ex);
-                    }
-                    finally
-                    {
-                        _pendingCommands.TryRemove(id.Value, out _);
                     }
                 }
                 else
@@ -347,10 +343,9 @@ internal sealed class Broker : IAsyncDisposable
             case TypeError:
                 if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
+                if (_pendingCommands.TryRemove(id.Value, out var errorCommand))
                 {
                     errorCommand.TaskCompletionSource.TrySetException(new BiDiException($"{error}: {message}"));
-                    _pendingCommands.TryRemove(id.Value, out _);
                 }
                 else
                 {
