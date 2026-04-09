@@ -25,33 +25,42 @@ public sealed class StorageModule : Module, IStorageModule
 {
     private static readonly StorageJsonSerializerContext JsonContext = StorageJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
+        "storage.getCookies", JsonContext.CommandMessageGetCookiesParameters, JsonContext.GetCookiesResult);
+
+    private static readonly CommandDescriptor<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
+        "storage.deleteCookies", JsonContext.CommandMessageDeleteCookiesParameters, JsonContext.DeleteCookiesResult);
+
+    private static readonly CommandDescriptor<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
+        "storage.setCookie", JsonContext.CommandMessageSetCookieParameters, JsonContext.SetCookieResult);
+
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(new GetCookiesCommand(@params), options, JsonContext.GetCookiesCommand, JsonContext.GetCookiesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(GetCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(new DeleteCookiesCommand(@params), options, JsonContext.DeleteCookiesCommand, JsonContext.DeleteCookiesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(DeleteCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await ExecuteCommandAsync(new SetCookieCommand(@params), options, JsonContext.SetCookieCommand, JsonContext.SetCookieResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetCookieCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(GetCookiesCommand))]
+[JsonSerializable(typeof(CommandMessage<GetCookiesParameters>))]
 [JsonSerializable(typeof(GetCookiesResult))]
-[JsonSerializable(typeof(SetCookieCommand))]
+[JsonSerializable(typeof(CommandMessage<SetCookieParameters>))]
 [JsonSerializable(typeof(SetCookieResult))]
-[JsonSerializable(typeof(DeleteCookiesCommand))]
+[JsonSerializable(typeof(CommandMessage<DeleteCookiesParameters>))]
 [JsonSerializable(typeof(DeleteCookiesResult))]
 
 [JsonSourceGenerationOptions(

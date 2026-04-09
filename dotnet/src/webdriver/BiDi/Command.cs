@@ -18,29 +18,32 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class Command
+internal readonly struct CommandMessage<TParameters> where TParameters : Parameters
 {
-    protected Command(string method)
-    {
-        Method = method;
-    }
+    [JsonPropertyOrder(0)]
+    public long Id { get; init; }
 
     [JsonPropertyOrder(1)]
-    public string Method { get; }
+    public string Method { get; init; }
 
-    [JsonPropertyOrder(0)]
-    public long Id { get; internal set; }
+    [JsonPropertyOrder(2)]
+    public TParameters Params { get; init; }
 }
 
-public abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
+internal sealed class CommandDescriptor<TParameters, TResult>(
+    string method,
+    JsonTypeInfo<CommandMessage<TParameters>> commandTypeInfo,
+    JsonTypeInfo<TResult> resultTypeInfo)
     where TParameters : Parameters
     where TResult : EmptyResult
 {
-    [JsonPropertyOrder(2)]
-    public TParameters Params { get; } = @params;
+    public string Method { get; } = method;
+    public JsonTypeInfo<CommandMessage<TParameters>> CommandTypeInfo { get; } = commandTypeInfo;
+    public JsonTypeInfo<TResult> ResultTypeInfo { get; } = resultTypeInfo;
 }
 
 public record Parameters

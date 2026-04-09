@@ -25,15 +25,18 @@ public sealed class PermissionsModule : Module, IPermissionsModule
 {
     private static readonly PermissionsJsonSerializerContext JsonContext = PermissionsJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<SetPermissionCommandParameters, SetPermissionResult> SetPermissionCommand = new(
+        "permissions.setPermission", JsonContext.CommandMessageSetPermissionCommandParameters, JsonContext.SetPermissionResult);
+
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetPermissionCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(SetPermissionCommand))]
+[JsonSerializable(typeof(CommandMessage<SetPermissionCommandParameters>))]
 [JsonSerializable(typeof(SetPermissionResult))]
 
 [JsonSourceGenerationOptions(

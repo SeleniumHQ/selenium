@@ -114,8 +114,8 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
-        where TCommand : Command
+    public async Task<TResult> ExecuteCommandAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
         where TResult : EmptyResult
     {
         if (_terminalReceiveException is { } terminalException)
@@ -123,7 +123,14 @@ internal sealed class Broker : IAsyncDisposable
             throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
         }
 
-        command.Id = Interlocked.Increment(ref _currentCommandId);
+        var id = Interlocked.Increment(ref _currentCommandId);
+
+        var message = new CommandMessage<TParameters>
+        {
+            Id = id,
+            Method = descriptor.Method,
+            Params = @params
+        };
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -141,7 +148,7 @@ internal sealed class Broker : IAsyncDisposable
             using (BiDiContext.Use(_bidi))
             using (var writer = new Utf8JsonWriter(sendBuffer))
             {
-                JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
+                JsonSerializer.Serialize(writer, message, descriptor.CommandTypeInfo);
             }
         }
         catch
@@ -150,13 +157,13 @@ internal sealed class Broker : IAsyncDisposable
             throw;
         }
 
-        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
+        var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
+        _pendingCommands[id] = commandInfo;
 
         using var ctsRegistration = cts.Token.Register(() =>
         {
             tcs.TrySetCanceled(cts.Token);
-            _pendingCommands.TryRemove(command.Id, out _);
+            _pendingCommands.TryRemove(id, out _);
         });
 
         try
@@ -174,7 +181,7 @@ internal sealed class Broker : IAsyncDisposable
         }
         catch
         {
-            _pendingCommands.TryRemove(command.Id, out _);
+            _pendingCommands.TryRemove(id, out _);
             throw;
         }
         finally

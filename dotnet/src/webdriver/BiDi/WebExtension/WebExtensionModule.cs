@@ -25,24 +25,30 @@ public sealed class WebExtensionModule : Module, IWebExtensionModule
 {
     private static readonly WebExtensionJsonSerializerContext JsonContext = WebExtensionJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<InstallParameters, InstallResult> InstallCommand = new(
+        "webExtension.install", JsonContext.CommandMessageInstallParameters, JsonContext.InstallResult);
+
+    private static readonly CommandDescriptor<UninstallParameters, UninstallResult> UninstallCommand = new(
+        "webExtension.uninstall", JsonContext.CommandMessageUninstallParameters, JsonContext.UninstallResult);
+
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new InstallParameters(extensionData);
 
-        return await ExecuteCommandAsync(new InstallCommand(@params), options, JsonContext.InstallCommand, JsonContext.InstallResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(InstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UninstallParameters(extension);
 
-        return await ExecuteCommandAsync(new UninstallCommand(@params), options, JsonContext.UninstallCommand, JsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(UninstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(InstallCommand))]
+[JsonSerializable(typeof(CommandMessage<InstallParameters>))]
 [JsonSerializable(typeof(InstallResult))]
-[JsonSerializable(typeof(UninstallCommand))]
+[JsonSerializable(typeof(CommandMessage<UninstallParameters>))]
 [JsonSerializable(typeof(UninstallResult))]
 
 [JsonSourceGenerationOptions(

@@ -25,121 +25,140 @@ public sealed class EmulationModule : Module, IEmulationModule
 {
     private static readonly EmulationJsonSerializerContext JsonContext = EmulationJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
+        "emulation.setTimezoneOverride", JsonContext.CommandMessageSetTimezoneOverrideParameters, JsonContext.SetTimezoneOverrideResult);
+
+    private static readonly CommandDescriptor<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
+        "emulation.setUserAgentOverride", JsonContext.CommandMessageSetUserAgentOverrideParameters, JsonContext.SetUserAgentOverrideResult);
+
+    private static readonly CommandDescriptor<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
+        "emulation.setLocaleOverride", JsonContext.CommandMessageSetLocaleOverrideParameters, JsonContext.SetLocaleOverrideResult);
+
+    private static readonly CommandDescriptor<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
+        "emulation.setForcedColorsModeThemeOverride", JsonContext.CommandMessageSetForcedColorsModeThemeOverrideParameters, JsonContext.SetForcedColorsModeThemeOverrideResult);
+
+    private static readonly CommandDescriptor<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
+        "emulation.setScriptingEnabled", JsonContext.CommandMessageSetScriptingEnabledParameters, JsonContext.SetScriptingEnabledResult);
+
+    private static readonly CommandDescriptor<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
+        "emulation.setScreenOrientationOverride", JsonContext.CommandMessageSetScreenOrientationOverrideParameters, JsonContext.SetScreenOrientationOverrideResult);
+
+    private static readonly CommandDescriptor<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
+        "emulation.setScreenSettingsOverride", JsonContext.CommandMessageSetScreenSettingsOverrideParameters, JsonContext.SetScreenSettingsOverrideResult);
+
+    private static readonly CommandDescriptor<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
+        "emulation.setScrollbarTypeOverride", JsonContext.CommandMessageSetScrollbarTypeOverrideParameters, JsonContext.SetScrollbarTypeOverrideResult);
+
+    private static readonly CommandDescriptor<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
+        "emulation.setGeolocationOverride", JsonContext.CommandMessageSetGeolocationOverrideParameters, JsonContext.SetGeolocationOverrideResult);
+
+    private static readonly CommandDescriptor<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
+        "emulation.setTouchOverride", JsonContext.CommandMessageSetTouchOverrideParameters, JsonContext.SetTouchOverrideResult);
+
+    private static readonly CommandDescriptor<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
+        "emulation.setNetworkConditions", JsonContext.CommandMessageSetNetworkConditionsParameters, JsonContext.SetNetworkConditionsResult);
+
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetTimezoneOverrideCommand(@params), options, JsonContext.SetTimezoneOverrideCommand, JsonContext.SetTimezoneOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetTimezoneOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetUserAgentOverrideResult> SetUserAgentOverrideAsync(string? userAgent, SetUserAgentOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetUserAgentOverrideParameters(userAgent, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetUserAgentOverrideCommand(@params), options, JsonContext.SetUserAgentOverrideCommand, JsonContext.SetUserAgentOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetUserAgentOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetLocaleOverrideResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetLocaleOverrideCommand(@params), options, JsonContext.SetLocaleOverrideCommand, JsonContext.SetLocaleOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetForcedColorsModeThemeOverrideParameters(theme, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetForcedColorsModeThemeOverrideCommand(@params), options, JsonContext.SetForcedColorsModeThemeOverrideCommand, JsonContext.SetForcedColorsModeThemeOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetForcedColorsModeThemeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScriptingEnabledResult> SetScriptingEnabledAsync(bool? enabled, SetScriptingEnabledOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScriptingEnabledParameters(enabled, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetScriptingEnabledCommand(@params), options, JsonContext.SetScriptingEnabledCommand, JsonContext.SetScriptingEnabledResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetScriptingEnabledCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenOrientationOverrideResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetScreenOrientationOverrideCommand(@params), options, JsonContext.SetScreenOrientationOverrideCommand, JsonContext.SetScreenOrientationOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetScreenOrientationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenSettingsOverrideParameters(screenArea, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetScreenSettingsOverrideCommand(@params), options, JsonContext.SetScreenSettingsOverrideCommand, JsonContext.SetScreenSettingsOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetScreenSettingsOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScrollbarTypeOverrideParameters(scrollbarType, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetScrollbarTypeOverrideCommand(@params), options, JsonContext.SetScrollbarTypeOverrideCommand, JsonContext.SetScrollbarTypeOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetScrollbarTypeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
-
         var @params = new SetGeolocationOverrideCoordinatesParameters(coordinates, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetGeolocationOverrideCoordinatesParameters(null, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetTouchOverrideResult> SetTouchOverrideAsync(long? maxTouchPoints, SetTouchOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTouchOverrideParameters(maxTouchPoints, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetTouchOverrideCommand(@params), options, JsonContext.SetTouchOverrideCommand, JsonContext.SetTouchOverrideResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetTouchOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetNetworkConditionsResult> SetNetworkConditionsAsync(NetworkConditions? networkConditions, SetNetworkConditionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetNetworkConditionsParameters(networkConditions, options?.Contexts, options?.UserContexts);
-
-        return await ExecuteCommandAsync(new SetNetworkConditionsCommand(@params), options, JsonContext.SetNetworkConditionsCommand, JsonContext.SetNetworkConditionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetNetworkConditionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(SetTimezoneOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetTimezoneOverrideParameters>))]
 [JsonSerializable(typeof(SetTimezoneOverrideResult))]
-[JsonSerializable(typeof(SetUserAgentOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetUserAgentOverrideParameters>))]
 [JsonSerializable(typeof(SetUserAgentOverrideResult))]
-[JsonSerializable(typeof(SetLocaleOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetLocaleOverrideParameters>))]
 [JsonSerializable(typeof(SetLocaleOverrideResult))]
-[JsonSerializable(typeof(SetForcedColorsModeThemeOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetForcedColorsModeThemeOverrideParameters>))]
 [JsonSerializable(typeof(SetForcedColorsModeThemeOverrideResult))]
-[JsonSerializable(typeof(SetScriptingEnabledCommand))]
+[JsonSerializable(typeof(CommandMessage<SetScriptingEnabledParameters>))]
 [JsonSerializable(typeof(SetScriptingEnabledResult))]
-[JsonSerializable(typeof(SetScreenOrientationOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetScreenOrientationOverrideParameters>))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
-[JsonSerializable(typeof(SetScreenSettingsOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetScreenSettingsOverrideParameters>))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
-[JsonSerializable(typeof(SetScrollbarTypeOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetScrollbarTypeOverrideParameters>))]
 [JsonSerializable(typeof(SetScrollbarTypeOverrideResult))]
-[JsonSerializable(typeof(SetGeolocationOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetGeolocationOverrideParameters>))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
-[JsonSerializable(typeof(SetTouchOverrideCommand))]
+[JsonSerializable(typeof(CommandMessage<SetTouchOverrideParameters>))]
 [JsonSerializable(typeof(SetTouchOverrideResult))]
-[JsonSerializable(typeof(SetNetworkConditionsCommand))]
+[JsonSerializable(typeof(CommandMessage<SetNetworkConditionsParameters>))]
 [JsonSerializable(typeof(SetNetworkConditionsResult))]
 
 [JsonSourceGenerationOptions(

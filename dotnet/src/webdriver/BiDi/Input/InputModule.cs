@@ -25,25 +25,34 @@ public sealed class InputModule : Module, IInputModule
 {
     private static readonly InputJsonSerializerContext JsonContext = InputJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
+        "input.performActions", JsonContext.CommandMessagePerformActionsParameters, JsonContext.PerformActionsResult);
+
+    private static readonly CommandDescriptor<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
+        "input.releaseActions", JsonContext.CommandMessageReleaseActionsParameters, JsonContext.ReleaseActionsResult);
+
+    private static readonly CommandDescriptor<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
+        "input.setFiles", JsonContext.CommandMessageSetFilesParameters, JsonContext.SetFilesResult);
+
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await ExecuteCommandAsync(new PerformActionsCommand(@params), options, JsonContext.PerformActionsCommand, JsonContext.PerformActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(PerformActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, JsonContext.ReleaseActionsCommand, JsonContext.ReleaseActionsResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await ExecuteCommandAsync(new SetFilesCommand(@params), options, JsonContext.SetFilesCommand, JsonContext.SetFilesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -62,11 +71,11 @@ public sealed class InputModule : Module, IInputModule
     }
 }
 
-[JsonSerializable(typeof(PerformActionsCommand))]
+[JsonSerializable(typeof(CommandMessage<PerformActionsParameters>))]
 [JsonSerializable(typeof(PerformActionsResult))]
-[JsonSerializable(typeof(ReleaseActionsCommand))]
+[JsonSerializable(typeof(CommandMessage<ReleaseActionsParameters>))]
 [JsonSerializable(typeof(ReleaseActionsResult))]
-[JsonSerializable(typeof(SetFilesCommand))]
+[JsonSerializable(typeof(CommandMessage<SetFilesParameters>))]
 [JsonSerializable(typeof(SetFilesResult))]
 
 [JsonSerializable(typeof(FileDialogInfo))]

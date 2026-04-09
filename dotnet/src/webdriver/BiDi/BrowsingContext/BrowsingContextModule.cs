@@ -25,88 +25,124 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
 {
     private static readonly BrowsingContextJsonSerializerContext JsonContext = BrowsingContextJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<CreateParameters, CreateResult> CreateCommand = new(
+        "browsingContext.create", JsonContext.CommandMessageCreateParameters, JsonContext.CreateResult);
+
+    private static readonly CommandDescriptor<NavigateParameters, NavigateResult> NavigateCommand = new(
+        "browsingContext.navigate", JsonContext.CommandMessageNavigateParameters, JsonContext.NavigateResult);
+
+    private static readonly CommandDescriptor<ActivateParameters, ActivateResult> ActivateCommand = new(
+        "browsingContext.activate", JsonContext.CommandMessageActivateParameters, JsonContext.ActivateResult);
+
+    private static readonly CommandDescriptor<LocateNodesParameters, LocateNodesResult> LocateNodesCommand = new(
+        "browsingContext.locateNodes", JsonContext.CommandMessageLocateNodesParameters, JsonContext.LocateNodesResult);
+
+    private static readonly CommandDescriptor<CaptureScreenshotParameters, CaptureScreenshotResult> CaptureScreenshotCommand = new(
+        "browsingContext.captureScreenshot", JsonContext.CommandMessageCaptureScreenshotParameters, JsonContext.CaptureScreenshotResult);
+
+    private static readonly CommandDescriptor<CloseParameters, CloseResult> CloseCommand = new(
+        "browsingContext.close", JsonContext.CommandMessageCloseParameters, JsonContext.CloseResult);
+
+    private static readonly CommandDescriptor<TraverseHistoryParameters, TraverseHistoryResult> TraverseHistoryCommand = new(
+        "browsingContext.traverseHistory", JsonContext.CommandMessageTraverseHistoryParameters, JsonContext.TraverseHistoryResult);
+
+    private static readonly CommandDescriptor<ReloadParameters, ReloadResult> ReloadCommand = new(
+        "browsingContext.reload", JsonContext.CommandMessageReloadParameters, JsonContext.ReloadResult);
+
+    private static readonly CommandDescriptor<SetViewportParameters, SetViewportResult> SetViewportCommand = new(
+        "browsingContext.setViewport", JsonContext.CommandMessageSetViewportParameters, JsonContext.SetViewportResult);
+
+    private static readonly CommandDescriptor<GetTreeParameters, GetTreeResult> GetTreeCommand = new(
+        "browsingContext.getTree", JsonContext.CommandMessageGetTreeParameters, JsonContext.GetTreeResult);
+
+    private static readonly CommandDescriptor<PrintParameters, PrintResult> PrintCommand = new(
+        "browsingContext.print", JsonContext.CommandMessagePrintParameters, JsonContext.PrintResult);
+
+    private static readonly CommandDescriptor<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
+        "browsingContext.handleUserPrompt", JsonContext.CommandMessageHandleUserPromptParameters, JsonContext.HandleUserPromptResult);
+
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        return await ExecuteCommandAsync(new CreateCommand(@params), options, JsonContext.CreateCommand, JsonContext.CreateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(CreateCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NavigateParameters(context, url, options?.Wait);
 
-        return await ExecuteCommandAsync(new NavigateCommand(@params), options, JsonContext.NavigateCommand, JsonContext.NavigateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(NavigateCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ActivateResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ActivateParameters(context);
 
-        return await ExecuteCommandAsync(new ActivateCommand(@params), options, JsonContext.ActivateCommand, JsonContext.ActivateResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(ActivateCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new LocateNodesParameters(context, locator, options?.MaxNodeCount, options?.SerializationOptions, options?.StartNodes);
 
-        return await ExecuteCommandAsync(new LocateNodesCommand(@params), options, JsonContext.LocateNodesCommand, JsonContext.LocateNodesResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(LocateNodesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
 
-        return await ExecuteCommandAsync(new CaptureScreenshotCommand(@params), options, JsonContext.CaptureScreenshotCommand, JsonContext.CaptureScreenshotResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(CaptureScreenshotCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CloseResult> CloseAsync(BrowsingContext context, CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await ExecuteCommandAsync(new CloseCommand(@params), options, JsonContext.CloseCommand, JsonContext.CloseResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(CloseCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new TraverseHistoryParameters(context, delta);
 
-        return await ExecuteCommandAsync(new TraverseHistoryCommand(@params), options, JsonContext.TraverseHistoryCommand, JsonContext.TraverseHistoryResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(TraverseHistoryCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReloadResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReloadParameters(context, options?.IgnoreCache, options?.Wait);
 
-        return await ExecuteCommandAsync(new ReloadCommand(@params), options, JsonContext.ReloadCommand, JsonContext.ReloadResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(ReloadCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetViewportParameters(options?.Context, options?.Viewport, options?.DevicePixelRatio, options?.UserContexts);
 
-        return await ExecuteCommandAsync(new SetViewportCommand(@params), options, JsonContext.SetViewportCommand, JsonContext.SetViewportResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(SetViewportCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        return await ExecuteCommandAsync(new GetTreeCommand(@params), options, JsonContext.GetTreeCommand, JsonContext.GetTreeResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(GetTreeCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PrintParameters(context, options?.Background, options?.Margin, options?.Orientation, options?.Page, options?.PageRanges, options?.Scale, options?.ShrinkToFit);
 
-        return await ExecuteCommandAsync(new PrintCommand(@params), options, JsonContext.PrintCommand, JsonContext.PrintResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(PrintCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<HandleUserPromptResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new HandleUserPromptParameters(context, options?.Accept, options?.UserText);
 
-        return await ExecuteCommandAsync(new HandleUserPromptCommand(@params), options, JsonContext.HandleUserPromptCommand, JsonContext.HandleUserPromptResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCommandAsync(HandleUserPromptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Func<NavigationStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
@@ -283,29 +319,29 @@ public sealed class BrowsingContextModule : Module, IBrowsingContextModule
     private static UserPromptClosedEventArgs CreateUserPromptClosedEventArgs(IBiDi bidi, UserPromptClosedParameters p) => new(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText);
 }
 
-[JsonSerializable(typeof(ActivateCommand))]
+[JsonSerializable(typeof(CommandMessage<ActivateParameters>))]
 [JsonSerializable(typeof(ActivateResult))]
-[JsonSerializable(typeof(CaptureScreenshotCommand))]
+[JsonSerializable(typeof(CommandMessage<CaptureScreenshotParameters>))]
 [JsonSerializable(typeof(CaptureScreenshotResult))]
-[JsonSerializable(typeof(CloseCommand))]
+[JsonSerializable(typeof(CommandMessage<CloseParameters>))]
 [JsonSerializable(typeof(CloseResult))]
-[JsonSerializable(typeof(CreateCommand))]
+[JsonSerializable(typeof(CommandMessage<CreateParameters>))]
 [JsonSerializable(typeof(CreateResult))]
-[JsonSerializable(typeof(GetTreeCommand))]
+[JsonSerializable(typeof(CommandMessage<GetTreeParameters>))]
 [JsonSerializable(typeof(GetTreeResult))]
-[JsonSerializable(typeof(HandleUserPromptCommand))]
+[JsonSerializable(typeof(CommandMessage<HandleUserPromptParameters>))]
 [JsonSerializable(typeof(HandleUserPromptResult))]
-[JsonSerializable(typeof(LocateNodesCommand))]
+[JsonSerializable(typeof(CommandMessage<LocateNodesParameters>))]
 [JsonSerializable(typeof(LocateNodesResult))]
-[JsonSerializable(typeof(NavigateCommand))]
+[JsonSerializable(typeof(CommandMessage<NavigateParameters>))]
 [JsonSerializable(typeof(NavigateResult))]
-[JsonSerializable(typeof(PrintCommand))]
+[JsonSerializable(typeof(CommandMessage<PrintParameters>))]
 [JsonSerializable(typeof(PrintResult))]
-[JsonSerializable(typeof(ReloadCommand))]
+[JsonSerializable(typeof(CommandMessage<ReloadParameters>))]
 [JsonSerializable(typeof(ReloadResult))]
-[JsonSerializable(typeof(SetViewportCommand))]
+[JsonSerializable(typeof(CommandMessage<SetViewportParameters>))]
 [JsonSerializable(typeof(SetViewportResult))]
-[JsonSerializable(typeof(TraverseHistoryCommand))]
+[JsonSerializable(typeof(CommandMessage<TraverseHistoryParameters>))]
 [JsonSerializable(typeof(TraverseHistoryResult))]
 
 [JsonSerializable(typeof(DownloadWillBeginParams))]
