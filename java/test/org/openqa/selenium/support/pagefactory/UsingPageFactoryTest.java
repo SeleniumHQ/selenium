@@ -81,7 +81,7 @@ class UsingPageFactoryTest extends JupiterTestBase {
     assertThat(seen).isEqualTo(expected);
   }
 
-  class PublicPage {
+  static class PublicPage {
     public WebElement element;
   }
 

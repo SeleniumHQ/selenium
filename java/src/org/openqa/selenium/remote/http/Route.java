@@ -137,7 +137,7 @@ public abstract class Route implements HttpHandler, Routable {
     return new CombinedRoute(StreamSupport.stream(routes.spliterator(), false));
   }
 
-  public static class TemplatizedRouteConfig {
+  public static final class TemplatizedRouteConfig {
 
     private final Predicate<HttpRequest> predicate;
     private final UrlTemplate template;
@@ -158,7 +158,7 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  private static class TemplatizedRoute extends Route {
+  private static final class TemplatizedRoute extends Route {
 
     private final UrlTemplate template;
     private final Predicate<HttpRequest> predicate;
@@ -301,13 +301,10 @@ public abstract class Route implements HttpHandler, Routable {
               .collect(Collectors.toUnmodifiableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
-      request
-          .getQueryParameterNames()
-          .forEach(
-              name ->
-                  request
-                      .getQueryParameters(name)
-                      .forEach(value -> toForward.addQueryParameter(name, value)));
+      request.forEachQueryParameter(
+          (name, value) -> {
+            toForward.addQueryParameter(name, value);
+          });
 
       toForward.setContent(request.getContent());
 
@@ -315,7 +312,7 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  private static class CombinedRoute extends Route {
+  private static final class CombinedRoute extends Route {
 
     private final List<Routable> allRoutes;
 
@@ -362,7 +359,7 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  public static class PredicatedConfig {
+  public static final class PredicatedConfig {
     private final Predicate<HttpRequest> predicate;
 
     private PredicatedConfig(Predicate<HttpRequest> predicate) {
@@ -374,7 +371,7 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  private static class PredicatedRoute extends Route {
+  private static final class PredicatedRoute extends Route {
 
     private final Predicate<HttpRequest> predicate;
     private final Supplier<HttpHandler> supplier;
@@ -391,10 +388,7 @@ public abstract class Route implements HttpHandler, Routable {
 
     @Override
     protected HttpResponse handle(HttpRequest req) {
-      HttpHandler handler = supplier.get();
-      if (handler == null) {
-        throw new IllegalStateException("No handler available.");
-      }
+      HttpHandler handler = Require.nonNull("Handler", supplier.get());
       return handler.execute(req);
     }
   }

@@ -24,7 +24,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -41,7 +40,6 @@ import org.openqa.selenium.print.PrintOptions;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@NullMarked
 public interface DriverCommand {
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";

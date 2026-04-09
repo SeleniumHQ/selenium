@@ -61,7 +61,7 @@ import org.openqa.selenium.os.ExternalProcess;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is used
  * to stop the server.
  */
-public class DriverService implements Closeable {
+public abstract class DriverService implements Closeable {
 
   public static final String LOG_NULL = "/dev/null";
   public static final String LOG_STDERR = "/dev/stderr";
@@ -84,7 +84,7 @@ public class DriverService implements Closeable {
   private final URL url;
 
   /** Controls access to {@link #process}. */
-  private String executable;
+  private @Nullable String executable;
 
   private final ReentrantLock lock = new ReentrantLock();
   private final Duration timeout;
@@ -95,7 +95,7 @@ public class DriverService implements Closeable {
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
-  protected ExternalProcess process = null;
+  @Nullable protected ExternalProcess process = null;
 
   private OutputStream outputStream = System.err;
 
@@ -110,7 +110,7 @@ public class DriverService implements Closeable {
   protected DriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -124,6 +124,7 @@ public class DriverService implements Closeable {
     this.url = getUrl(port);
   }
 
+  @Nullable
   public String getExecutable() {
     return executable;
   }
@@ -152,13 +153,9 @@ public class DriverService implements Closeable {
     return null;
   }
 
-  public @Nullable String getDriverProperty() {
-    return null;
-  }
+  public abstract String getDriverProperty();
 
-  public String getDriverEnvironmentVariable() {
-    return null;
-  }
+  protected abstract String getDriverEnvironmentVariable();
 
   protected @Nullable File getDriverExecutable() {
     return null;
@@ -222,7 +219,7 @@ public class DriverService implements Closeable {
               },
               executorService);
 
-      CompletableFuture<StartOrDie> processFinished =
+      CompletableFuture<@Nullable StartOrDie> processFinished =
           CompletableFuture.supplyAsync(
               () -> {
                 try {
@@ -368,7 +365,7 @@ public class DriverService implements Closeable {
     public File exe = null;
     private Map<String, String> environment = emptyMap();
     private File logFile;
-    private Duration timeout;
+    private Duration timeout = DEFAULT_TIMEOUT;
     private OutputStream logOutputStream;
 
     /**

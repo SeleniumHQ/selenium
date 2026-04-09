@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -166,6 +167,7 @@ class NativeHttpClientMethodsTest {
    * responses with predictable data - UnsupportedOperationException for methods not relevant to
    * native API testing
    */
+  @NullMarked
   private static class TestHttpClient implements HttpClient {
     private final boolean shouldFail;
 

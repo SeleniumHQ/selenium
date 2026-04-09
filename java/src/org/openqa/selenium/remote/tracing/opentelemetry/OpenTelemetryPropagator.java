@@ -24,6 +24,7 @@ import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -53,22 +54,23 @@ class OpenTelemetryPropagator implements Propagator {
 
   @Override
   public <C> OpenTelemetryContext extractContext(
-      TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
+      TraceContext existing, C carrier, BiFunction<@Nullable C, String, @Nullable String> getter) {
     Require.nonNull("Trace context to extract from", existing);
     Require.nonNull("Carrier", carrier);
     Require.nonNull("Getter", getter);
     Require.argument("Trace context", existing).instanceOf(OpenTelemetryContext.class);
 
     TextMapGetter<C> propagatorGetter =
-        new TextMapGetter<C>() {
+        new TextMapGetter<>() {
 
           @Override
           public Iterable<String> keys(C carrier) {
             return null;
           }
 
+          @Nullable
           @Override
-          public String get(C carrier, String key) {
+          public String get(@Nullable C carrier, String key) {
             return getter.apply(carrier, key);
           }
         };

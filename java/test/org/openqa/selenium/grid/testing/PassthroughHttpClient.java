@@ -56,8 +56,7 @@ public class PassthroughHttpClient implements HttpClient {
 
   @Override
   public <T> java.net.http.HttpResponse<T> sendNative(
-      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
-      throws java.io.IOException, InterruptedException {
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
     throw new UnsupportedOperationException("sendNative");
   }
 

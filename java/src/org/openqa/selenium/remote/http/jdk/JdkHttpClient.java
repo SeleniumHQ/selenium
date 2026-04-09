@@ -54,6 +54,7 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLContext;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -111,18 +112,7 @@ public class JdkHttpClient implements HttpClient {
     Credentials credentials = config.credentials();
     String info = config.baseUri().getUserInfo();
     if (info != null && !info.trim().isEmpty()) {
-      String[] parts = info.split(":", 2);
-      String username = parts[0];
-      String password = parts.length > 1 ? parts[1] : null;
-
-      Authenticator authenticator =
-          new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-              return new PasswordAuthentication(username, password.toCharArray());
-            }
-          };
-      builder = builder.authenticator(authenticator);
+      builder = builder.authenticator(new PasswordAuthenticator(info));
     } else if (credentials != null) {
       if (!(credentials instanceof UsernameAndPassword)) {
         throw new IllegalArgumentException(
@@ -187,6 +177,7 @@ public class JdkHttpClient implements HttpClient {
                   final StringBuilder builder = new StringBuilder();
                   final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onText(
                       java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
@@ -206,6 +197,7 @@ public class JdkHttpClient implements HttpClient {
                     return null;
                   }
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onBinary(
                       java.net.http.WebSocket webSocket, ByteBuffer data, boolean last) {
@@ -231,6 +223,7 @@ public class JdkHttpClient implements HttpClient {
                     return null;
                   }
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onClose(
                       java.net.http.WebSocket webSocket, int statusCode, String reason) {
@@ -629,9 +622,6 @@ public class JdkHttpClient implements HttpClient {
 
     @Override
     public List<Proxy> select(URI uri) {
-      if (proxy == null) {
-        return List.of();
-      }
       if (uri.getScheme().toLowerCase(Locale.ENGLISH).startsWith("http")) {
         return List.of(proxy);
       }

@@ -15,6 +15,7 @@ java_test_suite(
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -38,6 +39,7 @@ java_test_suite(
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 

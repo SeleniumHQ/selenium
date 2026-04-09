@@ -14,5 +14,6 @@ java_test_suite(
         artifact("it.ozimov:embedded-redis"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

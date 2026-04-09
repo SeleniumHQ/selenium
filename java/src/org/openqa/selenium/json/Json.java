@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -116,7 +117,7 @@ public class Json {
    * @param toConvert the object to be serialized
    * @return JSON string representing the specified object
    */
-  public String toJson(Object toConvert) {
+  public String toJson(@Nullable Object toConvert) {
     return toJson(toConvert, JsonOutput.MAX_DEPTH);
   }
 
@@ -128,7 +129,7 @@ public class Json {
    * @return JSON string representing the specified object
    * @throws JsonException if an I/O exception is encountered
    */
-  public String toJson(Object toConvert, int maxDepth) {
+  public String toJson(@Nullable Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
         JsonOutput jsonOutput = newOutput(writer)) {
       jsonOutput.write(toConvert, maxDepth);

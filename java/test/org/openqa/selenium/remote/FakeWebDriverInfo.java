@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -28,6 +29,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 
 @AutoService(WebDriverInfo.class)
+@NullMarked
 public class FakeWebDriverInfo implements WebDriverInfo {
 
   static final String FAKE_BROWSER = "selenium-test";

@@ -416,7 +416,7 @@ public enum Platform {
    * @param osName the operating system name to determine the platform of
    * @return the most likely platform based on given operating system name
    */
-  public static Platform extractFromSysProperty(String osName) {
+  public static Platform extractFromSysProperty(@Nullable String osName) {
     return extractFromSysProperty(osName, System.getProperty("os.version", ""));
   }
 
@@ -429,7 +429,8 @@ public enum Platform {
    * @param osVersion the operating system version to determine the platform of
    * @return the most likely platform based on given operating system name and version
    */
-  public static Platform extractFromSysProperty(String osName, String osVersion) {
+  public static Platform extractFromSysProperty(
+      @Nullable String osName, @Nullable String osVersion) {
     osName = requireNonNullElse(osName, "");
     osVersion = requireNonNullElse(osVersion, "");
     osName = osName.toLowerCase(Locale.ENGLISH);
@@ -516,6 +517,7 @@ public enum Platform {
    * @return true if platforms are approximately similar, false otherwise
    */
   public boolean is(Platform compareWith) {
+    Platform family = this.family();
     return
     // Any platform is itself
     this == compareWith
@@ -524,7 +526,7 @@ public enum Platform {
         compareWith == ANY
         ||
         // And any Platform which is not a platform type belongs to the same family
-        (this.family() != null && this.family().is(compareWith));
+        (family != null && family.is(compareWith));
   }
 
   /**

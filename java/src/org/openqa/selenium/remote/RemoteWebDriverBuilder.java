@@ -97,9 +97,9 @@ public class RemoteWebDriverBuilder {
   private final Map<String, Object> metadata = new TreeMap<>();
   private HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
-  private URI remoteHost = null;
-  private DriverService driverService;
-  private Credentials credentials = null;
+  private @Nullable URI remoteHost = null;
+  private @Nullable DriverService driverService;
+  private @Nullable Credentials credentials = null;
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
@@ -308,8 +308,7 @@ public class RemoteWebDriverBuilder {
               @Override
               public <T> java.net.http.HttpResponse<T> sendNative(
                   java.net.http.HttpRequest request,
-                  java.net.http.HttpResponse.BodyHandler<T> handler)
-                  throws java.io.IOException, InterruptedException {
+                  java.net.http.HttpResponse.BodyHandler<T> handler) {
                 throw new UnsupportedOperationException("sendNative is not supported");
               }
             };
@@ -457,6 +456,7 @@ public class RemoteWebDriverBuilder {
     return clientConfig.baseUri();
   }
 
+  @Nullable
   private DriverService startDriverServiceIfNecessary() {
     if (driverService == null) {
       return null;

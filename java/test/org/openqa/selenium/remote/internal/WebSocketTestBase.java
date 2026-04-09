@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -100,6 +101,7 @@ public abstract class WebSocketTestBase {
     WebSocket.Listener listener =
         new WebSocket.Listener() {
           @Override
+          @NullMarked
           public void onText(CharSequence data) {
             message.set(data.toString());
             latch.countDown();
@@ -122,6 +124,7 @@ public abstract class WebSocketTestBase {
     WebSocket.Listener listener =
         new WebSocket.Listener() {
           @Override
+          @NullMarked
           public void onBinary(byte[] data) {
             message.set(data);
             latch.countDown();

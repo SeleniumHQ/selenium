@@ -84,7 +84,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.WebElementToJsonConverter;
@@ -95,7 +94,6 @@ import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
-@NullMarked
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();

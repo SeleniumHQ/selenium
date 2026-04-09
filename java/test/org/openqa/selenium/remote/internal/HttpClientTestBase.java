@@ -30,7 +30,6 @@ import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -335,11 +334,7 @@ public abstract class HttpClientTestBase {
     return executeWithinServer(
         request,
         req -> {
-          Map<String, Iterable<String>> params = new TreeMap<>();
-          req.getQueryParameterNames()
-              .forEach(name -> params.put(name, req.getQueryParameters(name)));
-
-          return new HttpResponse().setContent(Contents.asJson(params));
+          return new HttpResponse().setContent(Contents.asJson(req.getQueryParameters()));
         });
   }
 
