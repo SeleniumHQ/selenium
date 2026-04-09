@@ -585,6 +585,38 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             params["userContexts"] = user_contexts
         cmd = command_builder("emulation.setNetworkConditions", params)
         return self._conn.execute(cmd)''',
+            '''    def set_screen_settings_override(
+        self,
+        width: int | None = None,
+        height: int | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
+        """Execute emulation.setScreenSettingsOverride.
+
+        Sets or clears the screen settings override for specified browsing or user
+        contexts.
+
+        Args:
+            width: The screen width in pixels, or ``None`` to clear the override.
+            height: The screen height in pixels, or ``None`` to clear the override.
+            contexts: List of browsing context IDs to target.
+            user_contexts: List of user context IDs to target.
+        """
+        screen_area = None
+        if width is not None or height is not None:
+            screen_area = {}
+            if width is not None:
+                screen_area["width"] = width
+            if height is not None:
+                screen_area["height"] = height
+        params: dict[str, Any] = {"screenArea": screen_area}
+        if contexts is not None:
+            params["contexts"] = contexts
+        if user_contexts is not None:
+            params["userContexts"] = user_contexts
+        cmd = command_builder("emulation.setScreenSettingsOverride", params)
+        return self._conn.execute(cmd)''',
         ],
     },
     "script": {
