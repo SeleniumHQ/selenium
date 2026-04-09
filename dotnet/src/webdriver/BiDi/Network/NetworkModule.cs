@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed partial class NetworkModule : Module, INetworkModule
+internal sealed partial class NetworkModule : Module, INetworkModule
 {
     private static readonly NetworkJsonSerializerContext JsonContext = NetworkJsonSerializerContext.Default;
 

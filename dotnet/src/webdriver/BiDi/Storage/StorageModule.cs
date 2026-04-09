@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule : Module, IStorageModule
+internal sealed class StorageModule : Module, IStorageModule
 {
     private static readonly StorageJsonSerializerContext JsonContext = StorageJsonSerializerContext.Default;
 

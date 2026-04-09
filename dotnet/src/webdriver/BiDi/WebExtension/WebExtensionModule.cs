@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule : Module, IWebExtensionModule
+internal sealed class WebExtensionModule : Module, IWebExtensionModule
 {
     private static readonly WebExtensionJsonSerializerContext JsonContext = WebExtensionJsonSerializerContext.Default;
 

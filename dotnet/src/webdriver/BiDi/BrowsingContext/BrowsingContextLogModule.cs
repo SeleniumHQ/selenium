@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Log;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
+internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
     public Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {

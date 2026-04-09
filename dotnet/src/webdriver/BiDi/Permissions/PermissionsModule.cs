@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-public sealed class PermissionsModule : Module, IPermissionsModule
+internal sealed class PermissionsModule : Module, IPermissionsModule
 {
     private static readonly PermissionsJsonSerializerContext JsonContext = PermissionsJsonSerializerContext.Default;
 

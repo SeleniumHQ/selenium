@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Input;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
+internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
 {
     public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {

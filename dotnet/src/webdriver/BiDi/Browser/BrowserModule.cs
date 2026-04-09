@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class BrowserModule : Module, IBrowserModule
+internal sealed class BrowserModule : Module, IBrowserModule
 {
     private static readonly BrowserJsonSerializerContext JsonContext = BrowserJsonSerializerContext.Default;
 

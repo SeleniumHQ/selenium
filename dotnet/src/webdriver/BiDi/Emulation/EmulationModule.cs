@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule : Module, IEmulationModule
+internal sealed class EmulationModule : Module, IEmulationModule
 {
     private static readonly EmulationJsonSerializerContext JsonContext = EmulationJsonSerializerContext.Default;
 

@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public sealed class LogModule : Module, ILogModule
+internal sealed class LogModule : Module, ILogModule
 {
     private static readonly LogJsonSerializerContext JsonContext = LogJsonSerializerContext.Default;
 

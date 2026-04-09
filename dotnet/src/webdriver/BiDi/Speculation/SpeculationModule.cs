@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
-public sealed class SpeculationModule : Module, ISpeculationModule
+internal sealed class SpeculationModule : Module, ISpeculationModule
 {
     private static readonly SpeculationJsonSerializerContext JsonContext = SpeculationJsonSerializerContext.Default;
 

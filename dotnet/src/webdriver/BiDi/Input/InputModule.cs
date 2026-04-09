@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule : Module, IInputModule
+internal sealed class InputModule : Module, IInputModule
 {
     private static readonly InputJsonSerializerContext JsonContext = InputJsonSerializerContext.Default;
 

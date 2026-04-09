@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class ScriptModule : Module, IScriptModule
+internal sealed class ScriptModule : Module, IScriptModule
 {
     private static readonly ScriptJsonSerializerContext JsonContext = ScriptJsonSerializerContext.Default;
 
