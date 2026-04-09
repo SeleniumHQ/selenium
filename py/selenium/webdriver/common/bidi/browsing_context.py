@@ -10,9 +10,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
 from selenium.webdriver.common.bidi.common import command_builder
-
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager
 
 class ReadinessState:
     """ReadinessState."""
@@ -366,13 +365,11 @@ class DownloadWillBeginParams:
 
     suggested_filename: str | None = None
 
-
 @dataclass
 class DownloadCanceledParams:
     """DownloadCanceledParams."""
 
     status: Any | None = None
-
 
 @dataclass
 class DownloadParams:
@@ -384,7 +381,6 @@ class DownloadParams:
     timestamp: Any | None = None
     url: str | None = None
     filepath: str | None = None
-
 
 @dataclass
 class DownloadEndParams:
@@ -405,7 +401,6 @@ class DownloadEndParams:
         )
         return cls(download_params=dp)
 
-
 # BiDi Event Name to Parameter Type Mapping
 EVENT_NAME_MAPPING = {
     "context_created": "browsingContext.contextCreated",
@@ -423,7 +418,6 @@ EVENT_NAME_MAPPING = {
     "user_prompt_closed": "browsingContext.userPromptClosed",
     "user_prompt_opened": "browsingContext.userPromptOpened",
 }
-
 
 def _deserialize_info_list(items: list) -> list | None:
     """Recursively deserialize a list of dicts to Info objects.
@@ -457,11 +451,12 @@ def _deserialize_info_list(items: list) -> list | None:
     return result if result else None
 
 
+
+
 class BrowsingContext:
     """WebDriver BiDi browsingContext module."""
 
     EVENT_CONFIGS: dict[str, EventConfig] = {}
-
     def __init__(self, conn) -> None:
         self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
@@ -562,7 +557,7 @@ class BrowsingContext:
                     original_opener=item.get("originalOpener"),
                     url=item.get("url"),
                     user_context=item.get("userContext"),
-                    parent=item.get("parent"),
+                    parent=item.get("parent")
                 )
                 for item in items
                 if isinstance(item, dict)
@@ -694,25 +689,6 @@ class BrowsingContext:
         result = self._conn.execute(cmd)
         return result
 
-    def set_viewport(
-        self,
-        context: str | None = None,
-        viewport: Any | None = None,
-        user_contexts: Any | None = None,
-        device_pixel_ratio: Any | None = None,
-    ):
-        """Execute browsingContext.setViewport."""
-        params = {
-            "context": context,
-            "viewport": viewport,
-            "userContexts": user_contexts,
-            "devicePixelRatio": device_pixel_ratio,
-        }
-        params = {k: v for k, v in params.items() if v is not None}
-        cmd = command_builder("browsingContext.setViewport", params)
-        result = self._conn.execute(cmd)
-        return result
-
     def traverse_history(self, context: Any | None = None, delta: Any | None = None):
         """Execute browsingContext.traverseHistory."""
         if context is None:
@@ -726,6 +702,32 @@ class BrowsingContext:
         }
         params = {k: v for k, v in params.items() if v is not None}
         cmd = command_builder("browsingContext.traverseHistory", params)
+        result = self._conn.execute(cmd)
+        return result
+
+    def set_viewport(
+        self,
+        context: str | None = None,
+        viewport: Any = ...,
+        user_contexts: Any | None = None,
+        device_pixel_ratio: Any = ...,
+    ):
+        """Execute browsingContext.setViewport.
+
+        Uses sentinel defaults so explicit None is serialized for viewport/devicePixelRatio,
+        while omitted arguments are not sent.
+        """
+        params = {}
+        if context is not None:
+            params["context"] = context
+        if user_contexts is not None:
+            params["userContexts"] = user_contexts
+        if viewport is not ...:
+            params["viewport"] = viewport
+        if device_pixel_ratio is not ...:
+            params["devicePixelRatio"] = device_pixel_ratio
+
+        cmd = command_builder("browsingContext.setViewport", params)
         result = self._conn.execute(cmd)
         return result
 
@@ -755,49 +757,48 @@ class BrowsingContext:
         """Clear all event handlers."""
         return self._event_manager.clear_event_handlers()
 
-
 # Event Info Type Aliases
 # Event: browsingContext.contextCreated
-ContextCreated = globals().get("Info", dict)  # Fallback to dict if type not defined
+ContextCreated = globals().get('Info', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.contextDestroyed
-ContextDestroyed = globals().get("Info", dict)  # Fallback to dict if type not defined
+ContextDestroyed = globals().get('Info', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.navigationStarted
-NavigationStarted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+NavigationStarted = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.fragmentNavigated
-FragmentNavigated = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+FragmentNavigated = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.historyUpdated
-HistoryUpdated = globals().get("HistoryUpdatedParameters", dict)  # Fallback to dict if type not defined
+HistoryUpdated = globals().get('HistoryUpdatedParameters', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.domContentLoaded
-DomContentLoaded = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+DomContentLoaded = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.load
-Load = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+Load = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.downloadWillBegin
-DownloadWillBegin = globals().get("DownloadWillBeginParams", dict)  # Fallback to dict if type not defined
+DownloadWillBegin = globals().get('DownloadWillBeginParams', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.downloadEnd
-DownloadEnd = globals().get("DownloadEndParams", dict)  # Fallback to dict if type not defined
+DownloadEnd = globals().get('DownloadEndParams', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.navigationAborted
-NavigationAborted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+NavigationAborted = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.navigationCommitted
-NavigationCommitted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+NavigationCommitted = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.navigationFailed
-NavigationFailed = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+NavigationFailed = globals().get('BaseNavigationInfo', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.userPromptClosed
-UserPromptClosed = globals().get("UserPromptClosedParameters", dict)  # Fallback to dict if type not defined
+UserPromptClosed = globals().get('UserPromptClosedParameters', dict)  # Fallback to dict if type not defined
 
 # Event: browsingContext.userPromptOpened
-UserPromptOpened = globals().get("UserPromptOpenedParameters", dict)  # Fallback to dict if type not defined
+UserPromptOpened = globals().get('UserPromptOpenedParameters', dict)  # Fallback to dict if type not defined
 
 
 # Populate EVENT_CONFIGS with event configuration mappings
