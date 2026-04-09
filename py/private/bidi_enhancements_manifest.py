@@ -184,6 +184,7 @@ class SetClientWindowStateParameters:
     },
     "browsingContext": {
         # Method enhancements
+        "exclude_methods": ["set_viewport"],
         "create": {
             "extract_field": "context",
         },
@@ -223,6 +224,33 @@ class SetClientWindowStateParameters:
                 "devicePixelRatio": "float",
             },
         },
+        "extra_methods": [
+            '''    def set_viewport(
+        self,
+        context: str | None = None,
+        viewport: Any = ...,
+        user_contexts: Any | None = None,
+        device_pixel_ratio: Any = ...,
+    ):
+        """Execute browsingContext.setViewport.
+
+        Uses sentinel defaults so explicit None is serialized for viewport/devicePixelRatio,
+        while omitted arguments are not sent.
+        """
+        params = {}
+        if context is not None:
+            params["context"] = context
+        if user_contexts is not None:
+            params["userContexts"] = user_contexts
+        if viewport is not ...:
+            params["viewport"] = viewport
+        if device_pixel_ratio is not ...:
+            params["devicePixelRatio"] = device_pixel_ratio
+
+        cmd = command_builder("browsingContext.setViewport", params)
+        result = self._conn.execute(cmd)
+        return result''',
+        ],
         # Non-CDDL download event dataclasses (Chromium-specific)
         "extra_dataclasses": [
             '''@dataclass
