@@ -25,13 +25,13 @@ namespace OpenQA.Selenium.BiDi.Storage;
 internal sealed class StorageModule : Module, IStorageModule
 {
     private static readonly CommandDescriptor<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
-        "storage.getCookies", Default.CommandMessageGetCookiesParameters, Default.GetCookiesResult);
+        "storage.getCookies", Default.GetCookiesParameters, Default.GetCookiesResult);
 
     private static readonly CommandDescriptor<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
-        "storage.deleteCookies", Default.CommandMessageDeleteCookiesParameters, Default.DeleteCookiesResult);
+        "storage.deleteCookies", Default.DeleteCookiesParameters, Default.DeleteCookiesResult);
 
     private static readonly CommandDescriptor<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
-        "storage.setCookie", Default.CommandMessageSetCookieParameters, Default.SetCookieResult);
+        "storage.setCookie", Default.SetCookieParameters, Default.SetCookieResult);
 
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -55,11 +55,11 @@ internal sealed class StorageModule : Module, IStorageModule
     }
 }
 
-[JsonSerializable(typeof(CommandMessage<GetCookiesParameters>))]
+[JsonSerializable(typeof(GetCookiesParameters))]
 [JsonSerializable(typeof(GetCookiesResult))]
-[JsonSerializable(typeof(CommandMessage<SetCookieParameters>))]
+[JsonSerializable(typeof(SetCookieParameters))]
 [JsonSerializable(typeof(SetCookieResult))]
-[JsonSerializable(typeof(CommandMessage<DeleteCookiesParameters>))]
+[JsonSerializable(typeof(DeleteCookiesParameters))]
 [JsonSerializable(typeof(DeleteCookiesResult))]
 
 [JsonSourceGenerationOptions(

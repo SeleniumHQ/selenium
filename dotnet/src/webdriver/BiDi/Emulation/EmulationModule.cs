@@ -25,37 +25,37 @@ namespace OpenQA.Selenium.BiDi.Emulation;
 internal sealed class EmulationModule : Module, IEmulationModule
 {
     private static readonly CommandDescriptor<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
-        "emulation.setTimezoneOverride", Default.CommandMessageSetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult);
+        "emulation.setTimezoneOverride", Default.SetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult);
 
     private static readonly CommandDescriptor<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
-        "emulation.setUserAgentOverride", Default.CommandMessageSetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult);
+        "emulation.setUserAgentOverride", Default.SetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult);
 
     private static readonly CommandDescriptor<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
-        "emulation.setLocaleOverride", Default.CommandMessageSetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
+        "emulation.setLocaleOverride", Default.SetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
 
     private static readonly CommandDescriptor<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
-        "emulation.setForcedColorsModeThemeOverride", Default.CommandMessageSetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
+        "emulation.setForcedColorsModeThemeOverride", Default.SetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
 
     private static readonly CommandDescriptor<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
-        "emulation.setScriptingEnabled", Default.CommandMessageSetScriptingEnabledParameters, Default.SetScriptingEnabledResult);
+        "emulation.setScriptingEnabled", Default.SetScriptingEnabledParameters, Default.SetScriptingEnabledResult);
 
     private static readonly CommandDescriptor<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
-        "emulation.setScreenOrientationOverride", Default.CommandMessageSetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult);
+        "emulation.setScreenOrientationOverride", Default.SetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult);
 
     private static readonly CommandDescriptor<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
-        "emulation.setScreenSettingsOverride", Default.CommandMessageSetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult);
+        "emulation.setScreenSettingsOverride", Default.SetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult);
 
     private static readonly CommandDescriptor<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
-        "emulation.setScrollbarTypeOverride", Default.CommandMessageSetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult);
+        "emulation.setScrollbarTypeOverride", Default.SetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult);
 
     private static readonly CommandDescriptor<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
-        "emulation.setGeolocationOverride", Default.CommandMessageSetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult);
+        "emulation.setGeolocationOverride", Default.SetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult);
 
     private static readonly CommandDescriptor<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
-        "emulation.setTouchOverride", Default.CommandMessageSetTouchOverrideParameters, Default.SetTouchOverrideResult);
+        "emulation.setTouchOverride", Default.SetTouchOverrideParameters, Default.SetTouchOverrideResult);
 
     private static readonly CommandDescriptor<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
-        "emulation.setNetworkConditions", Default.CommandMessageSetNetworkConditionsParameters, Default.SetNetworkConditionsResult);
+        "emulation.setNetworkConditions", Default.SetNetworkConditionsParameters, Default.SetNetworkConditionsResult);
 
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -137,27 +137,27 @@ internal sealed class EmulationModule : Module, IEmulationModule
     }
 }
 
-[JsonSerializable(typeof(CommandMessage<SetTimezoneOverrideParameters>))]
+[JsonSerializable(typeof(SetTimezoneOverrideParameters))]
 [JsonSerializable(typeof(SetTimezoneOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetUserAgentOverrideParameters>))]
+[JsonSerializable(typeof(SetUserAgentOverrideParameters))]
 [JsonSerializable(typeof(SetUserAgentOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetLocaleOverrideParameters>))]
+[JsonSerializable(typeof(SetLocaleOverrideParameters))]
 [JsonSerializable(typeof(SetLocaleOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetForcedColorsModeThemeOverrideParameters>))]
+[JsonSerializable(typeof(SetForcedColorsModeThemeOverrideParameters))]
 [JsonSerializable(typeof(SetForcedColorsModeThemeOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetScriptingEnabledParameters>))]
+[JsonSerializable(typeof(SetScriptingEnabledParameters))]
 [JsonSerializable(typeof(SetScriptingEnabledResult))]
-[JsonSerializable(typeof(CommandMessage<SetScreenOrientationOverrideParameters>))]
+[JsonSerializable(typeof(SetScreenOrientationOverrideParameters))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetScreenSettingsOverrideParameters>))]
+[JsonSerializable(typeof(SetScreenSettingsOverrideParameters))]
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetScrollbarTypeOverrideParameters>))]
+[JsonSerializable(typeof(SetScrollbarTypeOverrideParameters))]
 [JsonSerializable(typeof(SetScrollbarTypeOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetGeolocationOverrideParameters>))]
+[JsonSerializable(typeof(SetGeolocationOverrideParameters))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetTouchOverrideParameters>))]
+[JsonSerializable(typeof(SetTouchOverrideParameters))]
 [JsonSerializable(typeof(SetTouchOverrideResult))]
-[JsonSerializable(typeof(CommandMessage<SetNetworkConditionsParameters>))]
+[JsonSerializable(typeof(SetNetworkConditionsParameters))]
 [JsonSerializable(typeof(SetNetworkConditionsResult))]
 
 [JsonSourceGenerationOptions(

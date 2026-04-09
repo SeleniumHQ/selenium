@@ -125,13 +125,6 @@ internal sealed class Broker : IAsyncDisposable
 
         var id = Interlocked.Increment(ref _currentCommandId);
 
-        var message = new CommandMessage<TParameters>
-        {
-            Id = id,
-            Method = descriptor.Method,
-            Params = @params
-        };
-
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         using var cts = cancellationToken.CanBeCanceled
@@ -148,7 +141,12 @@ internal sealed class Broker : IAsyncDisposable
             using (BiDiContext.Use(_bidi))
             using (var writer = new Utf8JsonWriter(sendBuffer))
             {
-                JsonSerializer.Serialize(writer, message, descriptor.CommandTypeInfo);
+                writer.WriteStartObject();
+                writer.WriteNumber("id"u8, id);
+                writer.WriteString("method"u8, descriptor.Method);
+                writer.WritePropertyName("params"u8);
+                JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                writer.WriteEndObject();
             }
         }
         catch

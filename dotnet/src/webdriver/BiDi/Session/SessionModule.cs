@@ -25,19 +25,19 @@ namespace OpenQA.Selenium.BiDi.Session;
 internal sealed class SessionModule : Module, ISessionModule
 {
     private static readonly CommandDescriptor<Parameters, StatusResult> StatusCommand = new(
-        "session.status", Default.CommandMessageParameters, Default.StatusResult);
+        "session.status", Default.Parameters, Default.StatusResult);
 
     private static readonly CommandDescriptor<NewParameters, NewResult> NewCommand = new(
-        "session.new", Default.CommandMessageNewParameters, Default.NewResult);
+        "session.new", Default.NewParameters, Default.NewResult);
 
     private static readonly CommandDescriptor<Parameters, EndResult> EndCommand = new(
-        "session.end", Default.CommandMessageParameters, Default.EndResult);
+        "session.end", Default.Parameters, Default.EndResult);
 
     private static readonly CommandDescriptor<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
-        "session.subscribe", Default.CommandMessageSubscribeParameters, Default.SubscribeResult);
+        "session.subscribe", Default.SubscribeParameters, Default.SubscribeResult);
 
     private static readonly CommandDescriptor<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
-        "session.unsubscribe", Default.CommandMessageUnsubscribeByIdParameters, Default.UnsubscribeResult);
+        "session.unsubscribe", Default.UnsubscribeByIdParameters, Default.UnsubscribeResult);
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -71,14 +71,14 @@ internal sealed class SessionModule : Module, ISessionModule
     }
 }
 
-[JsonSerializable(typeof(CommandMessage<Parameters>))]
+[JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(StatusResult))]
-[JsonSerializable(typeof(CommandMessage<NewParameters>))]
+[JsonSerializable(typeof(NewParameters))]
 [JsonSerializable(typeof(NewResult))]
 [JsonSerializable(typeof(EndResult))]
-[JsonSerializable(typeof(CommandMessage<SubscribeParameters>))]
+[JsonSerializable(typeof(SubscribeParameters))]
 [JsonSerializable(typeof(SubscribeResult))]
-[JsonSerializable(typeof(CommandMessage<UnsubscribeByIdParameters>))]
+[JsonSerializable(typeof(UnsubscribeByIdParameters))]
 [JsonSerializable(typeof(UnsubscribeResult))]
 
 [JsonSourceGenerationOptions(

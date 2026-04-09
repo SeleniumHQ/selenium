@@ -25,40 +25,40 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 {
     private static readonly CommandDescriptor<CreateParameters, CreateResult> CreateCommand = new(
-        "browsingContext.create", Default.CommandMessageCreateParameters, Default.CreateResult);
+        "browsingContext.create", Default.CreateParameters, Default.CreateResult);
 
     private static readonly CommandDescriptor<NavigateParameters, NavigateResult> NavigateCommand = new(
-        "browsingContext.navigate", Default.CommandMessageNavigateParameters, Default.NavigateResult);
+        "browsingContext.navigate", Default.NavigateParameters, Default.NavigateResult);
 
     private static readonly CommandDescriptor<ActivateParameters, ActivateResult> ActivateCommand = new(
-        "browsingContext.activate", Default.CommandMessageActivateParameters, Default.ActivateResult);
+        "browsingContext.activate", Default.ActivateParameters, Default.ActivateResult);
 
     private static readonly CommandDescriptor<LocateNodesParameters, LocateNodesResult> LocateNodesCommand = new(
-        "browsingContext.locateNodes", Default.CommandMessageLocateNodesParameters, Default.LocateNodesResult);
+        "browsingContext.locateNodes", Default.LocateNodesParameters, Default.LocateNodesResult);
 
     private static readonly CommandDescriptor<CaptureScreenshotParameters, CaptureScreenshotResult> CaptureScreenshotCommand = new(
-        "browsingContext.captureScreenshot", Default.CommandMessageCaptureScreenshotParameters, Default.CaptureScreenshotResult);
+        "browsingContext.captureScreenshot", Default.CaptureScreenshotParameters, Default.CaptureScreenshotResult);
 
     private static readonly CommandDescriptor<CloseParameters, CloseResult> CloseCommand = new(
-        "browsingContext.close", Default.CommandMessageCloseParameters, Default.CloseResult);
+        "browsingContext.close", Default.CloseParameters, Default.CloseResult);
 
     private static readonly CommandDescriptor<TraverseHistoryParameters, TraverseHistoryResult> TraverseHistoryCommand = new(
-        "browsingContext.traverseHistory", Default.CommandMessageTraverseHistoryParameters, Default.TraverseHistoryResult);
+        "browsingContext.traverseHistory", Default.TraverseHistoryParameters, Default.TraverseHistoryResult);
 
     private static readonly CommandDescriptor<ReloadParameters, ReloadResult> ReloadCommand = new(
-        "browsingContext.reload", Default.CommandMessageReloadParameters, Default.ReloadResult);
+        "browsingContext.reload", Default.ReloadParameters, Default.ReloadResult);
 
     private static readonly CommandDescriptor<SetViewportParameters, SetViewportResult> SetViewportCommand = new(
-        "browsingContext.setViewport", Default.CommandMessageSetViewportParameters, Default.SetViewportResult);
+        "browsingContext.setViewport", Default.SetViewportParameters, Default.SetViewportResult);
 
     private static readonly CommandDescriptor<GetTreeParameters, GetTreeResult> GetTreeCommand = new(
-        "browsingContext.getTree", Default.CommandMessageGetTreeParameters, Default.GetTreeResult);
+        "browsingContext.getTree", Default.GetTreeParameters, Default.GetTreeResult);
 
     private static readonly CommandDescriptor<PrintParameters, PrintResult> PrintCommand = new(
-        "browsingContext.print", Default.CommandMessagePrintParameters, Default.PrintResult);
+        "browsingContext.print", Default.PrintParameters, Default.PrintResult);
 
     private static readonly CommandDescriptor<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
-        "browsingContext.handleUserPrompt", Default.CommandMessageHandleUserPromptParameters, Default.HandleUserPromptResult);
+        "browsingContext.handleUserPrompt", Default.HandleUserPromptParameters, Default.HandleUserPromptResult);
 
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -318,29 +318,29 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
     private static UserPromptClosedEventArgs CreateUserPromptClosedEventArgs(IBiDi bidi, UserPromptClosedParameters p) => new(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText);
 }
 
-[JsonSerializable(typeof(CommandMessage<ActivateParameters>))]
+[JsonSerializable(typeof(ActivateParameters))]
 [JsonSerializable(typeof(ActivateResult))]
-[JsonSerializable(typeof(CommandMessage<CaptureScreenshotParameters>))]
+[JsonSerializable(typeof(CaptureScreenshotParameters))]
 [JsonSerializable(typeof(CaptureScreenshotResult))]
-[JsonSerializable(typeof(CommandMessage<CloseParameters>))]
+[JsonSerializable(typeof(CloseParameters))]
 [JsonSerializable(typeof(CloseResult))]
-[JsonSerializable(typeof(CommandMessage<CreateParameters>))]
+[JsonSerializable(typeof(CreateParameters))]
 [JsonSerializable(typeof(CreateResult))]
-[JsonSerializable(typeof(CommandMessage<GetTreeParameters>))]
+[JsonSerializable(typeof(GetTreeParameters))]
 [JsonSerializable(typeof(GetTreeResult))]
-[JsonSerializable(typeof(CommandMessage<HandleUserPromptParameters>))]
+[JsonSerializable(typeof(HandleUserPromptParameters))]
 [JsonSerializable(typeof(HandleUserPromptResult))]
-[JsonSerializable(typeof(CommandMessage<LocateNodesParameters>))]
+[JsonSerializable(typeof(LocateNodesParameters))]
 [JsonSerializable(typeof(LocateNodesResult))]
-[JsonSerializable(typeof(CommandMessage<NavigateParameters>))]
+[JsonSerializable(typeof(NavigateParameters))]
 [JsonSerializable(typeof(NavigateResult))]
-[JsonSerializable(typeof(CommandMessage<PrintParameters>))]
+[JsonSerializable(typeof(PrintParameters))]
 [JsonSerializable(typeof(PrintResult))]
-[JsonSerializable(typeof(CommandMessage<ReloadParameters>))]
+[JsonSerializable(typeof(ReloadParameters))]
 [JsonSerializable(typeof(ReloadResult))]
-[JsonSerializable(typeof(CommandMessage<SetViewportParameters>))]
+[JsonSerializable(typeof(SetViewportParameters))]
 [JsonSerializable(typeof(SetViewportResult))]
-[JsonSerializable(typeof(CommandMessage<TraverseHistoryParameters>))]
+[JsonSerializable(typeof(TraverseHistoryParameters))]
 [JsonSerializable(typeof(TraverseHistoryResult))]
 
 [JsonSerializable(typeof(DownloadWillBeginParams))]

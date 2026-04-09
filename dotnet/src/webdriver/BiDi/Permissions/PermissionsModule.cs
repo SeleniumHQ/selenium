@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.BiDi.Permissions;
 internal sealed class PermissionsModule : Module, IPermissionsModule
 {
     private static readonly CommandDescriptor<SetPermissionCommandParameters, SetPermissionResult> SetPermissionCommand = new(
-        "permissions.setPermission", Default.CommandMessageSetPermissionCommandParameters, Default.SetPermissionResult);
+        "permissions.setPermission", Default.SetPermissionCommandParameters, Default.SetPermissionResult);
 
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -35,7 +35,7 @@ internal sealed class PermissionsModule : Module, IPermissionsModule
     }
 }
 
-[JsonSerializable(typeof(CommandMessage<SetPermissionCommandParameters>))]
+[JsonSerializable(typeof(SetPermissionCommandParameters))]
 [JsonSerializable(typeof(SetPermissionResult))]
 
 [JsonSourceGenerationOptions(

@@ -80,7 +80,7 @@ class CustomModule : Module
     private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
     private static readonly CommandDescriptor<Parameters, DoSomethingResult> DoSomethingCommand =
-        new("session.status", JsonContext.CommandMessageParameters, JsonContext.DoSomethingResult);
+        new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
@@ -91,7 +91,7 @@ class CustomModule : Module
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
-[JsonSerializable(typeof(CommandMessage<Parameters>))]
+[JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(DoSomethingResult))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
 

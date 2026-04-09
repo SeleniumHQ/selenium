@@ -26,40 +26,40 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 {
 
     private static readonly CommandDescriptor<AddDataCollectorParameters, AddDataCollectorResult> AddDataCollectorCommand = new(
-        "network.addDataCollector", Default.CommandMessageAddDataCollectorParameters, Default.AddDataCollectorResult);
+        "network.addDataCollector", Default.AddDataCollectorParameters, Default.AddDataCollectorResult);
 
     private static readonly CommandDescriptor<AddInterceptParameters, AddInterceptResult> AddInterceptCommand = new(
-        "network.addIntercept", Default.CommandMessageAddInterceptParameters, Default.AddInterceptResult);
+        "network.addIntercept", Default.AddInterceptParameters, Default.AddInterceptResult);
 
     private static readonly CommandDescriptor<RemoveDataCollectorParameters, RemoveDataCollectorResult> RemoveDataCollectorCommand = new(
-        "network.removeDataCollector", Default.CommandMessageRemoveDataCollectorParameters, Default.RemoveDataCollectorResult);
+        "network.removeDataCollector", Default.RemoveDataCollectorParameters, Default.RemoveDataCollectorResult);
 
     private static readonly CommandDescriptor<RemoveInterceptParameters, RemoveInterceptResult> RemoveInterceptCommand = new(
-        "network.removeIntercept", Default.CommandMessageRemoveInterceptParameters, Default.RemoveInterceptResult);
+        "network.removeIntercept", Default.RemoveInterceptParameters, Default.RemoveInterceptResult);
 
     private static readonly CommandDescriptor<SetCacheBehaviorParameters, SetCacheBehaviorResult> SetCacheBehaviorCommand = new(
-        "network.setCacheBehavior", Default.CommandMessageSetCacheBehaviorParameters, Default.SetCacheBehaviorResult);
+        "network.setCacheBehavior", Default.SetCacheBehaviorParameters, Default.SetCacheBehaviorResult);
 
     private static readonly CommandDescriptor<SetExtraHeadersParameters, SetExtraHeadersResult> SetExtraHeadersCommand = new(
-        "network.setExtraHeaders", Default.CommandMessageSetExtraHeadersParameters, Default.SetExtraHeadersResult);
+        "network.setExtraHeaders", Default.SetExtraHeadersParameters, Default.SetExtraHeadersResult);
 
     private static readonly CommandDescriptor<ContinueRequestParameters, ContinueRequestResult> ContinueRequestCommand = new(
-        "network.continueRequest", Default.CommandMessageContinueRequestParameters, Default.ContinueRequestResult);
+        "network.continueRequest", Default.ContinueRequestParameters, Default.ContinueRequestResult);
 
     private static readonly CommandDescriptor<ContinueResponseParameters, ContinueResponseResult> ContinueResponseCommand = new(
-        "network.continueResponse", Default.CommandMessageContinueResponseParameters, Default.ContinueResponseResult);
+        "network.continueResponse", Default.ContinueResponseParameters, Default.ContinueResponseResult);
 
     private static readonly CommandDescriptor<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
-        "network.failRequest", Default.CommandMessageFailRequestParameters, Default.FailRequestResult);
+        "network.failRequest", Default.FailRequestParameters, Default.FailRequestResult);
 
     private static readonly CommandDescriptor<GetDataParameters, GetDataResult> GetDataCommand = new(
-        "network.getData", Default.CommandMessageGetDataParameters, Default.GetDataResult);
+        "network.getData", Default.GetDataParameters, Default.GetDataResult);
 
     private static readonly CommandDescriptor<ProvideResponseParameters, ProvideResponseResult> ProvideResponseCommand = new(
-        "network.provideResponse", Default.CommandMessageProvideResponseParameters, Default.ProvideResponseResult);
+        "network.provideResponse", Default.ProvideResponseParameters, Default.ProvideResponseResult);
 
     private static readonly CommandDescriptor<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
-        "network.continueWithAuth", Default.CommandMessageContinueWithAuthParameters, Default.ContinueWithAuthResult);
+        "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
 
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -221,29 +221,29 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response);
 }
 
-[JsonSerializable(typeof(CommandMessage<AddDataCollectorParameters>))]
+[JsonSerializable(typeof(AddDataCollectorParameters))]
 [JsonSerializable(typeof(AddDataCollectorResult))]
-[JsonSerializable(typeof(CommandMessage<AddInterceptParameters>))]
+[JsonSerializable(typeof(AddInterceptParameters))]
 [JsonSerializable(typeof(AddInterceptResult))]
-[JsonSerializable(typeof(CommandMessage<ContinueRequestParameters>))]
+[JsonSerializable(typeof(ContinueRequestParameters))]
 [JsonSerializable(typeof(ContinueRequestResult))]
-[JsonSerializable(typeof(CommandMessage<ContinueResponseParameters>))]
+[JsonSerializable(typeof(ContinueResponseParameters))]
 [JsonSerializable(typeof(ContinueResponseResult))]
-[JsonSerializable(typeof(CommandMessage<ContinueWithAuthParameters>))]
+[JsonSerializable(typeof(ContinueWithAuthParameters))]
 [JsonSerializable(typeof(ContinueWithAuthResult))]
-[JsonSerializable(typeof(CommandMessage<FailRequestParameters>))]
+[JsonSerializable(typeof(FailRequestParameters))]
 [JsonSerializable(typeof(FailRequestResult))]
-[JsonSerializable(typeof(CommandMessage<GetDataParameters>))]
+[JsonSerializable(typeof(GetDataParameters))]
 [JsonSerializable(typeof(GetDataResult))]
-[JsonSerializable(typeof(CommandMessage<ProvideResponseParameters>))]
+[JsonSerializable(typeof(ProvideResponseParameters))]
 [JsonSerializable(typeof(ProvideResponseResult))]
-[JsonSerializable(typeof(CommandMessage<RemoveDataCollectorParameters>))]
+[JsonSerializable(typeof(RemoveDataCollectorParameters))]
 [JsonSerializable(typeof(RemoveDataCollectorResult))]
-[JsonSerializable(typeof(CommandMessage<RemoveInterceptParameters>))]
+[JsonSerializable(typeof(RemoveInterceptParameters))]
 [JsonSerializable(typeof(RemoveInterceptResult))]
-[JsonSerializable(typeof(CommandMessage<SetCacheBehaviorParameters>))]
+[JsonSerializable(typeof(SetCacheBehaviorParameters))]
 [JsonSerializable(typeof(SetCacheBehaviorResult))]
-[JsonSerializable(typeof(CommandMessage<SetExtraHeadersParameters>))]
+[JsonSerializable(typeof(SetExtraHeadersParameters))]
 [JsonSerializable(typeof(SetExtraHeadersResult))]
 
 [JsonSerializable(typeof(BeforeRequestSentParameters))]

@@ -25,13 +25,13 @@ namespace OpenQA.Selenium.BiDi.Input;
 internal sealed class InputModule : Module, IInputModule
 {
     private static readonly CommandDescriptor<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
-        "input.performActions", Default.CommandMessagePerformActionsParameters, Default.PerformActionsResult);
+        "input.performActions", Default.PerformActionsParameters, Default.PerformActionsResult);
 
     private static readonly CommandDescriptor<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
-        "input.releaseActions", Default.CommandMessageReleaseActionsParameters, Default.ReleaseActionsResult);
+        "input.releaseActions", Default.ReleaseActionsParameters, Default.ReleaseActionsResult);
 
     private static readonly CommandDescriptor<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
-        "input.setFiles", Default.CommandMessageSetFilesParameters, Default.SetFilesResult);
+        "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -70,11 +70,11 @@ internal sealed class InputModule : Module, IInputModule
     }
 }
 
-[JsonSerializable(typeof(CommandMessage<PerformActionsParameters>))]
+[JsonSerializable(typeof(PerformActionsParameters))]
 [JsonSerializable(typeof(PerformActionsResult))]
-[JsonSerializable(typeof(CommandMessage<ReleaseActionsParameters>))]
+[JsonSerializable(typeof(ReleaseActionsParameters))]
 [JsonSerializable(typeof(ReleaseActionsResult))]
-[JsonSerializable(typeof(CommandMessage<SetFilesParameters>))]
+[JsonSerializable(typeof(SetFilesParameters))]
 [JsonSerializable(typeof(SetFilesResult))]
 
 [JsonSerializable(typeof(FileDialogInfo))]
