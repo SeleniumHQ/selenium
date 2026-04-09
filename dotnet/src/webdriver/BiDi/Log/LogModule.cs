@@ -18,21 +18,20 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Log.LogJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 internal sealed class LogModule : Module, ILogModule
 {
-    private static readonly LogJsonSerializerContext JsonContext = LogJsonSerializerContext.Default;
-
     public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, Default.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, JsonContext.LogEntry, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("log.entryAdded", handler, CreateEntryAddedEventArgs, options, Default.LogEntry, cancellationToken).ConfigureAwait(false);
     }
 
     private static EntryAddedEventArgs CreateEntryAddedEventArgs(IBiDi bidi, LogEntry p) => p switch

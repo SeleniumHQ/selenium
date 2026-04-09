@@ -18,45 +18,44 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Emulation.EmulationJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class EmulationModule : Module, IEmulationModule
 {
-    private static readonly EmulationJsonSerializerContext JsonContext = EmulationJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
-        "emulation.setTimezoneOverride", JsonContext.CommandMessageSetTimezoneOverrideParameters, JsonContext.SetTimezoneOverrideResult);
+        "emulation.setTimezoneOverride", Default.CommandMessageSetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult);
 
     private static readonly CommandDescriptor<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
-        "emulation.setUserAgentOverride", JsonContext.CommandMessageSetUserAgentOverrideParameters, JsonContext.SetUserAgentOverrideResult);
+        "emulation.setUserAgentOverride", Default.CommandMessageSetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult);
 
     private static readonly CommandDescriptor<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
-        "emulation.setLocaleOverride", JsonContext.CommandMessageSetLocaleOverrideParameters, JsonContext.SetLocaleOverrideResult);
+        "emulation.setLocaleOverride", Default.CommandMessageSetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
 
     private static readonly CommandDescriptor<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
-        "emulation.setForcedColorsModeThemeOverride", JsonContext.CommandMessageSetForcedColorsModeThemeOverrideParameters, JsonContext.SetForcedColorsModeThemeOverrideResult);
+        "emulation.setForcedColorsModeThemeOverride", Default.CommandMessageSetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
 
     private static readonly CommandDescriptor<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
-        "emulation.setScriptingEnabled", JsonContext.CommandMessageSetScriptingEnabledParameters, JsonContext.SetScriptingEnabledResult);
+        "emulation.setScriptingEnabled", Default.CommandMessageSetScriptingEnabledParameters, Default.SetScriptingEnabledResult);
 
     private static readonly CommandDescriptor<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
-        "emulation.setScreenOrientationOverride", JsonContext.CommandMessageSetScreenOrientationOverrideParameters, JsonContext.SetScreenOrientationOverrideResult);
+        "emulation.setScreenOrientationOverride", Default.CommandMessageSetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult);
 
     private static readonly CommandDescriptor<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
-        "emulation.setScreenSettingsOverride", JsonContext.CommandMessageSetScreenSettingsOverrideParameters, JsonContext.SetScreenSettingsOverrideResult);
+        "emulation.setScreenSettingsOverride", Default.CommandMessageSetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult);
 
     private static readonly CommandDescriptor<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
-        "emulation.setScrollbarTypeOverride", JsonContext.CommandMessageSetScrollbarTypeOverrideParameters, JsonContext.SetScrollbarTypeOverrideResult);
+        "emulation.setScrollbarTypeOverride", Default.CommandMessageSetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult);
 
     private static readonly CommandDescriptor<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
-        "emulation.setGeolocationOverride", JsonContext.CommandMessageSetGeolocationOverrideParameters, JsonContext.SetGeolocationOverrideResult);
+        "emulation.setGeolocationOverride", Default.CommandMessageSetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult);
 
     private static readonly CommandDescriptor<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
-        "emulation.setTouchOverride", JsonContext.CommandMessageSetTouchOverrideParameters, JsonContext.SetTouchOverrideResult);
+        "emulation.setTouchOverride", Default.CommandMessageSetTouchOverrideParameters, Default.SetTouchOverrideResult);
 
     private static readonly CommandDescriptor<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
-        "emulation.setNetworkConditions", JsonContext.CommandMessageSetNetworkConditionsParameters, JsonContext.SetNetworkConditionsResult);
+        "emulation.setNetworkConditions", Default.CommandMessageSetNetworkConditionsParameters, Default.SetNetworkConditionsResult);
 
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {

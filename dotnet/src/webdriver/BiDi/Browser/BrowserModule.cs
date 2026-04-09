@@ -18,30 +18,29 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Browser.BrowserJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class BrowserModule : Module, IBrowserModule
 {
-    private static readonly BrowserJsonSerializerContext JsonContext = BrowserJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<Parameters, CloseResult> CloseCommand = new(
-        "browser.close", JsonContext.CommandMessageParameters, JsonContext.CloseResult);
+        "browser.close", Default.CommandMessageParameters, Default.CloseResult);
 
     private static readonly CommandDescriptor<CreateUserContextParameters, CreateUserContextResult> CreateUserContextCommand = new(
-        "browser.createUserContext", JsonContext.CommandMessageCreateUserContextParameters, JsonContext.CreateUserContextResult);
+        "browser.createUserContext", Default.CommandMessageCreateUserContextParameters, Default.CreateUserContextResult);
 
     private static readonly CommandDescriptor<Parameters, GetUserContextsResult> GetUserContextsCommand = new(
-        "browser.getUserContexts", JsonContext.CommandMessageParameters, JsonContext.GetUserContextsResult);
+        "browser.getUserContexts", Default.CommandMessageParameters, Default.GetUserContextsResult);
 
     private static readonly CommandDescriptor<RemoveUserContextParameters, RemoveUserContextResult> RemoveUserContextCommand = new(
-        "browser.removeUserContext", JsonContext.CommandMessageRemoveUserContextParameters, JsonContext.RemoveUserContextResult);
+        "browser.removeUserContext", Default.CommandMessageRemoveUserContextParameters, Default.RemoveUserContextResult);
 
     private static readonly CommandDescriptor<Parameters, GetClientWindowsResult> GetClientWindowsCommand = new(
-        "browser.getClientWindows", JsonContext.CommandMessageParameters, JsonContext.GetClientWindowsResult);
+        "browser.getClientWindows", Default.CommandMessageParameters, Default.GetClientWindowsResult);
 
     private static readonly CommandDescriptor<SetDownloadBehaviorParameters, SetDownloadBehaviorResult> SetDownloadBehaviorCommand = new(
-        "browser.setDownloadBehavior", JsonContext.CommandMessageSetDownloadBehaviorParameters, JsonContext.SetDownloadBehaviorResult);
+        "browser.setDownloadBehavior", Default.CommandMessageSetDownloadBehaviorParameters, Default.SetDownloadBehaviorResult);
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {

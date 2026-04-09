@@ -18,21 +18,20 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Speculation.SpeculationJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
 internal sealed class SpeculationModule : Module, ISpeculationModule
 {
-    private static readonly SpeculationJsonSerializerContext JsonContext = SpeculationJsonSerializerContext.Default;
-
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, JsonContext.PrefetchStatusUpdatedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, Default.PrefetchStatusUpdatedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, JsonContext.PrefetchStatusUpdatedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, CreatePrefetchStatusUpdatedEventArgs, options, Default.PrefetchStatusUpdatedParameters, cancellationToken).ConfigureAwait(false);
     }
 
     private static PrefetchStatusUpdatedEventArgs CreatePrefetchStatusUpdatedEventArgs(IBiDi bidi, PrefetchStatusUpdatedParameters p)

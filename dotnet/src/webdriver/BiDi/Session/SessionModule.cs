@@ -18,27 +18,26 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Session.SessionJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module, ISessionModule
 {
-    private static readonly SessionJsonSerializerContext JsonContext = SessionJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<Parameters, StatusResult> StatusCommand = new(
-        "session.status", JsonContext.CommandMessageParameters, JsonContext.StatusResult);
+        "session.status", Default.CommandMessageParameters, Default.StatusResult);
 
     private static readonly CommandDescriptor<NewParameters, NewResult> NewCommand = new(
-        "session.new", JsonContext.CommandMessageNewParameters, JsonContext.NewResult);
+        "session.new", Default.CommandMessageNewParameters, Default.NewResult);
 
     private static readonly CommandDescriptor<Parameters, EndResult> EndCommand = new(
-        "session.end", JsonContext.CommandMessageParameters, JsonContext.EndResult);
+        "session.end", Default.CommandMessageParameters, Default.EndResult);
 
     private static readonly CommandDescriptor<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
-        "session.subscribe", JsonContext.CommandMessageSubscribeParameters, JsonContext.SubscribeResult);
+        "session.subscribe", Default.CommandMessageSubscribeParameters, Default.SubscribeResult);
 
     private static readonly CommandDescriptor<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
-        "session.unsubscribe", JsonContext.CommandMessageUnsubscribeByIdParameters, JsonContext.UnsubscribeResult);
+        "session.unsubscribe", Default.CommandMessageUnsubscribeByIdParameters, Default.UnsubscribeResult);
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {

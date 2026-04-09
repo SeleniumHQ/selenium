@@ -18,15 +18,14 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Permissions.PermissionsJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
 internal sealed class PermissionsModule : Module, IPermissionsModule
 {
-    private static readonly PermissionsJsonSerializerContext JsonContext = PermissionsJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<SetPermissionCommandParameters, SetPermissionResult> SetPermissionCommand = new(
-        "permissions.setPermission", JsonContext.CommandMessageSetPermissionCommandParameters, JsonContext.SetPermissionResult);
+        "permissions.setPermission", Default.CommandMessageSetPermissionCommandParameters, Default.SetPermissionResult);
 
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {

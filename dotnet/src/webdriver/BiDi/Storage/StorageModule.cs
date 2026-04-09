@@ -18,21 +18,20 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Storage.StorageJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
 internal sealed class StorageModule : Module, IStorageModule
 {
-    private static readonly StorageJsonSerializerContext JsonContext = StorageJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
-        "storage.getCookies", JsonContext.CommandMessageGetCookiesParameters, JsonContext.GetCookiesResult);
+        "storage.getCookies", Default.CommandMessageGetCookiesParameters, Default.GetCookiesResult);
 
     private static readonly CommandDescriptor<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
-        "storage.deleteCookies", JsonContext.CommandMessageDeleteCookiesParameters, JsonContext.DeleteCookiesResult);
+        "storage.deleteCookies", Default.CommandMessageDeleteCookiesParameters, Default.DeleteCookiesResult);
 
     private static readonly CommandDescriptor<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
-        "storage.setCookie", JsonContext.CommandMessageSetCookieParameters, JsonContext.SetCookieResult);
+        "storage.setCookie", Default.CommandMessageSetCookieParameters, Default.SetCookieResult);
 
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {

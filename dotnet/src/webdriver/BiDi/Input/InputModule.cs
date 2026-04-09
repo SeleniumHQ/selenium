@@ -18,21 +18,20 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Input.InputJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
 internal sealed class InputModule : Module, IInputModule
 {
-    private static readonly InputJsonSerializerContext JsonContext = InputJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
-        "input.performActions", JsonContext.CommandMessagePerformActionsParameters, JsonContext.PerformActionsResult);
+        "input.performActions", Default.CommandMessagePerformActionsParameters, Default.PerformActionsResult);
 
     private static readonly CommandDescriptor<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
-        "input.releaseActions", JsonContext.CommandMessageReleaseActionsParameters, JsonContext.ReleaseActionsResult);
+        "input.releaseActions", Default.CommandMessageReleaseActionsParameters, Default.ReleaseActionsResult);
 
     private static readonly CommandDescriptor<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
-        "input.setFiles", JsonContext.CommandMessageSetFilesParameters, JsonContext.SetFilesResult);
+        "input.setFiles", Default.CommandMessageSetFilesParameters, Default.SetFilesResult);
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -57,12 +56,12 @@ internal sealed class InputModule : Module, IInputModule
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, JsonContext.FileDialogInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, Default.FileDialogInfo, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, JsonContext.FileDialogInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, Default.FileDialogInfo, cancellationToken).ConfigureAwait(false);
     }
 
     private static FileDialogOpenedEventArgs CreateFileDialogOpenedEventArgs(IBiDi bidi, FileDialogInfo p)

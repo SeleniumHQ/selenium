@@ -18,18 +18,17 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.WebExtension.WebExtensionJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
 internal sealed class WebExtensionModule : Module, IWebExtensionModule
 {
-    private static readonly WebExtensionJsonSerializerContext JsonContext = WebExtensionJsonSerializerContext.Default;
-
     private static readonly CommandDescriptor<InstallParameters, InstallResult> InstallCommand = new(
-        "webExtension.install", JsonContext.CommandMessageInstallParameters, JsonContext.InstallResult);
+        "webExtension.install", Default.CommandMessageInstallParameters, Default.InstallResult);
 
     private static readonly CommandDescriptor<UninstallParameters, UninstallResult> UninstallCommand = new(
-        "webExtension.uninstall", JsonContext.CommandMessageUninstallParameters, JsonContext.UninstallResult);
+        "webExtension.uninstall", Default.CommandMessageUninstallParameters, Default.UninstallResult);
 
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)
     {
