@@ -44,52 +44,52 @@ internal sealed class BrowserModule : Module, IBrowserModule
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(CloseCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(CloseCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
-        return await ExecuteCommandAsync(CreateUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(CreateUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(GetUserContextsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(GetUserContextsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveUserContextParameters(userContext);
 
-        return await ExecuteCommandAsync(RemoveUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(RemoveUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(GetClientWindowsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(GetClientWindowsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
 
-        return await ExecuteCommandAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
 
-        return await ExecuteCommandAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
 
-        return await ExecuteCommandAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

@@ -84,7 +84,7 @@ class CustomModule : Module
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteCommandAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
+        return await ExecuteAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
     }
 }
 

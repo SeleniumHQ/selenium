@@ -34,14 +34,14 @@ internal sealed class WebExtensionModule : Module, IWebExtensionModule
     {
         var @params = new InstallParameters(extensionData);
 
-        return await ExecuteCommandAsync(InstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(InstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UninstallParameters(extension);
 
-        return await ExecuteCommandAsync(UninstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(UninstallCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

@@ -65,70 +65,70 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     {
         var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteCommandAsync(AddDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(AddDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
-        return await ExecuteCommandAsync(AddInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(AddInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveDataCollectorParameters(collector);
 
-        return await ExecuteCommandAsync(RemoveDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(RemoveDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveInterceptResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveInterceptParameters(intercept);
 
-        return await ExecuteCommandAsync(RemoveInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(RemoveInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, SetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCacheBehaviorParameters(behavior, options?.Contexts);
 
-        return await ExecuteCommandAsync(SetCacheBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetCacheBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetExtraHeadersResult> SetExtraHeadersAsync(IEnumerable<Header> headers, SetExtraHeadersOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteCommandAsync(SetExtraHeadersCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetExtraHeadersCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueRequestResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueRequestParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);
 
-        return await ExecuteCommandAsync(ContinueRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueResponseResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueResponseParameters(request, options?.Cookies, options?.Credentials, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteCommandAsync(ContinueResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<FailRequestResult> FailRequestAsync(Request request, FailRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new FailRequestParameters(request);
 
-        return await ExecuteCommandAsync(FailRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(FailRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
 
-        var result = await ExecuteCommandAsync(GetDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        var result = await ExecuteAsync(GetDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
 
         return result.Bytes;
     }
@@ -137,22 +137,22 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     {
         var @params = new ProvideResponseParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteCommandAsync(ProvideResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ProvideResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(ContinueWithAuthCommand, new ContinueWithAuthCredentials(request, credentials), options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthCredentials(request, credentials), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(ContinueWithAuthCommand, new ContinueWithAuthDefaultCredentials(request), options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthDefaultCredentials(request), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(ContinueWithAuthCommand, new ContinueWithAuthCancelCredentials(request), options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthCancelCredentials(request), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

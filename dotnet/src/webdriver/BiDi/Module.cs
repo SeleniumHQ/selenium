@@ -25,11 +25,11 @@ public abstract class Module
 {
     private Broker Broker { get; set; } = null!;
 
-    protected Task<TResult> ExecuteCommandAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    protected Task<TResult> ExecuteAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {
-        return Broker.ExecuteCommandAsync(descriptor, @params, options, cancellationToken);
+        return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
     }
 
     protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)

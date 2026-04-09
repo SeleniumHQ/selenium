@@ -31,7 +31,7 @@ internal sealed class PermissionsModule : Module, IPermissionsModule
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(SetPermissionCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetPermissionCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

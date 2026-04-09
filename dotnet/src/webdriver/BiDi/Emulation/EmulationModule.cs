@@ -60,80 +60,80 @@ internal sealed class EmulationModule : Module, IEmulationModule
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetTimezoneOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetTimezoneOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetUserAgentOverrideResult> SetUserAgentOverrideAsync(string? userAgent, SetUserAgentOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetUserAgentOverrideParameters(userAgent, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetUserAgentOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetUserAgentOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetLocaleOverrideResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetForcedColorsModeThemeOverrideParameters(theme, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetForcedColorsModeThemeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetForcedColorsModeThemeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScriptingEnabledResult> SetScriptingEnabledAsync(bool? enabled, SetScriptingEnabledOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScriptingEnabledParameters(enabled, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetScriptingEnabledCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetScriptingEnabledCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenOrientationOverrideResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetScreenOrientationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetScreenOrientationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenSettingsOverrideParameters(screenArea, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetScreenSettingsOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetScreenSettingsOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScrollbarTypeOverrideParameters(scrollbarType, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetScrollbarTypeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetScrollbarTypeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
         var @params = new SetGeolocationOverrideCoordinatesParameters(coordinates, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetGeolocationOverrideCoordinatesParameters(null, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetTouchOverrideResult> SetTouchOverrideAsync(long? maxTouchPoints, SetTouchOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTouchOverrideParameters(maxTouchPoints, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetTouchOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetTouchOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetNetworkConditionsResult> SetNetworkConditionsAsync(NetworkConditions? networkConditions, SetNetworkConditionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetNetworkConditionsParameters(networkConditions, options?.Contexts, options?.UserContexts);
-        return await ExecuteCommandAsync(SetNetworkConditionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetNetworkConditionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

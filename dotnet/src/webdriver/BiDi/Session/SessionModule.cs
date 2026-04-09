@@ -41,33 +41,33 @@ internal sealed class SessionModule : Module, ISessionModule
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(StatusCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(StatusCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await ExecuteCommandAsync(SubscribeCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SubscribeCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await ExecuteCommandAsync(UnsubscribeByIdCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(UnsubscribeByIdCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NewParameters(capabilities);
 
-        return await ExecuteCommandAsync(NewCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(NewCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteCommandAsync(EndCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(EndCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

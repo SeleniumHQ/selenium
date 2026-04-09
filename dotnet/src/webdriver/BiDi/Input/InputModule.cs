@@ -37,21 +37,21 @@ internal sealed class InputModule : Module, IInputModule
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await ExecuteCommandAsync(PerformActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(PerformActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await ExecuteCommandAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await ExecuteCommandAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

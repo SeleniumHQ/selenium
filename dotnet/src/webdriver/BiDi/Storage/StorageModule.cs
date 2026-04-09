@@ -37,21 +37,21 @@ internal sealed class StorageModule : Module, IStorageModule
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(GetCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(GetCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteCommandAsync(DeleteCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(DeleteCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await ExecuteCommandAsync(SetCookieCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(SetCookieCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
