@@ -22,7 +22,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-internal readonly struct CommandMessage<TParameters> where TParameters : Parameters
+public readonly struct CommandMessage<TParameters> where TParameters : Parameters
 {
     [JsonPropertyOrder(0)]
     public long Id { get; init; }
@@ -34,7 +34,7 @@ internal readonly struct CommandMessage<TParameters> where TParameters : Paramet
     public TParameters Params { get; init; }
 }
 
-internal sealed class CommandDescriptor<TParameters, TResult>(
+public sealed class CommandDescriptor<TParameters, TResult>(
     string method,
     JsonTypeInfo<CommandMessage<TParameters>> commandTypeInfo,
     JsonTypeInfo<TResult> resultTypeInfo)

@@ -25,7 +25,7 @@ public abstract class Module
 {
     private Broker Broker { get; set; } = null!;
 
-    private protected Task<TResult> ExecuteCommandAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    protected Task<TResult> ExecuteCommandAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {

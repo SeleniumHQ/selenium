@@ -79,21 +79,21 @@ class CustomModule : Module
 {
     private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
+    private static readonly CommandDescriptor<Parameters, DoSomethingResult> DoSomethingCommand =
+        new("session.status", JsonContext.CommandMessageParameters, JsonContext.DoSomethingResult);
+
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteCommandAsync(new DoSomethingCommand(), options, JsonContext.DoSomethingCommand, JsonContext.DoSomethingResult, CancellationToken.None);
+        return await ExecuteCommandAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
     }
 }
 
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
-[JsonSerializable(typeof(DoSomethingCommand))]
+[JsonSerializable(typeof(CommandMessage<Parameters>))]
 [JsonSerializable(typeof(DoSomethingResult))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
-
-class DoSomethingCommand()
-    : Command<Parameters, DoSomethingResult>(Parameters.Empty, "session.status");
 
 record DoSomethingResult : EmptyResult;
 
