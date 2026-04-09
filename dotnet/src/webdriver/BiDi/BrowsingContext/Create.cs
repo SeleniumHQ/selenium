@@ -1,4 +1,4 @@
-// <copyright file="CreateCommand.cs" company="Selenium Committers">
+// <copyright file="Create.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
