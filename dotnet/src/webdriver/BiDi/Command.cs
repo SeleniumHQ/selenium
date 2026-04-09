@@ -21,17 +21,12 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class Command<TParameters, TResult>(
-    string method,
-    JsonTypeInfo<TParameters> paramsTypeInfo,
-    JsonTypeInfo<TResult> resultTypeInfo)
+public readonly record struct Command<TParameters, TResult>(
+    string Method,
+    JsonTypeInfo<TParameters> ParamsTypeInfo,
+    JsonTypeInfo<TResult> ResultTypeInfo)
     where TParameters : Parameters
-    where TResult : EmptyResult
-{
-    public string Method { get; } = method;
-    public JsonTypeInfo<TParameters> ParamsTypeInfo { get; } = paramsTypeInfo;
-    public JsonTypeInfo<TResult> ResultTypeInfo { get; } = resultTypeInfo;
-}
+    where TResult : EmptyResult;
 
 public record Parameters
 {
