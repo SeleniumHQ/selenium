@@ -24,13 +24,13 @@ namespace OpenQA.Selenium.BiDi.Storage;
 
 internal sealed class StorageModule : Module, IStorageModule
 {
-    private static readonly CommandDescriptor<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
+    private static readonly Command<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
         "storage.getCookies", Default.GetCookiesParameters, Default.GetCookiesResult);
 
-    private static readonly CommandDescriptor<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
+    private static readonly Command<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
         "storage.deleteCookies", Default.DeleteCookiesParameters, Default.DeleteCookiesResult);
 
-    private static readonly CommandDescriptor<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
+    private static readonly Command<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
         "storage.setCookie", Default.SetCookieParameters, Default.SetCookieResult);
 
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)

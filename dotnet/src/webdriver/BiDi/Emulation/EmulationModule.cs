@@ -24,37 +24,37 @@ namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class EmulationModule : Module, IEmulationModule
 {
-    private static readonly CommandDescriptor<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
+    private static readonly Command<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
         "emulation.setTimezoneOverride", Default.SetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult);
 
-    private static readonly CommandDescriptor<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
+    private static readonly Command<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
         "emulation.setUserAgentOverride", Default.SetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult);
 
-    private static readonly CommandDescriptor<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
+    private static readonly Command<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
         "emulation.setLocaleOverride", Default.SetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
 
-    private static readonly CommandDescriptor<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
+    private static readonly Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
         "emulation.setForcedColorsModeThemeOverride", Default.SetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
 
-    private static readonly CommandDescriptor<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
+    private static readonly Command<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
         "emulation.setScriptingEnabled", Default.SetScriptingEnabledParameters, Default.SetScriptingEnabledResult);
 
-    private static readonly CommandDescriptor<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
+    private static readonly Command<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
         "emulation.setScreenOrientationOverride", Default.SetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult);
 
-    private static readonly CommandDescriptor<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
+    private static readonly Command<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
         "emulation.setScreenSettingsOverride", Default.SetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult);
 
-    private static readonly CommandDescriptor<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
+    private static readonly Command<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
         "emulation.setScrollbarTypeOverride", Default.SetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult);
 
-    private static readonly CommandDescriptor<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
+    private static readonly Command<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
         "emulation.setGeolocationOverride", Default.SetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult);
 
-    private static readonly CommandDescriptor<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
+    private static readonly Command<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
         "emulation.setTouchOverride", Default.SetTouchOverrideParameters, Default.SetTouchOverrideResult);
 
-    private static readonly CommandDescriptor<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
+    private static readonly Command<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
         "emulation.setNetworkConditions", Default.SetNetworkConditionsParameters, Default.SetNetworkConditionsResult);
 
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)

@@ -25,40 +25,40 @@ namespace OpenQA.Selenium.BiDi.Network;
 internal sealed partial class NetworkModule : Module, INetworkModule
 {
 
-    private static readonly CommandDescriptor<AddDataCollectorParameters, AddDataCollectorResult> AddDataCollectorCommand = new(
+    private static readonly Command<AddDataCollectorParameters, AddDataCollectorResult> AddDataCollectorCommand = new(
         "network.addDataCollector", Default.AddDataCollectorParameters, Default.AddDataCollectorResult);
 
-    private static readonly CommandDescriptor<AddInterceptParameters, AddInterceptResult> AddInterceptCommand = new(
+    private static readonly Command<AddInterceptParameters, AddInterceptResult> AddInterceptCommand = new(
         "network.addIntercept", Default.AddInterceptParameters, Default.AddInterceptResult);
 
-    private static readonly CommandDescriptor<RemoveDataCollectorParameters, RemoveDataCollectorResult> RemoveDataCollectorCommand = new(
+    private static readonly Command<RemoveDataCollectorParameters, RemoveDataCollectorResult> RemoveDataCollectorCommand = new(
         "network.removeDataCollector", Default.RemoveDataCollectorParameters, Default.RemoveDataCollectorResult);
 
-    private static readonly CommandDescriptor<RemoveInterceptParameters, RemoveInterceptResult> RemoveInterceptCommand = new(
+    private static readonly Command<RemoveInterceptParameters, RemoveInterceptResult> RemoveInterceptCommand = new(
         "network.removeIntercept", Default.RemoveInterceptParameters, Default.RemoveInterceptResult);
 
-    private static readonly CommandDescriptor<SetCacheBehaviorParameters, SetCacheBehaviorResult> SetCacheBehaviorCommand = new(
+    private static readonly Command<SetCacheBehaviorParameters, SetCacheBehaviorResult> SetCacheBehaviorCommand = new(
         "network.setCacheBehavior", Default.SetCacheBehaviorParameters, Default.SetCacheBehaviorResult);
 
-    private static readonly CommandDescriptor<SetExtraHeadersParameters, SetExtraHeadersResult> SetExtraHeadersCommand = new(
+    private static readonly Command<SetExtraHeadersParameters, SetExtraHeadersResult> SetExtraHeadersCommand = new(
         "network.setExtraHeaders", Default.SetExtraHeadersParameters, Default.SetExtraHeadersResult);
 
-    private static readonly CommandDescriptor<ContinueRequestParameters, ContinueRequestResult> ContinueRequestCommand = new(
+    private static readonly Command<ContinueRequestParameters, ContinueRequestResult> ContinueRequestCommand = new(
         "network.continueRequest", Default.ContinueRequestParameters, Default.ContinueRequestResult);
 
-    private static readonly CommandDescriptor<ContinueResponseParameters, ContinueResponseResult> ContinueResponseCommand = new(
+    private static readonly Command<ContinueResponseParameters, ContinueResponseResult> ContinueResponseCommand = new(
         "network.continueResponse", Default.ContinueResponseParameters, Default.ContinueResponseResult);
 
-    private static readonly CommandDescriptor<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
+    private static readonly Command<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
         "network.failRequest", Default.FailRequestParameters, Default.FailRequestResult);
 
-    private static readonly CommandDescriptor<GetDataParameters, GetDataResult> GetDataCommand = new(
+    private static readonly Command<GetDataParameters, GetDataResult> GetDataCommand = new(
         "network.getData", Default.GetDataParameters, Default.GetDataResult);
 
-    private static readonly CommandDescriptor<ProvideResponseParameters, ProvideResponseResult> ProvideResponseCommand = new(
+    private static readonly Command<ProvideResponseParameters, ProvideResponseResult> ProvideResponseCommand = new(
         "network.provideResponse", Default.ProvideResponseParameters, Default.ProvideResponseResult);
 
-    private static readonly CommandDescriptor<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
+    private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
         "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
 
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)

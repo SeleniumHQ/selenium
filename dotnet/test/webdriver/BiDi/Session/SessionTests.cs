@@ -79,7 +79,7 @@ class CustomModule : Module
 {
     private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
-    private static readonly CommandDescriptor<Parameters, DoSomethingResult> DoSomethingCommand =
+    private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)

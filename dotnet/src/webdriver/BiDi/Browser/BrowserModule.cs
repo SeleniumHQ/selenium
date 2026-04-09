@@ -24,22 +24,22 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class BrowserModule : Module, IBrowserModule
 {
-    private static readonly CommandDescriptor<Parameters, CloseResult> CloseCommand = new(
+    private static readonly Command<Parameters, CloseResult> CloseCommand = new(
         "browser.close", Default.Parameters, Default.CloseResult);
 
-    private static readonly CommandDescriptor<CreateUserContextParameters, CreateUserContextResult> CreateUserContextCommand = new(
+    private static readonly Command<CreateUserContextParameters, CreateUserContextResult> CreateUserContextCommand = new(
         "browser.createUserContext", Default.CreateUserContextParameters, Default.CreateUserContextResult);
 
-    private static readonly CommandDescriptor<Parameters, GetUserContextsResult> GetUserContextsCommand = new(
+    private static readonly Command<Parameters, GetUserContextsResult> GetUserContextsCommand = new(
         "browser.getUserContexts", Default.Parameters, Default.GetUserContextsResult);
 
-    private static readonly CommandDescriptor<RemoveUserContextParameters, RemoveUserContextResult> RemoveUserContextCommand = new(
+    private static readonly Command<RemoveUserContextParameters, RemoveUserContextResult> RemoveUserContextCommand = new(
         "browser.removeUserContext", Default.RemoveUserContextParameters, Default.RemoveUserContextResult);
 
-    private static readonly CommandDescriptor<Parameters, GetClientWindowsResult> GetClientWindowsCommand = new(
+    private static readonly Command<Parameters, GetClientWindowsResult> GetClientWindowsCommand = new(
         "browser.getClientWindows", Default.Parameters, Default.GetClientWindowsResult);
 
-    private static readonly CommandDescriptor<SetDownloadBehaviorParameters, SetDownloadBehaviorResult> SetDownloadBehaviorCommand = new(
+    private static readonly Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult> SetDownloadBehaviorCommand = new(
         "browser.setDownloadBehavior", Default.SetDownloadBehaviorParameters, Default.SetDownloadBehaviorResult);
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)

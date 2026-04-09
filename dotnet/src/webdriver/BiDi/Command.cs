@@ -21,7 +21,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class CommandDescriptor<TParameters, TResult>(
+public sealed class Command<TParameters, TResult>(
     string method,
     JsonTypeInfo<TParameters> paramsTypeInfo,
     JsonTypeInfo<TResult> resultTypeInfo)

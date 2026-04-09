@@ -24,19 +24,19 @@ namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module, ISessionModule
 {
-    private static readonly CommandDescriptor<Parameters, StatusResult> StatusCommand = new(
+    private static readonly Command<Parameters, StatusResult> StatusCommand = new(
         "session.status", Default.Parameters, Default.StatusResult);
 
-    private static readonly CommandDescriptor<NewParameters, NewResult> NewCommand = new(
+    private static readonly Command<NewParameters, NewResult> NewCommand = new(
         "session.new", Default.NewParameters, Default.NewResult);
 
-    private static readonly CommandDescriptor<Parameters, EndResult> EndCommand = new(
+    private static readonly Command<Parameters, EndResult> EndCommand = new(
         "session.end", Default.Parameters, Default.EndResult);
 
-    private static readonly CommandDescriptor<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
+    private static readonly Command<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
         "session.subscribe", Default.SubscribeParameters, Default.SubscribeResult);
 
-    private static readonly CommandDescriptor<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
+    private static readonly Command<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
         "session.unsubscribe", Default.UnsubscribeByIdParameters, Default.UnsubscribeResult);
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)

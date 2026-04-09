@@ -24,10 +24,10 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 internal sealed class WebExtensionModule : Module, IWebExtensionModule
 {
-    private static readonly CommandDescriptor<InstallParameters, InstallResult> InstallCommand = new(
+    private static readonly Command<InstallParameters, InstallResult> InstallCommand = new(
         "webExtension.install", Default.InstallParameters, Default.InstallResult);
 
-    private static readonly CommandDescriptor<UninstallParameters, UninstallResult> UninstallCommand = new(
+    private static readonly Command<UninstallParameters, UninstallResult> UninstallCommand = new(
         "webExtension.uninstall", Default.UninstallParameters, Default.UninstallResult);
 
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)

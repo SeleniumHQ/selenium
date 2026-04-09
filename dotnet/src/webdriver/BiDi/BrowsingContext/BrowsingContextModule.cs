@@ -24,40 +24,40 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 {
-    private static readonly CommandDescriptor<CreateParameters, CreateResult> CreateCommand = new(
+    private static readonly Command<CreateParameters, CreateResult> CreateCommand = new(
         "browsingContext.create", Default.CreateParameters, Default.CreateResult);
 
-    private static readonly CommandDescriptor<NavigateParameters, NavigateResult> NavigateCommand = new(
+    private static readonly Command<NavigateParameters, NavigateResult> NavigateCommand = new(
         "browsingContext.navigate", Default.NavigateParameters, Default.NavigateResult);
 
-    private static readonly CommandDescriptor<ActivateParameters, ActivateResult> ActivateCommand = new(
+    private static readonly Command<ActivateParameters, ActivateResult> ActivateCommand = new(
         "browsingContext.activate", Default.ActivateParameters, Default.ActivateResult);
 
-    private static readonly CommandDescriptor<LocateNodesParameters, LocateNodesResult> LocateNodesCommand = new(
+    private static readonly Command<LocateNodesParameters, LocateNodesResult> LocateNodesCommand = new(
         "browsingContext.locateNodes", Default.LocateNodesParameters, Default.LocateNodesResult);
 
-    private static readonly CommandDescriptor<CaptureScreenshotParameters, CaptureScreenshotResult> CaptureScreenshotCommand = new(
+    private static readonly Command<CaptureScreenshotParameters, CaptureScreenshotResult> CaptureScreenshotCommand = new(
         "browsingContext.captureScreenshot", Default.CaptureScreenshotParameters, Default.CaptureScreenshotResult);
 
-    private static readonly CommandDescriptor<CloseParameters, CloseResult> CloseCommand = new(
+    private static readonly Command<CloseParameters, CloseResult> CloseCommand = new(
         "browsingContext.close", Default.CloseParameters, Default.CloseResult);
 
-    private static readonly CommandDescriptor<TraverseHistoryParameters, TraverseHistoryResult> TraverseHistoryCommand = new(
+    private static readonly Command<TraverseHistoryParameters, TraverseHistoryResult> TraverseHistoryCommand = new(
         "browsingContext.traverseHistory", Default.TraverseHistoryParameters, Default.TraverseHistoryResult);
 
-    private static readonly CommandDescriptor<ReloadParameters, ReloadResult> ReloadCommand = new(
+    private static readonly Command<ReloadParameters, ReloadResult> ReloadCommand = new(
         "browsingContext.reload", Default.ReloadParameters, Default.ReloadResult);
 
-    private static readonly CommandDescriptor<SetViewportParameters, SetViewportResult> SetViewportCommand = new(
+    private static readonly Command<SetViewportParameters, SetViewportResult> SetViewportCommand = new(
         "browsingContext.setViewport", Default.SetViewportParameters, Default.SetViewportResult);
 
-    private static readonly CommandDescriptor<GetTreeParameters, GetTreeResult> GetTreeCommand = new(
+    private static readonly Command<GetTreeParameters, GetTreeResult> GetTreeCommand = new(
         "browsingContext.getTree", Default.GetTreeParameters, Default.GetTreeResult);
 
-    private static readonly CommandDescriptor<PrintParameters, PrintResult> PrintCommand = new(
+    private static readonly Command<PrintParameters, PrintResult> PrintCommand = new(
         "browsingContext.print", Default.PrintParameters, Default.PrintResult);
 
-    private static readonly CommandDescriptor<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
+    private static readonly Command<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
         "browsingContext.handleUserPrompt", Default.HandleUserPromptParameters, Default.HandleUserPromptResult);
 
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)

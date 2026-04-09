@@ -24,13 +24,13 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 internal sealed class InputModule : Module, IInputModule
 {
-    private static readonly CommandDescriptor<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
+    private static readonly Command<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
         "input.performActions", Default.PerformActionsParameters, Default.PerformActionsResult);
 
-    private static readonly CommandDescriptor<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
+    private static readonly Command<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
         "input.releaseActions", Default.ReleaseActionsParameters, Default.ReleaseActionsResult);
 
-    private static readonly CommandDescriptor<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
+    private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
         "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)

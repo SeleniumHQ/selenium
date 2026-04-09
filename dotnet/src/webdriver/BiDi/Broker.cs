@@ -114,7 +114,7 @@ internal sealed class Broker : IAsyncDisposable
         _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
     }
 
-    public async Task<TResult> ExecuteAsync<TParameters, TResult>(CommandDescriptor<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {

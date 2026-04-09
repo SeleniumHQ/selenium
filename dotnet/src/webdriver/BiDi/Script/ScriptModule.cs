@@ -25,22 +25,22 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class ScriptModule : Module, IScriptModule
 {
-    private static readonly CommandDescriptor<EvaluateParameters, EvaluateResult> EvaluateCommand = new(
+    private static readonly Command<EvaluateParameters, EvaluateResult> EvaluateCommand = new(
         "script.evaluate", Default.EvaluateParameters, Default.EvaluateResult);
 
-    private static readonly CommandDescriptor<CallFunctionParameters, EvaluateResult> CallFunctionCommand = new(
+    private static readonly Command<CallFunctionParameters, EvaluateResult> CallFunctionCommand = new(
         "script.callFunction", Default.CallFunctionParameters, Default.EvaluateResult);
 
-    private static readonly CommandDescriptor<DisownParameters, DisownResult> DisownCommand = new(
+    private static readonly Command<DisownParameters, DisownResult> DisownCommand = new(
         "script.disown", Default.DisownParameters, Default.DisownResult);
 
-    private static readonly CommandDescriptor<GetRealmsParameters, GetRealmsResult> GetRealmsCommand = new(
+    private static readonly Command<GetRealmsParameters, GetRealmsResult> GetRealmsCommand = new(
         "script.getRealms", Default.GetRealmsParameters, Default.GetRealmsResult);
 
-    private static readonly CommandDescriptor<AddPreloadScriptParameters, AddPreloadScriptResult> AddPreloadScriptCommand = new(
+    private static readonly Command<AddPreloadScriptParameters, AddPreloadScriptResult> AddPreloadScriptCommand = new(
         "script.addPreloadScript", Default.AddPreloadScriptParameters, Default.AddPreloadScriptResult);
 
-    private static readonly CommandDescriptor<RemovePreloadScriptParameters, RemovePreloadScriptResult> RemovePreloadScriptCommand = new(
+    private static readonly Command<RemovePreloadScriptParameters, RemovePreloadScriptResult> RemovePreloadScriptCommand = new(
         "script.removePreloadScript", Default.RemovePreloadScriptParameters, Default.RemovePreloadScriptResult);
 
     public async Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)
