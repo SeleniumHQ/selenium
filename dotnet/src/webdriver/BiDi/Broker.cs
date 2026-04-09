@@ -69,18 +69,18 @@ internal sealed class Broker : IAsyncDisposable
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
-        return await SubscribeAsync(eventName, InvokeAction, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(descriptor.Name, InvokeAction, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string eventName, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
+    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         ValueTask InvokeFunc(EventArgs args) => new(func((TEventArgs)args));
-        return await SubscribeAsync(eventName, InvokeFunc, (bidi, ep) => factory(bidi, (TEventParams)ep), jsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(descriptor.Name, InvokeFunc, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)

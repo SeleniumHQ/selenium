@@ -61,6 +61,31 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
         "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
 
+    private static readonly Event<BeforeRequestSentEventArgs, BeforeRequestSentParameters> BeforeRequestSentEvent = new(
+        "network.beforeRequestSent",
+        static (bidi, p) => new BeforeRequestSentEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts),
+        Default.BeforeRequestSentParameters);
+
+    private static readonly Event<ResponseStartedEventArgs, ResponseStartedParameters> ResponseStartedEvent = new(
+        "network.responseStarted",
+        static (bidi, p) => new ResponseStartedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
+        Default.ResponseStartedParameters);
+
+    private static readonly Event<ResponseCompletedEventArgs, ResponseCompletedParameters> ResponseCompletedEvent = new(
+        "network.responseCompleted",
+        static (bidi, p) => new ResponseCompletedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
+        Default.ResponseCompletedParameters);
+
+    private static readonly Event<FetchErrorEventArgs, FetchErrorParameters> FetchErrorEvent = new(
+        "network.fetchError",
+        static (bidi, p) => new FetchErrorEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts),
+        Default.FetchErrorParameters);
+
+    private static readonly Event<AuthRequiredEventArgs, AuthRequiredParameters> AuthRequiredEvent = new(
+        "network.authRequired",
+        static (bidi, p) => new AuthRequiredEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response),
+        Default.AuthRequiredParameters);
+
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
@@ -157,68 +182,53 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, Default.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.beforeRequestSent", handler, CreateBeforeRequestSentEventArgs, options, Default.BeforeRequestSentParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, Default.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseStarted", handler, CreateResponseStartedEventArgs, options, Default.ResponseStartedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, Default.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.responseCompleted", handler, CreateResponseCompletedEventArgs, options, Default.ResponseCompletedParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, Default.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.fetchError", handler, CreateFetchErrorEventArgs, options, Default.FetchErrorParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, Default.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("network.authRequired", handler, CreateAuthRequiredEventArgs, options, Default.AuthRequiredParameters, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
-
-    private static BeforeRequestSentEventArgs CreateBeforeRequestSentEventArgs(IBiDi bidi, BeforeRequestSentParameters p)
-        => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts);
-
-    private static ResponseStartedEventArgs CreateResponseStartedEventArgs(IBiDi bidi, ResponseStartedParameters p)
-        => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts);
-
-    private static ResponseCompletedEventArgs CreateResponseCompletedEventArgs(IBiDi bidi, ResponseCompletedParameters p)
-        => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts);
-
-    private static FetchErrorEventArgs CreateFetchErrorEventArgs(IBiDi bidi, FetchErrorParameters p)
-        => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts);
-
-    private static AuthRequiredEventArgs CreateAuthRequiredEventArgs(IBiDi bidi, AuthRequiredParameters p)
-        => new(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response);
 }
 
 [JsonSerializable(typeof(AddDataCollectorParameters))]

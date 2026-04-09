@@ -33,6 +33,11 @@ internal sealed class InputModule : Module, IInputModule
     private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
         "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
+    private static readonly Event<FileDialogOpenedEventArgs, FileDialogInfo> FileDialogOpenedEvent = new(
+        "input.fileDialogOpened",
+        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
+        Default.FileDialogInfo);
+
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
@@ -56,17 +61,12 @@ internal sealed class InputModule : Module, IInputModule
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, Default.FileDialogInfo, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("input.fileDialogOpened", handler, CreateFileDialogOpenedEventArgs, options, Default.FileDialogInfo, cancellationToken).ConfigureAwait(false);
-    }
-
-    private static FileDialogOpenedEventArgs CreateFileDialogOpenedEventArgs(IBiDi bidi, FileDialogInfo p)
-    {
-        return new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element);
+        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
