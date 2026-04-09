@@ -1,5 +1,5 @@
-load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
