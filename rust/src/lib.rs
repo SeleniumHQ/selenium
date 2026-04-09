@@ -65,6 +65,7 @@ pub mod files;
 pub mod firefox;
 pub mod grid;
 pub mod iexplorer;
+pub mod jre;
 pub mod lock;
 pub mod logger;
 pub mod metadata;

@@ -11,6 +11,10 @@ description = """
 Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.
 """
 
+[[bin]]
+name = "sel"
+path = "src/bin/sel.rs"
+
 [dependencies]
 clap = { version = "4.5.48", features = ["derive", "cargo"] }
 log = "0.4.28"

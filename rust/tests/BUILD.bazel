@@ -10,10 +10,12 @@ rust_test_suite(
     size = "small",
     srcs = glob(["**/*_tests.rs"]),
     data = [
+        "//rust:sel",
         "//rust:selenium-manager",
     ],
     edition = "2024",
     rustc_env = {
+        "CARGO_BIN_EXE_sel": "rust/sel",
         "CARGO_BIN_EXE_selenium-manager": "rust/selenium-manager",
     },
     shared_srcs = glob(

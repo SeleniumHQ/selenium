@@ -45,6 +45,24 @@ pub fn get_selenium_manager() -> Command {
 }
 
 #[allow(dead_code)]
+pub fn get_sel() -> Command {
+    let path = PathBuf::from(env!("CARGO_BIN_EXE_sel"));
+
+    if path.exists() {
+        return Command::new(path);
+    }
+
+    if cfg!(windows) {
+        let exe_path = path.with_extension("exe");
+        if exe_path.exists() {
+            return Command::new(exe_path);
+        }
+    }
+
+    panic!("Binary not found {}", path_to_string(&path));
+}
+
+#[allow(dead_code)]
 pub fn assert_driver(cmd: &mut Command) {
     let stdout = get_stdout(cmd);
 
