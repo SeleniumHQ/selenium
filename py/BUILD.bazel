@@ -810,7 +810,6 @@ BROWSER_TESTS = {
     ]
 ]
 
-
 test_suite(
     name = "test-remote",
     tags = ["remote"],

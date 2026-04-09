@@ -72,7 +72,6 @@ def _generate_bidi_impl(ctx):
 
     return [DefaultInfo(files = depset(outputs))]
 
-
 generate_bidi = rule(
     implementation = _generate_bidi_impl,
     attrs = {
