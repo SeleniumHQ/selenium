@@ -208,8 +208,11 @@ fn run_install(args: InstallArgs) -> Result<(), Error> {
         ));
     }
 
-    let cache_path = StringKey(vec![CACHE_PATH_KEY], &args.cache_path.clone().unwrap_or_default())
-        .get_value();
+    let cache_path = StringKey(
+        vec![CACHE_PATH_KEY],
+        &args.cache_path.clone().unwrap_or_default(),
+    )
+    .get_value();
 
     let output = args
         .output
@@ -218,8 +221,11 @@ fn run_install(args: InstallArgs) -> Result<(), Error> {
 
     let debug = args.debug || BooleanKey("debug", false).get_value();
     let trace = args.trace || BooleanKey("trace", false).get_value();
-    let log_level =
-        StringKey(vec!["log-level"], &args.log_level.clone().unwrap_or_default()).get_value();
+    let log_level = StringKey(
+        vec!["log-level"],
+        &args.log_level.clone().unwrap_or_default(),
+    )
+    .get_value();
     let log = Logger::create(&output, debug, trace, &log_level);
 
     if args.clear_cache || BooleanKey("clear-cache", false).get_value() {
@@ -293,7 +299,12 @@ fn run_install(args: InstallArgs) -> Result<(), Error> {
             path: grid_path.display().to_string(),
         });
 
-        let runtime = ensure_jre(Some(cache_path.as_str()), args.timeout, args.proxy.as_deref(), &log)?;
+        let runtime = ensure_jre(
+            Some(cache_path.as_str()),
+            args.timeout,
+            args.proxy.as_deref(),
+            &log,
+        )?;
         summary.jre = Some(java_runtime_to_artifact(runtime));
     }
 
