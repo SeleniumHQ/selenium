@@ -1,3 +1,7 @@
+## 4.43.0
+
+- Support CDP versions: v145, v146, v147
+
 ## 4.42.0
 
 - Support CDP versions: v144, v145, v146
