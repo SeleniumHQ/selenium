@@ -518,6 +518,7 @@ experimental domain Animation
 # Audits domain allows investigation of page violations and possible improvements.
 experimental domain Audits
   depends on Network
+  depends on Runtime
 
   # Information about a cookie that is affected by an inspector issue.
   type AffectedCookie extends object
@@ -545,8 +546,6 @@ experimental domain Audits
       ExcludeSameSiteNoneInsecure
       ExcludeSameSiteLax
       ExcludeSameSiteStrict
-      ExcludeInvalidSameParty
-      ExcludeSamePartyCrossPartyContext
       ExcludeDomainNonASCII
       ExcludeThirdPartyCookieBlockedInFirstPartySet
       ExcludeThirdPartyPhaseout
@@ -617,6 +616,16 @@ experimental domain Audits
       optional AffectedRequest request
       # The recommended solution to the issue.
       optional CookieIssueInsight insight
+
+  type PerformanceIssueType extends string
+    enum
+      DocumentCookie
+
+  # Details for a performance issue.
+  type PerformanceIssueDetails extends object
+    properties
+      PerformanceIssueType performanceIssueType
+      optional SourceCodeLocation sourceCodeLocation
 
   type MixedContentResolutionStatus extends string
     enum
@@ -760,16 +769,6 @@ experimental domain Audits
       boolean isWarning
       SharedArrayBufferIssueType type
 
-  type LowTextContrastIssueDetails extends object
-    properties
-      DOM.BackendNodeId violatingNodeId
-      string violatingNodeSelector
-      number contrastRatio
-      number thresholdAA
-      number thresholdAAA
-      string fontSize
-      string fontWeight
-
   # Details for a CORS related issue, e.g. a warning or error related to
   # CORS RFC1918 enforcement.
   type CorsIssueDetails extends object
@@ -866,6 +865,15 @@ experimental domain Audits
       IncorrectDigestType
       IncorrectDigestLength
 
+  type ConnectionAllowlistError extends string
+    enum
+      InvalidHeader
+      MoreThanOneList
+      ItemNotInnerList
+      InvalidAllowlistItemType
+      ReportingEndpointNotToken
+      InvalidUrlPattern
+
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
@@ -909,6 +917,11 @@ experimental domain Audits
       UnencodedDigestError error
       AffectedRequest request
 
+  type ConnectionAllowlistIssueDetails extends object
+    properties
+      ConnectionAllowlistError error
+      AffectedRequest request
+
   type GenericIssueErrorType extends string
     enum
       FormLabelForNameError
@@ -923,6 +936,10 @@ experimental domain Audits
       FormInputHasWrongButWellIntendedAutocompleteValueError
       ResponseWasBlockedByORB
       NavigationEntryMarkedSkippable
+      AutofillAndManualTextPolicyControlledFeaturesInfo
+      AutofillPolicyControlledFeatureInfo
+      ManualTextPolicyControlledFeatureInfo
+      FormModelContextParameterMissingTitleAndDescription
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -996,10 +1013,6 @@ experimental domain Audits
       ConfigNoResponse
       ConfigInvalidResponse
       ConfigInvalidContentType
-      ClientMetadataHttpNotFound
-      ClientMetadataNoResponse
-      ClientMetadataInvalidResponse
-      ClientMetadataInvalidContentType
       IdpNotPotentiallyTrustworthy
       DisabledInSettings
       DisabledInFlags
@@ -1021,11 +1034,9 @@ experimental domain Audits
       Canceled
       RpPageNotVisible
       SilentMediationFailure
-      ThirdPartyCookiesBlocked
       NotSignedInWithIdp
       MissingTransientUserActivation
       ReplacedByActiveMode
-      InvalidFieldsSpecified
       RelyingPartyOriginIsOpaque
       TypeNotMatching
       UiDismissedNoEmbargo
@@ -1188,6 +1199,41 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
+  # Metadata about the ad script that was on the stack that caused the current
+  # script in the `AdAncestry` to be considered ad related.
+  type AdScriptIdentifier extends object
+    properties
+      # The script's v8 identifier.
+      Runtime.ScriptId scriptId
+      # v8's debugging id for the v8::Context.
+      Runtime.UniqueDebuggerId debuggerId
+      # The script's url (or generated name based on id if inline script).
+      string name
+
+  # Providence about how an ad script was determined to be such. It is an ad
+  # because its url matched a filterlist rule, or because some other ad script
+  # was on the stack when this script was loaded.
+  type AdAncestry extends object
+    properties
+      # The ad-script in the stack when the offending script was loaded. This is
+      # recursive down to the root script that was tagged due to the filterlist
+      # rule.
+      array of AdScriptIdentifier adAncestryChain
+      # The filterlist rule that caused the root (last) script in
+      # `adAncestry` to be ad-tagged.
+      optional string rootScriptFilterlistRule
+
+  # The issue warns about blocked calls to privacy sensitive APIs via the
+  # Selective Permissions Intervention.
+  type SelectivePermissionsInterventionIssueDetails extends object
+    properties
+      # Which API was intervened on.
+      string apiName
+      # Why the ad script using the API is considered an ad.
+      AdAncestry adAncestry
+      # The stack trace at the time of the intervention.
+      optional Runtime.StackTrace stackTrace
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -1199,7 +1245,6 @@ experimental domain Audits
       HeavyAdIssue
       ContentSecurityPolicyIssue
       SharedArrayBufferIssue
-      LowTextContrastIssue
       CorsIssue
       AttributionReportingIssue
       QuirksModeIssue
@@ -1219,8 +1264,11 @@ experimental domain Audits
       ElementAccessibilityIssue
       SRIMessageSignatureIssue
       UnencodedDigestIssue
+      ConnectionAllowlistIssue
       UserReidentificationIssue
       PermissionElementIssue
+      PerformanceIssue
+      SelectivePermissionsInterventionIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1233,7 +1281,6 @@ experimental domain Audits
       optional HeavyAdIssueDetails heavyAdIssueDetails
       optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
       optional SharedArrayBufferIssueDetails sharedArrayBufferIssueDetails
-      optional LowTextContrastIssueDetails lowTextContrastIssueDetails
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
@@ -1252,8 +1299,11 @@ experimental domain Audits
       optional ElementAccessibilityIssueDetails elementAccessibilityIssueDetails
       optional SRIMessageSignatureIssueDetails sriMessageSignatureIssueDetails
       optional UnencodedDigestIssueDetails unencodedDigestIssueDetails
+      optional ConnectionAllowlistIssueDetails connectionAllowlistIssueDetails
       optional UserReidentificationIssueDetails userReidentificationIssueDetails
       optional PermissionElementIssueDetails permissionElementIssueDetails
+      optional PerformanceIssueDetails performanceIssueDetails
+      optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1297,13 +1347,6 @@ experimental domain Audits
   # Enables issues domain, sends the issues collected so far to the client by means of the
   # `issueAdded` event.
   command enable
-
-  # Runs the contrast check for the target page. Found issues are reported
-  # using Audits.issueAdded event.
-  command checkContrast
-    parameters
-      # Whether to report WCAG AAA level issues. Default is false.
-      optional boolean reportAAA
 
   # Runs the form issues check for the target page. Found issues are reported
   # using Audits.issueAdded event.
@@ -1783,7 +1826,9 @@ domain Browser
       idleDetection
       keyboardLock
       localFonts
+      localNetwork
       localNetworkAccess
+      loopbackNetwork
       midi
       midiSysex
       nfc
@@ -2270,6 +2315,9 @@ experimental domain CSS
       # @starting-style CSS at-rule array.
       # The array enumerates @starting-style at-rules starting with the innermost one, going outwards.
       experimental optional array of CSSStartingStyle startingStyles
+      # @navigation CSS at-rule array.
+      # The array enumerates @navigation at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSNavigation navigations
 
   # Enum indicating the type of a CSS rule, used to represent the order of a style rule's ancestors.
   # This list only contains rule types that are collected during the ancestor rule collection.
@@ -2282,6 +2330,7 @@ experimental domain CSS
       ScopeRule
       StyleRule
       StartingStyleRule
+      NavigationRule
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -2443,6 +2492,19 @@ experimental domain CSS
       string text
       # Whether the supports condition is satisfied.
       boolean active
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional DOM.StyleSheetId styleSheetId
+
+  # CSS Navigation at-rule descriptor.
+  experimental type CSSNavigation extends object
+    properties
+      # Navigation rule text.
+      string text
+      # Whether the navigation condition is satisfied.
+      optional boolean active
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -2641,6 +2703,8 @@ experimental domain CSS
       optional CSSContainerQuery containerQueries
       # @supports CSS at-rule condition. Only one type of condition should be set.
       optional CSSSupports supports
+      # @navigation condition. Only one type of condition should be set.
+      optional CSSNavigation navigation
       # Block body.
       array of CSSFunctionNode children
       # The condition text.
@@ -2793,6 +2857,8 @@ experimental domain CSS
   # to the provided property syntax, the value is parsed using combined
   # syntax as if null `propertyName` was provided. If the value cannot be
   # resolved even then, return the provided value without any changes.
+  # Note: this function currently does not resolve CSS random() function,
+  # it returns unmodified random() function parts.`
   experimental command resolveValues
     parameters
       # Cascade-dependent keywords (revert/revert-layer) do not work.
@@ -3006,6 +3072,16 @@ experimental domain CSS
     returns
       # The resulting CSS Supports rule after modification.
       CSSSupports supports
+
+  # Modifies the expression of a navigation at-rule.
+  experimental command setNavigationText
+    parameters
+      DOM.StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Navigation rule after modification.
+      CSSNavigation navigation
 
   # Modifies the expression of a scope at-rule.
   experimental command setScopeText
@@ -3371,7 +3447,6 @@ domain DOM
       picker
       permission-icon
       overscroll-area-parent
-      overscroll-client-area
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -3479,6 +3554,7 @@ domain DOM
       experimental optional boolean isScrollable
       experimental optional boolean affectedByStartingStyles
       experimental optional array of StyleSheetId adoptedStyleSheets
+      experimental optional boolean isAdRelated
 
   # A structure to hold the top-level node of a detached tree and an array of its retained descendants.
   type DetachedElementInfo extends object
@@ -4207,6 +4283,14 @@ domain DOM
       DOM.NodeId nodeId
       # If the node is scrollable.
       boolean isScrollable
+
+  # Fired when a node's ad related state changes.
+  experimental event adRelatedStateUpdated
+    parameters
+      # The id of the node.
+      DOM.NodeId nodeId
+      # If the node is ad related.
+      boolean isAdRelated
 
   # Fired when a node's starting styles changes.
   experimental event affectedByStartingStylesFlagUpdated
@@ -5135,6 +5219,21 @@ domain Emulation
       # to continuous.
       # Deprecated, use Emulation.setDevicePostureOverride.
       experimental deprecated optional DevicePosture devicePosture
+      # Scrollbar type. Default: `default`.
+      experimental optional enum scrollbarType
+        # Emulates scrollbars that float over the content, typically appearing
+        # only when scrolling.
+        overlay
+        # Restores the platform's default scrollbar behavior, which might be
+        # classic (occupying space within the layout) or overlay, depending
+        # on the platform. Note: if `mobile` is `true`, the default scrollbar type is `overlay`.
+        default
+      # If set to true, enables screen orientation lock emulation, which
+      # intercepts screen.orientation.lock() calls from the page and reports
+      # orientation changes via screenOrientationLockChanged events. This is
+      # useful for emulating mobile device orientation lock behavior in
+      # responsive design mode.
+      experimental optional boolean screenOrientationLockEmulation
 
   # Start reporting the given posture value to the Device Posture API.
   # This override can also be set in setDeviceMetricsOverride().
@@ -5359,10 +5458,21 @@ domain Emulation
   # Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
   experimental event virtualTimeBudgetExpired
 
+  # Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+  # while device emulation is enabled. This allows the DevTools frontend to update the
+  # emulated device orientation accordingly.
+  experimental event screenOrientationLockChanged
+    parameters
+      # Whether the screen orientation is currently locked.
+      boolean locked
+      # The orientation lock type requested by the page. Only set when locked is true.
+      optional ScreenOrientation orientation
+
   # Enum of image types that can be disabled.
   experimental type DisabledImageType extends string
     enum
       avif
+      jxl
       webp
 
   experimental command setDisabledImageTypes
@@ -5409,7 +5519,8 @@ domain Emulation
       # of size 100lvh.
       integer difference
 
-  # Returns device's screen configuration.
+  # Returns device's screen configuration. In headful mode, the physical screens configuration is returned,
+  # whereas in headless mode, a virtual headless screen configuration is provided instead.
   experimental command getScreenInfos
     returns
       array of ScreenInfo screenInfos
@@ -5440,8 +5551,44 @@ domain Emulation
     returns
       ScreenInfo screenInfo
 
+  # Updates specified screen parameters. Only supported in headless mode.
+  experimental command updateScreen
+    parameters
+      # Target screen identifier.
+      ScreenId screenId
+      # Offset of the left edge of the screen in pixels.
+      optional integer left
+      # Offset of the top edge of the screen in pixels.
+      optional integer top
+      # The width of the screen in pixels.
+      optional integer width
+      # The height of the screen in pixels.
+      optional integer height
+      # Specifies the screen's work area.
+      optional WorkAreaInsets workAreaInsets
+      # Specifies the screen's device pixel ratio.
+      optional number devicePixelRatio
+      # Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+      optional integer rotation
+      # Specifies the screen's color depth in bits.
+      optional integer colorDepth
+      # Specifies the descriptive label for the screen.
+      optional string label
+      # Indicates whether the screen is internal to the device or external, attached to the device. Default is false.
+      optional boolean isInternal
+    returns
+      ScreenInfo screenInfo
+
   # Remove screen from the device. Only supported in headless mode.
   experimental command removeScreen
+    parameters
+      ScreenId screenId
+
+  # Set primary screen. Only supported in headless mode.
+  # Note that this changes the coordinate system origin to the top-left
+  # of the new primary screen, updating the bounds and work areas
+  # of all existing screens accordingly.
+  experimental command setPrimaryScreen
     parameters
       ScreenId screenId
 
@@ -5485,6 +5632,17 @@ experimental domain Extensions
       local
       sync
       managed
+
+  # Runs an extension default action.
+  # Available if the client is connected using the --remote-debugging-pipe
+  # flag and the --enable-unsafe-extension-debugging flag is set.
+  command triggerAction
+    parameters
+      # Extension id.
+      string id
+      # A tab target ID to trigger the default extension action on.
+      string targetId
+
   # Installs an unpacked extension from the filesystem similar to
   # --load-extension CLI flags. Returns extension ID once the extension
   # has been installed. Available if the client is connected using the
@@ -5494,9 +5652,33 @@ experimental domain Extensions
     parameters
       # Absolute file path.
       string path
+      # Enable the extension in incognito
+      optional boolean enableInIncognito
     returns
       # Extension id.
       string id
+
+  # Detailed information about an extension.
+  type ExtensionInfo extends object
+    properties
+      # Extension id.
+      string id
+      # Extension name.
+      string name
+      # Extension version.
+      string version
+      # The path from which the extension was loaded.
+      string path
+      # Extension enabled status.
+      boolean enabled
+
+  # Gets a list of all unpacked extensions.
+  # Available if the client is connected using the --remote-debugging-pipe flag
+  # and the --enable-unsafe-extension-debugging flag is set.
+  command getExtensions
+    returns
+      array of ExtensionInfo extensions
+
   # Uninstalls an unpacked extension (others not supported) from the profile.
   # Available if the client is connected using the --remote-debugging-pipe flag
   # and the --enable-unsafe-extension-debugging.
@@ -7300,6 +7482,15 @@ domain Network
       High
       VeryHigh
 
+  # The render-blocking behavior of a resource request.
+  experimental type RenderBlockingBehavior extends string
+    enum
+      Blocking
+      InBodyParserBlocking
+      NonBlocking
+      NonBlockingDynamic
+      PotentiallyBlocking
+
   # Post data entry for HTTP request
   type PostDataEntry extends object
     properties
@@ -7458,37 +7649,17 @@ domain Network
       # TODO(https://crbug.com/1263483): Remove this once frontend code does
       # not reference it anymore.
       PreflightInvalidAllowExternal
-      PreflightMissingAllowPrivateNetwork
-      PreflightInvalidAllowPrivateNetwork
       InvalidAllowMethodsPreflightResponse
       InvalidAllowHeadersPreflightResponse
       MethodDisallowedByPreflightResponse
       HeaderDisallowedByPreflightResponse
       RedirectContainsCredentials
       # Request was a private network request initiated by a non-secure context.
-      InsecurePrivateNetwork
+      InsecureLocalNetwork
       # Request carried a target IP address space property that did not match
       # the target resource's address space.
-      InvalidPrivateNetworkAccess
-      # Request was a private network request yet did not carry a target IP
-      # address space.
-      UnexpectedPrivateNetworkAccess
+      InvalidLocalNetworkAccess
       NoCorsRedirectModeNotFollow
-      # Request was a private network request and needed user permission yet did
-      # not carry `Private-Network-Access-Id` in the preflight response.
-      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
-      PreflightMissingPrivateNetworkAccessId
-      # Request was a private network request and needed user permission yet did
-      # not carry `Private-Network-Access-Name` in the preflight response.
-      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
-      PreflightMissingPrivateNetworkAccessName
-      # Request was a private network request and needed user permission yet not
-      # able to request for permission.
-      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
-      PrivateNetworkAccessPermissionUnavailable
-      # Request was a private network request and is denied by user permission.
-      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
-      PrivateNetworkAccessPermissionDenied
       # Request was a local network request and is denied by user permission.
       # https://wicg.github.io/local-network-access/
       LocalNetworkAccessPermissionDenied
@@ -7747,8 +7918,6 @@ domain Network
       optional CookieSameSite sameSite
       # Cookie Priority
       experimental CookiePriority priority
-      # True if cookie is SameParty.
-      experimental deprecated boolean sameParty
       # Cookie source scheme type.
       experimental CookieSourceScheme sourceScheme
       # Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
@@ -7812,12 +7981,6 @@ domain Network
       # value.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteUnspecifiedTreatedAsLax
-      # The cookie had the "SameParty" attribute but came from a cross-party response.
-      SamePartyFromCrossPartyContext
-      # The cookie had the "SameParty" attribute but did not specify the "Secure" attribute
-      # (which is required in order to use "SameParty"); or specified the "SameSite=Strict"
-      # attribute (which is forbidden when using "SameParty").
-      SamePartyConflictsWithOtherAttributes
       # The cookie's name/value pair size exceeded the size limit defined in
       # RFC6265bis.
       NameValuePairExceedsMaxSize
@@ -7874,8 +8037,6 @@ domain Network
       # value.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteUnspecifiedTreatedAsLax
-      # The cookie had the "SameParty" attribute and the request was made from a cross-party context.
-      SamePartyFromCrossPartyContext
       # The cookie's name/value pair size exceeded the size limit defined in
       # RFC6265bis.
       NameValuePairExceedsMaxSize
@@ -7972,8 +8133,6 @@ domain Network
       optional TimeSinceEpoch expires
       # Cookie Priority.
       experimental optional CookiePriority priority
-      # True if cookie is SameParty.
-      experimental optional boolean sameParty
       # Cookie source scheme type.
       experimental optional CookieSourceScheme sourceScheme
       # Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
@@ -8270,6 +8429,8 @@ domain Network
   command enable
     parameters
       # Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+      # This is the maximum number of bytes that will be collected by this
+      # DevTools session.
       experimental optional integer maxTotalBufferSize
       # Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
       experimental optional integer maxResourceBufferSize
@@ -8279,8 +8440,20 @@ domain Network
       experimental optional boolean reportDirectSocketTraffic
       # Enable storing response bodies outside of renderer, so that these survive
       # a cross-process navigation. Requires maxTotalBufferSize to be set.
-      # Currently defaults to false.
+      # Currently defaults to false. This field is being deprecated in favor of the dedicated
+      # configureDurableMessages command, due to the possibility of deadlocks when awaiting
+      # Network.enable before issuing Runtime.runIfWaitingForDebugger.
       experimental optional boolean enableDurableMessages
+
+  # Configures storing response bodies outside of renderer, so that these survive
+  # a cross-process navigation.
+  # If maxTotalBufferSize is not set, durable messages are disabled.
+  experimental command configureDurableMessages
+    parameters
+      # Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+      optional integer maxTotalBufferSize
+      # Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
+      optional integer maxResourceBufferSize
 
   # Returns all browser cookies. Depending on the backend support, will return detailed cookie
   # information in the `cookies` field.
@@ -8329,6 +8502,8 @@ domain Network
     returns
       # Request body string, omitting files from multipart requests
       string postData
+      # True, if content was sent as base64.
+      boolean base64Encoded
 
   # Returns content served for the given currently intercepted request.
   experimental command getResponseBodyForInterception
@@ -8428,8 +8603,6 @@ domain Network
       optional TimeSinceEpoch expires
       # Cookie Priority type.
       experimental optional CookiePriority priority
-      # True if cookie is SameParty.
-      experimental optional boolean sameParty
       # Cookie source scheme type.
       experimental optional CookieSourceScheme sourceScheme
       # Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
@@ -8620,6 +8793,8 @@ domain Network
       optional Page.FrameId frameId
       # Whether the request is initiated by a user gesture. Defaults to false.
       optional boolean hasUserGesture
+      # The render-blocking behavior of the request.
+      experimental optional RenderBlockingBehavior renderBlockingBehavior
 
   # Fired when resource loading priority is changed
   experimental event resourceChangedPriority
@@ -8912,7 +9087,7 @@ domain Network
       DirectUDPMessage message
       MonotonicTime timestamp
 
-  experimental type PrivateNetworkRequestPolicy extends string
+  experimental type LocalNetworkAccessRequestPolicy extends string
     enum
       Allow
       BlockFromInsecureToMorePrivate
@@ -8938,7 +9113,7 @@ domain Network
     properties
       boolean initiatorIsSecureContext
       IPAddressSpace initiatorIPAddressSpace
-      PrivateNetworkRequestPolicy privateNetworkRequestPolicy
+      LocalNetworkAccessRequestPolicy localNetworkAccessRequestPolicy
 
   # Fired when additional information about a requestWillBeSent event is available from the
   # network stack. Not every requestWillBeSent event will have an additional
@@ -8955,6 +9130,8 @@ domain Network
       Headers headers
       # Connection timing information for the request.
       experimental ConnectTiming connectTiming
+      # How the request site's device bound sessions were used during this request.
+      optional array of DeviceBoundSessionWithUsage deviceBoundSessionUsages
       # The client security state set for the request.
       optional ClientSecurityState clientSecurityState
       # Whether the site has partitioned cookies stored in a partition different than the current one.
@@ -9167,6 +9344,276 @@ domain Network
       # Origin of the document(s) which configured the endpoints.
       string origin
       array of ReportingApiEndpoint endpoints
+
+  # Unique identifier for a device bound session.
+  experimental type DeviceBoundSessionKey extends object
+    properties
+      # The site the session is set up for.
+      string site
+      # The id of the session.
+      string id
+
+  # How a device bound session was used during a request.
+  experimental type DeviceBoundSessionWithUsage extends object
+    properties
+      # The key for the session.
+      DeviceBoundSessionKey sessionKey
+      # How the session was used (or not used).
+      enum usage
+        NotInScope
+        InScopeRefreshNotYetNeeded
+        InScopeRefreshNotAllowed
+        ProactiveRefreshNotPossible
+        ProactiveRefreshAttempted
+        Deferred
+
+  # A device bound session's cookie craving.
+  experimental type DeviceBoundSessionCookieCraving extends object
+    properties
+      # The name of the craving.
+      string name
+      # The domain of the craving.
+      string domain
+      # The path of the craving.
+      string path
+      # The `Secure` attribute of the craving attributes.
+      boolean secure
+      # The `HttpOnly` attribute of the craving attributes.
+      boolean httpOnly
+      # The `SameSite` attribute of the craving attributes.
+      optional CookieSameSite sameSite
+
+  # A device bound session's inclusion URL rule.
+  experimental type DeviceBoundSessionUrlRule extends object
+    properties
+      # See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::rule_type`.
+      enum ruleType
+        Exclude
+        Include
+      # See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::host_pattern`.
+      string hostPattern
+      # See comments on `net::device_bound_sessions::SessionInclusionRules::UrlRule::path_prefix`.
+      string pathPrefix
+
+  # A device bound session's inclusion rules.
+  experimental type DeviceBoundSessionInclusionRules extends object
+    properties
+      # See comments on `net::device_bound_sessions::SessionInclusionRules::origin_`.
+      string origin
+      # Whether the whole site is included. See comments on
+      # `net::device_bound_sessions::SessionInclusionRules::include_site_` for more
+      # details; this boolean is true if that value is populated.
+      boolean includeSite
+      # See comments on `net::device_bound_sessions::SessionInclusionRules::url_rules_`.
+      array of DeviceBoundSessionUrlRule urlRules
+
+  # A device bound session.
+  experimental type DeviceBoundSession extends object
+    properties
+      # The site and session ID of the session.
+      DeviceBoundSessionKey key
+      # See comments on `net::device_bound_sessions::Session::refresh_url_`.
+      string refreshUrl
+      # See comments on `net::device_bound_sessions::Session::inclusion_rules_`.
+      DeviceBoundSessionInclusionRules inclusionRules
+      # See comments on `net::device_bound_sessions::Session::cookie_cravings_`.
+      array of DeviceBoundSessionCookieCraving cookieCravings
+      # See comments on `net::device_bound_sessions::Session::expiry_date_`.
+      Network.TimeSinceEpoch expiryDate
+      # See comments on `net::device_bound_sessions::Session::cached_challenge__`.
+      optional string cachedChallenge
+      # See comments on `net::device_bound_sessions::Session::allowed_refresh_initiators_`.
+      array of string allowedRefreshInitiators
+
+  # A unique identifier for a device bound session event.
+  experimental type DeviceBoundSessionEventId extends string
+
+  # A fetch result for a device bound session creation or refresh.
+  experimental type DeviceBoundSessionFetchResult extends string
+    enum
+      Success
+      KeyError
+      SigningError
+      ServerRequestedTermination
+      InvalidSessionId
+      InvalidChallenge
+      TooManyChallenges
+      InvalidFetcherUrl
+      InvalidRefreshUrl
+      TransientHttpError
+      ScopeOriginSameSiteMismatch
+      RefreshUrlSameSiteMismatch
+      MismatchedSessionId
+      MissingScope
+      NoCredentials
+      SubdomainRegistrationWellKnownUnavailable
+      SubdomainRegistrationUnauthorized
+      SubdomainRegistrationWellKnownMalformed
+      SessionProviderWellKnownUnavailable
+      RelyingPartyWellKnownUnavailable
+      FederatedKeyThumbprintMismatch
+      InvalidFederatedSessionUrl
+      InvalidFederatedKey
+      TooManyRelyingOriginLabels
+      BoundCookieSetForbidden
+      NetError
+      ProxyError
+      EmptySessionConfig
+      InvalidCredentialsConfig
+      InvalidCredentialsType
+      InvalidCredentialsEmptyName
+      InvalidCredentialsCookie
+      PersistentHttpError
+      RegistrationAttemptedChallenge
+      InvalidScopeOrigin
+      ScopeOriginContainsPath
+      RefreshInitiatorNotString
+      RefreshInitiatorInvalidHostPattern
+      InvalidScopeSpecification
+      MissingScopeSpecificationType
+      EmptyScopeSpecificationDomain
+      EmptyScopeSpecificationPath
+      InvalidScopeSpecificationType
+      InvalidScopeIncludeSite
+      MissingScopeIncludeSite
+      FederatedNotAuthorizedByProvider
+      FederatedNotAuthorizedByRelyingParty
+      SessionProviderWellKnownMalformed
+      SessionProviderWellKnownHasProviderOrigin
+      RelyingPartyWellKnownMalformed
+      RelyingPartyWellKnownHasRelyingOrigins
+      InvalidFederatedSessionProviderSessionMissing
+      InvalidFederatedSessionWrongProviderOrigin
+      InvalidCredentialsCookieCreationTime
+      InvalidCredentialsCookieName
+      InvalidCredentialsCookieParsing
+      InvalidCredentialsCookieUnpermittedAttribute
+      InvalidCredentialsCookieInvalidDomain
+      InvalidCredentialsCookiePrefix
+      InvalidScopeRulePath
+      InvalidScopeRuleHostPattern
+      ScopeRuleOriginScopedHostPatternMismatch
+      ScopeRuleSiteScopedHostPatternMismatch
+      SigningQuotaExceeded
+      InvalidConfigJson
+      InvalidFederatedSessionProviderFailedToRestoreKey
+      FailedToUnwrapKey
+      SessionDeletedDuringRefresh
+
+  # Details about a failed device bound session network request.
+  experimental type DeviceBoundSessionFailedRequest extends object
+    properties
+      # The failed request URL.
+      string requestUrl
+      # The net error of the response if it was not OK.
+      optional string netError
+      # The response code if the net error was OK and the response code was not
+      # 200.
+      optional integer responseError
+      # The body of the response if the net error was OK, the response code was
+      # not 200, and the response body was not empty.
+      optional string responseErrorBody
+
+  # Session event details specific to creation.
+  experimental type CreationEventDetails extends object
+    properties
+      # The result of the fetch attempt.
+      DeviceBoundSessionFetchResult fetchResult
+      # The session if there was a newly created session. This is populated for
+      # all successful creation events.
+      optional DeviceBoundSession newSession
+      # Details about a failed device bound session network request if there was
+      # one.
+      optional DeviceBoundSessionFailedRequest failedRequest
+
+  # Session event details specific to refresh.
+  experimental type RefreshEventDetails extends object
+    properties
+      # The result of a refresh.
+      enum refreshResult
+        Refreshed
+        InitializedService
+        Unreachable
+        ServerError
+        RefreshQuotaExceeded
+        FatalError
+        SigningQuotaExceeded
+      # If there was a fetch attempt, the result of that.
+      optional DeviceBoundSessionFetchResult fetchResult
+      # The session display if there was a newly created session. This is populated
+      # for any refresh event that modifies the session config.
+      optional DeviceBoundSession newSession
+      # See comments on `net::device_bound_sessions::RefreshEventResult::was_fully_proactive_refresh`.
+      boolean wasFullyProactiveRefresh
+      # Details about a failed device bound session network request if there was
+      # one.
+      optional DeviceBoundSessionFailedRequest failedRequest
+
+  # Session event details specific to termination.
+  experimental type TerminationEventDetails extends object
+    properties
+      # The reason for a session being deleted.
+      enum deletionReason
+        Expired
+        FailedToRestoreKey
+        FailedToUnwrapKey
+        StoragePartitionCleared
+        ClearBrowsingData
+        ServerRequested
+        InvalidSessionParams
+        RefreshFatalError
+
+  # Session event details specific to challenges.
+  experimental type ChallengeEventDetails extends object
+    properties
+      # The result of a challenge.
+      enum challengeResult
+        Success
+        NoSessionId
+        NoSessionMatch
+        CantSetBoundCookie
+      # The challenge set.
+      string challenge
+
+  # Triggered when the initial set of device bound sessions is added.
+  experimental event deviceBoundSessionsAdded
+    parameters
+      # The device bound sessions.
+      array of DeviceBoundSession sessions
+
+  # Triggered when a device bound session event occurs.
+  experimental event deviceBoundSessionEventOccurred
+    parameters
+      # A unique identifier for this session event.
+      DeviceBoundSessionEventId eventId
+      # The site this session event is associated with.
+      string site
+      # Whether this event was considered successful.
+      boolean succeeded
+      # The session ID this event is associated with. May not be populated for
+      # failed events.
+      optional string sessionId
+
+      # The below are the different session event type details. Exactly one is populated.
+      optional CreationEventDetails creationEventDetails
+      optional RefreshEventDetails refreshEventDetails
+      optional TerminationEventDetails terminationEventDetails
+      optional ChallengeEventDetails challengeEventDetails
+
+  # Sets up tracking device bound sessions and fetching of initial set of sessions.
+  experimental command enableDeviceBoundSessions
+    parameters
+      # Whether to enable or disable events.
+      boolean enable
+
+  # Fetches the schemeful site for a specific origin.
+  experimental command fetchSchemefulSite
+    parameters
+      # The URL origin.
+      string origin
+    returns
+      # The corresponding schemeful site.
+      string schemefulSite
 
   # An object providing the result of a network resource load.
   experimental type LoadNetworkResourcePageResult extends object
@@ -9471,6 +9918,13 @@ experimental domain Overlay
       captureAreaScreenshot
       none
 
+  type InspectedElementAnchorConfig extends object
+    properties
+      # Identifier of the node to highlight.
+      optional DOM.NodeId nodeId
+      # Identifier of the backend node to highlight.
+      optional DOM.BackendNodeId backendNodeId
+
   # Disables domain notifications.
   command disable
 
@@ -9639,6 +10093,11 @@ experimental domain Overlay
       # An array of node identifiers and descriptors for the highlight appearance.
       array of ContainerQueryHighlightConfig containerQueryHighlightConfigs
 
+  command setShowInspectedElementAnchor
+    parameters
+      # Node identifier for which to show an anchor for.
+      InspectedElementAnchorConfig inspectedElementAnchorConfig
+
   # Requests that backend shows paint rectangles
   command setShowPaintRects
     parameters
@@ -9709,6 +10168,18 @@ experimental domain Overlay
     parameters
       # Viewport to capture, in device independent pixels (dip).
       Page.Viewport viewport
+
+  # Fired when user asks to show the Inspect panel.
+  event inspectPanelShowRequested
+    parameters
+      # Id of the node to show in the panel.
+      DOM.BackendNodeId backendNodeId
+
+  # Fired when user asks to restore the Inspected Element floating window.
+  event inspectedElementWindowRestored
+    parameters
+      # Id of the node to restore the floating window for.
+      DOM.BackendNodeId backendNodeId
 
   # Fired when user cancels the inspect mode.
   event inspectModeCanceled
@@ -10023,7 +10494,9 @@ domain Page
       language-detector
       language-model
       local-fonts
+      local-network
       local-network-access
+      loopback-network
       magnetometer
       manual-text
       media-playback-while-not-visible
@@ -11394,6 +11867,7 @@ domain Page
       BackForwardCacheDisabledForPrerender
       UserAgentOverrideDiffers
       ForegroundCacheLimit
+      ForwardCacheDisabled
       BrowsingInstanceNotSwapped
       BackForwardCacheDisabledForDelegate
       UnloadHandlerExistsInMainFrame
@@ -11438,6 +11912,7 @@ domain Page
       SharedWorkerMessage
       SharedWorkerWithNoActiveClient
       WebLocks
+      WebLocksContention
       WebHID
       WebBluetooth
       WebShare
@@ -12380,6 +12855,412 @@ experimental domain ServiceWorker
   event workerVersionUpdated
     parameters
       array of ServiceWorkerVersion versions
+
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# Contributing to Chrome DevTools Protocol: https://goo.gle/devtools-contribution-guide-cdp
+# This domain allows to emulate smart card readers and cards,
+# bypassing the need for physical hardware.
+
+experimental domain SmartCardEmulation
+
+  # Indicates the PC/SC error code.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__ErrorCodes.html
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
+  type ResultCode extends string
+    enum
+      success
+      removed-card
+      reset-card
+      unpowered-card
+      unresponsive-card
+      unsupported-card
+      reader-unavailable
+      sharing-violation
+      not-transacted
+      no-smartcard
+      proto-mismatch
+      system-cancelled
+      not-ready
+      cancelled
+      insufficient-buffer
+      invalid-handle
+      invalid-parameter
+      invalid-value
+      no-memory
+      timeout
+      unknown-reader
+      unsupported-feature
+      no-readers-available
+      service-stopped
+      no-service
+      comm-error
+      internal-error
+      server-too-busy
+      unexpected
+      shutdown
+
+      # Maps to SCARD_E_UNKNOWN_CARD.
+      # TODO(crbug.com/472114998): Rename Mojo's kUnknownError to kUnknownCard to match.
+      unknown-card
+
+      # Error code that is not mapped in this enum.
+      unknown
+
+  # Maps to the |SCARD_SHARE_*| values.
+  type ShareMode extends string
+    enum
+      shared
+      exclusive
+      direct
+
+  # Indicates what the reader should do with the card.
+  type Disposition extends string
+    enum
+      leave-card
+      reset-card
+      unpower-card
+      eject-card
+
+  # Maps to |SCARD_*| connection state values.
+  type ConnectionState extends string
+    enum
+      absent
+      present
+      swallowed
+      powered
+      negotiable
+      specific
+
+  # Maps to the |SCARD_STATE_*| flags.
+  type ReaderStateFlags extends object
+    properties
+      optional boolean unaware
+      optional boolean ignore
+      optional boolean changed
+      optional boolean unknown
+      optional boolean unavailable
+      optional boolean empty
+      optional boolean present
+      optional boolean exclusive
+      optional boolean inuse
+      optional boolean mute
+      optional boolean unpowered
+
+  # Maps to the |SCARD_PROTOCOL_*| flags.
+  type ProtocolSet extends object
+    properties
+      optional boolean t0
+      optional boolean t1
+      optional boolean raw
+
+  # Maps to the |SCARD_PROTOCOL_*| values.
+  type Protocol extends string
+    enum
+      t0
+      t1
+      raw
+
+  type ReaderStateIn extends object
+    properties
+      string reader
+      ReaderStateFlags currentState
+      integer currentInsertionCount
+
+  type ReaderStateOut extends object
+    properties
+      string reader
+      ReaderStateFlags eventState
+      integer eventCount
+      binary atr
+
+  # Enables the |SmartCardEmulation| domain.
+  command enable
+
+  # Disables the |SmartCardEmulation| domain.
+  command disable
+
+  # Reports the successful result of a |SCardEstablishContext| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
+  command reportEstablishContextResult
+    parameters
+      string requestId
+      integer contextId
+
+  # Reports the successful result of a |SCardReleaseContext| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
+  command reportReleaseContextResult
+    parameters
+      string requestId
+
+  # Reports the successful result of a |SCardListReaders| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
+  command reportListReadersResult
+    parameters
+      string requestId
+      array of string readers
+
+  # Reports the successful result of a |SCardGetStatusChange| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
+  command reportGetStatusChangeResult
+    parameters
+      string requestId
+      array of ReaderStateOut readerStates
+
+  # Reports the result of a |SCardBeginTransaction| call.
+  # On success, this creates a new transaction object.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
+  command reportBeginTransactionResult
+    parameters
+      string requestId
+      integer handle
+
+  # Reports the successful result of a call that returns only a result code.
+  # Used for: |SCardCancel|, |SCardDisconnect|, |SCardSetAttrib|, |SCardEndTransaction|.
+  #
+  # This maps to:
+  # 1. SCardCancel
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel
+  #
+  # 2. SCardDisconnect
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect
+  #
+  # 3. SCardSetAttrib
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib
+  #
+  # 4. SCardEndTransaction
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
+  command reportPlainResult
+    parameters
+      string requestId
+
+  # Reports the successful result of a |SCardConnect| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
+  command reportConnectResult
+    parameters
+      string requestId
+      integer handle
+      optional Protocol activeProtocol
+
+  # Reports the successful result of a call that sends back data on success.
+  # Used for |SCardTransmit|, |SCardControl|, and |SCardGetAttrib|.
+  #
+  # This maps to:
+  # 1. SCardTransmit
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit
+  #
+  # 2. SCardControl
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol
+  #
+  # 3. SCardGetAttrib
+  #    PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602
+  #    Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
+  command reportDataResult
+    parameters
+      string requestId
+      binary data
+
+  # Reports the successful result of a |SCardStatus| call.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
+  command reportStatusResult
+    parameters
+      string requestId
+      string readerName
+      ConnectionState state
+      binary atr
+      optional Protocol protocol
+
+  # Reports an error result for the given request.
+  command reportError
+    parameters
+      string requestId
+      ResultCode resultCode
+
+  # Fired when |SCardEstablishContext| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
+  event establishContextRequested
+    parameters
+      string requestId
+
+  # Fired when |SCardReleaseContext| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
+  event releaseContextRequested
+    parameters
+      string requestId
+      integer contextId
+
+  # Fired when |SCardListReaders| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
+  event listReadersRequested
+    parameters
+      string requestId
+      integer contextId
+
+  # Fired when |SCardGetStatusChange| is called. Timeout is specified in milliseconds.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
+  event getStatusChangeRequested
+    parameters
+      string requestId
+      integer contextId
+      array of ReaderStateIn readerStates
+
+      # in milliseconds, if absent, it means "infinite"
+      optional integer timeout
+
+  # Fired when |SCardCancel| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel
+  event cancelRequested
+    parameters
+      string requestId
+      integer contextId
+
+  # Fired when |SCardConnect| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
+  event connectRequested
+    parameters
+      string requestId
+      integer contextId
+      string reader
+      ShareMode shareMode
+      ProtocolSet preferredProtocols
+
+  # Fired when |SCardDisconnect| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect
+  event disconnectRequested
+    parameters
+      string requestId
+      integer handle
+      Disposition disposition
+
+  # Fired when |SCardTransmit| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit
+  event transmitRequested
+    parameters
+      string requestId
+      integer handle
+      binary data
+      optional Protocol protocol
+
+  # Fired when |SCardControl| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol
+  event controlRequested
+    parameters
+      string requestId
+      integer handle
+      integer controlCode
+      binary data
+
+  # Fired when |SCardGetAttrib| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
+  event getAttribRequested
+    parameters
+      string requestId
+      integer handle
+      integer attribId
+
+  # Fired when |SCardSetAttrib| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib
+  event setAttribRequested
+    parameters
+      string requestId
+      integer handle
+      integer attribId
+      binary data
+
+  # Fired when |SCardStatus| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
+  event statusRequested
+    parameters
+      string requestId
+      integer handle
+
+  # Fired when |SCardBeginTransaction| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
+  event beginTransactionRequested
+    parameters
+      string requestId
+      integer handle
+
+  # Fired when |SCardEndTransaction| is called.
+  #
+  # This maps to:
+  # PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b
+  # Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
+  event endTransactionRequested
+    parameters
+      string requestId
+      integer handle
+      Disposition disposition
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -13569,6 +14450,8 @@ domain Target
     returns
       # An array of browser context ids.
       array of Browser.BrowserContextID browserContextIds
+      # The id of the default browser context if available.
+      experimental optional Browser.BrowserContextID defaultBrowserContextId
 
   # Creates a new page.
   command createTarget
@@ -13602,6 +14485,14 @@ domain Target
       # present in the tab UI strip. Cannot be created with `forTab: true`, `newWindow: true` or
       # `background: false`. The life-time of the tab is limited to the life-time of the session.
       experimental optional boolean hidden
+      # If specified, the option is used to determine if the new target should
+      # be focused or not. By default, the focus behavior depends on the
+      # value of the background field. For example, background=false and focus=false
+      # will result in the target tab being opened but the browser window remain
+      # unchanged (if it was in the background, it will remain in the background)
+      # and background=false with focus=undefined will result in the window being focused.
+      # Using background: true and focus: true is not supported and will result in an error.
+      experimental optional boolean focus
     returns
       # The id of the page opened.
       TargetID targetId
@@ -13885,6 +14776,12 @@ domain Tracing
     returns
       # A list of supported tracing categories.
       array of string categories
+
+  # Return a descriptor for all available tracing categories.
+  experimental command getTrackEventDescriptor
+    returns
+      # Base64-encoded serialized perfetto.protos.TrackEventDescriptor protobuf message.
+      binary descriptor
 
   # Record a clock sync marker in the trace.
   experimental command recordClockSyncMarker
@@ -14400,4 +15297,58 @@ experimental domain WebAuthn
     parameters
       AuthenticatorId authenticatorId
       Credential credential
+
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# Contributing to Chrome DevTools Protocol: https://goo.gle/devtools-contribution-guide-cdp
+
+experimental domain WebMCP
+  depends on Runtime
+  depends on Page
+  depends on DOM
+
+  # Tool annotations
+  type Annotation extends object
+    properties
+      # A hint indicating that the tool does not modify any state.
+      optional boolean readOnly
+      # If the declarative tool was declared with the autosubmit attribute.
+      optional boolean autosubmit
+
+  # Definition of a tool that can be invoked.
+  type Tool extends object
+    properties
+      # Tool name.
+      string name
+      # Tool description.
+      string description
+      # Schema for the tool's input parameters.
+      optional object inputSchema
+      # Optional annotations for the tool.
+      optional Annotation annotations
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+      # Optional node ID for declarative tools.
+      optional DOM.BackendNodeId backendNodeId
+      # The stack trace at the time of the registration.
+      optional Runtime.StackTrace stackTrace
+
+
+  # Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for
+  # all currently registered tools.
+  command enable
+
+  # Event fired when new tools are added.
+  event toolsAdded
+    parameters
+      # Array of tools that were added.
+      array of Tool tools
+
+  # Event fired when tools are removed.
+  event toolsRemoved
+    parameters
+      # Array of tools that were removed.
+      array of Tool tools
 

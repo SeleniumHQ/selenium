@@ -16,6 +16,6 @@
 // under the License.
 
 @NullMarked
-package org.openqa.selenium.devtools.v144;
+package org.openqa.selenium.devtools.v147;
 
 import org.jspecify.annotations.NullMarked;
