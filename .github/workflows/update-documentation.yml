@@ -95,7 +95,7 @@ jobs:
       - name: Download documentation
         uses: actions/download-artifact@v4
         with:
-          pattern: documentation-*
+          name: documentation-${{ needs.parse.outputs.language }}
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
