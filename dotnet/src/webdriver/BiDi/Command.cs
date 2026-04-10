@@ -33,4 +33,9 @@ public record Parameters
     public static Parameters Empty { get; } = new Parameters();
 }
 
+public abstract record CommandOptions
+{
+    public TimeSpan? Timeout { get; init; }
+}
+
 public abstract record EmptyResult;
