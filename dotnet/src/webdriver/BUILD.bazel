@@ -11,7 +11,9 @@ load(
 )
 
 exports_files([
-    "WebDriver.csproj",
+    "Properties/ArgumentNullExceptionExtensions.cs",
+    "Properties/CallerArgumentExpressionAttribute.cs",
+    "Properties/NullableAttributes.cs",
     "Properties/StringSyntaxAttribute.cs",
     "Properties/StringSyntaxConstants.cs",
 ])
