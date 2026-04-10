@@ -98,7 +98,7 @@ internal sealed class LogContext : ILogContext
     {
         if (IsEnabled(logger, level))
         {
-            if (level < LogEventLevel.Warn)
+            if (_truncationLength.HasValue && level < LogEventLevel.Warn)
             {
                 message = TruncateMessage(message, _truncationLength);
             }
