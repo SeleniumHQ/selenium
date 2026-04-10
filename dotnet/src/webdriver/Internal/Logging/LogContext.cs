@@ -98,9 +98,12 @@ internal sealed class LogContext : ILogContext
     {
         if (IsEnabled(logger, level))
         {
-            string truncatedMessage = TruncateMessage(message, _truncationLength);
+            if (level < LogEventLevel.Warn)
+            {
+                message = TruncateMessage(message, _truncationLength);
+            }
 
-            var logEvent = new LogEvent(logger.Issuer, timestamp, level, truncatedMessage);
+            var logEvent = new LogEvent(logger.Issuer, timestamp, level, message);
 
             foreach (var handler in Handlers)
             {
