@@ -1,4 +1,4 @@
-// <copyright file="EventArgs.cs" company="Selenium Committers">
+// <copyright file="NavigationStartedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi;
+namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public abstract record EventArgs(IBiDi BiDi);
+public sealed record NavigationStartedEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+    : NavigationEventArgs(BiDi, Context, Navigation, Timestamp, Url, UserContext);

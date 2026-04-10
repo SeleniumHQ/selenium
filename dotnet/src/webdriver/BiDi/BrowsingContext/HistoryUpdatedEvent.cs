@@ -1,4 +1,4 @@
-// <copyright file="AuthRequiredEventArgs.cs" company="Selenium Committers">
+// <copyright file="HistoryUpdatedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,21 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.Network;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
-public record AuthRequiredEventArgs(
+namespace OpenQA.Selenium.BiDi.BrowsingContext;
+
+public sealed record HistoryUpdatedEventArgs(
     IBiDi BiDi,
-    BrowsingContext.BrowsingContext? Context,
-    bool IsBlocked,
-    BrowsingContext.Navigation? Navigation,
-    long RedirectCount,
-    RequestData Request,
+    BrowsingContext Context,
     DateTimeOffset Timestamp,
-    Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts,
-    ResponseData Response)
+    string Url,
+    Browser.UserContext? UserContext)
     : EventArgs(BiDi);
 
-internal record AuthRequiredParameters(
-    BrowsingContext.BrowsingContext? Context,
-    bool IsBlocked,
-    BrowsingContext.Navigation? Navigation,
-    long RedirectCount,
-    RequestData Request,
-    DateTimeOffset Timestamp,
-    ResponseData Response,
-    Browser.UserContext? UserContext,
-    IReadOnlyList<Intercept>? Intercepts)
-    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);
+internal sealed record HistoryUpdatedParameters(
+    BrowsingContext Context,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext);

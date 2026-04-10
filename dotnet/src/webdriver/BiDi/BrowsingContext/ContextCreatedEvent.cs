@@ -1,4 +1,4 @@
-// <copyright file="HistoryUpdatedEventArgs.cs" company="Selenium Committers">
+// <copyright file="ContextCreatedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,21 +17,14 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record HistoryUpdatedEventArgs(
+public sealed record ContextCreatedEventArgs(
     IBiDi BiDi,
+    IReadOnlyList<Info>? Children,
+    Browser.ClientWindow ClientWindow,
     BrowsingContext Context,
-    DateTimeOffset Timestamp,
+    BrowsingContext? OriginalOpener,
     string Url,
-    Browser.UserContext? UserContext)
-    : EventArgs(BiDi);
-
-internal sealed record HistoryUpdatedParameters(
-    BrowsingContext Context,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url,
-    Browser.UserContext? UserContext);
+    Browser.UserContext UserContext,
+    BrowsingContext? Parent) : EventArgs(BiDi);

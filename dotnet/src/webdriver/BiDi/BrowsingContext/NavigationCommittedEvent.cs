@@ -1,4 +1,4 @@
-// <copyright file="ContextDestroyedEventArgs.cs" company="Selenium Committers">
+// <copyright file="NavigationCommittedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,10 +19,5 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record ContextDestroyedEventArgs(IBiDi BiDi, IReadOnlyList<Info>? Children,
-    Browser.ClientWindow ClientWindow,
-    BrowsingContext Context,
-    BrowsingContext? OriginalOpener,
-    string Url,
-    Browser.UserContext UserContext,
-    BrowsingContext? Parent) : EventArgs(BiDi);
+public sealed record NavigationCommittedEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+    : NavigationEventArgs(BiDi, Context, Navigation, Timestamp, Url, UserContext);

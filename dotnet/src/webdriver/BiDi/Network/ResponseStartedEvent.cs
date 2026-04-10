@@ -1,4 +1,4 @@
-// <copyright file="FetchErrorEventArgs.cs" company="Selenium Committers">
+// <copyright file="ResponseStartedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record FetchErrorEventArgs(
+public record ResponseStartedEventArgs(
     IBiDi BiDi,
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
@@ -29,19 +29,19 @@ public sealed record FetchErrorEventArgs(
     long RedirectCount,
     RequestData Request,
     DateTimeOffset Timestamp,
-    string ErrorText,
+    ResponseData Response,
     Browser.UserContext? UserContext,
     IReadOnlyList<Intercept>? Intercepts)
-     : EventArgs(BiDi);
+    : EventArgs(BiDi);
 
-internal sealed record FetchErrorParameters(
+internal record ResponseStartedParameters(
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
     long RedirectCount,
     RequestData Request,
     DateTimeOffset Timestamp,
-    string ErrorText,
+    ResponseData Response,
     Browser.UserContext? UserContext,
     IReadOnlyList<Intercept>? Intercepts)
     : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

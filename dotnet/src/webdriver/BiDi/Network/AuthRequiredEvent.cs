@@ -1,4 +1,4 @@
-// <copyright file="UserPromptOpenedEventArgs.cs" company="Selenium Committers">
+// <copyright file="AuthRequiredEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,22 +17,29 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record UserPromptOpenedEventArgs(
+public record AuthRequiredEventArgs(
     IBiDi BiDi,
-    BrowsingContext Context,
-    Session.UserPromptHandlerType Handler,
-    string Message,
-    UserPromptType Type,
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    BrowsingContext.Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
-    string? DefaultValue)
+    IReadOnlyList<Intercept>? Intercepts,
+    ResponseData Response)
     : EventArgs(BiDi);
 
-internal sealed record UserPromptOpenedParameters(
-    BrowsingContext Context,
-    Session.UserPromptHandlerType Handler,
-    string Message,
-    UserPromptType Type,
+internal record AuthRequiredParameters(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    BrowsingContext.Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    ResponseData Response,
     Browser.UserContext? UserContext,
-    string? DefaultValue);
+    IReadOnlyList<Intercept>? Intercepts)
+    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

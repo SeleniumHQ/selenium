@@ -26,3 +26,5 @@ public readonly record struct Event<TEventArgs, TEventParams>(
     Func<IBiDi, TEventParams, TEventArgs> Factory,
     JsonTypeInfo<TEventParams> JsonTypeInfo)
     where TEventArgs : EventArgs;
+
+public abstract record EventArgs(IBiDi BiDi);

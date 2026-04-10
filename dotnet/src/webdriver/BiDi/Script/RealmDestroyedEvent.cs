@@ -1,4 +1,4 @@
-// <copyright file="NavigationEventArgs.cs" company="Selenium Committers">
+// <copyright file="RealmDestroyedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,7 +17,10 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Script;
 
-public record NavigationEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
-    : EventArgs(BiDi), IBaseNavigationInfo;
+public sealed record RealmDestroyedEventArgs(
+    IBiDi BiDi,
+    Realm Realm) : EventArgs(BiDi);
+
+internal sealed record RealmDestroyedParameters(Realm Realm);

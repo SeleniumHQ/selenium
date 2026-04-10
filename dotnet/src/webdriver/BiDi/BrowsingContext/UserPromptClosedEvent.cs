@@ -1,4 +1,4 @@
-// <copyright file="PrefetchStatusUpdatedEventArgs.cs" company="Selenium Committers">
+// <copyright file="UserPromptClosedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,16 +17,20 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.Speculation;
+namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record PrefetchStatusUpdatedEventArgs(
+public sealed record UserPromptClosedEventArgs(
     IBiDi BiDi,
-    BrowsingContext.BrowsingContext Context,
-    string Url,
-    PreloadingStatus Status)
+    BrowsingContext Context,
+    bool Accepted,
+    UserPromptType Type,
+    Browser.UserContext? UserContext,
+    string? UserText)
     : EventArgs(BiDi);
 
-internal sealed record PrefetchStatusUpdatedParameters(
-    BrowsingContext.BrowsingContext Context,
-    string Url,
-    PreloadingStatus Status);
+internal sealed record UserPromptClosedParameters(
+    BrowsingContext Context,
+    bool Accepted,
+    UserPromptType Type,
+    Browser.UserContext? UserContext,
+    string? UserText);

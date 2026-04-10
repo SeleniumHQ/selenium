@@ -1,4 +1,4 @@
-// <copyright file="MessageEventArgs.cs" company="Selenium Committers">
+// <copyright file="PrefetchStatusUpdatedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,15 +17,16 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.Speculation;
 
-public sealed record MessageEventArgs(
+public sealed record PrefetchStatusUpdatedEventArgs(
     IBiDi BiDi,
-    Channel Channel,
-    RemoteValue Data,
-    Source Source) : EventArgs(BiDi);
+    BrowsingContext.BrowsingContext Context,
+    string Url,
+    PreloadingStatus Status)
+    : EventArgs(BiDi);
 
-internal sealed record MessageParameters(
-    Channel Channel,
-    RemoteValue Data,
-    Source Source);
+internal sealed record PrefetchStatusUpdatedParameters(
+    BrowsingContext.BrowsingContext Context,
+    string Url,
+    PreloadingStatus Status);

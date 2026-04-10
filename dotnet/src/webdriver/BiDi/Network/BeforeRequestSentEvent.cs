@@ -1,4 +1,4 @@
-// <copyright file="DownloadWillBeginEventArgs.cs" company="Selenium Committers">
+// <copyright file="BeforeRequestSentEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,24 +17,30 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record DownloadWillBeginEventArgs(
+public record BeforeRequestSentEventArgs(
     IBiDi BiDi,
-    string SuggestedFilename,
-    BrowsingContext Context,
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
     Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
     DateTimeOffset Timestamp,
-    string Url)
-    : EventArgs(BiDi), IBaseNavigationInfo;
+    Initiator Initiator,
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts) : EventArgs(BiDi);
 
-internal sealed record DownloadWillBeginParams(
-    string SuggestedFilename,
-    BrowsingContext Context,
+internal record BeforeRequestSentParameters(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
     Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : IBaseNavigationInfo;
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    Initiator Initiator,
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts)
+    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

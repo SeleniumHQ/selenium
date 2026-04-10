@@ -1,4 +1,4 @@
-// <copyright file="UserPromptClosedEventArgs.cs" company="Selenium Committers">
+// <copyright file="ResponseCompletedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,31 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record UserPromptClosedEventArgs(
+namespace OpenQA.Selenium.BiDi.Network;
+
+public sealed record ResponseCompletedEventArgs(
     IBiDi BiDi,
-    BrowsingContext Context,
-    bool Accepted,
-    UserPromptType Type,
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    ResponseData Response,
     Browser.UserContext? UserContext,
-    string? UserText)
+    IReadOnlyList<Intercept>? Intercepts)
     : EventArgs(BiDi);
 
-internal sealed record UserPromptClosedParameters(
-    BrowsingContext Context,
-    bool Accepted,
-    UserPromptType Type,
+internal sealed record ResponseCompletedParameters(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
     Browser.UserContext? UserContext,
-    string? UserText);
+    IReadOnlyList<Intercept>? Intercepts,
+    ResponseData Response)
+    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

@@ -1,4 +1,4 @@
-// <copyright file="DomContentLoadedEventArgs.cs" company="Selenium Committers">
+// <copyright file="NavigationEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,5 +19,5 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record DomContentLoadedEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
-    : NavigationEventArgs(BiDi, Context, Navigation, Timestamp, Url, UserContext);
+public record NavigationEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+    : EventArgs(BiDi), IBaseNavigationInfo;
