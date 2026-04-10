@@ -29,7 +29,8 @@ public sealed record Navigation : IIdentifiable
 {
     public Navigation(IBiDi bidi, string id)
     {
-        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+        ArgumentNullException.ThrowIfNull(bidi);
+        BiDi = bidi;
         Id = id;
     }
 

@@ -40,7 +40,7 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
 
     public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpenedAsync(e, handler),
@@ -50,7 +50,7 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpened(e, handler),

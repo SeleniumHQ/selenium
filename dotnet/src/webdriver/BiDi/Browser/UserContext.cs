@@ -29,7 +29,8 @@ public sealed record UserContext : IIdentifiable
 {
     public UserContext(IBiDi bidi, string id)
     {
-        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+        ArgumentNullException.ThrowIfNull(bidi);
+        BiDi = bidi;
         Id = id;
     }
 

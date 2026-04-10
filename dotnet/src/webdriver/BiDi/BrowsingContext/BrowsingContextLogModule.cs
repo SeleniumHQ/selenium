@@ -25,7 +25,7 @@ internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModu
 {
     public Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAddedAsync(e, handler),
@@ -35,7 +35,7 @@ internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModu
 
     public Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAdded(e, handler),

@@ -35,7 +35,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnBeforeRequestSentAsync(
             e => HandleBeforeRequestSentAsync(e, handler),
@@ -45,7 +45,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnBeforeRequestSentAsync(
             e => HandleBeforeRequestSent(e, handler),
@@ -55,7 +55,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnResponseStartedAsync(e
          => HandleResponseStartedAsync(e, handler),
@@ -65,7 +65,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnResponseStartedAsync(
             e => HandleResponseStarted(e, handler),
@@ -75,7 +75,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnResponseCompletedAsync(
             e => HandleResponseCompletedAsync(e, handler),
@@ -85,7 +85,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnResponseCompletedAsync(
             e => HandleResponseCompleted(e, handler),
@@ -95,7 +95,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnFetchErrorAsync(
             e => HandleFetchErrorAsync(e, handler),
@@ -105,7 +105,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnFetchErrorAsync(
             e => HandleFetchError(e, handler),
@@ -115,7 +115,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnAuthRequiredAsync(
             e => HandleAuthRequiredAsync(e, handler),
@@ -125,7 +125,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
 
     public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return networkModule.OnAuthRequiredAsync(
             e => HandleAuthRequired(e, handler),
