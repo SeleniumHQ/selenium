@@ -41,6 +41,7 @@ internal sealed class LogContext : ILogContext
         {
             throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length must be non-negative.");
         }
+
         _level = level;
         _parentLogContext = parentLogContext;
         _loggers = CloneLoggers(loggers, level);
@@ -98,9 +99,12 @@ internal sealed class LogContext : ILogContext
     {
         if (IsEnabled(logger, level))
         {
-            string truncatedMessage = TruncateMessage(message, _truncationLength);
+            if (_truncationLength.HasValue && level < LogEventLevel.Warn)
+            {
+                message = TruncateMessage(message, _truncationLength);
+            }
 
-            var logEvent = new LogEvent(logger.Issuer, timestamp, level, truncatedMessage);
+            var logEvent = new LogEvent(logger.Issuer, timestamp, level, message);
 
             foreach (var handler in Handlers)
             {

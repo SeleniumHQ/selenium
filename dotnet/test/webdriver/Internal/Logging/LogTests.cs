@@ -298,6 +298,20 @@ public class LogTests
         Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
         Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(longMessage));
     }
+
+    [TestCase(LogEventLevel.Warn)]
+    [TestCase(LogEventLevel.Error)]
+    public void ShouldNotTruncateImportantMessages(LogEventLevel level)
+    {
+        var longMessage = new string('a', 150);
+
+        using var context = Log.CreateContext(level).WithTruncation(100).Handlers.Add(testLogHandler);
+
+        logger.LogMessage(DateTimeOffset.Now, level, longMessage);
+
+        Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        Assert.That(testLogHandler.Events[0].Message, Is.EqualTo(longMessage));
+    }
 }
 
 internal class TestLogHandler : ILogHandler

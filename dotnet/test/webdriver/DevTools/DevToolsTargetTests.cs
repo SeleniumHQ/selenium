@@ -18,14 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.Tests.Infrastructure.Environment;
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V146;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V147;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTargetTests : DevToolsTestFixture
 {
-    private const int id = 146;
+    private const int id = 147;
 
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
