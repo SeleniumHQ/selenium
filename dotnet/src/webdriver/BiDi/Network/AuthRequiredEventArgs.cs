@@ -19,5 +19,27 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record AuthRequiredEventArgs(BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList<Intercept>? Intercepts) :
-    BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);
+public record AuthRequiredEventArgs(
+    IBiDi BiDi,
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    BrowsingContext.Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts,
+    ResponseData Response)
+    : EventArgs(BiDi);
+
+internal record AuthRequiredParameters(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    BrowsingContext.Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    ResponseData Response,
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts)
+    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

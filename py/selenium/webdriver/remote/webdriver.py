@@ -41,6 +41,7 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
+from selenium.webdriver.common.api_request_context import APIRequestContext
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
@@ -284,6 +285,7 @@ class WebDriver(BaseWebDriver):
         self._permissions: Permissions | None = None
         self._emulation: Emulation | None = None
         self._input: Input | None = None
+        self._request: APIRequestContext | None = None
         self._devtools: Any | None = None
 
     def __repr__(self) -> str:
@@ -571,6 +573,9 @@ class WebDriver(BaseWebDriver):
         try:
             self.execute(Command.QUIT)
         finally:
+            if self._request is not None:
+                self._request.dispose()
+                self._request = None
             self.stop_client()
             executor = cast(RemoteConnection, self.command_executor)
             executor.close()
@@ -1314,6 +1319,24 @@ class WebDriver(BaseWebDriver):
             self._input = Input(self._websocket_connection)
 
         return self._input
+
+    @property
+    def request(self) -> APIRequestContext:
+        """Returns an APIRequestContext for making HTTP requests with browser cookie sync.
+
+        Returns:
+            An APIRequestContext instance bound to this driver.
+
+        Examples:
+            ```
+            response = driver.request.get("https://api.example.com/data")
+            assert response.ok
+            data = response.json()
+            ```
+        """
+        if self._request is None:
+            self._request = APIRequestContext(self)
+        return self._request
 
     def _get_cdp_details(self):
         import json

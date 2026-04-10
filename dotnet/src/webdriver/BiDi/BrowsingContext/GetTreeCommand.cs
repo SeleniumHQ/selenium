@@ -43,4 +43,4 @@ public sealed record ContextGetTreeOptions : CommandOptions
     };
 }
 
-public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;
+public sealed record GetTreeResult(IReadOnlyList<Info> Contexts) : EmptyResult;

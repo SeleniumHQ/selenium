@@ -18,6 +18,7 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
@@ -65,6 +66,7 @@ public sealed record CookieFilter
 
     public Network.SameSite? SameSite { get; init; }
 
+    [JsonConverter(typeof(DateTimeOffsetConverter))]
     public DateTimeOffset? Expiry { get; init; }
 }
 

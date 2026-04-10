@@ -17,16 +17,22 @@
 // under the License.
 // </copyright>
 
-using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
+using OpenQA.Selenium.BiDi.Json;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class EvaluateCommand(EvaluateParameters @params)
     : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate");
 
-internal sealed record EvaluateParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
+internal sealed record EvaluateParameters(
+    string Expression,
+    Target Target,
+    bool AwaitPromise,
+    ResultOwnership? ResultOwnership,
+    SerializationOptions? SerializationOptions,
+    bool? UserActivation) : Parameters;
 
 public sealed record EvaluateOptions : CommandOptions
 {
@@ -51,15 +57,43 @@ public abstract record EvaluateResult : EmptyResult
             return success.Result;
         }
 
-        throw new InvalidCastException($"Expected the result to be {nameof(EvaluateResultSuccess)}, but received {this}");
+        throw new InvalidCastException($"Expected the result to be {nameof(EvaluateResultSuccess)}, but got {this}");
     }
 }
 
-public sealed record EvaluateResultSuccess(RemoteValue Result, Realm Realm) : EvaluateResult
+public sealed record EvaluateResultSuccess(
+    RemoteValue Result,
+    Realm Realm) : EvaluateResult
 {
-    public static implicit operator RemoteValue(EvaluateResultSuccess success) => success.Result;
+    public static implicit operator RemoteValue(EvaluateResultSuccess success)
+        => success.Result;
 }
 
-public sealed record EvaluateResultException(ExceptionDetails ExceptionDetails, Realm Realm) : EvaluateResult;
+public sealed record EvaluateResultException(
+    ExceptionDetails ExceptionDetails,
+    Realm Realm) : EvaluateResult;
 
-public sealed record ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text);
+public sealed record ExceptionDetails(
+    long ColumnNumber,
+    long LineNumber,
+    StackTrace StackTrace,
+    string Text);
+
+// https://github.com/dotnet/runtime/issues/72604
+internal class EvaluateResultConverter : JsonConverter<EvaluateResult>
+{
+    public override EvaluateResult? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return reader.GetDiscriminator("type") switch
+        {
+            "success" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<EvaluateResultSuccess>()),
+            "exception" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<EvaluateResultException>()),
+            _ => null,
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, EvaluateResult value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+}

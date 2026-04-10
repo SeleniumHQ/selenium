@@ -19,5 +19,5 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record NavigationEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
-    : EventArgs, IBaseNavigationInfo;
+public record NavigationEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
+    : EventArgs(BiDi), IBaseNavigationInfo;

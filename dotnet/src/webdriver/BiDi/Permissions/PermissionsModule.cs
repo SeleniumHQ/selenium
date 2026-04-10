@@ -17,32 +17,26 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
 public sealed class PermissionsModule : Module, IPermissionsModule
 {
-    private PermissionsJsonSerializerContext _jsonContext = null!;
+    private static readonly PermissionsJsonSerializerContext JsonContext = PermissionsJsonSerializerContext.Default;
 
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-
-        _jsonContext = new PermissionsJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
     }
 }
 
 [JsonSerializable(typeof(SetPermissionCommand))]
 [JsonSerializable(typeof(SetPermissionResult))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class PermissionsJsonSerializerContext : JsonSerializerContext;

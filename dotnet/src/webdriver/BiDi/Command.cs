@@ -35,7 +35,7 @@ public abstract class Command
     public long Id { get; internal set; }
 }
 
-internal abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
+public abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
     where TParameters : Parameters
     where TResult : EmptyResult
 {
@@ -43,7 +43,7 @@ internal abstract class Command<TParameters, TResult>(TParameters @params, strin
     public TParameters Params { get; } = @params;
 }
 
-internal record Parameters
+public record Parameters
 {
     public static Parameters Empty { get; } = new Parameters();
 }

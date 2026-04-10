@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
@@ -33,31 +32,25 @@ public abstract class Module
         return Broker.ExecuteCommandAsync(command, options, jsonCommandTypeInfo, jsonResultTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Action<TEventArgs> action, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
-        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
+        return Broker.SubscribeAsync(name, action, factory, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(string name, Func<TEventArgs, Task> func, Func<IBiDi, TEventParams, TEventArgs> factory, SubscriptionOptions? options, JsonTypeInfo<TEventParams> jsonTypeInfo, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-        return Broker.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
+        return Broker.SubscribeAsync(name, func, factory, options, jsonTypeInfo, cancellationToken);
     }
 
-    protected abstract void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions);
-
-    internal static TModule Create<TModule>(IBiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
         where TModule : Module, new()
     {
         TModule module = new()
         {
             Broker = broker
         };
-
-        module.Initialize(bidi, jsonSerializerOptions);
 
         return module;
     }

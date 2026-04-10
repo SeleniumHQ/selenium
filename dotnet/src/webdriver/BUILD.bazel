@@ -48,9 +48,6 @@ csharp_library(
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    internals_visible_to = [
-        "WebDriver.Tests",
-    ],
     langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
@@ -81,9 +78,6 @@ csharp_library(
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    internals_visible_to = [
-        "WebDriver.Tests",
-    ],
     langversion = "14.0",
     nullable = "enable",
     resources = [],
@@ -117,9 +111,6 @@ csharp_library(
     out = "WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
-    ],
-    internals_visible_to = [
-        "WebDriver.Tests",
     ],
     langversion = "14.0",
     nullable = "enable",

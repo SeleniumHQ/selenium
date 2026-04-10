@@ -17,18 +17,46 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-[JsonConverter(typeof(SubscriptionConverter))]
-public sealed class Subscription
+[JsonConverter(typeof(Converter))]
+public sealed record Subscription : IIdentifiable
 {
-    internal Subscription(string id)
+    public Subscription(IBiDi bidi, string id)
     {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    internal string Id { get; }
+    public string Id { get; }
+
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(Subscription? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Subscription>
+    {
+        protected override Subscription Create(IBiDi bidi, string id) => new(bidi, id);
+    }
 }

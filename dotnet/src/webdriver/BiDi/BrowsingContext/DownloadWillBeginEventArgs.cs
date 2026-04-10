@@ -17,7 +17,24 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record DownloadWillBeginEventArgs(string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : EventArgs, IBaseNavigationInfo;
+public sealed record DownloadWillBeginEventArgs(
+    IBiDi BiDi,
+    string SuggestedFilename,
+    BrowsingContext Context,
+    Navigation? Navigation,
+    DateTimeOffset Timestamp,
+    string Url)
+    : EventArgs(BiDi), IBaseNavigationInfo;
+
+internal sealed record DownloadWillBeginParams(
+    string SuggestedFilename,
+    BrowsingContext Context,
+    Navigation? Navigation,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url)
+    : IBaseNavigationInfo;

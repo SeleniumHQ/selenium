@@ -22,6 +22,7 @@ using OpenQA.Selenium.BiDi.BrowsingContext;
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record ResponseCompletedEventArgs(
+    IBiDi BiDi,
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
@@ -29,5 +30,18 @@ public sealed record ResponseCompletedEventArgs(
     RequestData Request,
     DateTimeOffset Timestamp,
     ResponseData Response,
+    Browser.UserContext? UserContext,
     IReadOnlyList<Intercept>? Intercepts)
-    : BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);
+    : EventArgs(BiDi);
+
+internal sealed record ResponseCompletedParameters(
+    BrowsingContext.BrowsingContext? Context,
+    bool IsBlocked,
+    Navigation? Navigation,
+    long RedirectCount,
+    RequestData Request,
+    DateTimeOffset Timestamp,
+    Browser.UserContext? UserContext,
+    IReadOnlyList<Intercept>? Intercepts,
+    ResponseData Response)
+    : BaseParameters(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, UserContext, Intercepts);

@@ -151,14 +151,6 @@ public class LogTests
     }
 
     [Test]
-    public void ShouldCreateContextWithNullLogHandlers()
-    {
-        var context = new LogContext(LogEventLevel.Info, null, null, null, handlers: null);
-
-        Assert.That(context.Handlers, Is.Empty);
-    }
-
-    [Test]
     public void ContextShouldChangeLevel()
     {
         Log.SetLevel(LogEventLevel.Info);
@@ -320,5 +312,5 @@ internal class TestLogHandler : ILogHandler
         Events.Add(logEvent);
     }
 
-    public IList<LogEvent> Events { get; internal set; } = new List<LogEvent>();
+    public IList<LogEvent> Events { get; internal set; } = [];
 }

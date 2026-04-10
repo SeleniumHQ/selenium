@@ -17,7 +17,21 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record HistoryUpdatedEventArgs(BrowsingContext Context, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
-    : EventArgs;
+public sealed record HistoryUpdatedEventArgs(
+    IBiDi BiDi,
+    BrowsingContext Context,
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : EventArgs(BiDi);
+
+internal sealed record HistoryUpdatedParameters(
+    BrowsingContext Context,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext);
