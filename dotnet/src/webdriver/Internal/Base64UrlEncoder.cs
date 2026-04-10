@@ -58,7 +58,7 @@ public static class Base64UrlEncoder
     /// <exception cref="ArgumentNullException">'inArray' is null.</exception>
     public static string Encode(byte[] inArray)
     {
-        _ = inArray ?? throw new ArgumentNullException(nameof(inArray));
+        ArgumentNullException.ThrowIfNull(inArray);
 
         if (inArray.Length == 0)
             return string.Empty;
@@ -124,7 +124,7 @@ public static class Base64UrlEncoder
     /// <returns>UTF8 bytes.</returns>
     public static byte[] DecodeBytes(string str)
     {
-        _ = str ?? throw new ArgumentNullException(nameof(str));
+        ArgumentNullException.ThrowIfNull(str);
 
         // 62nd char of encoding
         str = str.Replace(base64UrlCharacter62, base64Character62);

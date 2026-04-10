@@ -31,7 +31,8 @@ public class ResponsePausedEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="responseData"/> is <see langword="null"/>.</exception>
     public ResponsePausedEventArgs(HttpResponseData responseData)
     {
-        ResponseData = responseData ?? throw new ArgumentNullException(nameof(responseData));
+        ArgumentNullException.ThrowIfNull(responseData);
+        ResponseData = responseData;
     }
 
     /// <summary>

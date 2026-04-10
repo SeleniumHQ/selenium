@@ -36,7 +36,8 @@ public class V146Target : DevTools.Target
     /// <exception cref="ArgumentNullException">If <paramref name="adapter"/> is <see langword="null"/>.</exception>
     public V146Target(TargetAdapter adapter)
     {
-        this.adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
+        ArgumentNullException.ThrowIfNull(adapter);
+        this.adapter = adapter;
         adapter.DetachedFromTarget += OnDetachedFromTarget;
         adapter.AttachedToTarget += OnAttachedToTarget;
     }

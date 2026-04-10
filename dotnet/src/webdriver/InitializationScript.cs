@@ -29,9 +29,12 @@ public class InitializationScript : IEquatable<InitializationScript>
 {
     internal InitializationScript(string scriptId, string scriptName, string scriptSource)
     {
-        this.ScriptId = scriptId ?? throw new ArgumentNullException(nameof(scriptId));
-        this.ScriptName = scriptName ?? throw new ArgumentNullException(nameof(scriptName));
-        this.ScriptSource = scriptSource ?? throw new ArgumentNullException(nameof(scriptSource));
+        ArgumentNullException.ThrowIfNull(scriptId);
+        ArgumentNullException.ThrowIfNull(scriptName);
+        ArgumentNullException.ThrowIfNull(scriptSource);
+        this.ScriptId = scriptId;
+        this.ScriptName = scriptName;
+        this.ScriptSource = scriptSource;
     }
 
     /// <summary>

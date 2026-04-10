@@ -37,7 +37,8 @@ public class V146Domains : DevToolsDomains
     /// <exception cref="ArgumentNullException">If <paramref name="session"/> is <see langword="null"/>.</exception>
     public V146Domains(DevToolsSession session)
     {
-        this.domains = new DevToolsSessionDomains(session ?? throw new ArgumentNullException(nameof(session)));
+        ArgumentNullException.ThrowIfNull(session);
+        this.domains = new DevToolsSessionDomains(session);
         this.network = new Lazy<V146Network>(() => new V146Network(domains.Network, domains.Fetch));
         this.javaScript = new Lazy<V146JavaScript>(() => new V146JavaScript(domains.Runtime, domains.Page));
         this.target = new Lazy<V146Target>(() => new V146Target(domains.Target));

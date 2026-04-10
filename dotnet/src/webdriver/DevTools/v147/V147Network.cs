@@ -39,8 +39,10 @@ public class V147Network : DevTools.Network
     /// <exception cref="ArgumentNullException">If <paramref name="network"/> or <paramref name="fetch"/> are <see langword="null"/>.</exception>
     public V147Network(NetworkAdapter network, FetchAdapter fetch)
     {
-        this.network = network ?? throw new ArgumentNullException(nameof(network));
-        this.fetch = fetch ?? throw new ArgumentNullException(nameof(fetch));
+        ArgumentNullException.ThrowIfNull(network);
+        ArgumentNullException.ThrowIfNull(fetch);
+        this.network = network;
+        this.fetch = fetch;
         fetch.AuthRequired += OnFetchAuthRequired;
         fetch.RequestPaused += OnFetchRequestPaused;
     }

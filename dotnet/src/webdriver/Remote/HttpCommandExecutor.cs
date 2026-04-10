@@ -390,7 +390,8 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpResponseInfo(string body, string? contentType, HttpStatusCode statusCode)
         {
-            this.Body = body ?? throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(body);
+            this.Body = body;
             this.ContentType = contentType;
             this.StatusCode = statusCode;
         }
@@ -412,7 +413,8 @@ public class HttpCommandExecutor : ICommandExecutor
         {
             ArgumentNullException.ThrowIfNull(messageHandler);
 
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(logger);
+            _logger = logger;
         }
 
         /// <summary>

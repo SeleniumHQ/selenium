@@ -31,7 +31,8 @@ public class EntryAddedEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If </exception>
     public EntryAddedEventArgs(LogEntry entry)
     {
-        Entry = entry ?? throw new ArgumentNullException(nameof(entry));
+        ArgumentNullException.ThrowIfNull(entry);
+        Entry = entry;
     }
 
     /// <summary>

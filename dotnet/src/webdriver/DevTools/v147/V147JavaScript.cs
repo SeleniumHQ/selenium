@@ -38,8 +38,10 @@ public class V147JavaScript : JavaScript
     /// <exception cref="ArgumentNullException">If <paramref name="runtime"/> or <paramref name="page"/> are <see langword="null"/>.</exception>
     public V147JavaScript(RuntimeAdapter runtime, PageAdapter page)
     {
-        this.runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
-        this.page = page ?? throw new ArgumentNullException(nameof(page));
+        ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(page);
+        this.runtime = runtime;
+        this.page = page;
         this.runtime.BindingCalled += OnRuntimeBindingCalled;
         this.runtime.ConsoleAPICalled += OnRuntimeConsoleApiCalled;
         this.runtime.ExceptionThrown += OnRuntimeExceptionThrown;

@@ -33,7 +33,8 @@ public class SessionId : IEquatable<SessionId>
     /// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
     public SessionId(string opaqueKey)
     {
-        this.sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
+        ArgumentNullException.ThrowIfNull(opaqueKey);
+        this.sessionOpaqueKey = opaqueKey;
     }
 
     /// <summary>

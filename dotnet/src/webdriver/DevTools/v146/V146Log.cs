@@ -35,7 +35,8 @@ public class V146Log : DevTools.Log
     /// <exception cref="ArgumentNullException">If <paramref name="adapter"/> is <see langword="null"/>.</exception>
     public V146Log(LogAdapter adapter)
     {
-        this.adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
+        ArgumentNullException.ThrowIfNull(adapter);
+        this.adapter = adapter;
         this.adapter.EntryAdded += OnAdapterEntryAdded;
     }
 

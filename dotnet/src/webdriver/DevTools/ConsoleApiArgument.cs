@@ -32,7 +32,8 @@ public class ConsoleApiArgument
     /// <exception cref="ArgumentNullException">If <paramref name="type"/> is <see langword="null"/>.</exception>
     public ConsoleApiArgument(string type, string? value)
     {
-        Type = type ?? throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(type);
+        Type = type;
         Value = value;
     }
 
