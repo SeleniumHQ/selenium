@@ -20,12 +20,23 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace System;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
+// Polyfill: ArgumentNullException.ThrowIfNull is available starting with .NET 7,
+// but the caller argument expression support requires .NET 8+.
+#if !NET8_0_OR_GREATER
 internal static class ArgumentNullExceptionExtensions
 {
     extension(ArgumentNullException)
     {
+        /// <summary>
+        /// Throws an <see cref="ArgumentNullException"/> if <paramref name="arg"/> is <see langword="null"/>.
+        /// </summary>
+        /// <param name="arg">The argument to validate as non-null.</param>
+        /// <param name="paramName">The name of the parameter with which <paramref name="arg"/> corresponds.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="arg"/> is <see langword="null"/>.</exception>
         public static void ThrowIfNull([NotNull] object? arg, [CallerArgumentExpression(nameof(arg))] string paramName = "")
         {
             if (arg is null)
@@ -35,4 +46,4 @@ internal static class ArgumentNullExceptionExtensions
         }
     }
 }
-
+#endif
