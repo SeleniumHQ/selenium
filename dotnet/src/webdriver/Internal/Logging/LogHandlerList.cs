@@ -28,6 +28,7 @@ namespace OpenQA.Selenium.Internal.Logging;
 internal sealed class LogHandlerList : ILogHandlerList
 {
     private readonly ILogContext _logContext;
+    private readonly object _lock = new();
     private volatile ILogHandler[] _handlers;
 
     public LogHandlerList(ILogContext logContext)
@@ -44,21 +45,30 @@ internal sealed class LogHandlerList : ILogHandlerList
 
     public ILogContext Add(ILogHandler handler)
     {
-        _handlers = [.. _handlers, handler];
+        lock (_lock)
+        {
+            _handlers = [.. _handlers, handler];
+        }
 
         return _logContext;
     }
 
     public ILogContext Remove(ILogHandler handler)
     {
-        _handlers = [.. _handlers.Where(h => h != handler)];
+        lock (_lock)
+        {
+            _handlers = [.. _handlers.Where(h => h != handler)];
+        }
 
         return _logContext;
     }
 
     public ILogContext Clear()
     {
-        _handlers = [];
+        lock (_lock)
+        {
+            _handlers = [];
+        }
 
         return _logContext;
     }
