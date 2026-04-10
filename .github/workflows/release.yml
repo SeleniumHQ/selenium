@@ -184,7 +184,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
-      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly && ./go rust:update' || '' }}
       artifact-name: version-reset
 
   update-version:

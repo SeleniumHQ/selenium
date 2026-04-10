@@ -1,5 +1,39 @@
 [
   {
+    "tag_name": "selenium-4.43.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.43.0/selenium-dotnet-4.43.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.43.0/selenium-dotnet-strongnamed-4.43.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.43.0/selenium-java-4.43.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.43.0/selenium-server-4.43.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.43.0/selenium-server-4.43.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "nightly",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.44.0-SNAPSHOT.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.44.0-SNAPSHOT.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.44.0-SNAPSHOT.zip"
+      }
+    ]
+  },
+  {
     "tag_name": "selenium-4.42.0",
     "assets": [
       {
@@ -16,20 +50,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.42.0/selenium-server-4.42.0.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "nightly",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.43.0-SNAPSHOT.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.43.0-SNAPSHOT.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.43.0-SNAPSHOT.zip"
       }
     ]
   },

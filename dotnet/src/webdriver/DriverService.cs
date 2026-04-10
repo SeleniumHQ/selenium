@@ -194,17 +194,6 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
     /// <summary>
     /// Starts the driver service if it is not already running.
     /// </summary>
-    /// <exception cref="InvalidOperationException">If the driver service path is specified but the driver service executable name is not.</exception>
-    /// <exception cref="WebDriverException">If the service fails to initialize within the timeout period or exits unexpectedly.</exception>
-    [Obsolete("Use StartAsync(CancellationToken) instead. This method will be removed in a future release (4.43).")]
-    public void Start()
-    {
-        this.StartAsync().GetAwaiter().GetResult();
-    }
-
-    /// <summary>
-    /// Starts the driver service if it is not already running.
-    /// </summary>
     /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous start operation.</returns>
     /// <exception cref="InvalidOperationException">If the driver service path is specified but the driver service executable name is not.</exception>

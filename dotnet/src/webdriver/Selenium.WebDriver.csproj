@@ -47,7 +47,7 @@
     <BaseSeleniumManagerPath>$(MSBuildThisFileDirectory)..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
-  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14480-->
+  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14780-->
   <!--<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->

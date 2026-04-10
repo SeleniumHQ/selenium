@@ -8,30 +8,6 @@ def python_version
   end
 end
 
-def setup_pypirc(nightly = false)
-  pypirc = File.join(Dir.home, '.pypirc')
-  section = nightly ? 'testpypi' : 'pypi'
-  token_env = nightly ? 'TWINE_NIGHTLY_PASSWORD' : 'TWINE_PASSWORD'
-
-  return if File.exist?(pypirc) && File.read(pypirc).match?(/^\[#{section}\]/m)
-
-  token = ENV.fetch(token_env, nil)
-  raise "Missing PyPI credentials: set #{token_env} or configure ~/.pypirc" if token.nil? || token.empty?
-
-  pypi_section = <<~PYPIRC
-    [#{section}]
-    username = __token__
-    password = #{token}
-  PYPIRC
-
-  if File.exist?(pypirc)
-    File.open(pypirc, 'a') { |f| f.puts("\n#{pypi_section}") }
-  else
-    File.write(pypirc, pypi_section)
-  end
-  File.chmod(0o600, pypirc)
-end
-
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -55,11 +31,11 @@ desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
-  setup_pypirc(nightly)
 
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
   command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
