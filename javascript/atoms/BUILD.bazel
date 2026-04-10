@@ -1,8 +1,14 @@
-load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
+
+js_binary(
+    name = "strip_trailing_semicolon",
+    data = ["typescript/strip-trailing-semicolon.js"],
+    entry_point = ":typescript/strip-trailing-semicolon.js",
+)
 
 js_run_binary(
     name = "is-displayed-typescript-compiled",
@@ -23,11 +29,15 @@ js_run_binary(
     tool = "@npm_typescript//:tsc",
 )
 
-genrule(
+js_run_binary(
     name = "is-displayed-typescript-generated",
     srcs = [":is-displayed-typescript-compiled"],
     outs = ["typescript/is-displayed.generated.js"],
-    cmd = "sed '$$ s/;[[:space:]]*$$//' $(location :is-displayed-typescript-compiled) > $@",
+    args = [
+        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed.generated.js)",
+    ],
+    tool = ":strip_trailing_semicolon",
 )
 
 filegroup(
