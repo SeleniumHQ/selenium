@@ -1,28 +1,16 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A color menu button.  Extends {@link goog.ui.MenuButton} by
  * showing the currently selected color in the button caption.
- *
- * @author robbyw@google.com (Robby Walker)
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ColorMenuButton');
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.ui.ColorMenuButtonRenderer');
 goog.require('goog.ui.ColorPalette');
@@ -30,6 +18,11 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.registry');
+goog.requireType('goog.dom.DomHelper');
+goog.requireType('goog.events.Event');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.ControlContent');
+goog.requireType('goog.ui.MenuButtonRenderer');
 
 
 
@@ -51,6 +44,7 @@ goog.require('goog.ui.registry');
  */
 goog.ui.ColorMenuButton = function(
     content, opt_menu, opt_renderer, opt_domHelper) {
+  'use strict';
   goog.ui.MenuButton.call(
       this, content, opt_menu,
       opt_renderer || goog.ui.ColorMenuButtonRenderer.getInstance(),
@@ -104,14 +98,18 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
  * @return {!goog.ui.Menu} Color menu.
  */
 goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
+  'use strict';
   var menu = new goog.ui.Menu(opt_domHelper);
 
   if (opt_extraItems) {
-    goog.array.forEach(
-        opt_extraItems, function(item) { menu.addChild(item, true); });
+    opt_extraItems.forEach(function(item) {
+      'use strict';
+      menu.addChild(item, true);
+    });
   }
 
   goog.object.forEach(goog.ui.ColorMenuButton.PALETTES, function(colors) {
+    'use strict';
     var palette = new goog.ui.ColorPalette(colors, null, opt_domHelper);
     palette.setSize(8);
     menu.addChild(palette, true);
@@ -126,6 +124,7 @@ goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
  * @return {string} The selected color.
  */
 goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
+  'use strict';
   return /** @type {string} */ (this.getValue());
 };
 
@@ -136,6 +135,7 @@ goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
  * @param {?string} color New color.
  */
 goog.ui.ColorMenuButton.prototype.setSelectedColor = function(color) {
+  'use strict';
   this.setValue(color);
 };
 
@@ -148,6 +148,7 @@ goog.ui.ColorMenuButton.prototype.setSelectedColor = function(color) {
  * @override
  */
 goog.ui.ColorMenuButton.prototype.setValue = function(value) {
+  'use strict';
   var color = /** @type {?string} */ (value);
   for (var i = 0, item; item = this.getItemAt(i); i++) {
     if (typeof item.setSelectedColor == 'function') {
@@ -167,8 +168,10 @@ goog.ui.ColorMenuButton.prototype.setValue = function(value) {
  * {@link goog.ui.MenuButton#handleMenuAction}.
  * @param {goog.events.Event} e Action event to handle.
  * @override
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.ColorMenuButton.prototype.handleMenuAction = function(e) {
+  'use strict';
   if (typeof e.target.getSelectedColor == 'function') {
     // User clicked something that looks like a color palette.
     this.setValue(e.target.getSelectedColor());
@@ -191,6 +194,7 @@ goog.ui.ColorMenuButton.prototype.handleMenuAction = function(e) {
  * @override
  */
 goog.ui.ColorMenuButton.prototype.setOpen = function(open, opt_e) {
+  'use strict';
   if (open && this.getItemCount() == 0) {
     this.setMenu(
         goog.ui.ColorMenuButton.newColorMenu(null, this.getDomHelper()));
@@ -202,5 +206,7 @@ goog.ui.ColorMenuButton.prototype.setOpen = function(open, opt_e) {
 
 // Register a decorator factory function for goog.ui.ColorMenuButtons.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.ColorMenuButtonRenderer.CSS_CLASS,
-    function() { return new goog.ui.ColorMenuButton(null); });
+    goog.ui.ColorMenuButtonRenderer.CSS_CLASS, function() {
+      'use strict';
+      return new goog.ui.ColorMenuButton(null);
+    });

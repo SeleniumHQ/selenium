@@ -25,7 +25,7 @@ require 'selenium-webdriver'
 require_relative 'spec_support'
 require_relative '../../../rspec_matchers'
 
-include Selenium # rubocop:disable Style/MixinUsage
+include Selenium
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
@@ -51,7 +51,7 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
-    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
+    GlobalTestEnv.ensure_grid if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
 

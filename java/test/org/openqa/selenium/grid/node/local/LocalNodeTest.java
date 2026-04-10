@@ -18,14 +18,13 @@
 package org.openqa.selenium.grid.node.local;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -90,8 +90,7 @@ class LocalNodeTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -147,8 +146,7 @@ class LocalNodeTest {
 
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
   }
@@ -157,8 +155,7 @@ class LocalNodeTest {
   void cannotCreateNewSessionsOnMaxSessionCount() {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
@@ -202,7 +199,7 @@ class LocalNodeTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }
@@ -220,8 +217,7 @@ class LocalNodeTest {
       callables.add(
           () -> {
             Either<WebDriverException, CreateSessionResponse> response =
-                node.newSession(
-                    new CreateSessionRequest(ImmutableSet.of(W3C), caps, ImmutableMap.of()));
+                node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
             if (response.isRight()) {
               CreateSessionResponse res = response.right();
               assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
@@ -266,8 +262,7 @@ class LocalNodeTest {
 
     for (int i = 0; i < 5; i++) {
       Either<WebDriverException, CreateSessionResponse> response =
-          localNode.newSession(
-              new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+          localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
       assertThat(response.isRight()).isTrue();
     }
 
@@ -295,8 +290,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -330,8 +324,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -363,8 +356,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -391,8 +383,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -419,8 +410,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -435,6 +425,124 @@ class LocalNodeTest {
     assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
     assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
         .isEqualTo("файл+with+tähtedega.png");
+  }
+
+  @Test
+  void commandInterceptorIsCalledForEachWebDriverCommand() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> interceptedCommands = new ArrayList<>();
+
+    LocalNode nodeWithInterceptor =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(
+                new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+                  @Override
+                  public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+                    return true;
+                  }
+
+                  @Override
+                  public void initialize(
+                      org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+                  @Override
+                  public HttpResponse intercept(
+                      SessionId id, HttpRequest req, Callable<HttpResponse> next) throws Exception {
+                    interceptedCommands.add(req.getMethod() + " " + req.getUri());
+                    return next.call();
+                  }
+                })
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptor.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+
+    SessionId sessionId = response.right().getSession().getId();
+    nodeWithInterceptor.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(interceptedCommands).hasSize(1);
+    assertThat(interceptedCommands.get(0)).contains("/title");
+  }
+
+  @Test
+  void multipleInterceptorsAreChainedOuterToInner() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> callOrder = new ArrayList<>();
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor outer =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("outer-before");
+            HttpResponse resp = next.call();
+            callOrder.add("outer-after");
+            return resp;
+          }
+        };
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor inner =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("inner-before");
+            HttpResponse resp = next.call();
+            callOrder.add("inner-after");
+            return resp;
+          }
+        };
+
+    LocalNode nodeWithInterceptors =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(outer)
+            .addInterceptor(inner)
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptors.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+    SessionId sessionId = response.right().getSession().getId();
+
+    nodeWithInterceptors.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(callOrder)
+        .containsExactly("outer-before", "inner-before", "inner-after", "outer-after");
   }
 
   private void waitUntilNodeStopped(SessionId sessionId) {

@@ -19,7 +19,6 @@ package org.openqa.selenium.support.events;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -173,7 +172,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    * @param listeners the listeners to notify about events happening in the decorated WebDriver
    */
   public EventFiringDecorator(WebDriverListener... listeners) {
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   /**
@@ -182,7 +181,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
     super(targetClass);
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   @Override

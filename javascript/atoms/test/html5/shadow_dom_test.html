@@ -1,13 +1,19 @@
 <!doctype html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
-    goog.require('goog.testing.jsunit');
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
   <h1>Page for Shadow DOM tests</h1>
 
   <div id="is-shown">Foo</div>
@@ -92,20 +98,22 @@
         '<slot name="a">Default</slot><slot name="b">Default</slot>';
     }
 
-    function testIsShown() {
+    QUnit.test('isShown', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
-      assert(bot.dom.isShown(elementIsShown));
+      assert.ok(bot.dom.isShown(elementIsShown));
 
       elementIsShown.style.display = 'none';
 
-      assertFalse(bot.dom.isShown(elementIsShown));
-    }
+      assert.notOk(bot.dom.isShown(elementIsShown));
+    });
 
-    function testIsShownInShadow() {
+    QUnit.test('isShownInShadow', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
@@ -113,15 +121,16 @@
         .shadowRoot
         .querySelector('.test');
 
-      assert(bot.dom.isShown(el));
+      assert.ok(bot.dom.isShown(el));
 
       elementIsShownInShadow.style.display = 'none';
 
-      assertFalse(bot.dom.isShown(el));
-    }
+      assert.notOk(bot.dom.isShown(el));
+    });
 
-    function testIsShownDirectlyInShadow() {
+    QUnit.test('isShownDirectlyInShadow', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
@@ -129,85 +138,91 @@
         .shadowRoot
         .querySelector('div');
 
-      assert(bot.dom.isShown(el));
+      assert.ok(bot.dom.isShown(el));
 
       elementIsShownDirectlyInShadow.style.display = 'none';
 
-      assertFalse(bot.dom.isShown(el));
-    }
+      assert.notOk(bot.dom.isShown(el));
+    });
 
-    function testIsShownInSlot() {
+    QUnit.test('isShownInSlot', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
       var el = elementIsShownInSlot.children[0];
 
-      assert(bot.dom.isShown(el));
+      assert.ok(bot.dom.isShown(el));
 
       elementIsShownInSlot.style.display = 'none';
 
-      assertFalse(bot.dom.isShown(el));
+      assert.notOk(bot.dom.isShown(el));
 
       elementIsShownInSlot.style.display = '';
       // Remove the slot, so our child is no longer slotted
       elementIsShownInSlot.shadowRoot.innerHTML = '';
 
-      assertFalse(bot.dom.isShown(el));
-    }
+      assert.notOk(bot.dom.isShown(el));
+    });
 
-    function testGetParentNodeInComposedDom() {
+    QUnit.test('getParentNodeInComposedDom', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
       var el = elementGetParent.children[0];
 
-      assertEquals(elementGetParent, bot.dom.getParentNodeInComposedDom(el));
+      assert.strictEqual(bot.dom.getParentNodeInComposedDom(el), elementGetParent);
 
       el = elementGetParentSlot.children[0];
 
-      assertEquals(
-        elementGetParentSlot.shadowRoot.querySelector('div'),
-        bot.dom.getParentNodeInComposedDom(el)
+      assert.strictEqual(
+        bot.dom.getParentNodeInComposedDom(el),
+        elementGetParentSlot.shadowRoot.querySelector('div')
       );
 
       elementGetParentSlot.shadowRoot.innerHTML = '';
 
-      assertEquals(null, bot.dom.getParentNodeInComposedDom(el));
-    }
+      assert.strictEqual(bot.dom.getParentNodeInComposedDom(el), null);
+    });
 
-    function testGetVisibleText() {
+    QUnit.test('getVisibleText', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
-      assertEquals('Foo', bot.dom.getVisibleText(elementGetText));
-    }
+      assert.strictEqual(bot.dom.getVisibleText(elementGetText), 'Foo');
+    });
 
-    function testGetVisibleTextInShadow() {
+    QUnit.test('getVisibleTextInShadow', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
-      assertEquals('foo', bot.dom.getVisibleText(elementGetTextShadow));
-    }
+      assert.strictEqual(bot.dom.getVisibleText(elementGetTextShadow), 'foo');
+    });
 
-    function testGetVisibleTextInSlot() {
+    QUnit.test('getVisibleTextInSlot', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
-      assertEquals('aFoob', bot.dom.getVisibleText(elementGetTextSlot));
-    }
+      assert.strictEqual(bot.dom.getVisibleText(elementGetTextSlot), 'aFoob');
+    });
 
-    function testGetVisibleTextInSlots() {
+    QUnit.test('getVisibleTextInSlots', function(assert) {
       if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        assert.ok(true, 'Skipping: shadow DOM not enabled');
         return;
       }
 
-      assertEquals('Foo\nBar', bot.dom.getVisibleText(elementGetTextSlots));
-    }
+      assert.strictEqual(bot.dom.getVisibleText(elementGetTextSlots), 'Foo\nBar');
+    });
   </script>
 </body>
 </html>

@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.federatedcredentialmanagement;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 
 /** Used by classes to indicate that they can interact with FedCM dialogs. */
 @Beta
-@NullMarked
 public interface HasFederatedCredentialManagement {
   /**
    * Disables the promise rejection delay.

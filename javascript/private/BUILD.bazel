@@ -9,3 +9,12 @@ py_binary(
         "//visibility:public",
     ],
 )
+
+py_binary(
+    name = "closure_make_deps",
+    srcs = ["closure_make_deps.py"],
+    visibility = [
+        "//javascript:__subpackages__",
+        "//third_party/closure/goog:__pkg__",
+    ],
+)

@@ -20,6 +20,7 @@ package org.openqa.selenium.docker.client;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Adapter for Docker API version 1.44 and later.
@@ -48,9 +49,7 @@ class V144Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptImageResponse(Map<String, Object> response) {
-    if (response == null) {
-      return response;
-    }
+    Require.nonNull("Image response", response);
 
     Map<String, Object> adapted = new HashMap<>(response);
 
@@ -75,9 +74,7 @@ class V144Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptContainerCreateRequest(Map<String, Object> request) {
-    if (request == null) {
-      return request;
-    }
+    Require.nonNull("Container Create Request", request);
 
     // v1.44+ supports multiple network endpoints
     // No adaptation needed, but we can log for debugging
@@ -106,9 +103,7 @@ class V144Adapter implements ApiVersionAdapter {
 
   @Override
   public Map<String, Object> adaptContainerInspectResponse(Map<String, Object> response) {
-    if (response == null) {
-      return response;
-    }
+    Require.nonNull("Container Inspect Response", response);
 
     Map<String, Object> adapted = new HashMap<>(response);
 

@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.bidi.emulation.SetScriptingEnabledParameters.scriptingDisabled;
+import static org.openqa.selenium.bidi.emulation.SetScriptingEnabledParameters.scriptingEnabled;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
@@ -39,11 +41,11 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 
 public class SetScriptingEnabledTest extends JupiterTestBase {
 
-  private boolean isFooInWindow(String contextId, Script script) {
+  private Optional<String> getHello(String contextId, Script script) {
     EvaluateResult result =
         script.evaluateFunctionInBrowsingContext(
-            contextId, "'foo' in window", false, Optional.empty());
-    return (Boolean) ((EvaluateResultSuccess) result).getResult().getValue().get();
+            contextId, "window.hello", false, Optional.empty());
+    return ((EvaluateResultSuccess) result).getResult().getValue().map(value -> (String) value);
   }
 
   @Test
@@ -56,19 +58,19 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     Emulation emulation = new Emulation(driver);
     Script script = new Script(driver);
 
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(false).contexts(List.of(contextId)));
+    emulation.setScriptingEnabled(scriptingDisabled().contexts(List.of(contextId)));
 
-    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
+    context.navigate(
+        "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
 
-    assertThat(isFooInWindow(contextId, script)).isFalse();
+    assertThat(getHello(contextId, script)).isEmpty();
 
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(null).contexts(List.of(contextId)));
+    emulation.setScriptingEnabled(scriptingEnabled().contexts(List.of(contextId)));
 
-    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
+    context.navigate(
+        "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
 
-    assertThat(isFooInWindow(contextId, script)).isTrue();
+    assertThat(getHello(contextId, script)).hasValue("World");
   }
 
   @Test
@@ -85,8 +87,7 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     driver.switchTo().window(contextId);
 
     Emulation emulation = new Emulation(driver);
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(false).userContexts(List.of(userContext)));
+    emulation.setScriptingEnabled(scriptingDisabled().userContexts(List.of(userContext)));
 
     String url = appServer.whereIs("javascriptPage.html");
     context.navigate(url, ReadinessState.COMPLETE);
@@ -106,8 +107,7 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     assertThat(resultValue).isEqualTo(initialValue);
 
     // Clear the scripting override
-    emulation.setScriptingEnabled(
-        new SetScriptingEnabledParameters(null).userContexts(List.of(userContext)));
+    emulation.setScriptingEnabled(scriptingEnabled().userContexts(List.of(userContext)));
 
     context.navigate(url, ReadinessState.COMPLETE);
 

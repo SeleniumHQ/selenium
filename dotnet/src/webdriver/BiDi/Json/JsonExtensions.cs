@@ -33,21 +33,20 @@ internal static class JsonExtensions
 
         string? discriminator = null;
 
-        readerClone.Read();
+        readerClone.Read(); // move past StartObject to first PropertyName
         while (readerClone.TokenType == JsonTokenType.PropertyName)
         {
-            string? propertyName = readerClone.GetString();
-            readerClone.Read();
-
-            if (propertyName == name)
+            if (readerClone.ValueTextEquals(name))
             {
+                readerClone.Read(); // move to the property value
                 discriminator = readerClone.GetString();
 
                 break;
             }
 
-            readerClone.Skip();
-            readerClone.Read();
+            readerClone.Read(); // move to the property value
+            readerClone.Skip(); // skip the value (including nested objects/arrays)
+            readerClone.Read(); // move to the next PropertyName or EndObject
         }
 
         return discriminator ?? throw new JsonException($"Couldn't determine '{name}' discriminator.");
@@ -55,6 +54,11 @@ internal static class JsonExtensions
 
     public static JsonTypeInfo<T> GetTypeInfo<T>(this JsonSerializerOptions options)
     {
-        return (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
+        if (options.TryGetTypeInfo(typeof(T), out JsonTypeInfo? typeInfo))
+        {
+            return (JsonTypeInfo<T>)typeInfo;
+        }
+
+        throw new JsonException($"Type info for '{typeof(T).FullName}' is not available in the serializer context. Ensure the type is included in the JsonSerializerContext.");
     }
 }

@@ -17,198 +17,192 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>element_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../test_bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.Keyboard');
     goog.require('bot.locators');
-    goog.require('goog.testing.jsunit');
-    goog.require('goog.testing.ExpectedFailures');
+    goog.require('bot.userAgent');
+    goog.require('goog.userAgent');
     goog.require('webdriver.atoms.element');
+    goog.require('webdriver.Key');
   </script>
 
   <script type="text/javascript">
-    var expectedFailures;
-
-    function setUp() {
-      expectedFailures = new goog.testing.ExpectedFailures();
-    }
-
-
-    function tearDown() {
-      expectedFailures.handleTearDown();
-    }
-
-    function testShouldReturnTheValueOfAnAttribute() {
+    QUnit.test('should return the value of an attribute', function(assert) {
       var element = bot.locators.findElement({id: 'has_id'});
 
-      assertEquals('cheese', webdriver.atoms.element.getAttribute(element, 'title'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'title'), 'cheese');
+    });
 
-    function testShouldReturnNullIfAValueDoesNotExistAsAnAttributeOrAProperty() {
+    QUnit.test('should return null if a value does not exist as an attribute or a property', function(assert) {
       var element = bot.locators.findElement({id: 'has_id'});
 
-      assertNull(webdriver.atoms.element.getAttribute(element, 'this_does_not_exist'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'this_does_not_exist'), null);
+    });
 
-    function testShouldReturnTheValueOfAProperty() {
+    QUnit.test('should return the value of a property', function(assert) {
       var element = bot.locators.findElement({id: 'has_property'});
 
-      assertEquals("This is an example", webdriver.atoms.element.getAttribute(element, 'value'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'value'), "This is an example");
+    });
 
-    function testShouldReturnValuesAsStrings() {
+    QUnit.test('should return values as strings', function(assert) {
       var element = bot.locators.findElement({id: 'has_property'});
 
-      assertEquals('2', webdriver.atoms.element.getAttribute(element, 'rows'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'rows'), '2');
+    });
 
-    function testShouldReturnSameValueForClassAndClassName() {
+    QUnit.test('should return same value for class and className', function(assert) {
       var element = document.body;
 
-      assertEquals(webdriver.atoms.element.getAttribute(element, 'class'),
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'class'),
                    webdriver.atoms.element.getAttribute(element, 'className'));
-    }
+    });
 
-    function testShouldReturnBooleanPropertiesAsStrings() {
-      var readOnlyElement = bot.locators.findElement({id: 'ro'}),
-            normalElement = bot.locators.findElement({id: 'normal'});
+    QUnit.test('should return boolean properties as strings', function(assert) {
+      var readOnlyElement = bot.locators.findElement({id: 'ro'});
 
-      assertEquals("true", webdriver.atoms.element.getAttribute(readOnlyElement, 'readonly'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(readOnlyElement, 'readonly'), "true");
+    });
 
-    function testSettingAnyValueForABooleanAttributeSetsItToTrue() {
+    QUnit.test('setting any value for a boolean attribute sets it to true', function(assert) {
       var element = bot.locators.findElement({id: 'bad-ro'});
 
-      assertEquals("true", webdriver.atoms.element.getAttribute(element, 'readonly'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'readonly'), "true");
+    });
 
-    function testShouldAttemptToStringifyTheStyleProperty() {
+    QUnit.test('should attempt to stringify the style property', function(assert) {
       var element = bot.locators.findElement({id: 'green'});
 
       var style = webdriver.atoms.element.getAttribute(element, 'style').toLowerCase();
-      assertTrue(style.indexOf('background-color') != -1);
-    }
+      assert.ok(style.indexOf('background-color') != -1);
+    });
 
-    function testShouldCorrectlyReportTheValueOfCheckedForRadioButtons() {
+    QUnit.test('should correctly report the value of checked for radio buttons', function(assert) {
       var selected = bot.locators.findElement({id: 'selected-radio'});
       var unselected = bot.locators.findElement({id: 'unselected-radio'});
 
-      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'checked'));
-      assertNull(webdriver.atoms.element.getAttribute(unselected, 'checked'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(selected, 'checked'), "true");
+      assert.strictEqual(webdriver.atoms.element.getAttribute(unselected, 'checked'), null);
+    });
 
-    function testShouldIndicateWhetherAnElementIsSelected() {
+    QUnit.test('should indicate whether an element is selected', function(assert) {
       var input = bot.locators.findElement({id: 'normal'});
       var unselectedRadio = bot.locators.findElement({id: 'unselected-radio'});
       var selectedRadio = bot.locators.findElement({id: 'selected-radio'});
       var unselectedOption = bot.locators.findElement({id: 'unselected-option'});
       var selectedOption = bot.locators.findElement({id: 'selected-option'});
 
-      assertTrue(webdriver.atoms.element.isSelected(selectedRadio));
-      assertTrue(webdriver.atoms.element.isSelected(selectedOption));
-      assertFalse(webdriver.atoms.element.isSelected(unselectedRadio));
-      assertFalse(webdriver.atoms.element.isSelected(unselectedOption));
-      assertFalse(webdriver.atoms.element.isSelected(input));
-    }
+      assert.ok(webdriver.atoms.element.isSelected(selectedRadio));
+      assert.ok(webdriver.atoms.element.isSelected(selectedOption));
+      assert.notOk(webdriver.atoms.element.isSelected(unselectedRadio));
+      assert.notOk(webdriver.atoms.element.isSelected(unselectedOption));
+      assert.notOk(webdriver.atoms.element.isSelected(input));
+    });
 
-    function testShouldCorrectlyReportTheValueOfSelectedForRadioButtons() {
+    QUnit.test('should correctly report the value of selected for radio buttons', function(assert) {
       var selected = bot.locators.findElement({id: 'selected-radio'});
       var unselected = bot.locators.findElement({id: 'unselected-radio'});
 
-      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'selected'));
-      assertNull(webdriver.atoms.element.getAttribute(unselected, 'selected'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(selected, 'selected'), "true");
+      assert.strictEqual(webdriver.atoms.element.getAttribute(unselected, 'selected'), null);
+    });
 
-    function testMultiplePropertyOfSelectsIsABoolean() {
+    QUnit.test('multiple property of selects is a boolean', function(assert) {
       var element = bot.locators.findElement({name: 'multi'});
 
-      assertEquals('true', webdriver.atoms.element.getAttribute(element, 'multiple'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'multiple'), 'true');
+    });
 
-    function testShouldReturnAnEmptyStringIfAnAttributeIsSetButEmpty() {
+    QUnit.test('should return an empty string if an attribute is set but empty', function(assert) {
       var element = bot.locators.findElement({id: 'body'});
 
-      assertEquals('', webdriver.atoms.element.getAttribute(element, 'style'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'style'), '');
+    });
 
-    function testShouldFallBackToUsingAttributeIfPropertyAvailableButNotSet() {
+    QUnit.test('should fall back to using attribute if property available but not set', function(assert) {
       var element = bot.locators.findElement({id: 'body'});
 
-      assertEquals('body', webdriver.atoms.element.getAttribute(element, 'name'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(element, 'name'), 'body');
+    });
 
-    function testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+    QUnit.test('should return the value of the disabled attribute as null if not set', function(assert) {
       var notInput = bot.locators.findElement({id: 'has_id'});
-      assertNull(webdriver.atoms.element.getAttribute(notInput, 'disabled'));
+      assert.strictEqual(webdriver.atoms.element.getAttribute(notInput, 'disabled'), null);
 
       var enabled =  bot.locators.findElement({id: 'normal'});
-      assertNull(webdriver.atoms.element.getAttribute(enabled, 'disabled'));
+      assert.strictEqual(webdriver.atoms.element.getAttribute(enabled, 'disabled'), null);
 
       var broken =  bot.locators.findElement({id: 'disabled'});
-      assertEquals("true", webdriver.atoms.element.getAttribute(broken, 'disabled'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(broken, 'disabled'), "true");
+    });
 
-    function testTheTopWindowsTitleShouldNotBeConsideredVisibleText() {
+    QUnit.test('the top windows title should not be considered visible text', function(assert) {
       var title = bot.locators.findElement({tagName: 'title'});
-      assertEquals('', webdriver.atoms.element.getText(title));
-    }
+      assert.strictEqual(webdriver.atoms.element.getText(title), '');
+    });
 
-    function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {
+    QUnit.test('a frame documents title should not be considered visible text', function(assert) {
       var frameDoc = bot.locators.findElement({id: 'frame_page_frame'}).contentWindow.document;
       var title = bot.locators.findElement({tagName: 'title'}, frameDoc);
-      assertEquals('frame page', frameDoc.title);
-      assertEquals('', webdriver.atoms.element.getText(title));
-    }
+      assert.strictEqual(frameDoc.title, 'frame page');
+      assert.strictEqual(webdriver.atoms.element.getText(title), '');
+    });
 
-    function testCanGetVisibleText() {
+    QUnit.test('can get visible text', function(assert) {
       var para = bot.locators.findElement({id: 'has_id'});
-      assertEquals('This has an ID', webdriver.atoms.element.getText(para));
-    }
+      assert.strictEqual(webdriver.atoms.element.getText(para), 'This has an ID');
+    });
 
-    function testWillReturnValueOfIndexForAnOptionEvenIfNotDeclared() {
+    QUnit.test('will return value of index for an option even if not declared', function(assert) {
       var select = bot.locators.findElement({id: 'multi'});
       var options = bot.locators.findElements({tagName: 'option'});
-      assertEquals("1", webdriver.atoms.element.getAttribute(options[1], 'index'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(options[1], 'index'), "1");
+    });
 
-    function testShouldReturnTheProtocolOfAnImage() {
+    QUnit.test('should return the protocol of an image', function(assert) {
       var image = bot.locators.findElement({id: 'image'});
       var url = webdriver.atoms.element.getAttribute(image, 'src');
-      assertTrue(url, url.indexOf('http') == 0);
-    }
+      assert.ok(url.indexOf('http') == 0, url);
+    });
 
-    function testShouldReturnNullWhenGettingSrcAttributeOfInvalidImageTag() {
+    QUnit.test('should return null when getting src attribute of invalid image tag', function(assert) {
       var image = bot.locators.findElement({id: 'invalidImgTag'});
       var url = webdriver.atoms.element.getAttribute(image, 'src');
-      assertNull(url);
-    }
+      assert.strictEqual(url, null);
+    });
 
-    function testShouldReturnNullForNonPresentBooleanAttribute() {
+    QUnit.test('should return null for non present boolean attribute', function(assert) {
       var el = document.getElementById('disabled');
-      assertNull(webdriver.atoms.element.getAttribute(el, 'required'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'required'), null);
+    });
 
-    function testShouldReturnTrueForBooleanProperty() {
+    QUnit.test('should return true for boolean property', function(assert) {
       var el = document.getElementById('image');
-      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'complete'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'complete'), 'true');
+    });
 
-    function testShouldReturnTrueForSpecifiedBooleanProperty() {
+    QUnit.test('should return true for specified boolean property', function(assert) {
       var el = document.getElementById('nowrap');
-      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'nowrap'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'nowrap'), 'true');
+    });
 
-    function testShouldReturnFalseForSpellcheckFalse() {
+    QUnit.test('should return false for spellcheck false', function(assert) {
       var el = document.getElementById('nospell');
-      assertEquals('false', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'spellcheck'), 'false');
+    });
 
-    function testShouldReturnTrueForSpellcheckTrue() {
+    QUnit.test('should return true for spellcheck true', function(assert) {
       var el = document.getElementById('spell');
-      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'spellcheck'), 'true');
+    });
 
-    function testShouldReturnTrueForSpellcheckUndefined() {
+    QUnit.test('should return true for spellcheck undefined', function(assert) {
       var el = document.getElementById('normal');
       var defaultSpellcheck = 'false';
       if (goog.userAgent.WEBKIT) {
@@ -217,49 +211,51 @@ limitations under the License.
       if (goog.userAgent.IE && !goog.userAgent.product.isVersion(10)) {
         defaultSpellcheck = 'undefined';
       }
-      assertEquals(defaultSpellcheck, webdriver.atoms.element.getAttribute(el, 'spellcheck'));
-    }
+      assert.strictEqual(webdriver.atoms.element.getAttribute(el, 'spellcheck'), defaultSpellcheck);
+    });
 
     var newLine = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
 
-    function testTypingEnterKeyOnTextArea() {
+    QUnit.test('typing enter key on text area', function(assert) {
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(el,
           ['hello', webdriver.Key.ENTER, webdriver.Key.ENTER, 'world']);
-      assertEquals('hello' + newLine + newLine + 'world', el.value);
-    }
+      assert.strictEqual(el.value, 'hello' + newLine + newLine + 'world');
+    });
 
-    function testTypingNewlineOnTextArea() {
+    QUnit.test('typing newline on text area', function(assert) {
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(el, ['hello\n\nworld']);
-      assertEquals('hello' + newLine + newLine + 'world', el.value);
-    }
+      assert.strictEqual(el.value, 'hello' + newLine + newLine + 'world');
+    });
 
-    function testCanUseNullKeyToReleaseModifiers_modifiersNotPersisted() {
+    QUnit.test('can use null key to release modifiers - modifiers not persisted', function(assert) {
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(
           el, ['abc', webdriver.Key.SHIFT, 'def', webdriver.Key.NULL, 'ghi']);
-      assertEquals('abcDEFghi', el.value);
-    }
+      assert.strictEqual(el.value, 'abcDEFghi');
+    });
 
-    function testCanUseNullKeyToReleaseModifiers_modifiersPersisted() {
+    QUnit.test('can use null key to release modifiers - modifiers persisted', function(assert) {
       var keyboard = new bot.Keyboard();
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(
           el, ['abc', webdriver.Key.SHIFT, 'def'], keyboard, true);
-      assertEquals('abcDEF', el.value);
+      assert.strictEqual(el.value, 'abcDEF');
 
       webdriver.atoms.element.type(
           el, ['ghi', webdriver.Key.NULL, 'jkl'], keyboard, true);
-      assertEquals('abcDEFGHIjkl', el.value);
-    }
+      assert.strictEqual(el.value, 'abcDEFGHIjkl');
+    });
   </script>
 </head>
 <body id="body" class="c" style="" name="body">
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 
 <p id="has_id" title="cheese">This has an ID</p>
 

@@ -34,11 +34,9 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,10 +49,31 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.TestUtilities;
 
 @Tag("UnitTests")
 class FirefoxOptionsTest {
+
+  @Test
+  void defaultConstructor() {
+    FirefoxOptions options = new FirefoxOptions();
+
+    assertThat(options.getBrowserName()).isEqualTo("firefox");
+    assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(options.prefs()).containsExactly(Map.entry("remote.active-protocols", 1));
+    assertThat(options.profile()).isNull();
+  }
+
+  @Test
+  void constructorWithProfile() {
+    FirefoxOptions options = new FirefoxOptions(new FirefoxProfile().setPreference("foo", "bar"));
+
+    assertThat(options.getBrowserName()).isEqualTo("firefox");
+    assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(options.prefs()).containsExactly(Map.entry("remote.active-protocols", 1));
+    assertThat(options.profile()).isBase64();
+  }
 
   @Test
   void canInitFirefoxOptionsWithCapabilities() {
@@ -70,8 +89,7 @@ class FirefoxOptionsTest {
   @Test
   void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
-    Capabilities caps =
-        new ImmutableCapabilities(FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
+    Capabilities caps = new ImmutableCapabilities(FIREFOX_OPTIONS, Map.of("profile", profile));
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
@@ -140,8 +158,7 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
+    FirefoxProfile profile = new FirefoxProfile().setPreference(key, value);
 
     FirefoxOptions options = new FirefoxOptions();
     options.setProfile(profile);
@@ -212,7 +229,7 @@ class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("args", Arrays.asList("-a", "-b"));
+        .containsEntry("args", List.of("-a", "-b"));
   }
 
   @Test
@@ -313,11 +330,7 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
-
-    options.setProfile(profile);
-
+    options.setProfile(new FirefoxProfile().setPreference(key, value));
     options.setLogLevel(DEBUG);
 
     File binary = TestUtilities.createTmpFile("binary");
@@ -385,14 +398,13 @@ class FirefoxOptionsTest {
     String key = "browser.startup.homepage";
     String value = "about:robots";
 
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference(key, value);
+    FirefoxProfile profile = new FirefoxProfile().setPreference(key, value);
 
     File binary = TestUtilities.createTmpFile("binary");
 
     MutableCapabilities browserCaps = new MutableCapabilities();
 
-    browserCaps.setCapability("args", Arrays.asList("verbose", "silent"));
+    browserCaps.setCapability("args", List.of("verbose", "silent"));
     browserCaps.setCapability("prefs", prefs);
     browserCaps.setCapability("profile", profile.toJson());
     browserCaps.setCapability("binary", binary.getPath());
@@ -460,6 +472,26 @@ class FirefoxOptionsTest {
 
     assertThat(caps).isEqualTo(options);
     assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
+  }
+
+  @Test
+  void issue15991() {
+    DesiredCapabilities options =
+        new DesiredCapabilities(Map.of("moz:firefoxOptions", Map.of("args", List.of("1", "2"))));
+
+    FirefoxOptions result = new FirefoxOptions().merge(options);
+
+    assertThat(result.asMap())
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of(
+                "acceptInsecureCerts",
+                true,
+                "browserName",
+                "firefox",
+                "moz:firefoxOptions",
+                Map.of(
+                    "args", List.of("1", "2"),
+                    "prefs", Map.of("remote.active-protocols", 1))));
   }
 
   private static class JreSystemProperty {

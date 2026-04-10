@@ -15,20 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.client as http_client
-
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.webkitgtk.options import Options
 from selenium.webdriver.webkitgtk.service import Service
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the WebKitGTKDriver and allows you to drive the browser."""
 
     def __init__(
         self,
-        options=None,
+        options: Options | None = None,
         service: Service | None = None,
     ):
         """Creates a new instance of the WebKitGTK driver.
@@ -36,31 +34,16 @@ class WebDriver(RemoteWebDriver):
         Starts the service and then creates new instance of WebKitGTK Driver.
 
         Args:
-            options: an instance of WebKitGTKOptions
-            service: Service object for handling the browser driver if you need to pass extra details
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
         """
-        options = options if options else Options()
+        self.options = options if options else Options()
         self.service = service if service else Service()
-        self.service.path = DriverFinder(self.service, options).get_driver_path()
+        self.service.path = DriverFinder(self.service, self.options).get_driver_path()
         self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, options=options)
-        self._is_remote = False
-
-    def quit(self):
-        """Close the browser and shut down the WebKitGTK driver executable."""
         try:
-            super().quit()
-        except http_client.BadStatusLine:
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
+            super().__init__(command_executor=self.service.service_url, options=self.options)
+        except Exception:
+            self.quit()
+            raise

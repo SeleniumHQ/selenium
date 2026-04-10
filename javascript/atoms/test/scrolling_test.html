@@ -1,7 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>scrolling_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -11,89 +15,84 @@
     goog.require('goog.labs.userAgent.device');
     goog.require('goog.labs.userAgent.platform');
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.ExpectedFailures');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <script type="text/javascript">
     var findElement = bot.locators.findElement;
-    var expectedFailures;
-
-    function setUp() {
-      window.scrollTo(0, 0);
-      assertEquals(document.body.scrollLeft, 0);
-      assertEquals(document.body.scrollTop, 0);
-      expectedFailures = new goog.testing.ExpectedFailures();
-    }
-
-    function tearDown() {
-      expectedFailures.handleTearDown();
-      window.scrollTo(0, 0); //Convenience to view results
-    }
 
     function getTopLevelParent() {
       return goog.dom.getDocumentScrollElement();
     }
 
-    function testScrollsElementInToViewIfRequired() {
+    QUnit.testStart(function() {
+      window.scrollTo(0, 0);
+    });
+
+    QUnit.testDone(function() {
+      window.scrollTo(0, 0);
+    });
+
+    QUnit.test('scrolls element in to view if required', function(assert) {
       bot.action.scrollIntoView(findElement({id: 'offscreen'}));
 
-      expectedFailures.expectFailureFor(
+      var isAndroidOrChromeRegression =
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
             goog.labs.userAgent.browser.isVersionOrHigher('40') &&
-            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
-        'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, but was fixed in m41: ' +
-        'https://code.google.com/p/chromium/issues/detail?id=448404');
-      expectedFailures.run(function() {
-        assertNotEquals(0, getTopLevelParent().scrollLeft);
-      });
-    }
+            !goog.labs.userAgent.browser.isVersionOrHigher('41');
 
-    function testDoesNotScrollElementInToViewIfAlreadyVisible() {
+      if (isAndroidOrChromeRegression) {
+        assert.ok(true, 'Skipping: Android doesn\'t currently provide scrolling information');
+        return;
+      }
+      assert.notStrictEqual(getTopLevelParent().scrollLeft, 0);
+    });
+
+    QUnit.test('does not scroll element in to view if already visible', function(assert) {
       bot.action.scrollIntoView(findElement({id: 'onscreen'}));
-      assertEquals(0, getTopLevelParent().scrollLeft);
-    }
+      assert.strictEqual(getTopLevelParent().scrollLeft, 0);
+    });
 
-    function testScrollsElementIfHiddenByScrollableOverflow() {
+    QUnit.test('scrolls element if hidden by scrollable overflow', function(assert) {
       var element = findElement({id: 'scrollable'});
       bot.action.scrollIntoView(element);
-      assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
-    }
+      assert.notStrictEqual(findElement({id: 'scrollable-container'}).scrollLeft, 0);
+    });
 
-    function testDoesNotScrollContainerIfNotHiddenByOverflow() {
+    QUnit.test('does not scroll container if not hidden by overflow', function(assert) {
       var element = findElement({id: 'scrollable-in-view'});
       bot.action.scrollIntoView(element);
       var container = findElement({id: 'scrollable-in-view-container'})
-      assertEquals(0, container.scrollLeft);
-    }
+      assert.strictEqual(container.scrollLeft, 0);
+    });
 
-    function testDoesNotScrollContainerIfNotHiddenByOverflowWithOffset() {
+    QUnit.test('does not scroll container if not hidden by overflow with offset', function(assert) {
       var element = findElement({id: 'scrollable-in-view2'});
       bot.action.scrollIntoView(element, new goog.math.Coordinate(0, 0));
       var container = findElement({id: 'scrollable-in-view-container2'})
-      assertEquals(0, container.scrollLeft);
-      assertEquals(0, getTopLevelParent().scrollTop);
-    }
+      assert.strictEqual(container.scrollLeft, 0);
+      assert.strictEqual(getTopLevelParent().scrollTop, 0);
+    });
 
-    function testScrollsContainerIfHiddenByOverflow() {
+    QUnit.test('scrolls container if hidden by overflow', function(assert) {
       bot.action.scrollIntoView(findElement({id: 'scrollable'}));
-      assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
-    }
+      assert.notStrictEqual(findElement({id: 'scrollable-container'}).scrollLeft, 0);
+    });
 
-    function testReturnsFalseIfElementHiddenByOverflow() {
+    QUnit.test('returns false if element hidden by overflow', function(assert) {
       var element = findElement({id: 'hidden-by-overflow'});
-      assertFalse(bot.action.scrollIntoView(element));
+      assert.notOk(bot.action.scrollIntoView(element));
       var container = findElement({id: 'hidden-by-overflow-container'})
-      assertEquals(0, container.scrollLeft);
-    }
+      assert.strictEqual(container.scrollLeft, 0);
+    });
 
-    function testScrollsNestedScrollContainers() {
+    QUnit.test('scrolls nested scroll containers', function(assert) {
       var top = findElement({id: 'nested-top-container'});
       var middle = findElement({id: 'nested-inner-container'});
       var element = findElement({id: 'nested'});
@@ -102,12 +101,16 @@
       bot.action.scrollIntoView(element);
 
       var nestedNewPosition = goog.style.getClientPosition(element);
-      assertNotEquals(0, top.scrollLeft);
-      assertNotEquals(0, middle.scrollLeft);
-      assertNotEquals(nestedOriginalPosition, nestedNewPosition);
-    }
+      assert.notStrictEqual(top.scrollLeft, 0);
+      assert.notStrictEqual(middle.scrollLeft, 0);
+      assert.notDeepEqual(nestedNewPosition, nestedOriginalPosition);
+    });
 
-    function testOnlyScrollsContainersThatNeedScrolling() {
+    QUnit.test('only scrolls containers that need scrolling', function(assert) {
+      if (goog.userAgent.IE) {
+        assert.ok(true, 'Skipping: IE scrollIntoView scrolls quite eagerly');
+        return;
+      }
       var element = findElement({id: 'scrollable-but-unscrolled-not-hidden'});
       var origX = goog.style.getClientPosition(element).x;
 
@@ -118,18 +121,13 @@
       var topContainer = findElement({id:
           'scrollable-but-unscrolled-top-container'});
 
-      expectedFailures.expectFailureFor(
-          goog.userAgent.IE,
-          'IE scrollIntoView scrolls quite eagerly.');
-      expectedFailures.run(function() {
-        assertNotEquals(0, topContainer.scrollLeft);
-        assertEquals(0, middleContainer.scrollLeft);
-        var newX = goog.style.getClientPosition(element).x;
-        assertTrue(newX < origX);
-      });
-    }
+      assert.notStrictEqual(topContainer.scrollLeft, 0);
+      assert.strictEqual(middleContainer.scrollLeft, 0);
+      var newX = goog.style.getClientPosition(element).x;
+      assert.ok(newX < origX);
+    });
 
-    function testScrollsNestedScrollContainersInIframes() {
+    QUnit.test('scrolls nested scroll containers in iframes', function(assert) {
       var iframe = findElement({id: 'scrollable-iframe'});
       var frameDocument = iframe.contentWindow.document;
       var top =
@@ -140,17 +138,16 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID &&
-          !bot.userAgent.isProductVersion(4.1),
-          'Android pre-Jellybean doesn\'t provide scrolling information');
-      expectedFailures.run(function() {
-        assertNotEquals(0, frameDocument.body.scrollLeft);
-        assertNotEquals(0, top.scrollLeft);
-        assertNotEquals(0, middle.scrollLeft);
-      });
-    }
+      if (goog.userAgent.product.ANDROID && !bot.userAgent.isProductVersion(4.1)) {
+        assert.ok(true, 'Skipping: Android pre-Jellybean doesn\'t provide scrolling information');
+        return;
+      }
+      assert.notStrictEqual(frameDocument.body.scrollLeft, 0);
+      assert.notStrictEqual(top.scrollLeft, 0);
+      assert.notStrictEqual(middle.scrollLeft, 0);
+    });
 
-    function testDocumentForIframe() {
+    QUnit.test('document for iframe', function(assert) {
       var iframe = findElement({id: 'offscreen-scrollable-iframe'});
       var frameDocument = iframe.contentWindow.document;
       var top =
@@ -161,49 +158,58 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(
+      var isAndroidOrChromeRegression =
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
             goog.labs.userAgent.browser.isVersionOrHigher('40') &&
-            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
-        'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, but was fixed in m41: ' +
-        'https://code.google.com/p/chromium/issues/detail?id=448404');
-      expectedFailures.run(function() {
-        assertNotEquals(0, getTopLevelParent().scrollLeft);
-      });
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
-        'Android doesn\'t currently provide scrolling information');
-      expectedFailures.run(function() {
-        assertNotEquals(0, frameDocument.body.scrollLeft);
-        assertNotEquals(0, top.scrollLeft);
-        assertNotEquals(0, middle.scrollLeft);
-      });
-    }
+            !goog.labs.userAgent.browser.isVersionOrHigher('41');
 
-    function testScrollsOverflowIfClickPointIsOutOfViewButElementIsInView() {
+      if (isAndroidOrChromeRegression) {
+        assert.ok(true, 'Skipping: Android doesn\'t currently provide scrolling information');
+      } else {
+        assert.notStrictEqual(getTopLevelParent().scrollLeft, 0);
+      }
+
+      if (goog.userAgent.product.ANDROID) {
+        assert.ok(true, 'Skipping: Android doesn\'t currently provide scrolling information');
+        return;
+      }
+      assert.notStrictEqual(frameDocument.body.scrollLeft, 0);
+      assert.notStrictEqual(top.scrollLeft, 0);
+      assert.notStrictEqual(middle.scrollLeft, 0);
+    });
+
+    QUnit.test('scrolls overflow if click point is out of view but element is in view', function(assert) {
       var outer = findElement({id: 'outer'});
       var inner = findElement({id: 'inner'});
       var coord = new goog.math.Coordinate(75, 2500);
 
       bot.action.scrollIntoView(inner, coord);
 
-      assertNotEquals(0, outer.scrollTop);
-    }
+      assert.notStrictEqual(outer.scrollTop, 0);
+    });
 
-    function testScrollingToRelativeRectangle() {
+    QUnit.test('scrolling to relative rectangle', function(assert) {
       var elem = findElement({id: 'relative-rect'});
       var region = new goog.math.Rect(60, 60, 10, 10);
-      assertEquals(bot.dom.OverflowState.SCROLL,
-          bot.dom.getOverflowState(elem, region));
+      assert.strictEqual(bot.dom.getOverflowState(elem, region), bot.dom.OverflowState.SCROLL);
 
       bot.action.scrollIntoView(elem, region);
-      assertEquals(bot.dom.OverflowState.NONE,
-          bot.dom.getOverflowState(elem, region));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem, region), bot.dom.OverflowState.NONE);
+    });
 
-    function testScrollingAccountsForScrollbarWidths() {
+    QUnit.test('scrolling accounts for scrollbar widths', function(assert) {
+      var isMobileOrTabletOrOldIEOrChromeMac =
+          goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
+            (goog.userAgent.IE && !goog.userAgent.isVersion(7)) ||
+            (goog.userAgent.product.CHROME && goog.userAgent.MAC);
+
+      if (isMobileOrTabletOrOldIEOrChromeMac) {
+        assert.ok(true, 'Skipping: scrollbars not shown or special IE behavior');
+        return;
+      }
+
       var elem = findElement({id: 'outside-both-scrollbars'});
       var rectBefore = bot.dom.getClientRect(elem);
       bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
@@ -212,32 +218,15 @@
       var horizontalScroll = rectBefore.left - rectAfter.left;
       var verticalScroll = rectBefore.top - rectAfter.top;
 
-      // In the absence of a scrollbar, the minimum scrolling needed to bring
-      // the full pixel into view would be 26 pixels. There is a scrollbar,
-      // however; scrollIntoView should scroll 26px plus the scrollbar
-      // width/height.
-
-      // This should fail on mobile and tablet since the scrollbars aren't shown.
-      // This should also fail on IE6 since scrolling only happens to
-      // exactly the scrollbar width, which is 17 by default on Windows XP.
-      // Not sure why this is failing on chrome on OS X, but it may be because
-      // there are no scroll bars that get displayed.
-      expectedFailures.expectFailureFor(
-          goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
-            (goog.userAgent.IE && !goog.userAgent.isVersion(7)) ||
-            (goog.userAgent.product.CHROME && goog.userAgent.MAC));
-
-      expectedFailures.run(function() {
-        assertTrue('Horizontal scroll did not account for scrollbar. ' +
-            'It scrolled ' + horizontalScroll + 'px, but should have ' +
-            'scrolled at least 26px plus the scrollbar width.',
-            horizontalScroll > 26);
-        assertTrue('Vertical scroll did not account for scrollbar. ' +
-            'It scrolled ' + verticalScroll + 'px, but should have ' +
-            'scrolled at least 26px plus the scrollbar height.',
-            verticalScroll > 26);
-      });
-    }
+      assert.ok(horizontalScroll > 26,
+          'Horizontal scroll did not account for scrollbar. ' +
+          'It scrolled ' + horizontalScroll + 'px, but should have ' +
+          'scrolled at least 26px plus the scrollbar width.');
+      assert.ok(verticalScroll > 26,
+          'Vertical scroll did not account for scrollbar. ' +
+          'It scrolled ' + verticalScroll + 'px, but should have ' +
+          'scrolled at least 26px plus the scrollbar height.');
+    });
   </script>
   <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>
   <div style="position: absolute; left: 8000px; border: 2px orange solid;"><a id="offscreen">Offscreen</a></div>

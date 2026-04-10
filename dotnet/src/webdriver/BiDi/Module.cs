@@ -17,28 +17,38 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
-
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
-    protected BiDi BiDi { get; private set; } = null!;
+    private Broker Broker { get; set; } = null!;
 
-    protected Broker Broker { get; private set; } = null!;
+    protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
+        where TResult : EmptyResult
+    {
+        return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
+    }
 
-    protected abstract void Initialize(JsonSerializerOptions jsonSerializerOptions);
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, action, options, cancellationToken);
+    }
 
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, func, options, cancellationToken);
+    }
+
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            BiDi = bidi,
             Broker = broker
         };
-
-        module.Initialize(jsonSerializerOptions);
 
         return module;
     }

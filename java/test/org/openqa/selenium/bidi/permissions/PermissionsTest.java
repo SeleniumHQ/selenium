@@ -18,6 +18,8 @@
 package org.openqa.selenium.bidi.permissions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.util.Map;
 import java.util.Optional;
@@ -32,10 +34,13 @@ import org.openqa.selenium.bidi.module.Permission;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.Pages;
 
+@Ignore(value = CHROME, reason = "BiDi permissions module not yet supported")
+@Ignore(value = EDGE, reason = "BiDi permissions module not yet supported")
 public class PermissionsTest extends JupiterTestBase {
   private Permission permission;
   private Script script;

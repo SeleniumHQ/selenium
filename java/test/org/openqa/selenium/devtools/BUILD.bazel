@@ -1,12 +1,34 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
+
+SMALL_TESTS = [
+    "CdpEndpointFinderTest.java",
+    "CdpVersionFinderTest.java",
+]
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = SMALL_TESTS,
+    deps = [
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
+    ] + JUNIT5_DEPS,
+)
 
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
-    srcs = glob(["*Test.java"]),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
     browsers = [
         "chrome",
+        "chrome-beta",
         "edge",
     ],
     tags = [
@@ -25,6 +47,7 @@ java_selenium_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -46,5 +69,6 @@ java_library(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

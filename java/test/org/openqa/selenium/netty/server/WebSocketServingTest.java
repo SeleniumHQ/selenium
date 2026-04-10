@@ -20,13 +20,13 @@ package org.openqa.selenium.netty.server;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -62,15 +62,17 @@ class WebSocketServingTest {
 
   @Test
   void clientShouldThrowAnExceptionIfUnableToConnectToAWebSocketEndPoint() {
-    assertThrows(
-        ConnectionFailedException.class,
-        () -> {
-          server = new NettyServer(defaultOptions(), req -> new HttpResponse()).start();
+    assertThatThrownBy(
+            () -> {
+              server = new NettyServer(defaultOptions(), req -> new HttpResponse()).start();
 
-          HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+              HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
-          client.openSocket(new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener() {});
-        });
+              client.openSocket(
+                  new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener() {});
+            })
+        .isInstanceOf(ConnectionFailedException.class)
+        .hasMessageStartingWith("JdkWebSocket initial request execution error");
   }
 
   @Test
@@ -232,7 +234,6 @@ class WebSocketServingTest {
 
   private BaseServerOptions defaultOptions() {
     return new BaseServerOptions(
-        new MapConfig(
-            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+        new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
   }
 }

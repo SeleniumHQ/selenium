@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableSet;
+
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -108,7 +109,8 @@ public class AnnotatedConfig implements Config {
     this.config = values;
   }
 
-  private String getSingleValue(Object value) {
+  @Nullable
+  private String getSingleValue(@Nullable Object value) {
     if (value == null) {
       return null;
     }
@@ -175,17 +177,17 @@ public class AnnotatedConfig implements Config {
       return Optional.empty();
     }
 
-    return Optional.of(ImmutableList.copyOf(values));
+    return Optional.of(List.copyOf(values));
   }
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSortedSet.copyOf(config.keySet());
+    return unmodifiableSet(config.keySet());
   }
 
   @Override
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
-    return ImmutableSortedSet.copyOf(config.getOrDefault(section, ImmutableMap.of()).keySet());
+    return unmodifiableSet(config.getOrDefault(section, emptyMap()).keySet());
   }
 }

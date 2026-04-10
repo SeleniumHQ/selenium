@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -178,9 +176,9 @@ public class ReadOnlyDesiredCapabilities : ICapabilities, IHasCapabilitiesDictio
     public override int GetHashCode()
     {
         int result;
-        result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
-        result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
-        result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+        result = this.BrowserName?.GetHashCode() ?? 0;
+        result = (31 * result) + (this.Version?.GetHashCode() ?? 0);
+        result = (31 * result) + (this.Platform?.GetHashCode() ?? 0);
         return result;
     }
 

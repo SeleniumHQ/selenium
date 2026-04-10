@@ -1,0 +1,51 @@
+<!-- Guidance for AI agents working in Selenium Ruby Bindings -->
+
+## Code location
+- Library: `rb/lib/selenium/webdriver`
+- Tests: `rb/spec/unit/` and `rb/spec/integration/`
+- Type signatures: `rb/sig/`
+
+## Common commands
+- Build: `bazel build //rb/...`
+
+## Testing
+See `rb/TESTING.md`
+
+## Code conventions
+
+### Logging
+```ruby
+WebDriver.logger.warn("actionable: something needs attention", id: :warning_id)
+WebDriver.logger.info("useful: driver started successfully")
+WebDriver.logger.debug("diagnostic: request details for debugging")
+```
+
+### Deprecation
+```ruby
+WebDriver.logger.deprecate(
+  'OldClass#old_method',
+  'NewClass#new_method',
+  id: :old_method
+)
+```
+
+### Internal APIs
+Mark internal APIs with `@api private` in YARD comments:
+```ruby
+# @api private
+def internal_method
+end
+```
+
+### Type signatures (steep/rbs)
+When changing public API, update corresponding `.rbs` files in `rb/sig/`
+
+### Documentation
+Use YARD for public APIs:
+```ruby
+# Brief description.
+#
+# @param name [Type] description
+# @return [Type] description
+# @raise [ErrorClass] when condition
+```

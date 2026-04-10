@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
@@ -46,6 +47,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -116,8 +118,8 @@ public class DriverService implements Closeable {
       this.executable = executable.getCanonicalPath();
     }
     this.timeout = timeout;
-    this.args = args;
-    this.environment = environment;
+    this.args = args == null ? emptyList() : List.copyOf(args);
+    this.environment = environment == null ? emptyMap() : Map.copyOf(environment);
 
     this.url = getUrl(port);
   }
@@ -482,7 +484,13 @@ public class DriverService implements Closeable {
         return;
       }
 
-      String logLocation = System.getProperty(logProperty, LOG_NULL);
+      String defaultLocation = Debug.isDebugAll() ? LOG_STDERR : LOG_NULL;
+      String logLocation = System.getProperty(logProperty, defaultLocation);
+      if (Debug.isDebugAll() && System.getProperty(logProperty) == null) {
+        System.err.println(
+            "WARNING: Environment Variable `SE_DEBUG` is set; defaulting driver log output to"
+                + " stderr.");
+      }
       switch (logLocation) {
         case LOG_STDOUT:
           withLogOutput(System.out);

@@ -35,7 +35,8 @@ public class Command<X> {
   }
 
   public Command(String method, Map<String, Object> params, Type typeOfX) {
-    this(method, params, input -> input.read(Require.nonNull("Type to convert to", typeOfX)));
+    this(
+        method, params, input -> input.readNonNull(Require.nonNull("Type to convert to", typeOfX)));
   }
 
   public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
@@ -73,7 +74,10 @@ public class Command<X> {
   /**
    * Some CDP commands do not appear to send responses, and so are really hard to deal with. Work
    * around that by flagging those commands.
+   *
+   * @deprecated Not needed. All CDP commands return something, at least empty map.
    */
+  @Deprecated
   public Command<X> doesNotSendResponse() {
     return new Command<>(method, params, mapper, false);
   }

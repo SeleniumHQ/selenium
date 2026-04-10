@@ -20,18 +20,13 @@ package org.openqa.selenium.grid.sessionqueue.local;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.UUID.randomUUID;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -43,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -78,7 +72,6 @@ import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -103,7 +96,7 @@ class LocalNewSessionQueueTest {
 
     this.sessionRequest =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(CAPS),
@@ -196,9 +189,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -213,6 +206,7 @@ class LocalNewSessionQueueTest {
 
     assertThat(latch.await(1000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isTrue();
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
   }
 
   @ParameterizedTest
@@ -243,9 +237,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -261,6 +255,7 @@ class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
     assertThat(latch.await(3000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isFalse();
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @ParameterizedTest
@@ -288,9 +283,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -302,7 +297,7 @@ class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
-    assertEquals(HTTP_OK, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
   }
 
   @ParameterizedTest
@@ -313,7 +308,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest sessionRequestWithTimeout =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(CAPS),
@@ -356,7 +351,7 @@ class LocalNewSessionQueueTest {
     assertThat(LocalDateTime.now().minusSeconds(10).isBefore(start)).isTrue();
 
     assertThat(isPresent.get()).isTrue();
-    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @ParameterizedTest
@@ -366,7 +361,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest sessionRequestWithTimeout =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(CAPS),
@@ -399,9 +394,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -414,7 +409,7 @@ class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
 
     assertThat(isPresent.get()).isTrue();
-    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @ParameterizedTest
@@ -433,7 +428,7 @@ class LocalNewSessionQueueTest {
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
-    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @ParameterizedTest
@@ -441,9 +436,9 @@ class LocalNewSessionQueueTest {
   void shouldBeAbleToRemoveFromQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
-    Optional<SessionRequest> httpRequest = queue.remove(new RequestId(UUID.randomUUID()));
+    Optional<SessionRequest> httpRequest = queue.remove(new RequestId(randomUUID()));
 
-    assertFalse(httpRequest.isPresent());
+    assertThat(httpRequest).isEmpty();
   }
 
   @ParameterizedTest
@@ -451,13 +446,13 @@ class LocalNewSessionQueueTest {
   void shouldBeClearQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
-    RequestId requestId = new RequestId(UUID.randomUUID());
+    RequestId requestId = new RequestId(randomUUID());
     localQueue.injectIntoQueue(sessionRequest);
 
     int count = queue.clearQueue();
 
-    assertEquals(1, count);
-    assertFalse(queue.remove(requestId).isPresent());
+    assertThat(count).isEqualTo(1);
+    assertThat(queue.remove(requestId)).isEmpty();
   }
 
   @ParameterizedTest
@@ -472,9 +467,7 @@ class LocalNewSessionQueueTest {
             .map(SessionRequestCapability::getDesiredCapabilities)
             .collect(Collectors.toList());
 
-    assertThat(response).hasSize(1);
-
-    assertEquals(Set.of(CAPS), response.get(0));
+    assertThat(response).containsExactly(Set.of(CAPS));
   }
 
   @ParameterizedTest
@@ -490,8 +483,8 @@ class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertEquals(1, count);
-    assertFalse(queue.remove(requestId).isPresent());
+    assertThat(count).isEqualTo(1);
+    assertThat(queue.remove(requestId)).isEmpty();
   }
 
   @ParameterizedTest
@@ -500,9 +493,9 @@ class LocalNewSessionQueueTest {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
-    Optional<SessionRequest> httpRequest = queue.remove(new RequestId(UUID.randomUUID()));
+    Optional<SessionRequest> httpRequest = queue.remove(new RequestId(randomUUID()));
 
-    assertFalse(httpRequest.isPresent());
+    assertThat(httpRequest).isEmpty();
   }
 
   @ParameterizedTest
@@ -516,7 +509,7 @@ class LocalNewSessionQueueTest {
     assertThat(removed).isPresent();
 
     boolean added = queue.retryAddToQueue(sessionRequest);
-    assertTrue(added);
+    assertThat(added).isTrue();
   }
 
   @ParameterizedTest
@@ -561,9 +554,9 @@ class LocalNewSessionQueueTest {
                         new CreateSessionResponse(
                             session,
                             JSON.toJson(
-                                    ImmutableMap.of(
+                                    Map.of(
                                         "value",
-                                        ImmutableMap.of(
+                                        Map.of(
                                             "sessionId", sessionId,
                                             "capabilities", capabilities)))
                                 .getBytes(UTF_8));
@@ -580,13 +573,14 @@ class LocalNewSessionQueueTest {
 
     assertThat(isPresent.get()).isTrue();
     assertThat(retrySuccess.get()).isTrue();
-    assertEquals(HTTP_OK, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
   }
 
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier) {
+  void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier)
+      throws ExecutionException, InterruptedException, TimeoutException {
     setup(supplier);
 
     AtomicBoolean processQueue = new AtomicBoolean(true);
@@ -602,7 +596,7 @@ class LocalNewSessionQueueTest {
                   ImmutableCapabilities capabilities =
                       new ImmutableCapabilities("browserName", "chrome");
                   try {
-                    SessionId sessionId = new SessionId(UUID.randomUUID());
+                    SessionId sessionId = new SessionId(randomUUID());
                     Session session =
                         new Session(
                             sessionId,
@@ -614,9 +608,9 @@ class LocalNewSessionQueueTest {
                         new CreateSessionResponse(
                             session,
                             JSON.toJson(
-                                    ImmutableMap.of(
+                                    Map.of(
                                         "value",
-                                        ImmutableMap.of(
+                                        Map.of(
                                             "sessionId", sessionId,
                                             "capabilities", capabilities)))
                                 .getBytes(UTF_8));
@@ -631,41 +625,37 @@ class LocalNewSessionQueueTest {
         .start();
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
-
-    Callable<HttpResponse> callable =
-        () -> {
-          SessionRequest sessionRequest =
-              new SessionRequest(
-                  new RequestId(UUID.randomUUID()),
-                  Instant.now(),
-                  Set.of(W3C),
-                  Set.of(CAPS),
-                  Map.of(),
-                  Map.of());
-
-          return queue.addToQueue(sessionRequest);
-        };
-
-    Future<HttpResponse> firstRequest = executor.submit(callable);
-    Future<HttpResponse> secondRequest = executor.submit(callable);
-
     try {
+      Callable<HttpResponse> callable =
+          () -> {
+            SessionRequest sessionRequest =
+                new SessionRequest(
+                    new RequestId(randomUUID()),
+                    Instant.now(),
+                    Set.of(W3C),
+                    Set.of(CAPS),
+                    Map.of(),
+                    Map.of());
+
+            return queue.addToQueue(sessionRequest);
+          };
+
+      Future<HttpResponse> firstRequest = executor.submit(callable);
+      Future<HttpResponse> secondRequest = executor.submit(callable);
+
       HttpResponse firstResponse = firstRequest.get(30, SECONDS);
       HttpResponse secondResponse = secondRequest.get(30, SECONDS);
 
-      String firstResponseContents = Contents.string(firstResponse);
-      String secondResponseContents = Contents.string(secondResponse);
+      String firstResponseContents = firstResponse.contentAsString();
+      String secondResponseContents = secondResponse.contentAsString();
 
-      assertEquals(HTTP_OK, firstResponse.getStatus());
-      assertEquals(HTTP_OK, secondResponse.getStatus());
-
-      assertNotEquals(firstResponseContents, secondResponseContents);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      fail("Could not create session");
+      assertThat(firstResponse.getStatus()).isEqualTo(HTTP_OK);
+      assertThat(secondResponse.getStatus()).isEqualTo(HTTP_OK);
+      assertThat(secondResponseContents).isNotEqualTo(firstResponseContents);
+    } finally {
+      executor.shutdown();
+      processQueue.set(false);
     }
-
-    executor.shutdown();
-    processQueue.set(false);
   }
 
   @ParameterizedTest
@@ -676,60 +666,53 @@ class LocalNewSessionQueueTest {
 
     final SessionRequest request =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
-            LONG_AGO,
-            Set.of(W3C),
-            Set.of(CAPS),
-            Map.of(),
-            Map.of());
+            new RequestId(randomUUID()), LONG_AGO, Set.of(W3C), Set.of(CAPS), Map.of(), Map.of());
 
     HttpResponse httpResponse = queue.addToQueue(request);
 
-    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier) {
+  void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier)
+      throws ExecutionException, InterruptedException, TimeoutException {
     setup(supplier);
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    Callable<HttpResponse> callable =
-        () -> {
-          SessionRequest sessionRequest =
-              new SessionRequest(
-                  new RequestId(UUID.randomUUID()),
-                  Instant.now(),
-                  Set.of(W3C),
-                  Set.of(CAPS),
-                  Map.of(),
-                  Map.of());
-          return queue.addToQueue(sessionRequest);
-        };
-
-    Future<HttpResponse> firstRequest = executor.submit(callable);
-    Future<HttpResponse> secondRequest = executor.submit(callable);
-
-    int count = 0;
-
-    while (count < 2) {
-      count += queue.clearQueue();
-    }
-
     try {
+      Callable<HttpResponse> callable =
+          () -> {
+            SessionRequest sessionRequest =
+                new SessionRequest(
+                    new RequestId(randomUUID()),
+                    Instant.now(),
+                    Set.of(W3C),
+                    Set.of(CAPS),
+                    Map.of(),
+                    Map.of());
+            return queue.addToQueue(sessionRequest);
+          };
+
+      Future<HttpResponse> firstRequest = executor.submit(callable);
+      Future<HttpResponse> secondRequest = executor.submit(callable);
+
+      int count = 0;
+
+      while (count < 2) {
+        count += queue.clearQueue();
+      }
+
       HttpResponse firstResponse = firstRequest.get(30, SECONDS);
       HttpResponse secondResponse = secondRequest.get(30, SECONDS);
 
-      assertEquals(HTTP_INTERNAL_ERROR, firstResponse.getStatus());
-      assertEquals(HTTP_INTERNAL_ERROR, secondResponse.getStatus());
-
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      fail("Could not create session");
+      assertThat(firstResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+      assertThat(secondResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+    } finally {
+      executor.shutdownNow();
     }
-
-    executor.shutdownNow();
   }
 
   @ParameterizedTest
@@ -740,7 +723,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest expected =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
@@ -750,7 +733,7 @@ class LocalNewSessionQueueTest {
 
     localQueue.injectIntoQueue(
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
@@ -762,6 +745,7 @@ class LocalNewSessionQueueTest {
 
     List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
 
+    assertThat(returned).hasSize(1);
     assertThat(returned.get(0)).isEqualTo(expected);
   }
 
@@ -773,7 +757,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest firstSessionRequest =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
@@ -782,7 +766,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest secondSessionRequest =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
@@ -791,7 +775,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest thirdSessionRequest =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
@@ -808,10 +792,10 @@ class LocalNewSessionQueueTest {
 
     List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
 
-    assertThat(returned.size()).isEqualTo(3);
-    assertTrue(returned.contains(firstSessionRequest));
-    assertTrue(returned.contains(secondSessionRequest));
-    assertTrue(returned.contains(thirdSessionRequest));
+    assertThat(returned).hasSize(3);
+    assertThat(returned).contains(firstSessionRequest);
+    assertThat(returned.contains(secondSessionRequest)).isTrue();
+    assertThat(returned.contains(thirdSessionRequest)).isTrue();
   }
 
   @ParameterizedTest
@@ -825,7 +809,7 @@ class LocalNewSessionQueueTest {
     // that doesn't match should be first in the queue.
     localQueue.injectIntoQueue(
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
@@ -834,7 +818,7 @@ class LocalNewSessionQueueTest {
 
     SessionRequest expected =
         new SessionRequest(
-            new RequestId(UUID.randomUUID()),
+            new RequestId(randomUUID()),
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
@@ -847,6 +831,7 @@ class LocalNewSessionQueueTest {
 
     List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
 
+    assertThat(returned).hasSize(1);
     assertThat(returned.get(0)).isEqualTo(expected);
   }
 

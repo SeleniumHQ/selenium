@@ -1,7 +1,11 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Web SQL database</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../../test_bootstrap.js"></script>
   <script src="../../../atoms/inject/deps.js"></script>
   <script type='text/javascript'>
@@ -9,7 +13,6 @@
     goog.require('bot.html5');
     goog.require('goog.json');
     goog.require('goog.Promise');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.atoms.inject.storage.database');
   </script>
 
@@ -19,7 +22,7 @@
      * to create the database.
      * This function must not fail or throw error for of the test functions.
      */
-    function setUpPage() {
+    QUnit.begin(function() {
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
@@ -47,41 +50,46 @@
             'INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
         }, fail, success);
       });
-    }
+    });
 
-    function testExecuteSqlWithErrorWrapsErrorInJsonResult() {
+    QUnit.test('executeSqlWithErrorWrapsErrorInJsonResult', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
+        assert.ok(true, 'Web SQL Database not supported');
         return;
       }
 
-      return new goog.Promise(function(onDone) {
-        // WITH is erroneously used instead of WHERE
-        webdriver.atoms.inject.storage.database.executeSql(
-            'testDB',
-            'SELECT * from docids WITH id = 1',
-             [], onDone);
-      }).then(function(result) {
-        assertEquals(bot.ErrorCode.SQL_DATABASE_ERROR,
-            goog.json.parse(result)["status"]);
-      });
-    }
+      var done = assert.async();
+      // WITH is erroneously used instead of WHERE
+      webdriver.atoms.inject.storage.database.executeSql(
+          'testDB',
+          'SELECT * from docids WITH id = 1',
+           [], function(result) {
+             assert.strictEqual(goog.json.parse(result)["status"],
+                 bot.ErrorCode.SQL_DATABASE_ERROR);
+             done();
+           });
+    });
 
-    function testExecuteSqlReturnsSuccessInJsonResult() {
+    QUnit.test('executeSqlReturnsSuccessInJsonResult', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
+        assert.ok(true, 'Web SQL Database not supported');
         return;
       }
-      return new goog.Promise(function(onDone) {
-        webdriver.atoms.inject.storage.database.executeSql(
-            'testDB',
-            'SELECT * from docids WHERE id = 1',
-             [], onDone);
-      }).then(function(result) {
-        assertEquals(bot.ErrorCode.SUCCESS,
-            goog.json.parse(result)["status"]);
-      });
-    }
+
+      var done = assert.async();
+      webdriver.atoms.inject.storage.database.executeSql(
+          'testDB',
+          'SELECT * from docids WHERE id = 1',
+           [], function(result) {
+             assert.strictEqual(goog.json.parse(result)["status"],
+                 bot.ErrorCode.SUCCESS);
+             done();
+           });
+    });
   </script>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 </body>
 </html>

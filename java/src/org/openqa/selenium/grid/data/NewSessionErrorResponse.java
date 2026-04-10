@@ -49,6 +49,7 @@ public class NewSessionErrorResponse {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static NewSessionErrorResponse fromJson(JsonInput input) {
     String message = null;
     RequestId requestId = null;

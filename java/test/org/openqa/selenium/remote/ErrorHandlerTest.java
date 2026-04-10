@@ -20,11 +20,9 @@ package org.openqa.selenium.remote;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -48,8 +46,9 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
 
 @Tag("UnitTests")
+@SuppressWarnings("removal")
 class ErrorHandlerTest {
-  private ErrorHandler handler;
+  private final ErrorHandler handler = new ErrorHandler().setIncludeServerErrors(true);
 
   private static void assertStackTracesEqual(
       StackTraceElement[] expected, StackTraceElement[] actual) {
@@ -66,12 +65,6 @@ class ErrorHandlerTest {
   private static Map<String, Object> toMap(Object o) {
     String rawJson = new Json().toJson(o);
     return new Json().toType(rawJson, Map.class);
-  }
-
-  @BeforeEach
-  public void setUp() {
-    handler = new ErrorHandler();
-    handler.setIncludeServerErrors(true);
   }
 
   @Test
@@ -99,7 +92,7 @@ class ErrorHandlerTest {
       int status, Class<? extends RuntimeException> type) {
     assertThatExceptionOfType(RuntimeException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(createResponse(status), 123))
-        .satisfies(e -> assertThat(type.isAssignableFrom(e.getClass())).isTrue());
+        .isInstanceOf(type);
   }
 
   @Test
@@ -130,8 +123,7 @@ class ErrorHandlerTest {
         .isThrownBy(
             () ->
                 handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, ImmutableMap.of("message", "boom")),
-                    123))
+                    createResponse(ErrorCodes.UNHANDLED_ERROR, Map.of("message", "boom")), 123))
         .withNoCause()
         .withMessageContaining("boom")
         .withMessageContaining(new WebDriverException().getMessage());
@@ -145,8 +137,7 @@ class ErrorHandlerTest {
                 handler.throwIfResponseFailed(
                     createResponse(
                         ErrorCodes.UNHANDLED_ERROR,
-                        ImmutableMap.of(
-                            "message", "boom", "class", NullPointerException.class.getName())),
+                        Map.of("message", "boom", "class", NullPointerException.class.getName())),
                     123))
         .withMessage(
             new WebDriverException(
@@ -165,8 +156,7 @@ class ErrorHandlerTest {
                 handler.throwIfResponseFailed(
                     createResponse(
                         ErrorCodes.UNHANDLED_ERROR,
-                        ImmutableMap.of(
-                            "message", "boom", "class", NullPointerException.class.getName())),
+                        Map.of("message", "boom", "class", NullPointerException.class.getName())),
                     1234))
         .withMessage(
             new WebDriverException(
@@ -230,12 +220,12 @@ class ErrorHandlerTest {
   @Test
   void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data =
-        ImmutableMap.of(
+        Map.of(
             "message",
             "some error message",
             "stackTrace",
             Collections.singletonList(
-                ImmutableMap.of(
+                Map.of(
                     "lineNumber", 1224,
                     "methodName", "someMethod",
                     "className", "MyClass",
@@ -295,7 +285,7 @@ class ErrorHandlerTest {
     data.put(
         "stackTrace",
         Collections.singletonList(
-            ImmutableMap.of(
+            Map.of(
                 "lineNumber", 1224,
                 "methodName", "someMethod",
                 "className", "MyClass",
@@ -337,12 +327,12 @@ class ErrorHandlerTest {
   @Test
   void testToleratesNonNumericLineNumber() {
     Map<String, ?> data =
-        ImmutableMap.of(
+        Map.of(
             "message",
             "some error message",
             "stackTrace",
             Collections.singletonList(
-                ImmutableMap.of(
+                Map.of(
                     "lineNumber", "some string, might be empty or 'Not available'",
                     "methodName", "someMethod",
                     "className", "MyClass",
@@ -376,12 +366,12 @@ class ErrorHandlerTest {
   @Test
   void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data =
-        ImmutableMap.of(
+        Map.of(
             "message",
             "some error message",
             "stackTrace",
             Collections.singletonList(
-                ImmutableMap.of(
+                Map.of(
                     "lineNumber", "1224", // number as a string
                     "methodName", "someMethod",
                     "className", "MyClass",

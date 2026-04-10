@@ -18,9 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Remote;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace OpenQA.Selenium.Safari;
 
@@ -158,27 +155,51 @@ public class SafariDriver : WebDriver
         this.AddCustomSafariCommand(SetPermissionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/permissions");
     }
 
-    /// <summary>
-    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-    /// </summary>
-    /// <param name="service"></param>
-    /// <param name="commandTimeout"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
-        ArgumentNullException.ThrowIfNull(service);
+        return Task.Run(async () =>
+            await GenerateDriverServiceCommandExecutorAsync(service, options, commandTimeout).ConfigureAwait(false))
+            .GetAwaiter().GetResult();
+    }
 
-        ArgumentNullException.ThrowIfNull(options);
+    private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
+        if (service is null)
+        {
+            throw new ArgumentNullException(nameof(service));
+        }
+
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
 
         if (service.DriverServicePath == null)
         {
             DriverFinder finder = new DriverFinder(options);
-            string fullServicePath = finder.GetDriverPath();
+            string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);
             service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
             service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
         }
-        return new DriverServiceCommandExecutor(service, commandTimeout);
+
+        try
+        {
+            await service.StartAsync().ConfigureAwait(false);
+            return new DriverServiceCommandExecutor(service, commandTimeout);
+        }
+        catch
+        {
+            try
+            {
+                await service.DisposeAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // Ignore exceptions thrown while disposing the service to preserve the original exception.
+            }
+
+            throw;
+        }
     }
 
     /// <summary>
@@ -208,7 +229,7 @@ public class SafariDriver : WebDriver
 
         Dictionary<string, object> permissions = new Dictionary<string, object>();
         permissions[permissionName] = permissionValue;
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["permissions"] = permissions;
         this.Execute(SetPermissionsCommand, parameters);
     }

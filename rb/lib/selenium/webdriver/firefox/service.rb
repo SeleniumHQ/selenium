@@ -26,13 +26,32 @@ module Selenium
         SHUTDOWN_SUPPORTED = false
         DRIVER_PATH_ENV_KEY = 'SE_GECKODRIVER'
 
-        def initialize(path: nil, port: nil, log: nil, args: nil)
-          args ||= []
+        def initialize(args: nil, **)
+          args = Array(args.dup)
           unless args.any? { |arg| arg.include?('--connect-existing') || arg.include?('--websocket-port') }
             args << '--websocket-port'
             args << '0'
           end
+
+          if ENV.key?('SE_DEBUG')
+            remove_log_args(args)
+            args << '-v'
+          end
+
           super
+        end
+
+        private
+
+        def remove_log_args(args)
+          if (index = args.index('--log'))
+            args.delete_at(index) # delete '--log'
+            args.delete_at(index) if args[index] && !args[index].start_with?('-') # delete value if present
+            warn_driver_log_override
+          elsif (index = args.index { |arg| arg.start_with?('--log=') })
+            args.delete_at(index)
+            warn_driver_log_override
+          end
         end
       end # Service
     end # Firefox

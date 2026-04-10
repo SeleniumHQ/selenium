@@ -12,6 +12,8 @@ module Selenium
 
         SHUTDOWN_SUPPORTED: bool
 
+        def initialize: (?args: Array[String]?, **untyped) -> void
+
         def log: () -> untyped
       end
     end

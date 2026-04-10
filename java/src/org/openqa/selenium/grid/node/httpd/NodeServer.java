@@ -26,7 +26,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
@@ -39,6 +38,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -73,8 +73,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class NodeServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
-  private Node node;
-  private EventBus bus;
+  private @Nullable Node node;
+  private @Nullable EventBus bus;
   private final Thread shutdownHook =
       new Thread(() -> bus.fire(new NodeRemovedEvent(node.getStatus())));
 
@@ -90,7 +90,7 @@ public class NodeServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, NODE_ROLE);
+    return Set.of(EVENT_BUS_ROLE, HTTPD_ROLE, NODE_ROLE);
   }
 
   @Override

@@ -17,57 +17,51 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi;
 
 public class Subscription : IAsyncDisposable
 {
     private readonly Broker _broker;
 
-    internal Subscription(Session.Subscription subscription, Broker broker, EventHandler eventHandler)
+    internal Subscription(Session.Subscription subscription, Broker broker, string eventName)
     {
         SubscriptionId = subscription;
         _broker = broker;
-        EventHandler = eventHandler;
+        EventName = eventName;
     }
 
     internal Session.Subscription SubscriptionId { get; }
 
-    internal EventHandler EventHandler { get; }
+    internal string EventName { get; }
 
-    public async Task UnsubscribeAsync()
+    internal Func<EventArgs, ValueTask> Handler { get; init; } = null!;
+
+    public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _broker.UnsubscribeAsync(this).ConfigureAwait(false);
+        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
     {
         await UnsubscribeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }
 
-public class SubscriptionOptions
+public sealed record SubscriptionOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 
-    public TimeSpan? Timeout { get; set; }
+    public TimeSpan? Timeout { get; init; }
 }
 
-public class ContextSubscriptionOptions
+public sealed record ContextSubscriptionOptions
 {
-    public TimeSpan? Timeout { get; set; }
-}
+    public TimeSpan? Timeout { get; init; }
 
-internal static class ContextSubscriptionOptionsExtensions
-{
-    // Converts ContextSubscriptionOptions to SubscriptionOptions with the specified context.
-    // Deeply copying other properties as needed.
-    public static SubscriptionOptions WithContext(this ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context],
         Timeout = options?.Timeout

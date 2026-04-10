@@ -21,13 +21,13 @@ from selenium.webdriver.common import service
 
 
 class Service(service.Service):
-    """Manage the safaridriver service lifecycle (start/stop).
+    """Service class responsible for starting and stopping of `safaridriver`.
 
     This service is only supported on macOS.
 
     Args:
-        executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
-        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        executable_path: (Optional) Install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
         service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
         enable_logging: (Optional) Enable logging of the service. Logs can be located at

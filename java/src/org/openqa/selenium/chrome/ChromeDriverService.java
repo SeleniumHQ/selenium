@@ -18,7 +18,6 @@
 package org.openqa.selenium.chrome;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -109,12 +108,7 @@ public class ChromeDriverService extends DriverService {
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -273,8 +267,18 @@ public class ChromeDriverService extends DriverService {
       if (appendLog == null) {
         this.appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
       }
-      if (verbose == null && Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY)) {
-        withVerbose(Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY));
+      if (Debug.isDebugAll()
+          || (verbose == null && Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY))) {
+        if (Debug.isDebugAll()
+            && (logLevel != null
+                || silent != null
+                || Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)
+                || System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null)) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromeDriver --verbose and"
+                  + " overriding --silent/--log-level settings.");
+        }
+        withVerbose(true);
       }
       if (silent == null && Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)) {
         withSilent(Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY));

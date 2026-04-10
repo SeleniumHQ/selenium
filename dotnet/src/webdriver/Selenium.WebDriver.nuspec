@@ -25,9 +25,11 @@
     <dependencies>
       <group targetFramework="net462">
         <dependency id="System.Text.Json" version="8.0.5" exclude="Build,Analyzers" />
+        <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="System.Text.Json" version="8.0.5" exclude="Build,Analyzers" />
+        <dependency id="System.Threading.Channels" version="8.0.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net8.0">
         
@@ -52,8 +54,8 @@
     <file src="lib/net8.0/WebDriver.pdb" target="lib/net8.0/WebDriver.pdb" />
     <file src="lib/net8.0/WebDriver.xml" target="lib/net8.0/WebDriver.xml" />
 
-    <file src="build/Selenium.WebDriver.targets" target="build/Selenium.WebDriver.targets"/>
-    <file src="buildTransitive/Selenium.WebDriver.targets" target="buildTransitive/Selenium.WebDriver.targets"/>
+    <file src="build/Selenium.WebDriver.props" target="build/Selenium.WebDriver.props"/>
+    <file src="buildTransitive/Selenium.WebDriver.props" target="buildTransitive/Selenium.WebDriver.props"/>
 
     <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
     <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />

@@ -17,16 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -54,7 +50,7 @@ public class DevToolsSession : IDevToolsSession
     private string? attachedTargetId;
 
     private WebSocketConnection? connection;
-    private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
+    private readonly ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
     private readonly BlockingCollection<string> messageQueue = new BlockingCollection<string>();
     private readonly Task messageQueueMonitorTask;
     private long currentCommandId = 0;
@@ -633,10 +629,7 @@ public class DevToolsSession : IDevToolsSession
 
     private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
     {
-        if (DevToolsEventReceived != null)
-        {
-            DevToolsEventReceived(this, e);
-        }
+        DevToolsEventReceived?.Invoke(this, e);
     }
 
     private void OnConnectionDataReceived(object? sender, WebSocketConnectionDataReceivedEventArgs e)
@@ -646,17 +639,11 @@ public class DevToolsSession : IDevToolsSession
 
     private void LogTrace(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
     }
 
     private void LogError(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
     }
 }

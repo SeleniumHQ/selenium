@@ -32,7 +32,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_astring(driver, 
 
     result = driver.execute_script("return document.title")
 
-    assert isinstance(result, str), "The type of the result is %s" % type(result)
+    assert isinstance(result, str), f"The type of the result is {type(result)}"
     assert "XHTML Test Page" == result
 
 

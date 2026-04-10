@@ -45,6 +45,9 @@ module Selenium
       class NoSuchWindowError < WebDriverError
       end
 
+      class NoSuchTargetError < WebDriverError
+      end
+
       class NoSuchShadowRootError < WebDriverError
       end
 

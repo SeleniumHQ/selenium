@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node.local;
 
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.time.Instant;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,15 +29,17 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.SessionClosedData;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -44,6 +48,7 @@ import org.openqa.selenium.grid.node.relay.RelaySessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.WebDriverInfo;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -62,7 +67,8 @@ public class SessionSlot
   private final boolean supportingCdp;
   private final boolean supportingBiDi;
   private final AtomicLong connectionCounter;
-  private ActiveSession currentSession;
+  // volatile ensures memory visibility across threads when session is set after reservation
+  private volatile @Nullable ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
@@ -88,6 +94,23 @@ public class SessionSlot
     }
   }
 
+  /**
+   * Atomically attempts to reserve this slot if it's available and matches the given capabilities.
+   * This method is thread-safe and eliminates the need for external synchronization.
+   *
+   * @param capabilities the capabilities to test against this slot's stereotype
+   * @return true if the slot was successfully reserved, false if already reserved or capabilities
+   *     don't match
+   */
+  public boolean tryReserve(Capabilities capabilities) {
+    // First check capabilities without reserving (fast path for non-matching slots)
+    if (!test(capabilities)) {
+      return false;
+    }
+    // Atomically try to reserve - only succeeds if currently unreserved
+    return reserved.compareAndSet(false, true);
+  }
+
   public void release() {
     reserved.set(false);
   }
@@ -96,6 +119,7 @@ public class SessionSlot
     return !reserved.get();
   }
 
+  @Nullable
   public ActiveSession getSession() {
     if (isAvailable()) {
       throw new NoSuchSessionException("Session is not running");
@@ -109,21 +133,44 @@ public class SessionSlot
   }
 
   public void stop(SessionClosedReason reason) {
+    stop(reason, null, null);
+  }
+
+  /**
+   * Stops the session with full context for sidecar services.
+   *
+   * @param reason the reason for closing the session
+   * @param nodeId the ID of the node where the session was running (may be null for backward
+   *     compatibility)
+   * @param nodeUri the URI of the node where the session was running (may be null for backward
+   *     compatibility)
+   */
+  public void stop(SessionClosedReason reason, @Nullable NodeId nodeId, @Nullable URI nodeUri) {
     if (isAvailable()) {
       return;
     }
 
+    // Capture session data before clearing
     SessionId id = currentSession.getId();
+    Capabilities capabilities = currentSession.getCapabilities();
+    Instant startTime = currentSession.getStartTime();
+    Instant endTime = Instant.now();
+
+    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
     try {
       currentSession.stop();
+      LOG.info(String.format("Session stopped successfully: %s", id));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to cleanly close session", e);
+      LOG.log(Level.WARNING, String.format("Unable to cleanly close session %s", id), e);
     }
     currentSession = null;
     connectionCounter.set(0);
     release();
-    bus.fire(new SessionClosedEvent(id, reason));
-    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
+
+    // Fire event with full context for sidecar services
+    SessionClosedData closedData =
+        new SessionClosedData(id, reason, nodeId, nodeUri, capabilities, startTime, endTime);
+    bus.fire(new SessionClosedEvent(closedData));
   }
 
   @Override

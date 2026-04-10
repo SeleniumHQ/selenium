@@ -77,7 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2024",
-    version = "0.4.40-nightly",
+    version = "0.4.44-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -91,6 +91,10 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
+    crate_features = select({
+        "//common:stamp": [],
+        "//conditions:default": ["avoid_stats"],
+    }),
     edition = "2024",
     visibility = ["//rust:__subpackages__"],
     deps = all_crate_deps(normal = True),

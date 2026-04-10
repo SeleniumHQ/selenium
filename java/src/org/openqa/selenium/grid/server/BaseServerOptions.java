@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -48,7 +49,7 @@ public class BaseServerOptions {
     new JMXHelper().register(this);
   }
 
-  public Optional<String> getHostname() {
+  public Optional<@Nullable String> getHostname() {
     return config.get(SERVER_SECTION, "host");
   }
 

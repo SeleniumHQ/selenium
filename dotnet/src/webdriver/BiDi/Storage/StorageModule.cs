@@ -17,52 +17,52 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using static OpenQA.Selenium.BiDi.Storage.StorageJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule : Module
+internal sealed class StorageModule : Module, IStorageModule
 {
-    private StorageJsonSerializerContext _jsonContext = null!;
+    private static readonly Command<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
+        "storage.getCookies", Default.GetCookiesParameters, Default.GetCookiesResult);
 
-    public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
+    private static readonly Command<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
+        "storage.deleteCookies", Default.DeleteCookiesParameters, Default.DeleteCookiesResult);
+
+    private static readonly Command<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
+        "storage.setCookie", Default.SetCookieParameters, Default.SetCookieResult);
+
+    public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync(new GetCookiesCommand(@params), options, _jsonContext.GetCookiesCommand, _jsonContext.GetCookiesResult).ConfigureAwait(false);
+        return await ExecuteAsync(GetCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
+    public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync(new DeleteCookiesCommand(@params), options, _jsonContext.DeleteCookiesCommand, _jsonContext.DeleteCookiesResult).ConfigureAwait(false);
+        return await ExecuteAsync(DeleteCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
+    public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync(new SetCookieCommand(@params), options, _jsonContext.SetCookieCommand, _jsonContext.SetCookieResult).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
-
-        _jsonContext = new StorageJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteAsync(SetCookieCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(GetCookiesCommand))]
+[JsonSerializable(typeof(GetCookiesParameters))]
 [JsonSerializable(typeof(GetCookiesResult))]
-[JsonSerializable(typeof(SetCookieCommand))]
+[JsonSerializable(typeof(SetCookieParameters))]
 [JsonSerializable(typeof(SetCookieResult))]
-[JsonSerializable(typeof(DeleteCookiesCommand))]
+[JsonSerializable(typeof(DeleteCookiesParameters))]
 [JsonSerializable(typeof(DeleteCookiesResult))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class StorageJsonSerializerContext : JsonSerializerContext;

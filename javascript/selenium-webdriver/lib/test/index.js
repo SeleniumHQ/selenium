@@ -19,7 +19,6 @@
 
 //const build = require('./build')
 const fileserver = require('./fileserver')
-const logging = require('selenium-webdriver/lib/logging')
 const testing = require('selenium-webdriver/testing')
 
 //const NO_BUILD = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD'])
@@ -52,11 +51,6 @@ function suite(fn, options = undefined) {
 process.on('unhandledRejection', (reason) => {
   console.error('Unhandled promise rejection:', reason)
 })
-
-if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
-  logging.installConsoleHandler()
-  logging.getLogger(`${logging.Type.DRIVER}.http`).setLevel(logging.Level.ALL)
-}
 
 testing.init()
 

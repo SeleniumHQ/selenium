@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.support.events;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -1349,6 +1351,6 @@ class EventFiringDecoratorTest {
     RemoteWebDriver rem =
         new EventFiringDecorator<>(RemoteWebDriver.class, listener).decorate(originalDriver);
     rem.get("http://localhost:4444");
-    assertThat(invocationCount.get()).isEqualTo(1);
+    assertThat(invocationCount).hasValue(1);
   }
 }

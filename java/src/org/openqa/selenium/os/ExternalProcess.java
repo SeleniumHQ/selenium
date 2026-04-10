@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
@@ -43,8 +44,8 @@ public class ExternalProcess {
 
   public static class Builder {
 
-    private ProcessBuilder builder;
-    private OutputStream copyOutputTo;
+    private final ProcessBuilder builder;
+    private @Nullable OutputStream copyOutputTo;
     private int bufferSize = 32768;
 
     Builder() {

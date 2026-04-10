@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.Internal.Logging;
@@ -67,7 +66,7 @@ public static class Log
     /// Gets or sets the current log context.
     /// </summary>
     [AllowNull]
-    internal static ILogContext CurrentContext
+    public static ILogContext CurrentContext
     {
         get => _logContextManager.CurrentContext;
         set => _logContextManager.CurrentContext = value;
@@ -78,7 +77,7 @@ public static class Log
     /// </summary>
     /// <typeparam name="T">The type to get the logger for.</typeparam>
     /// <returns>The logger.</returns>
-    internal static ILogger GetLogger<T>()
+    public static ILogger GetLogger<T>()
     {
         return _logContextManager.CurrentContext.GetLogger<T>();
     }
@@ -88,7 +87,7 @@ public static class Log
     /// </summary>
     /// <param name="type">The type to get the logger for.</param>
     /// <returns>The logger.</returns>
-    internal static ILogger GetLogger(Type type)
+    public static ILogger GetLogger(Type type)
     {
         return _logContextManager.CurrentContext.GetLogger(type);
     }

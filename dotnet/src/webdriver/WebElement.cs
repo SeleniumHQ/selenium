@@ -17,23 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
 /// <summary>
 /// A base class representing an HTML element on a page.
 /// </summary>
-public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference
+public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference, IEquatable<IWebElement>
 {
     /// <summary>
     /// The property name that represents a web element in the wire protocol.
@@ -652,18 +648,24 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     }
 
     /// <summary>
-    /// Compares if two elements are equal
+    /// Indicates whether the current <see cref="WebElement"/> is equal to another object.
     /// </summary>
-    /// <param name="obj">Object to compare against</param>
-    /// <returns>A boolean if it is equal or not</returns>
+    /// <param name="obj">An object to compare with this <see cref="WebElement"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="WebElement"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        if (obj is not IWebElement other)
-        {
-            return false;
-        }
+        return Equals(obj as IWebElement);
+    }
 
-        if (obj is IWrapsElement objAsWrapsElement)
+    /// <summary>
+    /// Indicates whether the current <see cref="WebElement"/> is equal to another <see cref="IWebElement"/>.
+    /// </summary>
+    /// <param name="other">An <see cref="IWebElement"/> to compare with this <see cref="WebElement"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="WebElement"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method only returns <see langword="true"/> if <paramref name="other"/> is or wraps a <see cref="WebElement"/>.</remarks>
+    public bool Equals(IWebElement? other)
+    {
+        if (other is IWrapsElement objAsWrapsElement)
         {
             other = objAsWrapsElement.WrappedElement;
         }

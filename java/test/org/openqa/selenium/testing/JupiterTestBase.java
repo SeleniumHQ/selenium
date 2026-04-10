@@ -17,21 +17,26 @@
 
 package org.openqa.selenium.testing;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.Wait;
@@ -41,55 +46,77 @@ public abstract class JupiterTestBase {
 
   private static final Logger LOG = Logger.getLogger(JupiterTestBase.class.getName());
 
-  @RegisterExtension protected static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension
+  protected static final SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
   protected WebDriver driver;
+  private String initialWindowHandle;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
   protected WebDriver localDriver;
 
   @BeforeAll
-  public static void shouldTestBeRunAtAll() {
+  static void shouldTestBeRunAtAll() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
   @BeforeEach
-  public void prepareEnvironment() {
+  final void prepareEnvironment() {
     boolean needsSecureServer =
         Optional.ofNullable(this.getClass().getAnnotation(NeedsSecureServer.class))
             .map(NeedsSecureServer::value)
             .orElse(false);
 
-    environment =
-        GlobalTestEnvironment.getOrCreate(() -> new InProcessTestEnvironment(needsSecureServer));
+    environment = GlobalTestEnvironment.getOrCreate(needsSecureServer);
     appServer = environment.getAppServer();
-
-    if (needsSecureServer) {
-      try {
-        appServer.whereIsSecure("/");
-      } catch (IllegalStateException ex) {
-        // this should not happen with bazel, a new JVM is used for each class
-        // the annotation is on class level, so we should never see this
-        LOG.info("appServer is restarted with secureServer=true");
-        environment.stop();
-        environment = new InProcessTestEnvironment(true);
-      }
-    }
 
     pages = new Pages(appServer);
 
     driver = seleniumExtension.getDriver();
     wait = seleniumExtension::waitUntil;
     shortWait = seleniumExtension::shortWaitUntil;
+
+    if (driver != null) {
+      initialWindowHandle = driver.getWindowHandle();
+      driver.get("about:blank");
+      driver.get(pages.blankPage + "?test=" + seleniumExtension.currentTest());
+      driver.manage().deleteAllCookies();
+    }
   }
 
   @AfterEach
-  public void quitLocalDriver() {
+  final void quitLocalDriver() {
     if (localDriver != null) {
-      localDriver.quit();
+      try {
+        localDriver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
+    }
+  }
+
+  @AfterEach
+  final void switchToInitialWindow() {
+    if (driver == null) {
+      return;
+    }
+
+    if (initialWindowHandle != null) {
+      try {
+        driver.switchTo().window(initialWindowHandle);
+      } catch (NoSuchWindowException | NoSuchSessionException ok) {
+        LOG.log(
+            Level.FINE,
+            String.format(
+                "The initial window has been closed in test %s: %s",
+                seleniumExtension.currentTest(), ok));
+      }
     }
   }
 
@@ -113,7 +140,23 @@ public abstract class JupiterTestBase {
     }
   }
 
-  protected WebDriverWait wait(WebDriver driver) {
+  protected final WebDriverWait wait(WebDriver driver) {
     return new WebDriverWait(driver, Duration.ofSeconds(10));
+  }
+
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeJavaScript(String js) {
+    return (T) requireNonNull(((JavascriptExecutor) driver).executeScript(js));
+  }
+
+  @Nullable
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeScriptNullable(String js) {
+    return (T) ((JavascriptExecutor) driver).executeScript(js);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected final <T> T executeAsyncScript(String js) {
+    return (T) requireNonNull(((JavascriptExecutor) driver).executeAsyncScript(js));
   }
 }

@@ -59,7 +59,7 @@ def import_devtools(ver):
         # Attempt to parse and load the 'most recent' devtools module. This is likely
         # because cdp has been updated but selenium python has not been released yet.
         devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
-        versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
+        versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir() and f.name != "latest")
         latest = max(int(x[1:]) for x in versions)
         selenium_logger = logging.getLogger(__name__)
         selenium_logger.debug("Falling back to loading `devtools`: v%s", latest)
@@ -300,6 +300,8 @@ class CdpBase:
             data: event as a JSON dictionary
         """
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         event = devtools.util.parse_json_event(data)
         logger.debug("Received event: %s", event)
         to_remove = set()
@@ -424,6 +426,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
     async def connect_session(self, target_id) -> "CdpSession":
         """Returns a new :class:`CdpSession` connected to the specified target."""
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         session_id = await self.execute(devtools.target.attach_to_target(target_id, True))
         session = CdpSession(self.ws, session_id, target_id)
         self.sessions[session_id] = session
@@ -435,6 +439,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         Dispatches responses to commands and events to listeners.
         """
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         while True:
             try:
                 message = await self.ws.get_message()

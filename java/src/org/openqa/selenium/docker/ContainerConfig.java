@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
+import static java.util.Collections.emptyList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 
 @Beta
@@ -45,7 +45,7 @@ public class ContainerConfig {
   private final long shmSize;
   private final Map<String, Object> hostConfig;
   private final Map<String, String> labels;
-  private final String name;
+  private final @Nullable String name;
 
   public ContainerConfig(
       Image image,
@@ -63,8 +63,8 @@ public class ContainerConfig {
         devices,
         networkName,
         shmSize,
-        ImmutableMap.of(),
-        ImmutableMap.of());
+        Map.of(),
+        Map.of());
   }
 
   public ContainerConfig(
@@ -85,7 +85,7 @@ public class ContainerConfig {
         networkName,
         shmSize,
         hostConfig,
-        ImmutableMap.of());
+        Map.of());
   }
 
   public ContainerConfig(
@@ -121,7 +121,7 @@ public class ContainerConfig {
       long shmSize,
       Map<String, Object> hostConfig,
       Map<String, String> labels,
-      String name) {
+      @Nullable String name) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
@@ -135,6 +135,7 @@ public class ContainerConfig {
     this.name = name;
   }
 
+  @Nullable
   public String getName() {
     return this.name;
   }
@@ -146,10 +147,10 @@ public class ContainerConfig {
   public static ContainerConfig image(Image image) {
     return new ContainerConfig(
         image,
-        HashMultimap.create(),
-        ImmutableMap.of(),
-        ImmutableMap.of(),
-        ImmutableList.of(),
+        new Multimap<>(),
+        Map.of(),
+        Map.of(),
+        emptyList(),
         DEFAULT_DOCKER_NETWORK,
         DEFAULT_SHM_SIZE);
   }
@@ -163,10 +164,10 @@ public class ContainerConfig {
           String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
     }
 
-    Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
+    Multimap<String, Map<String, Object>> updatedBindings = new Multimap<>(portBindings);
     updatedBindings.put(
         containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
+        Map.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerConfig(
         image,
@@ -348,14 +349,14 @@ public class ContainerConfig {
         this.devices.stream()
             .map(
                 device ->
-                    ImmutableMap.of(
+                    Map.of(
                         "PathOnHost", device.getPathOnHost(),
                         "PathInContainer", device.getPathInContainer(),
                         "CgroupPermissions", device.getCgroupPermissions()))
             .collect(Collectors.toList());
 
     Map<String, Object> hostConfig =
-        ImmutableMap.of(
+        Map.of(
             "PortBindings", portBindings.asMap(),
             "AutoRemove", autoRemove,
             "NetworkMode", networkName,
@@ -366,7 +367,7 @@ public class ContainerConfig {
     if (!this.hostConfig.isEmpty()) {
       Map<String, Object> copyMap = new HashMap<>(hostConfig);
       copyMap.putAll(this.hostConfig);
-      hostConfig = ImmutableMap.copyOf(copyMap);
+      hostConfig = Map.copyOf(copyMap);
     }
 
     Map<String, Object> config = new HashMap<>();
@@ -376,6 +377,6 @@ public class ContainerConfig {
     if (!labels.isEmpty()) {
       config.put("Labels", labels);
     }
-    return config;
+    return Map.copyOf(config);
   }
 }

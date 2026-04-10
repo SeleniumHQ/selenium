@@ -42,7 +42,7 @@ class ChildrenFindingTest extends JupiterTestBase {
     WebElement parent = driver.findElement(By.id("multiline"));
     List<WebElement> allPs = driver.findElements(By.xpath("//p"));
     List<WebElement> children = parent.findElements(By.xpath("//p"));
-    assertThat(allPs.size()).isEqualTo(children.size());
+    assertThat(allPs).hasSize(children.size());
   }
 
   @Test

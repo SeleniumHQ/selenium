@@ -37,13 +37,11 @@ public enum PrimitiveType {
   }
 
   public static PrimitiveType findByName(String name) {
-    PrimitiveType result = null;
     for (PrimitiveType type : values()) {
       if (type.toString().equalsIgnoreCase(name)) {
-        result = type;
-        break;
+        return type;
       }
     }
-    return result;
+    throw new IllegalArgumentException("Unsupported primitive type: " + name);
   }
 }
