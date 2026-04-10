@@ -236,9 +236,7 @@ public class RelaySessionFactoryTest {
                 "sessionId",
                 fakeSessionId,
                 "capabilities",
-                Map.of(
-                    "platformName", "android",
-                    "se:downloadsEnabled", false)));
+                Map.of("platformName", "android", "se:downloadsEnabled", false)));
 
     Route route =
         Route.post("/session")
