@@ -41,7 +41,7 @@ internal sealed class LogContext : ILogContext
         {
             throw new ArgumentOutOfRangeException(nameof(truncationLength), "Truncation length must be non-negative.");
         }
-        
+
         _level = level;
         _parentLogContext = parentLogContext;
         _loggers = CloneLoggers(loggers, level);
