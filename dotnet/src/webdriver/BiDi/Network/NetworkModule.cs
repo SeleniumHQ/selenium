@@ -165,14 +165,14 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ProvideResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth action, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth auth, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default)
     {
-        ContinueWithAuthParameters @params = action switch
+        ContinueWithAuthParameters @params = auth switch
         {
             ContinueWithAuthCredentials c => new ContinueWithAuthCredentialsParameters(request, c.Credentials),
             ContinueWithAuthDefault => new ContinueWithAuthDefaultParameters(request),
             ContinueWithAuthCancel => new ContinueWithAuthCancelParameters(request),
-            _ => throw new ArgumentException($"Unknown action type: {action.GetType()}", nameof(action))
+            _ => throw new ArgumentException($"Unknown action type: {auth.GetType()}", nameof(auth))
         };
 
         return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
