@@ -71,23 +71,9 @@ internal sealed class BrowserModule : Module, IBrowserModule
         return await ExecuteAsync(GetClientWindowsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAsync(DownloadBehavior? downloadBehavior, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
-
-        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
-
-        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
+        var @params = new SetDownloadBehaviorParameters(downloadBehavior, options?.UserContexts);
 
         return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }

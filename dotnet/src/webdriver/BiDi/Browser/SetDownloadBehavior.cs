@@ -26,11 +26,14 @@ internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condi
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(DownloadBehaviorAllowed), "allowed")]
 [JsonDerivedType(typeof(DownloadBehaviorDenied), "denied")]
-internal abstract record DownloadBehavior;
+public abstract record DownloadBehavior
+{
+    public static DownloadBehavior? Default => null;
+}
 
-internal sealed record DownloadBehaviorAllowed(string DestinationFolder) : DownloadBehavior;
+public sealed record DownloadBehaviorAllowed(string DestinationFolder) : DownloadBehavior;
 
-internal sealed record DownloadBehaviorDenied : DownloadBehavior;
+public sealed record DownloadBehaviorDenied : DownloadBehavior;
 
 public sealed record SetDownloadBehaviorOptions : CommandOptions
 {
