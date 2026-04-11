@@ -43,7 +43,7 @@ public static class CreatePageHandler
         string fileName = $"page{Guid.NewGuid():N}.html";
         pages[fileName] = content;
 
-        string url = $"{context.Request.Scheme}://{context.Request.Host}/common/temp/{fileName}";
+        string url = $"{context.Request.Scheme}://{context.Request.Host}/temp/{fileName}";
 
         return Results.Text(url, "text/plain");
     }
