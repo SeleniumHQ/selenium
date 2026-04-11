@@ -198,7 +198,7 @@ public class CookieImplementationTests : DriverTestFixture
     public void GetCookiesInAFrame()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
-        Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals");
         driver.Manage().Cookies.AddCookie(cookie1);
 
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameWithAnimals.html");
@@ -217,7 +217,7 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         string cookieName = "fish";
-        driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod", "/Common/animals"));
+        driver.Manage().Cookies.AddCookie(new Cookie(cookieName, "cod", "/Animals"));
 
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
         Assert.That(driver.Manage().Cookies.GetCookieNamed(cookieName), Is.Null);
@@ -424,7 +424,7 @@ public class CookieImplementationTests : DriverTestFixture
         }
 
         DateTime time = DateTime.Now.AddDays(1);
-        Cookie cookie1 = new Cookie("fish", "cod", null, "/common/animals", time);
+        Cookie cookie1 = new Cookie("fish", "cod", null, "/animals", time);
         IOptions options = driver.Manage();
         options.Cookies.AddCookie(cookie1);
 
@@ -457,7 +457,7 @@ public class CookieImplementationTests : DriverTestFixture
         DateTime current = DateTime.Now;
         DateTime expireDate = new DateTime(current.Year, current.Month, current.Day, current.Hour, current.Minute, current.Second, DateTimeKind.Local).AddDays(1);
 
-        Cookie addCookie = new Cookie("fish", "cod", "/common/animals", expireDate);
+        Cookie addCookie = new Cookie("fish", "cod", "/animals", expireDate);
         IOptions options = driver.Manage();
         options.Cookies.AddCookie(addCookie);
 
@@ -473,7 +473,7 @@ public class CookieImplementationTests : DriverTestFixture
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-        Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false, null);
+        Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/animals", null, true, false, null);
         driver.Manage().Cookies.AddCookie(addedCookie);
 
         driver.Navigate().Refresh();
@@ -489,7 +489,7 @@ public class CookieImplementationTests : DriverTestFixture
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-        ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false, null);
+        ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/animals", null, true, false, null);
 
         driver.Manage().Cookies.AddCookie(addedCookie);
 
@@ -507,7 +507,7 @@ public class CookieImplementationTests : DriverTestFixture
         url.Append("?action=add");
         url.Append("&name=").Append("fish");
         url.Append("&value=").Append("cod");
-        url.Append("&path=").Append("/common/animals");
+        url.Append("&path=").Append("/animals");
         url.Append("&httpOnly=").Append("true");
 
         driver.Url = url.ToString();
@@ -524,7 +524,7 @@ public class CookieImplementationTests : DriverTestFixture
         url.Append("?action=add");
         url.Append("&name=").Append("fish");
         url.Append("&value=").Append("cod");
-        url.Append("&path=").Append("/common/animals");
+        url.Append("&path=").Append("/animals");
         url.Append("&httpOnly=").Append("true");
 
         driver.Url = url.ToString();
@@ -540,7 +540,7 @@ public class CookieImplementationTests : DriverTestFixture
     public void SettingACookieThatExpiredInThePast()
     {
         DateTime expires = DateTime.Now.AddSeconds(-1000);
-        Cookie cookie = new Cookie("expired", "yes", "/common/animals", expires);
+        Cookie cookie = new Cookie("expired", "yes", "/animals", expires);
         IOptions options = driver.Manage();
         options.Cookies.AddCookie(cookie);
 
@@ -799,7 +799,7 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddHours(-1));
+        Cookie addCookie = new Cookie("fish", "cod", "/animals", DateTime.Now.AddHours(-1));
         IOptions options = driver.Manage();
         options.Cookies.AddCookie(addCookie);
 

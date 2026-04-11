@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using OpenQA.Selenium.Testing.WebServer.Handlers;
 
@@ -42,6 +43,7 @@ public class AppServer : IAsyncDisposable
         var builder = WebApplication.CreateSlimBuilder();
 
         builder.WebHost.UseUrls("http://127.0.0.1:0");
+        builder.Services.AddDirectoryBrowser();
 
         _app = builder.Build();
 
@@ -55,6 +57,11 @@ public class AppServer : IAsyncDisposable
             {
                 FileProvider = fileProvider,
                 ServeUnknownFileTypes = true
+            });
+
+            _app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = fileProvider
             });
         }
 
