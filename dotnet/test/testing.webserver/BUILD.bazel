@@ -1,0 +1,18 @@
+load("//dotnet:defs.bzl", "csharp_library")
+
+csharp_library(
+    name = "testing.webserver",
+    testonly = True,
+    srcs = glob(["**/*.cs"]),
+    out = "Testing.WebServer",
+    data = [
+        "//common/src/web",
+    ],
+    nullable = "enable",
+    project_sdk = "web",
+    run_analyzers = False,
+    target_frameworks = ["net8.0"],
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+)

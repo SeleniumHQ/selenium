@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Http;

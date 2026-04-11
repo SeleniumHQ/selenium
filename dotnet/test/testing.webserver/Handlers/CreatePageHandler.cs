@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace OpenQA.Selenium.Testing.WebServer.Handlers;

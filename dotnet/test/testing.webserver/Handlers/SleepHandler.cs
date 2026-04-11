@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace OpenQA.Selenium.Testing.WebServer.Handlers;
