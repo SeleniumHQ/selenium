@@ -45,6 +45,7 @@ public static class BasicAuthHandler
             }
         }
 
+        context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"selenium-server\"";
         return Results.Text(string.Empty, statusCode: (int)HttpStatusCode.Unauthorized,
             contentType: "text/html; charset=utf-8");
     }
