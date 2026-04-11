@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Testing.WebServer.Handlers;
 
 public static class CreatePageHandler
 {
-    public static async Task<IResult> Handle(HttpContext context, ConcurrentDictionary<string, string> pages, int port)
+    public static async Task<IResult> Handle(HttpContext context, ConcurrentDictionary<string, string> pages)
     {
         string body;
         using (var reader = new StreamReader(context.Request.Body))
@@ -43,8 +43,7 @@ public static class CreatePageHandler
         string fileName = $"page{Guid.NewGuid():N}.html";
         pages[fileName] = content;
 
-        string hostname = context.Request.Host.Host;
-        string url = $"http://{hostname}:{port}/common/temp/{fileName}";
+        string url = $"{context.Request.Scheme}://{context.Request.Host}/common/temp/{fileName}";
 
         return Results.Text(url, "text/plain");
     }

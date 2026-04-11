@@ -83,9 +83,10 @@ public class EnvironmentManager
         RemoteCapabilities = driverConfig.RemoteCapabilities;
 
         WebServer = new AppServer();
-        WebServer.StartAsync().Wait();
+        string baseUrl = WebServer.StartAsync().Result;
 
-        websiteConfig.Port = WebServer.Port.ToString();
+        int port = new Uri(baseUrl).Port;
+        websiteConfig.Port = port.ToString();
         UrlBuilder = new UrlBuilder(websiteConfig);
 
         // Find selenium-manager binary.

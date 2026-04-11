@@ -37,17 +37,11 @@ public class AppServer : IAsyncDisposable
     private readonly string _webContentRoot = FindWebContentRoot();
     private readonly ConcurrentDictionary<string, string> _pages = new();
 
-    public string BaseUrl => $"http://localhost:{Port}";
-
-    public int Port { get; private set; }
-
-    public async Task StartAsync()
+    public async Task<string> StartAsync()
     {
         var builder = WebApplication.CreateBuilder();
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.ListenLocalhost(0);
-        });
+        
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
 
         _app = builder.Build();
 
@@ -74,7 +68,7 @@ public class AppServer : IAsyncDisposable
 
         await _app.StartAsync();
 
-        Port = new Uri(_app.Urls.First()).Port;
+        return _app.Urls.First();
     }
 
     public async Task StopAsync()
@@ -102,7 +96,7 @@ public class AppServer : IAsyncDisposable
         endpoints.MapGet("/redirect", RedirectHandler.Handle);
         endpoints.MapGet("/page/{pageNumber}", PageHandler.Handle);
         endpoints.MapGet("/utf8/{*path}", (HttpContext context, string path) => Utf8Handler.Handle(context, path, _webContentRoot));
-        endpoints.MapPost("/createPage", (Delegate)((HttpContext context) => CreatePageHandler.Handle(context, _pages, Port)));
+        endpoints.MapPost("/createPage", (Delegate)((HttpContext context) => CreatePageHandler.Handle(context, _pages)));
         endpoints.MapPost("/upload", (Delegate)UploadHandler.Handle);
 
         endpoints.MapGet("/.well-known/web-identity", (HttpContext context) => FedCmHandler.HandleWebIdentity(context));
