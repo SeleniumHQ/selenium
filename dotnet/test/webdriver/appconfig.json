@@ -2,10 +2,6 @@
   "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
-  "TestWebServerConfig": {
-    "CaptureConsoleOutput": false,
-    "HideCommandPromptWindow": true
-  },
   "WebsiteConfigs": {
     "Default": {
       "Protocol": "http",

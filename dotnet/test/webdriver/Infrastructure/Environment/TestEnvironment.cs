@@ -34,6 +34,4 @@ internal class TestEnvironment
     public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
 
     public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
-
-    public TestWebServerConfig TestWebServerConfig { get; set; }
 }
