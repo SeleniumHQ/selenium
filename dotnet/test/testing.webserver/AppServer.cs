@@ -39,14 +39,13 @@ public class AppServer : IAsyncDisposable
 
     public async Task<string> StartAsync()
     {
-        var builder = WebApplication.CreateBuilder();
-        
+        var builder = WebApplication.CreateSlimBuilder();
+
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 
         _app = builder.Build();
 
         MapEndpoints(_app);
-        MapEndpoints(_app.MapGroup("/common"));
 
         if (Directory.Exists(_webContentRoot))
         {
@@ -55,13 +54,6 @@ public class AppServer : IAsyncDisposable
             _app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = fileProvider,
-                ServeUnknownFileTypes = true
-            });
-
-            _app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = fileProvider,
-                RequestPath = "/common",
                 ServeUnknownFileTypes = true
             });
         }

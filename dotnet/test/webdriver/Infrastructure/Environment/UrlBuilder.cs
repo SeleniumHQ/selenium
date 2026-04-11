@@ -27,23 +27,16 @@ namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 public class UrlBuilder
 {
-    private readonly string protocol;
     private readonly string port;
-    private readonly string securePort;
 
     public string AlternateHostName { get; }
 
     public string HostName { get; }
 
-    public string Path { get; }
-
-    public UrlBuilder(WebsiteConfig config)
+    public UrlBuilder(string hostname, int port)
     {
-        protocol = config.Protocol;
-        HostName = config.HostName;
-        port = config.Port;
-        securePort = config.SecurePort;
-        Path = config.Folder;
+        HostName = hostname;
+        this.port = port.ToString();
         //Use the first IPv4 address that we find
         IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
         foreach (IPAddress ip in Dns.GetHostEntry(HostName).AddressList)
@@ -57,25 +50,14 @@ public class UrlBuilder
         AlternateHostName = ipAddress.ToString();
     }
 
-    public string LocalWhereIs(string page)
-    {
-        string location = "http://localhost:" + port + "/" + Path + "/" + page;
-
-        return location;
-    }
-
     public string WhereIs(string page)
     {
-        string location = "http://" + HostName + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return "http://" + HostName + ":" + port + "/" + page;
     }
 
     public string WhereElseIs(string page)
     {
-        string location = "http://" + AlternateHostName + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return "http://" + AlternateHostName + ":" + port + "/" + page;
     }
 
     public string WhereIsViaNonLoopbackAddress(string page)
@@ -90,16 +72,12 @@ public class UrlBuilder
                 break;
             }
         }
-        string location = "http://" + hostNameAsIPAddress + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return "http://" + hostNameAsIPAddress + ":" + port + "/" + page;
     }
 
     public string WhereIsSecure(string page)
     {
-        string location = "https://" + HostName + ":" + securePort + "/" + Path + "/" + page;
-
-        return location;
+        return "https://" + HostName + ":" + port + "/" + page;
     }
     public string CreateInlinePage(InlinePage page)
     {

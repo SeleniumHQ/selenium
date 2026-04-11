@@ -59,9 +59,7 @@ public class EnvironmentManager
 
         string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
 
-        string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
-        WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
 
         this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
         this.driverFactory.DriverStarting += OnDriverStarting;
@@ -86,8 +84,7 @@ public class EnvironmentManager
         string baseUrl = WebServer.StartAsync().Result;
 
         int port = new Uri(baseUrl).Port;
-        websiteConfig.Port = port.ToString();
-        UrlBuilder = new UrlBuilder(websiteConfig);
+        UrlBuilder = new UrlBuilder("localhost", port);
 
         // Find selenium-manager binary.
         try

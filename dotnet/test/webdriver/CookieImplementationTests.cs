@@ -176,10 +176,8 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        string basePath = EnvironmentManager.Instance.UrlBuilder.Path;
-
-        Cookie cookie1 = new Cookie("fish", "cod", "/" + basePath + "/animals");
-        Cookie cookie2 = new Cookie("planet", "earth", "/" + basePath + "/");
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals");
+        Cookie cookie2 = new Cookie("planet", "earth", "/");
         IOptions options = driver.Manage();
         options.Cookies.AddCookie(cookie1);
         options.Cookies.AddCookie(cookie2);
@@ -361,19 +359,17 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        string basePath = EnvironmentManager.Instance.UrlBuilder.Path;
-
         Cookie cookie1 = new Cookie("fish", "cod");
         driver.Manage().Cookies.AddCookie(cookie1);
         int count = driver.Manage().Cookies.AllCookies.Count;
 
         driver.Url = childPage;
-        Cookie cookie2 = new Cookie("rodent", "hamster", "/" + basePath + "/child");
+        Cookie cookie2 = new Cookie("rodent", "hamster", "/child");
         driver.Manage().Cookies.AddCookie(cookie2);
         count = driver.Manage().Cookies.AllCookies.Count;
 
         driver.Url = grandchildPage;
-        Cookie cookie3 = new Cookie("dog", "dalmatian", "/" + basePath + "/child/grandchild/");
+        Cookie cookie3 = new Cookie("dog", "dalmatian", "/child/grandchild/");
         driver.Manage().Cookies.AddCookie(cookie3);
         count = driver.Manage().Cookies.AllCookies.Count;
 
@@ -648,9 +644,8 @@ public class CookieImplementationTests : DriverTestFixture
             return;
         }
 
-        string basePath = EnvironmentManager.Instance.UrlBuilder.Path;
-        Cookie cookie1 = new Cookie("fish", "cod", "/" + basePath + "/animals");
-        Cookie cookie2 = new Cookie("planet", "earth", "/" + basePath + "/galaxy");
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals");
+        Cookie cookie2 = new Cookie("planet", "earth", "/galaxy");
 
         IOptions options = driver.Manage();
         ReadOnlyCollection<Cookie> count = options.Cookies.AllCookies;
@@ -727,7 +722,7 @@ public class CookieImplementationTests : DriverTestFixture
 
         driver.Url = macbethPage;
         IOptions options = driver.Manage();
-        Cookie cookie = new Cookie("Homer", "Simpson", this.hostname, "/" + EnvironmentManager.Instance.UrlBuilder.Path, null);
+        Cookie cookie = new Cookie("Homer", "Simpson", this.hostname, "/", null);
         options.Cookies.AddCookie(cookie);
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         Assert.That(cookies, Does.Contain(cookie), "Valid cookie was not returned");
@@ -743,7 +738,7 @@ public class CookieImplementationTests : DriverTestFixture
 
         driver.Url = macbethPage;
         IOptions options = driver.Manage();
-        Cookie cookie = new Cookie("Bart", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName + ".com", EnvironmentManager.Instance.UrlBuilder.Path, null);
+        Cookie cookie = new Cookie("Bart", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName + ".com", "/", null);
         Assert.That(
             () => options.Cookies.AddCookie(cookie),
             Throws.InstanceOf<WebDriverException>().Or.InstanceOf<InvalidOperationException>());
@@ -771,7 +766,7 @@ public class CookieImplementationTests : DriverTestFixture
 
         driver.Url = macbethPage;
         IOptions options = driver.Manage();
-        Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, "/" + EnvironmentManager.Instance.UrlBuilder.Path + "IDoNotExist", null);
+        Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, "/IDoNotExist", null);
         options.Cookies.AddCookie(cookie);
         ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
         Assert.That(cookies, Does.Not.Contain(cookie), "Invalid cookie was returned");
