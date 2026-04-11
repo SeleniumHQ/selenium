@@ -1,4 +1,4 @@
-// <copyright file="TestWebServerConfig.cs" company="Selenium Committers">
+// <copyright file="RedirectHandler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,16 +17,20 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.WebServer.Handlers;
 
-public class TestWebServerConfig
+public static class RedirectHandler
 {
-    public bool CaptureConsoleOutput { get; set; }
+    public static IResult Handle(HttpContext context)
+    {
+        string path = context.Request.Path.Value ?? "/";
+        string basePath = path.Contains("/redirect")
+            ? path[..path.IndexOf("/redirect")]
+            : "";
+        string targetLocation = $"{basePath}/resultPage.html";
 
-    public bool HideCommandPromptWindow { get; set; }
-
-    [JsonIgnore]
-    public string Port { get; set; }
+        return Results.Redirect(targetLocation);
+    }
 }

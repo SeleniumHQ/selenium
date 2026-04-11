@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\support\Selenium.WebDriver.Support.csproj" />
     <ProjectReference Include="..\webdriver\Selenium.WebDriver.Tests.csproj" />
+    <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

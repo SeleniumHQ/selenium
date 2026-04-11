@@ -1,4 +1,4 @@
-// <copyright file="TestWebServerConfig.cs" company="Selenium Committers">
+// <copyright file="SleepHandler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,16 +17,25 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.WebServer.Handlers;
 
-public class TestWebServerConfig
+public static class SleepHandler
 {
-    public bool CaptureConsoleOutput { get; set; }
+    public static async Task<IResult> Handle(HttpContext context)
+    {
+        string? duration = context.Request.Query["time"];
+        int seconds = int.Parse(duration!);
 
-    public bool HideCommandPromptWindow { get; set; }
+        await Task.Delay(seconds * 1000);
 
-    [JsonIgnore]
-    public string Port { get; set; }
+        string html = $"<html><head><title>Done</title></head><body>Slept for {duration}s</body></html>";
+
+        context.Response.Headers.CacheControl = "no-cache";
+        context.Response.Headers.Pragma = "no-cache";
+        context.Response.Headers.Expires = "0";
+
+        return Results.Content(html, "text/html; charset=utf-8");
+    }
 }

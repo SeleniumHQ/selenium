@@ -1,4 +1,4 @@
-// <copyright file="TestWebServerConfig.cs" company="Selenium Committers">
+// <copyright file="Utf8Handler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,16 +17,23 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.WebServer.Handlers;
 
-public class TestWebServerConfig
+public static class Utf8Handler
 {
-    public bool CaptureConsoleOutput { get; set; }
+    public static async Task<IResult> Handle(HttpContext context, string path, string webContentRoot)
+    {
+        string filePath = Path.Combine(webContentRoot, path);
 
-    public bool HideCommandPromptWindow { get; set; }
+        if (!File.Exists(filePath))
+        {
+            return Results.NotFound();
+        }
 
-    [JsonIgnore]
-    public string Port { get; set; }
+        string content = await File.ReadAllTextAsync(filePath);
+
+        return Results.Content(content, "text/html; charset=UTF-8");
+    }
 }

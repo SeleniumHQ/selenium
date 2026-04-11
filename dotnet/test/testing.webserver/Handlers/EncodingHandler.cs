@@ -1,4 +1,4 @@
-// <copyright file="TestWebServerConfig.cs" company="Selenium Committers">
+// <copyright file="EncodingHandler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,16 +17,23 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.WebServer.Handlers;
 
-public class TestWebServerConfig
+public static class EncodingHandler
 {
-    public bool CaptureConsoleOutput { get; set; }
+    public static IResult Handle()
+    {
+        string text =
+            "<html><title>Character encoding (UTF 16)</title>"
+            + "<body><p id='text'>"
+            + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
+            + "</p></body></html>";
 
-    public bool HideCommandPromptWindow { get; set; }
+        byte[] bytes = Encoding.Unicode.GetBytes(text); // UTF-16LE
 
-    [JsonIgnore]
-    public string Port { get; set; }
+        return Results.Bytes(bytes, "text/html;charset=UTF-16LE");
+    }
 }

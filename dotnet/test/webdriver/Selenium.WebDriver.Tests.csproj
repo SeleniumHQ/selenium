@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\webdriver\Selenium.WebDriver.csproj" />
+    <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,9 +32,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
-    <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver" WorkingDirectory="../../.." />
-  </Target>
 
 </Project>

@@ -4,8 +4,7 @@
   "ActiveWebsiteConfig": "Default",
   "TestWebServerConfig": {
     "CaptureConsoleOutput": false,
-    "HideCommandPromptWindow": true,
-    "JavaHomeDirectory": ""
+    "HideCommandPromptWindow": true
   },
   "WebsiteConfigs": {
     "Default": {
