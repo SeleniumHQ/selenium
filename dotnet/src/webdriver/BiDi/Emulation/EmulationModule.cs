@@ -105,22 +105,20 @@ internal sealed class EmulationModule : Module, IEmulationModule
         return await ExecuteAsync(SetScrollbarTypeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetGeolocationOverrideResult> SetGeolocationOverrideAsync(GeolocationOverride? geolocationOverride, SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
-        var @params = new SetGeolocationOverrideCoordinatesParameters(coordinates, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
-    }
+        SetGeolocationOverrideParameters @params = geolocationOverride switch
+        {
+            GeolocationCoordinatesOverride c => new SetGeolocationOverrideCoordinatesParameters(
+                new GeolocationCoordinates(c.Latitude, c.Longitude, c.Accuracy, c.Altitude, c.AltitudeAccuracy, c.Heading, c.Speed),
+                options?.Contexts, options?.UserContexts),
+            GeolocationPositionErrorOverride => new SetGeolocationOverridePositionErrorParameters(
+                new GeolocationPositionError(), options?.Contexts, options?.UserContexts),
+            null => new SetGeolocationOverrideCoordinatesParameters(
+                null, options?.Contexts, options?.UserContexts),
+            _ => throw new ArgumentException($"Unknown geolocation override type: {geolocationOverride.GetType()}", nameof(geolocationOverride))
+        };
 
-    public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var @params = new SetGeolocationOverrideCoordinatesParameters(null, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<SetGeolocationOverrideResult> SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
         return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 

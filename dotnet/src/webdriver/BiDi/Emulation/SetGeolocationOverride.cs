@@ -21,6 +21,19 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
+public abstract record GeolocationOverride;
+
+public sealed record GeolocationCoordinatesOverride(double Latitude, double Longitude) : GeolocationOverride
+{
+    public double? Accuracy { get; init; }
+    public double? Altitude { get; init; }
+    public double? AltitudeAccuracy { get; init; }
+    public double? Heading { get; init; }
+    public double? Speed { get; init; }
+}
+
+public sealed record GeolocationPositionErrorOverride : GeolocationOverride;
+
 [JsonDerivedType(typeof(SetGeolocationOverrideCoordinatesParameters))]
 [JsonDerivedType(typeof(SetGeolocationOverridePositionErrorParameters))]
 internal abstract record SetGeolocationOverrideParameters(IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
@@ -37,22 +50,11 @@ internal sealed record GeolocationPositionError
     internal string Type { get; } = "positionUnavailable";
 }
 
-public record SetGeolocationOverrideOptions : CommandOptions
+public sealed record SetGeolocationOverrideOptions : CommandOptions
 {
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
-
-public sealed record SetGeolocationCoordinatesOverrideOptions : SetGeolocationOverrideOptions
-{
-    public double? Accuracy { get; init; }
-    public double? Altitude { get; init; }
-    public double? AltitudeAccuracy { get; init; }
-    public double? Heading { get; init; }
-    public double? Speed { get; init; }
-}
-
-public sealed record SetGeolocationPositionErrorOverrideOptions : SetGeolocationOverrideOptions;
 
 public sealed record SetGeolocationOverrideResult : EmptyResult;
