@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,7 @@ using OpenQA.Selenium.Testing.WebServer.Handlers;
 
 namespace OpenQA.Selenium.Testing.WebServer;
 
-public class AppServer(int port) : IAsyncDisposable
+public class AppServer : IAsyncDisposable
 {
     private WebApplication? _app;
     private readonly string _webContentRoot = FindWebContentRoot();
@@ -38,14 +39,14 @@ public class AppServer(int port) : IAsyncDisposable
 
     public string BaseUrl => $"http://localhost:{Port}";
 
-    public int Port { get; } = port;
+    public int Port { get; private set; }
 
     public async Task StartAsync()
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.ListenLocalhost(Port);
+            options.ListenLocalhost(0);
         });
 
         _app = builder.Build();
@@ -72,6 +73,8 @@ public class AppServer(int port) : IAsyncDisposable
         }
 
         await _app.StartAsync();
+
+        Port = new Uri(_app.Urls.First()).Port;
     }
 
     public async Task StopAsync()

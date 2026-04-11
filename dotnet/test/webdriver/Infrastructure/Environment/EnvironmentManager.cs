@@ -63,9 +63,6 @@ public class EnvironmentManager
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
         WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
 
-        int port = PortUtilities.FindFreePort();
-        websiteConfig.Port = port.ToString();
-
         this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
         this.driverFactory.DriverStarting += OnDriverStarting;
 
@@ -85,6 +82,10 @@ public class EnvironmentManager
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
 
+        WebServer = new AppServer();
+        WebServer.StartAsync().Wait();
+
+        websiteConfig.Port = WebServer.Port.ToString();
         UrlBuilder = new UrlBuilder(websiteConfig);
 
         // Find selenium-manager binary.
@@ -112,8 +113,6 @@ public class EnvironmentManager
         {
             // Use the default one.
         }
-
-        WebServer = new AppServer(port);
 
         string projectRoot = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
         if (!string.IsNullOrEmpty(projectRoot))
