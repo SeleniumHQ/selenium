@@ -154,14 +154,14 @@ public class PositionAndSizeTests : DriverTestFixture
 
         IWebElement r2 = driver.FindElement(By.Id("r2"));
         string left = r2.GetCssValue("left");
-        Assert.That(Math.Round(Convert.ToDecimal(left.Replace("px", "")), 1), Is.EqualTo(10.9));
+        Assert.That(Math.Round(decimal.Parse(left.Replace("px", ""), System.Globalization.CultureInfo.InvariantCulture), 1), Is.EqualTo(10.9));
         string top = r2.GetCssValue("top");
-        Assert.That(Math.Round(Convert.ToDecimal(top.Replace("px", "")), 1), Is.EqualTo(10.1));
+        Assert.That(Math.Round(decimal.Parse(top.Replace("px", ""), System.Globalization.CultureInfo.InvariantCulture), 1), Is.EqualTo(10.1));
         Assert.That(r2.Location, Is.EqualTo(new Point(11, 10)));
         string width = r2.GetCssValue("width");
-        Assert.That(Math.Round(Convert.ToDecimal(width.Replace("px", "")), 1), Is.EqualTo(48.7));
+        Assert.That(Math.Round(decimal.Parse(width.Replace("px", ""), System.Globalization.CultureInfo.InvariantCulture), 1), Is.EqualTo(48.7));
         string height = r2.GetCssValue("height");
-        Assert.That(Math.Round(Convert.ToDecimal(height.Replace("px", "")), 1), Is.EqualTo(49.3));
+        Assert.That(Math.Round(decimal.Parse(height.Replace("px", ""), System.Globalization.CultureInfo.InvariantCulture), 1), Is.EqualTo(49.3));
         Assert.That(r2.Size, Is.EqualTo(new Size(49, 49)));
     }
 

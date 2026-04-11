@@ -52,12 +52,12 @@ public class UrlBuilder
 
     public string WhereIs(string page)
     {
-        return "http://" + HostName + ":" + port + "/" + page;
+        return "http://" + HostName + ":" + port + "/common/" + page;
     }
 
     public string WhereElseIs(string page)
     {
-        return "http://" + AlternateHostName + ":" + port + "/" + page;
+        return "http://" + AlternateHostName + ":" + port + "/common/" + page;
     }
 
     public string WhereIsViaNonLoopbackAddress(string page)

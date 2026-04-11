@@ -48,6 +48,7 @@ public class AppServer : IAsyncDisposable
         _app = builder.Build();
 
         MapEndpoints(_app);
+        MapEndpoints(_app.MapGroup("/common"));
 
         if (Directory.Exists(_webContentRoot))
         {
@@ -59,9 +60,22 @@ public class AppServer : IAsyncDisposable
                 ServeUnknownFileTypes = true
             });
 
+            _app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = "/common",
+                ServeUnknownFileTypes = true
+            });
+
             _app.UseDirectoryBrowser(new DirectoryBrowserOptions
             {
                 FileProvider = fileProvider
+            });
+
+            _app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = "/common"
             });
         }
 
