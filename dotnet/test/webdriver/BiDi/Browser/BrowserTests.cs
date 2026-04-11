@@ -85,7 +85,7 @@ internal class BrowserTests : BiDiTestFixture
         // or
 
         var result2 = await bidi.Browser.SetDownloadBehaviorAsync(DownloadBehavior.Default);
-        
+
         Assert.That(result, Is.Not.Null);
         Assert.That(result2, Is.Not.Null);
     }
