@@ -165,19 +165,17 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ProvideResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth action, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthCredentials(request, credentials), options, cancellationToken).ConfigureAwait(false);
-    }
+        ContinueWithAuthParameters @params = action switch
+        {
+            ContinueWithAuthCredentials c => new ContinueWithAuthCredentialsParameters(request, c.Credentials),
+            ContinueWithAuthDefault => new ContinueWithAuthDefaultParameters(request),
+            ContinueWithAuthCancel => new ContinueWithAuthCancelParameters(request),
+            _ => throw new ArgumentException($"Unknown action type: {action.GetType()}", nameof(action))
+        };
 
-    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthDefaultCredentials(request), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await ExecuteAsync(ContinueWithAuthCommand, new ContinueWithAuthCancelCredentials(request), options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)

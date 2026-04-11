@@ -198,7 +198,7 @@ internal class NetworkTests : BiDiTestFixture
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
-                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new AuthCredentials("test", "test"));
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthCredentials(new AuthCredentials("test", "test")));
             }
         });
 
@@ -217,7 +217,7 @@ internal class NetworkTests : BiDiTestFixture
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
-                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthDefaultCredentialsOptions());
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthDefault());
             }
         });
 
@@ -236,7 +236,7 @@ internal class NetworkTests : BiDiTestFixture
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
-                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthCancelCredentialsOptions());
+                await bidi.Network.ContinueWithAuthAsync(e.Request.Request, new ContinueWithAuthCancel());
             }
         });
 

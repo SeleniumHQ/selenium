@@ -21,28 +21,26 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
+public abstract record ContinueWithAuth;
+
+public sealed record ContinueWithAuthCredentials(AuthCredentials Credentials) : ContinueWithAuth;
+
+public sealed record ContinueWithAuthDefault : ContinueWithAuth;
+
+public sealed record ContinueWithAuthCancel : ContinueWithAuth;
+
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "action")]
-[JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]
-[JsonDerivedType(typeof(ContinueWithAuthDefaultCredentials), "default")]
-[JsonDerivedType(typeof(ContinueWithAuthCancelCredentials), "cancel")]
+[JsonDerivedType(typeof(ContinueWithAuthCredentialsParameters), "provideCredentials")]
+[JsonDerivedType(typeof(ContinueWithAuthDefaultParameters), "default")]
+[JsonDerivedType(typeof(ContinueWithAuthCancelParameters), "cancel")]
 internal abstract record ContinueWithAuthParameters(Request Request) : Parameters;
 
-internal sealed record ContinueWithAuthCredentials(Request Request, AuthCredentials Credentials) : ContinueWithAuthParameters(Request);
+internal sealed record ContinueWithAuthCredentialsParameters(Request Request, AuthCredentials Credentials) : ContinueWithAuthParameters(Request);
 
-internal abstract record ContinueWithAuthNoCredentials(Request Request) : ContinueWithAuthParameters(Request);
+internal sealed record ContinueWithAuthDefaultParameters(Request Request) : ContinueWithAuthParameters(Request);
 
-internal sealed record ContinueWithAuthDefaultCredentials(Request Request) : ContinueWithAuthNoCredentials(Request);
+internal sealed record ContinueWithAuthCancelParameters(Request Request) : ContinueWithAuthParameters(Request);
 
-internal sealed record ContinueWithAuthCancelCredentials(Request Request) : ContinueWithAuthNoCredentials(Request);
-
-public abstract record ContinueWithAuthOptions : CommandOptions;
-
-public sealed record ContinueWithAuthCredentialsOptions : ContinueWithAuthOptions;
-
-public abstract record ContinueWithAuthNoCredentialsOptions : ContinueWithAuthOptions;
-
-public sealed record ContinueWithAuthDefaultCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
-
-public sealed record ContinueWithAuthCancelCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
+public sealed record ContinueWithAuthOptions : CommandOptions;
 
 public sealed record ContinueWithAuthResult : EmptyResult;
