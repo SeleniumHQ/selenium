@@ -21,11 +21,15 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using OpenQA.Selenium.Testing.WebServer.Handlers;
@@ -38,11 +42,20 @@ public class AppServer : IAsyncDisposable
     private readonly string _webContentRoot = FindWebContentRoot();
     private readonly ConcurrentDictionary<string, string> _pages = new();
 
-    public async Task<string> StartAsync()
+    public async Task<(string HttpUrl, string HttpsUrl)> StartAsync()
     {
         var builder = WebApplication.CreateSlimBuilder();
 
-        builder.WebHost.UseUrls("http://127.0.0.1:0");
+        var certificate = GenerateSelfSignedCertificate();
+
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.Listen(IPAddress.Loopback, 0);
+            options.Listen(IPAddress.Loopback, 0, listenOptions =>
+            {
+                listenOptions.UseHttps(certificate);
+            });
+        });
         builder.Services.AddDirectoryBrowser();
 
         _app = builder.Build();
@@ -81,7 +94,10 @@ public class AppServer : IAsyncDisposable
 
         await _app.StartAsync();
 
-        return _app.Urls.First();
+        string httpUrl = _app.Urls.First(u => u.StartsWith("http://"));
+        string httpsUrl = _app.Urls.First(u => u.StartsWith("https://"));
+
+        return (httpUrl, httpsUrl);
     }
 
     public async Task StopAsync()
@@ -117,6 +133,16 @@ public class AppServer : IAsyncDisposable
         endpoints.MapPost("/fedcm/id_assertion.json", (HttpContext context) => FedCmHandler.HandleIdAssertion(context));
 
         endpoints.MapGet("/temp/{fileName}", (string fileName) => CreatePageHandler.ServePage(fileName, _pages));
+    }
+
+    private static X509Certificate2 GenerateSelfSignedCertificate()
+    {
+        using var rsa = RSA.Create(2048);
+        var request = new CertificateRequest("CN=localhost", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        var cert = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(1));
+
+        // On Windows, ephemeral keys need to be exported and re-imported for Kestrel
+        return new X509Certificate2(cert.Export(X509ContentType.Pfx));
     }
 
     private static string FindWebContentRoot()

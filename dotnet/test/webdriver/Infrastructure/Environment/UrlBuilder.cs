@@ -28,15 +28,17 @@ namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
 public class UrlBuilder
 {
     private readonly string port;
+    private readonly string securePort;
 
     public string AlternateHostName { get; }
 
     public string HostName { get; }
 
-    public UrlBuilder(string hostname, int port)
+    public UrlBuilder(string hostname, int port, int securePort)
     {
         HostName = hostname;
         this.port = port.ToString();
+        this.securePort = securePort.ToString();
         //Use the first IPv4 address that we find
         IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
         foreach (IPAddress ip in Dns.GetHostEntry(HostName).AddressList)
@@ -77,7 +79,7 @@ public class UrlBuilder
 
     public string WhereIsSecure(string page)
     {
-        return "https://" + HostName + ":" + port + "/common/" + page;
+        return "https://" + HostName + ":" + securePort + "/common/" + page;
     }
     public string CreateInlinePage(InlinePage page)
     {
