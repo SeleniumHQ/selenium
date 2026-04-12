@@ -27,18 +27,18 @@ namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 public class UrlBuilder
 {
-    private readonly string port;
-    private readonly string securePort;
+    private readonly Uri _httpBaseUrl;
+    private readonly Uri _httpsBaseUrl;
+
+    public string HostName => _httpBaseUrl.Host;
 
     public string AlternateHostName { get; }
 
-    public string HostName { get; }
-
-    public UrlBuilder(string hostname, int port, int securePort)
+    public UrlBuilder(string httpUrl, string httpsUrl)
     {
-        HostName = hostname;
-        this.port = port.ToString();
-        this.securePort = securePort.ToString();
+        _httpBaseUrl = new Uri(httpUrl);
+        _httpsBaseUrl = new Uri(httpsUrl);
+
         //Use the first IPv4 address that we find
         IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
         foreach (IPAddress ip in Dns.GetHostEntry(HostName).AddressList)
@@ -54,12 +54,12 @@ public class UrlBuilder
 
     public string WhereIs(string page)
     {
-        return "http://" + HostName + ":" + port + "/common/" + page;
+        return _httpBaseUrl + "common/" + page;
     }
 
     public string WhereElseIs(string page)
     {
-        return "http://" + AlternateHostName + ":" + port + "/common/" + page;
+        return new UriBuilder(_httpBaseUrl) { Host = AlternateHostName } + "common/" + page;
     }
 
     public string WhereIsViaNonLoopbackAddress(string page)
@@ -74,12 +74,12 @@ public class UrlBuilder
                 break;
             }
         }
-        return "http://" + hostNameAsIPAddress + ":" + port + "/common/" + page;
+        return new UriBuilder(_httpBaseUrl) { Host = hostNameAsIPAddress } + "common/" + page;
     }
 
     public string WhereIsSecure(string page)
     {
-        return "https://" + HostName + ":" + securePort + "/common/" + page;
+        return _httpsBaseUrl + "common/" + page;
     }
     public string CreateInlinePage(InlinePage page)
     {

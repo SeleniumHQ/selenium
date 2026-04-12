@@ -82,9 +82,7 @@ public class EnvironmentManager
         WebServer = new AppServer();
         var (httpUrl, httpsUrl) = WebServer.StartAsync().Result;
 
-        int port = new Uri(httpUrl).Port;
-        int securePort = new Uri(httpsUrl).Port;
-        UrlBuilder = new UrlBuilder("localhost", port, securePort);
+        UrlBuilder = new UrlBuilder(httpUrl, httpsUrl);
 
         // Find selenium-manager binary.
         try
