@@ -137,12 +137,9 @@ public class AppServer : IAsyncDisposable
 
     private static X509Certificate2 GenerateSelfSignedCertificate()
     {
-        using var rsa = RSA.Create(2048);
-        var request = new CertificateRequest("CN=localhost", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        var cert = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(1));
-
-        // On Windows, ephemeral keys need to be exported and re-imported for Kestrel
-        return new X509Certificate2(cert.Export(X509ContentType.Pfx));
+        using var ecdsa = ECDsa.Create();
+        var request = new CertificateRequest("CN=localhost", ecdsa, HashAlgorithmName.SHA256);
+        return request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(1));
     }
 
     private static string FindWebContentRoot()
