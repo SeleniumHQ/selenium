@@ -158,6 +158,11 @@ public class JdkHttpClient implements HttpClient {
     this.client = builder.build();
   }
 
+  /** Will expose the underlying native HttpClient used. */
+  public java.net.http.HttpClient client() {
+    return client;
+  }
+
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
     URI uri;
