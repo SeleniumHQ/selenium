@@ -131,6 +131,10 @@ class JdkHttpMessages {
         || uri.startsWith("https://")) {
       rawUrl = uri;
     } else {
+      if (baseUrl == null) {
+        throw new IllegalStateException(
+            "Unable to resolve relative URI " + uri + ": base URI is not set in ClientConfig");
+      }
       String base = baseUrl.toString();
       if (base.endsWith("/")) {
         rawUrl = base.substring(0, base.length() - 1) + uri;

@@ -110,7 +110,8 @@ public class JdkHttpClient implements HttpClient {
             .executor(executorService);
 
     Credentials credentials = config.credentials();
-    String info = config.baseUri().getUserInfo();
+    URI baseUri = config.baseUri();
+    String info = baseUri != null ? baseUri.getUserInfo() : null;
     if (info != null && !info.trim().isEmpty()) {
       builder = builder.authenticator(new PasswordAuthenticator(info));
     } else if (credentials != null) {
