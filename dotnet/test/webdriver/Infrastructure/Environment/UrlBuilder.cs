@@ -72,12 +72,12 @@ public class UrlBuilder
                 break;
             }
         }
-        return "http://" + hostNameAsIPAddress + ":" + port + "/" + page;
+        return "http://" + hostNameAsIPAddress + ":" + port + "/common/" + page;
     }
 
     public string WhereIsSecure(string page)
     {
-        return "https://" + HostName + ":" + port + "/" + page;
+        return "https://" + HostName + ":" + port + "/common/" + page;
     }
     public string CreateInlinePage(InlinePage page)
     {
