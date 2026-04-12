@@ -93,10 +93,10 @@ public class AppServer : IAsyncDisposable
 
         await _app.StartAsync();
 
-        string httpUrl = _app.Urls.First(u => u.StartsWith("http://"));
-        string httpsUrl = _app.Urls.First(u => u.StartsWith("https://"));
+        int httpPort = new Uri(_app.Urls.First(u => u.StartsWith("http://"))).Port;
+        int httpsPort = new Uri(_app.Urls.First(u => u.StartsWith("https://"))).Port;
 
-        return (httpUrl, httpsUrl);
+        return ($"http://localhost:{httpPort}", $"https://localhost:{httpsPort}");
     }
 
     public async Task StopAsync()
