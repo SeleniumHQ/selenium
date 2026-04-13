@@ -57,6 +57,7 @@ task :local_dev, [:all] do |_task, arguments|
 
   copy_all = arguments[:all] == 'all'
   if copy_all
+    FileUtils.rm_rf("#{lib_path}/common/devtools")
     FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
   else
     bidi_src = "#{bazel_bin}/common/bidi"
