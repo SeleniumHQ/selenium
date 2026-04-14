@@ -74,8 +74,8 @@ class DriverFinder:
                 else:
                     raise ValueError(f"The browser path is not a valid file: {output['browser_path']}")
         except Exception as err:
-            msg = f"Unable to obtain driver for {browser}"
-            raise NoSuchDriverException(msg) from err
+           msg = f"Unable to obtain driver for {browser}. Ensure browser is installed and driver is in PATH."
+        raise NoSuchDriverException(msg) from err
         return self._paths
 
     def _to_args(self) -> list:
