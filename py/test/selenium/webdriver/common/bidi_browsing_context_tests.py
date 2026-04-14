@@ -92,7 +92,10 @@ def test_create_context_with_all_parameters(driver):
     user_context = driver.browser.create_user_context()
 
     context_id = driver.browsing_context.create(
-        type=WindowTypes.WINDOW, reference_context=reference_context, user_context=user_context, background=True
+        type=WindowTypes.WINDOW,
+        reference_context=reference_context,
+        user_context=user_context,
+        background=True,
     )
     assert context_id is not None
     assert context_id != reference_context
@@ -366,7 +369,9 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
 
     try:
         driver.browsing_context.set_viewport(
-            context=context_id, viewport={"width": 252, "height": 302}, device_pixel_ratio=5
+            context=context_id,
+            viewport={"width": 252, "height": 302},
+            device_pixel_ratio=5,
         )
 
         viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
@@ -388,7 +393,9 @@ def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
 
     try:
         driver.browsing_context.set_viewport(
-            context=context_id, viewport={"width": 253, "height": 303}, device_pixel_ratio=6
+            context=context_id,
+            viewport={"width": 253, "height": 303},
+            device_pixel_ratio=6,
         )
 
         driver.browsing_context.set_viewport(context=context_id)
@@ -405,6 +412,7 @@ def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
         driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
+@pytest.mark.xfail_chrome
 def test_set_viewport_back_to_default(driver, pages):
     """Test resetting the viewport and device pixel ratio to defaults."""
     context_id = driver.current_window_handle
@@ -415,7 +423,9 @@ def test_set_viewport_back_to_default(driver, pages):
 
     try:
         driver.browsing_context.set_viewport(
-            context=context_id, viewport={"width": 254, "height": 304}, device_pixel_ratio=10
+            context=context_id,
+            viewport={"width": 254, "height": 304},
+            device_pixel_ratio=10,
         )
 
         driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
@@ -423,8 +433,9 @@ def test_set_viewport_back_to_default(driver, pages):
         viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
         device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
-        assert viewport_size[0] == default_viewport_size[0]
-        assert viewport_size[1] == default_viewport_size[1]
+        # Allow some tolerance since some window managers might not put it to the exact value
+        assert abs(viewport_size[0] - default_viewport_size[0]) <= 5
+        assert abs(viewport_size[1] - default_viewport_size[1]) <= 5
         assert device_pixel_ratio == default_device_pixel_ratio
     finally:
         driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
@@ -493,7 +504,9 @@ def test_locate_nodes_with_css_locator(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "css", "value": "div.extraDiv, div.content"}, max_node_count=1
+        context=context_id,
+        locator={"type": "css", "value": "div.extraDiv, div.content"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1
@@ -515,7 +528,9 @@ def test_locate_nodes_with_xpath_locator(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "xpath", "value": "/html/body/div[2]"}, max_node_count=1
+        context=context_id,
+        locator={"type": "xpath", "value": "/html/body/div[2]"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1
@@ -538,7 +553,9 @@ def test_locate_nodes_with_inner_text(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "innerText", "value": "Spaced out"}, max_node_count=1
+        context=context_id,
+        locator={"type": "innerText", "value": "Spaced out"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1

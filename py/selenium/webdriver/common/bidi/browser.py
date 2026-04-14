@@ -14,267 +14,350 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import os
+
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
 from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
-from selenium.webdriver.common.bidi.session import UserPromptHandler
-from selenium.webdriver.common.proxy import Proxy
 
 
-class ClientWindowState:
-    """Represents a window state."""
+def transform_download_params(
+    allowed: bool | None,
+    destination_folder: str | None,
+) -> dict[str, Any] | None:
+    """Transform download parameters into download_behavior object.
+
+    Args:
+        allowed: Whether downloads are allowed
+        destination_folder: Destination folder for downloads (accepts str or
+            pathlib.Path; will be coerced to str)
+
+    Returns:
+        Dictionary representing the download_behavior object, or None if allowed is None
+    """
+    if allowed is True:
+        return {
+            "type": "allowed",
+            # Coerce pathlib.Path (or any path-like) to str so the BiDi
+            # protocol always receives a plain JSON string.
+            "destinationFolder": str(destination_folder) if destination_folder is not None else None,
+        }
+    elif allowed is False:
+        return {"type": "denied"}
+    else:  # None — reset to browser default (sent as JSON null)
+        return None
+
+
+def validate_download_behavior(
+    allowed: bool | None,
+    destination_folder: str | None,
+    user_contexts: Any | None = None,
+) -> None:
+    """Validate download behavior parameters.
+
+    Args:
+        allowed: Whether downloads are allowed
+        destination_folder: Destination folder for downloads
+        user_contexts: Optional list of user contexts
+
+    Raises:
+        ValueError: If parameters are invalid
+    """
+    if allowed is True and not destination_folder:
+        raise ValueError("destination_folder is required when allowed=True")
+    if allowed is False and destination_folder:
+        raise ValueError("destination_folder should not be provided when allowed=False")
+
+
+@dataclass
+class ClientWindowInfo:
+    """ClientWindowInfo."""
+
+    active: bool | None = None
+    client_window: Any | None = None
+    height: Any | None = None
+    state: Any | None = None
+    width: Any | None = None
+    x: Any | None = None
+    y: Any | None = None
+
+    def get_client_window(self):
+        """Get the client window ID."""
+        return self.client_window
+
+    def get_state(self):
+        """Get the client window state."""
+        return self.state
+
+    def get_width(self):
+        """Get the client window width."""
+        return self.width
+
+    def get_height(self):
+        """Get the client window height."""
+        return self.height
+
+    def is_active(self):
+        """Check if the client window is active."""
+        return self.active
+
+    def get_x(self):
+        """Get the client window X position."""
+        return self.x
+
+    def get_y(self):
+        """Get the client window Y position."""
+        return self.y
+
+
+@dataclass
+class UserContextInfo:
+    """UserContextInfo."""
+
+    user_context: Any | None = None
+
+
+@dataclass
+class CreateUserContextParameters:
+    """CreateUserContextParameters."""
+
+    accept_insecure_certs: bool | None = None
+    proxy: Any | None = None
+    unhandled_prompt_behavior: Any | None = None
+
+
+@dataclass
+class GetClientWindowsResult:
+    """GetClientWindowsResult."""
+
+    client_windows: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class GetUserContextsResult:
+    """GetUserContextsResult."""
+
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class RemoveUserContextParameters:
+    """RemoveUserContextParameters."""
+
+    user_context: Any | None = None
+
+
+@dataclass
+class ClientWindowRectState:
+    """ClientWindowRectState."""
+
+    state: str = field(default="normal", init=False)
+    width: Any | None = None
+    height: Any | None = None
+    x: Any | None = None
+    y: Any | None = None
+
+
+@dataclass
+class SetDownloadBehaviorParameters:
+    """SetDownloadBehaviorParameters."""
+
+    download_behavior: Any | None = None
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class DownloadBehaviorAllowed:
+    """DownloadBehaviorAllowed."""
+
+    type: str = field(default="allowed", init=False)
+    destination_folder: str | None = None
+
+
+@dataclass
+class DownloadBehaviorDenied:
+    """DownloadBehaviorDenied."""
+
+    type: str = field(default="denied", init=False)
+
+
+class ClientWindowNamedState:
+    """Named states for a browser client window."""
 
     FULLSCREEN = "fullscreen"
     MAXIMIZED = "maximized"
     MINIMIZED = "minimized"
     NORMAL = "normal"
 
-    VALID_STATES = {FULLSCREEN, MAXIMIZED, MINIMIZED, NORMAL}
 
+@dataclass
+class SetClientWindowStateParameters:
+    """SetClientWindowStateParameters.
 
-class ClientWindowInfo:
-    """Represents a client window information."""
+    The ``state`` field is required and must be either a named-state string
+    (e.g. ``ClientWindowNamedState.MAXIMIZED``) or a
+    :class:`ClientWindowRectState` instance.  ``client_window`` is the ID of
+    the window to affect.
+    """
 
-    def __init__(
-        self,
-        client_window: str,
-        state: str,
-        width: int,
-        height: int,
-        x: int,
-        y: int,
-        active: bool,
-    ):
-        self.client_window = client_window
-        self.state = state
-        self.width = width
-        self.height = height
-        self.x = x
-        self.y = y
-        self.active = active
-
-    def get_state(self) -> str:
-        """Gets the state of the client window.
-
-        Returns:
-            str: The state of the client window (one of the ClientWindowState constants).
-        """
-        return self.state
-
-    def get_client_window(self) -> str:
-        """Gets the client window identifier.
-
-        Returns:
-            str: The client window identifier.
-        """
-        return self.client_window
-
-    def get_width(self) -> int:
-        """Gets the width of the client window.
-
-        Returns:
-            int: The width of the client window.
-        """
-        return self.width
-
-    def get_height(self) -> int:
-        """Gets the height of the client window.
-
-        Returns:
-            int: The height of the client window.
-        """
-        return self.height
-
-    def get_x(self) -> int:
-        """Gets the x coordinate of the client window.
-
-        Returns:
-            int: The x coordinate of the client window.
-        """
-        return self.x
-
-    def get_y(self) -> int:
-        """Gets the y coordinate of the client window.
-
-        Returns:
-            int: The y coordinate of the client window.
-        """
-        return self.y
-
-    def is_active(self) -> bool:
-        """Checks if the client window is active.
-
-        Returns:
-            bool: True if the client window is active, False otherwise.
-        """
-        return self.active
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "ClientWindowInfo":
-        """Creates a ClientWindowInfo instance from a dictionary.
-
-        Args:
-            data: A dictionary containing the client window information.
-
-        Returns:
-            ClientWindowInfo: A new instance of ClientWindowInfo.
-
-        Raises:
-            ValueError: If required fields are missing or have invalid types.
-        """
-        try:
-            client_window = data["clientWindow"]
-            if not isinstance(client_window, str):
-                raise ValueError("clientWindow must be a string")
-
-            state = data["state"]
-            if not isinstance(state, str):
-                raise ValueError("state must be a string")
-            if state not in ClientWindowState.VALID_STATES:
-                raise ValueError(f"Invalid state: {state}. Must be one of {ClientWindowState.VALID_STATES}")
-
-            width = data["width"]
-            if not isinstance(width, int) or width < 0:
-                raise ValueError(f"width must be a non-negative integer, got {width}")
-
-            height = data["height"]
-            if not isinstance(height, int) or height < 0:
-                raise ValueError(f"height must be a non-negative integer, got {height}")
-
-            x = data["x"]
-            if not isinstance(x, int):
-                raise ValueError(f"x must be an integer, got {type(x).__name__}")
-
-            y = data["y"]
-            if not isinstance(y, int):
-                raise ValueError(f"y must be an integer, got {type(y).__name__}")
-
-            active = data["active"]
-            if not isinstance(active, bool):
-                raise ValueError("active must be a boolean")
-
-            return cls(
-                client_window=client_window,
-                state=state,
-                width=width,
-                height=height,
-                x=x,
-                y=y,
-                active=active,
-            )
-        except (KeyError, TypeError) as e:
-            raise ValueError(f"Invalid data format for ClientWindowInfo: {e}") from e
+    client_window: Any | None = None
+    state: Any | None = None
 
 
 class Browser:
-    """BiDi implementation of the browser module."""
+    """WebDriver BiDi browser module."""
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, conn) -> None:
+        self._conn = conn
+
+    def close(self):
+        """Execute browser.close."""
+        params = {}
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browser.close", params)
+        result = self._conn.execute(cmd)
+        return result
 
     def create_user_context(
         self,
         accept_insecure_certs: bool | None = None,
-        proxy: Proxy | None = None,
-        unhandled_prompt_behavior: UserPromptHandler | None = None,
-    ) -> str:
-        """Creates a new user context.
+        proxy: Any | None = None,
+        unhandled_prompt_behavior: Any | None = None,
+    ):
+        """Execute browser.createUserContext."""
+        if proxy and hasattr(proxy, "to_bidi_dict"):
+            proxy = proxy.to_bidi_dict()
 
-        Args:
-            accept_insecure_certs: Optional flag to accept insecure TLS certificates.
-            proxy: Optional proxy configuration for the user context.
-            unhandled_prompt_behavior: Optional configuration for handling user prompts.
+        if unhandled_prompt_behavior and hasattr(unhandled_prompt_behavior, "to_bidi_dict"):
+            unhandled_prompt_behavior = unhandled_prompt_behavior.to_bidi_dict()
 
-        Returns:
-            str: The ID of the created user context.
-        """
-        params: dict[str, Any] = {}
+        params = {
+            "acceptInsecureCerts": accept_insecure_certs,
+            "proxy": proxy,
+            "unhandledPromptBehavior": unhandled_prompt_behavior,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browser.createUserContext", params)
+        result = self._conn.execute(cmd)
+        if result and "userContext" in result:
+            extracted = result.get("userContext")
+            return extracted
+        return result
 
-        if accept_insecure_certs is not None:
-            params["acceptInsecureCerts"] = accept_insecure_certs
+    def get_client_windows(self):
+        """Execute browser.getClientWindows."""
+        params = {}
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browser.getClientWindows", params)
+        result = self._conn.execute(cmd)
+        if result and "clientWindows" in result:
+            items = result.get("clientWindows", [])
+            return [
+                ClientWindowInfo(
+                    active=item.get("active"),
+                    client_window=item.get("clientWindow"),
+                    height=item.get("height"),
+                    state=item.get("state"),
+                    width=item.get("width"),
+                    x=item.get("x"),
+                    y=item.get("y"),
+                )
+                for item in items
+                if isinstance(item, dict)
+            ]
+        return []
 
-        if proxy is not None:
-            params["proxy"] = proxy.to_bidi_dict()
+    def get_user_contexts(self):
+        """Execute browser.getUserContexts."""
+        params = {}
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browser.getUserContexts", params)
+        result = self._conn.execute(cmd)
+        if result and "userContexts" in result:
+            items = result.get("userContexts", [])
+            return [item.get("userContext") for item in items if isinstance(item, dict)]
+        return []
 
-        if unhandled_prompt_behavior is not None:
-            params["unhandledPromptBehavior"] = unhandled_prompt_behavior.to_dict()
+    def remove_user_context(self, user_context: Any | None = None):
+        """Execute browser.removeUserContext."""
+        if user_context is None:
+            raise TypeError("remove_user_context() missing required argument: 'user_context'")
 
-        result = self.conn.execute(command_builder("browser.createUserContext", params))
-        return result["userContext"]
-
-    def get_user_contexts(self) -> list[str]:
-        """Gets all user contexts.
-
-        Returns:
-            List[str]: A list of user context IDs.
-        """
-        result = self.conn.execute(command_builder("browser.getUserContexts", {}))
-        return [context_info["userContext"] for context_info in result["userContexts"]]
-
-    def remove_user_context(self, user_context_id: str) -> None:
-        """Removes a user context.
-
-        Args:
-            user_context_id: The ID of the user context to remove.
-
-        Raises:
-            ValueError: If the user context ID is "default" or does not exist.
-        """
-        if user_context_id == "default":
-            raise ValueError("Cannot remove the default user context")
-
-        params = {"userContext": user_context_id}
-        self.conn.execute(command_builder("browser.removeUserContext", params))
-
-    def get_client_windows(self) -> list[ClientWindowInfo]:
-        """Gets all client windows.
-
-        Returns:
-            List[ClientWindowInfo]: A list of client window information.
-        """
-        result = self.conn.execute(command_builder("browser.getClientWindows", {}))
-        return [ClientWindowInfo.from_dict(window) for window in result["clientWindows"]]
+        params = {
+            "userContext": user_context,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browser.removeUserContext", params)
+        result = self._conn.execute(cmd)
+        return result
 
     def set_download_behavior(
         self,
-        *,
         allowed: bool | None = None,
-        destination_folder: str | os.PathLike | None = None,
-        user_contexts: list[str] | None = None,
-    ) -> None:
-        """Set the download behavior for the browser or specific user contexts.
+        destination_folder: str | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
+        """Set the download behavior for the browser.
 
         Args:
-            allowed: True to allow downloads, False to deny downloads, or None to
-                clear download behavior (revert to default).
-            destination_folder: Required when allowed is True. Specifies the folder
-                to store downloads in.
-            user_contexts: Optional list of user context IDs to apply this
-                behavior to. If omitted, updates the default behavior.
+            allowed: ``True`` to allow downloads, ``False`` to deny, or ``None``
+                to reset to browser default (sends ``null`` to the protocol).
+            destination_folder: Destination folder for downloads.  Required when
+                ``allowed=True``.  Accepts a string or :class:`pathlib.Path`.
+            user_contexts: Optional list of user context IDs.
 
         Raises:
-            ValueError: If allowed=True and destination_folder is missing, or if
-                allowed=False and destination_folder is provided.
+            ValueError: If *allowed* is ``True`` and *destination_folder* is
+                omitted, or ``False`` and *destination_folder* is provided.
         """
-        params: dict[str, Any] = {}
-
-        if allowed is None:
-            params["downloadBehavior"] = None
-        else:
-            if allowed:
-                if not destination_folder:
-                    raise ValueError("destination_folder is required when allowed=True.")
-                params["downloadBehavior"] = {
-                    "type": "allowed",
-                    "destinationFolder": os.fspath(destination_folder),
-                }
-            else:
-                if destination_folder:
-                    raise ValueError("destination_folder should not be provided when allowed=False.")
-                params["downloadBehavior"] = {"type": "denied"}
-
+        validate_download_behavior(
+            allowed=allowed,
+            destination_folder=destination_folder,
+            user_contexts=user_contexts,
+        )
+        download_behavior = transform_download_params(allowed, destination_folder)
+        # downloadBehavior is a REQUIRED field in the BiDi spec (can be null but
+        # must be present).  Do NOT use a generic None-filter on it.
+        params: dict = {"downloadBehavior": download_behavior}
         if user_contexts is not None:
             params["userContexts"] = user_contexts
+        cmd = command_builder("browser.setDownloadBehavior", params)
+        return self._conn.execute(cmd)
 
-        self.conn.execute(command_builder("browser.setDownloadBehavior", params))
+    def set_client_window_state(
+        self,
+        client_window: Any | None = None,
+        state: Any | None = None,
+    ):
+        """Set the client window state.
+
+        Args:
+            client_window: The client window ID to apply the state to.
+            state: The window state to set. Can be one of:
+                - A string: "fullscreen", "maximized", "minimized", "normal"
+                - A ClientWindowRectState object with width, height, x, y
+                - A dict representing the state
+
+        Raises:
+            ValueError: If client_window is not provided or state is invalid.
+        """
+        if client_window is None:
+            raise ValueError("client_window is required")
+        if state is None:
+            raise ValueError("state is required")
+
+        # Serialize ClientWindowRectState if needed
+        state_param = state
+        if hasattr(state, "__dataclass_fields__"):
+            # It's a dataclass, convert to dict
+            state_param = {k: v for k, v in state.__dict__.items() if v is not None}
+
+        params = {
+            "clientWindow": client_window,
+            "state": state_param,
+        }
+        cmd = command_builder("browser.setClientWindowState", params)
+        return self._conn.execute(cmd)

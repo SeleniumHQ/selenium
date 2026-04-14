@@ -15,12 +15,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""WebDriver BiDi Permissions module."""
+
+from __future__ import annotations
+
+from enum import Enum
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
+_VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}
 
-class PermissionState:
-    """Represents the possible permission states."""
+
+class PermissionState(str, Enum):
+    """Permission state enumeration."""
 
     GRANTED = "granted"
     DENIED = "denied"
@@ -28,56 +36,68 @@ class PermissionState:
 
 
 class PermissionDescriptor:
-    """Represents a permission descriptor."""
+    """Descriptor for a permission."""
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
+        """Initialize a PermissionDescriptor.
+
+        Args:
+            name: The name of the permission (e.g., 'geolocation', 'microphone', 'camera')
+        """
         self.name = name
 
-    def to_dict(self) -> dict:
-        return {"name": self.name}
+    def __repr__(self) -> str:
+        return f"PermissionDescriptor('{self.name}')"
 
 
 class Permissions:
-    """BiDi implementation of the permissions module."""
+    """WebDriver BiDi Permissions module."""
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, websocket_connection: Any) -> None:
+        """Initialize the Permissions module.
+
+        Args:
+            websocket_connection: The WebSocket connection for sending BiDi commands
+        """
+        self._conn = websocket_connection
 
     def set_permission(
         self,
-        descriptor: str | PermissionDescriptor,
-        state: str,
-        origin: str,
+        descriptor: PermissionDescriptor | str,
+        state: PermissionState | str,
+        origin: str | None = None,
         user_context: str | None = None,
     ) -> None:
-        """Sets a permission state for a given permission descriptor.
+        """Set a permission for a given origin.
 
         Args:
-            descriptor: The permission name (str) or PermissionDescriptor object.
-              Examples: "geolocation", "camera", "microphone".
-            state: The permission state (granted, denied, prompt).
-            origin: The origin for which the permission is set.
-            user_context: The user context id (optional).
+            descriptor: The permission descriptor or permission name as a string
+            state: The desired permission state
+            origin: The origin for which to set the permission
+            user_context: Optional user context ID to scope the permission
 
         Raises:
-            ValueError: If the permission state is invalid.
+            ValueError: If the state is not a valid permission state
         """
-        if state not in [PermissionState.GRANTED, PermissionState.DENIED, PermissionState.PROMPT]:
-            valid_states = f"{PermissionState.GRANTED}, {PermissionState.DENIED}, {PermissionState.PROMPT}"
-            raise ValueError(f"Invalid permission state. Must be one of: {valid_states}")
+        state_value = state.value if isinstance(state, PermissionState) else state
+        if state_value not in _VALID_PERMISSION_STATES:
+            raise ValueError(
+                f"Invalid permission state: {state_value!r}. Must be one of {sorted(_VALID_PERMISSION_STATES)}"
+            )
 
         if isinstance(descriptor, str):
-            permission_descriptor = PermissionDescriptor(descriptor)
+            descriptor_dict = {"name": descriptor}
         else:
-            permission_descriptor = descriptor
+            descriptor_dict = {"name": descriptor.name}
 
-        params = {
-            "descriptor": permission_descriptor.to_dict(),
-            "state": state,
-            "origin": origin,
+        params: dict[str, Any] = {
+            "descriptor": descriptor_dict,
+            "state": state_value,
         }
-
+        if origin is not None:
+            params["origin"] = origin
         if user_context is not None:
             params["userContext"] = user_context
 
-        self.conn.execute(command_builder("permissions.setPermission", params))
+        cmd = command_builder("permissions.setPermission", params)
+        self._conn.execute(cmd)

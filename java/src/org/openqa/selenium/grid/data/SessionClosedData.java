@@ -27,6 +27,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonType;
 import org.openqa.selenium.remote.SessionId;
 
 /**
@@ -140,6 +141,10 @@ public class SessionClosedData {
 
   @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SessionClosedData fromJson(JsonInput input) {
+    if (input.peek() == JsonType.STRING) {
+      return new SessionClosedData(input.read(SessionId.class), SessionClosedReason.QUIT_COMMAND);
+    }
+
     SessionId sessionId = null;
     SessionClosedReason reason = null;
     NodeId nodeId = null;
