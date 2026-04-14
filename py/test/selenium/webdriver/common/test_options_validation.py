@@ -9,3 +9,4 @@ def test_invalid_page_load_strategy():
         options.page_load_strategy = "fast"
 
     assert "Invalid page load strategy" in str(exc.value)
+    
