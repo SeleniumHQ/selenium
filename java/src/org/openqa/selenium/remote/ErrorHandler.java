@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNullElse;
+
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -97,8 +99,9 @@ public class ErrorHandler {
       throw new RuntimeException(throwable);
     }
 
+    int responseStatus = requireNonNullElse(response.getStatus(), -1);
     Class<? extends WebDriverException> outerErrorType =
-        errorCodes.getExceptionType(response.getStatus());
+        errorCodes.getExceptionType(responseStatus);
 
     Object value = response.getValue();
     String message = null;
@@ -120,7 +123,7 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      Throwable serverError = rebuildServerError(rawErrorData, response.getStatus());
+      Throwable serverError = rebuildServerError(rawErrorData, responseStatus);
 
       // If serverError is null, then the server did not provide a className (only expected if
       // the server is a Java process) or a stack trace. The lack of a className is OK, but
