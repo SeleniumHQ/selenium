@@ -83,7 +83,7 @@ class _PageLoadStrategyDescriptor:
         if value in ("normal", "eager", "none"):
             obj.set_capability(self.name, value)
         else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+           raise ValueError("Invalid page load strategy. Expected one of: normal, eager, none.")
 
 
 class _UnHandledPromptBehaviorDescriptor:
