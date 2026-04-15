@@ -179,9 +179,9 @@ Selenium Grid (optional)
 For local Selenium scripts, the Java server is not needed.
 
 To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
-https://www.selenium.dev/documentation/grid/getting_started/
+https://selenium.dev/documentation/grid/getting_started/
 
-To use Remote WebDriver see: https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
+To use Remote WebDriver see: https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
 
 Use The Source Luke!
 ====================
@@ -191,18 +191,3 @@ View source code online:
 +---------------+-------------------------------------------------------+
 | **Official**: | https://github.com/SeleniumHQ/selenium/tree/trunk/py  |
 +---------------+-------------------------------------------------------+
-
-Contributing
-============
-
- - Fork the selenium repo
- - Clone your fork locally
- - Create a branch for your work
-     - `git checkout -b my-cool-branch-name`
- - Create a virtual environment and install tox
-     - `python -m venv venv && source venv/bin/activate && pip install tox`
- - Make your changes
- - Run the linter/formatter
-     - `tox -e linting`
- - If tox exits `0`, commit and push. Otherwise, fix the newly introduced style violations
- - Submit a Pull Request
