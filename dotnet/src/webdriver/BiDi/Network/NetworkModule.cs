@@ -180,77 +180,77 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 
     public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(BeforeRequestSentEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(BeforeRequestSentEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(BeforeRequestSentEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(BeforeRequestSentEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseStartedEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseStartedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseStartedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseStartedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseCompletedEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseCompletedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseCompletedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(ResponseCompletedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(FetchErrorEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FetchErrorEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FetchErrorEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(FetchErrorEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(AuthRequiredEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(AuthRequiredEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(AuthRequiredEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(AuthRequiredEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

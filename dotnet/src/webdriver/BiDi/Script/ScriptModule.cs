@@ -127,47 +127,47 @@ internal sealed class ScriptModule : Module, IScriptModule
 
     public async Task<Subscription<MessageEventArgs>> OnMessageAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(MessageEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(MessageEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<MessageEventArgs>> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(MessageEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(MessageEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<MessageEventArgs>> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(MessageEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(MessageEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmCreatedEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmCreatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Func<RealmCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmCreatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmCreatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Action<RealmCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmCreatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmCreatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmDestroyedEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmDestroyedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmDestroyedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmDestroyedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(RealmDestroyedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(RealmDestroyedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

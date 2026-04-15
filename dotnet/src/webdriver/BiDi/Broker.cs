@@ -69,27 +69,7 @@ internal sealed class Broker : IAsyncDisposable
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeAction(TEventArgs args) { action(args); return default; }
-        return await SubscribeAsync(descriptor, InvokeAction, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeFunc(TEventArgs args) => new(func(args));
-        return await SubscribeAsync(descriptor, InvokeFunc, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        return SubscribeAsync<TEventArgs, TEventParams>(descriptor, handler: null, options, cancellationToken);
-    }
-
-    private async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, ValueTask>? handler, SubscriptionOptions? options, CancellationToken cancellationToken)
+    internal async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, ValueTask>? handler, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         var metadata = _eventMetadata.GetOrAdd(descriptor.Name, new EventMetadata(descriptor.JsonTypeInfo, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep)));

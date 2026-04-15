@@ -31,17 +31,17 @@ internal sealed class SpeculationModule : Module, ISpeculationModule
 
     public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(PrefetchStatusUpdatedEvent, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
