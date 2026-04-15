@@ -29,12 +29,17 @@ internal sealed class SpeculationModule : Module, ISpeculationModule
         static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
         Default.PrefetchStatusUpdatedParameters);
 
-    public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<PrefetchStatusUpdatedEventArgs>> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }

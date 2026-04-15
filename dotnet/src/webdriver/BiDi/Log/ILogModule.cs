@@ -21,6 +21,7 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 public interface ILogModule
 {
-    Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
 }

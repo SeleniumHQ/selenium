@@ -38,7 +38,14 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return inputModule.OnFileDialogOpenedAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -48,7 +55,7 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
             cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 

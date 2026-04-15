@@ -115,7 +115,13 @@ public sealed record BrowsingContext : IIdentifiable
         return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this), cancellationToken);
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(Func<NavigationStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -124,7 +130,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(Action<NavigationStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -133,7 +139,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Func<FragmentNavigatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(Func<FragmentNavigatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -142,7 +154,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Action<FragmentNavigatedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(Action<FragmentNavigatedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -151,7 +163,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -160,7 +178,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -169,7 +187,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Func<DomContentLoadedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(Func<DomContentLoadedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -178,7 +202,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Action<DomContentLoadedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(Action<DomContentLoadedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -187,7 +211,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnLoadAsync(Action<LoadEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<LoadEventArgs>> OnLoadAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnLoadAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<LoadEventArgs>> OnLoadAsync(Action<LoadEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -196,7 +226,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnLoadAsync(Func<LoadEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<LoadEventArgs>> OnLoadAsync(Func<LoadEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -205,7 +235,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -214,7 +250,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -223,7 +259,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnDownloadEndAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -232,7 +274,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -241,7 +283,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationAbortedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(Action<NavigationAbortedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -250,7 +298,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationAbortedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(Func<NavigationAbortedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -259,7 +307,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationFailedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(Action<NavigationFailedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -268,7 +322,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationFailedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(Func<NavigationFailedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -277,7 +331,13 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationCommittedEventArgs> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(ContextSubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(
+            ContextSubscriptionOptions.WithContext(options, this));
+    }
+
+    public Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(Action<NavigationCommittedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -286,7 +346,7 @@ public sealed record BrowsingContext : IIdentifiable
             ContextSubscriptionOptions.WithContext(options, this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationCommittedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
+    public Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(Func<NavigationCommittedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(handler);
 

@@ -33,7 +33,14 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
         return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.OnBeforeRequestSentAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -43,7 +50,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -53,7 +60,14 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.OnResponseStartedAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -63,7 +77,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
          cancellationToken);
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -73,7 +87,14 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.OnResponseCompletedAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -83,7 +104,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -93,7 +114,14 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.OnFetchErrorAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -103,7 +131,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -113,7 +141,14 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return networkModule.OnAuthRequiredAsync(
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    public Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -123,7 +158,7 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
             cancellationToken);
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 

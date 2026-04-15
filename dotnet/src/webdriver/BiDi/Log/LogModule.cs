@@ -35,12 +35,17 @@ internal sealed class LogModule : Module, ILogModule
         },
         Default.LogEntry);
 
-    public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return await SubscribeAsync(EntryAddedEvent, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(EntryAddedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(EntryAddedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }

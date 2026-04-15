@@ -59,12 +59,17 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return await SubscribeAsync(FileDialogOpenedEvent, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
