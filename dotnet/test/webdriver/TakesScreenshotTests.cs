@@ -85,7 +85,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]
     public void ShouldCaptureScreenshotOfCurrentViewport()
     {
-#if NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -114,7 +114,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldTakeScreenshotsOfAnElement()
     {
-#if NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -142,7 +142,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtFramePage()
     {
-#if NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -186,7 +186,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtIFramePage()
     {
-#if NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -228,7 +228,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
     {
-#if NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -268,7 +268,7 @@ public class TakesScreenshotTests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
     {
-#if NET6_0 || NET8_0
+#if NET10_0
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
