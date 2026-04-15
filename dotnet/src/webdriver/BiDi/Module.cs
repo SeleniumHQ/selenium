@@ -30,16 +30,22 @@ public abstract class Module
         return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
+    protected Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         return Broker.SubscribeAsync(descriptor, action, options, cancellationToken);
     }
 
-    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
+    protected Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         return Broker.SubscribeAsync(descriptor, func, options, cancellationToken);
+    }
+
+    protected Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync<TEventArgs, TEventParams>(descriptor, options, cancellationToken);
     }
 
     internal static TModule Create<TModule>(IBiDi bidi, Broker broker)

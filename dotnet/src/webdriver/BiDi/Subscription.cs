@@ -38,6 +38,10 @@ public class Subscription : IAsyncDisposable
 
     internal string EventName { get; }
 
+    internal virtual void Deliver(EventArgs args) { }
+
+    internal virtual void Complete(Exception? error = null) { }
+
     public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
         await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
@@ -74,12 +78,12 @@ public class Subscription<TEventArgs> : Subscription, IAsyncEnumerable<TEventArg
         _drainTask = Task.Run(DrainAsync);
     }
 
-    internal void Deliver(TEventArgs args)
+    internal override void Deliver(EventArgs args)
     {
-        _channel.Writer.TryWrite(args);
+        _channel.Writer.TryWrite((TEventArgs)args);
     }
 
-    internal void Complete(Exception? error = null)
+    internal override void Complete(Exception? error = null)
     {
         _channel.Writer.TryComplete(error);
     }

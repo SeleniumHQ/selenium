@@ -37,10 +37,11 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
-    private readonly EventDispatcher _eventDispatcher;
     private readonly BiDi _bidi;
 
     private readonly ConcurrentDictionary<string, EventMetadata> _eventMetadata = new();
+
+    private readonly ConcurrentDictionary<string, SubscriptionRegistry> _subscriptions = new();
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -62,56 +63,61 @@ internal sealed class Broker : IAsyncDisposable
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = new EventDispatcher();
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
+    public async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
-        return await SubscribeAsync(descriptor.Name, InvokeAction, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
+        ValueTask InvokeAction(TEventArgs args) { action(args); return default; }
+        return await SubscribeAsync(descriptor, InvokeAction, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
+    public async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        ValueTask InvokeFunc(EventArgs args) => new(func((TEventArgs)args));
-        return await SubscribeAsync(descriptor.Name, InvokeFunc, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
+        ValueTask InvokeFunc(TEventArgs args) => new(func(args));
+        return await SubscribeAsync(descriptor, InvokeFunc, options, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
+    public Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
     {
-        var metadata = _eventMetadata.GetOrAdd(eventName, new EventMetadata(jsonTypeInfo, argsFactory));
+        return SubscribeAsync<TEventArgs, TEventParams>(descriptor, handler: null, options, cancellationToken);
+    }
 
-        if (metadata.JsonTypeInfo != jsonTypeInfo)
+    private async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, ValueTask>? handler, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        var metadata = _eventMetadata.GetOrAdd(descriptor.Name, new EventMetadata(descriptor.JsonTypeInfo, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep)));
+
+        if (metadata.JsonTypeInfo != descriptor.JsonTypeInfo)
         {
-            throw new ArgumentException($"Event '{eventName}' is already registered with different metadata.", nameof(eventName));
+            throw new ArgumentException($"Event '{descriptor.Name}' is already registered with different metadata.", nameof(descriptor));
         }
 
-        _eventDispatcher.AddHandler(eventName, handler);
+        var subscribeResult = await _bidi.Session.SubscribeAsync([descriptor.Name], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
+            .ConfigureAwait(false);
 
-        try
-        {
-            var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
-                .ConfigureAwait(false);
+        var subscription = new Subscription<TEventArgs>(subscribeResult.Subscription, this, descriptor.Name, handler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
-        }
-        catch
-        {
-            _eventDispatcher.RemoveHandler(eventName, handler);
-            throw;
-        }
+        var registry = _subscriptions.GetOrAdd(descriptor.Name, _ => new SubscriptionRegistry());
+        registry.Add(subscription);
+
+        return subscription;
     }
 
     public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         await _bidi.Session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-        _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
+
+        if (_subscriptions.TryGetValue(subscription.EventName, out var registry))
+        {
+            registry.Remove(subscription);
+        }
     }
 
     public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
@@ -208,8 +214,6 @@ internal sealed class Broker : IAsyncDisposable
             await _transport.DisposeAsync().ConfigureAwait(false);
 
             await _processingTask.ConfigureAwait(false);
-
-            await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
         }
         finally
         {
@@ -337,7 +341,13 @@ internal sealed class Broker : IAsyncDisposable
 
                 var eventArgs = metadata.CreateEventArgs(_bidi, eventParams);
 
-                _eventDispatcher.EnqueueEvent(method, eventArgs);
+                if (_subscriptions.TryGetValue(method, out var registry))
+                {
+                    foreach (var subscription in registry.GetSnapshot())
+                    {
+                        subscription.Deliver(eventArgs);
+                    }
+                }
                 break;
 
             case TypeError:
@@ -442,6 +452,16 @@ internal sealed class Broker : IAsyncDisposable
         // Channel is fully drained. Fail any commands that didn't get a response:
         // either with the transport error or cancellation for clean shutdown.
         var terminalException = _terminalReceiveException;
+
+        // Propagate to all active subscriptions
+        foreach (var registry in _subscriptions.Values)
+        {
+            foreach (var subscription in registry.GetSnapshot())
+            {
+                subscription.Complete(terminalException);
+            }
+        }
+
         foreach (var id in _pendingCommands.Keys)
         {
             if (_pendingCommands.TryRemove(id, out var pendingCommand))
@@ -549,6 +569,24 @@ internal sealed class Broker : IAsyncDisposable
                 _buffer = null;
                 ArrayPool<byte>.Shared.Return(buffer);
             }
+        }
+    }
+
+    internal sealed class SubscriptionRegistry
+    {
+        private readonly object _lock = new();
+        private volatile Subscription[] _subscriptions = [];
+
+        public Subscription[] GetSnapshot() => _subscriptions;
+
+        public void Add(Subscription subscription)
+        {
+            lock (_lock) _subscriptions = [.. _subscriptions, subscription];
+        }
+
+        public void Remove(Subscription subscription)
+        {
+            lock (_lock) _subscriptions = Array.FindAll(_subscriptions, s => s != subscription);
         }
     }
 }
