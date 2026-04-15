@@ -25,7 +25,10 @@ dotnet_nunit_test_suite(
     size = "small",
     srcs = glob(
         ["**/*.cs"],
-        exclude = ["bin/**", "obj/**"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
     ),
     out = "WebDriver.Tests",
     browsers = [

@@ -5,7 +5,10 @@ dotnet_nunit_test_suite(
     size = "large",
     srcs = glob(
         ["**/*.cs"],
-        exclude = ["bin/**", "obj/**"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
     ),
     browsers = [
         "firefox",

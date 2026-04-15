@@ -5,7 +5,10 @@ csharp_library(
     testonly = True,
     srcs = glob(
         ["**/*.cs"],
-        exclude = ["bin/**", "obj/**"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
     ),
     out = "Testing.WebServer",
     data = [
