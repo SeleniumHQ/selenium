@@ -150,7 +150,6 @@ standard `unittest <https://docs.python.org/3/library/unittest.html>`_ framework
             self.driver.get("https://selenium.dev")
             self.assertIn("Selenium", self.driver.title)
 
-
 Example 3:
 ==========
 
