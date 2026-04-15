@@ -17,9 +17,10 @@
 
 use crate::downloads::{download_to_tmp_folder, parse_json_from_url};
 use crate::files::{create_path_if_not_exists, default_cache_folder, path_to_string, uncompress};
-use crate::{Logger, create_http_client};
-use anyhow::Error;
+use crate::lock::Lock;
+use crate::{create_http_client, Logger};
 use anyhow::anyhow;
+use anyhow::Error;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::env::consts::{ARCH, OS};
@@ -72,28 +73,53 @@ pub fn ensure_jre(
     }
 
     let install_root = resolve_managed_jre_root(cache_path);
-    create_path_if_not_exists(&install_root)?;
+    if let Some(runtime) = detect_managed_jre_candidate(&install_root)? {
+        return Ok(runtime);
+    }
 
-    if let Some(runtime) = detect_managed_jre(&install_root)? {
+    let mut lock = Lock::acquire(log, &install_root, None)?;
+    if let Some(runtime) = detect_managed_jre_candidate(&install_root)? {
+        lock.release();
         return Ok(runtime);
     }
 
     let jre_asset = request_latest_jre_asset(timeout, proxy, log)?;
     if install_root.exists() {
         fs::remove_dir_all(&install_root)?;
-        create_path_if_not_exists(&install_root)?;
+    }
+
+    if let Some(parent) = install_root.parent() {
+        create_path_if_not_exists(parent)?;
     }
 
     let http_client = create_http_client(timeout, proxy.unwrap_or_default())?;
     let (_tmp, archive) = download_to_tmp_folder(&http_client, jre_asset.binary.package.link, log)?;
     uncompress(&archive, &install_root, log, OS, None, None)?;
 
-    detect_managed_jre(&install_root)?.ok_or_else(|| {
+    let runtime = detect_managed_jre_candidate(&install_root)?.ok_or_else(|| {
         anyhow!(format!(
             "Downloaded Java runtime but failed to resolve java binary in {}",
             install_root.display()
         ))
-    })
+    })?;
+    lock.release();
+
+    Ok(runtime)
+}
+
+fn detect_managed_jre_candidate(install_root: &Path) -> Result<Option<JavaRuntime>, Error> {
+    if install_root.exists() && let Some(runtime) = detect_managed_jre(install_root)? {
+        return Ok(Some(runtime));
+    }
+
+    if let Some(parent) = install_root.parent()
+        && parent.exists()
+        && let Some(runtime) = detect_managed_jre(parent)?
+    {
+        return Ok(Some(runtime));
+    }
+
+    Ok(None)
 }
 
 fn detect_system_java(log: &Logger) -> Result<Option<JavaRuntime>, Error> {

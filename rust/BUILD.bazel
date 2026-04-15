@@ -84,17 +84,6 @@ rust_binary(
     ] + all_crate_deps(normal = True),
 )
 
-rust_binary(
-    name = "sel",
-    srcs = ["src/bin/sel.rs"],
-    edition = "2024",
-    version = "0.4.42",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":selenium_manager",
-    ] + all_crate_deps(normal = True),
-)
-
 rust_library(
     # The name here is used as the crate name
     name = "selenium_manager",
