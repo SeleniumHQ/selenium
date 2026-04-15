@@ -343,7 +343,7 @@ public class TakesScreenshotTests : DriverTestFixture
     {
         HashSet<string> colors = new HashSet<string>();
 
-#if !NET8_0
+#if !NET10_0
         try
         {
             Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
@@ -377,7 +377,7 @@ public class TakesScreenshotTests : DriverTestFixture
     {
         Color pixelColor = Color.Black;
 
-#if !NET8_0
+#if !NET10_0
         Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
         Bitmap bitmap = new Bitmap(image);
         pixelColor = bitmap.GetPixel(1, 1);

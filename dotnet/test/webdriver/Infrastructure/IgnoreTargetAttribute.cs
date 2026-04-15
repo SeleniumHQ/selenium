@@ -78,8 +78,8 @@ public class IgnoreTargetAttribute(string target) : NUnitAttribute, IApplyToTest
 
     private static string CurrentPlatform()
     {
-#if NET8_0
-        return "net8";
+#if NET10_0
+        return "net10";
 #else
 #error Update IgnoreTargetAttribute.CurrentPlatform to the current TFM
 #endif
