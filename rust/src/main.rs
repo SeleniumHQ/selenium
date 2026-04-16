@@ -249,6 +249,7 @@ fn main() {
                     Some(cache_path.as_str()),
                     cli.timeout,
                     Some(proxy.as_str()),
+                    selenium_manager.is_offline(),
                     selenium_manager.get_logger(),
                 )
                 .map(|runtime| {

@@ -16,11 +16,11 @@
 // under the License.
 
 use crate::downloads::{download_to_tmp_folder, parse_json_from_url};
-use crate::files::{create_path_if_not_exists, default_cache_folder, path_to_string, uncompress};
+use crate::files::{create_path_if_not_exists, default_cache_folder, uncompress};
 use crate::lock::Lock;
-use crate::{create_http_client, Logger};
-use anyhow::anyhow;
+use crate::{Logger, create_http_client};
 use anyhow::Error;
+use anyhow::anyhow;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::env::consts::{ARCH, OS};
@@ -66,6 +66,7 @@ pub fn ensure_jre(
     cache_path: Option<&str>,
     timeout: u64,
     proxy: Option<&str>,
+    offline: bool,
     log: &Logger,
 ) -> Result<JavaRuntime, Error> {
     if let Some(runtime) = detect_system_java(log)? {
@@ -77,24 +78,70 @@ pub fn ensure_jre(
         return Ok(runtime);
     }
 
-    let mut lock = Lock::acquire(log, &install_root, None)?;
+    let _lock = Lock::acquire(log, &install_root, None)?;
     if let Some(runtime) = detect_managed_jre_candidate(&install_root)? {
-        lock.release();
         return Ok(runtime);
     }
 
+    if offline {
+        return Err(Error::msg(
+            "Java not found and cannot be downloaded in offline mode",
+        ));
+    }
+
     let jre_asset = request_latest_jre_asset(timeout, proxy, log)?;
+    let parent = install_root
+        .parent()
+        .ok_or_else(|| anyhow!("Failed to get parent directory of JRE install root"))?;
+
+    // Remove old installation if it exists
     if install_root.exists() {
         fs::remove_dir_all(&install_root)?;
     }
 
-    if let Some(parent) = install_root.parent() {
-        create_path_if_not_exists(parent)?;
-    }
+    create_path_if_not_exists(parent)?;
 
     let http_client = create_http_client(timeout, proxy.unwrap_or_default())?;
     let (_tmp, archive) = download_to_tmp_folder(&http_client, jre_asset.binary.package.link, log)?;
-    uncompress(&archive, &install_root, log, OS, None, None)?;
+
+    // Extract to a temporary directory first
+    let temp_extract = parent.join(format!(
+        "jre_extract_tmp_{}",
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos()
+    ));
+    create_path_if_not_exists(&temp_extract)?;
+
+    uncompress(&archive, &temp_extract, log, OS, None, None)?;
+
+    // Move the extracted JRE root directory to install_root
+    // Adoptium bundles JREs with a leading directory like "jdk-21+35"
+    let mut extracted_root = None;
+    for entry in fs::read_dir(&temp_extract)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_dir() {
+            // Check if this directory contains a 'bin' subdirectory with java binary
+            if path.join("bin").exists() {
+                extracted_root = Some(path);
+                break;
+            }
+        }
+    }
+
+    let extracted_root = extracted_root.ok_or_else(|| {
+        anyhow!(
+            "Downloaded archive did not contain expected JDK structure with 'bin' directory in {}",
+            temp_extract.display()
+        )
+    })?;
+
+    fs::rename(&extracted_root, &install_root)?;
+
+    // Clean up temporary extraction directory
+    fs::remove_dir_all(&temp_extract)?;
 
     let runtime = detect_managed_jre_candidate(&install_root)?.ok_or_else(|| {
         anyhow!(format!(
@@ -102,13 +149,14 @@ pub fn ensure_jre(
             install_root.display()
         ))
     })?;
-    lock.release();
 
     Ok(runtime)
 }
 
 fn detect_managed_jre_candidate(install_root: &Path) -> Result<Option<JavaRuntime>, Error> {
-    if install_root.exists() && let Some(runtime) = detect_managed_jre(install_root)? {
+    if install_root.exists()
+        && let Some(runtime) = detect_managed_jre(install_root)?
+    {
         return Ok(Some(runtime));
     }
 
@@ -237,7 +285,11 @@ fn find_java_binary(root: &Path) -> Option<PathBuf> {
                 .file_name()
                 .map(|name| name.eq_ignore_ascii_case(java_binary))
                 .unwrap_or(false)
-            && path_to_string(path).contains("bin")
+            && path
+                .parent()
+                .and_then(|parent| parent.file_name())
+                .map(|name| name.eq_ignore_ascii_case("bin"))
+                .unwrap_or(false)
         {
             return Some(path.to_path_buf());
         }
@@ -279,7 +331,22 @@ fn parse_java_major(version: &str) -> Option<i32> {
 
 #[cfg(test)]
 mod tests {
-    use super::{is_supported_java_version, parse_java_major, parse_java_version};
+    use super::{
+        OS, find_java_binary, is_supported_java_version, map_arch_to_adoptium, map_os_to_adoptium,
+        parse_java_major, parse_java_version,
+    };
+    use std::fs::{self, File};
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    fn create_test_dir(prefix: &str) -> std::path::PathBuf {
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let dir = std::env::temp_dir().join(format!("{}_{}", prefix, unique));
+        fs::create_dir_all(&dir).unwrap();
+        dir
+    }
 
     #[test]
     fn parses_java_major_versions() {
@@ -302,5 +369,88 @@ mod tests {
             Some("21.0.3".to_string()),
             parse_java_version(output).unwrap()
         );
+    }
+
+    #[test]
+    fn map_os_to_adoptium_returns_expected_values() {
+        assert_eq!("mac", map_os_to_adoptium("macos").unwrap());
+        assert_eq!("linux", map_os_to_adoptium("linux").unwrap());
+        assert_eq!("windows", map_os_to_adoptium("windows").unwrap());
+    }
+
+    #[test]
+    fn map_os_to_adoptium_rejects_unknown_values() {
+        assert!(map_os_to_adoptium("freebsd").is_err());
+        assert!(map_os_to_adoptium("unknown").is_err());
+    }
+
+    #[test]
+    fn map_arch_to_adoptium_returns_expected_values() {
+        assert_eq!("x64", map_arch_to_adoptium("x86_64").unwrap());
+        assert_eq!("aarch64", map_arch_to_adoptium("aarch64").unwrap());
+        assert_eq!("x32", map_arch_to_adoptium("x86").unwrap());
+    }
+
+    #[test]
+    fn map_arch_to_adoptium_rejects_unknown_values() {
+        assert!(map_arch_to_adoptium("armv7").is_err());
+        assert!(map_arch_to_adoptium("unknown").is_err());
+    }
+
+    #[test]
+    fn find_java_binary_detects_managed_runtime_layout() {
+        let root = create_test_dir("jre_find_java_binary");
+        let java_name = if OS == "windows" { "java.exe" } else { "java" };
+        let java_path = root.join("jdk-21").join("bin").join(java_name);
+
+        fs::create_dir_all(java_path.parent().unwrap()).unwrap();
+        File::create(&java_path).unwrap();
+
+        let detected = find_java_binary(&root);
+
+        assert_eq!(detected, Some(java_path));
+
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn find_java_binary_ignores_non_bin_locations() {
+        let root = create_test_dir("jre_find_java_outside_bindir");
+        let java_name = if OS == "windows" { "java.exe" } else { "java" };
+        let java_path = root.join("jdk-21").join(java_name);
+
+        fs::create_dir_all(java_path.parent().unwrap()).unwrap();
+        File::create(&java_path).unwrap();
+
+        let detected = find_java_binary(&root);
+
+        assert!(detected.is_none());
+
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn find_java_binary_picks_first_in_bin_directory() {
+        let root = create_test_dir("jre_find_java_binsearch");
+        let java_name = if OS == "windows" { "java.exe" } else { "java" };
+
+        // Create two java binaries in different directories
+        let java_path1 = root.join("jdk-20").join("bin").join(java_name);
+        let java_path2 = root.join("jdk-21").join("bin").join(java_name);
+
+        fs::create_dir_all(java_path1.parent().unwrap()).unwrap();
+        fs::create_dir_all(java_path2.parent().unwrap()).unwrap();
+        File::create(&java_path1).unwrap();
+        File::create(&java_path2).unwrap();
+
+        let detected = find_java_binary(&root);
+
+        // Should find at least one java binary
+        assert!(detected.is_some());
+        let detected_path = detected.unwrap();
+        assert!(detected_path.to_string_lossy().contains("bin"));
+        assert!(detected_path.file_name().unwrap() == java_name);
+
+        fs::remove_dir_all(&root).unwrap();
     }
 }

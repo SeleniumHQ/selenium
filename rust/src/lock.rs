@@ -69,6 +69,15 @@ impl Lock {
     }
 }
 
+impl Drop for Lock {
+    fn drop(&mut self) {
+        // Ensure lock is always released, even if not explicitly called
+        fs::remove_file(&self.path).unwrap_or_default();
+        FileExt::unlock(&self.file).unwrap_or_default();
+        set_lock_path(None);
+    }
+}
+
 pub fn clear_lock_if_required() {
     if let Some(lock) = get_lock_path()
         && lock.exists()
