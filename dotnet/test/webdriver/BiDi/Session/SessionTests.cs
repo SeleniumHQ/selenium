@@ -67,7 +67,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStream()
     {
-        await using var sub = await bidi.Log.EntryAdded.SubscribeAsync();
+        await using var sub = await bidi.Log.EntryAddedEvent.SubscribeAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var enumerator = sub.GetAsyncEnumerator(cts.Token);

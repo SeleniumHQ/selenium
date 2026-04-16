@@ -61,27 +61,27 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
         "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
 
-    private static readonly Event<BeforeRequestSentEventArgs, BeforeRequestSentParameters> BeforeRequestSentEvent = new(
+    private static readonly Event<BeforeRequestSentEventArgs, BeforeRequestSentParameters> s_beforeRequestSentEvent = new(
         "network.beforeRequestSent",
         static (bidi, p) => new BeforeRequestSentEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts),
         Default.BeforeRequestSentParameters);
 
-    private static readonly Event<ResponseStartedEventArgs, ResponseStartedParameters> ResponseStartedEvent = new(
+    private static readonly Event<ResponseStartedEventArgs, ResponseStartedParameters> s_responseStartedEvent = new(
         "network.responseStarted",
         static (bidi, p) => new ResponseStartedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
         Default.ResponseStartedParameters);
 
-    private static readonly Event<ResponseCompletedEventArgs, ResponseCompletedParameters> ResponseCompletedEvent = new(
+    private static readonly Event<ResponseCompletedEventArgs, ResponseCompletedParameters> s_responseCompletedEvent = new(
         "network.responseCompleted",
         static (bidi, p) => new ResponseCompletedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
         Default.ResponseCompletedParameters);
 
-    private static readonly Event<FetchErrorEventArgs, FetchErrorParameters> FetchErrorEvent = new(
+    private static readonly Event<FetchErrorEventArgs, FetchErrorParameters> s_fetchErrorEvent = new(
         "network.fetchError",
         static (bidi, p) => new FetchErrorEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts),
         Default.FetchErrorParameters);
 
-    private static readonly Event<AuthRequiredEventArgs, AuthRequiredParameters> AuthRequiredEvent = new(
+    private static readonly Event<AuthRequiredEventArgs, AuthRequiredParameters> s_authRequiredEvent = new(
         "network.authRequired",
         static (bidi, p) => new AuthRequiredEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response),
         Default.AuthRequiredParameters);
@@ -178,19 +178,19 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(BeforeRequestSentEvent), null) ?? _beforeRequestSent;
+    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSentEvent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(s_beforeRequestSentEvent), null) ?? _beforeRequestSent;
     private EventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public EventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(ResponseStartedEvent), null) ?? _responseStarted;
+    public EventSource<ResponseStartedEventArgs> ResponseStartedEvent => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(s_responseStartedEvent), null) ?? _responseStarted;
     private EventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public EventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(ResponseCompletedEvent), null) ?? _responseCompleted;
+    public EventSource<ResponseCompletedEventArgs> ResponseCompletedEvent => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(s_responseCompletedEvent), null) ?? _responseCompleted;
     private EventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public EventSource<FetchErrorEventArgs> FetchError => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(FetchErrorEvent), null) ?? _fetchError;
+    public EventSource<FetchErrorEventArgs> FetchErrorEvent => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(s_fetchErrorEvent), null) ?? _fetchError;
     private EventSource<FetchErrorEventArgs>? _fetchError;
 
-    public EventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(AuthRequiredEvent), null) ?? _authRequired;
+    public EventSource<AuthRequiredEventArgs> AuthRequiredEvent => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(s_authRequiredEvent), null) ?? _authRequired;
     private EventSource<AuthRequiredEventArgs>? _authRequired;
 }
 

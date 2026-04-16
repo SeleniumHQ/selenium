@@ -39,7 +39,7 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
-        new UnboundedChannelOptions { SingleReader = true, SingleWriter = false });
+        new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
     private readonly Task _drainTask;
 

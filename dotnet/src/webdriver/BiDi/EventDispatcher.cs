@@ -124,15 +124,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         await CompleteAllAsync(null).ConfigureAwait(false);
     }
 
-    internal EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, IBiDi bidi)
+    internal void RegisterEventMetadata<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, IBiDi bidi)
         where TEventArgs : EventArgs
     {
         // Register event metadata eagerly so deserialization is available as soon as EventSource is created
         _eventMetadata.GetOrAdd(descriptor.Name, new EventMetadata(descriptor.JsonTypeInfo, ep => descriptor.Factory(bidi, (TEventParams)ep)));
-
-        return new EventSource<TEventArgs>(
-            (handler, filter, options, ct) => SubscribeAsync(descriptor, handler, filter, options, ct),
-            (filter, options, ct) => SubscribeAsync(descriptor, filter, options, ct));
     }
 
     private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry Registry)> SubscribeCoreAsync<TEventArgs, TEventParams>(

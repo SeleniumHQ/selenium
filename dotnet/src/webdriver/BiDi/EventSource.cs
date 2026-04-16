@@ -21,38 +21,43 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 {
-    private readonly Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> _onAsyncCore;
-    private readonly Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> _subscribeAsyncCore;
+    private readonly IBiDi _bidi;
+    internal readonly Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> _onAsyncCore;
+    internal readonly Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> _subscribeAsyncCore;
+    internal readonly Func<TEventArgs, bool>? _filter;
+    internal readonly Func<SubscriptionOptions?, SubscriptionOptions>? _mapOptions;
 
     internal EventSource(
+        IBiDi bidi,
         Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> onAsyncCore,
-        Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> subscribeAsyncCore)
+        Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> subscribeAsyncCore,
+        Func<TEventArgs, bool>? filter = null,
+        Func<SubscriptionOptions?, SubscriptionOptions>? mapOptions = null)
     {
+        _bidi = bidi;
         _onAsyncCore = onAsyncCore;
         _subscribeAsyncCore = subscribeAsyncCore;
+        _filter = filter;
+        _mapOptions = mapOptions;
     }
 
     public Task<Subscription<TEventArgs>> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(handler);
-        return _onAsyncCore(e => { handler(e); return default; }, null, options, cancellationToken);
+        return _bidi.OnAsync(this, handler, options, cancellationToken);
     }
 
     public Task<Subscription<TEventArgs>> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(handler);
-        return _onAsyncCore(e => new ValueTask(handler(e)), null, options, cancellationToken);
+        return _bidi.OnAsync(this, handler, options, cancellationToken);
     }
 
     public Task<EventStream<TEventArgs>> SubscribeAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _subscribeAsyncCore(null, options, cancellationToken);
+        return _bidi.SubscribeAsync(this, options, cancellationToken);
     }
 
     internal EventSource<TEventArgs> WithContext(Func<TEventArgs, bool> filter, Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)
     {
-        return new EventSource<TEventArgs>(
-            (handler, _, options, ct) => _onAsyncCore(handler, filter, mapOptions(options), ct),
-            (_, options, ct) => _subscribeAsyncCore(filter, mapOptions(options), ct));
+        return new EventSource<TEventArgs>(_bidi, _onAsyncCore, _subscribeAsyncCore, filter, mapOptions);
     }
 }

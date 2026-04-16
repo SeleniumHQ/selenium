@@ -21,5 +21,5 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 
 public interface ISpeculationModule
 {
-    EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated { get; }
+    EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdatedEvent { get; }
 }

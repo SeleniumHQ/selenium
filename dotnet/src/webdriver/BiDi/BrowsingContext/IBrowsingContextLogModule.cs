@@ -23,5 +23,5 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public interface IBrowsingContextLogModule
 {
-    EventSource<EntryAddedEventArgs> EntryAdded { get; }
+    EventSource<EntryAddedEventArgs> EntryAddedEvent { get; }
 }

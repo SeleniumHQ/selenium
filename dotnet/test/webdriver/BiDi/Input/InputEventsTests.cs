@@ -30,7 +30,7 @@ internal class InputEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<FileDialogOpenedEventArgs> tcs = new();
 
-        await using var subscription = await context.Input.FileDialogOpened.OnAsync(tcs.SetResult);
+        await using var subscription = await context.Input.FileDialogOpenedEvent.OnAsync(tcs.SetResult);
 
         await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
 

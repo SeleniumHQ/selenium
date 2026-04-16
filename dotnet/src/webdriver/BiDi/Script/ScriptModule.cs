@@ -43,12 +43,12 @@ internal sealed class ScriptModule : Module, IScriptModule
     private static readonly Command<RemovePreloadScriptParameters, RemovePreloadScriptResult> RemovePreloadScriptCommand = new(
         "script.removePreloadScript", Default.RemovePreloadScriptParameters, Default.RemovePreloadScriptResult);
 
-    private static readonly Event<MessageEventArgs, MessageParameters> MessageEvent = new(
+    private static readonly Event<MessageEventArgs, MessageParameters> s_messageEvent = new(
         "script.message",
         static (bidi, p) => new MessageEventArgs(bidi, p.Channel, p.Data, p.Source),
         Default.MessageParameters);
 
-    private static readonly Event<RealmCreatedEventArgs, RealmInfo> RealmCreatedEvent = new(
+    private static readonly Event<RealmCreatedEventArgs, RealmInfo> s_realmCreatedEvent = new(
         "script.realmCreated",
         static (bidi, p) => p switch
         {
@@ -64,7 +64,7 @@ internal sealed class ScriptModule : Module, IScriptModule
         },
         Default.RealmInfo);
 
-    private static readonly Event<RealmDestroyedEventArgs, RealmDestroyedParameters> RealmDestroyedEvent = new(
+    private static readonly Event<RealmDestroyedEventArgs, RealmDestroyedParameters> s_realmDestroyedEvent = new(
         "script.realmDestroyed",
         static (bidi, p) => new RealmDestroyedEventArgs(bidi, p.Realm),
         Default.RealmDestroyedParameters);
@@ -125,13 +125,13 @@ internal sealed class ScriptModule : Module, IScriptModule
         return await ExecuteAsync(RemovePreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<MessageEventArgs> Message => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(MessageEvent), null) ?? _message;
+    public EventSource<MessageEventArgs> MessageEvent => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(s_messageEvent), null) ?? _message;
     private EventSource<MessageEventArgs>? _message;
 
-    public EventSource<RealmCreatedEventArgs> RealmCreated => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(RealmCreatedEvent), null) ?? _realmCreated;
+    public EventSource<RealmCreatedEventArgs> RealmCreatedEvent => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(s_realmCreatedEvent), null) ?? _realmCreated;
     private EventSource<RealmCreatedEventArgs>? _realmCreated;
 
-    public EventSource<RealmDestroyedEventArgs> RealmDestroyed => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(RealmDestroyedEvent), null) ?? _realmDestroyed;
+    public EventSource<RealmDestroyedEventArgs> RealmDestroyedEvent => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(s_realmDestroyedEvent), null) ?? _realmDestroyed;
     private EventSource<RealmDestroyedEventArgs>? _realmDestroyed;
 }
 

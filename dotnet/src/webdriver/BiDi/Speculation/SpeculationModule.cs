@@ -24,12 +24,12 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 
 internal sealed class SpeculationModule : Module, ISpeculationModule
 {
-    private static readonly Event<PrefetchStatusUpdatedEventArgs, PrefetchStatusUpdatedParameters> PrefetchStatusUpdatedEvent = new(
+    private static readonly Event<PrefetchStatusUpdatedEventArgs, PrefetchStatusUpdatedParameters> s_prefetchStatusUpdatedEvent = new(
         "speculation.prefetchStatusUpdated",
         static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
         Default.PrefetchStatusUpdatedParameters);
 
-    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(PrefetchStatusUpdatedEvent), null) ?? _prefetchStatusUpdated;
+    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdatedEvent => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(s_prefetchStatusUpdatedEvent), null) ?? _prefetchStatusUpdated;
     private EventSource<PrefetchStatusUpdatedEventArgs>? _prefetchStatusUpdated;
 }
 

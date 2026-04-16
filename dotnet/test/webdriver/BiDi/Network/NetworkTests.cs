@@ -89,7 +89,7 @@ internal class NetworkTests : BiDiTestFixture
 
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await context.Network.BeforeRequestSent.OnAsync(async e =>
+        await context.Network.BeforeRequestSentEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -111,7 +111,7 @@ internal class NetworkTests : BiDiTestFixture
 
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.ResponseStarted]);
 
-        await bidi.Network.ResponseStarted.OnAsync(async e =>
+        await bidi.Network.ResponseStartedEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -133,7 +133,7 @@ internal class NetworkTests : BiDiTestFixture
 
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await bidi.Network.BeforeRequestSent.OnAsync(async e =>
+        await bidi.Network.BeforeRequestSentEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -155,7 +155,7 @@ internal class NetworkTests : BiDiTestFixture
 
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await bidi.Network.BeforeRequestSent.OnAsync(async e =>
+        await bidi.Network.BeforeRequestSentEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -194,7 +194,7 @@ internal class NetworkTests : BiDiTestFixture
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
 
-        await bidi.Network.AuthRequired.OnAsync(async e =>
+        await bidi.Network.AuthRequiredEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -213,7 +213,7 @@ internal class NetworkTests : BiDiTestFixture
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
 
-        await bidi.Network.AuthRequired.OnAsync(async e =>
+        await bidi.Network.AuthRequiredEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -232,7 +232,7 @@ internal class NetworkTests : BiDiTestFixture
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
 
-        await bidi.Network.AuthRequired.OnAsync(async e =>
+        await bidi.Network.AuthRequiredEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -250,7 +250,7 @@ internal class NetworkTests : BiDiTestFixture
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.BeforeRequestSent]);
 
-        await context.Network.BeforeRequestSent.OnAsync(async e =>
+        await context.Network.BeforeRequestSentEvent.OnAsync(async e =>
         {
             if (e.IsBlocked && e.Intercepts?.Contains(result.Intercept) == true)
             {
@@ -272,7 +272,7 @@ internal class NetworkTests : BiDiTestFixture
 
         TaskCompletionSource<string> responseBodyCompletionSource = new();
 
-        await using var _ = await bidi.Network.ResponseCompleted.OnAsync(async e =>
+        await using var _ = await bidi.Network.ResponseCompletedEvent.OnAsync(async e =>
         {
             if (e.Response.Url.Contains("simpleTest.html"))
             {

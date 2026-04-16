@@ -37,7 +37,7 @@ public abstract class Module
     protected EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor)
         where TEventArgs : EventArgs
     {
-        return EventDispatcher.CreateEventSource(descriptor, BiDi);
+        return ((BiDi)BiDi).CreateEventSource(descriptor);
     }
 
     internal static TModule Create<TModule>(IBiDi bidi, Broker broker)

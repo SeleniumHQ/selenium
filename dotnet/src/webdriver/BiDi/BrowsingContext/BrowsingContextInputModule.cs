@@ -38,7 +38,7 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public EventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ??= inputModule.FileDialogOpened.WithContext(
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ??= inputModule.FileDialogOpenedEvent.WithContext(
         e => context.Equals(e.Context),
         WithContext);
     private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;

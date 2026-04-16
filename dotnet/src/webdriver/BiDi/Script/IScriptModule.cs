@@ -30,8 +30,8 @@ public interface IScriptModule
     Task<EvaluateResult> EvaluateAsync([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<TResult?> EvaluateAsync<TResult>([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default);
-    EventSource<MessageEventArgs> Message { get; }
-    EventSource<RealmCreatedEventArgs> RealmCreated { get; }
-    EventSource<RealmDestroyedEventArgs> RealmDestroyed { get; }
+    EventSource<MessageEventArgs> MessageEvent { get; }
+    EventSource<RealmCreatedEventArgs> RealmCreatedEvent { get; }
+    EventSource<RealmDestroyedEventArgs> RealmDestroyedEvent { get; }
     Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null, CancellationToken cancellationToken = default);
 }

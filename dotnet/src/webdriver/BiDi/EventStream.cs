@@ -29,7 +29,7 @@ public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerab
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
-        new UnboundedChannelOptions { SingleReader = true, SingleWriter = false });
+        new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
     internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
