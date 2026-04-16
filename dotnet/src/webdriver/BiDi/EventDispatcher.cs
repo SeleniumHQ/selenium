@@ -23,7 +23,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-internal sealed class EventDispatcher
+internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
     private readonly Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
@@ -100,7 +100,7 @@ internal sealed class EventDispatcher
         return true;
     }
 
-    internal void CompleteAll(Exception? error)
+    internal async Task CompleteAllAsync(Exception? error)
     {
         foreach (var registry in _subscriptions.Values)
         {
@@ -109,6 +109,19 @@ internal sealed class EventDispatcher
                 subscription.Complete(error);
             }
         }
+
+        foreach (var registry in _subscriptions.Values)
+        {
+            foreach (var subscription in registry.GetSnapshot())
+            {
+                await subscription.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CompleteAllAsync(null).ConfigureAwait(false);
     }
 
     internal EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, IBiDi bidi)

@@ -26,6 +26,7 @@ internal interface IEventSubscription
 {
     void Deliver(EventArgs args);
     void Complete(Exception? error = null);
+    ValueTask DisposeAsync();
 }
 
 public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposable

@@ -149,10 +149,14 @@ internal sealed class Broker : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        _receiveMessagesCancellationTokenSource.Cancel();
-
         try
         {
+            // Dispose subscriptions while transport and processing loop are still active,
+            // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
+            await EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+
+            _receiveMessagesCancellationTokenSource.Cancel();
+
             try
             {
                 await _receivingTask.ConfigureAwait(false);
@@ -162,9 +166,9 @@ internal sealed class Broker : IAsyncDisposable
                 // Expected when cancellation is requested, ignore.
             }
 
-            await _transport.DisposeAsync().ConfigureAwait(false);
-
             await _processingTask.ConfigureAwait(false);
+
+            await _transport.DisposeAsync().ConfigureAwait(false);
         }
         finally
         {
@@ -389,9 +393,6 @@ internal sealed class Broker : IAsyncDisposable
         // Channel is fully drained. Fail any commands that didn't get a response:
         // either with the transport error or cancellation for clean shutdown.
         var terminalException = _terminalReceiveException;
-
-        // Propagate to all active subscriptions
-        EventDispatcher.CompleteAll(terminalException);
 
         foreach (var id in _pendingCommands.Keys)
         {
