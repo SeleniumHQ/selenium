@@ -23,7 +23,5 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public interface IBrowsingContextLogModule
 {
-    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    EventSource<EntryAddedEventArgs> EntryAdded { get; }
 }

@@ -24,20 +24,10 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 public interface IBrowsingContextNetworkModule
 {
     Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    EventSource<AuthRequiredEventArgs> AuthRequired { get; }
+    EventSource<BeforeRequestSentEventArgs> BeforeRequestSent { get; }
+    EventSource<FetchErrorEventArgs> FetchError { get; }
+    EventSource<ResponseCompletedEventArgs> ResponseCompleted { get; }
+    EventSource<ResponseStartedEventArgs> ResponseStarted { get; }
     Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default);
 }

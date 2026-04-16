@@ -1,4 +1,4 @@
-// <copyright file="Subscription.cs" company="Selenium Committers">
+// <copyright file="EventStream.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -18,21 +18,12 @@
 // </copyright>
 
 using System.Threading.Channels;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-internal interface IEventSubscription
-{
-    void Deliver(EventArgs args);
-    void Complete(Exception? error = null);
-}
-
-public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposable
+public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerable<TEventArgs>, IAsyncDisposable
     where TEventArgs : EventArgs
 {
-    private static readonly ILogger Logger = Internal.Logging.Log.GetLogger(typeof(Subscription<>));
-
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, bool>? _filter;
     private int _disposed;
@@ -40,13 +31,10 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = false });
 
-    private readonly Task _drainTask;
-
-    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler, Func<TEventArgs, bool>? filter = null)
+    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
         _filter = filter;
-        _drainTask = Task.Run(() => DrainAsync(handler));
     }
 
     void IEventSubscription.Deliver(EventArgs args)
@@ -63,6 +51,22 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
         _channel.Writer.TryComplete(error);
     }
 
+    public IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    {
+        return ReadChannelAsync(_channel.Reader, cancellationToken);
+    }
+
+    private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, CancellationToken cancellationToken)
+    {
+        while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            while (reader.TryRead(out var item))
+            {
+                yield return item;
+            }
+        }
+    }
+
     public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
         await _unsubscribe(cancellationToken).ConfigureAwait(false);
@@ -73,52 +77,8 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
             _channel.Writer.TryComplete();
-
-            await _drainTask.ConfigureAwait(false);
-
             await UnsubscribeAsync().ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }
-
-    private async Task DrainAsync(Func<TEventArgs, ValueTask> handler)
-    {
-        while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
-        {
-            while (_channel.Reader.TryRead(out var args))
-            {
-                try
-                {
-                    await handler(args).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    if (Logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                    }
-                }
-            }
-        }
-    }
-}
-
-public sealed record SubscriptionOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
-
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
-
-    public TimeSpan? Timeout { get; init; }
-}
-
-public sealed record ContextSubscriptionOptions
-{
-    public TimeSpan? Timeout { get; init; }
-
-    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
-    {
-        Contexts = [context],
-        Timeout = options?.Timeout
-    };
 }

@@ -35,20 +35,8 @@ internal sealed class LogModule : Module, ILogModule
         },
         Default.LogEntry);
 
-    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(EntryAddedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(EntryAddedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(EntryAddedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(EntryAddedEvent), null) ?? _entryAdded;
+    private EventSource<EntryAddedEventArgs>? _entryAdded;
 }
 
 #region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency

@@ -219,215 +219,47 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
         return await ExecuteAsync(HandleUserPromptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationStartedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<NavigationStartedEventArgs> NavigationStarted => _navigationStarted ?? Interlocked.CompareExchange(ref _navigationStarted, CreateEventSource(NavigationStartedEvent), null) ?? _navigationStarted;
+    private EventSource<NavigationStartedEventArgs>? _navigationStarted;
 
-    public async Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(Func<NavigationStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationStartedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<FragmentNavigatedEventArgs> FragmentNavigated => _fragmentNavigated ?? Interlocked.CompareExchange(ref _fragmentNavigated, CreateEventSource(FragmentNavigatedEvent), null) ?? _fragmentNavigated;
+    private EventSource<FragmentNavigatedEventArgs>? _fragmentNavigated;
 
-    public async Task<Subscription<NavigationStartedEventArgs>> OnNavigationStartedAsync(Action<NavigationStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationStartedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<HistoryUpdatedEventArgs> HistoryUpdated => _historyUpdated ?? Interlocked.CompareExchange(ref _historyUpdated, CreateEventSource(HistoryUpdatedEvent), null) ?? _historyUpdated;
+    private EventSource<HistoryUpdatedEventArgs>? _historyUpdated;
 
-    public async Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FragmentNavigatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<DomContentLoadedEventArgs> DomContentLoaded => _domContentLoaded ?? Interlocked.CompareExchange(ref _domContentLoaded, CreateEventSource(DomContentLoadedEvent), null) ?? _domContentLoaded;
+    private EventSource<DomContentLoadedEventArgs>? _domContentLoaded;
 
-    public async Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(Func<FragmentNavigatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FragmentNavigatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<LoadEventArgs> Load => _load ?? Interlocked.CompareExchange(ref _load, CreateEventSource(LoadEvent), null) ?? _load;
+    private EventSource<LoadEventArgs>? _load;
 
-    public async Task<Subscription<FragmentNavigatedEventArgs>> OnFragmentNavigatedAsync(Action<FragmentNavigatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FragmentNavigatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<DownloadWillBeginEventArgs> DownloadWillBegin => _downloadWillBegin ?? Interlocked.CompareExchange(ref _downloadWillBegin, CreateEventSource(DownloadWillBeginEvent), null) ?? _downloadWillBegin;
+    private EventSource<DownloadWillBeginEventArgs>? _downloadWillBegin;
 
-    public async Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(HistoryUpdatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<DownloadEndEventArgs> DownloadEnd => _downloadEnd ?? Interlocked.CompareExchange(ref _downloadEnd, CreateEventSource(DownloadEndEvent), null) ?? _downloadEnd;
+    private EventSource<DownloadEndEventArgs>? _downloadEnd;
 
-    public async Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(HistoryUpdatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<NavigationAbortedEventArgs> NavigationAborted => _navigationAborted ?? Interlocked.CompareExchange(ref _navigationAborted, CreateEventSource(NavigationAbortedEvent), null) ?? _navigationAborted;
+    private EventSource<NavigationAbortedEventArgs>? _navigationAborted;
 
-    public async Task<Subscription<HistoryUpdatedEventArgs>> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(HistoryUpdatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<NavigationFailedEventArgs> NavigationFailed => _navigationFailed ?? Interlocked.CompareExchange(ref _navigationFailed, CreateEventSource(NavigationFailedEvent), null) ?? _navigationFailed;
+    private EventSource<NavigationFailedEventArgs>? _navigationFailed;
 
-    public async Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DomContentLoadedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<NavigationCommittedEventArgs> NavigationCommitted => _navigationCommitted ?? Interlocked.CompareExchange(ref _navigationCommitted, CreateEventSource(NavigationCommittedEvent), null) ?? _navigationCommitted;
+    private EventSource<NavigationCommittedEventArgs>? _navigationCommitted;
 
-    public async Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(Func<DomContentLoadedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DomContentLoadedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<ContextCreatedEventArgs> ContextCreated => _contextCreated ?? Interlocked.CompareExchange(ref _contextCreated, CreateEventSource(ContextCreatedEvent), null) ?? _contextCreated;
+    private EventSource<ContextCreatedEventArgs>? _contextCreated;
 
-    public async Task<Subscription<DomContentLoadedEventArgs>> OnDomContentLoadedAsync(Action<DomContentLoadedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DomContentLoadedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<ContextDestroyedEventArgs> ContextDestroyed => _contextDestroyed ?? Interlocked.CompareExchange(ref _contextDestroyed, CreateEventSource(ContextDestroyedEvent), null) ?? _contextDestroyed;
+    private EventSource<ContextDestroyedEventArgs>? _contextDestroyed;
 
-    public async Task<Subscription<LoadEventArgs>> OnLoadAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(LoadEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<UserPromptOpenedEventArgs> UserPromptOpened => _userPromptOpened ?? Interlocked.CompareExchange(ref _userPromptOpened, CreateEventSource(UserPromptOpenedEvent), null) ?? _userPromptOpened;
+    private EventSource<UserPromptOpenedEventArgs>? _userPromptOpened;
 
-    public async Task<Subscription<LoadEventArgs>> OnLoadAsync(Func<LoadEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(LoadEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<LoadEventArgs>> OnLoadAsync(Action<LoadEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(LoadEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadWillBeginEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadWillBeginEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadWillBeginEventArgs>> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadWillBeginEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadEndEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadEndEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<DownloadEndEventArgs>> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(DownloadEndEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationAbortedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(Func<NavigationAbortedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationAbortedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationAbortedEventArgs>> OnNavigationAbortedAsync(Action<NavigationAbortedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationAbortedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationFailedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(Func<NavigationFailedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationFailedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationFailedEventArgs>> OnNavigationFailedAsync(Action<NavigationFailedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationFailedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationCommittedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(Func<NavigationCommittedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationCommittedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<NavigationCommittedEventArgs>> OnNavigationCommittedAsync(Action<NavigationCommittedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(NavigationCommittedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextCreatedEventArgs>> OnContextCreatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextCreatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextCreatedEventArgs>> OnContextCreatedAsync(Func<ContextCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextCreatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextCreatedEventArgs>> OnContextCreatedAsync(Action<ContextCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextCreatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextDestroyedEventArgs>> OnContextDestroyedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextDestroyedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextDestroyedEventArgs>> OnContextDestroyedAsync(Func<ContextDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextDestroyedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ContextDestroyedEventArgs>> OnContextDestroyedAsync(Action<ContextDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ContextDestroyedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptOpenedEventArgs>> OnUserPromptOpenedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptOpenedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptOpenedEventArgs>> OnUserPromptOpenedAsync(Func<UserPromptOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptOpenedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptOpenedEventArgs>> OnUserPromptOpenedAsync(Action<UserPromptOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptOpenedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptClosedEventArgs>> OnUserPromptClosedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptClosedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptClosedEventArgs>> OnUserPromptClosedAsync(Func<UserPromptClosedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptClosedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<UserPromptClosedEventArgs>> OnUserPromptClosedAsync(Action<UserPromptClosedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(UserPromptClosedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<UserPromptClosedEventArgs> UserPromptClosed => _userPromptClosed ?? Interlocked.CompareExchange(ref _userPromptClosed, CreateEventSource(UserPromptClosedEvent), null) ?? _userPromptClosed;
+    private EventSource<UserPromptClosedEventArgs>? _userPromptClosed;
 }
 
 [JsonSerializable(typeof(ActivateParameters))]

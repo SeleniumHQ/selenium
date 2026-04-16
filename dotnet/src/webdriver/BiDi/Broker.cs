@@ -39,9 +39,7 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ITransport _transport;
     private readonly BiDi _bidi;
 
-    private readonly ConcurrentDictionary<string, EventMetadata> _eventMetadata = new();
-
-    private readonly ConcurrentDictionary<string, SubscriptionRegistry> _subscriptions = new();
+    internal readonly EventDispatcher EventDispatcher;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -64,40 +62,13 @@ internal sealed class Broker : IAsyncDisposable
         _transport = transport;
         _bidi = bidi;
 
+        EventDispatcher = new EventDispatcher(
+            (events, options, ct) => bidi.Session.SubscribeAsync(events, options, ct),
+            (subscriptions, options, ct) => bidi.Session.UnsubscribeAsync(subscriptions, options, ct));
+
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
         _processingTask = Task.Run(ProcessMessagesAsync);
-    }
-
-    internal async Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, ValueTask>? handler, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        var metadata = _eventMetadata.GetOrAdd(descriptor.Name, new EventMetadata(descriptor.JsonTypeInfo, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep)));
-
-        if (metadata.JsonTypeInfo != descriptor.JsonTypeInfo)
-        {
-            throw new ArgumentException($"Event '{descriptor.Name}' is already registered with different metadata.", nameof(descriptor));
-        }
-
-        var subscribeResult = await _bidi.Session.SubscribeAsync([descriptor.Name], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
-            .ConfigureAwait(false);
-
-        var subscription = new Subscription<TEventArgs>(subscribeResult.Subscription, this, descriptor.Name, handler);
-
-        var registry = _subscriptions.GetOrAdd(descriptor.Name, _ => new SubscriptionRegistry());
-        registry.Add(subscription);
-
-        return subscription;
-    }
-
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
-    {
-        await _bidi.Session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-
-        if (_subscriptions.TryGetValue(subscription.EventName, out var registry))
-        {
-            registry.Remove(subscription);
-        }
     }
 
     public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
@@ -306,28 +277,14 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_eventMetadata.TryGetValue(method, out var metadata))
+                if (!EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
                         _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                     }
-
-                    break;
                 }
 
-                var eventParams = JsonSerializer.Deserialize(ref paramsReader, metadata.JsonTypeInfo)
-                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
-
-                var eventArgs = metadata.CreateEventArgs(_bidi, eventParams);
-
-                if (_subscriptions.TryGetValue(method, out var registry))
-                {
-                    foreach (var subscription in registry.GetSnapshot())
-                    {
-                        subscription.Deliver(eventArgs);
-                    }
-                }
                 break;
 
             case TypeError:
@@ -434,13 +391,7 @@ internal sealed class Broker : IAsyncDisposable
         var terminalException = _terminalReceiveException;
 
         // Propagate to all active subscriptions
-        foreach (var registry in _subscriptions.Values)
-        {
-            foreach (var subscription in registry.GetSnapshot())
-            {
-                subscription.Complete(terminalException);
-            }
-        }
+        EventDispatcher.CompleteAll(terminalException);
 
         foreach (var id in _pendingCommands.Keys)
         {
@@ -473,11 +424,6 @@ internal sealed class Broker : IAsyncDisposable
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
-
-    private readonly record struct EventMetadata(JsonTypeInfo JsonTypeInfo, Func<IBiDi, object, EventArgs> ArgsFactory)
-    {
-        public EventArgs CreateEventArgs(IBiDi bidi, object eventParams) => ArgsFactory(bidi, eventParams);
-    }
 
     private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable
     {
@@ -549,24 +495,6 @@ internal sealed class Broker : IAsyncDisposable
                 _buffer = null;
                 ArrayPool<byte>.Shared.Return(buffer);
             }
-        }
-    }
-
-    internal sealed class SubscriptionRegistry
-    {
-        private readonly object _lock = new();
-        private volatile Subscription[] _subscriptions = [];
-
-        public Subscription[] GetSnapshot() => _subscriptions;
-
-        public void Add(Subscription subscription)
-        {
-            lock (_lock) _subscriptions = [.. _subscriptions, subscription];
-        }
-
-        public void Remove(Subscription subscription)
-        {
-            lock (_lock) _subscriptions = Array.FindAll(_subscriptions, s => s != subscription);
         }
     }
 }

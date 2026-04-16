@@ -23,46 +23,14 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public EventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ??= logModule.EntryAdded.WithContext(
+        e => context.Equals(e.Source.Context),
+        WithContext);
+    private EventSource<EntryAddedEventArgs>? _entryAdded;
+
+    private SubscriptionOptions WithContext(SubscriptionOptions? options) => new()
     {
-        return logModule.OnEntryAddedAsync(
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return logModule.OnEntryAddedAsync(
-            e => HandleEntryAddedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription<EntryAddedEventArgs>> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return logModule.OnEntryAddedAsync(
-            e => HandleEntryAdded(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    private async Task HandleEntryAddedAsync(EntryAddedEventArgs e, Func<EntryAddedEventArgs, Task> handler)
-    {
-        if (context.Equals(e.Source.Context))
-        {
-            await handler(e).ConfigureAwait(false);
-        }
-    }
-
-    private void HandleEntryAdded(EntryAddedEventArgs e, Action<EntryAddedEventArgs> handler)
-    {
-        if (context.Equals(e.Source.Context))
-        {
-            handler(e);
-        }
-    }
+        Contexts = [context],
+        Timeout = options?.Timeout
+    };
 }

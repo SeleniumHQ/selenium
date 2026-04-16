@@ -59,20 +59,8 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FileDialogOpenedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FileDialogOpenedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FileDialogOpenedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(FileDialogOpenedEvent), null) ?? _fileDialogOpened;
+    private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }
 
 [JsonSerializable(typeof(PerformActionsParameters))]

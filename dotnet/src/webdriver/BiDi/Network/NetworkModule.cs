@@ -178,80 +178,20 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(BeforeRequestSentEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(BeforeRequestSentEvent), null) ?? _beforeRequestSent;
+    private EventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(BeforeRequestSentEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(ResponseStartedEvent), null) ?? _responseStarted;
+    private EventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public async Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(BeforeRequestSentEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(ResponseCompletedEvent), null) ?? _responseCompleted;
+    private EventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseStartedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<FetchErrorEventArgs> FetchError => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(FetchErrorEvent), null) ?? _fetchError;
+    private EventSource<FetchErrorEventArgs>? _fetchError;
 
-    public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseStartedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseStartedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseCompletedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseCompletedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseCompletedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FetchErrorEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FetchErrorEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FetchErrorEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(AuthRequiredEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(AuthRequiredEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(AuthRequiredEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(AuthRequiredEvent), null) ?? _authRequired;
+    private EventSource<AuthRequiredEventArgs>? _authRequired;
 }
 
 [JsonSerializable(typeof(AddDataCollectorParameters))]

@@ -28,21 +28,11 @@ public interface INetworkModule
     Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth auth, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default);
     Task<FailRequestResult> FailRequestAsync(Request request, FailRequestOptions? options = null, CancellationToken cancellationToken = default);
     Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<AuthRequiredEventArgs>> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<BeforeRequestSentEventArgs>> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<FetchErrorEventArgs>> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseCompletedEventArgs>> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<ResponseStartedEventArgs>> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    EventSource<AuthRequiredEventArgs> AuthRequired { get; }
+    EventSource<BeforeRequestSentEventArgs> BeforeRequestSent { get; }
+    EventSource<FetchErrorEventArgs> FetchError { get; }
+    EventSource<ResponseCompletedEventArgs> ResponseCompleted { get; }
+    EventSource<ResponseStartedEventArgs> ResponseStarted { get; }
     Task<ProvideResponseResult> ProvideResponseAsync(Request request, ProvideResponseOptions? options = null, CancellationToken cancellationToken = default);
     Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
     Task<RemoveInterceptResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default);

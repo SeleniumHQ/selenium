@@ -125,50 +125,14 @@ internal sealed class ScriptModule : Module, IScriptModule
         return await ExecuteAsync(RemovePreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription<MessageEventArgs>> OnMessageAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(MessageEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<MessageEventArgs> Message => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(MessageEvent), null) ?? _message;
+    private EventSource<MessageEventArgs>? _message;
 
-    public async Task<Subscription<MessageEventArgs>> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(MessageEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<RealmCreatedEventArgs> RealmCreated => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(RealmCreatedEvent), null) ?? _realmCreated;
+    private EventSource<RealmCreatedEventArgs>? _realmCreated;
 
-    public async Task<Subscription<MessageEventArgs>> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(MessageEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmCreatedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Func<RealmCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmCreatedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Action<RealmCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmCreatedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmDestroyedEvent, handler: null, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmDestroyedEvent, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(RealmDestroyedEvent, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
-    }
+    public EventSource<RealmDestroyedEventArgs> RealmDestroyed => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(RealmDestroyedEvent), null) ?? _realmDestroyed;
+    private EventSource<RealmDestroyedEventArgs>? _realmDestroyed;
 }
 
 #region https://github.com/dotnet/runtime/issues/72604

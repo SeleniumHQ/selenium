@@ -30,14 +30,8 @@ public interface IScriptModule
     Task<EvaluateResult> EvaluateAsync([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<TResult?> EvaluateAsync<TResult>([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<MessageEventArgs>> OnMessageAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<MessageEventArgs>> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<MessageEventArgs>> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Func<RealmCreatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmCreatedEventArgs>> OnRealmCreatedAsync(Action<RealmCreatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<Subscription<RealmDestroyedEventArgs>> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default);
+    EventSource<MessageEventArgs> Message { get; }
+    EventSource<RealmCreatedEventArgs> RealmCreated { get; }
+    EventSource<RealmDestroyedEventArgs> RealmDestroyed { get; }
     Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null, CancellationToken cancellationToken = default);
 }

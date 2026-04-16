@@ -38,46 +38,14 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ??= inputModule.FileDialogOpened.WithContext(
+        e => context.Equals(e.Context),
+        WithContext);
+    private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
+
+    private SubscriptionOptions WithContext(SubscriptionOptions? options) => new()
     {
-        return inputModule.OnFileDialogOpenedAsync(
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return inputModule.OnFileDialogOpenedAsync(
-            e => HandleFileDialogOpenedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription<FileDialogOpenedEventArgs>> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return inputModule.OnFileDialogOpenedAsync(
-            e => HandleFileDialogOpened(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    private async Task HandleFileDialogOpenedAsync(FileDialogOpenedEventArgs e, Func<FileDialogOpenedEventArgs, Task> handler)
-    {
-        if (context.Equals(e.Context))
-        {
-            await handler(e).ConfigureAwait(false);
-        }
-    }
-
-    private void HandleFileDialogOpened(FileDialogOpenedEventArgs e, Action<FileDialogOpenedEventArgs> handler)
-    {
-        if (context.Equals(e.Context))
-        {
-            handler(e);
-        }
-    }
+        Contexts = [context],
+        Timeout = options?.Timeout
+    };
 }

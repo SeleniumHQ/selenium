@@ -23,6 +23,10 @@ public abstract class Module
 {
     private Broker Broker { get; set; } = null!;
 
+    private IBiDi BiDi { get; set; } = null!;
+
+    private EventDispatcher EventDispatcher => Broker.EventDispatcher;
+
     protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
@@ -30,10 +34,10 @@ public abstract class Module
         return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
     }
 
-    protected Task<Subscription<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, ValueTask>? handler, SubscriptionOptions? options, CancellationToken cancellationToken)
+    protected EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor)
         where TEventArgs : EventArgs
     {
-        return Broker.SubscribeAsync(descriptor, handler, options, cancellationToken);
+        return EventDispatcher.CreateEventSource(descriptor, BiDi);
     }
 
     internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
@@ -41,7 +45,8 @@ public abstract class Module
     {
         TModule module = new()
         {
-            Broker = broker
+            Broker = broker,
+            BiDi = bidi
         };
 
         return module;
