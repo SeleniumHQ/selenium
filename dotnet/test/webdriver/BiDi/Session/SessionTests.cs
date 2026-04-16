@@ -79,6 +79,19 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
+    public async Task CanConsumeAsyncEventStreamViaLinq()
+    {
+        await using var sub = await bidi.Log.EntryAddedEvent.SubscribeAsync();
+
+        await context.Script.EvaluateAsync("console.log('hello stream');", true);
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var log = await sub.FirstAsync(cts.Token);
+
+        Assert.That(log.Text, Is.EqualTo("hello stream"));
+    }
+
+    [Test]
     public async Task CustomModuleShouldExecuteCommand()
     {
         var customModule = bidi.AsModule<CustomModule>();
