@@ -31,6 +31,8 @@ public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerab
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = false });
 
+    private TaskCompletionSource<bool>? _readerComplete;
+
     internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
@@ -53,17 +55,26 @@ public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerab
 
     public IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        return ReadChannelAsync(_channel.Reader, cancellationToken);
+        var readerComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _readerComplete = readerComplete;
+        return ReadChannelAsync(_channel.Reader, readerComplete, cancellationToken);
     }
 
-    private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, CancellationToken cancellationToken)
+    private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, TaskCompletionSource<bool> readerComplete, CancellationToken cancellationToken)
     {
-        while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+        try
         {
-            while (reader.TryRead(out var item))
+            while (await reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                yield return item;
+                while (reader.TryRead(out var item))
+                {
+                    yield return item;
+                }
             }
+        }
+        finally
+        {
+            readerComplete.TrySetResult(true);
         }
     }
 
@@ -78,6 +89,12 @@ public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerab
         {
             _channel.Writer.TryComplete();
             await UnsubscribeAsync().ConfigureAwait(false);
+
+            if (Volatile.Read(ref _readerComplete) is { } readerComplete)
+            {
+                await readerComplete.Task.ConfigureAwait(false);
+            }
+
             GC.SuppressFinalize(this);
         }
     }

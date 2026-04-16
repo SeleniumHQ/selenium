@@ -73,10 +73,10 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
             _channel.Writer.TryComplete();
+            await UnsubscribeAsync().ConfigureAwait(false);
 
             await _drainTask.ConfigureAwait(false);
 
-            await UnsubscribeAsync().ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }
