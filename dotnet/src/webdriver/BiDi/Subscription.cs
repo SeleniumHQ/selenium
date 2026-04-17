@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Concurrent;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -35,19 +36,22 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
     private static readonly ILogger Logger = Internal.Logging.Log.GetLogger(typeof(Subscription<>));
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
+    private readonly Func<TEventArgs, ValueTask> _handler;
     private readonly Func<TEventArgs, bool>? _filter;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
-    private readonly Task _drainTask;
+    private readonly Task _dispatchTask;
+    private readonly ConcurrentDictionary<Task, byte> _activeHandlers = [];
 
     internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
+        _handler = handler;
         _filter = filter;
-        _drainTask = Task.Run(() => DrainAsync(handler));
+        _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
     void IEventSubscription.Deliver(EventArgs args)
@@ -77,29 +81,40 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
 
             _channel.Writer.TryComplete();
 
-            await _drainTask.ConfigureAwait(false);
+            await _dispatchTask.ConfigureAwait(false);
+
+            if (!_activeHandlers.IsEmpty)
+            {
+                await Task.WhenAll(_activeHandlers.Keys).ConfigureAwait(false);
+            }
 
             GC.SuppressFinalize(this);
         }
     }
 
-    private async Task DrainAsync(Func<TEventArgs, ValueTask> handler)
+    private async Task DispatchEventsAsync()
     {
         while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
         {
             while (_channel.Reader.TryRead(out var args))
             {
-                try
+                var activeHandlerTask = Task.Run(async () =>
                 {
-                    await handler(args).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    if (Logger.IsEnabled(LogEventLevel.Error))
+                    try
                     {
-                        Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                        await _handler(args).ConfigureAwait(false);
                     }
-                }
+                    catch (Exception ex)
+                    {
+                        if (Logger.IsEnabled(LogEventLevel.Error))
+                        {
+                            Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
+                        }
+                    }
+                });
+
+                _activeHandlers.TryAdd(activeHandlerTask, 0);
+                _ = activeHandlerTask.ContinueWith(t => _activeHandlers.TryRemove(t, out _));
             }
         }
     }
