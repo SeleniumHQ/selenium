@@ -115,42 +115,52 @@ public sealed record BrowsingContext : IIdentifiable
         return BiDi.BrowsingContext.GetTreeAsync(ContextGetTreeOptions.WithContext(options, this), cancellationToken);
     }
 
+    [JsonIgnore]
     public EventSource<NavigationStartedEventArgs> NavigationStartedEvent => _navigationStarted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationStartedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<NavigationStartedEventArgs>? _navigationStarted;
 
+    [JsonIgnore]
     public EventSource<FragmentNavigatedEventArgs> FragmentNavigatedEvent => _fragmentNavigated ??= CreateContextEventSource(
         BiDi.BrowsingContext.FragmentNavigatedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<FragmentNavigatedEventArgs>? _fragmentNavigated;
 
+    [JsonIgnore]
     public EventSource<HistoryUpdatedEventArgs> HistoryUpdatedEvent => _historyUpdated ??= CreateContextEventSource(
         BiDi.BrowsingContext.HistoryUpdatedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<HistoryUpdatedEventArgs>? _historyUpdated;
 
+    [JsonIgnore]
     public EventSource<DomContentLoadedEventArgs> DomContentLoadedEvent => _domContentLoaded ??= CreateContextEventSource(
         BiDi.BrowsingContext.DomContentLoadedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<DomContentLoadedEventArgs>? _domContentLoaded;
 
+    [JsonIgnore]
     public EventSource<LoadEventArgs> LoadEvent => _load ??= CreateContextEventSource(
         BiDi.BrowsingContext.LoadEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<LoadEventArgs>? _load;
 
+    [JsonIgnore]
     public EventSource<DownloadWillBeginEventArgs> DownloadWillBeginEvent => _downloadWillBegin ??= CreateContextEventSource(
         BiDi.BrowsingContext.DownloadWillBeginEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<DownloadWillBeginEventArgs>? _downloadWillBegin;
 
+    [JsonIgnore]
     public EventSource<DownloadEndEventArgs> DownloadEndEvent => _downloadEnd ??= CreateContextEventSource(
         BiDi.BrowsingContext.DownloadEndEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<DownloadEndEventArgs>? _downloadEnd;
 
+    [JsonIgnore]
     public EventSource<NavigationAbortedEventArgs> NavigationAbortedEvent => _navigationAborted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationAbortedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<NavigationAbortedEventArgs>? _navigationAborted;
 
+    [JsonIgnore]
     public EventSource<NavigationFailedEventArgs> NavigationFailedEvent => _navigationFailed ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationFailedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<NavigationFailedEventArgs>? _navigationFailed;
 
+    [JsonIgnore]
     public EventSource<NavigationCommittedEventArgs> NavigationCommittedEvent => _navigationCommitted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationCommittedEvent, static (e, ctx) => ctx.Equals(e.Context));
     private EventSource<NavigationCommittedEventArgs>? _navigationCommitted;
@@ -158,7 +168,7 @@ public sealed record BrowsingContext : IIdentifiable
     private EventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
         EventSource<TEventArgs> moduleEventSource,
         Func<TEventArgs, BrowsingContext, bool> filter)
-        where TEventArgs : OpenQA.Selenium.BiDi.EventArgs
+        where TEventArgs : EventArgs
     {
         return moduleEventSource.WithContext(
             e => filter(e, this),
