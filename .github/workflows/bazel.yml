@@ -103,7 +103,6 @@ jobs:
           echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
           sudo rm -rf /opt/ghc || true
           sudo rm -rf /usr/local/.ghcup || true
-          sudo rm -rf /usr/local/lib/android || true
           sudo rm -rf /usr/local/share/boost || true
           sudo rm -rf /usr/share/swift || true
           sudo rm -rf /usr/local/julia* || true
