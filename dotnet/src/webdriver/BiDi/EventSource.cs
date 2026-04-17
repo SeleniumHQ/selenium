@@ -43,17 +43,17 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 
     public Task<Subscription<TEventArgs>> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.OnAsync(this, handler, options, cancellationToken);
+        return _bidi.OnEventAsync(this, handler, options, cancellationToken);
     }
 
     public Task<Subscription<TEventArgs>> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.OnAsync(this, handler, options, cancellationToken);
+        return _bidi.OnEventAsync(this, handler, options, cancellationToken);
     }
 
     public Task<EventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.ReadAllAsync(this, options, cancellationToken);
+        return _bidi.ReadAllEventsAsync(this, options, cancellationToken);
     }
 
     internal EventSource<TEventArgs> WithContext(Func<TEventArgs, bool> filter, Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)

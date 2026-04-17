@@ -93,7 +93,7 @@ public sealed class BiDi : IBiDi
             (filter, options, ct) => eventDispatcher.SubscribeAsync(descriptor, filter, options, ct));
     }
 
-    public Task<Subscription<TEventArgs>> OnAsync<TEventArgs>(EventSource<TEventArgs> source, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<Subscription<TEventArgs>> OnEventAsync<TEventArgs>(EventSource<TEventArgs> source, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(handler);
@@ -102,7 +102,7 @@ public sealed class BiDi : IBiDi
         return source._onAsyncCore(e => { handler(e); return default; }, source._filter, effectiveOptions, cancellationToken);
     }
 
-    public Task<Subscription<TEventArgs>> OnAsync<TEventArgs>(EventSource<TEventArgs> source, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<Subscription<TEventArgs>> OnEventAsync<TEventArgs>(EventSource<TEventArgs> source, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(handler);
@@ -111,7 +111,7 @@ public sealed class BiDi : IBiDi
         return source._onAsyncCore(e => new ValueTask(handler(e)), source._filter, effectiveOptions, cancellationToken);
     }
 
-    public Task<EventReader<TEventArgs>> ReadAllAsync<TEventArgs>(EventSource<TEventArgs> source, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<EventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventSource<TEventArgs> source, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(source);
 
