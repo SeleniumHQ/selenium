@@ -1699,9 +1699,12 @@ def main(
 
     logger.info(f"Parsed {len(modules)} modules")
 
-    # Clean up existing generated files
+    # Clean up existing generated files.
+    # Keep static helper modules that are staged by Bazel (for example cdp.py)
+    # as part of create-bidi-src.extra_srcs.
+    preserved_python_files = {"py.typed", "cdp.py"}
     for file_path in output_path.glob("*.py"):
-        if file_path.name != "py.typed" and not file_path.name.startswith("_"):
+        if file_path.name not in preserved_python_files and not file_path.name.startswith("_"):
             file_path.unlink()
             logger.debug(f"Removed: {file_path}")
 
