@@ -23,14 +23,14 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 {
     private readonly IBiDi _bidi;
     internal readonly Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> _onAsyncCore;
-    internal readonly Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> _subscribeAsyncCore;
+    internal readonly Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventReader<TEventArgs>>> _subscribeAsyncCore;
     internal readonly Func<TEventArgs, bool>? _filter;
     internal readonly Func<SubscriptionOptions?, SubscriptionOptions>? _mapOptions;
 
     internal EventSource(
         IBiDi bidi,
         Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> onAsyncCore,
-        Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventStream<TEventArgs>>> subscribeAsyncCore,
+        Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventReader<TEventArgs>>> subscribeAsyncCore,
         Func<TEventArgs, bool>? filter = null,
         Func<SubscriptionOptions?, SubscriptionOptions>? mapOptions = null)
     {
@@ -51,9 +51,9 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         return _bidi.OnAsync(this, handler, options, cancellationToken);
     }
 
-    public Task<EventStream<TEventArgs>> SubscribeAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<EventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.SubscribeAsync(this, options, cancellationToken);
+        return _bidi.ReadAllAsync(this, options, cancellationToken);
     }
 
     internal EventSource<TEventArgs> WithContext(Func<TEventArgs, bool> filter, Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)

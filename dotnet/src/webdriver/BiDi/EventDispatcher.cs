@@ -59,7 +59,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return (Subscription<TEventArgs>)subscription;
     }
 
-    internal async Task<EventStream<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(
+    internal async Task<EventReader<TEventArgs>> SubscribeAsync<TEventArgs, TEventParams>(
         Event<TEventArgs, TEventParams> descriptor,
         Func<TEventArgs, bool>? filter,
         SubscriptionOptions? options,
@@ -69,12 +69,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
         var (subscribeResult, registry) = await SubscribeCoreAsync(descriptor, options, cancellationToken).ConfigureAwait(false);
 
         IEventSubscription subscription = null!;
-        subscription = new EventStream<TEventArgs>(
+        subscription = new EventReader<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, registry, subscription, ct),
             filter);
         registry.Add(subscription);
 
-        return (EventStream<TEventArgs>)subscription;
+        return (EventReader<TEventArgs>)subscription;
     }
 
     internal bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader)

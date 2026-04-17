@@ -1,4 +1,4 @@
-// <copyright file="EventStream.cs" company="Selenium Committers">
+// <copyright file="EventReader.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,7 +21,7 @@ using System.Threading.Channels;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerable<TEventArgs>, IAsyncDisposable
+public sealed class EventReader<TEventArgs> : IEventSubscription, IAsyncEnumerable<TEventArgs>, IAsyncDisposable
     where TEventArgs : EventArgs
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
@@ -31,7 +31,7 @@ public sealed class EventStream<TEventArgs> : IEventSubscription, IAsyncEnumerab
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
-    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
+    internal EventReader(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
         _filter = filter;

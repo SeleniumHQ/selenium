@@ -67,7 +67,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStream()
     {
-        await using var sub = await bidi.Log.EntryAddedEvent.SubscribeAsync();
+        await using var sub = await bidi.Log.EntryAddedEvent.ReadAllAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var enumerator = sub.GetAsyncEnumerator(cts.Token);
@@ -81,7 +81,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStreamViaLinq()
     {
-        await using var sub = await bidi.Log.EntryAddedEvent.SubscribeAsync();
+        await using var sub = await bidi.Log.EntryAddedEvent.ReadAllAsync();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 

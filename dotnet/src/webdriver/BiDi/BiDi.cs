@@ -111,7 +111,7 @@ public sealed class BiDi : IBiDi
         return source._onAsyncCore(e => new ValueTask(handler(e)), source._filter, effectiveOptions, cancellationToken);
     }
 
-    public Task<EventStream<TEventArgs>> SubscribeAsync<TEventArgs>(EventSource<TEventArgs> source, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<EventReader<TEventArgs>> ReadAllAsync<TEventArgs>(EventSource<TEventArgs> source, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(source);
 
