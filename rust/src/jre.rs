@@ -101,6 +101,10 @@ pub fn ensure_jre(
 
     create_path_if_not_exists(parent)?;
 
+    let entries_before_uncompress = fs::read_dir(parent)?
+        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
+        .collect::<Vec<PathBuf>>();
+
     let http_client = create_http_client(timeout, proxy.unwrap_or_default())?;
     let (_tmp, archive) = download_to_tmp_folder(&http_client, jre_asset.binary.package.link, log)?;
 
@@ -112,19 +116,36 @@ pub fn ensure_jre(
             .unwrap_or_default()
             .as_nanos()
     ));
-    create_path_if_not_exists(&temp_extract)?;
 
     uncompress(&archive, &temp_extract, log, OS, None, None)?;
 
     // Move the extracted JRE root directory to install_root
-    // Adoptium bundles JREs with a leading directory like "jdk-21+35"
+    // Adoptium tarballs can extract into the parent directory, while some archives
+    // can extract into the provided target path.
     let mut extracted_root = None;
-    for entry in fs::read_dir(&temp_extract)? {
-        let entry = entry?;
-        let path = entry.path();
-        if path.is_dir() {
-            // Check if this directory contains a 'bin' subdirectory with java binary
-            if path.join("bin").exists() {
+    if temp_extract.exists() {
+        if find_java_binary(&temp_extract).is_some() {
+            extracted_root = Some(temp_extract.clone());
+        } else {
+            for entry in fs::read_dir(&temp_extract)? {
+                let entry = entry?;
+                let path = entry.path();
+                if path.is_dir() && find_java_binary(&path).is_some() {
+                    extracted_root = Some(path);
+                    break;
+                }
+            }
+        }
+    }
+
+    if extracted_root.is_none() {
+        for entry in fs::read_dir(parent)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir()
+                && !entries_before_uncompress.contains(&path)
+                && find_java_binary(&path).is_some()
+            {
                 extracted_root = Some(path);
                 break;
             }
@@ -133,15 +154,20 @@ pub fn ensure_jre(
 
     let extracted_root = extracted_root.ok_or_else(|| {
         anyhow!(
-            "Downloaded archive did not contain expected JDK structure with 'bin' directory in {}",
-            temp_extract.display()
+            "Downloaded archive did not contain expected Java runtime structure in {} or {}",
+            temp_extract.display(),
+            parent.display()
         )
     })?;
 
-    fs::rename(&extracted_root, &install_root)?;
+    if extracted_root != install_root {
+        fs::rename(&extracted_root, &install_root)?;
+    }
 
     // Clean up temporary extraction directory
-    fs::remove_dir_all(&temp_extract)?;
+    if temp_extract.exists() && temp_extract != install_root {
+        fs::remove_dir_all(&temp_extract)?;
+    }
 
     let runtime = detect_managed_jre_candidate(&install_root)?.ok_or_else(|| {
         anyhow!(format!(
