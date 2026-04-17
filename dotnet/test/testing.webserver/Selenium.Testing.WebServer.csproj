@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>Testing.WebServer</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Testing.WebServer</RootNamespace>
     <Nullable>enable</Nullable>

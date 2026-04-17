@@ -23,7 +23,13 @@ filegroup(
 dotnet_nunit_test_suite(
     name = "webdriver",
     size = "small",
-    srcs = glob(["**/*.cs"]),
+    srcs = glob(
+        ["**/*.cs"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
+    ),
     out = "WebDriver.Tests",
     browsers = [
         # The first browser in this list is assumed to be the one that should
@@ -38,7 +44,7 @@ dotnet_nunit_test_suite(
         ":test-data",
     ],
     project_sdk = "web",
-    target_frameworks = ["net8.0"],
+    target_frameworks = ["net10.0"],
     visibility = ["//dotnet/test:__subpackages__"],
     deps = [
         "//dotnet/src/webdriver:webdriver-net8.0",

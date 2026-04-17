@@ -56,6 +56,9 @@ public class NetworkInterceptionTests : DriverTestFixture
             string text = driver.FindElement(By.CssSelector("p")).Text;
             await network.StopMonitoring();
             Assert.That(text, Is.EqualTo("I intercepted you"));
+            driver.Navigate().Refresh();
+            text = driver.FindElement(By.CssSelector("h1")).Text;
+            Assert.That(text, Is.EqualTo("Heading"));
         }
     }
 

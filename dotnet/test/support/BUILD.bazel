@@ -3,7 +3,13 @@ load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 dotnet_nunit_test_suite(
     name = "support",
     size = "large",
-    srcs = glob(["**/*.cs"]),
+    srcs = glob(
+        ["**/*.cs"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
+    ),
     browsers = [
         "firefox",
     ],
@@ -11,7 +17,7 @@ dotnet_nunit_test_suite(
         "//dotnet/test/webdriver:test-data",
     ],
     project_sdk = "web",
-    target_frameworks = ["net8.0"],
+    target_frameworks = ["net10.0"],
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
