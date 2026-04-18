@@ -65,7 +65,10 @@ module Selenium
         end
 
         def window
-          @window ||= windows.find(&:active?) || windows.first
+          @window ||= begin
+            current_windows = windows
+            current_windows.find(&:active?) || current_windows.first
+          end
         end
       end # Browser
     end # BiDi
