@@ -17,9 +17,14 @@
 // under the License.
 // </copyright>
 
+using static OpenQA.Selenium.BiDi.Input.InputJsonSerializerContext;
+
 namespace OpenQA.Selenium.BiDi.Input;
 
 public static class InputEvent
 {
-    public static EventDescriptor<FileDialogOpenedEventArgs> FileDialogOpened { get; } = new("input.fileDialogOpened");
+    public static EventDescriptor<FileDialogOpenedEventArgs> FileDialogOpened { get; } = EventDescriptor<FileDialogOpenedEventArgs>.Create<FileDialogInfo>(
+        "input.fileDialogOpened",
+        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
+        Default.FileDialogInfo);
 }

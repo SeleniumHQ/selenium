@@ -33,11 +33,6 @@ internal sealed class InputModule : Module, IInputModule
     private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
         "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
 
-    private static readonly EventRegistration<FileDialogOpenedEventArgs, FileDialogInfo> s_fileDialogOpenedReg = new(
-        InputEvent.FileDialogOpened,
-        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
-        Default.FileDialogInfo);
-
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PerformActionsParameters(context, actions);
@@ -59,7 +54,7 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(s_fileDialogOpenedReg), null) ?? _fileDialogOpened;
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(InputEvent.FileDialogOpened), null) ?? _fileDialogOpened;
     private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }
 

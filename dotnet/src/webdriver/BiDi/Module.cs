@@ -34,12 +34,10 @@ public abstract class Module
         return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
     }
 
-    private protected EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(EventRegistration<TEventArgs, TEventParams> registration)
+    private protected EventSource<TEventArgs> CreateEventSource<TEventArgs>(EventDescriptor<TEventArgs> descriptor)
         where TEventArgs : EventArgs
     {
-        EventDispatcher.RegisterEventMetadata(registration, BiDi);
-
-        return new EventSource<TEventArgs>(EventDispatcher, registration.Descriptor);
+        return new EventSource<TEventArgs>(EventDispatcher, descriptor);
     }
 
     internal static TModule Create<TModule>(IBiDi bidi, Broker broker)

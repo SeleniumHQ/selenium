@@ -43,32 +43,6 @@ internal sealed class ScriptModule : Module, IScriptModule
     private static readonly Command<RemovePreloadScriptParameters, RemovePreloadScriptResult> RemovePreloadScriptCommand = new(
         "script.removePreloadScript", Default.RemovePreloadScriptParameters, Default.RemovePreloadScriptResult);
 
-    private static readonly EventRegistration<MessageEventArgs, MessageParameters> s_messageReg = new(
-        ScriptEvent.Message,
-        static (bidi, p) => new MessageEventArgs(bidi, p.Channel, p.Data, p.Source),
-        Default.MessageParameters);
-
-    private static readonly EventRegistration<RealmCreatedEventArgs, RealmInfo> s_realmCreatedReg = new(
-        ScriptEvent.RealmCreated,
-        static (bidi, p) => p switch
-        {
-            WindowRealmInfo w => new WindowRealmCreatedEventArgs(bidi, w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
-            DedicatedWorkerRealmInfo d => new DedicatedWorkerRealmCreatedEventArgs(bidi, d.Realm, d.Origin, d.Owners),
-            SharedWorkerRealmInfo s => new SharedWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
-            ServiceWorkerRealmInfo s => new ServiceWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
-            WorkerRealmInfo w => new WorkerRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
-            PaintWorkletRealmInfo p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
-            AudioWorkletRealmInfo a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
-            WorkletRealmInfo w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
-            _ => throw new BiDiException($"Unknown {nameof(RealmInfo)} type: {p.GetType()}")
-        },
-        Default.RealmInfo);
-
-    private static readonly EventRegistration<RealmDestroyedEventArgs, RealmDestroyedParameters> s_realmDestroyedReg = new(
-        ScriptEvent.RealmDestroyed,
-        static (bidi, p) => new RealmDestroyedEventArgs(bidi, p.Realm),
-        Default.RealmDestroyedParameters);
-
     public async Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
@@ -125,13 +99,13 @@ internal sealed class ScriptModule : Module, IScriptModule
         return await ExecuteAsync(RemovePreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<MessageEventArgs> MessageEvent => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(s_messageReg), null) ?? _message;
+    public EventSource<MessageEventArgs> MessageEvent => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(ScriptEvent.Message), null) ?? _message;
     private EventSource<MessageEventArgs>? _message;
 
-    public EventSource<RealmCreatedEventArgs> RealmCreatedEvent => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(s_realmCreatedReg), null) ?? _realmCreated;
+    public EventSource<RealmCreatedEventArgs> RealmCreatedEvent => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(ScriptEvent.RealmCreated), null) ?? _realmCreated;
     private EventSource<RealmCreatedEventArgs>? _realmCreated;
 
-    public EventSource<RealmDestroyedEventArgs> RealmDestroyedEvent => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(s_realmDestroyedReg), null) ?? _realmDestroyed;
+    public EventSource<RealmDestroyedEventArgs> RealmDestroyedEvent => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(ScriptEvent.RealmDestroyed), null) ?? _realmDestroyed;
     private EventSource<RealmDestroyedEventArgs>? _realmDestroyed;
 }
 

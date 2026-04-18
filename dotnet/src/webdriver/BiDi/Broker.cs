@@ -64,7 +64,8 @@ internal sealed class Broker : IAsyncDisposable
 
         EventDispatcher = new EventDispatcher(
             (events, options, ct) => bidi.Session.SubscribeAsync(events, options, ct),
-            (subscriptions, options, ct) => bidi.Session.UnsubscribeAsync(subscriptions, options, ct));
+            (subscriptions, options, ct) => bidi.Session.UnsubscribeAsync(subscriptions, options, ct),
+            bidi);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));

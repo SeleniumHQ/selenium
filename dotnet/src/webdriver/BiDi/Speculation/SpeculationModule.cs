@@ -18,18 +18,12 @@
 // </copyright>
 
 using System.Text.Json.Serialization;
-using static OpenQA.Selenium.BiDi.Speculation.SpeculationJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
 internal sealed class SpeculationModule : Module, ISpeculationModule
 {
-    private static readonly EventRegistration<PrefetchStatusUpdatedEventArgs, PrefetchStatusUpdatedParameters> s_prefetchStatusUpdatedReg = new(
-        SpeculationEvent.PrefetchStatusUpdated,
-        static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
-        Default.PrefetchStatusUpdatedParameters);
-
-    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdatedEvent => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(s_prefetchStatusUpdatedReg), null) ?? _prefetchStatusUpdated;
+    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdatedEvent => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(SpeculationEvent.PrefetchStatusUpdated), null) ?? _prefetchStatusUpdated;
     private EventSource<PrefetchStatusUpdatedEventArgs>? _prefetchStatusUpdated;
 }
 

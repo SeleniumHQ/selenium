@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization.Metadata;
+
 namespace OpenQA.Selenium.BiDi;
 
 public interface IEventDescriptor<out TEventArgs> where TEventArgs : EventArgs
@@ -32,10 +34,38 @@ public abstract class EventDescriptor
     {
         Name = name;
     }
+
+    internal abstract void EnsureRegistered(EventDispatcher dispatcher, IBiDi bidi);
 }
 
 public sealed class EventDescriptor<TEventArgs> : EventDescriptor, IEventDescriptor<TEventArgs>
     where TEventArgs : EventArgs
 {
+    private readonly Action<EventDispatcher, IBiDi>? _register;
+
     internal EventDescriptor(string name) : base(name) { }
+
+    internal EventDescriptor(string name, Action<EventDispatcher, IBiDi> register) : base(name)
+    {
+        _register = register;
+    }
+
+    internal override void EnsureRegistered(EventDispatcher dispatcher, IBiDi bidi)
+    {
+        if (_register is null)
+        {
+            throw new InvalidOperationException($"Event '{Name}' does not have built-in registration metadata.");
+        }
+
+        _register(dispatcher, bidi);
+    }
+
+    internal static EventDescriptor<TEventArgs> Create<TEventParams>(
+        string name,
+        Func<IBiDi, TEventParams, TEventArgs> factory,
+        JsonTypeInfo<TEventParams> jsonTypeInfo)
+    {
+        return new(name, (dispatcher, bidi) =>
+            dispatcher.RegisterEventMetadata(name, jsonTypeInfo, ep => factory(bidi, (TEventParams)ep)));
+    }
 }

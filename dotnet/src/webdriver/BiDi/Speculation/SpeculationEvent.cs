@@ -17,9 +17,14 @@
 // under the License.
 // </copyright>
 
+using static OpenQA.Selenium.BiDi.Speculation.SpeculationJsonSerializerContext;
+
 namespace OpenQA.Selenium.BiDi.Speculation;
 
 public static class SpeculationEvent
 {
-    public static EventDescriptor<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated { get; } = new("speculation.prefetchStatusUpdated");
+    public static EventDescriptor<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated { get; } = EventDescriptor<PrefetchStatusUpdatedEventArgs>.Create<PrefetchStatusUpdatedParameters>(
+        "speculation.prefetchStatusUpdated",
+        static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
+        Default.PrefetchStatusUpdatedParameters);
 }

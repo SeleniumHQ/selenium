@@ -17,11 +17,35 @@
 // under the License.
 // </copyright>
 
+using static OpenQA.Selenium.BiDi.Script.ScriptJsonSerializerContext;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
 public static class ScriptEvent
 {
-    public static EventDescriptor<MessageEventArgs> Message { get; } = new("script.message");
-    public static EventDescriptor<RealmCreatedEventArgs> RealmCreated { get; } = new("script.realmCreated");
-    public static EventDescriptor<RealmDestroyedEventArgs> RealmDestroyed { get; } = new("script.realmDestroyed");
+    public static EventDescriptor<MessageEventArgs> Message { get; } = EventDescriptor<MessageEventArgs>.Create<MessageParameters>(
+        "script.message",
+        static (bidi, p) => new MessageEventArgs(bidi, p.Channel, p.Data, p.Source),
+        Default.MessageParameters);
+
+    public static EventDescriptor<RealmCreatedEventArgs> RealmCreated { get; } = EventDescriptor<RealmCreatedEventArgs>.Create<RealmInfo>(
+        "script.realmCreated",
+        static (bidi, p) => p switch
+        {
+            WindowRealmInfo w => new WindowRealmCreatedEventArgs(bidi, w.Realm, w.Origin, w.Context, w.UserContext, w.Sandbox),
+            DedicatedWorkerRealmInfo d => new DedicatedWorkerRealmCreatedEventArgs(bidi, d.Realm, d.Origin, d.Owners),
+            SharedWorkerRealmInfo s => new SharedWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+            ServiceWorkerRealmInfo s => new ServiceWorkerRealmCreatedEventArgs(bidi, s.Realm, s.Origin),
+            WorkerRealmInfo w => new WorkerRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
+            PaintWorkletRealmInfo p2 => new PaintWorkletRealmCreatedEventArgs(bidi, p2.Realm, p2.Origin),
+            AudioWorkletRealmInfo a => new AudioWorkletRealmCreatedEventArgs(bidi, a.Realm, a.Origin),
+            WorkletRealmInfo w => new WorkletRealmCreatedEventArgs(bidi, w.Realm, w.Origin),
+            _ => throw new BiDiException($"Unknown {nameof(RealmInfo)} type: {p.GetType()}")
+        },
+        Default.RealmInfo);
+
+    public static EventDescriptor<RealmDestroyedEventArgs> RealmDestroyed { get; } = EventDescriptor<RealmDestroyedEventArgs>.Create<RealmDestroyedParameters>(
+        "script.realmDestroyed",
+        static (bidi, p) => new RealmDestroyedEventArgs(bidi, p.Realm),
+        Default.RealmDestroyedParameters);
 }

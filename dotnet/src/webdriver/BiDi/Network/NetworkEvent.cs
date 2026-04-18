@@ -17,13 +17,34 @@
 // under the License.
 // </copyright>
 
+using static OpenQA.Selenium.BiDi.Network.NetworkJsonSerializerContext;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
 public static class NetworkEvent
 {
-    public static EventDescriptor<BeforeRequestSentEventArgs> BeforeRequestSent { get; } = new("network.beforeRequestSent");
-    public static EventDescriptor<ResponseStartedEventArgs> ResponseStarted { get; } = new("network.responseStarted");
-    public static EventDescriptor<ResponseCompletedEventArgs> ResponseCompleted { get; } = new("network.responseCompleted");
-    public static EventDescriptor<FetchErrorEventArgs> FetchError { get; } = new("network.fetchError");
-    public static EventDescriptor<AuthRequiredEventArgs> AuthRequired { get; } = new("network.authRequired");
+    public static EventDescriptor<BeforeRequestSentEventArgs> BeforeRequestSent { get; } = EventDescriptor<BeforeRequestSentEventArgs>.Create<BeforeRequestSentParameters>(
+        "network.beforeRequestSent",
+        static (bidi, p) => new BeforeRequestSentEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts),
+        Default.BeforeRequestSentParameters);
+
+    public static EventDescriptor<ResponseStartedEventArgs> ResponseStarted { get; } = EventDescriptor<ResponseStartedEventArgs>.Create<ResponseStartedParameters>(
+        "network.responseStarted",
+        static (bidi, p) => new ResponseStartedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
+        Default.ResponseStartedParameters);
+
+    public static EventDescriptor<ResponseCompletedEventArgs> ResponseCompleted { get; } = EventDescriptor<ResponseCompletedEventArgs>.Create<ResponseCompletedParameters>(
+        "network.responseCompleted",
+        static (bidi, p) => new ResponseCompletedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
+        Default.ResponseCompletedParameters);
+
+    public static EventDescriptor<FetchErrorEventArgs> FetchError { get; } = EventDescriptor<FetchErrorEventArgs>.Create<FetchErrorParameters>(
+        "network.fetchError",
+        static (bidi, p) => new FetchErrorEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts),
+        Default.FetchErrorParameters);
+
+    public static EventDescriptor<AuthRequiredEventArgs> AuthRequired { get; } = EventDescriptor<AuthRequiredEventArgs>.Create<AuthRequiredParameters>(
+        "network.authRequired",
+        static (bidi, p) => new AuthRequiredEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response),
+        Default.AuthRequiredParameters);
 }

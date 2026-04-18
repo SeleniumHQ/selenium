@@ -60,81 +60,6 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
     private static readonly Command<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
         "browsingContext.handleUserPrompt", Default.HandleUserPromptParameters, Default.HandleUserPromptResult);
 
-    private static readonly EventRegistration<NavigationStartedEventArgs, NavigationInfo> s_navigationStartedReg = new(
-        BrowsingContextEvent.NavigationStarted,
-        static (bidi, p) => new NavigationStartedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<FragmentNavigatedEventArgs, NavigationInfo> s_fragmentNavigatedReg = new(
-        BrowsingContextEvent.FragmentNavigated,
-        static (bidi, p) => new FragmentNavigatedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<HistoryUpdatedEventArgs, HistoryUpdatedParameters> s_historyUpdatedReg = new(
-        BrowsingContextEvent.HistoryUpdated,
-        static (bidi, p) => new HistoryUpdatedEventArgs(bidi, p.Context, p.Timestamp, p.Url, p.UserContext),
-        Default.HistoryUpdatedParameters);
-
-    private static readonly EventRegistration<DomContentLoadedEventArgs, NavigationInfo> s_domContentLoadedReg = new(
-        BrowsingContextEvent.DomContentLoaded,
-        static (bidi, p) => new DomContentLoadedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<LoadEventArgs, NavigationInfo> s_loadReg = new(
-        BrowsingContextEvent.Load,
-        static (bidi, p) => new LoadEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<DownloadWillBeginEventArgs, DownloadWillBeginParams> s_downloadWillBeginReg = new(
-        BrowsingContextEvent.DownloadWillBegin,
-        static (bidi, p) => new DownloadWillBeginEventArgs(bidi, p.SuggestedFilename, p.Context, p.Navigation, p.Timestamp, p.Url),
-        Default.DownloadWillBeginParams);
-
-    private static readonly EventRegistration<DownloadEndEventArgs, DownloadEndParams> s_downloadEndReg = new(
-        BrowsingContextEvent.DownloadEnd,
-        static (bidi, p) => p switch
-        {
-            DownloadCanceledParams c => new DownloadCanceledEventArgs(bidi, c.Context, c.Navigation, c.Timestamp, c.Url),
-            DownloadCompleteParams c => new DownloadCompleteEventArgs(bidi, c.Filepath, c.Context, c.Navigation, c.Timestamp, c.Url),
-            _ => throw new BiDiException($"Unknown {nameof(DownloadEndParams)} type: {p.GetType()}")
-        },
-        Default.DownloadEndParams);
-
-    private static readonly EventRegistration<NavigationAbortedEventArgs, NavigationInfo> s_navigationAbortedReg = new(
-        BrowsingContextEvent.NavigationAborted,
-        static (bidi, p) => new NavigationAbortedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<NavigationFailedEventArgs, NavigationInfo> s_navigationFailedReg = new(
-        BrowsingContextEvent.NavigationFailed,
-        static (bidi, p) => new NavigationFailedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<NavigationCommittedEventArgs, NavigationInfo> s_navigationCommittedReg = new(
-        BrowsingContextEvent.NavigationCommitted,
-        static (bidi, p) => new NavigationCommittedEventArgs(bidi, p.Context, p.Navigation, p.Timestamp, p.Url, p.UserContext),
-        Default.NavigationInfo);
-
-    private static readonly EventRegistration<ContextCreatedEventArgs, Info> s_contextCreatedReg = new(
-        BrowsingContextEvent.ContextCreated,
-        static (bidi, p) => new ContextCreatedEventArgs(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent),
-        Default.Info);
-
-    private static readonly EventRegistration<ContextDestroyedEventArgs, Info> s_contextDestroyedReg = new(
-        BrowsingContextEvent.ContextDestroyed,
-        static (bidi, p) => new ContextDestroyedEventArgs(bidi, p.Children, p.ClientWindow, p.Context, p.OriginalOpener, p.Url, p.UserContext, p.Parent),
-        Default.Info);
-
-    private static readonly EventRegistration<UserPromptOpenedEventArgs, UserPromptOpenedParameters> s_userPromptOpenedReg = new(
-        BrowsingContextEvent.UserPromptOpened,
-        static (bidi, p) => new UserPromptOpenedEventArgs(bidi, p.Context, p.Handler, p.Message, p.Type, p.UserContext, p.DefaultValue),
-        Default.UserPromptOpenedParameters);
-
-    private static readonly EventRegistration<UserPromptClosedEventArgs, UserPromptClosedParameters> s_userPromptClosedReg = new(
-        BrowsingContextEvent.UserPromptClosed,
-        static (bidi, p) => new UserPromptClosedEventArgs(bidi, p.Context, p.Accepted, p.Type, p.UserContext, p.UserText),
-        Default.UserPromptClosedParameters);
-
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
@@ -219,46 +144,46 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
         return await ExecuteAsync(HandleUserPromptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<NavigationStartedEventArgs> NavigationStartedEvent => _navigationStarted ?? Interlocked.CompareExchange(ref _navigationStarted, CreateEventSource(s_navigationStartedReg), null) ?? _navigationStarted;
+    public EventSource<NavigationStartedEventArgs> NavigationStartedEvent => _navigationStarted ?? Interlocked.CompareExchange(ref _navigationStarted, CreateEventSource(BrowsingContextEvent.NavigationStarted), null) ?? _navigationStarted;
     private EventSource<NavigationStartedEventArgs>? _navigationStarted;
 
-    public EventSource<FragmentNavigatedEventArgs> FragmentNavigatedEvent => _fragmentNavigated ?? Interlocked.CompareExchange(ref _fragmentNavigated, CreateEventSource(s_fragmentNavigatedReg), null) ?? _fragmentNavigated;
+    public EventSource<FragmentNavigatedEventArgs> FragmentNavigatedEvent => _fragmentNavigated ?? Interlocked.CompareExchange(ref _fragmentNavigated, CreateEventSource(BrowsingContextEvent.FragmentNavigated), null) ?? _fragmentNavigated;
     private EventSource<FragmentNavigatedEventArgs>? _fragmentNavigated;
 
-    public EventSource<HistoryUpdatedEventArgs> HistoryUpdatedEvent => _historyUpdated ?? Interlocked.CompareExchange(ref _historyUpdated, CreateEventSource(s_historyUpdatedReg), null) ?? _historyUpdated;
+    public EventSource<HistoryUpdatedEventArgs> HistoryUpdatedEvent => _historyUpdated ?? Interlocked.CompareExchange(ref _historyUpdated, CreateEventSource(BrowsingContextEvent.HistoryUpdated), null) ?? _historyUpdated;
     private EventSource<HistoryUpdatedEventArgs>? _historyUpdated;
 
-    public EventSource<DomContentLoadedEventArgs> DomContentLoadedEvent => _domContentLoaded ?? Interlocked.CompareExchange(ref _domContentLoaded, CreateEventSource(s_domContentLoadedReg), null) ?? _domContentLoaded;
+    public EventSource<DomContentLoadedEventArgs> DomContentLoadedEvent => _domContentLoaded ?? Interlocked.CompareExchange(ref _domContentLoaded, CreateEventSource(BrowsingContextEvent.DomContentLoaded), null) ?? _domContentLoaded;
     private EventSource<DomContentLoadedEventArgs>? _domContentLoaded;
 
-    public EventSource<LoadEventArgs> LoadEvent => _load ?? Interlocked.CompareExchange(ref _load, CreateEventSource(s_loadReg), null) ?? _load;
+    public EventSource<LoadEventArgs> LoadEvent => _load ?? Interlocked.CompareExchange(ref _load, CreateEventSource(BrowsingContextEvent.Load), null) ?? _load;
     private EventSource<LoadEventArgs>? _load;
 
-    public EventSource<DownloadWillBeginEventArgs> DownloadWillBeginEvent => _downloadWillBegin ?? Interlocked.CompareExchange(ref _downloadWillBegin, CreateEventSource(s_downloadWillBeginReg), null) ?? _downloadWillBegin;
+    public EventSource<DownloadWillBeginEventArgs> DownloadWillBeginEvent => _downloadWillBegin ?? Interlocked.CompareExchange(ref _downloadWillBegin, CreateEventSource(BrowsingContextEvent.DownloadWillBegin), null) ?? _downloadWillBegin;
     private EventSource<DownloadWillBeginEventArgs>? _downloadWillBegin;
 
-    public EventSource<DownloadEndEventArgs> DownloadEndEvent => _downloadEnd ?? Interlocked.CompareExchange(ref _downloadEnd, CreateEventSource(s_downloadEndReg), null) ?? _downloadEnd;
+    public EventSource<DownloadEndEventArgs> DownloadEndEvent => _downloadEnd ?? Interlocked.CompareExchange(ref _downloadEnd, CreateEventSource(BrowsingContextEvent.DownloadEnd), null) ?? _downloadEnd;
     private EventSource<DownloadEndEventArgs>? _downloadEnd;
 
-    public EventSource<NavigationAbortedEventArgs> NavigationAbortedEvent => _navigationAborted ?? Interlocked.CompareExchange(ref _navigationAborted, CreateEventSource(s_navigationAbortedReg), null) ?? _navigationAborted;
+    public EventSource<NavigationAbortedEventArgs> NavigationAbortedEvent => _navigationAborted ?? Interlocked.CompareExchange(ref _navigationAborted, CreateEventSource(BrowsingContextEvent.NavigationAborted), null) ?? _navigationAborted;
     private EventSource<NavigationAbortedEventArgs>? _navigationAborted;
 
-    public EventSource<NavigationFailedEventArgs> NavigationFailedEvent => _navigationFailed ?? Interlocked.CompareExchange(ref _navigationFailed, CreateEventSource(s_navigationFailedReg), null) ?? _navigationFailed;
+    public EventSource<NavigationFailedEventArgs> NavigationFailedEvent => _navigationFailed ?? Interlocked.CompareExchange(ref _navigationFailed, CreateEventSource(BrowsingContextEvent.NavigationFailed), null) ?? _navigationFailed;
     private EventSource<NavigationFailedEventArgs>? _navigationFailed;
 
-    public EventSource<NavigationCommittedEventArgs> NavigationCommittedEvent => _navigationCommitted ?? Interlocked.CompareExchange(ref _navigationCommitted, CreateEventSource(s_navigationCommittedReg), null) ?? _navigationCommitted;
+    public EventSource<NavigationCommittedEventArgs> NavigationCommittedEvent => _navigationCommitted ?? Interlocked.CompareExchange(ref _navigationCommitted, CreateEventSource(BrowsingContextEvent.NavigationCommitted), null) ?? _navigationCommitted;
     private EventSource<NavigationCommittedEventArgs>? _navigationCommitted;
 
-    public EventSource<ContextCreatedEventArgs> ContextCreatedEvent => _contextCreated ?? Interlocked.CompareExchange(ref _contextCreated, CreateEventSource(s_contextCreatedReg), null) ?? _contextCreated;
+    public EventSource<ContextCreatedEventArgs> ContextCreatedEvent => _contextCreated ?? Interlocked.CompareExchange(ref _contextCreated, CreateEventSource(BrowsingContextEvent.ContextCreated), null) ?? _contextCreated;
     private EventSource<ContextCreatedEventArgs>? _contextCreated;
 
-    public EventSource<ContextDestroyedEventArgs> ContextDestroyedEvent => _contextDestroyed ?? Interlocked.CompareExchange(ref _contextDestroyed, CreateEventSource(s_contextDestroyedReg), null) ?? _contextDestroyed;
+    public EventSource<ContextDestroyedEventArgs> ContextDestroyedEvent => _contextDestroyed ?? Interlocked.CompareExchange(ref _contextDestroyed, CreateEventSource(BrowsingContextEvent.ContextDestroyed), null) ?? _contextDestroyed;
     private EventSource<ContextDestroyedEventArgs>? _contextDestroyed;
 
-    public EventSource<UserPromptOpenedEventArgs> UserPromptOpenedEvent => _userPromptOpened ?? Interlocked.CompareExchange(ref _userPromptOpened, CreateEventSource(s_userPromptOpenedReg), null) ?? _userPromptOpened;
+    public EventSource<UserPromptOpenedEventArgs> UserPromptOpenedEvent => _userPromptOpened ?? Interlocked.CompareExchange(ref _userPromptOpened, CreateEventSource(BrowsingContextEvent.UserPromptOpened), null) ?? _userPromptOpened;
     private EventSource<UserPromptOpenedEventArgs>? _userPromptOpened;
 
-    public EventSource<UserPromptClosedEventArgs> UserPromptClosedEvent => _userPromptClosed ?? Interlocked.CompareExchange(ref _userPromptClosed, CreateEventSource(s_userPromptClosedReg), null) ?? _userPromptClosed;
+    public EventSource<UserPromptClosedEventArgs> UserPromptClosedEvent => _userPromptClosed ?? Interlocked.CompareExchange(ref _userPromptClosed, CreateEventSource(BrowsingContextEvent.UserPromptClosed), null) ?? _userPromptClosed;
     private EventSource<UserPromptClosedEventArgs>? _userPromptClosed;
 }
 

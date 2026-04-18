@@ -27,16 +27,19 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
     private readonly Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
+    private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<string, EventMetadata> _eventMetadata = new();
     private readonly ConcurrentDictionary<string, SubscriptionRegistry> _subscriptions = new();
 
     public EventDispatcher(
         Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
-        Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe)
+        Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
+        IBiDi bidi)
     {
         _wireSubscribe = wireSubscribe;
         _wireUnsubscribe = wireUnsubscribe;
+        _bidi = bidi;
     }
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(
@@ -147,10 +150,9 @@ internal sealed class EventDispatcher : IAsyncDisposable
         await CompleteAllAsync(null).ConfigureAwait(false);
     }
 
-    public void RegisterEventMetadata<TEventArgs, TEventParams>(EventRegistration<TEventArgs, TEventParams> registration, IBiDi bidi)
-        where TEventArgs : EventArgs
+    internal void RegisterEventMetadata(string name, JsonTypeInfo jsonTypeInfo, Func<object, EventArgs> argsFactory)
     {
-        _eventMetadata.GetOrAdd(registration.Descriptor.Name, new EventMetadata(registration.JsonTypeInfo, ep => registration.Factory(bidi, (TEventParams)ep)));
+        _eventMetadata.GetOrAdd(name, new EventMetadata(jsonTypeInfo, argsFactory));
     }
 
     private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync<TEventArgs>(
@@ -162,9 +164,14 @@ internal sealed class EventDispatcher : IAsyncDisposable
         var names = new List<string>();
         foreach (var descriptor in descriptors)
         {
+            if (!_eventMetadata.ContainsKey(descriptor.Name) && descriptor is EventDescriptor eventDescriptor)
+            {
+                eventDescriptor.EnsureRegistered(this, _bidi);
+            }
+
             if (!_eventMetadata.ContainsKey(descriptor.Name))
             {
-                throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered. Call CreateEventSource first.");
+                throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered.");
             }
             names.Add(descriptor.Name);
         }
