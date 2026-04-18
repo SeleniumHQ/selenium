@@ -53,7 +53,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     }
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(
-        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
+        IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
         SubscriptionOptions? options,
         CancellationToken cancellationToken)
@@ -84,7 +84,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     }
 
     public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
-        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
+        IEnumerable<EventDescriptor> descriptors,
         SubscriptionOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
@@ -155,18 +155,17 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventMetadata.GetOrAdd(name, new EventMetadata(jsonTypeInfo, argsFactory));
     }
 
-    private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync<TEventArgs>(
-        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
+    private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync(
+        IEnumerable<EventDescriptor> descriptors,
         SubscriptionOptions? options,
         CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
     {
         var names = new List<string>();
         foreach (var descriptor in descriptors)
         {
-            if (!_eventMetadata.ContainsKey(descriptor.Name) && descriptor is EventDescriptor eventDescriptor)
+            if (!_eventMetadata.ContainsKey(descriptor.Name))
             {
-                eventDescriptor.EnsureRegistered(this, _bidi);
+                descriptor.EnsureRegistered(this, _bidi);
             }
 
             if (!_eventMetadata.ContainsKey(descriptor.Name))

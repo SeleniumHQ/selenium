@@ -21,11 +21,6 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
 
-public interface IEventDescriptor<out TEventArgs> where TEventArgs : EventArgs
-{
-    string Name { get; }
-}
-
 public abstract class EventDescriptor
 {
     public string Name { get; }
@@ -38,7 +33,7 @@ public abstract class EventDescriptor
     internal abstract void EnsureRegistered(EventDispatcher dispatcher, IBiDi bidi);
 }
 
-public sealed class EventDescriptor<TEventArgs> : EventDescriptor, IEventDescriptor<TEventArgs>
+public sealed class EventDescriptor<TEventArgs> : EventDescriptor
     where TEventArgs : EventArgs
 {
     private readonly Action<EventDispatcher, IBiDi>? _register;
