@@ -116,63 +116,61 @@ public sealed record BrowsingContext : IIdentifiable
     }
 
     [JsonIgnore]
-    public EventSource<NavigationStartedEventArgs> NavigationStartedEvent => _navigationStarted ??= CreateContextEventSource(
+    public ContextEventSource<NavigationStartedEventArgs> NavigationStartedEvent => _navigationStarted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationStartedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<NavigationStartedEventArgs>? _navigationStarted;
+    private ContextEventSource<NavigationStartedEventArgs>? _navigationStarted;
 
     [JsonIgnore]
-    public EventSource<FragmentNavigatedEventArgs> FragmentNavigatedEvent => _fragmentNavigated ??= CreateContextEventSource(
+    public ContextEventSource<FragmentNavigatedEventArgs> FragmentNavigatedEvent => _fragmentNavigated ??= CreateContextEventSource(
         BiDi.BrowsingContext.FragmentNavigatedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<FragmentNavigatedEventArgs>? _fragmentNavigated;
+    private ContextEventSource<FragmentNavigatedEventArgs>? _fragmentNavigated;
 
     [JsonIgnore]
-    public EventSource<HistoryUpdatedEventArgs> HistoryUpdatedEvent => _historyUpdated ??= CreateContextEventSource(
+    public ContextEventSource<HistoryUpdatedEventArgs> HistoryUpdatedEvent => _historyUpdated ??= CreateContextEventSource(
         BiDi.BrowsingContext.HistoryUpdatedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<HistoryUpdatedEventArgs>? _historyUpdated;
+    private ContextEventSource<HistoryUpdatedEventArgs>? _historyUpdated;
 
     [JsonIgnore]
-    public EventSource<DomContentLoadedEventArgs> DomContentLoadedEvent => _domContentLoaded ??= CreateContextEventSource(
+    public ContextEventSource<DomContentLoadedEventArgs> DomContentLoadedEvent => _domContentLoaded ??= CreateContextEventSource(
         BiDi.BrowsingContext.DomContentLoadedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<DomContentLoadedEventArgs>? _domContentLoaded;
+    private ContextEventSource<DomContentLoadedEventArgs>? _domContentLoaded;
 
     [JsonIgnore]
-    public EventSource<LoadEventArgs> LoadEvent => _load ??= CreateContextEventSource(
+    public ContextEventSource<LoadEventArgs> LoadEvent => _load ??= CreateContextEventSource(
         BiDi.BrowsingContext.LoadEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<LoadEventArgs>? _load;
+    private ContextEventSource<LoadEventArgs>? _load;
 
     [JsonIgnore]
-    public EventSource<DownloadWillBeginEventArgs> DownloadWillBeginEvent => _downloadWillBegin ??= CreateContextEventSource(
+    public ContextEventSource<DownloadWillBeginEventArgs> DownloadWillBeginEvent => _downloadWillBegin ??= CreateContextEventSource(
         BiDi.BrowsingContext.DownloadWillBeginEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<DownloadWillBeginEventArgs>? _downloadWillBegin;
+    private ContextEventSource<DownloadWillBeginEventArgs>? _downloadWillBegin;
 
     [JsonIgnore]
-    public EventSource<DownloadEndEventArgs> DownloadEndEvent => _downloadEnd ??= CreateContextEventSource(
+    public ContextEventSource<DownloadEndEventArgs> DownloadEndEvent => _downloadEnd ??= CreateContextEventSource(
         BiDi.BrowsingContext.DownloadEndEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<DownloadEndEventArgs>? _downloadEnd;
+    private ContextEventSource<DownloadEndEventArgs>? _downloadEnd;
 
     [JsonIgnore]
-    public EventSource<NavigationAbortedEventArgs> NavigationAbortedEvent => _navigationAborted ??= CreateContextEventSource(
+    public ContextEventSource<NavigationAbortedEventArgs> NavigationAbortedEvent => _navigationAborted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationAbortedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<NavigationAbortedEventArgs>? _navigationAborted;
+    private ContextEventSource<NavigationAbortedEventArgs>? _navigationAborted;
 
     [JsonIgnore]
-    public EventSource<NavigationFailedEventArgs> NavigationFailedEvent => _navigationFailed ??= CreateContextEventSource(
+    public ContextEventSource<NavigationFailedEventArgs> NavigationFailedEvent => _navigationFailed ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationFailedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<NavigationFailedEventArgs>? _navigationFailed;
+    private ContextEventSource<NavigationFailedEventArgs>? _navigationFailed;
 
     [JsonIgnore]
-    public EventSource<NavigationCommittedEventArgs> NavigationCommittedEvent => _navigationCommitted ??= CreateContextEventSource(
+    public ContextEventSource<NavigationCommittedEventArgs> NavigationCommittedEvent => _navigationCommitted ??= CreateContextEventSource(
         BiDi.BrowsingContext.NavigationCommittedEvent, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<NavigationCommittedEventArgs>? _navigationCommitted;
+    private ContextEventSource<NavigationCommittedEventArgs>? _navigationCommitted;
 
-    private EventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
+    private ContextEventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
         EventSource<TEventArgs> moduleEventSource,
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return moduleEventSource
-            .Where(e => filter(e, this))
-            .WithOptions(options => new SubscriptionOptions { Contexts = [this], Timeout = options?.Timeout });
+        return new(moduleEventSource.Where(e => filter(e, this)), this);
     }
 
     public bool Equals(BrowsingContext? other)

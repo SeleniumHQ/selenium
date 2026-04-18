@@ -24,7 +24,6 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
     private readonly IBiDi _bidi;
     private readonly EventDescriptor<TEventArgs> _descriptor;
     private readonly Func<TEventArgs, bool>? _filter;
-    private readonly Func<SubscriptionOptions?, SubscriptionOptions>? _mapOptions;
 
     internal EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor)
     {
@@ -32,13 +31,11 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         _descriptor = descriptor;
     }
 
-    private EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor,
-        Func<TEventArgs, bool>? filter, Func<SubscriptionOptions?, SubscriptionOptions>? mapOptions)
+    private EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, bool> filter)
     {
         _bidi = bidi;
         _descriptor = descriptor;
         _filter = filter;
-        _mapOptions = mapOptions;
     }
 
     public EventDescriptor<TEventArgs> Descriptor => _descriptor;
@@ -47,19 +44,19 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), EffectiveOptions(options), cancellationToken);
+        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), options, cancellationToken);
     }
 
     public Task<ISubscription> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), EffectiveOptions(options), cancellationToken);
+        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), options, cancellationToken);
     }
 
     public async Task<IEventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var reader = await _bidi.ReadAllEventsAsync(_descriptor, EffectiveOptions(options), cancellationToken).ConfigureAwait(false);
+        var reader = await _bidi.ReadAllEventsAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
 
         return _filter is not null
             ? new FilteredEventReader<TEventArgs>(reader, _filter)
@@ -92,14 +89,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
             ? e => existing(e) && predicate(e)
             : predicate;
 
-        return new(_bidi, _descriptor, combined, _mapOptions);
-    }
-
-    public EventSource<TEventArgs> WithOptions(Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)
-    {
-        ArgumentNullException.ThrowIfNull(mapOptions);
-
-        return new(_bidi, _descriptor, _filter, mapOptions);
+        return new(_bidi, _descriptor, combined);
     }
 
     private Action<TEventArgs> WrapHandler(Action<TEventArgs> handler)
@@ -107,7 +97,4 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 
     private Func<TEventArgs, Task> WrapHandler(Func<TEventArgs, Task> handler)
         => _filter is { } f ? async e => { if (f(e)) await handler(e).ConfigureAwait(false); } : handler;
-
-    private SubscriptionOptions? EffectiveOptions(SubscriptionOptions? options)
-        => _mapOptions?.Invoke(options) ?? options;
 }

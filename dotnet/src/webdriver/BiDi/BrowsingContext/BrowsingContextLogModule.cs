@@ -23,12 +23,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ??= logModule.EntryAddedEvent
-        .Where(e => context.Equals(e.Source.Context))
-        .WithOptions(options => new SubscriptionOptions
-        {
-            Contexts = [context],
-            Timeout = options?.Timeout
-        });
-    private EventSource<EntryAddedEventArgs>? _entryAdded;
+    public ContextEventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ??= new(
+        logModule.EntryAddedEvent.Where(e => context.Equals(e.Source.Context)), context);
+    private ContextEventSource<EntryAddedEventArgs>? _entryAdded;
 }

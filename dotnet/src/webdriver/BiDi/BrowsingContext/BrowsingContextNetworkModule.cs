@@ -33,38 +33,32 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
         return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSentEvent => _beforeRequestSent ??= CreateContextEventSource(
+    public ContextEventSource<BeforeRequestSentEventArgs> BeforeRequestSentEvent => _beforeRequestSent ??= CreateContextEventSource(
         networkModule.BeforeRequestSentEvent, context, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
+    private ContextEventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public EventSource<ResponseStartedEventArgs> ResponseStartedEvent => _responseStarted ??= CreateContextEventSource(
+    public ContextEventSource<ResponseStartedEventArgs> ResponseStartedEvent => _responseStarted ??= CreateContextEventSource(
         networkModule.ResponseStartedEvent, context, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<ResponseStartedEventArgs>? _responseStarted;
+    private ContextEventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public EventSource<ResponseCompletedEventArgs> ResponseCompletedEvent => _responseCompleted ??= CreateContextEventSource(
+    public ContextEventSource<ResponseCompletedEventArgs> ResponseCompletedEvent => _responseCompleted ??= CreateContextEventSource(
         networkModule.ResponseCompletedEvent, context, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<ResponseCompletedEventArgs>? _responseCompleted;
+    private ContextEventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public EventSource<FetchErrorEventArgs> FetchErrorEvent => _fetchError ??= CreateContextEventSource(
+    public ContextEventSource<FetchErrorEventArgs> FetchErrorEvent => _fetchError ??= CreateContextEventSource(
         networkModule.FetchErrorEvent, context, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<FetchErrorEventArgs>? _fetchError;
+    private ContextEventSource<FetchErrorEventArgs>? _fetchError;
 
-    public EventSource<AuthRequiredEventArgs> AuthRequiredEvent => _authRequired ??= CreateContextEventSource(
+    public ContextEventSource<AuthRequiredEventArgs> AuthRequiredEvent => _authRequired ??= CreateContextEventSource(
         networkModule.AuthRequiredEvent, context, static (e, ctx) => ctx.Equals(e.Context));
-    private EventSource<AuthRequiredEventArgs>? _authRequired;
+    private ContextEventSource<AuthRequiredEventArgs>? _authRequired;
 
-    private static EventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
+    private static ContextEventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
         EventSource<TEventArgs> moduleEventSource,
         BrowsingContext context,
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return moduleEventSource
-            .Where(e => filter(e, context))
-            .WithOptions(options => new SubscriptionOptions
-            {
-                Contexts = [context],
-                Timeout = options?.Timeout
-            });
+        return new(moduleEventSource.Where(e => filter(e, context)), context);
     }
 }
