@@ -69,6 +69,10 @@ public interface IBiDi : IAsyncDisposable
 
     Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
+    Task<TResult> ReadAllEventsAsync<TEventArgs, TResult>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, Func<IEventReader<TEventArgs>, Task<TResult>> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+
+    Task ReadAllEventsAsync<TEventArgs>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, Func<IEventReader<TEventArgs>, Task> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     T AsModule<T>() where T : Module, new();
 }
