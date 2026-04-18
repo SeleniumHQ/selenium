@@ -33,10 +33,7 @@ public class DriverProcessStartedEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driverProcess"/> is <see langword="null"/>.</exception>
     public DriverProcessStartedEventArgs(Process driverProcess)
     {
-        if (driverProcess is null)
-        {
-            throw new ArgumentNullException(nameof(driverProcess));
-        }
+        ArgumentNullException.ThrowIfNull(driverProcess);
 
         this.ProcessId = driverProcess.Id;
     }

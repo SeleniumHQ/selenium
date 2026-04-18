@@ -8,27 +8,6 @@ def python_version
   end
 end
 
-def setup_pypirc
-  pypirc = File.join(Dir.home, '.pypirc')
-  return if File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
-
-  token = ENV.fetch('TWINE_PASSWORD', nil)
-  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' if token.nil? || token.empty?
-
-  pypi_section = <<~PYPIRC
-    [pypi]
-    username = __token__
-    password = #{token}
-  PYPIRC
-
-  if File.exist?(pypirc)
-    File.open(pypirc, 'a') { |f| f.puts("\n#{pypi_section}") }
-  else
-    File.write(pypirc, pypi_section)
-  end
-  File.chmod(0o600, pypirc)
-end
-
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -39,23 +18,24 @@ end
 desc 'Validate Python release credentials'
 task :check_credentials do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
-  next if nightly
+  token_env = nightly ? 'TWINE_NIGHTLY_PASSWORD' : 'TWINE_PASSWORD'
+  section = nightly ? 'testpypi' : 'pypi'
 
   pypirc = File.join(Dir.home, '.pypirc')
-  has_pypirc = File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
-  has_env = ENV.fetch('TWINE_PASSWORD', nil) && !ENV['TWINE_PASSWORD'].empty?
-  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' unless has_pypirc || has_env
+  has_pypirc = File.exist?(pypirc) && File.read(pypirc).match?(/^\[#{section}\]/m)
+  has_env = ENV.fetch(token_env, nil) && !ENV[token_env].empty?
+  raise "Missing PyPI credentials: set #{token_env} or configure ~/.pypirc" unless has_pypirc || has_env
 end
 
 desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
-  setup_pypirc unless nightly
 
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
   command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
@@ -80,7 +60,22 @@ task :local_dev, [:all] do |_task, arguments|
     FileUtils.rm_rf("#{lib_path}/common/devtools")
     FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
   else
-    %w[common/devtools common/linux common/mac common/windows].each do |dir|
+    bidi_src = "#{bazel_bin}/common/bidi"
+    bidi_dest = "#{lib_path}/common/bidi"
+    if Dir.exist?(bidi_src)
+      FileUtils.mkdir_p(bidi_dest)
+      Dir.children(bidi_src).sort.each do |entry|
+        src = File.join(bidi_src, entry)
+        dest = File.join(bidi_dest, entry)
+        next unless File.file?(src) || File.symlink?(src)
+
+        resolved_src = File.symlink?(src) ? File.realpath(src) : src
+        FileUtils.rm_f(dest)
+        FileUtils.cp(resolved_src, dest)
+      end
+    end
+
+    %w[common/devtools common/linux common/macos common/windows].each do |dir|
       src = "#{bazel_bin}/#{dir}"
       dest = "#{lib_path}/#{dir}"
       next unless Dir.exist?(src)

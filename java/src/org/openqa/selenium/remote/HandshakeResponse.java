@@ -19,14 +19,16 @@ package org.openqa.selenium.remote;
 
 import java.util.Optional;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 interface HandshakeResponse {
 
-  Function<InitialHandshakeResponse, ProtocolHandshake.Result> errorHandler();
+  Function<InitialHandshakeResponse, ProtocolHandshake.@Nullable Result> errorHandler();
 
-  Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler();
+  Function<InitialHandshakeResponse, ProtocolHandshake.@Nullable Result> successHandler();
 
-  default Function<InitialHandshakeResponse, ProtocolHandshake.Result> getResponseFunction() {
+  default Function<InitialHandshakeResponse, ProtocolHandshake.@Nullable Result>
+      getResponseFunction() {
     return resp ->
         Optional.ofNullable(errorHandler().apply(resp)).orElse(successHandler().apply(resp));
   }

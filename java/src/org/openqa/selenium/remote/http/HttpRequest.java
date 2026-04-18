@@ -17,12 +17,19 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.joining;
+
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class HttpRequest extends HttpMessage<HttpRequest> {
@@ -51,6 +58,7 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
   /**
    * Get a query parameter. The implementation will take care of decoding from the percent encoding.
    */
+  @Nullable
   public String getQueryParameter(String name) {
     Iterable<String> allParams = getQueryParameters(name);
     if (allParams == null) {
@@ -71,10 +79,37 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
     return this;
   }
 
+  public void forEachQueryParameter(BiConsumer<String, String> action) {
+    for (Map.Entry<String, List<String>> parameter : queryParameters.entrySet()) {
+      for (String value : parameter.getValue()) {
+        action.accept(parameter.getKey(), value);
+      }
+    }
+  }
+
+  public String getQueryString() {
+    return queryParameters.entrySet().stream()
+        .map(param -> toQueryString(param.getKey(), param.getValue()))
+        .collect(joining("&"));
+  }
+
+  private String toQueryString(String name, List<String> values) {
+    return values.stream().map(value -> toQueryString(name, value)).collect(joining("&"));
+  }
+
+  private String toQueryString(String name, String value) {
+    return String.format("%s=%s", URLEncoder.encode(name, UTF_8), URLEncoder.encode(value, UTF_8));
+  }
+
+  public Map<String, Iterable<String>> getQueryParameters() {
+    return Collections.unmodifiableMap(queryParameters);
+  }
+
   public Iterable<String> getQueryParameterNames() {
     return queryParameters.keySet();
   }
 
+  @Nullable
   public Iterable<String> getQueryParameters(String name) {
     return queryParameters.get(name);
   }

@@ -15,22 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""Common utilities for BiDi command construction."""
+
+from __future__ import annotations
+
 from collections.abc import Generator
+from typing import Any
 
 
-def command_builder(method: str, params: dict | None = None) -> Generator[dict, dict, dict]:
-    """Build a command iterator to send to the BiDi protocol.
+def command_builder(method: str, params: dict[str, Any] | None = None) -> Generator[dict[str, Any], Any, Any]:
+    """Build a BiDi command generator.
 
     Args:
-        method: The method to execute.
-        params: The parameters to pass to the method. Default is None.
+        method: The BiDi method name (e.g., "session.status", "browser.close")
+        params: The parameters for the command. If omitted, an empty
+            dictionary is sent.
+
+    Yields:
+        A dictionary representing the BiDi command
 
     Returns:
-        The response from the command execution.
+        The result from the BiDi command execution
     """
     if params is None:
         params = {}
-
-    command = {"method": method, "params": params}
-    cmd = yield command
-    return cmd
+    result = yield {"method": method, "params": params}
+    return result

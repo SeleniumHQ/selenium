@@ -53,7 +53,8 @@ public abstract class SlowLoadableComponent<T> : LoadableComponent<T>
     /// <exception cref="ArgumentNullException">If <paramref name="clock"/> is <see langword="null"/>.</exception>
     protected SlowLoadableComponent(TimeSpan timeout, IClock clock)
     {
-        this.Clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        ArgumentNullException.ThrowIfNull(clock);
+        this.Clock = clock;
         this.Timeout = timeout;
     }
 

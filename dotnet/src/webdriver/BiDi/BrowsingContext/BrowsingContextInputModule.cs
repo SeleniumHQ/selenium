@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Input;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
+internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
 {
     public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -38,9 +38,9 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, IInputMo
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpenedAsync(e, handler),
@@ -48,9 +48,9 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, IInputMo
             cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return inputModule.OnFileDialogOpenedAsync(
             e => HandleFileDialogOpened(e, handler),
@@ -58,7 +58,7 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, IInputMo
             cancellationToken);
     }
 
-    private async Task HandleFileDialogOpenedAsync(FileDialogEventArgs e, Func<FileDialogEventArgs, Task> handler)
+    private async Task HandleFileDialogOpenedAsync(FileDialogOpenedEventArgs e, Func<FileDialogOpenedEventArgs, Task> handler)
     {
         if (context.Equals(e.Context))
         {
@@ -66,7 +66,7 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, IInputMo
         }
     }
 
-    private void HandleFileDialogOpened(FileDialogEventArgs e, Action<FileDialogEventArgs> handler)
+    private void HandleFileDialogOpened(FileDialogOpenedEventArgs e, Action<FileDialogOpenedEventArgs> handler)
     {
         if (context.Equals(e.Context))
         {

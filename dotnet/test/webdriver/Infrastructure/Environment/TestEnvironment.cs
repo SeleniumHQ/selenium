@@ -29,11 +29,5 @@ internal class TestEnvironment
 
     public string ActiveDriverConfig { get; set; }
 
-    public string ActiveWebsiteConfig { get; set; }
-
-    public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
-
     public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
-
-    public TestWebServerConfig TestWebServerConfig { get; set; }
 }

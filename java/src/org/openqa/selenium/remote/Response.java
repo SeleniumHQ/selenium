@@ -20,10 +20,8 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class Response {
 
   private volatile @Nullable Object value;

@@ -44,6 +44,9 @@
     <!--Workaround for being unable to have two different types of the same name in WebDriver and in Support, despite both being internal-->
     <Compile Include="$(CsprojIncludePath)\Properties\StringSyntaxAttribute.cs" Link="Properties\StringSyntaxAttribute.cs" />
     <Compile Include="$(CsprojIncludePath)\Properties\StringSyntaxConstants.cs" Link="Properties\StringSyntaxConstants.cs" />
+    <Compile Include="$(CsprojIncludePath)\Properties\NullableAttributes.cs" Link="Properties\NullableAttributes.cs" />
+    <Compile Include="$(CsprojIncludePath)\Properties\CallerArgumentExpressionAttribute.cs" Link="Properties\CallerArgumentExpressionAttribute.cs" />
+    <Compile Include="$(CsprojIncludePath)\Properties\ArgumentNullExceptionExtensions.cs" Link="Properties\ArgumentNullExceptionExtensions.cs" />
   </ItemGroup>
 
 </Project>

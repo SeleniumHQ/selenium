@@ -18,9 +18,7 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class InvalidResponseException extends IllegalArgumentException {
   private static final String w3cErrorFormat = "https://www.w3.org/TR/webdriver2/#errors";
 

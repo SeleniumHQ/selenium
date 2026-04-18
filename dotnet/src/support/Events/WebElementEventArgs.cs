@@ -32,8 +32,10 @@ public class WebElementEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="element"/> are <see langword="null"/>.</exception>
     public WebElementEventArgs(IWebDriver driver, IWebElement element)
     {
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        this.Element = element ?? throw new ArgumentNullException(nameof(element));
+        ArgumentNullException.ThrowIfNull(driver);
+        ArgumentNullException.ThrowIfNull(element);
+        this.Driver = driver;
+        this.Element = element;
     }
 
     /// <summary>

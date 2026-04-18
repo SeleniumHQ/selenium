@@ -15,21 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import threading
+
+from __future__ import annotations
+
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
-from typing_extensions import Sentinel
-
+from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventManager
 from selenium.webdriver.common.bidi.common import command_builder
-from selenium.webdriver.common.bidi.session import Session
-
-UNDEFINED = Sentinel("UNDEFINED")
 
 
 class ReadinessState:
-    """Represents the stage of document loading at which a navigation command will return."""
+    """ReadinessState."""
 
     NONE = "none"
     INTERACTIVE = "interactive"
@@ -37,1024 +35,857 @@ class ReadinessState:
 
 
 class UserPromptType:
-    """Represents the possible user prompt types."""
+    """UserPromptType."""
 
     ALERT = "alert"
-    BEFORE_UNLOAD = "beforeunload"
+    BEFOREUNLOAD = "beforeunload"
     CONFIRM = "confirm"
     PROMPT = "prompt"
 
 
-class NavigationInfo:
-    """Provides details of an ongoing navigation."""
+class CreateType:
+    """CreateType."""
 
-    def __init__(
-        self,
-        context: str,
-        navigation: str | None,
-        timestamp: int,
-        url: str,
-    ):
-        self.context = context
-        self.navigation = navigation
-        self.timestamp = timestamp
-        self.url = url
+    TAB = "tab"
+    WINDOW = "window"
 
-    @classmethod
-    def from_json(cls, json: dict) -> "NavigationInfo":
-        """Creates a NavigationInfo instance from a dictionary.
 
-        Args:
-            json: A dictionary containing the navigation information.
+class DownloadCompleteParams:
+    """DownloadCompleteParams."""
 
-        Returns:
-            A new instance of NavigationInfo.
-        """
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        navigation = json.get("navigation")
-        if navigation is not None and not isinstance(navigation, str):
-            raise ValueError("navigation must be a string")
-
-        timestamp = json.get("timestamp")
-        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
-            raise ValueError("timestamp is required and must be a non-negative integer")
-
-        url = json.get("url")
-        if url is None or not isinstance(url, str):
-            raise ValueError("url is required and must be a string")
-
-        return cls(context, navigation, timestamp, url)
-
-
-class BrowsingContextInfo:
-    """Represents the properties of a navigable."""
-
-    def __init__(
-        self,
-        context: str,
-        url: str,
-        children: list["BrowsingContextInfo"] | None,
-        client_window: str,
-        user_context: str,
-        parent: str | None = None,
-        original_opener: str | None = None,
-    ):
-        self.context = context
-        self.url = url
-        self.children = children
-        self.parent = parent
-        self.user_context = user_context
-        self.original_opener = original_opener
-        self.client_window = client_window
-
-    @classmethod
-    def from_json(cls, json: dict) -> "BrowsingContextInfo":
-        """Creates a BrowsingContextInfo instance from a dictionary.
-
-        Args:
-            json: A dictionary containing the browsing context information.
-
-        Returns:
-            A new instance of BrowsingContextInfo.
-        """
-        children = None
-        raw_children = json.get("children")
-        if raw_children is not None:
-            if not isinstance(raw_children, list):
-                raise ValueError("children must be a list if provided")
-
-            children = []
-            for child in raw_children:
-                if not isinstance(child, dict):
-                    raise ValueError(f"Each child must be a dictionary, got {type(child)}")
-                children.append(BrowsingContextInfo.from_json(child))
-
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        url = json.get("url")
-        if url is None or not isinstance(url, str):
-            raise ValueError("url is required and must be a string")
-
-        parent = json.get("parent")
-        if parent is not None and not isinstance(parent, str):
-            raise ValueError("parent must be a string if provided")
-
-        user_context = json.get("userContext")
-        if user_context is None or not isinstance(user_context, str):
-            raise ValueError("userContext is required and must be a string")
-
-        original_opener = json.get("originalOpener")
-        if original_opener is not None and not isinstance(original_opener, str):
-            raise ValueError("originalOpener must be a string if provided")
-
-        client_window = json.get("clientWindow")
-        if client_window is None or not isinstance(client_window, str):
-            raise ValueError("clientWindow is required and must be a string")
-
-        return cls(
-            context=context,
-            url=url,
-            children=children,
-            client_window=client_window,
-            user_context=user_context,
-            parent=parent,
-            original_opener=original_opener,
-        )
-
-
-class DownloadWillBeginParams(NavigationInfo):
-    """Parameters for the downloadWillBegin event."""
-
-    def __init__(
-        self,
-        context: str,
-        navigation: str | None,
-        timestamp: int,
-        url: str,
-        suggested_filename: str,
-    ):
-        super().__init__(context, navigation, timestamp, url)
-        self.suggested_filename = suggested_filename
-
-    @classmethod
-    def from_json(cls, json: dict) -> "DownloadWillBeginParams":
-        nav_info = NavigationInfo.from_json(json)
-
-        suggested_filename = json.get("suggestedFilename")
-        if suggested_filename is None or not isinstance(suggested_filename, str):
-            raise ValueError("suggestedFilename is required and must be a string")
-
-        return cls(
-            context=nav_info.context,
-            navigation=nav_info.navigation,
-            timestamp=nav_info.timestamp,
-            url=nav_info.url,
-            suggested_filename=suggested_filename,
-        )
-
-
-class UserPromptOpenedParams:
-    """Parameters for the userPromptOpened event."""
-
-    def __init__(
-        self,
-        context: str,
-        handler: str,
-        message: str,
-        type: str,
-        default_value: str | None = None,
-    ):
-        self.context = context
-        self.handler = handler
-        self.message = message
-        self.type = type
-        self.default_value = default_value
-
-    @classmethod
-    def from_json(cls, json: dict) -> "UserPromptOpenedParams":
-        """Creates a UserPromptOpenedParams instance from a dictionary.
-
-        Args:
-            json: A dictionary containing the user prompt parameters.
-
-        Returns:
-            A new instance of UserPromptOpenedParams.
-        """
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        handler = json.get("handler")
-        if handler is None or not isinstance(handler, str):
-            raise ValueError("handler is required and must be a string")
-
-        message = json.get("message")
-        if message is None or not isinstance(message, str):
-            raise ValueError("message is required and must be a string")
-
-        type_value = json.get("type")
-        if type_value is None or not isinstance(type_value, str):
-            raise ValueError("type is required and must be a string")
-
-        default_value = json.get("defaultValue")
-        if default_value is not None and not isinstance(default_value, str):
-            raise ValueError("defaultValue must be a string if provided")
-
-        return cls(
-            context=context,
-            handler=handler,
-            message=message,
-            type=type_value,
-            default_value=default_value,
-        )
-
-
-class UserPromptClosedParams:
-    """Parameters for the userPromptClosed event."""
-
-    def __init__(
-        self,
-        context: str,
-        accepted: bool,
-        type: str,
-        user_text: str | None = None,
-    ):
-        self.context = context
-        self.accepted = accepted
-        self.type = type
-        self.user_text = user_text
-
-    @classmethod
-    def from_json(cls, json: dict) -> "UserPromptClosedParams":
-        """Creates a UserPromptClosedParams instance from a dictionary.
-
-        Args:
-            json: A dictionary containing the user prompt closed parameters.
-
-        Returns:
-            A new instance of UserPromptClosedParams.
-        """
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        accepted = json.get("accepted")
-        if accepted is None or not isinstance(accepted, bool):
-            raise ValueError("accepted is required and must be a boolean")
-
-        type_value = json.get("type")
-        if type_value is None or not isinstance(type_value, str):
-            raise ValueError("type is required and must be a string")
-
-        user_text = json.get("userText")
-        if user_text is not None and not isinstance(user_text, str):
-            raise ValueError("userText must be a string if provided")
-
-        return cls(
-            context=context,
-            accepted=accepted,
-            type=type_value,
-            user_text=user_text,
-        )
-
-
-class HistoryUpdatedParams:
-    """Parameters for the historyUpdated event."""
-
-    def __init__(
-        self,
-        context: str,
-        timestamp: int,
-        url: str,
-    ):
-        self.context = context
-        self.timestamp = timestamp
-        self.url = url
-
-    @classmethod
-    def from_json(cls, json: dict) -> "HistoryUpdatedParams":
-        """Creates a HistoryUpdatedParams instance from a dictionary.
-
-        Args:
-            json: A dictionary containing the history updated parameters.
-
-        Returns:
-            A new instance of HistoryUpdatedParams.
-        """
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        timestamp = json.get("timestamp")
-        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
-            raise ValueError("timestamp is required and must be a non-negative integer")
-
-        url = json.get("url")
-        if url is None or not isinstance(url, str):
-            raise ValueError("url is required and must be a string")
-
-        return cls(
-            context=context,
-            timestamp=timestamp,
-            url=url,
-        )
-
-
-class DownloadCanceledParams(NavigationInfo):
-    def __init__(
-        self,
-        context: str,
-        navigation: str | None,
-        timestamp: int,
-        url: str,
-        status: str = "canceled",
-    ):
-        super().__init__(context, navigation, timestamp, url)
-        self.status = status
-
-    @classmethod
-    def from_json(cls, json: dict) -> "DownloadCanceledParams":
-        nav_info = NavigationInfo.from_json(json)
-
-        status = json.get("status")
-        if status is None or status != "canceled":
-            raise ValueError("status is required and must be 'canceled'")
-
-        return cls(
-            context=nav_info.context,
-            navigation=nav_info.navigation,
-            timestamp=nav_info.timestamp,
-            url=nav_info.url,
-            status=status,
-        )
-
-
-class DownloadCompleteParams(NavigationInfo):
-    def __init__(
-        self,
-        context: str,
-        navigation: str | None,
-        timestamp: int,
-        url: str,
-        status: str = "complete",
-        filepath: str | None = None,
-    ):
-        super().__init__(context, navigation, timestamp, url)
-        self.status = status
-        self.filepath = filepath
-
-    @classmethod
-    def from_json(cls, json: dict) -> "DownloadCompleteParams":
-        nav_info = NavigationInfo.from_json(json)
-
-        status = json.get("status")
-        if status is None or status != "complete":
-            raise ValueError("status is required and must be 'complete'")
-
-        filepath = json.get("filepath")
-        if filepath is not None and not isinstance(filepath, str):
-            raise ValueError("filepath must be a string if provided")
-
-        return cls(
-            context=nav_info.context,
-            navigation=nav_info.navigation,
-            timestamp=nav_info.timestamp,
-            url=nav_info.url,
-            status=status,
-            filepath=filepath,
-        )
-
-
-class DownloadEndParams:
-    """Parameters for the downloadEnd event."""
-
-    def __init__(
-        self,
-        download_params: DownloadCanceledParams | DownloadCompleteParams,
-    ):
-        self.download_params = download_params
-
-    @classmethod
-    def from_json(cls, json: dict) -> "DownloadEndParams":
-        status = json.get("status")
-        if status == "canceled":
-            return cls(DownloadCanceledParams.from_json(json))
-        elif status == "complete":
-            return cls(DownloadCompleteParams.from_json(json))
-        else:
-            raise ValueError("status must be either 'canceled' or 'complete'")
-
-
-class ContextCreated:
-    """Event class for browsingContext.contextCreated event."""
-
-    event_class = "browsingContext.contextCreated"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, BrowsingContextInfo):
-            return json
-        return BrowsingContextInfo.from_json(json)
-
-
-class ContextDestroyed:
-    """Event class for browsingContext.contextDestroyed event."""
-
-    event_class = "browsingContext.contextDestroyed"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, BrowsingContextInfo):
-            return json
-        return BrowsingContextInfo.from_json(json)
-
-
-class NavigationStarted:
-    """Event class for browsingContext.navigationStarted event."""
-
-    event_class = "browsingContext.navigationStarted"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class NavigationCommitted:
-    """Event class for browsingContext.navigationCommitted event."""
-
-    event_class = "browsingContext.navigationCommitted"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class NavigationFailed:
-    """Event class for browsingContext.navigationFailed event."""
-
-    event_class = "browsingContext.navigationFailed"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class NavigationAborted:
-    """Event class for browsingContext.navigationAborted event."""
-
-    event_class = "browsingContext.navigationAborted"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class DomContentLoaded:
-    """Event class for browsingContext.domContentLoaded event."""
-
-    event_class = "browsingContext.domContentLoaded"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class Load:
-    """Event class for browsingContext.load event."""
-
-    event_class = "browsingContext.load"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class FragmentNavigated:
-    """Event class for browsingContext.fragmentNavigated event."""
-
-    event_class = "browsingContext.fragmentNavigated"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        if isinstance(json, NavigationInfo):
-            return json
-        return NavigationInfo.from_json(json)
-
-
-class DownloadWillBegin:
-    """Event class for browsingContext.downloadWillBegin event."""
-
-    event_class = "browsingContext.downloadWillBegin"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        return DownloadWillBeginParams.from_json(json)
-
-
-class UserPromptOpened:
-    """Event class for browsingContext.userPromptOpened event."""
-
-    event_class = "browsingContext.userPromptOpened"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        return UserPromptOpenedParams.from_json(json)
-
-
-class UserPromptClosed:
-    """Event class for browsingContext.userPromptClosed event."""
-
-    event_class = "browsingContext.userPromptClosed"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        return UserPromptClosedParams.from_json(json)
-
-
-class HistoryUpdated:
-    """Event class for browsingContext.historyUpdated event."""
-
-    event_class = "browsingContext.historyUpdated"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        return HistoryUpdatedParams.from_json(json)
-
-
-class DownloadEnd:
-    """Event class for browsingContext.downloadEnd event."""
-
-    event_class = "browsingContext.downloadEnd"
-
-    @classmethod
-    def from_json(cls, json: dict):
-        return DownloadEndParams.from_json(json)
+    COMPLETE = "complete"
 
 
 @dataclass
-class EventConfig:
-    event_key: str
-    bidi_event: str
-    event_class: type
+class Info:
+    """Info."""
+
+    children: Any | None = None
+    client_window: Any | None = None
+    context: Any | None = None
+    original_opener: Any | None = None
+    url: str | None = None
+    user_context: Any | None = None
+    parent: Any | None = None
 
 
-class _EventManager:
-    """Class to manage event subscriptions and callbacks for BrowsingContext."""
+@dataclass
+class AccessibilityLocator:
+    """AccessibilityLocator."""
 
-    def __init__(self, conn, event_configs: dict[str, EventConfig]):
-        self.conn = conn
-        self.event_configs = event_configs
-        self.subscriptions: dict = {}
-        self._bidi_to_class = {config.bidi_event: config.event_class for config in event_configs.values()}
-        self._available_events = ", ".join(sorted(event_configs.keys()))
-        # Thread safety lock for subscription operations
-        self._subscription_lock = threading.Lock()
+    type: str = field(default="accessibility", init=False)
+    name: str | None = None
+    role: str | None = None
 
-    def validate_event(self, event: str) -> EventConfig:
-        event_config = self.event_configs.get(event)
-        if not event_config:
-            raise ValueError(f"Event '{event}' not found. Available events: {self._available_events}")
-        return event_config
 
-    def subscribe_to_event(self, bidi_event: str, contexts: list[str] | None = None) -> None:
-        """Subscribe to a BiDi event if not already subscribed.
+@dataclass
+class CssLocator:
+    """CssLocator."""
 
-        Args:
-            bidi_event: The BiDi event name.
-            contexts: Optional browsing context IDs to subscribe to.
-        """
-        with self._subscription_lock:
-            if bidi_event not in self.subscriptions:
-                session = Session(self.conn)
-                self.conn.execute(session.subscribe(bidi_event, browsing_contexts=contexts))
-                self.subscriptions[bidi_event] = []
+    type: str = field(default="css", init=False)
+    value: str | None = None
 
-    def unsubscribe_from_event(self, bidi_event: str) -> None:
-        """Unsubscribe from a BiDi event if no more callbacks exist.
 
-        Args:
-            bidi_event: The BiDi event name.
-        """
-        with self._subscription_lock:
-            callback_list = self.subscriptions.get(bidi_event)
-            if callback_list is not None and not callback_list:
-                session = Session(self.conn)
-                self.conn.execute(session.unsubscribe(bidi_event))
-                del self.subscriptions[bidi_event]
+@dataclass
+class ContextLocator:
+    """ContextLocator."""
 
-    def add_callback_to_tracking(self, bidi_event: str, callback_id: int) -> None:
-        with self._subscription_lock:
-            self.subscriptions[bidi_event].append(callback_id)
+    type: str = field(default="context", init=False)
+    context: Any | None = None
 
-    def remove_callback_from_tracking(self, bidi_event: str, callback_id: int) -> None:
-        with self._subscription_lock:
-            callback_list = self.subscriptions.get(bidi_event)
-            if callback_list and callback_id in callback_list:
-                callback_list.remove(callback_id)
 
-    def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
-        event_config = self.validate_event(event)
+@dataclass
+class InnerTextLocator:
+    """InnerTextLocator."""
 
-        callback_id = self.conn.add_callback(event_config.event_class, callback)
+    type: str = field(default="innerText", init=False)
+    value: str | None = None
+    ignore_case: bool | None = None
+    match_type: Any | None = None
+    max_depth: Any | None = None
 
-        # Subscribe to the event if needed
-        self.subscribe_to_event(event_config.bidi_event, contexts)
 
-        # Track the callback
-        self.add_callback_to_tracking(event_config.bidi_event, callback_id)
+@dataclass
+class XPathLocator:
+    """XPathLocator."""
 
-        return callback_id
+    type: str = field(default="xpath", init=False)
+    value: str | None = None
 
-    def remove_event_handler(self, event: str, callback_id: int) -> None:
-        event_config = self.validate_event(event)
 
-        # Remove the callback from the connection
-        self.conn.remove_callback(event_config.event_class, callback_id)
+@dataclass
+class BaseNavigationInfo:
+    """BaseNavigationInfo."""
 
-        # Remove from tracking collections
-        self.remove_callback_from_tracking(event_config.bidi_event, callback_id)
+    context: Any | None = None
+    navigation: Any | None = None
+    timestamp: Any | None = None
+    url: str | None = None
+    user_context: Any | None = None
 
-        # Unsubscribe if no more callbacks exist
-        self.unsubscribe_from_event(event_config.bidi_event)
 
-    def clear_event_handlers(self) -> None:
-        """Clear all event handlers from the browsing context."""
-        with self._subscription_lock:
-            if not self.subscriptions:
-                return
+@dataclass
+class ActivateParameters:
+    """ActivateParameters."""
 
-            session = Session(self.conn)
+    context: Any | None = None
 
-            for bidi_event, callback_ids in list(self.subscriptions.items()):
-                event_class = self._bidi_to_class.get(bidi_event)
-                if event_class:
-                    # Remove all callbacks for this event
-                    for callback_id in callback_ids:
-                        self.conn.remove_callback(event_class, callback_id)
 
-                    self.conn.execute(session.unsubscribe(bidi_event))
+@dataclass
+class CaptureScreenshotParameters:
+    """CaptureScreenshotParameters."""
 
-            self.subscriptions.clear()
+    context: Any | None = None
+    format: Any | None = None
+    clip: Any | None = None
+
+
+@dataclass
+class ImageFormat:
+    """ImageFormat."""
+
+    type: str | None = None
+    quality: Any | None = None
+
+
+@dataclass
+class ElementClipRectangle:
+    """ElementClipRectangle."""
+
+    type: str = field(default="element", init=False)
+    element: Any | None = None
+
+
+@dataclass
+class BoxClipRectangle:
+    """BoxClipRectangle."""
+
+    type: str = field(default="box", init=False)
+    x: Any | None = None
+    y: Any | None = None
+    width: Any | None = None
+    height: Any | None = None
+
+
+@dataclass
+class CaptureScreenshotResult:
+    """CaptureScreenshotResult."""
+
+    data: str | None = None
+
+
+@dataclass
+class CloseParameters:
+    """CloseParameters."""
+
+    context: Any | None = None
+    prompt_unload: bool | None = None
+
+
+@dataclass
+class CreateParameters:
+    """CreateParameters."""
+
+    type: Any | None = None
+    reference_context: Any | None = None
+    background: bool | None = None
+    user_context: Any | None = None
+
+
+@dataclass
+class CreateResult:
+    """CreateResult."""
+
+    context: Any | None = None
+    user_context: Any | None = None
+
+
+@dataclass
+class GetTreeParameters:
+    """GetTreeParameters."""
+
+    max_depth: Any | None = None
+    root: Any | None = None
+
+
+@dataclass
+class GetTreeResult:
+    """GetTreeResult."""
+
+    contexts: Any | None = None
+
+
+@dataclass
+class HandleUserPromptParameters:
+    """HandleUserPromptParameters."""
+
+    context: Any | None = None
+    accept: bool | None = None
+    user_text: str | None = None
+
+
+@dataclass
+class LocateNodesParameters:
+    """LocateNodesParameters."""
+
+    context: Any | None = None
+    locator: Any | None = None
+    serialization_options: Any | None = None
+    start_nodes: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class LocateNodesResult:
+    """LocateNodesResult."""
+
+    nodes: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class NavigateParameters:
+    """NavigateParameters."""
+
+    context: Any | None = None
+    url: str | None = None
+    wait: Any | None = None
+
+
+@dataclass
+class NavigateResult:
+    """NavigateResult."""
+
+    navigation: Any | None = None
+    url: str | None = None
+
+
+@dataclass
+class PrintParameters:
+    """PrintParameters."""
+
+    context: Any | None = None
+    background: bool | None = None
+    margin: Any | None = None
+    page: Any | None = None
+    scale: Any | None = None
+    shrink_to_fit: bool | None = None
+
+
+@dataclass
+class PrintMarginParameters:
+    """PrintMarginParameters."""
+
+    bottom: Any | None = None
+    left: Any | None = None
+    right: Any | None = None
+    top: Any | None = None
+
+
+@dataclass
+class PrintPageParameters:
+    """PrintPageParameters."""
+
+    height: Any | None = None
+    width: Any | None = None
+
+
+@dataclass
+class PrintResult:
+    """PrintResult."""
+
+    data: str | None = None
+
+
+@dataclass
+class ReloadParameters:
+    """ReloadParameters."""
+
+    context: Any | None = None
+    ignore_cache: bool | None = None
+    wait: Any | None = None
+
+
+@dataclass
+class SetBypassCSPParameters:
+    """SetBypassCSPParameters."""
+
+    bypass: Any | None = None
+    contexts: list[Any] = field(default_factory=list)
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class SetViewportParameters:
+    """SetViewportParameters."""
+
+    context: Any | None = None
+    viewport: Any | None = None
+    device_pixel_ratio: Any | None = None
+    user_contexts: list[Any] = field(default_factory=list)
+
+
+@dataclass
+class Viewport:
+    """Viewport."""
+
+    width: Any | None = None
+    height: Any | None = None
+
+
+@dataclass
+class TraverseHistoryParameters:
+    """TraverseHistoryParameters."""
+
+    context: Any | None = None
+    delta: Any | None = None
+
+
+@dataclass
+class HistoryUpdatedParameters:
+    """HistoryUpdatedParameters."""
+
+    context: Any | None = None
+    timestamp: Any | None = None
+    url: str | None = None
+    user_context: Any | None = None
+
+
+@dataclass
+class UserPromptClosedParameters:
+    """UserPromptClosedParameters."""
+
+    context: Any | None = None
+    accepted: bool | None = None
+    type: Any | None = None
+    user_context: Any | None = None
+    user_text: str | None = None
+
+
+@dataclass
+class UserPromptOpenedParameters:
+    """UserPromptOpenedParameters."""
+
+    context: Any | None = None
+    handler: Any | None = None
+    message: str | None = None
+    type: Any | None = None
+    user_context: Any | None = None
+    default_value: str | None = None
+
+
+@dataclass
+class DownloadWillBeginParams:
+    """DownloadWillBeginParams."""
+
+    suggested_filename: str | None = None
+
+
+@dataclass
+class DownloadCanceledParams:
+    """DownloadCanceledParams."""
+
+    status: Any | None = None
+
+
+@dataclass
+class DownloadParams:
+    """DownloadParams - fields shared by all download end event variants."""
+
+    status: str | None = None
+    context: Any | None = None
+    navigation: Any | None = None
+    timestamp: Any | None = None
+    url: str | None = None
+    filepath: str | None = None
+
+
+@dataclass
+class DownloadEndParams:
+    """DownloadEndParams - params for browsingContext.downloadEnd event."""
+
+    download_params: DownloadParams | None = None
+
+    @classmethod
+    def from_json(cls, params: dict) -> DownloadEndParams:
+        """Deserialize from BiDi wire-level params dict."""
+        dp = DownloadParams(
+            status=params.get("status"),
+            context=params.get("context"),
+            navigation=params.get("navigation"),
+            timestamp=params.get("timestamp"),
+            url=params.get("url"),
+            filepath=params.get("filepath"),
+        )
+        return cls(download_params=dp)
+
+
+# BiDi Event Name to Parameter Type Mapping
+EVENT_NAME_MAPPING = {
+    "context_created": "browsingContext.contextCreated",
+    "context_destroyed": "browsingContext.contextDestroyed",
+    "navigation_started": "browsingContext.navigationStarted",
+    "fragment_navigated": "browsingContext.fragmentNavigated",
+    "history_updated": "browsingContext.historyUpdated",
+    "dom_content_loaded": "browsingContext.domContentLoaded",
+    "load": "browsingContext.load",
+    "download_will_begin": "browsingContext.downloadWillBegin",
+    "download_end": "browsingContext.downloadEnd",
+    "navigation_aborted": "browsingContext.navigationAborted",
+    "navigation_committed": "browsingContext.navigationCommitted",
+    "navigation_failed": "browsingContext.navigationFailed",
+    "user_prompt_closed": "browsingContext.userPromptClosed",
+    "user_prompt_opened": "browsingContext.userPromptOpened",
+}
+
+
+def _deserialize_info_list(items: list) -> list | None:
+    """Recursively deserialize a list of dicts to Info objects.
+
+    Args:
+        items: List of dicts from the API response
+
+    Returns:
+        List of Info objects with properly nested children, or None if empty
+    """
+    if not items or not isinstance(items, list):
+        return None
+
+    result = []
+    for item in items:
+        if isinstance(item, dict):
+            # Recursively deserialize children only if the key exists in response
+            children_list = None
+            if "children" in item:
+                children_list = _deserialize_info_list(item.get("children", []))
+            info = Info(
+                children=children_list,
+                client_window=item.get("clientWindow"),
+                context=item.get("context"),
+                original_opener=item.get("originalOpener"),
+                url=item.get("url"),
+                user_context=item.get("userContext"),
+                parent=item.get("parent"),
+            )
+            result.append(info)
+    return result if result else None
 
 
 class BrowsingContext:
-    """BiDi implementation of the browsingContext module."""
+    """WebDriver BiDi browsingContext module."""
 
-    EVENT_CONFIGS = {
-        "context_created": EventConfig("context_created", "browsingContext.contextCreated", ContextCreated),
-        "context_destroyed": EventConfig("context_destroyed", "browsingContext.contextDestroyed", ContextDestroyed),
-        "dom_content_loaded": EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", DomContentLoaded),
-        "download_end": EventConfig("download_end", "browsingContext.downloadEnd", DownloadEnd),
-        "download_will_begin": EventConfig(
-            "download_will_begin", "browsingContext.downloadWillBegin", DownloadWillBegin
-        ),
-        "fragment_navigated": EventConfig("fragment_navigated", "browsingContext.fragmentNavigated", FragmentNavigated),
-        "history_updated": EventConfig("history_updated", "browsingContext.historyUpdated", HistoryUpdated),
-        "load": EventConfig("load", "browsingContext.load", Load),
-        "navigation_aborted": EventConfig("navigation_aborted", "browsingContext.navigationAborted", NavigationAborted),
-        "navigation_committed": EventConfig(
-            "navigation_committed", "browsingContext.navigationCommitted", NavigationCommitted
-        ),
-        "navigation_failed": EventConfig("navigation_failed", "browsingContext.navigationFailed", NavigationFailed),
-        "navigation_started": EventConfig("navigation_started", "browsingContext.navigationStarted", NavigationStarted),
-        "user_prompt_closed": EventConfig("user_prompt_closed", "browsingContext.userPromptClosed", UserPromptClosed),
-        "user_prompt_opened": EventConfig("user_prompt_opened", "browsingContext.userPromptOpened", UserPromptOpened),
-    }
+    EVENT_CONFIGS: dict[str, EventConfig] = {}
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, conn) -> None:
+        self._conn = conn
         self._event_manager = _EventManager(conn, self.EVENT_CONFIGS)
 
-    @classmethod
-    def get_event_names(cls) -> list[str]:
-        """Get a list of all available event names.
+    def activate(self, context: Any | None = None):
+        """Execute browsingContext.activate."""
+        if context is None:
+            raise TypeError("activate() missing required argument: 'context'")
 
-        Returns:
-            A list of event names that can be used with event handlers.
-        """
-        return list(cls.EVENT_CONFIGS.keys())
-
-    def activate(self, context: str) -> None:
-        """Activates and focuses the given top-level traversable.
-
-        Args:
-            context: The browsing context ID to activate.
-
-        Raises:
-            Exception: If the browsing context is not a top-level traversable.
-        """
-        params = {"context": context}
-        self.conn.execute(command_builder("browsingContext.activate", params))
+        params = {
+            "context": context,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.activate", params)
+        result = self._conn.execute(cmd)
+        return result
 
     def capture_screenshot(
         self,
-        context: str,
-        origin: str = "viewport",
-        format: dict | None = None,
-        clip: dict | None = None,
-    ) -> str:
-        """Captures an image of the given navigable, and returns it as a Base64-encoded string.
+        context: str | None = None,
+        format: Any | None = None,
+        clip: Any | None = None,
+        origin: str | None = None,
+    ):
+        """Execute browsingContext.captureScreenshot."""
+        if context is None:
+            raise TypeError("capture_screenshot() missing required argument: 'context'")
 
-        Args:
-            context: The browsing context ID to capture.
-            origin: The origin of the screenshot, either "viewport" or "document".
-            format: The format of the screenshot.
-            clip: The clip rectangle of the screenshot.
+        params = {
+            "context": context,
+            "format": format,
+            "clip": clip,
+            "origin": origin,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.captureScreenshot", params)
+        result = self._conn.execute(cmd)
+        if result and "data" in result:
+            extracted = result.get("data")
+            return extracted
+        return result
 
-        Returns:
-            The Base64-encoded screenshot.
-        """
-        params: dict[str, Any] = {"context": context, "origin": origin}
-        if format is not None:
-            params["format"] = format
-        if clip is not None:
-            params["clip"] = clip
+    def close(self, context: Any | None = None, prompt_unload: bool | None = None):
+        """Execute browsingContext.close."""
+        if context is None:
+            raise TypeError("close() missing required argument: 'context'")
 
-        result = self.conn.execute(command_builder("browsingContext.captureScreenshot", params))
-        return result["data"]
-
-    def close(self, context: str, prompt_unload: bool = False) -> None:
-        """Closes a top-level traversable.
-
-        Args:
-            context: The browsing context ID to close.
-            prompt_unload: Whether to prompt to unload.
-
-        Raises:
-            Exception: If the browsing context is not a top-level traversable.
-        """
-        params = {"context": context, "promptUnload": prompt_unload}
-        self.conn.execute(command_builder("browsingContext.close", params))
+        params = {
+            "context": context,
+            "promptUnload": prompt_unload,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.close", params)
+        result = self._conn.execute(cmd)
+        return result
 
     def create(
         self,
-        type: str,
-        reference_context: str | None = None,
-        background: bool = False,
-        user_context: str | None = None,
-    ) -> str:
-        """Creates a new navigable, either in a new tab or in a new window, and returns its navigable id.
+        type: Any | None = None,
+        reference_context: Any | None = None,
+        background: bool | None = None,
+        user_context: Any | None = None,
+    ):
+        """Execute browsingContext.create."""
+        if type is None:
+            raise TypeError("create() missing required argument: 'type'")
 
-        Args:
-            type: The type of the new navigable, either "tab" or "window".
-            reference_context: The reference browsing context ID.
-            background: Whether to create the new navigable in the background.
-            user_context: The user context ID.
+        params = {
+            "type": type,
+            "referenceContext": reference_context,
+            "background": background,
+            "userContext": user_context,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.create", params)
+        result = self._conn.execute(cmd)
+        if result and "context" in result:
+            extracted = result.get("context")
+            return extracted
+        return result
 
-        Returns:
-            The browsing context ID of the created navigable.
-        """
-        params: dict[str, Any] = {"type": type}
-        if reference_context is not None:
-            params["referenceContext"] = reference_context
-        if background is not None:
-            params["background"] = background
-        if user_context is not None:
-            params["userContext"] = user_context
+    def get_tree(self, max_depth: Any | None = None, root: Any | None = None):
+        """Execute browsingContext.getTree."""
+        params = {
+            "maxDepth": max_depth,
+            "root": root,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.getTree", params)
+        result = self._conn.execute(cmd)
+        if result and "contexts" in result:
+            items = result.get("contexts", [])
+            return [
+                Info(
+                    children=_deserialize_info_list(item.get("children", [])),
+                    client_window=item.get("clientWindow"),
+                    context=item.get("context"),
+                    original_opener=item.get("originalOpener"),
+                    url=item.get("url"),
+                    user_context=item.get("userContext"),
+                    parent=item.get("parent"),
+                )
+                for item in items
+                if isinstance(item, dict)
+            ]
+        return []
 
-        result = self.conn.execute(command_builder("browsingContext.create", params))
-        return result["context"]
+    def handle_user_prompt(self, context: Any | None = None, accept: bool | None = None, user_text: Any | None = None):
+        """Execute browsingContext.handleUserPrompt."""
+        if context is None:
+            raise TypeError("handle_user_prompt() missing required argument: 'context'")
 
-    def get_tree(
-        self,
-        max_depth: int | None = None,
-        root: str | None = None,
-    ) -> list[BrowsingContextInfo]:
-        """Get a tree of all descendent navigables including the given parent itself.
-
-        Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
-        when no parent is provided.
-
-        Args:
-            max_depth: The maximum depth of the tree.
-            root: The root browsing context ID.
-
-        Returns:
-            A list of browsing context information.
-        """
-        params: dict[str, Any] = {}
-        if max_depth is not None:
-            params["maxDepth"] = max_depth
-        if root is not None:
-            params["root"] = root
-
-        result = self.conn.execute(command_builder("browsingContext.getTree", params))
-        return [BrowsingContextInfo.from_json(context) for context in result["contexts"]]
-
-    def handle_user_prompt(
-        self,
-        context: str,
-        accept: bool | None = None,
-        user_text: str | None = None,
-    ) -> None:
-        """Allows closing an open prompt.
-
-        Args:
-            context: The browsing context ID.
-            accept: Whether to accept the prompt.
-            user_text: The text to enter in the prompt.
-        """
-        params: dict[str, Any] = {"context": context}
-        if accept is not None:
-            params["accept"] = accept
-        if user_text is not None:
-            params["userText"] = user_text
-
-        self.conn.execute(command_builder("browsingContext.handleUserPrompt", params))
+        params = {
+            "context": context,
+            "accept": accept,
+            "userText": user_text,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.handleUserPrompt", params)
+        result = self._conn.execute(cmd)
+        return result
 
     def locate_nodes(
         self,
-        context: str,
-        locator: dict,
+        context: str | None = None,
+        locator: Any | None = None,
+        serialization_options: Any | None = None,
+        start_nodes: Any | None = None,
         max_node_count: int | None = None,
-        serialization_options: dict | None = None,
-        start_nodes: list[dict] | None = None,
-    ) -> list[dict]:
-        """Returns a list of all nodes matching the specified locator.
+    ):
+        """Execute browsingContext.locateNodes."""
+        if context is None:
+            raise TypeError("locate_nodes() missing required argument: 'context'")
+        if locator is None:
+            raise TypeError("locate_nodes() missing required argument: 'locator'")
 
-        Args:
-            context: The browsing context ID.
-            locator: The locator to use.
-            max_node_count: The maximum number of nodes to return.
-            serialization_options: The serialization options.
-            start_nodes: The start nodes.
+        params = {
+            "context": context,
+            "locator": locator,
+            "serializationOptions": serialization_options,
+            "startNodes": start_nodes,
+            "maxNodeCount": max_node_count,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.locateNodes", params)
+        result = self._conn.execute(cmd)
+        if result and "nodes" in result:
+            extracted = result.get("nodes")
+            return extracted
+        return result
 
-        Returns:
-            A list of nodes.
-        """
-        params: dict[str, Any] = {"context": context, "locator": locator}
-        if max_node_count is not None:
-            params["maxNodeCount"] = max_node_count
-        if serialization_options is not None:
-            params["serializationOptions"] = serialization_options
-        if start_nodes is not None:
-            params["startNodes"] = start_nodes
+    def navigate(self, context: Any | None = None, url: Any | None = None, wait: Any | None = None):
+        """Execute browsingContext.navigate."""
+        if context is None:
+            raise TypeError("navigate() missing required argument: 'context'")
+        if url is None:
+            raise TypeError("navigate() missing required argument: 'url'")
 
-        result = self.conn.execute(command_builder("browsingContext.locateNodes", params))
-        return result["nodes"]
-
-    def navigate(
-        self,
-        context: str,
-        url: str,
-        wait: str | None = None,
-    ) -> dict:
-        """Navigates a navigable to the given URL.
-
-        Args:
-            context: The browsing context ID.
-            url: The URL to navigate to.
-            wait: The readiness state to wait for.
-
-        Returns:
-            A dictionary containing the navigation result.
-        """
-        params = {"context": context, "url": url}
-        if wait is not None:
-            params["wait"] = wait
-
-        result = self.conn.execute(command_builder("browsingContext.navigate", params))
+        params = {
+            "context": context,
+            "url": url,
+            "wait": wait,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.navigate", params)
+        result = self._conn.execute(cmd)
         return result
 
     def print(
         self,
-        context: str,
-        background: bool = False,
-        margin: dict | None = None,
-        orientation: str = "portrait",
-        page: dict | None = None,
-        page_ranges: list[int | str] | None = None,
-        scale: float = 1.0,
-        shrink_to_fit: bool = True,
-    ) -> str:
-        """Create a paginated PDF representation of the document as a Base64-encoded string.
+        context: Any | None = None,
+        background: bool | None = None,
+        margin: Any | None = None,
+        page: Any | None = None,
+        scale: Any | None = None,
+        shrink_to_fit: bool | None = None,
+    ):
+        """Execute browsingContext.print."""
+        if context is None:
+            raise TypeError("print() missing required argument: 'context'")
 
-        Args:
-            context: The browsing context ID.
-            background: Whether to include the background.
-            margin: The margin parameters.
-            orientation: The orientation, either "portrait" or "landscape".
-            page: The page parameters.
-            page_ranges: The page ranges.
-            scale: The scale.
-            shrink_to_fit: Whether to shrink to fit.
-
-        Returns:
-            The Base64-encoded PDF document.
-        """
         params = {
             "context": context,
             "background": background,
-            "orientation": orientation,
+            "margin": margin,
+            "page": page,
             "scale": scale,
             "shrinkToFit": shrink_to_fit,
         }
-        if margin is not None:
-            params["margin"] = margin
-        if page is not None:
-            params["page"] = page
-        if page_ranges is not None:
-            params["pageRanges"] = page_ranges
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.print", params)
+        result = self._conn.execute(cmd)
+        if result and "data" in result:
+            extracted = result.get("data")
+            return extracted
+        return result
 
-        result = self.conn.execute(command_builder("browsingContext.print", params))
-        return result["data"]
+    def reload(self, context: Any | None = None, ignore_cache: bool | None = None, wait: Any | None = None):
+        """Execute browsingContext.reload."""
+        if context is None:
+            raise TypeError("reload() missing required argument: 'context'")
 
-    def reload(
+        params = {
+            "context": context,
+            "ignoreCache": ignore_cache,
+            "wait": wait,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.reload", params)
+        result = self._conn.execute(cmd)
+        return result
+
+    def set_bypass_csp(
         self,
-        context: str,
-        ignore_cache: bool | None = None,
-        wait: str | None = None,
-    ) -> dict:
-        """Reloads a navigable.
+        bypass: Any | None = None,
+        contexts: list[Any] | None = None,
+        user_contexts: list[Any] | None = None,
+    ):
+        """Execute browsingContext.setBypassCSP."""
+        if bypass is None:
+            raise TypeError("set_bypass_csp() missing required argument: 'bypass'")
 
-        Args:
-            context: The browsing context ID.
-            ignore_cache: Whether to ignore the cache.
-            wait: The readiness state to wait for.
+        params = {
+            "bypass": bypass,
+            "contexts": contexts,
+            "userContexts": user_contexts,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.setBypassCSP", params)
+        result = self._conn.execute(cmd)
+        return result
 
-        Returns:
-            A dictionary containing the navigation result.
-        """
-        params: dict[str, Any] = {"context": context}
-        if ignore_cache is not None:
-            params["ignoreCache"] = ignore_cache
-        if wait is not None:
-            params["wait"] = wait
+    def traverse_history(self, context: Any | None = None, delta: Any | None = None):
+        """Execute browsingContext.traverseHistory."""
+        if context is None:
+            raise TypeError("traverse_history() missing required argument: 'context'")
+        if delta is None:
+            raise TypeError("traverse_history() missing required argument: 'delta'")
 
-        result = self.conn.execute(command_builder("browsingContext.reload", params))
+        params = {
+            "context": context,
+            "delta": delta,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("browsingContext.traverseHistory", params)
+        result = self._conn.execute(cmd)
         return result
 
     def set_viewport(
         self,
         context: str | None = None,
-        viewport: dict | None | Sentinel = UNDEFINED,
-        device_pixel_ratio: float | None | Sentinel = UNDEFINED,
-        user_contexts: list[str] | None = None,
-    ) -> None:
-        """Modifies specific viewport characteristics on the given top-level traversable.
+        viewport: Any = ...,
+        user_contexts: Any | None = None,
+        device_pixel_ratio: Any = ...,
+    ):
+        """Execute browsingContext.setViewport.
 
-        Args:
-            context: The browsing context ID.
-            viewport: The viewport parameters - {"width": <int>, "height": <int>} (`None` resets to default).
-            device_pixel_ratio: The device pixel ratio (`None` resets to default).
-            user_contexts: The user context IDs.
-
-        Raises:
-            Exception: If the browsing context is not a top-level traversable
-            ValueError: If neither `context` nor `user_contexts` is provided
-            ValueError: If both `context` and `user_contexts` are provided
+        Uses sentinel defaults so explicit None is serialized for viewport/devicePixelRatio,
+        while omitted arguments are not sent.
         """
-        if context is not None and user_contexts is not None:
-            raise ValueError("Cannot specify both context and user_contexts")
-
-        if context is None and user_contexts is None:
-            raise ValueError("Must specify either context or user_contexts")
-
-        params: dict[str, Any] = {}
+        params = {}
         if context is not None:
             params["context"] = context
-        elif user_contexts is not None:
+        if user_contexts is not None:
             params["userContexts"] = user_contexts
-        if viewport is not UNDEFINED:
+        if viewport is not ...:
             params["viewport"] = viewport
-        if device_pixel_ratio is not UNDEFINED:
+        if device_pixel_ratio is not ...:
             params["devicePixelRatio"] = device_pixel_ratio
 
-        self.conn.execute(command_builder("browsingContext.setViewport", params))
-
-    def traverse_history(self, context: str, delta: int) -> dict:
-        """Traverses the history of a given navigable by a delta.
-
-        Args:
-            context: The browsing context ID.
-            delta: The delta to traverse by.
-
-        Returns:
-            A dictionary containing the traverse history result.
-        """
-        params = {"context": context, "delta": delta}
-        result = self.conn.execute(command_builder("browsingContext.traverseHistory", params))
+        cmd = command_builder("browsingContext.setViewport", params)
+        result = self._conn.execute(cmd)
         return result
 
     def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
-        """Add an event handler to the browsing context.
+        """Add an event handler.
 
         Args:
             event: The event to subscribe to.
             callback: The callback function to execute on event.
-            contexts: The browsing context IDs to subscribe to.
+            contexts: The context IDs to subscribe to (optional).
 
         Returns:
-            Callback id.
+            The callback ID.
         """
         return self._event_manager.add_event_handler(event, callback, contexts)
 
     def remove_event_handler(self, event: str, callback_id: int) -> None:
-        """Remove an event handler from the browsing context.
+        """Remove an event handler.
 
         Args:
             event: The event to unsubscribe from.
-            callback_id: The callback id to remove.
+            callback_id: The callback ID.
         """
-        self._event_manager.remove_event_handler(event, callback_id)
+        return self._event_manager.remove_event_handler(event, callback_id)
 
     def clear_event_handlers(self) -> None:
-        """Clear all event handlers from the browsing context."""
-        self._event_manager.clear_event_handlers()
+        """Clear all event handlers."""
+        return self._event_manager.clear_event_handlers()
+
+
+# Event Info Type Aliases
+# Event: browsingContext.contextCreated
+ContextCreated = globals().get("Info", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.contextDestroyed
+ContextDestroyed = globals().get("Info", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.navigationStarted
+NavigationStarted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.fragmentNavigated
+FragmentNavigated = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.historyUpdated
+HistoryUpdated = globals().get("HistoryUpdatedParameters", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.domContentLoaded
+DomContentLoaded = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.load
+Load = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.downloadWillBegin
+DownloadWillBegin = globals().get("DownloadWillBeginParams", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.downloadEnd
+DownloadEnd = globals().get("DownloadEndParams", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.navigationAborted
+NavigationAborted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.navigationCommitted
+NavigationCommitted = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.navigationFailed
+NavigationFailed = globals().get("BaseNavigationInfo", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.userPromptClosed
+UserPromptClosed = globals().get("UserPromptClosedParameters", dict)  # Fallback to dict if type not defined
+
+# Event: browsingContext.userPromptOpened
+UserPromptOpened = globals().get("UserPromptOpenedParameters", dict)  # Fallback to dict if type not defined
+
+
+# Populate EVENT_CONFIGS with event configuration mappings
+_globals = globals()
+BrowsingContext.EVENT_CONFIGS = {
+    "context_created": EventConfig(
+        "context_created",
+        "browsingContext.contextCreated",
+        _globals.get("ContextCreated", dict) if _globals.get("ContextCreated") else dict,
+    ),
+    "context_destroyed": EventConfig(
+        "context_destroyed",
+        "browsingContext.contextDestroyed",
+        _globals.get("ContextDestroyed", dict) if _globals.get("ContextDestroyed") else dict,
+    ),
+    "navigation_started": EventConfig(
+        "navigation_started",
+        "browsingContext.navigationStarted",
+        _globals.get("NavigationStarted", dict) if _globals.get("NavigationStarted") else dict,
+    ),
+    "fragment_navigated": EventConfig(
+        "fragment_navigated",
+        "browsingContext.fragmentNavigated",
+        _globals.get("FragmentNavigated", dict) if _globals.get("FragmentNavigated") else dict,
+    ),
+    "history_updated": EventConfig(
+        "history_updated",
+        "browsingContext.historyUpdated",
+        _globals.get("HistoryUpdated", dict) if _globals.get("HistoryUpdated") else dict,
+    ),
+    "dom_content_loaded": EventConfig(
+        "dom_content_loaded",
+        "browsingContext.domContentLoaded",
+        _globals.get("DomContentLoaded", dict) if _globals.get("DomContentLoaded") else dict,
+    ),
+    "load": EventConfig("load", "browsingContext.load", _globals.get("Load", dict) if _globals.get("Load") else dict),
+    "download_will_begin": EventConfig(
+        "download_will_begin",
+        "browsingContext.downloadWillBegin",
+        _globals.get("DownloadWillBegin", dict) if _globals.get("DownloadWillBegin") else dict,
+    ),
+    "download_end": EventConfig(
+        "download_end",
+        "browsingContext.downloadEnd",
+        _globals.get("DownloadEnd", dict) if _globals.get("DownloadEnd") else dict,
+    ),
+    "navigation_aborted": EventConfig(
+        "navigation_aborted",
+        "browsingContext.navigationAborted",
+        _globals.get("NavigationAborted", dict) if _globals.get("NavigationAborted") else dict,
+    ),
+    "navigation_committed": EventConfig(
+        "navigation_committed",
+        "browsingContext.navigationCommitted",
+        _globals.get("NavigationCommitted", dict) if _globals.get("NavigationCommitted") else dict,
+    ),
+    "navigation_failed": EventConfig(
+        "navigation_failed",
+        "browsingContext.navigationFailed",
+        _globals.get("NavigationFailed", dict) if _globals.get("NavigationFailed") else dict,
+    ),
+    "user_prompt_closed": EventConfig(
+        "user_prompt_closed",
+        "browsingContext.userPromptClosed",
+        _globals.get("UserPromptClosed", dict) if _globals.get("UserPromptClosed") else dict,
+    ),
+    "user_prompt_opened": EventConfig(
+        "user_prompt_opened",
+        "browsingContext.userPromptOpened",
+        _globals.get("UserPromptOpened", dict) if _globals.get("UserPromptOpened") else dict,
+    ),
+}

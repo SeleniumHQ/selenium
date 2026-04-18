@@ -37,7 +37,8 @@ public abstract class EncodedFile
     /// </exception>
     protected EncodedFile(string base64EncodedFile)
     {
-        this.AsBase64EncodedString = base64EncodedFile ?? throw new ArgumentNullException(nameof(base64EncodedFile));
+        ArgumentNullException.ThrowIfNull(base64EncodedFile);
+        this.AsBase64EncodedString = base64EncodedFile;
         this.AsByteArray = Convert.FromBase64String(base64EncodedFile);
     }
 

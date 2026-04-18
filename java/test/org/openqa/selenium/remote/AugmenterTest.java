@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -47,6 +48,7 @@ import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
 @Tag("UnitTests")
+@NullMarked
 class AugmenterTest {
 
   private Augmenter getAugmenter() {
@@ -281,6 +283,7 @@ class AugmenterTest {
     WebElement findByMagic(String magicWord);
   }
 
+  @NullMarked
   protected static class StubExecutor implements CommandExecutor {
 
     private final Capabilities capabilities;
@@ -353,6 +356,7 @@ class AugmenterTest {
       return caps;
     }
 
+    @NullMarked
     @Override
     public WebElement findElement(By locator) {
       if (locator instanceof By.Remotable) {
@@ -360,7 +364,7 @@ class AugmenterTest {
           throw new NoSuchElementException("Boom");
         }
       }
-      return null;
+      throw new NoSuchElementException("Element not found by " + locator);
     }
   }
 
@@ -392,6 +396,7 @@ class AugmenterTest {
     }
   }
 
+  @NullMarked
   private static class ModifyTitleWebDriverDecorator extends WebDriverDecorator<WebDriver> {
 
     @Override

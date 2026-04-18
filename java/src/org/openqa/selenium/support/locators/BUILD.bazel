@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "locators",
@@ -15,6 +15,7 @@ java_library(
         "//java:auto-service",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.http.HttpMethod;
 
@@ -26,7 +25,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
  *
  * @param <T> The type of encoded command.
  */
-@NullMarked
 public interface CommandCodec<T> {
 
   /**

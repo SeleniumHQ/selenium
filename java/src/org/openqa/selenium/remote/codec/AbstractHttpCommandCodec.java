@@ -92,7 +92,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
@@ -110,7 +109,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
-@NullMarked
 public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
   private static final String SESSION_ID_PARAM = "sessionId";
 

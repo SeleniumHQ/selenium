@@ -71,7 +71,8 @@ public class DevToolsSession : IDevToolsSession
             throw new ArgumentNullException(nameof(endpointAddress));
         }
 
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+        this.options = options;
         this.CommandTimeout = TimeSpan.FromSeconds(30);
         this.debuggerEndpoint = endpointAddress;
         if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))
@@ -143,10 +144,7 @@ public class DevToolsSession : IDevToolsSession
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
@@ -177,10 +175,7 @@ public class DevToolsSession : IDevToolsSession
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, string sessionId, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, sessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
@@ -213,10 +208,7 @@ public class DevToolsSession : IDevToolsSession
         where TCommand : ICommand
         where TCommandResponse : ICommandResponse<TCommand>
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);

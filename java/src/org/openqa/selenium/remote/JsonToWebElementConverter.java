@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -30,9 +31,9 @@ import org.openqa.selenium.WebElement;
  */
 public class JsonToWebElementConverter implements Function<Object, Object> {
 
-  protected final RemoteWebDriver driver;
+  @Nullable protected final RemoteWebDriver driver;
 
-  public JsonToWebElementConverter(RemoteWebDriver driver) {
+  public JsonToWebElementConverter(@Nullable RemoteWebDriver driver) {
     this.driver = driver;
   }
 
@@ -89,6 +90,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return element;
   }
 
+  @Nullable
   protected String getElementKey(Map<?, ?> resultAsMap) {
     for (Dialect d : Dialect.values()) {
       String elementKeyForDialect = d.getEncodedElementKey();
@@ -99,6 +101,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return null;
   }
 
+  @Nullable
   protected String getShadowRootKey(Map<?, ?> resultAsMap) {
     for (Dialect d : Dialect.values()) {
       String shadowRootElementKey = d.getShadowRootElementKey();

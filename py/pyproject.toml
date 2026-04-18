@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.42.0.202602192150"
+version = "4.44.0.202604101016"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -44,7 +44,7 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.15.8",
+    "ruff==0.15.9",
 ]
 validate = [
     "validate-pyproject==0.25",
@@ -140,6 +140,7 @@ warn_unreachable = false
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
+    "selenium/webdriver/common/bidi/",
 ]
 line-length = 120
 respect-gitignore = true

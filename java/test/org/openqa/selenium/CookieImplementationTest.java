@@ -485,20 +485,20 @@ class CookieImplementationTest extends JupiterTestBase {
   public void testDeleteEmptyNamedCookie() {
     assertThatThrownBy(() -> driver.manage().deleteCookieNamed(""))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cookie name cannot be empty");
+        .hasMessage("Cookie name must not be blank");
     assertThatThrownBy(() -> driver.manage().deleteCookieNamed(" "))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cookie name cannot be empty");
+        .hasMessage("Cookie name must not be blank");
   }
 
   @Test
   public void testGetEmptyNamedCookie() {
     assertThatThrownBy(() -> driver.manage().getCookieNamed(""))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cookie name cannot be empty");
+        .hasMessage("Cookie name must not be blank");
     assertThatThrownBy(() -> driver.manage().getCookieNamed(" "))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cookie name cannot be empty");
+        .hasMessage("Cookie name must not be blank");
   }
 
   @Test

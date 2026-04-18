@@ -17,9 +17,10 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json;
 using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -353,4 +354,53 @@ public enum Mode
 {
     Open,
     Closed
+}
+
+
+// https://github.com/dotnet/runtime/issues/72604
+internal class RemoteValueConverter : JsonConverter<RemoteValue>
+{
+    public override RemoteValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            return new StringRemoteValue(reader.GetString()!);
+        }
+
+        return reader.GetDiscriminator("type") switch
+        {
+            "number" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NumberRemoteValue>()),
+            "boolean" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<BooleanRemoteValue>()),
+            "bigint" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<BigIntRemoteValue>()),
+            "string" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<StringRemoteValue>()),
+            "null" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NullRemoteValue>()),
+            "undefined" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<UndefinedRemoteValue>()),
+            "symbol" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SymbolRemoteValue>()),
+            "array" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ArrayRemoteValue>()),
+            "object" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ObjectRemoteValue>()),
+            "function" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<FunctionRemoteValue>()),
+            "regexp" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<RegExpRemoteValue>()),
+            "date" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DateRemoteValue>()),
+            "map" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<MapRemoteValue>()),
+            "set" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SetRemoteValue>()),
+            "weakmap" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WeakMapRemoteValue>()),
+            "weakset" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WeakSetRemoteValue>()),
+            "generator" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GeneratorRemoteValue>()),
+            "error" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ErrorRemoteValue>()),
+            "proxy" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ProxyRemoteValue>()),
+            "promise" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PromiseRemoteValue>()),
+            "typedarray" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<TypedArrayRemoteValue>()),
+            "arraybuffer" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ArrayBufferRemoteValue>()),
+            "nodelist" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NodeListRemoteValue>()),
+            "htmlcollection" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<HtmlCollectionRemoteValue>()),
+            "node" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NodeRemoteValue>()),
+            "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowProxyRemoteValue>()),
+            _ => null,
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, RemoteValue value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
 }

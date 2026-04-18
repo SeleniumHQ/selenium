@@ -24,6 +24,7 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-handler"),

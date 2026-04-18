@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
@@ -246,7 +247,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
     wait.until(presenceOfElementLocated(By.id("ifr")));
     driver.switchTo().frame("ifr");
 
-    WebElement link = wait.until(presenceOfElementLocated(By.id("link")));
+    WebElement link = wait.until(elementToBeClickable(By.id("link")));
 
     new Actions(driver).moveToElement(link).click().perform();
 

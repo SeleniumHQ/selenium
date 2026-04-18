@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,7 +46,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public abstract class AppServerTestBase {
   private static final String APPCACHE_MIME_TYPE = "text/cache-manifest";
   private AppServer server;
-  private static WebDriver driver;
+  private static @Nullable WebDriver driver = null;
 
   @BeforeAll
   public static void startDriver() {
@@ -67,7 +68,10 @@ public abstract class AppServerTestBase {
 
   @AfterAll
   public static void quitDriver() {
-    driver.quit();
+    if (driver != null) {
+      driver.quit();
+      driver = null;
+    }
   }
 
   @Test

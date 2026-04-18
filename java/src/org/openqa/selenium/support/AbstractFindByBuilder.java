@@ -20,6 +20,7 @@ package org.openqa.selenium.support;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.By;
 
 public abstract class AbstractFindByBuilder<T> {
@@ -37,6 +38,7 @@ public abstract class AbstractFindByBuilder<T> {
     return ans;
   }
 
+  @Nullable
   protected By buildByFromShortFindBy(FindBy findBy) {
     if (!"".equals(findBy.className())) {
       return By.className(findBy.className());

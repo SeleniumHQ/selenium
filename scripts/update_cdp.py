@@ -182,8 +182,8 @@ def update_dotnet(chrome_milestone):
     for file in files:
         replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
-    files = [root_dir / "dotnet/test/common/CustomDriverConfigs/StableChannelChromeDriver.cs"]
-    dir_path = root_dir / "dotnet/test/common/DevTools"
+    files = [root_dir / "dotnet/test/webdriver/Infrastructure/DriverConfigs/StableChannelChromeDriver.cs"]
+    dir_path = root_dir / "dotnet/test/webdriver/DevTools"
     files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
     for file in files:
         replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))

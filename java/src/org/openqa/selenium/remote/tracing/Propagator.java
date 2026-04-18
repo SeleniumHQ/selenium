@@ -18,13 +18,14 @@
 package org.openqa.selenium.remote.tracing;
 
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 
 public interface Propagator {
 
   <C> void inject(TraceContext toInject, C carrier, Setter<C> setter);
 
   <C> TraceContext extractContext(
-      TraceContext existing, C carrier, BiFunction<C, String, String> getter);
+      TraceContext existing, C carrier, BiFunction<C, String, @Nullable String> getter);
 
   interface Setter<C> {
     void set(C carrier, String key, String value);

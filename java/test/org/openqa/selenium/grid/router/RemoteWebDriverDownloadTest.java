@@ -133,6 +133,7 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
     localDriver = createWebdriver(capabilities, mode);
 
     localDriver.get(appServer.whereIs("downloads/download.html"));
+    assertThat(localDriver.findElement(selector).isDisplayed()).isTrue();
     localDriver.findElement(selector).click();
     waitForDownloadedFiles(localDriver, 1);
 

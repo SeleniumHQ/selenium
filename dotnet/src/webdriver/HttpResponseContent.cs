@@ -34,7 +34,8 @@ public class HttpResponseContent
     /// <param name="content">The byte array representing the content of the response.</param>
     public HttpResponseContent(byte[] content)
     {
-        this.content = content ?? throw new ArgumentNullException(nameof(content));
+        ArgumentNullException.ThrowIfNull(content);
+        this.content = content;
     }
 
     /// <summary>

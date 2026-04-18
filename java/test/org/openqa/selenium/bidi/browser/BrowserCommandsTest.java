@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,13 +49,17 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 
 class BrowserCommandsTest extends JupiterTestBase {
 
+  private static final Logger LOG = Logger.getLogger(BrowserCommandsTest.class.getName());
   private final Path tmpDir =
-      TemporaryFilesystem.getDefaultTmpFS().createTempDir("downloads", "test").toPath();
+      TemporaryFilesystem.getDefaultTmpFS()
+          .createTempDir("selenium-", "-BrowserCommandsTest")
+          .toPath();
   private Browser browser;
 
   @BeforeEach
   final void setUp() {
     browser = new Browser(driver);
+    LOG.info(() -> "Created temp dir: " + tmpDir.toAbsolutePath());
   }
 
   @AfterEach
@@ -64,6 +69,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @AfterEach
   final void deleteTempDir() {
+    LOG.info(() -> "Deleting temp dir: " + tmpDir.toAbsolutePath());
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
   }
 
@@ -221,7 +227,27 @@ class BrowserCommandsTest extends JupiterTestBase {
     @Override
     public Boolean apply(WebDriver driver) {
       foundFiles = files(dir);
-      return foundFiles.contains(expectedFileName);
+      boolean result = foundFiles.contains(expectedFileName);
+      if (result) {
+        LOG.info(
+            () ->
+                "Found file: "
+                    + expectedFileName
+                    + " in temp dir: "
+                    + dir.toAbsolutePath()
+                    + ". All found files: "
+                    + foundFiles);
+      } else {
+        LOG.info(
+            () ->
+                "Not found file: "
+                    + expectedFileName
+                    + " in temp dir: "
+                    + dir.toAbsolutePath()
+                    + ". All found files: "
+                    + foundFiles);
+      }
+      return result;
     }
 
     @Override

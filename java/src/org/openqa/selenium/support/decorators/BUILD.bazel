@@ -12,5 +12,6 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         artifact("net.bytebuddy:byte-buddy"),
+        artifact("org.jspecify:jspecify"),
     ],
 )
