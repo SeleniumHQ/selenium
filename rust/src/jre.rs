@@ -74,11 +74,17 @@ pub fn ensure_jre(
     }
 
     let install_root = resolve_managed_jre_root(cache_path);
+    let install_parent = install_root
+        .parent()
+        .ok_or_else(|| anyhow!("Failed to get parent directory of JRE install root"))?
+        .to_path_buf();
     if let Some(runtime) = detect_managed_jre_candidate(&install_root)? {
         return Ok(runtime);
     }
 
-    let _lock = Lock::acquire(log, &install_root, None)?;
+    // Hold the lock in the stable parent directory because installation removes and
+    // recreates install_root while extracting archives into the parent cache folder.
+    let _lock = Lock::acquire(log, &install_parent, None)?;
     if let Some(runtime) = detect_managed_jre_candidate(&install_root)? {
         return Ok(runtime);
     }
@@ -90,18 +96,15 @@ pub fn ensure_jre(
     }
 
     let jre_asset = request_latest_jre_asset(timeout, proxy, log)?;
-    let parent = install_root
-        .parent()
-        .ok_or_else(|| anyhow!("Failed to get parent directory of JRE install root"))?;
 
     // Remove old installation if it exists
     if install_root.exists() {
         fs::remove_dir_all(&install_root)?;
     }
 
-    create_path_if_not_exists(parent)?;
+    create_path_if_not_exists(&install_parent)?;
 
-    let entries_before_uncompress = fs::read_dir(parent)?
+    let entries_before_uncompress = fs::read_dir(&install_parent)?
         .filter_map(|entry| entry.ok().map(|entry| entry.path()))
         .collect::<Vec<PathBuf>>();
 
@@ -109,7 +112,7 @@ pub fn ensure_jre(
     let (_tmp, archive) = download_to_tmp_folder(&http_client, jre_asset.binary.package.link, log)?;
 
     // Extract to a temporary directory first
-    let temp_extract = parent.join(format!(
+    let temp_extract = install_parent.join(format!(
         "jre_extract_tmp_{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -139,7 +142,7 @@ pub fn ensure_jre(
     }
 
     if extracted_root.is_none() {
-        for entry in fs::read_dir(parent)? {
+        for entry in fs::read_dir(&install_parent)? {
             let entry = entry?;
             let path = entry.path();
             if path.is_dir()
@@ -156,7 +159,7 @@ pub fn ensure_jre(
         anyhow!(
             "Downloaded archive did not contain expected Java runtime structure in {} or {}",
             temp_extract.display(),
-            parent.display()
+            install_parent.display()
         )
     })?;
 
