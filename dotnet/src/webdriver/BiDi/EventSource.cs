@@ -95,8 +95,10 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
     }
 
     private Action<TEventArgs> WrapHandler(Action<TEventArgs> handler)
-        => _filter is { } f ? e => { if (f(e)) handler(e); } : handler;
+        => _filter is { } f ? e => { if (f(e)) handler(e); }
+    : handler;
 
     private Func<TEventArgs, Task> WrapHandler(Func<TEventArgs, Task> handler)
-        => _filter is { } f ? async e => { if (f(e)) await handler(e).ConfigureAwait(false); } : handler;
+        => _filter is { } f ? async e => { if (f(e)) await handler(e).ConfigureAwait(false); }
+    : handler;
 }
