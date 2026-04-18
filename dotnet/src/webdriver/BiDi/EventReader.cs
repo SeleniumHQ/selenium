@@ -61,16 +61,16 @@ public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSu
         }
     }
 
-    public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
+    public ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
     {
-        await _unsubscribe(cancellationToken).ConfigureAwait(false);
+        return DisposeAsync();
     }
 
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
-            await UnsubscribeAsync().ConfigureAwait(false);
+            await _unsubscribe(default).ConfigureAwait(false);
             _channel.Writer.TryComplete();
             GC.SuppressFinalize(this);
         }
