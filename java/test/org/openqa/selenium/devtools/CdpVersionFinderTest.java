@@ -20,7 +20,7 @@ package org.openqa.selenium.devtools;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,30 +73,30 @@ class CdpVersionFinderTest {
     CdpInfo v84 = new CdpInfo(84, dt -> null) {};
     CdpInfo v85 = new CdpInfo(85, dt -> null) {};
 
-    CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
+    CdpVersionFinder finder = new CdpVersionFinder(5, List.of(v84, v85));
 
     Optional<CdpInfo> info = finder.match(chrome85);
-    assertThat(info).isEqualTo(Optional.of(v85));
+    assertThat(info).contains(v85);
 
     info = finder.match(edge84);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 
   @Test
   void shouldReturnThePreviousLowestMatchIfNoExactMatchFoundWithinFuzzFactor() {
     CdpInfo v84 = new CdpInfo(84, dt -> null) {};
 
-    CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84));
+    CdpVersionFinder finder = new CdpVersionFinder(5, List.of(v84));
 
     Optional<CdpInfo> info = finder.match(chrome85);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 
   @Test
   void shouldReturnEmptyIfNothingIsFoundThatMatches() {
     CdpInfo v90 = new CdpInfo(90, dt -> null) {};
 
-    CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v90));
+    CdpVersionFinder finder = new CdpVersionFinder(5, List.of(v90));
 
     assertThat(finder.match(edge84)).isEmpty();
     assertThat(finder.match(chrome85)).isEmpty();
@@ -109,12 +109,12 @@ class CdpVersionFinderTest {
 
     CdpInfo v84 = new CdpInfo(84, dt -> null) {};
     CdpInfo v85 = new CdpInfo(85, dt -> null) {};
-    CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
+    CdpVersionFinder finder = new CdpVersionFinder(5, List.of(v84, v85));
 
     Optional<CdpInfo> info = finder.match(chromeVersion);
-    assertThat(info).isEqualTo(Optional.of(v85));
+    assertThat(info).contains(v85);
 
     info = finder.match(edgeVersion);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 }

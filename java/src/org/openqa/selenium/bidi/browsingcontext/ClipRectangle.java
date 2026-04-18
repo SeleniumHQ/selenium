@@ -35,7 +35,7 @@ public abstract class ClipRectangle {
     }
   }
 
-  private Type type;
+  private final Type type;
 
   ClipRectangle(Type type) {
     this.type = type;
@@ -46,4 +46,9 @@ public abstract class ClipRectangle {
   }
 
   public abstract Map<String, Object> toMap();
+
+  @Override
+  public String toString() {
+    return String.format("%s{%s}", getClass().getSimpleName(), toMap());
+  }
 }

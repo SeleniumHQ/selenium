@@ -35,10 +35,10 @@ public abstract class FirefoxDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public FirefoxDriverService(
+  protected FirefoxDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {

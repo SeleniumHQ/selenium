@@ -18,7 +18,6 @@
 package org.openqa.selenium.safari;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI;
 
@@ -28,8 +27,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
@@ -67,16 +64,11 @@ public class SafariDriverService extends DriverService {
   public SafariDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -161,18 +153,20 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected List<String> createArgs() {
-      List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
+      List<String> args = new ArrayList<>(3);
+      args.add("--port");
+      args.add(String.valueOf(getPort()));
       if (Boolean.TRUE.equals(diagnose)) {
         args.add("--diagnose");
       }
-      return args;
+      return unmodifiableList(args);
     }
 
     @Override
     protected SafariDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

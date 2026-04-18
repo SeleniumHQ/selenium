@@ -1,0 +1,32 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+import pytest
+import urllib3
+
+from selenium import webdriver
+from selenium.webdriver.common.options import ArgOptions as Options
+
+
+def test_command_executor_ssl_certificate_is_verified():
+    options = Options()
+    site = "wrong.host.badssl.com"
+    with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
+        webdriver.Remote(command_executor="https://wrong.host.badssl.com/", options=options)
+    assert isinstance(excinfo.value.reason, urllib3.exceptions.SSLError)
+    assert site in str(excinfo.value)
+    assert "certificate is not valid" in str(excinfo.value).lower()

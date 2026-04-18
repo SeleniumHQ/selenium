@@ -22,13 +22,13 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class FirefoxRemoteConnection(RemoteConnection):
-    browser_name = DesiredCapabilities.FIREFOX["browserName"]
+    browser_name = DesiredCapabilities.FIREFOX["browserName"]  # type: ignore
 
     def __init__(
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: bool | None = False,
+        ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:
         client_config = client_config or ClientConfig(

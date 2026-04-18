@@ -83,13 +83,15 @@ def test_add_cookie(cookie, driver):
 def test_add_cookie_same_site_strict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie("foo")
-    assert "sameSite" in returned and returned["sameSite"] == "Strict"
+    assert "sameSite" in returned
+    assert returned["sameSite"] == "Strict"
 
 
 def test_add_cookie_same_site_lax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie("foo")
-    assert "sameSite" in returned and returned["sameSite"] == "Lax"
+    assert "sameSite" in returned
+    assert returned["sameSite"] == "Lax"
 
 
 def test_add_cookie_same_site_none(same_site_cookie_none, driver):

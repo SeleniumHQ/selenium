@@ -21,13 +21,13 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.FakeWebDriverInfo.FAKE_BROWSER;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -39,7 +39,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -54,6 +58,7 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
@@ -66,9 +71,9 @@ class RemoteWebDriverBuilderTest {
       new HttpResponse()
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "sessionId",
                           SESSION_ID,
                           // Primula is a canned cheese. Boom boom!
@@ -164,7 +169,7 @@ class RemoteWebDriverBuilderTest {
         .connectingWith(
             config ->
                 req -> {
-                  Map<String, Object> payload = new Json().toType(Contents.string(req), MAP_TYPE);
+                  Map<String, Object> payload = new Json().toType(req.contentAsString(), MAP_TYPE);
                   seen.set("merhaba".equals(payload.getOrDefault("cloud:options", "")));
                   return CANNED_SESSION_RESPONSE;
                 })
@@ -221,21 +226,21 @@ class RemoteWebDriverBuilderTest {
     URI uri = URI.create("http://localhost:7575");
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .oneOf(new FirefoxOptions())
-        .address(uri)
-        .connectingWith(
-            config ->
-                req -> {
-                  seen.set(config.baseUri());
-                  return CANNED_SESSION_RESPONSE;
-                })
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .oneOf(new FirefoxOptions())
+            .address(uri)
+            .connectingWith(on(config -> seen.set(config.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+    assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).capabilities.asMap())
+        .containsEntry("se:cheese", "primula");
   }
 
   @Test
+  @NullMarked
   void shouldUseGivenDriverServiceForUrlIfProvided() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -248,15 +253,11 @@ class RemoteWebDriverBuilderTest {
           }
         };
 
-    AtomicReference<URI> seen = new AtomicReference<>();
+    AtomicReference<@Nullable URI> seen = new AtomicReference<>();
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .withDriverService(service)
-        .connectingWith(
-            config -> {
-              seen.set(config.baseUri());
-              return req -> CANNED_SESSION_RESPONSE;
-            })
+        .connectingWith(on(config -> seen.set(config.baseUri())))
         .build();
 
     assertThat(seen).hasValue(uri);
@@ -300,52 +301,52 @@ class RemoteWebDriverBuilderTest {
 
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .address(uri.toString())
-        .oneOf(new FirefoxOptions())
-        .connectingWith(
-            config -> {
-              seen.set(config.baseUri());
-              return req -> CANNED_SESSION_RESPONSE;
-            })
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .address(uri.toString())
+            .oneOf(new FirefoxOptions())
+            .connectingWith(on(config -> seen.set(config.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+
+    ClientConfig actualConfig = ((RemoteWebDriver) webDriver).getClientConfig();
+    ClientConfig expectedConfig = ClientConfig.defaultConfig();
+    assertThat(actualConfig).usingRecursiveComparison().isEqualTo(expectedConfig);
   }
 
   @Test
   void shouldSetRemoteHostUriOnClientConfigIfSet() {
     URI uri = URI.create("http://localhost:6546");
-    ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
+    ClientConfig config =
+        ClientConfig.defaultConfig().baseUri(uri).readTimeout(Duration.ofSeconds(1111));
 
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .config(config)
-        .oneOf(new FirefoxOptions())
-        .connectingWith(
-            c -> {
-              seen.set(c.baseUri());
-              return req -> CANNED_SESSION_RESPONSE;
-            })
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .config(config)
+            .oneOf(new FirefoxOptions())
+            .connectingWith(on(c -> seen.set(c.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+    assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).getClientConfig()).isEqualTo(config);
   }
 
   @Test
-  void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
-    ClientConfig config = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(4));
-
+  void canUseCustomConfigForLocalDriver() {
+    ClientConfig customConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(111));
     RemoteWebDriverBuilder builder =
         RemoteWebDriver.builder()
-            .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
-            .config(config)
-            .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
+            .oneOf(new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER))
+            .config(customConfig);
 
-    assertThatIllegalArgumentException()
-        .isThrownBy(builder::build)
-        .withMessage("ClientConfig instances do not work for Local Drivers");
+    WebDriver webDriver = builder.build();
+
+    assertThat(webDriver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).getClientConfig()).isEqualTo(customConfig);
   }
 
   @Test
@@ -384,13 +385,15 @@ class RemoteWebDriverBuilderTest {
   @Test
   void
       shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
+    AtomicReference<URI> seen = new AtomicReference<>();
     WebDriver driver =
         RemoteWebDriver.builder()
-            .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
-            .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
+            .oneOf(new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER))
+            .connectingWith(on(config -> seen.set(config.baseUri())))
             .build();
 
     assertThat(driver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
+    assertThat(seen.get()).isNull();
   }
 
   @Test
@@ -399,9 +402,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",
@@ -425,6 +428,7 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  @NullMarked
   void shouldAugmentDriverWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -441,9 +445,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",
@@ -467,6 +471,7 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  @NullMarked
   void shouldAugmentWithDevToolsWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
@@ -483,9 +488,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",
@@ -507,7 +512,7 @@ class RemoteWebDriverBuilderTest {
 
   @SuppressWarnings("unchecked")
   private List<Capabilities> listCapabilities(HttpRequest request) {
-    Map<String, Object> converted = new Json().toType(Contents.string(request), MAP_TYPE);
+    Map<String, Object> converted = new Json().toType(request.contentAsString(), MAP_TYPE);
     Map<String, Object> w3cCaps = (Map<String, Object>) converted.get("capabilities");
     Map<String, Object> always =
         (Map<String, Object>) w3cCaps.getOrDefault("alwaysMatch", emptyMap());
@@ -521,6 +526,7 @@ class RemoteWebDriverBuilderTest {
         .collect(Collectors.toList());
   }
 
+  @NullMarked
   static class FakeDriverService extends DriverService {
     private boolean started;
 
@@ -542,5 +548,23 @@ class RemoteWebDriverBuilderTest {
     protected void waitUntilAvailable() {
       // return immediately
     }
+
+    @Override
+    public String getDriverProperty() {
+      return "";
+    }
+
+    @Override
+    protected String getDriverEnvironmentVariable() {
+      return "";
+    }
+  }
+
+  private Function<ClientConfig, HttpHandler> on(Consumer<ClientConfig> callback) {
+    return config ->
+        req -> {
+          callback.accept(config);
+          return CANNED_SESSION_RESPONSE;
+        };
   }
 }

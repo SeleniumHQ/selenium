@@ -17,8 +17,19 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
+import org.jspecify.annotations.Nullable;
+
 public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
-  public SetScriptingEnabledParameters(Boolean enabled) {
+  public static SetScriptingEnabledParameters scriptingEnabled() {
+    return new SetScriptingEnabledParameters(null);
+  }
+
+  public static SetScriptingEnabledParameters scriptingDisabled() {
+    return new SetScriptingEnabledParameters(false);
+  }
+
+  public SetScriptingEnabledParameters(@Nullable Boolean enabled) {
     if (Boolean.TRUE.equals(enabled)) {
       throw new IllegalArgumentException(
           "Only emulation of disabled JavaScript is supported (enabled must be false or null)");
@@ -27,13 +38,13 @@ public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
   }
 
   @Override
-  public SetScriptingEnabledParameters contexts(java.util.List<String> contexts) {
+  public SetScriptingEnabledParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetScriptingEnabledParameters userContexts(java.util.List<String> userContexts) {
+  public SetScriptingEnabledParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

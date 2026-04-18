@@ -17,15 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -166,15 +162,9 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentNullException">If <paramref name="scriptName"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
     public async Task<InitializationScript> AddInitializationScript(string scriptName, [StringSyntax(StringSyntaxConstants.JavaScript)] string script)
     {
-        if (scriptName is null)
-        {
-            throw new ArgumentNullException(nameof(scriptName));
-        }
+        ArgumentNullException.ThrowIfNull(scriptName);
 
-        if (script is null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         if (this.initializationScripts.TryGetValue(scriptName, out InitializationScript? existingScript))
         {
@@ -198,10 +188,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentNullException">If <paramref name="scriptName"/> is <see langword="null"/>.</exception>
     public async Task RemoveInitializationScript(string scriptName)
     {
-        if (scriptName is null)
-        {
-            throw new ArgumentNullException(nameof(scriptName));
-        }
+        ArgumentNullException.ThrowIfNull(scriptName);
 
         if (this.initializationScripts.TryGetValue(scriptName, out InitializationScript? script))
         {
@@ -235,10 +222,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentNullException">If <paramref name="script"/> is <see langword="null"/>.</exception>
     public async Task<PinnedScript> PinScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         string newScriptHandle = Guid.NewGuid().ToString("N");
 
@@ -263,10 +247,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentNullException">If <paramref name="script"/> is <see langword="null"/>.</exception>
     public async Task UnpinScript(PinnedScript script)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         if (this.pinnedScripts.ContainsKey(script.Handle))
         {
@@ -286,10 +267,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentException">If A binding with the specified name already exists.</exception>
     public async Task AddScriptCallbackBinding(string bindingName)
     {
-        if (bindingName is null)
-        {
-            throw new ArgumentNullException(nameof(bindingName));
-        }
+        ArgumentNullException.ThrowIfNull(bindingName);
 
         if (!this.bindings.Add(bindingName))
         {
@@ -308,10 +286,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <exception cref="ArgumentNullException">If <paramref name="bindingName"/> is <see langword="null"/>.</exception>
     public async Task RemoveScriptCallbackBinding(string bindingName)
     {
-        if (bindingName is null)
-        {
-            throw new ArgumentNullException(nameof(bindingName));
-        }
+        ArgumentNullException.ThrowIfNull(bindingName);
 
         await this.session.Value.Domains.JavaScript.RemoveBinding(bindingName).ConfigureAwait(false);
         _ = this.bindings.Remove(bindingName);

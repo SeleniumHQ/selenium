@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Internal.Logging;
 
 /// <summary>
@@ -44,14 +42,14 @@ public interface ILogContext : IDisposable
     /// </summary>
     /// <typeparam name="T">The type for which to retrieve the logger.</typeparam>
     /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-    internal ILogger GetLogger<T>();
+    ILogger GetLogger<T>();
 
     /// <summary>
     /// Gets a logger for the specified type.
     /// </summary>
     /// <param name="type">The type for which to retrieve the logger.</param>
     /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-    internal ILogger GetLogger(Type type);
+    ILogger GetLogger(Type type);
 
     /// <summary>
     /// Checks whether logs emitting is enabled for a logger and a log event level.
@@ -65,9 +63,10 @@ public interface ILogContext : IDisposable
     /// Emits a log message using the specified logger, log level, and message.
     /// </summary>
     /// <param name="logger">The logger to emit the log message.</param>
+    /// <param name="timestamp">The timestamp of the log event.</param>
     /// <param name="level">The log level of the message.</param>
     /// <param name="message">The log message.</param>
-    internal void EmitMessage(ILogger logger, LogEventLevel level, string message);
+    internal void EmitMessage(ILogger logger, DateTimeOffset timestamp, LogEventLevel level, string message);
 
     /// <summary>
     /// Sets the minimum log level for the current context.
@@ -83,6 +82,13 @@ public interface ILogContext : IDisposable
     /// <param name="level">The minimum log level.</param>
     /// <returns>The current instance of <see cref="ILogContext"/> with the minimum log level set for the specified type.</returns>
     ILogContext SetLevel(Type issuer, LogEventLevel level);
+
+    /// <summary>
+    /// Sets the truncation length for log messages in the current context.
+    /// </summary>
+    /// <param name="length">The maximum length of log messages before truncation occurs. Pass <see langword="null"/> to disable truncation.</param>
+    /// <returns>The current instance of <see cref="ILogContext"/> with the truncation length set.</returns>
+    ILogContext WithTruncation(int? length);
 
     /// <summary>
     /// Gets a list of log handlers.

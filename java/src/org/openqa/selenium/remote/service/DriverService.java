@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
@@ -46,6 +47,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -59,7 +61,7 @@ import org.openqa.selenium.os.ExternalProcess;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is used
  * to stop the server.
  */
-public class DriverService implements Closeable {
+public abstract class DriverService implements Closeable {
 
   public static final String LOG_NULL = "/dev/null";
   public static final String LOG_STDERR = "/dev/stderr";
@@ -82,7 +84,7 @@ public class DriverService implements Closeable {
   private final URL url;
 
   /** Controls access to {@link #process}. */
-  private String executable;
+  private @Nullable String executable;
 
   private final ReentrantLock lock = new ReentrantLock();
   private final Duration timeout;
@@ -93,7 +95,7 @@ public class DriverService implements Closeable {
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
-  protected ExternalProcess process = null;
+  @Nullable protected ExternalProcess process = null;
 
   private OutputStream outputStream = System.err;
 
@@ -108,7 +110,7 @@ public class DriverService implements Closeable {
   protected DriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -116,12 +118,13 @@ public class DriverService implements Closeable {
       this.executable = executable.getCanonicalPath();
     }
     this.timeout = timeout;
-    this.args = args;
-    this.environment = environment;
+    this.args = args == null ? emptyList() : List.copyOf(args);
+    this.environment = environment == null ? emptyMap() : Map.copyOf(environment);
 
     this.url = getUrl(port);
   }
 
+  @Nullable
   public String getExecutable() {
     return executable;
   }
@@ -150,13 +153,9 @@ public class DriverService implements Closeable {
     return null;
   }
 
-  public @Nullable String getDriverProperty() {
-    return null;
-  }
+  public abstract String getDriverProperty();
 
-  public String getDriverEnvironmentVariable() {
-    return null;
-  }
+  protected abstract String getDriverEnvironmentVariable();
 
   protected @Nullable File getDriverExecutable() {
     return null;
@@ -220,7 +219,7 @@ public class DriverService implements Closeable {
               },
               executorService);
 
-      CompletableFuture<StartOrDie> processFinished =
+      CompletableFuture<@Nullable StartOrDie> processFinished =
           CompletableFuture.supplyAsync(
               () -> {
                 try {
@@ -366,7 +365,7 @@ public class DriverService implements Closeable {
     public File exe = null;
     private Map<String, String> environment = emptyMap();
     private File logFile;
-    private Duration timeout;
+    private Duration timeout = DEFAULT_TIMEOUT;
     private OutputStream logOutputStream;
 
     /**
@@ -482,7 +481,13 @@ public class DriverService implements Closeable {
         return;
       }
 
-      String logLocation = System.getProperty(logProperty, LOG_NULL);
+      String defaultLocation = Debug.isDebugAll() ? LOG_STDERR : LOG_NULL;
+      String logLocation = System.getProperty(logProperty, defaultLocation);
+      if (Debug.isDebugAll() && System.getProperty(logProperty) == null) {
+        System.err.println(
+            "WARNING: Environment Variable `SE_DEBUG` is set; defaulting driver log output to"
+                + " stderr.");
+      }
       switch (logLocation) {
         case LOG_STDOUT:
           withLogOutput(System.out);

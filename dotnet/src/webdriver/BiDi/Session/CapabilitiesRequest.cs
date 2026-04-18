@@ -17,13 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 public sealed record CapabilitiesRequest
 {
-    public CapabilityRequest? AlwaysMatch { get; set; }
+    public CapabilityRequest? AlwaysMatch { get; init; }
 
-    public IEnumerable<CapabilityRequest>? FirstMatch { get; set; }
+    public IEnumerable<CapabilityRequest>? FirstMatch { get; init; }
 }

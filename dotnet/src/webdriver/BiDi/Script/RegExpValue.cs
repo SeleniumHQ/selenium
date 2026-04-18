@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -25,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record RegExpValue(string Pattern)
 {
-    public string? Flags { get; set; }
+    public string? Flags { get; init; }
 
     internal static string? GetRegExpFlags(RegexOptions options)
     {

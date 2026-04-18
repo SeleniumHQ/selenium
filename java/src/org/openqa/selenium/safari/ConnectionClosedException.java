@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.safari;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 /** Exception thrown when the connection to the SafariDriver is lost. */
-@NullMarked
 public class ConnectionClosedException extends WebDriverException {
 
   public ConnectionClosedException(@Nullable String message) {

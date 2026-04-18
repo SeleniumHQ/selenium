@@ -19,13 +19,19 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.logging.Logger;
-import javax.management.*;
+import javax.management.AttributeList;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanInfo;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -64,8 +70,7 @@ class JmxTest {
 
     BaseServerOptions baseServerOptions =
         new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+            new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
 
     MBeanInfo info = beanServer.getMBeanInfo(name);
     assertThat(info).isNotNull();
@@ -106,10 +111,10 @@ class JmxTest {
     assertThat(info).isNotNull();
 
     MBeanAttributeInfo[] attributeInfo = info.getAttributes();
-    assertThat(attributeInfo).hasSize(9);
+    assertThat(attributeInfo).hasSize(10);
 
     AttributeList attributeList = getAttributeList(name, attributeInfo);
-    assertThat(attributeList).isNotNull().hasSize(9);
+    assertThat(attributeList).isNotNull().hasSize(10);
 
     Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
     assertNumberAttribute(currentSessions, 0);
@@ -129,6 +134,9 @@ class JmxTest {
     Object load = beanServer.getAttribute(name, "Load");
     assertNumberAttribute(load, 0.0f);
 
+    Object consecutiveSessionFailures = beanServer.getAttribute(name, "ConsecutiveSessionFailures");
+    assertNumberAttribute(consecutiveSessionFailures, 0);
+
     String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
     assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
 
@@ -142,8 +150,7 @@ class JmxTest {
 
     new JMXHelper().unregister(name);
 
-    NewSessionQueueOptions newSessionQueueOptions =
-        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(new MapConfig());
     MBeanInfo info = beanServer.getMBeanInfo(name);
     assertThat(info).isNotNull();
 

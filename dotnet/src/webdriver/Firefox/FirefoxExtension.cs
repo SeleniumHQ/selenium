@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Xml;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -49,7 +47,8 @@ public class FirefoxExtension
     /// <exception cref="ArgumentNullException">If <paramref name="fileName"/> is <see langword="null"/>.</exception>
     public FirefoxExtension(string fileName)
     {
-        this.extensionFileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+        ArgumentNullException.ThrowIfNull(fileName);
+        this.extensionFileName = fileName;
     }
 
     /// <summary>

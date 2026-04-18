@@ -54,7 +54,12 @@ public class TracedCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
   }
 
+  /**
+   * @deprecated logging is not in the W3C WebDriver spec and LocalLogs are no longer supported.
+   */
   @Override
+  @Deprecated(forRemoval = true)
+  @SuppressWarnings("deprecation")
   public void setLocalLogs(LocalLogs logs) {
     if (delegate instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) delegate).setLocalLogs(logs);

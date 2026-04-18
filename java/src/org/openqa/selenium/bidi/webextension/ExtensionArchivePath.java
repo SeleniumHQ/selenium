@@ -19,7 +19,12 @@ package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
 
-public class ExtensionArchivePath extends ExtensionData {
+/**
+ * @see <a
+ *     href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-webextensionextensionarchivepath">BiDi
+ *     spec</a>
+ */
+public class ExtensionArchivePath implements ExtensionData {
   private final String path;
 
   public ExtensionArchivePath(String path) {
@@ -28,7 +33,6 @@ public class ExtensionArchivePath extends ExtensionData {
 
   @Override
   public Map<String, Object> toMap() {
-    String type = "archivePath";
-    return Map.of("extensionData", Map.of("type", type, "path", path));
+    return Map.of("extensionData", Map.of("type", "archivePath", "path", path));
   }
 }

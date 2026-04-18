@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.locators;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -35,6 +37,7 @@ class RelativeLocatorScript {
 
       String rawFunction;
       try (InputStream stream = RelativeLocator.class.getResourceAsStream(location)) {
+        requireNonNull(stream, () -> "Resource not found: " + location);
         rawFunction = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
       }
 

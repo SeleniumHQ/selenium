@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.bidi.storage;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.json.JsonInput;
 
 public class PartitionKey {
-  private final String userContext;
-  private final String sourceOrigin;
+  @Nullable private final String userContext;
+  @Nullable private final String sourceOrigin;
 
-  public PartitionKey(String userContext, String sourceOrigin) {
+  public PartitionKey(@Nullable String userContext, @Nullable String sourceOrigin) {
     this.userContext = userContext;
     this.sourceOrigin = sourceOrigin;
   }
@@ -54,10 +55,12 @@ public class PartitionKey {
     return new PartitionKey(userContext, sourceOrigin);
   }
 
+  @Nullable
   public String getUserContext() {
     return userContext;
   }
 
+  @Nullable
   public String getSourceOrigin() {
     return sourceOrigin;
   }

@@ -22,10 +22,8 @@ import java.util.logging.Logger;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class JMXHelper {
 
   private static final Logger LOG = Logger.getLogger(JMXHelper.class.getName());
@@ -44,7 +42,7 @@ public class JMXHelper {
     }
   }
 
-  public void unregister(ObjectName objectName) {
+  public void unregister(@Nullable ObjectName objectName) {
     if (objectName != null) {
       MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
       try {

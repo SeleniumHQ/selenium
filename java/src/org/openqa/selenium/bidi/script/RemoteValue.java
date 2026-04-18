@@ -25,13 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 public class RemoteValue {
 
-  private enum Type {
+  public enum Type {
     UNDEFINED("undefined"),
     NULL("null"),
     STRING("string"),
@@ -73,33 +75,27 @@ public class RemoteValue {
     }
 
     public static Type findByName(String name) {
-      Type result = null;
       for (Type type : values()) {
         if (type.toString().equalsIgnoreCase(name)) {
-          result = type;
-          break;
+          return type;
         }
       }
-      return result;
+      throw new IllegalArgumentException("Unsupported value type: " + name);
     }
   }
 
   private static final Json JSON = new Json();
 
   private final Type type;
-
   private final Optional<String> handle;
-
-  private final Optional<Long> internalId;
-
+  private final Optional<String> internalId;
   private final Optional<Object> value;
-
   private final Optional<String> sharedId;
 
   public RemoteValue(
       Type type,
       Optional<String> handle,
-      Optional<Long> internalId,
+      Optional<String> internalId,
       Optional<Object> value,
       Optional<String> sharedId) {
     this.type = type;
@@ -111,20 +107,16 @@ public class RemoteValue {
 
   public static RemoteValue fromJson(JsonInput input) {
     Type type = null;
-
     Optional<String> handle = Optional.empty();
-
-    Optional<Long> internalId = Optional.empty();
-
+    Optional<String> internalId = Optional.empty();
     Optional<Object> value = Optional.empty();
-
     Optional<String> sharedId = Optional.empty();
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          String typeString = input.read(String.class);
+          String typeString = input.readNonNull(String.class);
           type = Type.findByName(typeString);
           break;
 
@@ -133,12 +125,11 @@ public class RemoteValue {
           break;
 
         case "internalId":
-          internalId = Optional.ofNullable(input.read(Long.class));
+          internalId = Optional.ofNullable(input.read(String.class));
           break;
 
         case "value":
           value = Optional.ofNullable(input.read(Object.class));
-
           break;
 
         case "sharedId":
@@ -153,11 +144,12 @@ public class RemoteValue {
 
     input.endObject();
 
+    Type valueType = Require.nonNull("type", type);
     if (value.isPresent()) {
       value = Optional.ofNullable(deserializeValue(value.get(), type));
     }
 
-    return new RemoteValue(type, handle, internalId, value, sharedId);
+    return new RemoteValue(valueType, handle, internalId, value, sharedId);
   }
 
   public String getType() {
@@ -168,7 +160,7 @@ public class RemoteValue {
     return handle;
   }
 
-  public Optional<Long> getInternalId() {
+  public Optional<String> getInternalId() {
     return internalId;
   }
 
@@ -192,6 +184,7 @@ public class RemoteValue {
     return unmodifiableMap(toReturn);
   }
 
+  @Nullable
   private static Object deserializeValue(Object value, Type type) {
     Object finalValue;
 

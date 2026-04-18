@@ -42,4 +42,9 @@ public class ScreenOrientation {
         "natural", natural.toString(),
         "type", type.toString());
   }
+
+  @Override
+  public String toString() {
+    return String.format("ScreenOrientation{natural=%s, type=%s}", natural, type);
+  }
 }

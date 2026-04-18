@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.bidi.storage;
 
+import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Instant;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-import org.junit.jupiter.api.AfterEach;
+import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
@@ -39,7 +39,7 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 class StorageCommandsTest extends JupiterTestBase {
   private String cookiePage;
-  private static final Random random = ThreadLocalRandom.current();
+  private static final AtomicLong sequence = new AtomicLong(currentTimeMillis());
 
   private Storage storage;
 
@@ -275,8 +275,10 @@ class StorageCommandsTest extends JupiterTestBase {
 
   @Test
   public void canDeleteAllCookies() {
-    addCookieOnServerSide(new Cookie("foo", "set"));
-    assertSomeCookiesArePresent();
+    addCookieOnServerSide(new Cookie("foo1", "value1"));
+    addCookieOnServerSide(new Cookie("foo2", "value2"));
+    assertCookieHasValue("foo1", "value1");
+    assertCookieHasValue("foo2", "value2");
 
     storage.deleteCookies(new DeleteCookiesParameters(new CookieFilter()));
 
@@ -291,20 +293,20 @@ class StorageCommandsTest extends JupiterTestBase {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
 
-    addCookieOnServerSide(new Cookie(key1, "set"));
-    addCookieOnServerSide(new Cookie(key2, "set"));
+    addCookieOnServerSide(new Cookie(key1, "value1"));
+    addCookieOnServerSide(new Cookie(key2, "value2"));
 
-    assertCookieIsPresentWithName(key1);
-    assertCookieIsPresentWithName(key2);
+    assertCookieHasValue(key1, "value1");
+    assertCookieHasValue(key2, "value2");
 
     storage.deleteCookies(new DeleteCookiesParameters(new CookieFilter().name(key1)));
 
     assertCookieIsNotPresentWithName(key1);
-    assertCookieIsPresentWithName(key2);
+    assertCookieHasValue(key2, "value2");
 
     openAnotherPage();
     assertCookieIsNotPresentWithName(key1);
-    assertCookieIsPresentWithName(key2);
+    assertCookieHasValue(key2, "value2");
   }
 
   @Test
@@ -336,15 +338,8 @@ class StorageCommandsTest extends JupiterTestBase {
     assertCookieIsNotPresentWithName("fish");
   }
 
-  @AfterEach
-  public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
-  }
-
   private String generateUniqueKey() {
-    return String.format("key_%d", random.nextInt());
+    return String.format("key_%d", sequence.incrementAndGet());
   }
 
   private void assertNoCookiesArePresent() {
@@ -355,19 +350,11 @@ class StorageCommandsTest extends JupiterTestBase {
     }
   }
 
-  private void assertSomeCookiesArePresent() {
-    assertThat(driver.manage().getCookies()).isNotEmpty();
-    String documentCookie = getDocumentCookieOrNull();
-    if (documentCookie != null) {
-      assertThat(documentCookie).as("Cookies were empty").isNotEqualTo("");
-    }
-  }
-
   private void assertCookieIsNotPresentWithName(final String key) {
     assertThat(driver.manage().getCookieNamed(key)).as("Cookie with name " + key).isNull();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat(documentCookie).as("Cookie with name " + key).doesNotContain((key + "="));
+      assertThat(documentCookie).as("Cookie with name " + key).doesNotContain(key + "=");
     }
   }
 
@@ -382,7 +369,10 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   private void assertCookieHasValue(final String key, final String value) {
-    assertThat(driver.manage().getCookieNamed(key).getValue()).isEqualTo(value);
+    Cookie cookie = driver.manage().getCookieNamed(key);
+    assertThat(cookie).isNotNull();
+    assertThat(cookie.getValue()).isEqualTo(value);
+
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat(documentCookie)
@@ -418,9 +408,7 @@ class StorageCommandsTest extends JupiterTestBase {
     if (cookie.getDomain() != null) {
       url.append("&domain=").append(cookie.getDomain());
     }
-    if (cookie.getPath() != null) {
-      url.append("&path=").append(cookie.getPath());
-    }
+    url.append("&path=").append(cookie.getPath());
     if (cookie.getExpiry() != null) {
       url.append("&expiry=").append(cookie.getExpiry().getTime());
     }

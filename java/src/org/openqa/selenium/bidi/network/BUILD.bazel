@@ -21,5 +21,6 @@ java_library(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.auto.service:auto-service-annotations"),
+        "@maven//:org_jspecify_jspecify",
     ],
 )

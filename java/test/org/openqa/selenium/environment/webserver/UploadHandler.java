@@ -18,15 +18,15 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.remote.http.Contents.string;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.base.Splitter;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +48,8 @@ class UploadHandler implements HttpHandler {
 
     // I mean. Seriously. *sigh*
     try {
-      String decoded = URLDecoder.decode(string(req), Charset.defaultCharset().displayName());
+      String decoded =
+          URLDecoder.decode(req.contentAsString(), Charset.defaultCharset().displayName());
 
       String[] splits = decoded.split("\r\n");
 
@@ -70,8 +71,12 @@ class UploadHandler implements HttpHandler {
         }
 
         if (inHeaders && splits[i].toLowerCase().startsWith("content-disposition:")) {
-          for (String keyValue :
-              Splitter.on(';').trimResults().omitEmptyStrings().split(splits[i])) {
+          List<String> keyValues =
+              Arrays.stream(splits[i].split(";"))
+                  .map(String::trim)
+                  .filter(s -> !s.isEmpty())
+                  .collect(toList());
+          for (String keyValue : keyValues) {
             Matcher matcher = Pattern.compile("(\\S+)\\s*=.*\"(.*?)\".*").matcher(keyValue);
             if (matcher.find()) {
               values.put(matcher.group(1), matcher.group(2));

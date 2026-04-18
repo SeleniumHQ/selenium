@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNullElse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +38,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Read;
 
 abstract class HttpMessage<M extends HttpMessage<M>> {
 
@@ -51,6 +53,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @param key attribute name
    * @return attribute object
    */
+  @Nullable
   public Object getAttribute(String key) {
     return attributes.get(key);
   }
@@ -115,6 +118,10 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     String lcName = name.toLowerCase(Locale.ENGLISH);
     List<String> values = headers.getOrDefault(lcName, emptyList());
     return !values.isEmpty() ? values.get(0) : null;
+  }
+
+  public String getHeader(HttpHeader header, String defaultValue) {
+    return requireNonNullElse(getHeader(header.getName()), defaultValue);
   }
 
   /**
@@ -199,8 +206,8 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
 
   @Deprecated
   public M setContent(Supplier<InputStream> supplier) {
-    try {
-      return setContent(Contents.bytes(supplier.get().readAllBytes()));
+    try (InputStream in = supplier.get()) {
+      return setContent(Contents.bytes(Read.toByteArray(in)));
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }

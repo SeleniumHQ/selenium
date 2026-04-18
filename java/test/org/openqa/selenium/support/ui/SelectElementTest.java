@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -178,7 +177,7 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
     Select select = new Select(selectElement);
 
-    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    List<String> options = List.of("Apples", "Pears", "Oranges", "Lemons");
     options.forEach(
         option ->
             assertThatExceptionOfType(NoSuchElementException.class)
@@ -208,7 +207,7 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
     Select select = new Select(selectElement);
 
-    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    List<String> options = List.of("Apples", "Pears", "Oranges", "Lemons");
     options.forEach(
         option ->
             assertThatExceptionOfType(NoSuchElementException.class)

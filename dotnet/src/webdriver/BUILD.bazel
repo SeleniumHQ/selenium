@@ -11,7 +11,9 @@ load(
 )
 
 exports_files([
-    "WebDriver.csproj",
+    "Properties/ArgumentNullExceptionExtensions.cs",
+    "Properties/CallerArgumentExpressionAttribute.cs",
+    "Properties/NullableAttributes.cs",
     "Properties/StringSyntaxAttribute.cs",
     "Properties/StringSyntaxConstants.cs",
 ])
@@ -46,12 +48,9 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    internals_visible_to = [
-        "WebDriver.Common.Tests",
-    ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "net462",
@@ -67,6 +66,7 @@ csharp_library(
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
         nuget_package("System.Text.Encodings.Web"),
         nuget_package("System.Text.Json"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.ValueTuple"),
     ],
 )
@@ -78,12 +78,9 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    internals_visible_to = [
-        "WebDriver.Common.Tests",
-    ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -96,6 +93,7 @@ csharp_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -111,15 +109,12 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
     ],
-    internals_visible_to = [
-        "WebDriver.Common.Tests",
-    ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -128,8 +123,7 @@ csharp_library(
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
-    ],
+    deps = [],
 )
 
 csharp_library(
@@ -139,10 +133,10 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "net462",
@@ -153,6 +147,7 @@ csharp_library(
     deps = [
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -169,10 +164,10 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -185,6 +180,7 @@ csharp_library(
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -200,13 +196,13 @@ csharp_library(
         ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     defines = [
         "NET8_0_OR_GREATER",
     ],
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -215,8 +211,7 @@ csharp_library(
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
-    ],
+    deps = [],
 )
 
 copy_file(
@@ -226,36 +221,36 @@ copy_file(
 )
 
 copy_file(
-    name = "assets-nuget-build-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.targets",
-    out = "Selenium.WebDriver.targets",
+    name = "assets-nuget-build-props",
+    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.props",
+    out = "Selenium.WebDriver.props",
 )
 
 copy_file(
-    name = "assets-nuget-buildtransitive-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.targets",
-    out = "transitiveSelenium.WebDriver.targets",
+    name = "assets-nuget-buildtransitive-props",
+    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.props",
+    out = "transitiveSelenium.WebDriver.props",
 )
 
 copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",
     out = "manager/linux/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 nuget_pack(
@@ -266,8 +261,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",
     },
     id = "Selenium.WebDriver",
     libs = {
@@ -293,8 +288,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.StrongNamed.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.StrongNamed.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.props",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
@@ -303,10 +298,6 @@ nuget_pack(
         ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "Selenium.WebDriver.StrongNamed.nuspec",
-    property_group_vars = {
-        "BaseImagePath": "images",
-        "BaseSeleniumManagerPath": "manager",
-    },
     tags = [
         "block-network",
     ],

@@ -22,27 +22,22 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 public class SimplePropertyDescriptor {
 
-  private static final Function<Object, Object> GET_CLASS_NAME =
-      obj -> {
-        if (obj == null) {
-          return null;
-        }
-
-        if (obj instanceof Class) {
-          return ((Class<?>) obj).getName();
-        }
-
-        return obj.getClass().getName();
-      };
-
+  private static final Function<Object, @Nullable Object> GET_CLASS_NAME = new GetClassName();
+  private final Class<?> clazz;
   private final String name;
-  private final Function<Object, Object> read;
-  private final Method write;
+  private final @Nullable Function<Object, @Nullable Object> read;
+  private final @Nullable Method write;
 
-  public SimplePropertyDescriptor(String name, Function<Object, Object> read, Method write) {
+  public SimplePropertyDescriptor(
+      Class<?> clazz,
+      String name,
+      @Nullable Function<Object, @Nullable Object> read,
+      @Nullable Method write) {
+    this.clazz = clazz;
     this.name = name;
     this.read = read;
     this.write = write;
@@ -52,18 +47,23 @@ public class SimplePropertyDescriptor {
     return name;
   }
 
-  public Function<Object, Object> getReadMethod() {
+  public @Nullable Function<Object, @Nullable Object> getReadMethod() {
     return read;
   }
 
-  public Method getWriteMethod() {
+  public @Nullable Method getWriteMethod() {
     return write;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s.%s", clazz.getSimpleName(), name);
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
 
-    properties.put("class", new SimplePropertyDescriptor("class", GET_CLASS_NAME, null));
+    properties.put("class", new SimplePropertyDescriptor(clazz, "class", GET_CLASS_NAME, null));
 
     for (Method m : clazz.getMethods()) {
       if (Class.class.equals(m.getDeclaringClass()) || Object.class.equals(m.getDeclaringClass())) {
@@ -93,7 +93,7 @@ public class SimplePropertyDescriptor {
         readMethod = null;
       }
 
-      Function<Object, Object> read = null;
+      Function<Object, @Nullable Object> read = null;
 
       if (readMethod != null) {
         final Method finalReadMethod = readMethod;
@@ -109,14 +109,15 @@ public class SimplePropertyDescriptor {
             };
       }
 
-      if (readMethod != null || writeMethod != null) {
+      if (propertyName != null && (readMethod != null || writeMethod != null)) {
         SimplePropertyDescriptor descriptor =
             properties.getOrDefault(
-                propertyName, new SimplePropertyDescriptor(propertyName, null, null));
+                propertyName, new SimplePropertyDescriptor(clazz, propertyName, null, null));
 
         properties.put(
             propertyName,
             new SimplePropertyDescriptor(
+                clazz,
                 propertyName,
                 read != null ? read : descriptor.getReadMethod(),
                 writeMethod != null ? writeMethod : descriptor.getWriteMethod()));
@@ -141,5 +142,20 @@ public class SimplePropertyDescriptor {
     }
 
     return Character.isUpperCase(methodName.charAt(prefix.length()));
+  }
+
+  private static class GetClassName implements Function<Object, @Nullable Object> {
+    @Override
+    public @Nullable Object apply(Object obj) {
+      if (obj == null) {
+        return null;
+      }
+
+      if (obj instanceof Class) {
+        return ((Class<?>) obj).getName();
+      }
+
+      return obj.getClass().getName();
+    }
   }
 }

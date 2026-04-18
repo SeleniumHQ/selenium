@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -33,6 +34,7 @@ import org.openqa.selenium.WebElement;
 @Tag("UnitTests")
 class IntegrationTest {
 
+  @NullMarked
   static class CountCalls extends WebDriverDecorator<WebDriver> {
 
     int counterBefore = 0;

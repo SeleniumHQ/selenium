@@ -17,36 +17,26 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed record Handle
+[JsonConverter(typeof(Converter))]
+public sealed record Handle : IIdentifiable
 {
-    public Handle(BiDi bidi, string id)
-        : this(id)
+    public Handle(IBiDi bidi, string id)
     {
         BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
-    }
-
-    [JsonConstructor]
-    internal Handle(string id)
-    {
         Id = id;
     }
 
-    internal string Id { get; }
-
-    private BiDi? _bidi;
+    public string Id { get; }
 
     [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
+    public IBiDi BiDi { get; }
 
     public bool Equals(Handle? other)
     {
@@ -55,13 +45,18 @@ public sealed record Handle
 
     public override int GetHashCode()
     {
-        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+        return StringComparer.Ordinal.GetHashCode(Id);
     }
 
-    // Includes Id only for brevity
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
     private bool PrintMembers(StringBuilder builder)
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Handle>
+    {
+        protected override Handle Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

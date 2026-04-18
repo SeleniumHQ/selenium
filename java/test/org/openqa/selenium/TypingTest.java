@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import static com.google.common.base.Joiner.on;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
@@ -666,7 +665,7 @@ class TypingTest extends JupiterTestBase {
 
     input.sendKeys("b");
     assertThat(getValueText(log))
-        .isEqualTo(on('\n').join("keydown (target)", "keyup (target)", "keyup (body)"));
+        .isEqualTo(String.join("\n", "keydown (target)", "keyup (target)", "keyup (body)"));
 
     input.sendKeys("a");
 

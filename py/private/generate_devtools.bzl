@@ -48,3 +48,23 @@ generate_devtools = rule(
         "deps": attr.label_list(),
     },
 )
+
+def _generate_latest_impl(ctx):
+    versions = ctx.attr.browser_versions
+    latest = "v%s" % max([int(v[1:]) for v in versions])
+    output_file = ctx.actions.declare_file("selenium/webdriver/common/devtools/latest/__init__.py")
+    ctx.actions.write(
+        output = output_file,
+        content = "from ..%s import *\n" % latest,
+    )
+    return [DefaultInfo(
+        files = depset([output_file]),
+        runfiles = ctx.runfiles(files = [output_file]),
+    )]
+
+generate_devtools_latest = rule(
+    implementation = _generate_latest_impl,
+    attrs = {
+        "browser_versions": attr.string_list(mandatory = True),
+    },
+)

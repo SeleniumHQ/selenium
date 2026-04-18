@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -36,7 +34,6 @@ import org.jspecify.annotations.Nullable;
  * configuration. That is, it is an error to set an <code>httpProxy</code> manually and then turn on
  * proxy autodetect.
  */
-@NullMarked
 public class Proxy {
 
   public enum ProxyType {
@@ -142,7 +139,7 @@ public class Proxy {
       m.put(HTTP_PROXY, httpProxy);
     }
     if (noProxy != null) {
-      m.put(NO_PROXY, Arrays.asList(noProxy.split(",\\s*")));
+      m.put(NO_PROXY, List.of(noProxy.split(",\\s*")));
     }
     if (sslProxy != null) {
       m.put(SSL_PROXY, sslProxy);

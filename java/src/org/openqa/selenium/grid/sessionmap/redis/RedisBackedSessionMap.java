@@ -23,13 +23,12 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -55,7 +54,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class RedisBackedSessionMap extends SessionMap {
 
-  private static final Logger LOG = Logger.getLogger(RedisBackedSessionMap.class.getName());
   private static final Json JSON = new Json();
   private static final String REDIS_URI_KEY = "session.uri_key";
   private static final String REDIS_URI_VALUE = "session.uri_value";
@@ -66,19 +64,18 @@ public class RedisBackedSessionMap extends SessionMap {
   private static final String DATABASE_SYSTEM = AttributeKey.DATABASE_SYSTEM.getKey();
   private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.getKey();
   private final GridRedisClient connection;
-  private final EventBus bus;
   private final URI serverUri;
 
   public RedisBackedSessionMap(Tracer tracer, URI serverUri, EventBus bus) {
     super(tracer);
 
     Require.nonNull("Redis Server Uri", serverUri);
-    this.bus = Require.nonNull("Event bus", bus);
+    Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
+    bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
-    this.bus.addListener(
+    bus.addListener(
         NodeRemovedEvent.listener(
             nodeStatus ->
                 nodeStatus.getSlots().stream()
@@ -139,7 +136,7 @@ public class RedisBackedSessionMap extends SessionMap {
 
       span.addEvent("Inserted into the database", attributeMap);
       connection.mset(
-          ImmutableMap.of(
+          Map.of(
               uriKey, uriValue,
               stereotypeKey, stereotypeJson,
               capabilitiesKey, capabilitiesJson,
@@ -197,6 +194,7 @@ public class RedisBackedSessionMap extends SessionMap {
       CAPABILITIES_EVENT.accept(attributeMap, caps);
 
       span.addEvent("Retrieved session from the database", attributeMap);
+      //noinspection DataFlowIssue
       return new Session(id, uri, stereotype, caps, start);
     }
   }

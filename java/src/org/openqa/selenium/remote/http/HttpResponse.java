@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
+import org.jspecify.annotations.Nullable;
+
 public class HttpResponse extends HttpMessage<HttpResponse> {
 
   public static final String HTTP_TARGET_HOST = "http.target.host";
@@ -53,6 +55,7 @@ public class HttpResponse extends HttpMessage<HttpResponse> {
    *
    * @return originating host
    */
+  @Nullable
   public String getTargetHost() {
     return (String) getAttribute(HTTP_TARGET_HOST);
   }

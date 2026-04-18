@@ -1,4 +1,5 @@
-load("//java:defs.bzl", "java_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "locators",
@@ -9,5 +10,6 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
+        artifact("org.jspecify:jspecify"),
     ],
 )

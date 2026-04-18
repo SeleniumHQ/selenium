@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.support.events;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -34,6 +36,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
@@ -54,6 +57,7 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 @Tag("UnitTests")
+@NullMarked
 class EventFiringDecoratorTest {
 
   static class CollectorListener implements WebDriverListener {
@@ -1335,6 +1339,7 @@ class EventFiringDecoratorTest {
   }
 
   @Test
+  @NullMarked
   public void ensureListenersAreInvokedWhenUsingDecoratedSubClasses() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     doNothing().when(originalDriver).get(any());

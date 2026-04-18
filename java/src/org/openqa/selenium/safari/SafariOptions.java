@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import java.util.Collections;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -105,7 +106,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   public boolean getAutomaticProfiling() {
-    return Boolean.TRUE.equals(is(Option.AUTOMATIC_PROFILING));
+    return is(Option.AUTOMATIC_PROFILING);
   }
 
   /**
@@ -144,6 +145,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     return Collections.emptySet();
   }
 
+  @Nullable
   @Override
   protected Object getExtraCapability(String capabilityName) {
     return null;

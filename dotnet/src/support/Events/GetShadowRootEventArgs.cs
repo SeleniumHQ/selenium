@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Support.Events;
 
 /// <summary>
@@ -34,8 +32,10 @@ public class GetShadowRootEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="searchContext"/> are <see langword="null"/>.</exception>
     public GetShadowRootEventArgs(IWebDriver driver, ISearchContext searchContext)
     {
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        this.SearchContext = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
+        ArgumentNullException.ThrowIfNull(driver);
+        ArgumentNullException.ThrowIfNull(searchContext);
+        this.Driver = driver;
+        this.SearchContext = searchContext;
     }
 
     /// <summary>

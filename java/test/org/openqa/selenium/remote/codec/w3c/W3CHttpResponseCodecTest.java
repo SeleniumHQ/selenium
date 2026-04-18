@@ -26,8 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.collect.ImmutableMap;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
@@ -149,14 +147,14 @@ class W3CHttpResponseCodecTest {
 
   @Test
   void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
-    Map<String, Map<String, Serializable>> data =
-        ImmutableMap.of(
+    Map<String, Map<String, Object>> data =
+        Map.of(
             "value",
-            ImmutableMap.of(
+            Map.of(
                 "error", "unexpected alert open",
                 "message", "Modal dialog present",
                 "stacktrace", "",
-                "data", ImmutableMap.of("text", "cheese")));
+                "data", Map.of("text", "cheese")));
 
     HttpResponse response = createValidResponse(500, data);
     Response decoded = new W3CHttpResponseCodec().decode(response);

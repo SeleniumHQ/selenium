@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.testing;
 
+import static java.util.Collections.synchronizedList;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.internal.Debug.isDebugging;
 
@@ -32,65 +33,59 @@ import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 class CaptureLoggingRule {
 
-  List<Handler> handlers;
+  private final Logger logger = rootLogger();
 
-  public CaptureLoggingRule() {
+  public void startLogCapture() {
     if (isDebugging()) {
       return;
     }
 
-    Logger logger = LogManager.getLogManager().getLogger("");
-
     // Capture the original log handlers
-    handlers =
-        Arrays.stream(logger.getHandlers())
-            .filter(handler -> handler instanceof ConsoleHandler)
-            .collect(toList());
+    List<ConsoleHandler> handlers = handlers(ConsoleHandler.class);
 
     // Remove them from the logger
     handlers.forEach(logger::removeHandler);
 
     // Replace them with log handlers that record messages
-    logger.addHandler(new RecordingHandler());
+    logger.addHandler(new RecordingHandler(handlers));
   }
 
-  public void writeCapturedLogs() {
-    if (isDebugging()) {
-      return;
-    }
-
-    Logger logger = LogManager.getLogManager().getLogger("");
-    Arrays.stream(logger.getHandlers())
-        .filter(handler -> handler instanceof RecordingHandler)
-        .map(handler -> (RecordingHandler) handler)
-        .forEach(RecordingHandler::write);
+  private void writeCapturedLogs(Level writeLogsHigherThan) {
+    handlers(RecordingHandler.class)
+        .forEach(recordingHandler -> recordingHandler.write(writeLogsHigherThan));
   }
 
-  public void endLogCapture() {
+  public void endLogCapture(Level writeLogsHigherThan) {
+    writeCapturedLogs(writeLogsHigherThan);
+
     if (isDebugging()) {
       return;
     }
 
     // Find our recording handler
-    Logger logger = LogManager.getLogManager().getLogger("");
-    List<RecordingHandler> recordingHandlers =
-        Arrays.stream(logger.getHandlers())
-            .filter(handler -> handler instanceof RecordingHandler)
-            .map(handler -> (RecordingHandler) handler)
-            .collect(toList());
+    List<RecordingHandler> recordingHandlers = handlers(RecordingHandler.class);
 
-    recordingHandlers.forEach(logger::removeHandler);
+    // Restore the original handlers
+    for (RecordingHandler recordingHandler : recordingHandlers) {
+      logger.removeHandler(recordingHandler);
+      recordingHandler.originalHandlers.forEach(logger::addHandler);
+    }
   }
 
   private static class RecordingHandler extends Handler {
+    private final List<? extends Handler> originalHandlers;
+    private final List<LogRecord> records = synchronizedList(new ArrayList<>());
 
-    private final List<LogRecord> records = new ArrayList<>();
+    private RecordingHandler(List<? extends Handler> originalHandlers) {
+      this.originalHandlers = originalHandlers;
+    }
 
     @Override
     public void publish(LogRecord record) {
@@ -107,9 +102,11 @@ class CaptureLoggingRule {
       // no-op
     }
 
-    public void write() {
+    public void write(Level writeLogsHigherThan) {
       Formatter formatter = new OurFormatter();
-      records.forEach(record -> System.out.print(formatter.format(record)));
+      records.stream()
+          .filter(record -> record.getLevel().intValue() >= writeLogsHigherThan.intValue())
+          .forEach(record -> System.out.print(formatter.format(record)));
     }
   }
 
@@ -144,5 +141,17 @@ class CaptureLoggingRule {
 
       return buffer.toString();
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> List<T> handlers(Class<T> klass) {
+    return Arrays.stream(logger.getHandlers())
+        .filter(handler -> klass.isAssignableFrom(handler.getClass()))
+        .map(handler -> (T) handler)
+        .collect(toList());
+  }
+
+  private static Logger rootLogger() {
+    return LogManager.getLogManager().getLogger("");
   }
 }

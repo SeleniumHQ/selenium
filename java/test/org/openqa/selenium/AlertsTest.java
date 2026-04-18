@@ -18,10 +18,12 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -456,7 +458,7 @@ class AlertsTest extends JupiterTestBase {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
 
-    driver.quit();
+    assertThatCode(() -> driver.quit()).doesNotThrowAnyException();
   }
 
   @Test
@@ -466,7 +468,9 @@ class AlertsTest extends JupiterTestBase {
             new Page()
                 .withTitle("Testing Alerts")
                 .withBody(
-                    "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
+                    "<form id='theForm'"
+                        + "    action='/click_tests/submitted_page.html' "
+                        + "    onsubmit='return alert(\"Tasty cheese\");'>",
                     "<input id='unused' type='submit' value='Submit'>",
                     "</form>")));
 
@@ -476,6 +480,8 @@ class AlertsTest extends JupiterTestBase {
     alert.accept();
 
     assertThat(value).isEqualTo("Tasty cheese");
-    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+
+    wait.until(titleIs("Submitted Successfully!"));
+    assertThat(driver.getCurrentUrl()).contains("submitted_page.html");
   }
 }

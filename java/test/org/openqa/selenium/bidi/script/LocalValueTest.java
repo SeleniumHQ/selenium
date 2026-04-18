@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -353,7 +352,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("set");
-    assertThat(successResult.getResult().getValue().isPresent());
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
 
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
     assertThat(resultValue).hasSize(1);
@@ -503,12 +502,5 @@ class LocalValueTest extends JupiterTestBase {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("regexp");
     assertThat(successResult.getResult().getValue()).hasValue(new RegExpValue("foo", "g"));
-  }
-
-  @AfterEach
-  public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
   }
 }

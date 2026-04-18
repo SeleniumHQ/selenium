@@ -32,47 +32,51 @@ if (goog.userAgent.IE && !goog.dom.isCss1CompatMode() && engineVersion < 10) {
   engineVersion = 5;
 }
 
-function testIsEngineVersion() {
-  assertTrue(bot.userAgent.isEngineVersion(engineVersion));
-}
+QUnit.test('isEngineVersion', function(assert) {
+  assert.ok(bot.userAgent.isEngineVersion(engineVersion));
+});
 
-function testIsEngineVersionLower() {
-  assertTrue(bot.userAgent.isEngineVersion(engineVersion - 1));
-}
+QUnit.test('isEngineVersionLower', function(assert) {
+  assert.ok(bot.userAgent.isEngineVersion(engineVersion - 1));
+});
 
-function testIsEngineVersionLittleHigher() {
-  assertFalse(bot.userAgent.isEngineVersion(engineVersion + 0.00111));
-}
+QUnit.test('isEngineVersionLittleHigher', function(assert) {
+  assert.notOk(bot.userAgent.isEngineVersion(engineVersion + 0.00111));
+});
 
-function testIsEngineVersionHigher() {
-  assertFalse(bot.userAgent.isEngineVersion(engineVersion + 1));
-}
+QUnit.test('isEngineVersionHigher', function(assert) {
+  assert.notOk(bot.userAgent.isEngineVersion(engineVersion + 1));
+});
 
-function testIsEngineVersionLetters() {
-  assertTrue(bot.userAgent.isEngineVersion(engineVersion + 'a'));
-}
+QUnit.test('isEngineVersionLetters', function(assert) {
+  assert.ok(bot.userAgent.isEngineVersion(engineVersion + 'a'));
+});
 
-function testIsProductVersion() {
-  assertTrue(bot.userAgent.isProductVersion(productVersion));
-}
+QUnit.test('isProductVersion', function(assert) {
+  assert.ok(bot.userAgent.isProductVersion(productVersion));
+});
 
-function testIsProductVersionLower() {
-  assertTrue(bot.userAgent.isProductVersion(productVersion - 1));
-}
+QUnit.test('isProductVersionLower', function(assert) {
+  assert.ok(bot.userAgent.isProductVersion(productVersion - 1));
+});
 
-function testIsProductVersionHigher() {
-  assertFalse(bot.userAgent.isProductVersion(productVersion + 1));
-}
+QUnit.test('isProductVersionHigher', function(assert) {
+  assert.notOk(bot.userAgent.isProductVersion(productVersion + 1));
+});
 
-function testProductVersionAtLeastEngineVersion_IE() {
+QUnit.test('productVersionAtLeastEngineVersion_IE', function(assert) {
   if (goog.userAgent.IE) {
-    assertTrue(bot.userAgent.isProductVersion(engineVersion));
+    assert.ok(bot.userAgent.isProductVersion(engineVersion));
+  } else {
+    assert.ok(true, 'Skipping: not IE');
   }
-}
+});
 
-function testEngineVersionIsMajorProductVersionInStandardsMode_IE() {
+QUnit.test('engineVersionIsMajorProductVersionInStandardsMode_IE', function(assert) {
   if (goog.userAgent.IE && goog.dom.isCss1CompatMode()) {
     var majorProductVersion = Math.floor(productVersion);
-    assertTrue(bot.userAgent.isEngineVersion(majorProductVersion));
+    assert.ok(bot.userAgent.isEngineVersion(majorProductVersion));
+  } else {
+    assert.ok(true, 'Skipping: not IE in standards mode');
   }
-}
+});

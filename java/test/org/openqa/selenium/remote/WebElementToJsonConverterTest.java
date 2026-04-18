@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -87,8 +86,8 @@ class WebElementToJsonConverterTest {
 
   @Test
   void convertsNestedCollections_simpleValues() {
-    List<?> innerList = asList(123, "abc");
-    List<Object> outerList = asList("apples", "oranges", innerList);
+    List<?> innerList = List.of(123, "abc");
+    List<Object> outerList = List.of("apples", "oranges", innerList);
 
     Object converted = CONVERTER.apply(outerList);
     assertThat(converted).isInstanceOf(Collection.class);
@@ -103,23 +102,18 @@ class WebElementToJsonConverterTest {
   @Test
   void requiresMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> CONVERTER.apply(ImmutableMap.of(new Object(), "bunny")));
+        .isThrownBy(() -> CONVERTER.apply(Map.of(new Object(), "bunny")));
   }
 
   @Test
   void requiresNestedMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(
-            () ->
-                CONVERTER.apply(
-                    ImmutableMap.of(
-                        "one", ImmutableMap.of("two", ImmutableMap.of(3, "not good")))));
+        .isThrownBy(() -> CONVERTER.apply(Map.of("one", Map.of("two", Map.of(3, "not good")))));
   }
 
   @Test
   void convertsASimpleMap() {
-    Object converted =
-        CONVERTER.apply(ImmutableMap.of("one", 1, "fruit", "apples", "honest", true));
+    Object converted = CONVERTER.apply(Map.of("one", 1, "fruit", "apples", "honest", true));
 
     assertThat(converted)
         .asInstanceOf(MAP)
@@ -131,15 +125,7 @@ class WebElementToJsonConverterTest {
   void convertsANestedMap() {
     Object converted =
         CONVERTER.apply(
-            ImmutableMap.of(
-                "one",
-                1,
-                "fruit",
-                "apples",
-                "honest",
-                true,
-                "nested",
-                ImmutableMap.of("bugs", "bunny")));
+            Map.of("one", 1, "fruit", "apples", "honest", true, "nested", Map.of("bugs", "bunny")));
     assertThat(converted).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) converted;
@@ -159,7 +145,7 @@ class WebElementToJsonConverterTest {
     RemoteWebElement element2 = new RemoteWebElement();
     element2.setId("anotherId");
 
-    Object value = CONVERTER.apply(asList(element, element2));
+    Object value = CONVERTER.apply(List.of(element, element2));
     assertThat(value).isInstanceOf(Collection.class);
 
     List<Object> list = new ArrayList<>((Collection<Object>) value);
@@ -174,7 +160,7 @@ class WebElementToJsonConverterTest {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
-    Object value = CONVERTER.apply(ImmutableMap.of("one", element));
+    Object value = CONVERTER.apply(Map.of("one", element));
     assertThat(value).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) value;

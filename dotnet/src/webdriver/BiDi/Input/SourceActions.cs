@@ -17,134 +17,114 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
-using OpenQA.Selenium.BiDi.Json.Converters.Enumerable;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-[JsonConverter(typeof(InputSourceActionsConverter))]
-public abstract record SourceActions
-{
-    public string Id { get; } = Guid.NewGuid().ToString();
-}
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+[JsonDerivedType(typeof(KeySourceActions), "key")]
+[JsonDerivedType(typeof(PointerSourceActions), "pointer")]
+[JsonDerivedType(typeof(WheelSourceActions), "wheel")]
+[JsonDerivedType(typeof(NoneSourceActions), "none")]
+public abstract record SourceActions;
+
+public abstract record SourceActions<TSourceAction>(string Id, IEnumerable<TSourceAction> Actions)
+    : SourceActions where TSourceAction : ISourceAction;
 
 public interface ISourceAction;
 
-public abstract record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where T : ISourceAction
-{
-    public IList<ISourceAction> Actions { get; set; } = [];
-
-    public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-
-    public void Add(ISourceAction action) => Actions.Add(action);
-}
-
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(DownKey), "keyDown")]
-[JsonDerivedType(typeof(UpKey), "keyUp")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(KeyDownAction), "keyDown")]
+[JsonDerivedType(typeof(KeyUpAction), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public sealed record KeyActions : SourceActions<IKeySourceAction>
+public sealed record KeySourceActions(string Id, IEnumerable<IKeySourceAction> Actions)
+    : SourceActions<IKeySourceAction>(Id, Actions)
 {
-    public KeyActions Type(string text)
+    // TODO move out as extension method
+    public KeySourceActions Type(string text) => this with
     {
-        foreach (var character in text)
-        {
-            Add(new DownKey(character));
-            Add(new UpKey(character));
-        }
-
-        return this;
-    }
+        Actions = [.. Actions, .. text.SelectMany<char, IKeySourceAction>(c => [new KeyDownAction(c), new KeyUpAction(c)])]
+    };
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(DownPointer), "pointerDown")]
-[JsonDerivedType(typeof(UpPointer), "pointerUp")]
-[JsonDerivedType(typeof(MovePointer), "pointerMove")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(PointerDownAction), "pointerDown")]
+[JsonDerivedType(typeof(PointerUpAction), "pointerUp")]
+[JsonDerivedType(typeof(PointerMoveAction), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public sealed record PointerActions : SourceActions<IPointerSourceAction>
+public sealed record PointerSourceActions(string Id, IEnumerable<IPointerSourceAction> Actions)
+    : SourceActions<IPointerSourceAction>(Id, Actions)
 {
-    public PointerParameters? Options { get; set; }
+    public PointerParameters? Parameters { get; init; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
-[JsonDerivedType(typeof(ScrollWheel), "scroll")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
+[JsonDerivedType(typeof(WheelScrollAction), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public sealed record WheelActions : SourceActions<IWheelSourceAction>;
+public sealed record WheelSourceActions(string Id, IEnumerable<IWheelSourceAction> Actions)
+    : SourceActions<IWheelSourceAction>(Id, Actions);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Pause), "pause")]
+[JsonDerivedType(typeof(PauseAction), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneActions : SourceActions<None>;
+public sealed record NoneSourceActions(string Id, IEnumerable<INoneSourceAction> Actions)
+    : SourceActions<INoneSourceAction>(Id, Actions);
 
-public abstract record Key : IKeySourceAction;
+public sealed record KeyDownAction(char Value) : IKeySourceAction;
 
-public sealed record DownKey(char Value) : Key;
+public sealed record KeyUpAction(char Value) : IKeySourceAction;
 
-public sealed record UpKey(char Value) : Key;
-
-public abstract record Pointer : IPointerSourceAction;
-
-public sealed record DownPointer(int Button) : Pointer, IPointerCommonProperties
+public sealed record PointerDownAction(long Button) : IPointerSourceAction, IPointerCommonProperties
 {
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public long? Width { get; init; }
+    public long? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public long? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
-public sealed record UpPointer(int Button) : Pointer;
+public sealed record PointerUpAction(long Button) : IPointerSourceAction;
 
-public sealed record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
+public sealed record PointerMoveAction(double X, double Y) : IPointerSourceAction, IPointerCommonProperties
 {
-    public int? Duration { get; set; }
+    public long? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 
-    public int? Width { get; set; }
-    public int? Height { get; set; }
-    public double? Pressure { get; set; }
-    public double? TangentialPressure { get; set; }
-    public int? Twist { get; set; }
-    public double? AltitudeAngle { get; set; }
-    public double? AzimuthAngle { get; set; }
+    public long? Width { get; init; }
+    public long? Height { get; init; }
+    public double? Pressure { get; init; }
+    public double? TangentialPressure { get; init; }
+    public long? Twist { get; init; }
+    public double? AltitudeAngle { get; init; }
+    public double? AzimuthAngle { get; init; }
 }
 
-public abstract record Wheel : IWheelSourceAction;
-
-public sealed record ScrollWheel(int X, int Y, int DeltaX, int DeltaY) : Wheel
+public sealed record WheelScrollAction(long X, long Y, long DeltaX, long DeltaY) : IWheelSourceAction
 {
-    public int? Duration { get; set; }
+    public long? Duration { get; init; }
 
-    public Origin? Origin { get; set; }
+    public Origin? Origin { get; init; }
 }
 
-public abstract record None : INoneSourceAction;
-
-public sealed record Pause : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
+public sealed record PauseAction : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
 {
-    public long? Duration { get; set; }
+    public long? Duration { get; init; }
 }
 
 public sealed record PointerParameters
 {
-    public PointerType? PointerType { get; set; }
+    public PointerType? PointerType { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<PointerType>))]
@@ -157,17 +137,17 @@ public enum PointerType
 
 public interface IPointerCommonProperties
 {
-    public int? Width { get; set; }
+    public long? Width { get; init; }
 
-    public int? Height { get; set; }
+    public long? Height { get; init; }
 
-    public double? Pressure { get; set; }
+    public double? Pressure { get; init; }
 
-    public double? TangentialPressure { get; set; }
+    public double? TangentialPressure { get; init; }
 
-    public int? Twist { get; set; }
+    public long? Twist { get; init; }
 
-    public double? AltitudeAngle { get; set; }
+    public double? AltitudeAngle { get; init; }
 
-    public double? AzimuthAngle { get; set; }
+    public double? AzimuthAngle { get; init; }
 }

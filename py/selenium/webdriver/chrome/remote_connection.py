@@ -16,8 +16,8 @@
 # under the License.
 
 
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.client_config import ClientConfig
 
 
@@ -28,7 +28,7 @@ class ChromeRemoteConnection(ChromiumRemoteConnection):
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: bool | None = False,
+        ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:
         super().__init__(
