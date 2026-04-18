@@ -22,5 +22,4 @@ namespace OpenQA.Selenium.BiDi;
 public interface IEventReader<out TEventArgs> : IAsyncEnumerable<TEventArgs>, IAsyncDisposable
     where TEventArgs : EventArgs
 {
-    ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default);
 }

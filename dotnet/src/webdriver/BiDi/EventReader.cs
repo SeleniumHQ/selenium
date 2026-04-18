@@ -61,11 +61,6 @@ public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSu
         }
     }
 
-    public ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
-    {
-        return DisposeAsync();
-    }
-
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)

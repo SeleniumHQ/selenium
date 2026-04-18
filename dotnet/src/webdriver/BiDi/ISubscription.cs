@@ -21,5 +21,4 @@ namespace OpenQA.Selenium.BiDi;
 
 public interface ISubscription : IAsyncDisposable
 {
-    ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default);
 }

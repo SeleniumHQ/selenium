@@ -62,11 +62,6 @@ public sealed class Subscription<TEventArgs> : ISubscription, IEventSubscription
         _channel.Writer.TryComplete(error);
     }
 
-    public ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
-    {
-        return DisposeAsync();
-    }
-
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)

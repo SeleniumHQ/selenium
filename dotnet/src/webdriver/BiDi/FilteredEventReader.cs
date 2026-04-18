@@ -42,11 +42,6 @@ internal sealed class FilteredEventReader<TEventArgs> : IEventReader<TEventArgs>
         }
     }
 
-    public ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
-    {
-        return _inner.UnsubscribeAsync(cancellationToken);
-    }
-
     public ValueTask DisposeAsync()
     {
         return _inner.DisposeAsync();

@@ -66,6 +66,24 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
             : reader;
     }
 
+    public async Task<TResult> ReadAllAsync<TResult>(Func<IEventReader<TEventArgs>, Task<TResult>> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        await using var reader = await ReadAllAsync(options, cancellationToken).ConfigureAwait(false);
+
+        return await action(reader).ConfigureAwait(false);
+    }
+
+    public async Task ReadAllAsync(Func<IEventReader<TEventArgs>, Task> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        await using var reader = await ReadAllAsync(options, cancellationToken).ConfigureAwait(false);
+
+        await action(reader).ConfigureAwait(false);
+    }
+
     public EventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
