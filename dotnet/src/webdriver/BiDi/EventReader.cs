@@ -70,8 +70,8 @@ public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSu
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
-            _channel.Writer.TryComplete();
             await UnsubscribeAsync().ConfigureAwait(false);
+            _channel.Writer.TryComplete();
             GC.SuppressFinalize(this);
         }
     }

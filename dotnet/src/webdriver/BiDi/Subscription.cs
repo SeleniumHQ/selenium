@@ -77,9 +77,10 @@ public sealed class Subscription<TEventArgs> : ISubscription, IEventSubscription
 
             await _dispatchTask.ConfigureAwait(false);
 
-            if (!_activeHandlers.IsEmpty)
+            var remaining = _activeHandlers.Keys.ToArray();
+            if (remaining.Length > 0)
             {
-                await Task.WhenAll(_activeHandlers.Keys).ConfigureAwait(false);
+                await Task.WhenAll(remaining).ConfigureAwait(false);
             }
 
             GC.SuppressFinalize(this);
@@ -92,7 +93,7 @@ public sealed class Subscription<TEventArgs> : ISubscription, IEventSubscription
         {
             while (_channel.Reader.TryRead(out var args))
             {
-                var activeHandlerTask = Task.Run(async () =>
+                var handlerTask = Task.Run(async () =>
                 {
                     try
                     {
@@ -107,9 +108,24 @@ public sealed class Subscription<TEventArgs> : ISubscription, IEventSubscription
                     }
                 });
 
-                _activeHandlers.TryAdd(activeHandlerTask, 0);
-                _ = activeHandlerTask.ContinueWith(t => _activeHandlers.TryRemove(t, out _));
+                if (handlerTask.IsCompleted)
+                    continue;
+
+                _activeHandlers.TryAdd(handlerTask, 0);
+                _ = AwaitAndRemoveAsync(handlerTask);
             }
+        }
+    }
+
+    private async Task AwaitAndRemoveAsync(Task handlerTask)
+    {
+        try
+        {
+            await handlerTask.ConfigureAwait(false);
+        }
+        finally
+        {
+            _activeHandlers.TryRemove(handlerTask, out _);
         }
     }
 }
