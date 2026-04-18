@@ -21,19 +21,19 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 {
-    private readonly IBiDi _bidi;
+    private readonly EventDispatcher _dispatcher;
     private readonly EventDescriptor<TEventArgs> _descriptor;
     private readonly Func<TEventArgs, bool>? _filter;
 
-    internal EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor)
+    internal EventSource(EventDispatcher dispatcher, EventDescriptor<TEventArgs> descriptor)
     {
-        _bidi = bidi;
+        _dispatcher = dispatcher;
         _descriptor = descriptor;
     }
 
-    private EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, bool> filter)
+    private EventSource(EventDispatcher dispatcher, EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, bool> filter)
     {
-        _bidi = bidi;
+        _dispatcher = dispatcher;
         _descriptor = descriptor;
         _filter = filter;
     }
@@ -44,19 +44,21 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), options, cancellationToken);
+        var wrapped = WrapHandler(handler);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { wrapped(e); return default; }, options, cancellationToken);
     }
 
     public Task<ISubscription> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), options, cancellationToken);
+        var wrapped = WrapHandler(handler);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(wrapped(e)), options, cancellationToken);
     }
 
     public async Task<IEventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var reader = await _bidi.ReadAllEventsAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
+        var reader = await _dispatcher.SubscribeReaderAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
 
         return _filter is not null
             ? new FilteredEventReader<TEventArgs>(reader, _filter)
@@ -89,7 +91,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
             ? e => existing(e) && predicate(e)
             : predicate;
 
-        return new(_bidi, _descriptor, combined);
+        return new(_dispatcher, _descriptor, combined);
     }
 
     private Action<TEventArgs> WrapHandler(Action<TEventArgs> handler)

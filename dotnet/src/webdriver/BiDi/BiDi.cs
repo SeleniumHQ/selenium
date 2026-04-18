@@ -80,14 +80,6 @@ public sealed class BiDi : IBiDi
         return Session.EndAsync(options, cancellationToken);
     }
 
-    internal EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(EventRegistration<TEventArgs, TEventParams> registration)
-        where TEventArgs : EventArgs
-    {
-        Broker.EventDispatcher.RegisterEventMetadata(registration, this);
-
-        return new EventSource<TEventArgs>(this, registration.Descriptor);
-    }
-
     public Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
