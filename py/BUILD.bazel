@@ -262,9 +262,8 @@ py_library(
 # BiDi protocol support
 py_library(
     name = "bidi",
-    srcs = [],
+    srcs = [":create-bidi-src"],
     data = [
-        ":create-bidi-src",
         ":mutation-listener",
     ],
     imports = ["."],
