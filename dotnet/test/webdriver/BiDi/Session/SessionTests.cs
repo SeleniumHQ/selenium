@@ -138,6 +138,24 @@ internal class SessionTests : BiDiTestFixture
 
         Assert.That(result, Is.Not.Null);
     }
+
+    [Test]
+    public async Task CustomModuleShouldSubscribeToEvent()
+    {
+        var customModule = bidi.AsModule<CustomModule>();
+
+        SomethingHappenedEventArgs happened = null;
+
+        await using var _ = await customModule.SomethingHappenedEvent.OnAsync(e =>
+        {
+            happened = e;
+        });
+
+        await context.Script.EvaluateAsync("console.log('custom event');", true);
+
+        Assert.That(happened, Is.Not.Null);
+        Assert.That(happened.Text, Is.EqualTo("custom event"));
+    }
 }
 
 class CustomModule : Module
@@ -146,6 +164,14 @@ class CustomModule : Module
 
     private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
+
+    private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappened =
+        EventDescriptor<SomethingHappenedEventArgs>.Create<SomethingHappenedParameters>(
+            "log.entryAdded",
+            static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
+            JsonContext.SomethingHappenedParameters);
+
+    public EventSource<SomethingHappenedEventArgs> SomethingHappenedEvent => CreateEventSource(SomethingHappened);
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
@@ -158,8 +184,13 @@ class CustomModule : Module
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(Parameters))]
 [JsonSerializable(typeof(DoSomethingResult))]
+[JsonSerializable(typeof(SomethingHappenedParameters))]
 partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
 
 record DoSomethingResult : EmptyResult;
 
 record DoSomethingOptions : CommandOptions;
+
+record SomethingHappenedParameters(string Text);
+
+record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : Selenium.BiDi.EventArgs(BiDi);

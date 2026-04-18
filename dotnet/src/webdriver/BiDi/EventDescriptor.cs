@@ -55,7 +55,7 @@ public sealed class EventDescriptor<TEventArgs> : EventDescriptor
         _register(dispatcher, bidi);
     }
 
-    internal static EventDescriptor<TEventArgs> Create<TEventParams>(
+    public static EventDescriptor<TEventArgs> Create<TEventParams>(
         string name,
         Func<IBiDi, TEventParams, TEventArgs> factory,
         JsonTypeInfo<TEventParams> jsonTypeInfo)
