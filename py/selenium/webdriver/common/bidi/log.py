@@ -14,19 +14,22 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 
 class LogEntryAdded:
     event_class = "log.entryAdded"
 
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls, json: dict[str, Any]) -> ConsoleLogEntry | JavaScriptLogEntry | None:
         if json["type"] == "console":
             return ConsoleLogEntry.from_json(json)
         elif json["type"] == "javascript":
             return JavaScriptLogEntry.from_json(json)
+        return None
 
 
 @dataclass
@@ -35,11 +38,11 @@ class ConsoleLogEntry:
     text: str
     timestamp: str
     method: str
-    args: list[dict]
+    args: list[dict[str, Any]]
     type_: str
 
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls, json: dict[str, Any]) -> ConsoleLogEntry:
         return cls(
             level=json["level"],
             text=json["text"],
@@ -55,11 +58,11 @@ class JavaScriptLogEntry:
     level: str
     text: str
     timestamp: str
-    stacktrace: dict
+    stacktrace: dict[str, Any]
     type_: str
 
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls, json: dict[str, Any]) -> JavaScriptLogEntry:
         return cls(
             level=json["level"],
             text=json["text"],

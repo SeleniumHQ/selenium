@@ -30,13 +30,11 @@ public sealed partial class NetworkModule : Module
 {
     private NetworkJsonSerializerContext _jsonContext = null!;
 
-    public async Task<Collector> AddDataCollectorAsync(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, AddDataCollectorOptions? options = null)
+    public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null)
     {
-        var @params = new AddDataCollectorParameters(DataTypes, MaxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
+        var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
-        var result = await Broker.ExecuteCommandAsync(new AddDataCollectorCommand(@params), options, _jsonContext.AddDataCollectorCommand, _jsonContext.AddDataCollectorResult).ConfigureAwait(false);
-
-        return result.Collector;
+        return await Broker.ExecuteCommandAsync(new AddDataCollectorCommand(@params), options, _jsonContext.AddDataCollectorCommand, _jsonContext.AddDataCollectorResult).ConfigureAwait(false);
     }
 
     public async Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)

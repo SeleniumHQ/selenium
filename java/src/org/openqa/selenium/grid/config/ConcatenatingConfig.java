@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.config;
 
-import static java.util.Comparator.naturalOrder;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +46,7 @@ public class ConcatenatingConfig implements Config {
                 entry ->
                     new AbstractMap.SimpleImmutableEntry<>(
                         String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
-            .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -62,7 +60,7 @@ public class ConcatenatingConfig implements Config {
         .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
         .map(Map.Entry::getValue)
         .findFirst()
-        .map(ImmutableList::of);
+        .map(List::of);
   }
 
   @Override
@@ -76,7 +74,7 @@ public class ConcatenatingConfig implements Config {
         .filter(key -> key.indexOf(separator) > -1)
         .map(key -> key.substring(0, key.indexOf(separator)))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 
   @Override
@@ -90,6 +88,6 @@ public class ConcatenatingConfig implements Config {
         .filter(key -> key.length() > actualPrefix.length() + 1)
         .map(key -> key.substring(actualPrefix.length()))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 }

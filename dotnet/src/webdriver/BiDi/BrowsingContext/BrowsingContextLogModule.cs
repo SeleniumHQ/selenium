@@ -27,23 +27,35 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
 {
     public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return logModule.OnEntryAddedAsync(async args =>
-        {
-            if (args.Source.Context?.Equals(context) is true)
-            {
-                await handler(args).ConfigureAwait(false);
-            }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAddedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
     }
 
     public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
     {
-        return logModule.OnEntryAddedAsync(args =>
+        if (handler is null) throw new ArgumentNullException(nameof(handler));
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAdded(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context));
+    }
+
+    private async Task HandleEntryAddedAsync(Log.LogEntry e, Func<Log.LogEntry, Task> handler)
+    {
+        if (context.Equals(e.Source.Context))
         {
-            if (args.Source.Context?.Equals(context) is true)
-            {
-                handler(args);
-            }
-        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scope to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleEntryAdded(Log.LogEntry e, Action<Log.LogEntry> handler)
+    {
+        if (context.Equals(e.Source.Context))
+        {
+            handler(e);
+        }
     }
 }

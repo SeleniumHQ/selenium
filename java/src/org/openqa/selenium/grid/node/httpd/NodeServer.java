@@ -26,7 +26,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
@@ -90,7 +89,7 @@ public class NodeServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, NODE_ROLE);
+    return Set.of(EVENT_BUS_ROLE, HTTPD_ROLE, NODE_ROLE);
   }
 
   @Override

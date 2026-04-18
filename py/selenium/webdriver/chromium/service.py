@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+import sys
 from collections.abc import Mapping, Sequence
-from io import IOBase
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
@@ -26,17 +27,12 @@ class ChromiumService(service.Service):
     """Service class responsible for starting and stopping the ChromiumDriver WebDriver instance.
 
     Args:
-        executable_path: Install path of the executable.
-        port: Port for the service to run on, defaults to 0 where the operating
-            system will decide.
-        service_args: (Optional) Sequence of args to be passed to the subprocess
-            when launching the executable.
-        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO
-            instance or String path to file.
-        env: (Optional) Mapping of environment variables for the new process,
-            defaults to `os.environ`.
-        driver_path_env_key: (Optional) Environment variable to use to get the
-            path to the driver executable.
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
@@ -44,7 +40,7 @@ class ChromiumService(service.Service):
         executable_path: str | None = None,
         port: int = 0,
         service_args: Sequence[str] | None = None,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         env: Mapping[str, str] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,
@@ -54,11 +50,16 @@ class ChromiumService(service.Service):
 
         if isinstance(log_output, str):
             self._service_args.append(f"--log-path={log_output}")
-            self.log_output: IOBase | None = None
-        elif isinstance(log_output, IOBase):
-            self.log_output = log_output
+            self.log_output = None
         else:
             self.log_output = log_output
+
+        if os.environ.get("SE_DEBUG"):
+            self._service_args = [
+                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-path", "silent"))
+            ]
+            self._service_args.append("--verbose")
+            self.log_output = sys.stderr
 
         super().__init__(
             executable_path=executable_path,

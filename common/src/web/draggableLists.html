@@ -14,33 +14,34 @@
     </style>
     <script type="text/javascript">
       $(function() {
-          $("#sortable1, #sortable2").sortable({
-            connectWith: '.connectedSortable'
-            }).disableSelection();
+        $("#sortable1, #sortable2").sortable({
+          connectWith: '.connectedSortable'
+          }).disableSelection();
 
-          var report_event = function(report_text) {
-            var reportElement = $("#dragging_reports");
-            var origText = reportElement.text();
-            reportElement.text(origText + " " + report_text);
+        var report_event = function(report_text) {
+          var reportElement = $("#dragging_reports");
+          var origText = reportElement.text();
+          reportElement.text(origText + " " + report_text);
+        }
+
+        $("#sortable2").droppable({
+          out: function(event, ui) {
+            report_event("DragOut");
           }
-
-          $("#sortable2").droppable({
-            out: function(event, ui) {
-              report_event("DragOut");
-            }
-            });
-
-          $("#sortable1").droppable({
-            drop: function(event, ui) {
-              report_event("DropIn " + ui.draggable.text());
-            }
-            });
           });
+
+        $("#sortable1").droppable({
+          drop: function(event, ui) {
+            report_event("DropIn " + ui.draggable.text());
+          }
+        });
+        $("#sortable1, #sortable2").show();
+      });
     </script>
   </head>
   <body>
     <div class="demo">
-      <ul id="sortable1" class="connectedSortable">
+      <ul id="sortable1" class="connectedSortable" style="display: none;">
         <li id="leftitem-1" class="ui-state-default">LeftItem 1</li>
         <li id="leftitem-2" class="ui-state-default">LeftItem 2</li>
         <li id="leftitem-3" class="ui-state-default">LeftItem 3</li>
@@ -48,7 +49,7 @@
         <li id="leftitem-5" class="ui-state-default">LeftItem 5</li>
       </ul>
 
-      <ul id="sortable2" class="connectedSortable">
+      <ul id="sortable2" class="connectedSortable" style="display: none;">
         <li id="rightitem-1" class="ui-state-highlight">RightItem 1</li>
         <li id="rightitem-2" class="ui-state-highlight">RightItem 2</li>
         <li id="rightitem-3" class="ui-state-highlight">RightItem 3</li>

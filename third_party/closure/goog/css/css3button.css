@@ -5,8 +5,9 @@
  * See the COPYING file for details.
  */
 
-/* Author: slightlyoff@google.com (Alex Russell) */
-/* Author: eae@google.com (Emil A Eklund) */
+@provide 'goog.css.css3button';
+
+@require './common';
 
 /* Imageless button styles. */
 .goog-css3-button {

@@ -32,9 +32,9 @@ module Selenium
 
         def proxy=: (untyped proxy) -> untyped
 
-        def timeouts: () -> untyped
+        def timeouts: () -> Hash[Symbol, Integer]
 
-        def timeouts=: (untyped timeouts) -> untyped
+        def timeouts=: (Hash[Symbol, Integer] | untyped timeouts) -> untyped
 
         def implicit_timeout: () -> untyped
 

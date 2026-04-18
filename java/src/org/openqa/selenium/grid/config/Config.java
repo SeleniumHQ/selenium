@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,7 @@ public interface Config {
 
   default Optional<List<List<String>>> getArray(String section, String option) {
     Optional<List<String>> flatConfigs = getAll(section, option);
-    if (!flatConfigs.isPresent()) {
+    if (flatConfigs.isEmpty()) {
       return Optional.empty();
     }
 
@@ -95,7 +94,7 @@ public interface Config {
     // add record separator
     entryList.add(DELIMITER);
     // return immutable config settings list
-    return ImmutableList.<String>builder().addAll(entryList).build();
+    return List.copyOf(entryList);
   }
 
   default String toJson(Object value) {

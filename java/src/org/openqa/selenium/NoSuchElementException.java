@@ -17,14 +17,12 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)} and {@link
  * WebElement#findElement(By by) WebElement.findElement(By by)}.
  */
-@NullMarked
 public class NoSuchElementException extends NotFoundException {
 
   private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#nosuchelementexception";

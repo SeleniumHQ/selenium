@@ -7,11 +7,9 @@
 
 /*
  * Standard styling for goog.ui.Dialog.
- *
- * @author ssaviano@google.com (Steven Saviano)
- * @author attila@google.com (Attila Bodis)
  */
 
+@provide 'goog.css.dialog';
 
 .modal-dialog {
   background: #c1d9ff;

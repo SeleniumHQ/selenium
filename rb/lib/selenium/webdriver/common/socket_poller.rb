@@ -93,7 +93,7 @@ module Selenium
           true
         rescue *NOT_CONNECTED_ERRORS
           sock&.close
-          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}", id: :driver_service)
+          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}", id: :socket_poller)
           false
         end
       end

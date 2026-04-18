@@ -23,6 +23,8 @@
 goog.provide('bot.Error');
 goog.provide('bot.ErrorCode');
 
+goog.require('goog.utils');
+
 
 /**
  * Error codes from the Selenium WebDriver protocol:
@@ -113,7 +115,7 @@ bot.Error = function (code, opt_message) {
   /** @override */
   this.stack = template.stack || '';
 };
-goog.inherits(bot.Error, Error);
+goog.utils.inherits(bot.Error, Error);
 
 
 /**

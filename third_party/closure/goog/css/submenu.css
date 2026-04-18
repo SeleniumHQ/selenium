@@ -7,13 +7,13 @@
 
 /*
  * Standard styling for menus created by goog.ui.SubMenuRenderer.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
+@provide 'goog.css.submenu';
 
 /* State: resting. */
 /* @noflip */
+/* rtl:begin:ignore */
 .goog-submenu-arrow {
   color: #000;
   left: auto;
@@ -22,15 +22,18 @@
   right: 0;
   text-align: right;
 }
+/* rtl:end:ignore */
 
 /* BiDi override. */
 /* @noflip */
+/* rtl:begin:ignore */
 .goog-menuitem-rtl .goog-submenu-arrow {
   text-align: left;
   left: 0;
   right: auto;
   padding-left: 6px;
 }
+/* rtl:end:ignore */
 
 /* State: disabled. */
 .goog-menuitem-disabled .goog-submenu-arrow {

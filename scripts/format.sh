@@ -21,7 +21,7 @@ find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
 section "Javascript"
 echo "    javascript/selenium-webdriver - prettier" >&2
 NODE_WEBDRIVER="${WORKSPACE_ROOT}/javascript/selenium-webdriver"
-bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc"
+bazel run //javascript:prettier -- "${NODE_WEBDRIVER}" --write "${NODE_WEBDRIVER}/.prettierrc" --log-level=warn
 
 section "Ruby"
 echo "    rubocop" >&2

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -28,14 +30,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Set;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,8 +94,7 @@ class DriverServiceSessionFactoryTest {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session =
-        factory.apply(
-            new CreateSessionRequest(ImmutableSet.of(), toPayload("chrome"), ImmutableMap.of()));
+        factory.apply(new CreateSessionRequest(emptySet(), toPayload("chrome"), emptyMap()));
 
     assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
@@ -106,8 +106,7 @@ class DriverServiceSessionFactoryTest {
 
     Either<WebDriverException, ActiveSession> session =
         factory.apply(
-            new CreateSessionRequest(
-                ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
+            new CreateSessionRequest(Set.of(Dialect.W3C), toPayload("firefox"), emptyMap()));
 
     assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
@@ -121,8 +120,7 @@ class DriverServiceSessionFactoryTest {
 
     Either<WebDriverException, ActiveSession> session =
         factory.apply(
-            new CreateSessionRequest(
-                ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+            new CreateSessionRequest(Set.of(Dialect.W3C), toPayload("chrome"), emptyMap()));
 
     assertThat(session.isLeft()).isTrue();
     verify(builder, times(1)).build();
@@ -143,8 +141,7 @@ class DriverServiceSessionFactoryTest {
 
     Either<WebDriverException, ActiveSession> session =
         factory.apply(
-            new CreateSessionRequest(
-                ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+            new CreateSessionRequest(Set.of(Dialect.W3C), toPayload("chrome"), emptyMap()));
 
     assertThat(session.isLeft()).isTrue();
 
@@ -175,8 +172,7 @@ class DriverServiceSessionFactoryTest {
 
     Either<WebDriverException, ActiveSession> session =
         factory.apply(
-            new CreateSessionRequest(
-                ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+            new CreateSessionRequest(Set.of(Dialect.W3C), toPayload("chrome"), emptyMap()));
 
     assertThat(session.isRight()).isTrue();
 

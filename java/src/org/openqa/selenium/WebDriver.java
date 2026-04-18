@@ -21,7 +21,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
@@ -47,7 +46,6 @@ import org.openqa.selenium.logging.Logs;
  * <p>Most implementations of this interface follow <a href="https://w3c.github.io/webdriver/">W3C
  * WebDriver specification</a>
  */
-@NullMarked
 public interface WebDriver extends SearchContext {
   // Navigation
 

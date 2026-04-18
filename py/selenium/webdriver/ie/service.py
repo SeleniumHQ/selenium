@@ -15,14 +15,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+import sys
 from collections.abc import Sequence
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
 class Service(service.Service):
-    """Object that manages the starting and stopping of the IEDriver."""
+    """Service class responsible for starting and stopping of `IEDriver`.
+
+    Args:
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
+        host: (Optional) IP address the service port is bound
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
+            "TRACE". Default is "FATAL".
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+        **kwargs: Additional keyword arguments to pass to the parent Service class.
+    """
 
     def __init__(
         self,
@@ -31,24 +45,10 @@ class Service(service.Service):
         host: str | None = None,
         service_args: Sequence[str] | None = None,
         log_level: str | None = None,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
-        """Creates a new instance of the Service.
-
-        Args:
-            executable_path: Path to the IEDriver
-            port: Port the service is running on
-            host: (Optional) IP address the service port is bound
-            service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-            log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
-                "TRACE". Default is "FATAL".
-            log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-                Default is "stdout".
-            driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
-            **kwargs: Additional keyword arguments to pass to the parent Service class.
-        """
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"
 
@@ -56,6 +56,13 @@ class Service(service.Service):
             self._service_args.append(f"--host={host}")
         if log_level:
             self._service_args.append(f"--log-level={log_level}")
+
+        if os.environ.get("SE_DEBUG"):
+            self._service_args = [
+                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-file"))
+            ]
+            self._service_args.append("--log-level=DEBUG")
+            log_output = sys.stderr
 
         super().__init__(
             executable_path=executable_path,

@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.support.ui;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -71,8 +74,8 @@ public class Select implements ISelect, WrapsElement {
    *     Return false if visibility is set to 'hidden', display is 'none', or opacity is 0 or 0.0.
    */
   private boolean hasCssPropertyAndVisible(WebElement webElement) {
-    List<String> cssValueCandidates = Arrays.asList(new String[] {"hidden", "none", "0", "0.0"});
-    String[] cssPropertyCandidates = new String[] {"visibility", "display", "opacity"};
+    Set<String> cssValueCandidates = Set.of("hidden", "none", "0", "0.0");
+    List<String> cssPropertyCandidates = List.of("visibility", "display", "opacity");
 
     for (String property : cssPropertyCandidates) {
       String cssValue = webElement.getCssValue(property);

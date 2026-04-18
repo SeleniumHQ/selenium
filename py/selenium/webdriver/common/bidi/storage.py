@@ -14,10 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from selenium.webdriver.common.bidi.common import command_builder
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class SameSite:
@@ -39,7 +43,7 @@ class BytesValue:
         self.type = type
         self.value = value
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, str]:
         """Converts the BytesValue to a dictionary.
 
         Returns:
@@ -74,7 +78,7 @@ class Cookie:
         self.expiry = expiry
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Cookie":
+    def from_dict(cls, data: dict[str, Any]) -> Cookie:
         """Creates a Cookie instance from a dictionary.
 
         Args:
@@ -166,7 +170,7 @@ class PartitionKey:
         self.source_origin = source_origin
 
     @classmethod
-    def from_dict(cls, data: dict) -> "PartitionKey":
+    def from_dict(cls, data: dict[str, Any]) -> PartitionKey:
         """Creates a PartitionKey instance from a dictionary.
 
         Args:
@@ -188,7 +192,7 @@ class BrowsingContextPartitionDescriptor:
         self.type = "context"
         self.context = context
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, str]:
         """Converts the BrowsingContextPartitionDescriptor to a dictionary.
 
         Returns:
@@ -205,7 +209,7 @@ class StorageKeyPartitionDescriptor:
         self.user_context = user_context
         self.source_origin = source_origin
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, str]:
         """Converts the StorageKeyPartitionDescriptor to a dictionary.
 
         Returns:
@@ -275,7 +279,7 @@ class GetCookiesResult:
         self.partition_key = partition_key
 
     @classmethod
-    def from_dict(cls, data: dict) -> "GetCookiesResult":
+    def from_dict(cls, data: dict[str, Any]) -> GetCookiesResult:
         """Creates a GetCookiesResult instance from a dictionary.
 
         Args:
@@ -296,7 +300,7 @@ class SetCookieResult:
         self.partition_key = partition_key
 
     @classmethod
-    def from_dict(cls, data: dict) -> "SetCookieResult":
+    def from_dict(cls, data: dict[str, Any]) -> SetCookieResult:
         """Creates a SetCookieResult instance from a dictionary.
 
         Args:
@@ -316,7 +320,7 @@ class DeleteCookiesResult:
         self.partition_key = partition_key
 
     @classmethod
-    def from_dict(cls, data: dict) -> "DeleteCookiesResult":
+    def from_dict(cls, data: dict[str, Any]) -> DeleteCookiesResult:
         """Creates a DeleteCookiesResult instance from a dictionary.
 
         Args:
@@ -332,7 +336,7 @@ class DeleteCookiesResult:
 class Storage:
     """BiDi implementation of the storage module."""
 
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
 
     def get_cookies(

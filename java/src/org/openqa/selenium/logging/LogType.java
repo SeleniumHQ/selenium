@@ -23,7 +23,12 @@ public class LogType {
   /** This log type pertains to logs from the browser. */
   public static final String BROWSER = "browser";
 
-  /** This log type pertains to logs from the client. */
+  /**
+   * This log type pertains to logs from the client.
+   *
+   * @deprecated logging is not in the W3C WebDriver spec and CLIENT type is no longer supported.
+   */
+  @Deprecated(forRemoval = true)
   public static final String CLIENT = "client";
 
   /** This log pertains to logs from the WebDriver implementation. */
@@ -32,9 +37,19 @@ public class LogType {
   /** This log type pertains to logs relating to performance timings. */
   public static final String PERFORMANCE = "performance";
 
-  /** This log type pertains to logs relating to profiler timings. */
+  /**
+   * This log type pertains to logs relating to profiler timings.
+   *
+   * @deprecated logging is not in the W3C WebDriver spec and PROFILER type is no longer supported.
+   */
+  @Deprecated(forRemoval = true)
   public static final String PROFILER = "profiler";
 
-  /** This log type pertains to logs from the remote server. */
+  /**
+   * This log type pertains to logs from the remote server.
+   *
+   * @deprecated logging is not in the W3C WebDriver spec and SERVER type is no longer supported.
+   */
+  @Deprecated(forRemoval = true)
   public static final String SERVER = "server";
 }

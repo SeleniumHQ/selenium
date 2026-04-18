@@ -147,3 +147,28 @@ javascript/selenium-webdriver/.vscode/settings.json
 dotnet-bin
 .metadata/
 .npmrc
+
+/.local/*
+!/.local/.gitkeep
+
+# Security
+.env
+.env.local
+
+# AI agent local state (most common)
+.claude/
+.cursor/
+.continue/
+.cline/
+.windsurf/
+.zencoder/
+
+# Common per-tool config/rules files people accidentally add
+.cursorignore
+.cursorrules
+.windsurfrules
+.continuerc.json
+
+# Common generated transcripts
+*_cline_transcript.json
+.copilot-chat-history.json

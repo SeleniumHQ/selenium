@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static java.util.Collections.emptyMap;
+import static java.net.URI.create;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,9 +28,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.StringReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +43,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriverInfo;
@@ -64,6 +61,7 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.WebDriverInfo;
 import org.openqa.selenium.safari.SafariDriverInfo;
 
 @SuppressWarnings("DuplicatedCode")
@@ -133,9 +131,9 @@ class NodeOptionsTest {
     assumeTrue(driver.isPresent(), customMsg + " needs to be available");
     Config config =
         new MapConfig(
-            singletonMap(
+            Map.of(
                 "node",
-                ImmutableMap.of(
+                Map.of(
                     "detect-drivers",
                     "true",
                     "selenium-manager",
@@ -298,9 +296,9 @@ class NodeOptionsTest {
   void shouldThrowConfigExceptionIfDetectDriversIsFalseAndSpecificDriverIsAdded() {
     Config config =
         new MapConfig(
-            singletonMap(
+            Map.of(
                 "node",
-                ImmutableMap.of(
+                Map.of(
                     "detect-drivers", "false",
                     "driver-implementation", "[chrome]")));
     List<Capabilities> reported = new ArrayList<>();
@@ -324,7 +322,7 @@ class NodeOptionsTest {
         new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
         "A driver needs to be available");
 
-    Config config = new MapConfig(emptyMap());
+    Config config = new MapConfig();
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
@@ -598,7 +596,7 @@ class NodeOptionsTest {
     int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config =
-        new MapConfig(singletonMap("node", ImmutableMap.of("max-sessions", overriddenMaxSessions)));
+        new MapConfig(singletonMap("node", Map.of("max-sessions", overriddenMaxSessions)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config)
@@ -624,10 +622,9 @@ class NodeOptionsTest {
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config =
         new MapConfig(
-            singletonMap(
+            Map.of(
                 "node",
-                ImmutableMap.of(
-                    "max-sessions", overriddenMaxSessions, "override-max-sessions", true)));
+                Map.of("max-sessions", overriddenMaxSessions, "override-max-sessions", true)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config)
@@ -655,8 +652,7 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri())
-        .isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
+    assertThat(nodeOptions.getPublicGridUri()).contains(create("http://cheese.com:4444"));
   }
 
   @Test
@@ -669,8 +665,7 @@ class NodeOptionsTest {
     String nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
     String nonLoopbackAddressUrl = String.format("http://%s:4444", nonLoopbackAddress);
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri())
-        .isEqualTo(Optional.of(URI.create(nonLoopbackAddressUrl)));
+    assertThat(nodeOptions.getPublicGridUri()).contains(create(nonLoopbackAddressUrl));
   }
 
   @Test
@@ -775,8 +770,7 @@ class NodeOptionsTest {
     Config config =
         new MapConfig(
             singletonMap(
-                "node",
-                ImmutableMap.of("detect-drivers", "false", "delete-session-on-ui", "true")));
+                "node", Map.of("detect-drivers", "false", "delete-session-on-ui", "true")));
     NodeOptions nodeOptions = new NodeOptions(config);
     assertThat(nodeOptions.isSessionDeletedOnUi()).isTrue();
   }
@@ -786,8 +780,7 @@ class NodeOptionsTest {
     Config config =
         new MapConfig(
             singletonMap(
-                "node",
-                ImmutableMap.of("detect-drivers", "false", "delete-session-on-ui", "false")));
+                "node", Map.of("detect-drivers", "false", "delete-session-on-ui", "false")));
     NodeOptions nodeOptions = new NodeOptions(config);
     assertThat(nodeOptions.isSessionDeletedOnUi()).isFalse();
   }
@@ -800,8 +793,7 @@ class NodeOptionsTest {
 
     Config config =
         new MapConfig(
-            singletonMap(
-                "node", ImmutableMap.of("detect-drivers", "true", "delete-session-on-ui", "true")));
+            singletonMap("node", Map.of("detect-drivers", "true", "delete-session-on-ui", "true")));
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
@@ -830,8 +822,7 @@ class NodeOptionsTest {
     Config config =
         new MapConfig(
             singletonMap(
-                "node",
-                ImmutableMap.of("detect-drivers", "true", "delete-session-on-ui", "false")));
+                "node", Map.of("detect-drivers", "true", "delete-session-on-ui", "false")));
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)

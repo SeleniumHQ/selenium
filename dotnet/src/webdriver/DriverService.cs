@@ -112,7 +112,7 @@ public abstract class DriverService : ICommandServer
     /// <summary>
     /// Gets or sets a value indicating whether the command prompt window of the service should be hidden.
     /// </summary>
-    public bool HideCommandPromptWindow { get; set; }
+    public bool HideCommandPromptWindow { get; set; } = true;
 
     /// <summary>
     /// Gets the process ID of the running driver service executable. Returns 0 if the process is not running.

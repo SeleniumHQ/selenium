@@ -95,7 +95,7 @@ module Selenium
     #
 
     def self.logger(**)
-      level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
+      level = $DEBUG || ENV.key?('DEBUG') || ENV.key?('SE_DEBUG') ? :debug : :info
       @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **)
     end
   end # WebDriver

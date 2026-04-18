@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -263,8 +262,7 @@ class DecoratedWebDriverTest {
 
   @Test
   void getWindowHandles() {
-    Set<String> handles = new HashSet<>();
-    handles.add("test");
+    Set<String> handles = Set.of("test");
     verifyFunction(WebDriver::getWindowHandles, handles);
   }
 

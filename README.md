@@ -278,8 +278,8 @@ If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development,
 you can configure it use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
-2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
-3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
+2. From the `selenium` (parent) directory, run `./go rb:local_dev` to create up-to-date artifacts.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby++ruby+ruby/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust
@@ -287,7 +287,7 @@ you can configure it use Bazel artifacts:
 To keep `Cargo.Bazel.lock` synchronized with `Cargo.lock`, run:
 
 ```shell
-CARGO_BAZEL_REPIN=true bazel sync --only=crates
+CARGO_BAZEL_REPIN=true bazel run @crates//:all
 ```
 
 ## Testing
@@ -297,7 +297,7 @@ There are a number of bazel configurations specific for testing.
 ### Common Options Examples
 
 Here are examples of arguments we make use of in testing the Selenium code:
-* `--pin_browsers` - run specific browser versions defined in the build (versions are updated regularly)
+* `--pin_browsers=false` - use Selenium Manager to locate browsers/drivers
 * `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
@@ -327,9 +327,11 @@ bazel test //<language>/... --test_tag_filters=this,-not-this
 ```
 
 If there are multiple `--test_tag_filters`, only the last one is considered,
-so be careful if also using an inherited config
+so be careful if also using an inherited config.
 
-Language specific testing guides can be found in a `TESTING.md` file in the applicable directory. 
+### Language Specific Testing Guides
+
+See the `TESTING.md` file in the applicable language specific directory.
 
 ### Linux
 

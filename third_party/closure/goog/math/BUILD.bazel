@@ -1,0 +1,66 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "box",
+    srcs = ["box.js"],
+    lenient = True,
+    deps = [
+        ":coordinate",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/utils",
+    ],
+)
+
+closure_js_library(
+    name = "coordinate",
+    srcs = ["coordinate.js"],
+    lenient = True,
+    deps = [":math"],
+)
+
+closure_js_library(
+    name = "irect",
+    srcs = ["irect.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "math",
+    srcs = ["math.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/asserts"],
+)
+
+closure_js_library(
+    name = "rect",
+    srcs = ["rect.js"],
+    lenient = True,
+    deps = [
+        ":box",
+        ":coordinate",
+        ":irect",
+        ":size",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "size",
+    srcs = ["size.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "vec2",
+    srcs = ["vec2.js"],
+    lenient = True,
+    deps = [
+        ":coordinate",
+        ":math",
+        "//third_party/closure/goog/utils",
+    ],
+)

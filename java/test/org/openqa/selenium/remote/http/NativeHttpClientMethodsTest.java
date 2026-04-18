@@ -18,9 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.net.URI;
@@ -67,9 +65,9 @@ class NativeHttpClientMethodsTest {
         httpClient.sendAsyncNative(testRequest, HttpResponse.BodyHandlers.ofString());
 
     // Assert - Verify the asynchronous response is correct
-    assertNotNull(result, "Future should not be null");
+    assertThat(result).as("Future should not be null").isNotNull();
     HttpResponse<String> response = result.get(5, TimeUnit.SECONDS);
-    assertNotNull(response, "Response should not be null");
+    assertThat(response).as("Response should not be null").isNotNull();
     assertThat(response.statusCode()).isEqualTo(200);
     assertThat(response.body()).isEqualTo("Test response body");
   }
@@ -86,7 +84,7 @@ class NativeHttpClientMethodsTest {
         httpClient.sendNative(testRequest, HttpResponse.BodyHandlers.ofString());
 
     // Assert - Verify the synchronous response is correct
-    assertNotNull(result, "Response should not be null");
+    assertThat(result).as("Response should not be null").isNotNull();
     assertThat(result.statusCode()).isEqualTo(200);
     assertThat(result.body()).isEqualTo("Test response body");
   }
@@ -100,12 +98,14 @@ class NativeHttpClientMethodsTest {
   @Test
   void testSendNative_handlesIOException() {
     // Arrange - Create a client configured to simulate network failure
-    TestHttpClient failingClient = new TestHttpClient(true);
+    try (TestHttpClient failingClient = new TestHttpClient(true)) {
 
-    // Act & Assert - Verify that IOException is thrown when network failure occurs
-    assertThrows(
-        IOException.class,
-        () -> failingClient.sendNative(testRequest, HttpResponse.BodyHandlers.ofString()));
+      // Act & Assert - Verify that IOException is thrown when network failure occurs
+      assertThatThrownBy(
+              () -> failingClient.sendNative(testRequest, HttpResponse.BodyHandlers.ofString()))
+          .isInstanceOf(IOException.class)
+          .hasMessage("Simulated network error");
+    }
   }
 
   /**
@@ -121,7 +121,7 @@ class NativeHttpClientMethodsTest {
         HttpRequest.newBuilder().uri(URI.create("https://httpbin.org/get")).GET().build();
 
     // Assert GET request properties
-    assertNotNull(getRequest);
+    assertThat(getRequest).isNotNull();
     assertThat(getRequest.method()).isEqualTo("GET");
 
     // Test POST request creation with body and headers
@@ -133,9 +133,9 @@ class NativeHttpClientMethodsTest {
             .build();
 
     // Assert POST request properties including headers
-    assertNotNull(postRequest);
+    assertThat(postRequest).isNotNull();
     assertThat(postRequest.method()).isEqualTo("POST");
-    assertTrue(postRequest.headers().firstValue("Content-Type").isPresent());
+    assertThat(postRequest.headers().firstValue("Content-Type").isPresent()).isTrue();
   }
 
   /**
@@ -148,16 +148,16 @@ class NativeHttpClientMethodsTest {
   void testBodyHandlers_variations() {
     // Test String handler for regular text responses
     HttpResponse.BodyHandler<String> stringHandler = HttpResponse.BodyHandlers.ofString();
-    assertNotNull(stringHandler);
+    assertThat(stringHandler).isNotNull();
 
     // Test discarding handler (useful for HEAD requests or when body is not needed)
     HttpResponse.BodyHandler<Void> discardingHandler = HttpResponse.BodyHandlers.discarding();
-    assertNotNull(discardingHandler);
+    assertThat(discardingHandler).isNotNull();
 
     // Test lines handler for streaming large responses line by line
     HttpResponse.BodyHandler<java.util.stream.Stream<String>> linesHandler =
         HttpResponse.BodyHandlers.ofLines();
-    assertNotNull(linesHandler);
+    assertThat(linesHandler).isNotNull();
   }
 
   /**

@@ -1,4 +1,4 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_fragment", "closure_js_deps", "closure_lang_file", "closure_test_suite")
 
 closure_js_library(
@@ -15,11 +15,11 @@ closure_js_library(
     deps = [
         "//javascript/atoms:dom",
         "//javascript/atoms:locators",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/math:rect",
-        "@io_bazel_rules_closure//closure/library/math:size",
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
+        "//third_party/closure/goog/style",
     ],
 )
 
@@ -29,7 +29,7 @@ closure_fragment(
     function = "goog.style.getPageOffset",
     module = "goog.style",
     deps = [
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/style",
     ],
 )
 
@@ -161,11 +161,14 @@ closure_js_deps(
     deps = [
         ":lib",
         "//javascript/webdriver/atoms:all_js_for_testing",
+        "//third_party/closure/goog:library",
+        "//third_party/closure/goog:testing",
     ],
 )
 
 closure_test_suite(
-    name = "test",
+    name = "closure-test",
+    browsers = ["chrome"],
     data = [
         ":all_files",
         ":deps",

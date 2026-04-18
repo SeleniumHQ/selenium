@@ -33,7 +33,6 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -44,6 +43,7 @@ import org.openqa.selenium.grid.node.relay.RelaySessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.WebDriverInfo;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -62,7 +62,8 @@ public class SessionSlot
   private final boolean supportingCdp;
   private final boolean supportingBiDi;
   private final AtomicLong connectionCounter;
-  private ActiveSession currentSession;
+  // volatile ensures memory visibility across threads when session is set after reservation
+  private volatile ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
@@ -86,6 +87,23 @@ public class SessionSlot
     if (reserved.getAndSet(true)) {
       throw new IllegalStateException("Attempt to reserve a slot that is already reserved");
     }
+  }
+
+  /**
+   * Atomically attempts to reserve this slot if it's available and matches the given capabilities.
+   * This method is thread-safe and eliminates the need for external synchronization.
+   *
+   * @param capabilities the capabilities to test against this slot's stereotype
+   * @return true if the slot was successfully reserved, false if already reserved or capabilities
+   *     don't match
+   */
+  public boolean tryReserve(Capabilities capabilities) {
+    // First check capabilities without reserving (fast path for non-matching slots)
+    if (!test(capabilities)) {
+      return false;
+    }
+    // Atomically try to reserve - only succeeds if currently unreserved
+    return reserved.compareAndSet(false, true);
   }
 
   public void release() {
@@ -114,16 +132,17 @@ public class SessionSlot
     }
 
     SessionId id = currentSession.getId();
+    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
     try {
       currentSession.stop();
+      LOG.info(String.format("Session stopped successfully: %s", id));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to cleanly close session", e);
+      LOG.log(Level.WARNING, String.format("Unable to cleanly close session %s", id), e);
     }
     currentSession = null;
     connectionCounter.set(0);
     release();
     bus.fire(new SessionClosedEvent(id, reason));
-    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
   }
 
   @Override

@@ -36,6 +36,7 @@ goog.provide('bot.locators.xpath');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -203,7 +204,7 @@ bot.locators.xpath.single = function (target, root) {
   }
 
   var node = selectSingleNode();
-  if (!goog.isNull(node)) {
+  if (node !== null) {
     bot.locators.xpath.checkElement_(node, target);
   }
   return /** @type {Element} */ (node);

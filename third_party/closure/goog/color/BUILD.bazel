@@ -1,0 +1,21 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "color",
+    srcs = ["color.js"],
+    lenient = True,
+    deps = [
+        ":names",
+        "//third_party/closure/goog/math",
+    ],
+)
+
+closure_js_library(
+    name = "names",
+    srcs = ["names.js"],
+    lenient = True,
+)

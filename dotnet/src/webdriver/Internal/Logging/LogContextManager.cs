@@ -31,7 +31,12 @@ internal class LogContextManager
     {
         var defaulLogHandler = new TextWriterHandler(Console.Error);
 
-        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
+        // Enable debug logging if SE_DEBUG environment variable is set
+        var level = Environment.GetEnvironmentVariable("SE_DEBUG") is not null
+            ? LogEventLevel.Debug
+            : LogEventLevel.Warn;
+
+        GlobalContext = new LogContext(level, null, null, [defaulLogHandler]);
     }
 
     public ILogContext GlobalContext { get; }
