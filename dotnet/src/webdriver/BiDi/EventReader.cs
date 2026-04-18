@@ -21,29 +21,23 @@ using System.Threading.Channels;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class EventReader<TEventArgs> : IEventSubscription, IAsyncEnumerable<TEventArgs>, IAsyncDisposable
+public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSubscription
     where TEventArgs : EventArgs
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
-    private readonly Func<TEventArgs, bool>? _filter;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
-    internal EventReader(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
+    internal EventReader(Func<CancellationToken, ValueTask> unsubscribe)
     {
         _unsubscribe = unsubscribe;
-        _filter = filter;
     }
 
     void IEventSubscription.Deliver(EventArgs args)
     {
-        var typedArgs = (TEventArgs)args;
-        if (_filter is null || _filter(typedArgs))
-        {
-            _channel.Writer.TryWrite(typedArgs);
-        }
+        _channel.Writer.TryWrite((TEventArgs)args);
     }
 
     void IEventSubscription.Complete(Exception? error)

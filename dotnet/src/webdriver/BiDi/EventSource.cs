@@ -22,42 +22,74 @@ namespace OpenQA.Selenium.BiDi;
 public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
 {
     private readonly IBiDi _bidi;
-    internal readonly Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> _onAsyncCore;
-    internal readonly Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventReader<TEventArgs>>> _subscribeAsyncCore;
-    internal readonly Func<TEventArgs, bool>? _filter;
-    internal readonly Func<SubscriptionOptions?, SubscriptionOptions>? _mapOptions;
+    private readonly EventDescriptor<TEventArgs> _descriptor;
+    private readonly Func<TEventArgs, bool>? _filter;
+    private readonly Func<SubscriptionOptions?, SubscriptionOptions>? _mapOptions;
 
-    internal EventSource(
-        IBiDi bidi,
-        Func<Func<TEventArgs, ValueTask>, Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<Subscription<TEventArgs>>> onAsyncCore,
-        Func<Func<TEventArgs, bool>?, SubscriptionOptions?, CancellationToken, Task<EventReader<TEventArgs>>> subscribeAsyncCore,
-        Func<TEventArgs, bool>? filter = null,
-        Func<SubscriptionOptions?, SubscriptionOptions>? mapOptions = null)
+    internal EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor)
     {
         _bidi = bidi;
-        _onAsyncCore = onAsyncCore;
-        _subscribeAsyncCore = subscribeAsyncCore;
+        _descriptor = descriptor;
+    }
+
+    private EventSource(IBiDi bidi, EventDescriptor<TEventArgs> descriptor,
+        Func<TEventArgs, bool>? filter, Func<SubscriptionOptions?, SubscriptionOptions>? mapOptions)
+    {
+        _bidi = bidi;
+        _descriptor = descriptor;
         _filter = filter;
         _mapOptions = mapOptions;
     }
 
-    public Task<Subscription<TEventArgs>> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public EventDescriptor<TEventArgs> Descriptor => _descriptor;
+
+    public Task<ISubscription> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.OnEventAsync(this, handler, options, cancellationToken);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), EffectiveOptions(options), cancellationToken);
     }
 
-    public Task<Subscription<TEventArgs>> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.OnEventAsync(this, handler, options, cancellationToken);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return _bidi.OnEventAsync(_descriptor, WrapHandler(handler), EffectiveOptions(options), cancellationToken);
     }
 
-    public Task<EventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _bidi.ReadAllEventsAsync(this, options, cancellationToken);
+        var reader = await _bidi.ReadAllEventsAsync(_descriptor, EffectiveOptions(options), cancellationToken).ConfigureAwait(false);
+
+        return _filter is not null
+            ? new FilteredEventReader<TEventArgs>(reader, _filter)
+            : reader;
     }
 
-    internal EventSource<TEventArgs> WithContext(Func<TEventArgs, bool> filter, Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)
+    public EventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate)
     {
-        return new EventSource<TEventArgs>(_bidi, _onAsyncCore, _subscribeAsyncCore, filter, mapOptions);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var combined = _filter is { } existing
+            ? e => existing(e) && predicate(e)
+            : predicate;
+
+        return new(_bidi, _descriptor, combined, _mapOptions);
     }
+
+    public EventSource<TEventArgs> WithOptions(Func<SubscriptionOptions?, SubscriptionOptions> mapOptions)
+    {
+        ArgumentNullException.ThrowIfNull(mapOptions);
+
+        return new(_bidi, _descriptor, _filter, mapOptions);
+    }
+
+    private Action<TEventArgs> WrapHandler(Action<TEventArgs> handler)
+        => _filter is { } f ? e => { if (f(e)) handler(e); } : handler;
+
+    private Func<TEventArgs, Task> WrapHandler(Func<TEventArgs, Task> handler)
+        => _filter is { } f ? async e => { if (f(e)) await handler(e).ConfigureAwait(false); } : handler;
+
+    private SubscriptionOptions? EffectiveOptions(SubscriptionOptions? options)
+        => _mapOptions?.Invoke(options) ?? options;
 }

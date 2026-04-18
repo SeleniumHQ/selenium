@@ -1,4 +1,4 @@
-// <copyright file="BrowsingContextLogModule.cs" company="Selenium Committers">
+// <copyright file="NetworkEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,18 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Log;
+namespace OpenQA.Selenium.BiDi.Network;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
-
-internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
+public static class NetworkEvent
 {
-    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ??= logModule.EntryAddedEvent
-        .Where(e => context.Equals(e.Source.Context))
-        .WithOptions(options => new SubscriptionOptions
-        {
-            Contexts = [context],
-            Timeout = options?.Timeout
-        });
-    private EventSource<EntryAddedEventArgs>? _entryAdded;
+    public static EventDescriptor<BeforeRequestSentEventArgs> BeforeRequestSent { get; } = new("network.beforeRequestSent");
+    public static EventDescriptor<ResponseStartedEventArgs> ResponseStarted { get; } = new("network.responseStarted");
+    public static EventDescriptor<ResponseCompletedEventArgs> ResponseCompleted { get; } = new("network.responseCompleted");
+    public static EventDescriptor<FetchErrorEventArgs> FetchError { get; } = new("network.fetchError");
+    public static EventDescriptor<AuthRequiredEventArgs> AuthRequired { get; } = new("network.authRequired");
 }

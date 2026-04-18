@@ -80,43 +80,35 @@ public sealed class BiDi : IBiDi
         return Session.EndAsync(options, cancellationToken);
     }
 
-    internal EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor)
+    internal EventSource<TEventArgs> CreateEventSource<TEventArgs, TEventParams>(EventRegistration<TEventArgs, TEventParams> registration)
         where TEventArgs : EventArgs
     {
-        var eventDispatcher = Broker.EventDispatcher;
+        Broker.EventDispatcher.RegisterEventMetadata(registration, this);
 
-        eventDispatcher.RegisterEventMetadata(descriptor, this);
-
-        return new EventSource<TEventArgs>(
-            this,
-            (handler, filter, options, ct) => eventDispatcher.SubscribeAsync(descriptor, handler, filter, options, ct),
-            (filter, options, ct) => eventDispatcher.SubscribeAsync(descriptor, filter, options, ct));
+        return new EventSource<TEventArgs>(this, registration.Descriptor);
     }
 
-    public Task<Subscription<TEventArgs>> OnEventAsync<TEventArgs>(EventSource<TEventArgs> source, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(descriptor);
         ArgumentNullException.ThrowIfNull(handler);
 
-        var effectiveOptions = source._mapOptions?.Invoke(options) ?? options;
-        return source._onAsyncCore(e => { handler(e); return default; }, source._filter, effectiveOptions, cancellationToken);
+        return await Broker.EventDispatcher.SubscribeAsync(descriptor, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<Subscription<TEventArgs>> OnEventAsync<TEventArgs>(EventSource<TEventArgs> source, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(descriptor);
         ArgumentNullException.ThrowIfNull(handler);
 
-        var effectiveOptions = source._mapOptions?.Invoke(options) ?? options;
-        return source._onAsyncCore(e => new ValueTask(handler(e)), source._filter, effectiveOptions, cancellationToken);
+        return await Broker.EventDispatcher.SubscribeAsync(descriptor, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<EventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventSource<TEventArgs> source, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(descriptor);
 
-        var effectiveOptions = source._mapOptions?.Invoke(options) ?? options;
-        return source._subscribeAsyncCore(source._filter, effectiveOptions, cancellationToken);
+        return await Broker.EventDispatcher.SubscribeReaderAsync(descriptor, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

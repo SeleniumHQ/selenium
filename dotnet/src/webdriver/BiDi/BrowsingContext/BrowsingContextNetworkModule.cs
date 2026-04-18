@@ -59,14 +59,12 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return moduleEventSource.WithContext(
-            e => filter(e, context),
-            options => WithContext(options, context));
+        return moduleEventSource
+            .Where(e => filter(e, context))
+            .WithOptions(options => new SubscriptionOptions
+            {
+                Contexts = [context],
+                Timeout = options?.Timeout
+            });
     }
-
-    private static SubscriptionOptions WithContext(SubscriptionOptions? options, BrowsingContext context) => new()
-    {
-        Contexts = [context],
-        Timeout = options?.Timeout
-    };
 }

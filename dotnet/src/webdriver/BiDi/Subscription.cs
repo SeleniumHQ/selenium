@@ -30,14 +30,13 @@ internal interface IEventSubscription
     ValueTask DisposeAsync();
 }
 
-public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposable
+public sealed class Subscription<TEventArgs> : ISubscription, IEventSubscription
     where TEventArgs : EventArgs
 {
     private static readonly ILogger Logger = Internal.Logging.Log.GetLogger(typeof(Subscription<>));
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, ValueTask> _handler;
-    private readonly Func<TEventArgs, bool>? _filter;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
@@ -46,21 +45,16 @@ public sealed class Subscription<TEventArgs> : IEventSubscription, IAsyncDisposa
     private readonly Task _dispatchTask;
     private readonly ConcurrentDictionary<Task, byte> _activeHandlers = [];
 
-    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler, Func<TEventArgs, bool>? filter = null)
+    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
     {
         _unsubscribe = unsubscribe;
         _handler = handler;
-        _filter = filter;
         _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
     void IEventSubscription.Deliver(EventArgs args)
     {
-        var typedArgs = (TEventArgs)args;
-        if (_filter is null || _filter(typedArgs))
-        {
-            _channel.Writer.TryWrite(typedArgs);
-        }
+        _channel.Writer.TryWrite((TEventArgs)args);
     }
 
     void IEventSubscription.Complete(Exception? error)

@@ -38,14 +38,12 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ??= inputModule.FileDialogOpenedEvent.WithContext(
-        e => context.Equals(e.Context),
-        WithContext);
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ??= inputModule.FileDialogOpenedEvent
+        .Where(e => context.Equals(e.Context))
+        .WithOptions(options => new SubscriptionOptions
+        {
+            Contexts = [context],
+            Timeout = options?.Timeout
+        });
     private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
-
-    private SubscriptionOptions WithContext(SubscriptionOptions? options) => new()
-    {
-        Contexts = [context],
-        Timeout = options?.Timeout
-    };
 }

@@ -1,4 +1,4 @@
-// <copyright file="BrowsingContextLogModule.cs" company="Selenium Committers">
+// <copyright file="EventRegistration.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,18 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Log;
+using System.Text.Json.Serialization.Metadata;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi;
 
-internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
-{
-    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ??= logModule.EntryAddedEvent
-        .Where(e => context.Equals(e.Source.Context))
-        .WithOptions(options => new SubscriptionOptions
-        {
-            Contexts = [context],
-            Timeout = options?.Timeout
-        });
-    private EventSource<EntryAddedEventArgs>? _entryAdded;
-}
+internal readonly record struct EventRegistration<TEventArgs, TEventParams>(
+    EventDescriptor<TEventArgs> Descriptor,
+    Func<IBiDi, TEventParams, TEventArgs> Factory,
+    JsonTypeInfo<TEventParams> JsonTypeInfo)
+    where TEventArgs : EventArgs;

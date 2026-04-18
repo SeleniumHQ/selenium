@@ -24,8 +24,8 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 internal sealed class LogModule : Module, ILogModule
 {
-    private static readonly Event<EntryAddedEventArgs, LogEntry> s_entryAddedEvent = new(
-        "log.entryAdded",
+    private static readonly EventRegistration<EntryAddedEventArgs, LogEntry> s_entryAddedReg = new(
+        LogEvent.EntryAdded,
         static (bidi, p) => p switch
         {
             ConsoleLogEntry c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
@@ -35,7 +35,7 @@ internal sealed class LogModule : Module, ILogModule
         },
         Default.LogEntry);
 
-    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(s_entryAddedEvent), null) ?? _entryAdded;
+    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(s_entryAddedReg), null) ?? _entryAdded;
     private EventSource<EntryAddedEventArgs>? _entryAdded;
 }
 

@@ -170,9 +170,9 @@ public sealed record BrowsingContext : IIdentifiable
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return moduleEventSource.WithContext(
-            e => filter(e, this),
-            options => new SubscriptionOptions { Contexts = [this], Timeout = options?.Timeout });
+        return moduleEventSource
+            .Where(e => filter(e, this))
+            .WithOptions(options => new SubscriptionOptions { Contexts = [this], Timeout = options?.Timeout });
     }
 
     public bool Equals(BrowsingContext? other)

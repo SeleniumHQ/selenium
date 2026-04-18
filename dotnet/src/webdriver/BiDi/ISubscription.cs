@@ -1,4 +1,4 @@
-// <copyright file="BrowsingContextLogModule.cs" company="Selenium Committers">
+// <copyright file="ISubscription.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,18 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Log;
+namespace OpenQA.Selenium.BiDi;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
-
-internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
+public interface ISubscription : IAsyncDisposable
 {
-    public EventSource<EntryAddedEventArgs> EntryAddedEvent => _entryAdded ??= logModule.EntryAddedEvent
-        .Where(e => context.Equals(e.Source.Context))
-        .WithOptions(options => new SubscriptionOptions
-        {
-            Contexts = [context],
-            Timeout = options?.Timeout
-        });
-    private EventSource<EntryAddedEventArgs>? _entryAdded;
+    ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default);
 }
