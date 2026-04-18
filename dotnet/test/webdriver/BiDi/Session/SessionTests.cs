@@ -19,6 +19,8 @@
 
 using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi;
+using OpenQA.Selenium.BiDi.Log;
+using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.Tests.BiDi.Session;
 
@@ -62,6 +64,42 @@ internal class SessionTests : BiDiTestFixture
     public void AsModuleShouldReturnSameInstanceForSameType()
     {
         Assert.That(bidi.AsModule<CustomModule>(), Is.SameAs(bidi.AsModule<CustomModule>()));
+    }
+
+    [Test]
+    public async Task CanSubscribeToEvent()
+    {
+        EntryAddedEventArgs log = null;
+
+        await using var _ = await bidi.OnEventAsync(LogEvent.EntryAdded, e =>
+        {
+            log = e;
+        });
+
+        await context.Script.EvaluateAsync("console.log('hello event');", true);
+
+        Assert.That(log.Text, Is.EqualTo("hello event"));
+    }
+
+    [Test]
+    public async Task CanSubscribeToMultipleEvents()
+    {
+        ResponseStartedEventArgs e1 = null;
+        ResponseCompletedEventArgs e2 = null;
+
+        await using var _ = await bidi.OnEventAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
+        {
+            switch (e)
+            {
+                case ResponseStartedEventArgs started: e1 = started; break;
+                case ResponseCompletedEventArgs completed: e2 = completed; break;
+            }
+        });
+
+        await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+
+        Assert.That(e1, Is.Not.Null);
+        Assert.That(e2, Is.Not.Null);
     }
 
     [Test]
