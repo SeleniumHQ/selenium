@@ -14,18 +14,94 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from dataclasses import dataclass, field
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
-if TYPE_CHECKING:
-    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
+
+@dataclass
+class PartitionKey:
+    """PartitionKey."""
+
+    user_context: str | None = None
+    source_origin: str | None = None
+
+
+@dataclass
+class GetCookiesParameters:
+    """GetCookiesParameters."""
+
+    filter: Any | None = None
+    partition: Any | None = None
+
+
+@dataclass
+class GetCookiesResult:
+    """GetCookiesResult."""
+
+    cookies: list[Any] = field(default_factory=list)
+    partition_key: Any | None = None
+
+
+@dataclass
+class SetCookieParameters:
+    """SetCookieParameters."""
+
+    cookie: Any | None = None
+    partition: Any | None = None
+
+
+@dataclass
+class SetCookieResult:
+    """SetCookieResult."""
+
+    partition_key: Any | None = None
+
+
+@dataclass
+class DeleteCookiesParameters:
+    """DeleteCookiesParameters."""
+
+    filter: Any | None = None
+    partition: Any | None = None
+
+
+@dataclass
+class DeleteCookiesResult:
+    """DeleteCookiesResult."""
+
+    partition_key: Any | None = None
+
+
+class BytesValue:
+    """A string or base64-encoded bytes value used in cookie operations.
+
+    This corresponds to network.BytesValue in the WebDriver BiDi specification,
+    wrapping either a plain string or a base64-encoded binary value.
+    """
+
+    TYPE_STRING = "string"
+    TYPE_BASE64 = "base64"
+
+    def __init__(self, type: Any | None, value: Any | None) -> None:
+        self.type = type
+        self.value = value
+
+    def to_bidi_dict(self) -> dict:
+        return {"type": self.type, "value": self.value}
+
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 
 class SameSite:
-    """Represents the possible same site values for cookies."""
+    """SameSite cookie attribute values."""
 
     STRICT = "strict"
     LAX = "lax"
@@ -33,118 +109,62 @@ class SameSite:
     DEFAULT = "default"
 
 
-class BytesValue:
-    """Represents a bytes value."""
+@dataclass
+class StorageCookie:
+    """A cookie object returned by storage.getCookies."""
 
-    TYPE_BASE64 = "base64"
-    TYPE_STRING = "string"
-
-    def __init__(self, type: str, value: str):
-        self.type = type
-        self.value = value
-
-    def to_dict(self) -> dict[str, str]:
-        """Converts the BytesValue to a dictionary.
-
-        Returns:
-            A dictionary representation of the BytesValue.
-        """
-        return {"type": self.type, "value": self.value}
-
-
-class Cookie:
-    """Represents a cookie."""
-
-    def __init__(
-        self,
-        name: str,
-        value: BytesValue,
-        domain: str,
-        path: str | None = None,
-        size: int | None = None,
-        http_only: bool | None = None,
-        secure: bool | None = None,
-        same_site: str | None = None,
-        expiry: int | None = None,
-    ):
-        self.name = name
-        self.value = value
-        self.domain = domain
-        self.path = path
-        self.size = size
-        self.http_only = http_only
-        self.secure = secure
-        self.same_site = same_site
-        self.expiry = expiry
+    name: str | None = None
+    value: Any | None = None
+    domain: str | None = None
+    path: str | None = None
+    size: Any | None = None
+    http_only: bool | None = None
+    secure: bool | None = None
+    same_site: Any | None = None
+    expiry: Any | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Cookie:
-        """Creates a Cookie instance from a dictionary.
-
-        Args:
-            data: A dictionary containing the cookie information.
-
-        Returns:
-            A new instance of Cookie.
-        """
-        # Validation for empty strings
-        name = data.get("name")
-        if not name:
-            raise ValueError("name is required and cannot be empty")
-        domain = data.get("domain")
-        if not domain:
-            raise ValueError("domain is required and cannot be empty")
-
-        value = BytesValue(data.get("value", {}).get("type"), data.get("value", {}).get("value"))
+    def from_bidi_dict(cls, raw: dict) -> StorageCookie:
+        """Deserialize a wire-level cookie dict to a StorageCookie."""
+        value_raw = raw.get("value")
+        if isinstance(value_raw, dict):
+            value: Any = BytesValue(value_raw.get("type"), value_raw.get("value"))
+        else:
+            value = value_raw
         return cls(
-            name=str(name),
+            name=raw.get("name"),
             value=value,
-            domain=str(domain),
-            path=data.get("path"),
-            size=data.get("size"),
-            http_only=data.get("httpOnly"),
-            secure=data.get("secure"),
-            same_site=data.get("sameSite"),
-            expiry=data.get("expiry"),
+            domain=raw.get("domain"),
+            path=raw.get("path"),
+            size=raw.get("size"),
+            http_only=raw.get("httpOnly"),
+            secure=raw.get("secure"),
+            same_site=raw.get("sameSite"),
+            expiry=raw.get("expiry"),
         )
 
 
+@dataclass
 class CookieFilter:
-    """Represents a filter for cookies."""
+    """CookieFilter."""
 
-    def __init__(
-        self,
-        name: str | None = None,
-        value: BytesValue | None = None,
-        domain: str | None = None,
-        path: str | None = None,
-        size: int | None = None,
-        http_only: bool | None = None,
-        secure: bool | None = None,
-        same_site: str | None = None,
-        expiry: int | None = None,
-    ):
-        self.name = name
-        self.value = value
-        self.domain = domain
-        self.path = path
-        self.size = size
-        self.http_only = http_only
-        self.secure = secure
-        self.same_site = same_site
-        self.expiry = expiry
+    name: str | None = None
+    value: Any | None = None
+    domain: str | None = None
+    path: str | None = None
+    size: Any | None = None
+    http_only: bool | None = None
+    secure: bool | None = None
+    same_site: Any | None = None
+    expiry: Any | None = None
 
-    def to_dict(self) -> dict[str, Any]:
-        """Converts the CookieFilter to a dictionary.
-
-        Returns:
-            A dictionary representation of the CookieFilter.
-        """
-        result: dict[str, Any] = {}
+    def to_bidi_dict(self) -> dict:
+        """Serialize to the BiDi wire-protocol dict."""
+        result: dict = {}
         if self.name is not None:
             result["name"] = self.name
         if self.value is not None:
-            result["value"] = self.value.to_dict()
+            result["value"] = self.value.to_bidi_dict() if hasattr(self.value, "to_bidi_dict") else self.value
         if self.domain is not None:
             result["domain"] = self.domain
         if self.path is not None:
@@ -161,103 +181,33 @@ class CookieFilter:
             result["expiry"] = self.expiry
         return result
 
-
-class PartitionKey:
-    """Represents a storage partition key."""
-
-    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
-        self.user_context = user_context
-        self.source_origin = source_origin
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> PartitionKey:
-        """Creates a PartitionKey instance from a dictionary.
-
-        Args:
-            data: A dictionary containing the partition key information.
-
-        Returns:
-            A new instance of PartitionKey.
-        """
-        return cls(
-            user_context=data.get("userContext"),
-            source_origin=data.get("sourceOrigin"),
-        )
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 
-class BrowsingContextPartitionDescriptor:
-    """Represents a browsing context partition descriptor."""
-
-    def __init__(self, context: str):
-        self.type = "context"
-        self.context = context
-
-    def to_dict(self) -> dict[str, str]:
-        """Converts the BrowsingContextPartitionDescriptor to a dictionary.
-
-        Returns:
-            Dict: A dictionary representation of the BrowsingContextPartitionDescriptor.
-        """
-        return {"type": self.type, "context": self.context}
-
-
-class StorageKeyPartitionDescriptor:
-    """Represents a storage key partition descriptor."""
-
-    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
-        self.type = "storageKey"
-        self.user_context = user_context
-        self.source_origin = source_origin
-
-    def to_dict(self) -> dict[str, str]:
-        """Converts the StorageKeyPartitionDescriptor to a dictionary.
-
-        Returns:
-            Dict: A dictionary representation of the StorageKeyPartitionDescriptor.
-        """
-        result = {"type": self.type}
-        if self.user_context is not None:
-            result["userContext"] = self.user_context
-        if self.source_origin is not None:
-            result["sourceOrigin"] = self.source_origin
-        return result
-
-
+@dataclass
 class PartialCookie:
-    """Represents a partial cookie for setting."""
+    """PartialCookie."""
 
-    def __init__(
-        self,
-        name: str,
-        value: BytesValue,
-        domain: str,
-        path: str | None = None,
-        http_only: bool | None = None,
-        secure: bool | None = None,
-        same_site: str | None = None,
-        expiry: int | None = None,
-    ):
-        self.name = name
-        self.value = value
-        self.domain = domain
-        self.path = path
-        self.http_only = http_only
-        self.secure = secure
-        self.same_site = same_site
-        self.expiry = expiry
+    name: str | None = None
+    value: Any | None = None
+    domain: str | None = None
+    path: str | None = None
+    http_only: bool | None = None
+    secure: bool | None = None
+    same_site: Any | None = None
+    expiry: Any | None = None
 
-    def to_dict(self) -> dict[str, Any]:
-        """Converts the PartialCookie to a dictionary.
-
-        Returns:
-        -------
-            Dict: A dictionary representation of the PartialCookie.
-        """
-        result: dict[str, Any] = {
-            "name": self.name,
-            "value": self.value.to_dict(),
-            "domain": self.domain,
-        }
+    def to_bidi_dict(self) -> dict:
+        """Serialize to the BiDi wire-protocol dict."""
+        result: dict = {}
+        if self.name is not None:
+            result["name"] = self.name
+        if self.value is not None:
+            result["value"] = self.value.to_bidi_dict() if hasattr(self.value, "to_bidi_dict") else self.value
+        if self.domain is not None:
+            result["domain"] = self.domain
         if self.path is not None:
             result["path"] = self.path
         if self.http_only is not None:
@@ -270,144 +220,134 @@ class PartialCookie:
             result["expiry"] = self.expiry
         return result
 
-
-class GetCookiesResult:
-    """Represents the result of a getCookies command."""
-
-    def __init__(self, cookies: list[Cookie], partition_key: PartitionKey):
-        self.cookies = cookies
-        self.partition_key = partition_key
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> GetCookiesResult:
-        """Creates a GetCookiesResult instance from a dictionary.
-
-        Args:
-            data: A dictionary containing the get cookies result information.
-
-        Returns:
-            A new instance of GetCookiesResult.
-        """
-        cookies = [Cookie.from_dict(cookie) for cookie in data.get("cookies", [])]
-        partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
-        return cls(cookies=cookies, partition_key=partition_key)
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 
-class SetCookieResult:
-    """Represents the result of a setCookie command."""
+class BrowsingContextPartitionDescriptor:
+    """BrowsingContextPartitionDescriptor.
 
-    def __init__(self, partition_key: PartitionKey):
-        self.partition_key = partition_key
+    The first positional argument is *context* (a browsing-context ID / window
+    handle), mirroring how the class is used throughout the test suite:
+    ``BrowsingContextPartitionDescriptor(driver.current_window_handle)``.
+    """
 
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> SetCookieResult:
-        """Creates a SetCookieResult instance from a dictionary.
+    def __init__(self, context: Any = None, type: str = "context") -> None:
+        self.context = context
+        self.type = type
 
-        Args:
-            data: A dictionary containing the set cookie result information.
+    def to_bidi_dict(self) -> dict:
+        return {"type": "context", "context": self.context}
 
-        Returns:
-            A new instance of SetCookieResult.
-        """
-        partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
-        return cls(partition_key=partition_key)
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 
-class DeleteCookiesResult:
-    """Represents the result of a deleteCookies command."""
+@dataclass
+class StorageKeyPartitionDescriptor:
+    """StorageKeyPartitionDescriptor."""
 
-    def __init__(self, partition_key: PartitionKey):
-        self.partition_key = partition_key
+    type: Any | None = "storageKey"
+    user_context: str | None = None
+    source_origin: str | None = None
 
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> DeleteCookiesResult:
-        """Creates a DeleteCookiesResult instance from a dictionary.
+    def to_bidi_dict(self) -> dict:
+        """Serialize to the BiDi wire-protocol dict."""
+        result: dict = {"type": "storageKey"}
+        if self.user_context is not None:
+            result["userContext"] = self.user_context
+        if self.source_origin is not None:
+            result["sourceOrigin"] = self.source_origin
+        return result
 
-        Args:
-            data: A dictionary containing the delete cookies result information.
-
-        Returns:
-            A new instance of DeleteCookiesResult.
-        """
-        partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
-        return cls(partition_key=partition_key)
+    def to_dict(self) -> dict:
+        """Backward-compatible alias for to_bidi_dict()."""
+        return self.to_bidi_dict()
 
 
 class Storage:
-    """BiDi implementation of the storage module."""
+    """WebDriver BiDi storage module."""
 
-    def __init__(self, conn: WebSocketConnection) -> None:
-        self.conn = conn
+    def __init__(self, conn) -> None:
+        self._conn = conn
 
-    def get_cookies(
-        self,
-        filter: CookieFilter | None = None,
-        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
-    ) -> GetCookiesResult:
-        """Gets cookies matching the specified filter.
-
-        Args:
-            filter: Optional filter to specify which cookies to retrieve.
-            partition: Optional partition key to limit the scope of the operation.
-
-        Returns:
-            A GetCookiesResult containing the cookies and partition key.
-
-        Example:
-            result = await storage.get_cookies(
-                filter=CookieFilter(name="sessionId"),
-                partition=PartitionKey(...)
+    def get_cookies(self, filter=None, partition=None):
+        """Execute storage.getCookies and return a GetCookiesResult."""
+        if filter and hasattr(filter, "to_bidi_dict"):
+            filter = filter.to_bidi_dict()
+        if partition and hasattr(partition, "to_bidi_dict"):
+            partition = partition.to_bidi_dict()
+        params = {
+            "filter": filter,
+            "partition": partition,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("storage.getCookies", params)
+        result = self._conn.execute(cmd)
+        if result and "cookies" in result:
+            cookies = [StorageCookie.from_bidi_dict(c) for c in result.get("cookies", []) if isinstance(c, dict)]
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
             )
-        """
-        params = {}
-        if filter is not None:
-            params["filter"] = filter.to_dict()
-        if partition is not None:
-            params["partition"] = partition.to_dict()
+            return GetCookiesResult(cookies=cookies, partition_key=pk)
+        return GetCookiesResult(cookies=[], partition_key=None)
 
-        result = self.conn.execute(command_builder("storage.getCookies", params))
-        return GetCookiesResult.from_dict(result)
+    def set_cookie(self, cookie=None, partition=None):
+        """Execute storage.setCookie."""
+        if cookie and hasattr(cookie, "to_bidi_dict"):
+            cookie = cookie.to_bidi_dict()
+        if partition and hasattr(partition, "to_bidi_dict"):
+            partition = partition.to_bidi_dict()
+        params = {
+            "cookie": cookie,
+            "partition": partition,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("storage.setCookie", params)
+        result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return SetCookieResult(partition_key=pk)
+        return result
 
-    def set_cookie(
-        self,
-        cookie: PartialCookie,
-        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
-    ) -> SetCookieResult:
-        """Sets a cookie in the browser.
-
-        Args:
-            cookie: The cookie to set.
-            partition: Optional partition descriptor.
-
-        Returns:
-            The result of the set cookie command.
-        """
-        params = {"cookie": cookie.to_dict()}
-        if partition is not None:
-            params["partition"] = partition.to_dict()
-
-        result = self.conn.execute(command_builder("storage.setCookie", params))
-        return SetCookieResult.from_dict(result)
-
-    def delete_cookies(
-        self,
-        filter: CookieFilter | None = None,
-        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
-    ) -> DeleteCookiesResult:
-        """Deletes cookies that match the given parameters.
-
-        Args:
-            filter: Optional filter to match cookies to delete.
-            partition: Optional partition descriptor.
-
-        Returns:
-            The result of the delete cookies command.
-        """
-        params = {}
-        if filter is not None:
-            params["filter"] = filter.to_dict()
-        if partition is not None:
-            params["partition"] = partition.to_dict()
-
-        result = self.conn.execute(command_builder("storage.deleteCookies", params))
-        return DeleteCookiesResult.from_dict(result)
+    def delete_cookies(self, filter=None, partition=None):
+        """Execute storage.deleteCookies."""
+        if filter and hasattr(filter, "to_bidi_dict"):
+            filter = filter.to_bidi_dict()
+        if partition and hasattr(partition, "to_bidi_dict"):
+            partition = partition.to_bidi_dict()
+        params = {
+            "filter": filter,
+            "partition": partition,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        cmd = command_builder("storage.deleteCookies", params)
+        result = self._conn.execute(cmd)
+        if isinstance(result, dict):
+            pk_raw = result.get("partitionKey")
+            pk = (
+                PartitionKey(
+                    user_context=pk_raw.get("userContext"),
+                    source_origin=pk_raw.get("sourceOrigin"),
+                )
+                if isinstance(pk_raw, dict)
+                else None
+            )
+            return DeleteCookiesResult(partition_key=pk)
+        return result

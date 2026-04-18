@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -168,7 +169,7 @@ public class Contents {
   public static <T> T fromJson(HttpMessage<?> message, Type typeOfT) {
     try (Reader reader = reader(message);
         JsonInput input = JSON.newInput(reader)) {
-      return input.read(typeOfT);
+      return requireNonNull(input.read(typeOfT));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

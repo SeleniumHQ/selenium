@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi;
+
 namespace OpenQA.Selenium.Tests.BiDi.Session;
 
 internal class SessionTests : BiDiTestFixture
@@ -54,4 +57,44 @@ internal class SessionTests : BiDiTestFixture
             () => bidi.StatusAsync(cancellationToken: cts.Token),
             Throws.InstanceOf<TaskCanceledException>());
     }
+
+    [Test]
+    public void AsModuleShouldReturnSameInstanceForSameType()
+    {
+        Assert.That(bidi.AsModule<CustomModule>(), Is.SameAs(bidi.AsModule<CustomModule>()));
+    }
+
+    [Test]
+    public async Task CustomModuleShouldExecuteCommand()
+    {
+        var customModule = bidi.AsModule<CustomModule>();
+
+        var result = await customModule.DoSomethingAsync();
+
+        Assert.That(result, Is.Not.Null);
+    }
 }
+
+class CustomModule : Module
+{
+    private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
+
+    private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
+        new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
+
+    public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
+    {
+        return await ExecuteAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
+    }
+}
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+[JsonSerializable(typeof(Parameters))]
+[JsonSerializable(typeof(DoSomethingResult))]
+partial class CustomModuleJsonSerializerContext : JsonSerializerContext;
+
+record DoSomethingResult : EmptyResult;
+
+record DoSomethingOptions : CommandOptions;

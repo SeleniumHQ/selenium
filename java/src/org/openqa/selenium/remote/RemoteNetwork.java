@@ -29,8 +29,6 @@ import java.util.function.UnaryOperator;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BytesValue;
 import org.openqa.selenium.bidi.network.ContinueRequestParameters;
@@ -44,7 +42,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 @Beta
 class RemoteNetwork implements Network {
 
-  private final BiDi biDi;
   private final org.openqa.selenium.bidi.module.Network network;
 
   private final Map<Long, AuthDetails> authHandlers = new ConcurrentHashMap<>();
@@ -54,7 +51,6 @@ class RemoteNetwork implements Network {
   private final AtomicLong callBackId = new AtomicLong(1);
 
   public RemoteNetwork(WebDriver driver) {
-    this.biDi = ((HasBiDi) driver).getBiDi();
     this.network = new org.openqa.selenium.bidi.module.Network(driver);
 
     interceptAuthTraffic();
@@ -193,7 +189,7 @@ class RemoteNetwork implements Network {
     requestHandlers.clear();
   }
 
-  private class AuthDetails {
+  private static class AuthDetails {
     private final Predicate<URI> filter;
     private final UsernameAndPassword usernameAndPassword;
 
@@ -211,7 +207,7 @@ class RemoteNetwork implements Network {
     }
   }
 
-  private class RequestDetails {
+  private static class RequestDetails {
     private final Predicate<URI> filter;
     private final UnaryOperator<HttpRequest> handler;
 

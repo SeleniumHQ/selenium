@@ -33,7 +33,7 @@ internal class ScriptEventsTests : BiDiTestFixture
 
         await context.Script.CallFunctionAsync("(channel) => channel('foo')", false, new()
         {
-            Arguments = [new ChannelLocalValue(new(new("channel_name")))]
+            Arguments = [new ChannelLocalValue(new(new(bidi, "channel_name")))]
         });
 
         var message = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -49,7 +49,7 @@ internal class ScriptEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenToRealmCreatedEvent()
     {
-        TaskCompletionSource<RealmInfoEventArgs> tcs = new();
+        TaskCompletionSource<RealmCreatedEventArgs> tcs = new();
 
         await bidi.Script.OnRealmCreatedAsync(tcs.SetResult);
 
@@ -58,7 +58,7 @@ internal class ScriptEventsTests : BiDiTestFixture
         var realmInfo = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.That(realmInfo, Is.Not.Null);
-        Assert.That(realmInfo, Is.AssignableFrom<WindowRealmInfoEventArgs>());
+        Assert.That(realmInfo, Is.AssignableFrom<WindowRealmCreatedEventArgs>());
         Assert.That(realmInfo.Realm, Is.Not.Null);
     }
 

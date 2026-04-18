@@ -20,12 +20,10 @@ package org.openqa.selenium.remote;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementAccount;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
 
-@NullMarked
 class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   private final ExecuteMethod executeMethod;
 

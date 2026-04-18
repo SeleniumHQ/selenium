@@ -16,63 +16,139 @@
 # under the License.
 
 
-from selenium.common.exceptions import WebDriverException
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any
+
 from selenium.webdriver.common.bidi.common import command_builder
 
 
+@dataclass
+class InstallParameters:
+    """InstallParameters."""
+
+    extension_data: Any | None = None
+
+
+@dataclass
+class ExtensionPath:
+    """ExtensionPath."""
+
+    type: str = field(default="path", init=False)
+    path: str | None = None
+
+
+@dataclass
+class ExtensionArchivePath:
+    """ExtensionArchivePath."""
+
+    type: str = field(default="archivePath", init=False)
+    path: str | None = None
+
+
+@dataclass
+class ExtensionBase64Encoded:
+    """ExtensionBase64Encoded."""
+
+    type: str = field(default="base64", init=False)
+    value: str | None = None
+
+
+@dataclass
+class InstallResult:
+    """InstallResult."""
+
+    extension: Any | None = None
+
+
+@dataclass
+class UninstallParameters:
+    """UninstallParameters."""
+
+    extension: Any | None = None
+
+
 class WebExtension:
-    """BiDi implementation of the webExtension module."""
+    """WebDriver BiDi webExtension module."""
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, conn) -> None:
+        self._conn = conn
 
-    def install(self, path=None, archive_path=None, base64_value=None) -> dict:
-        """Installs a web extension in the remote end.
+    def install(
+        self,
+        path: str | None = None,
+        archive_path: str | None = None,
+        base64_value: str | None = None,
+    ):
+        """Install a web extension.
 
-        You must provide exactly one of the parameters.
+        Exactly one of the three keyword arguments must be provided.
 
         Args:
-            path: Path to an extension directory.
-            archive_path: Path to an extension archive file.
-            base64_value: Base64 encoded string of the extension archive.
+            path: Directory path to an unpacked extension (also accepted for
+                signed ``.xpi`` / ``.crx`` archive files on Firefox).
+            archive_path: File-system path to a packed extension archive.
+            base64_value: Base64-encoded extension archive string.
 
         Returns:
-            A dictionary containing the extension ID.
-        """
-        if sum(x is not None for x in (path, archive_path, base64_value)) != 1:
-            raise ValueError("Exactly one of path, archive_path, or base64_value must be provided")
+            The raw result dict from the BiDi ``webExtension.install`` command
+            (contains at least an ``"extension"`` key with the extension ID).
 
+        Raises:
+            ValueError: If more than one, or none, of the arguments is provided.
+        """
+        provided = [
+            k
+            for k, v in {
+                "path": path,
+                "archive_path": archive_path,
+                "base64_value": base64_value,
+            }.items()
+            if v is not None
+        ]
+        if len(provided) != 1:
+            raise ValueError(f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}")
         if path is not None:
             extension_data = {"type": "path", "path": path}
         elif archive_path is not None:
             extension_data = {"type": "archivePath", "path": archive_path}
-        elif base64_value is not None:
+        else:
+            assert base64_value is not None
             extension_data = {"type": "base64", "value": base64_value}
-
         params = {"extensionData": extension_data}
-
+        cmd = command_builder("webExtension.install", params)
         try:
-            result = self.conn.execute(command_builder("webExtension.install", params))
-            return result
-        except WebDriverException as e:
+            return self._conn.execute(cmd)
+        except Exception as e:
             if "Method not available" in str(e):
-                raise WebDriverException(
-                    f"{e!s}. If you are using Chrome or Edge, add '--enable-unsafe-extension-debugging' "
-                    "and '--remote-debugging-pipe' arguments or set options.enable_webextensions = True"
+                raise RuntimeError(
+                    "webExtension.install failed with 'Method not available'. "
+                    "This likely means that web extension support is disabled. "
+                    "Enable unsafe extension debugging and/or set options.enable_webextensions "
+                    "in your WebDriver configuration."
                 ) from e
             raise
 
-    def uninstall(self, extension_id_or_result: str | dict) -> None:
-        """Uninstalls a web extension from the remote end.
+    def uninstall(self, extension: str | dict):
+        """Uninstall a web extension.
 
         Args:
-            extension_id_or_result: Either the extension ID as a string or the result dictionary
-              from a previous install() call containing the extension ID.
+            extension: Either the extension ID string returned by ``install``,
+                or the full result dict returned by ``install`` (the
+                ``"extension"`` value is extracted automatically).
+
+        Raises:
+            ValueError: If extension is not provided or is None.
         """
-        if isinstance(extension_id_or_result, dict):
-            extension_id = extension_id_or_result.get("extension")
+        if isinstance(extension, dict):
+            extension_id: Any = extension.get("extension")
         else:
-            extension_id = extension_id_or_result
+            extension_id = extension
+
+        if extension_id is None:
+            raise ValueError("extension parameter is required")
 
         params = {"extension": extension_id}
-        self.conn.execute(command_builder("webExtension.uninstall", params))
+        cmd = command_builder("webExtension.uninstall", params)
+        return self._conn.execute(cmd)

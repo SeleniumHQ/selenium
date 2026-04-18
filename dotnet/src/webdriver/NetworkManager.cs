@@ -92,6 +92,8 @@ public class NetworkManager : INetwork
         this.session.Value.Domains.Network.AuthRequired -= OnAuthRequired;
         this.session.Value.Domains.Network.RequestPaused -= OnRequestPaused;
         await this.session.Value.Domains.Network.EnableNetworkCaching().ConfigureAwait(false);
+        await this.session.Value.Domains.Network.DisableNetwork().ConfigureAwait(false);
+        await this.session.Value.Domains.Network.DisableFetch().ConfigureAwait(false);
     }
 
     /// <summary>

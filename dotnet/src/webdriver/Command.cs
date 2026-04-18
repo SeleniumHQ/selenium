@@ -58,9 +58,10 @@ public class Command
     /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
     public Command(SessionId? sessionId, string name, Dictionary<string, object?>? parameters)
     {
+        ArgumentNullException.ThrowIfNull(name);
         this.SessionId = sessionId;
         this.Parameters = parameters ?? new Dictionary<string, object?>();
-        this.Name = name ?? throw new ArgumentNullException(nameof(name));
+        this.Name = name;
     }
 
     /// <summary>

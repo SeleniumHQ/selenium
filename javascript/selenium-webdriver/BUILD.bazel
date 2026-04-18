@@ -13,11 +13,11 @@ load("//javascript/private:jsdoc.bzl", "jsdoc")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.42.0-nightly202602192150"
+VERSION = "4.44.0-nightly202604101016"
 
 BROWSER_VERSIONS = [
-    "v143",
-    "v144",
+    "v146",
+    "v147",
     "v145",
 ]
 

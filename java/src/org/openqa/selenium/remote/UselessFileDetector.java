@@ -18,11 +18,9 @@
 package org.openqa.selenium.remote;
 
 import java.io.File;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** A file detector that never finds anything. */
-@NullMarked
 public class UselessFileDetector implements FileDetector {
   @Override
   public @Nullable File getLocalFile(CharSequence... keys) {

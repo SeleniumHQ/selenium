@@ -17,14 +17,16 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.jspecify.annotations.Nullable;
+
 public class Page {
 
   private String title = "";
   private String[] scripts = {};
   private String[] styles = {};
   private String[] bodyParts = {};
-  private String onLoad;
-  private String onBeforeUnload;
+  private @Nullable String onLoad;
+  private @Nullable String onBeforeUnload;
 
   public Page withTitle(String title) {
     this.title = title;

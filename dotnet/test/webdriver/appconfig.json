@@ -1,28 +1,6 @@
 {
   "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
-  "ActiveWebsiteConfig": "Default",
-  "TestWebServerConfig": {
-    "CaptureConsoleOutput": false,
-    "HideCommandPromptWindow": true,
-    "JavaHomeDirectory": ""
-  },
-  "WebsiteConfigs": {
-    "Default": {
-      "Protocol": "http",
-      "HostName": "localhost",
-      "Port": "2310",
-      "SecurePort": "2410",
-      "Folder": "common"
-    },
-    "HostsFileRedirect": {
-      "Protocol": "http",
-      "HostName": "www.seleniumhq-test.test",
-      "Port": "2310",
-      "SecurePort": "2410",
-      "Folder": "common"
-    }
-  },
   "DriverConfigs": {
     "Chrome": {
       "DriverTypeName": "OpenQA.Selenium.Tests.Infrastructure.DriverConfigs.StableChannelChromeDriver",

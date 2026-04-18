@@ -78,7 +78,7 @@ jobs:
       name: Generate Docs
       ref: ${{ inputs.tag }}
       run: ./go ${{ needs.parse.outputs.language }}:docs
-      artifact-name: documentation
+      artifact-name: documentation-${{ needs.parse.outputs.language }}
       artifact-path: build/docs/api/**/*
 
   commit-docs:
@@ -95,7 +95,7 @@ jobs:
       - name: Download documentation
         uses: actions/download-artifact@v4
         with:
-          name: documentation
+          name: documentation-${{ needs.parse.outputs.language }}
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

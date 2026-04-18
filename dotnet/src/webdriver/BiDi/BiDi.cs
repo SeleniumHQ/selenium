@@ -18,8 +18,6 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Session;
 
 namespace OpenQA.Selenium.BiDi;
@@ -62,7 +60,7 @@ public sealed class BiDi : IBiDi
 
         BiDi bidi = new();
 
-        bidi.Broker = new Broker(transport, bidi, () => bidi.Session);
+        bidi.Broker = new Broker(transport, bidi);
 
         return bidi;
     }
@@ -97,20 +95,6 @@ public sealed class BiDi : IBiDi
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, CreateDefaultJsonOptions()));
-    }
-
-    private static JsonSerializerOptions CreateDefaultJsonOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Converters =
-            {
-                new Json.Converters.DateTimeOffsetConverter(),
-            }
-        };
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker));
     }
 }

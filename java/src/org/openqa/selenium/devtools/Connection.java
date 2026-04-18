@@ -47,6 +47,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
@@ -242,6 +243,7 @@ public class Connection implements Closeable {
     this.isClosed.set(true);
   }
 
+  @NullMarked
   private class Listener implements WebSocket.Listener {
 
     @Override

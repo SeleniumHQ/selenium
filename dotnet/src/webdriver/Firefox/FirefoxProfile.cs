@@ -105,10 +105,7 @@ public class FirefoxProfile
     /// <exception cref="ArgumentNullException">If <paramref name="extensionToInstall"/> is <see langword="null"/>.</exception>
     public void AddExtension(string extensionToInstall)
     {
-        if (extensionToInstall is null)
-        {
-            throw new ArgumentNullException(nameof(extensionToInstall));
-        }
+        ArgumentNullException.ThrowIfNull(extensionToInstall);
 
         this.extensions.Add(Path.GetFileNameWithoutExtension(extensionToInstall), new FirefoxExtension(extensionToInstall));
     }

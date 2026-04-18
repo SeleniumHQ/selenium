@@ -10,6 +10,7 @@ load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+load("//py/private:generate_bidi.bzl", "generate_bidi")
 load("//py/private:import.bzl", "py_import")
 
 exports_files(
@@ -62,6 +63,7 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    extra_args = ["--no-strip-extras"],
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
     tags = [
@@ -69,11 +71,11 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.42.0.202602192150"
+SE_VERSION = "4.44.0.202604101016"
 
 BROWSER_VERSIONS = [
-    "v143",
-    "v144",
+    "v146",
+    "v147",
     "v145",
 ]
 
@@ -595,6 +597,12 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+py_binary(
+    name = "generate_bidi",
+    srcs = ["generate_bidi.py"],
+    srcs_version = "PY3",
+)
+
 [generate_devtools(
     name = "create-cdp-srcs-{}".format(devtools_version),
     browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
@@ -607,6 +615,20 @@ py_binary(
 generate_devtools_latest(
     name = "create-latest-devtools",
     browser_versions = BROWSER_VERSIONS,
+)
+
+# Pilot BiDi code generation from CDDL specification
+generate_bidi(
+    name = "create-bidi-src",
+    cddl_file = "//common/bidi/spec:all.cddl",
+    enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
+    extra_srcs = [
+        "//py/private:_event_manager.py",
+        "//py/private:cdp.py",
+    ],
+    generator = ":generate_bidi",
+    module_name = "selenium/webdriver/common/bidi",
+    spec_version = "1.0",
 )
 
 py_test_suite(

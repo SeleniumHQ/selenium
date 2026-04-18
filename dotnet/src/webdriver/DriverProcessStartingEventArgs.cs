@@ -34,7 +34,8 @@ public class DriverProcessStartingEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="startInfo"/> is <see langword="null"/>.</exception>
     public DriverProcessStartingEventArgs(ProcessStartInfo startInfo)
     {
-        this.DriverServiceProcessStartInfo = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
+        ArgumentNullException.ThrowIfNull(startInfo);
+        this.DriverServiceProcessStartInfo = startInfo;
     }
 
     /// <summary>

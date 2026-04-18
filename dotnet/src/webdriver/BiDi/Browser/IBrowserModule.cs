@@ -26,7 +26,5 @@ public interface IBrowserModule
     Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default);
     Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default);
     Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetDownloadBehaviorResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default);
+    Task<SetDownloadBehaviorResult> SetDownloadBehaviorAsync(DownloadBehavior? downloadBehavior, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default);
 }

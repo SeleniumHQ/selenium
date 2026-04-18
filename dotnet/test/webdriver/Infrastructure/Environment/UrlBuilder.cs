@@ -27,23 +27,18 @@ namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 public class UrlBuilder
 {
-    private readonly string protocol;
-    private readonly string port;
-    private readonly string securePort;
+    private readonly Uri _httpBaseUrl;
+    private readonly Uri _httpsBaseUrl;
+
+    public string HostName => _httpBaseUrl.Host;
 
     public string AlternateHostName { get; }
 
-    public string HostName { get; }
-
-    public string Path { get; }
-
-    public UrlBuilder(WebsiteConfig config)
+    public UrlBuilder(string httpUrl, string httpsUrl)
     {
-        protocol = config.Protocol;
-        HostName = config.HostName;
-        port = config.Port;
-        securePort = config.SecurePort;
-        Path = config.Folder;
+        _httpBaseUrl = new Uri(httpUrl);
+        _httpsBaseUrl = new Uri(httpsUrl);
+
         //Use the first IPv4 address that we find
         IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
         foreach (IPAddress ip in Dns.GetHostEntry(HostName).AddressList)
@@ -57,25 +52,14 @@ public class UrlBuilder
         AlternateHostName = ipAddress.ToString();
     }
 
-    public string LocalWhereIs(string page)
-    {
-        string location = "http://localhost:" + port + "/" + Path + "/" + page;
-
-        return location;
-    }
-
     public string WhereIs(string page)
     {
-        string location = "http://" + HostName + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return _httpBaseUrl + "common/" + page;
     }
 
     public string WhereElseIs(string page)
     {
-        string location = "http://" + AlternateHostName + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return new UriBuilder(_httpBaseUrl) { Host = AlternateHostName } + "common/" + page;
     }
 
     public string WhereIsViaNonLoopbackAddress(string page)
@@ -90,16 +74,12 @@ public class UrlBuilder
                 break;
             }
         }
-        string location = "http://" + hostNameAsIPAddress + ":" + port + "/" + Path + "/" + page;
-
-        return location;
+        return new UriBuilder(_httpBaseUrl) { Host = hostNameAsIPAddress } + "common/" + page;
     }
 
     public string WhereIsSecure(string page)
     {
-        string location = "https://" + HostName + ":" + securePort + "/" + Path + "/" + page;
-
-        return location;
+        return _httpsBaseUrl + "common/" + page;
     }
     public string CreateInlinePage(InlinePage page)
     {

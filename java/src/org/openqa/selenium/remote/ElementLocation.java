@@ -138,6 +138,9 @@ class ElementLocation {
           BiFunction<String, Object, CommandPayload> createPayload,
           By locator) {
         WebElement element = locator.findElement(context);
+        if (element == null) {
+          throw new NoSuchElementException("Unable to find element with locator " + locator);
+        }
         return massage(driver, context, element, locator);
       }
 
@@ -148,6 +151,10 @@ class ElementLocation {
           BiFunction<String, Object, CommandPayload> createPayload,
           By locator) {
         List<WebElement> elements = locator.findElements(context);
+        if (elements == null) {
+          return Collections.emptyList();
+        }
+
         return elements.stream()
             .map(e -> massage(driver, context, e, locator))
             .collect(Collectors.toList());

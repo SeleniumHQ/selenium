@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -49,8 +50,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public final HttpClient client;
   protected final HttpClient.Factory httpClientFactory;
   protected final Map<String, CommandInfo> additionalCommands;
-  protected CommandCodec<HttpRequest> commandCodec;
-  protected ResponseCodec<HttpResponse> responseCodec;
+  protected @Nullable CommandCodec<HttpRequest> commandCodec;
+  protected @Nullable ResponseCodec<HttpResponse> responseCodec;
 
   @SuppressWarnings("deprecation")
   private LocalLogs logs = LocalLogs.getNullLogger();

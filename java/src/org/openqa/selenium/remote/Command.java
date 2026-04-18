@@ -22,26 +22,28 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.json.JsonInput;
 
 public class Command {
 
-  private final SessionId sessionId;
+  private final @Nullable SessionId sessionId;
   private final CommandPayload payload;
 
   public Command(SessionId sessionId, String name) {
     this(sessionId, name, new HashMap<>());
   }
 
-  public Command(SessionId sessionId, String name, Map<String, ?> parameters) {
+  public Command(@Nullable SessionId sessionId, String name, Map<String, ?> parameters) {
     this(sessionId, new CommandPayload(name, parameters));
   }
 
-  public Command(SessionId sessionId, CommandPayload payload) {
+  public Command(@Nullable SessionId sessionId, CommandPayload payload) {
     this.sessionId = sessionId;
     this.payload = payload;
   }
 
+  @Nullable
   public SessionId getSessionId() {
     return sessionId;
   }
@@ -105,6 +107,7 @@ public class Command {
 
     input.endObject();
 
+    //noinspection DataFlowIssue
     return new Command(sessionId, name, parameters);
   }
 }
