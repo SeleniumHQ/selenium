@@ -172,14 +172,14 @@ impl ChromeManager {
 
     fn request_good_driver_version_from_online(&mut self) -> Result<String, Error> {
         let version_for_filtering = if self.is_driver_version_specific() {
-            self.get_driver_version()
+            self.get_driver_version().to_string()
         } else {
             let browser_or_driver_version = if self.get_driver_version().is_empty() {
                 self.get_browser_version()
             } else {
                 self.get_driver_version()
             };
-            &self.get_major_version(browser_or_driver_version)?
+            self.get_major_version(browser_or_driver_version)?
         };
         self.log.trace(format!(
             "Driver version used to request CfT: {version_for_filtering}"
@@ -191,13 +191,13 @@ impl ChromeManager {
         let filtered_versions: Vec<Version> = all_versions
             .versions
             .into_iter()
-            .filter(|r| r.version.starts_with(version_for_filtering))
+            .filter(|r| r.version.starts_with(version_for_filtering.as_str()))
             .collect();
         if filtered_versions.is_empty() {
             return Err(anyhow!(format_three_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_driver_name(),
-                &version_for_filtering,
+                version_for_filtering.as_str(),
                 &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
             )));
         }
