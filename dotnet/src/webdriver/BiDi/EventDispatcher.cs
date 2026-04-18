@@ -46,13 +46,27 @@ internal sealed class EventDispatcher : IAsyncDisposable
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, registry) = await SubscribeCoreAsync(descriptor, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync<TEventArgs>([descriptor], handler, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(
+        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
+        Func<TEventArgs, ValueTask> handler,
+        SubscriptionOptions? options,
+        CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options, cancellationToken).ConfigureAwait(false);
 
         IEventSubscription subscription = null!;
         subscription = new Subscription<TEventArgs>(
-            ct => UnsubscribeAsync(subscribeResult, registry, subscription, ct),
+            ct => UnsubscribeAsync(subscribeResult, registries, subscription, ct),
             handler);
-        registry.Add(subscription);
+
+        foreach (var registry in registries)
+        {
+            registry.Add(subscription);
+        }
 
         return (ISubscription)subscription;
     }
@@ -63,12 +77,25 @@ internal sealed class EventDispatcher : IAsyncDisposable
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, registry) = await SubscribeCoreAsync(descriptor, options, cancellationToken).ConfigureAwait(false);
+        return await SubscribeReaderAsync<TEventArgs>([descriptor], options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
+        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
+        SubscriptionOptions? options,
+        CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options, cancellationToken).ConfigureAwait(false);
 
         IEventSubscription subscription = null!;
         subscription = new EventReader<TEventArgs>(
-            ct => UnsubscribeAsync(subscribeResult, registry, subscription, ct));
-        registry.Add(subscription);
+            ct => UnsubscribeAsync(subscribeResult, registries, subscription, ct));
+
+        foreach (var registry in registries)
+        {
+            registry.Add(subscription);
+        }
 
         return (EventReader<TEventArgs>)subscription;
     }
@@ -126,30 +153,47 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _eventMetadata.GetOrAdd(registration.Descriptor.Name, new EventMetadata(registration.JsonTypeInfo, ep => registration.Factory(bidi, (TEventParams)ep)));
     }
 
-    private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry Registry)> SubscribeCoreAsync<TEventArgs>(
-        EventDescriptor<TEventArgs> descriptor,
+    private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync<TEventArgs>(
+        IEnumerable<IEventDescriptor<TEventArgs>> descriptors,
         SubscriptionOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        if (!_eventMetadata.ContainsKey(descriptor.Name))
+        var names = new List<string>();
+        foreach (var descriptor in descriptors)
         {
-            throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered. Call CreateEventSource first.");
+            if (!_eventMetadata.ContainsKey(descriptor.Name))
+            {
+                throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered. Call CreateEventSource first.");
+            }
+            names.Add(descriptor.Name);
         }
 
-        var subscribeResult = await _wireSubscribe([descriptor.Name], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
+        if (names.Count == 0)
+        {
+            throw new ArgumentException("At least one event descriptor must be provided.", nameof(descriptors));
+        }
+
+        var subscribeResult = await _wireSubscribe(names, new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
             .ConfigureAwait(false);
 
-        var registry = _subscriptions.GetOrAdd(descriptor.Name, _ => new SubscriptionRegistry());
+        var registries = new SubscriptionRegistry[names.Count];
+        for (int i = 0; i < names.Count; i++)
+        {
+            registries[i] = _subscriptions.GetOrAdd(names[i], _ => new SubscriptionRegistry());
+        }
 
-        return (subscribeResult.Subscription, registry);
+        return (subscribeResult.Subscription, registries);
     }
 
-    private async ValueTask UnsubscribeAsync(Session.Subscription subscriptionId, SubscriptionRegistry registry, IEventSubscription subscription, CancellationToken cancellationToken)
+    private async ValueTask UnsubscribeAsync(Session.Subscription subscriptionId, SubscriptionRegistry[] registries, IEventSubscription subscription, CancellationToken cancellationToken)
     {
         await _wireUnsubscribe([subscriptionId], null, cancellationToken).ConfigureAwait(false);
 
-        registry.Remove(subscription);
+        foreach (var registry in registries)
+        {
+            registry.Remove(subscription);
+        }
     }
 
     private readonly record struct EventMetadata(JsonTypeInfo JsonTypeInfo, Func<object, EventArgs> ArgsFactory)

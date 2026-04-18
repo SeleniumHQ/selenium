@@ -88,27 +88,48 @@ public sealed class BiDi : IBiDi
         return new EventSource<TEventArgs>(this, registration.Descriptor);
     }
 
-    public async Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
-        ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync(descriptor, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
+        return OnEventAsync([descriptor], handler, options, cancellationToken);
     }
 
-    public async Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
-        ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync(descriptor, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
+        return OnEventAsync([descriptor], handler, options, cancellationToken);
     }
 
-    public async Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    {
+        ArgumentNullException.ThrowIfNull(descriptors);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    {
+        ArgumentNullException.ThrowIfNull(descriptors);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
 
-        return await Broker.EventDispatcher.SubscribeReaderAsync(descriptor, options, cancellationToken).ConfigureAwait(false);
+        return ReadAllEventsAsync<TEventArgs>([descriptor], options, cancellationToken);
+    }
+
+    public async Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(IEnumerable<IEventDescriptor<TEventArgs>> descriptors, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    {
+        ArgumentNullException.ThrowIfNull(descriptors);
+
+        return await Broker.EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
