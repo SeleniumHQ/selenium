@@ -1,4 +1,4 @@
-# Selenium WebDriver — Java
+# selenium-java
 
 Java language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
