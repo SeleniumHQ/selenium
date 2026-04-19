@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -36,6 +35,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -88,12 +88,13 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("foo", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned =
-        getAugmenter()
-            .addDriverAugmentation("foo", MyInterface.class, (c, exe) -> () -> "Hello World")
-            .augment(driver);
+    var returned =
+        (WebDriver & MyInterface)
+            getAugmenter()
+                .addDriverAugmentation("foo", MyInterface.class, (c, exe) -> () -> "Hello World")
+                .augment(driver);
 
-    String text = ((MyInterface) returned).getHelloWorld();
+    String text = returned.getHelloWorld();
     assertThat(text).isEqualTo("Hello World");
   }
 
@@ -169,26 +170,27 @@ class AugmenterTest {
             "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned =
-        getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-            .addDriverAugmentation(
-                "numbers",
-                HasNumbers.class,
-                (c, exe) ->
-                    webDriver -> {
-                      Require.precondition(
-                          webDriver instanceof HasMagicNumbers,
-                          "Driver must implement HasMagicNumbers");
-                      return ((HasMagicNumbers) webDriver).getMagicNumber();
-                    })
-            .augment(driver);
+    var returned =
+        (WebDriver & HasNumbers)
+            getAugmenter()
+                .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+                .addDriverAugmentation(
+                    "numbers",
+                    HasNumbers.class,
+                    (c, exe) ->
+                        webDriver -> {
+                          Require.precondition(
+                              webDriver instanceof HasMagicNumbers,
+                              "Driver must implement HasMagicNumbers");
+                          return ((HasMagicNumbers) webDriver).getMagicNumber();
+                        })
+                .augment(driver);
 
     assertThat(returned).isNotSameAs(driver);
     assertThat(returned).isInstanceOf(HasMagicNumbers.class);
     assertThat(returned).isInstanceOf(HasNumbers.class);
 
-    int number = ((HasNumbers) returned).getNumbers(returned);
+    int number = returned.getNumbers(returned);
     assertThat(number).isEqualTo(42);
   }
 
@@ -215,7 +217,8 @@ class AugmenterTest {
                     })
             .augment(driver);
 
-    WebDriver decorated = new ModifyTitleWebDriverDecorator().decorate(augmented);
+    var decorated =
+        (WebDriver & HasNumbers) new ModifyTitleWebDriverDecorator().decorate(augmented);
 
     assertThat(decorated).isNotSameAs(driver);
 
@@ -226,7 +229,7 @@ class AugmenterTest {
 
     assertThat(title).isEqualTo("title");
 
-    int number = ((HasNumbers) decorated).getNumbers(decorated);
+    int number = decorated.getNumbers(decorated);
     assertThat(number).isEqualTo(42);
   }
 
@@ -343,14 +346,13 @@ class AugmenterTest {
     private final Capabilities caps;
 
     protected DetonatingDriver() {
-      this(null);
+      this(new MutableCapabilities());
     }
 
     public DetonatingDriver(Capabilities caps) {
       this.caps = caps;
     }
 
-    @NonNull
     @Override
     public Capabilities getCapabilities() {
       return caps;
@@ -375,7 +377,6 @@ class AugmenterTest {
 
   public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
 
-    @NonNull
     @Override
     public Capabilities getCapabilities() {
       return new FirefoxOptions();
@@ -389,7 +390,6 @@ class AugmenterTest {
 
   public static class WithFinals extends RemoteWebDriver {
 
-    @NonNull
     @Override
     public Capabilities getCapabilities() {
       return new ImmutableCapabilities();
