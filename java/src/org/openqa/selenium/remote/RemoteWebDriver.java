@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
@@ -150,7 +151,8 @@ public class RemoteWebDriver
   // For cglib
   @SuppressWarnings("DataFlowIssue")
   protected RemoteWebDriver() {
-    this.capabilities = init(new ImmutableCapabilities());
+    this.capabilities = new ImmutableCapabilities();
+    this.localLogs = initLocalLogs();
     this.clientConfig = ClientConfig.defaultConfig();
     this.executor = null;
   }
@@ -204,7 +206,8 @@ public class RemoteWebDriver
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
-    this.capabilities = init(capabilities);
+    this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
+    this.localLogs = initLocalLogs();
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -252,14 +255,8 @@ public class RemoteWebDriver
     return new RemoteWebDriverBuilder();
   }
 
-  private Capabilities init(Capabilities capabilities) {
-    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
-    initLocalLogs();
-    return capabilities;
-  }
-
   @SuppressWarnings("deprecation")
-  private void initLocalLogs() {
+  private static LocalLogs initLocalLogs() {
     LOG.addHandler(LoggingHandler.getInstance());
 
     Set<String> logTypesToIgnore = Set.of();
@@ -267,7 +264,7 @@ public class RemoteWebDriver
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
     LocalLogs clientLogs =
         LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
-    localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
+    return LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
   }
 
   @Nullable
@@ -307,20 +304,7 @@ public class RemoteWebDriver
       @SuppressWarnings("unchecked")
       Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
       MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-      String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
-      Platform platform;
-      try {
-        if (platformString == null || platformString.isEmpty()) {
-          platform = Platform.ANY;
-        } else {
-          platform = Platform.fromString(platformString);
-        }
-      } catch (WebDriverException e) {
-        // The server probably responded with a name matching the os.name
-        // system property. Try to recover and parse this.
-        platform = Platform.extractFromSysProperty(platformString);
-      }
-      returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+      returnedCapabilities.setCapability(PLATFORM_NAME, resolvePlatform(rawCapabilities));
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
@@ -334,6 +318,21 @@ public class RemoteWebDriver
         }
       }
       throw e;
+    }
+  }
+
+  static Platform resolvePlatform(Map<String, Object> rawCapabilities) {
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
+    try {
+      if (platformString == null || platformString.isEmpty()) {
+        return Platform.ANY;
+      } else {
+        return Platform.fromString(platformString);
+      }
+    } catch (WebDriverException e) {
+      // The server probably responded with a name matching the os.name
+      // system property. Try to recover and parse this.
+      return Platform.extractFromSysProperty(platformString);
     }
   }
 
@@ -359,9 +358,6 @@ public class RemoteWebDriver
 
   @Override
   public Capabilities getCapabilities() {
-    if (capabilities == null) {
-      return new ImmutableCapabilities();
-    }
     return capabilities;
   }
 

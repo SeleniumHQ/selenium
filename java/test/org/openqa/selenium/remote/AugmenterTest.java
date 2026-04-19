@@ -342,21 +342,16 @@ class AugmenterTest {
   }
 
   public static class DetonatingDriver extends RemoteWebDriver {
-
-    private final Capabilities caps;
-
     protected DetonatingDriver() {
       this(new MutableCapabilities());
     }
 
     public DetonatingDriver(Capabilities caps) {
-      this.caps = caps;
+      super(caps);
     }
 
     @Override
-    public Capabilities getCapabilities() {
-      return caps;
-    }
+    protected void startSession(Capabilities capabilities) {}
 
     @NullMarked
     @Override

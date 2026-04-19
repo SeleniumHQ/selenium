@@ -86,7 +86,7 @@ public class FakeWebDriverInfo implements WebDriverInfo {
     protected FakeWebDriver() {}
 
     public FakeWebDriver(Capabilities capabilities, ClientConfig clientConfig) {
-      super(command -> null, capabilities, clientConfig);
+      super(command -> new Response(), capabilities, clientConfig);
     }
 
     @Override
