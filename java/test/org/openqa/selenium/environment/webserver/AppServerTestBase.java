@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.id;
@@ -46,17 +47,19 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public abstract class AppServerTestBase {
   private static final String APPCACHE_MIME_TYPE = "text/cache-manifest";
   private AppServer server;
-  private static @Nullable WebDriver driver = null;
+  private static @Nullable WebDriver cachedDriver = null;
+  private WebDriver driver;
 
   @BeforeAll
   public static void startDriver() {
-    driver = new WebDriverBuilder().get();
+    cachedDriver = new WebDriverBuilder().get();
   }
 
   @BeforeEach
   public void startServer() {
     server = createAppServer();
     server.start();
+    driver = requireNonNull(cachedDriver, "Driver is not initialized");
   }
 
   protected abstract AppServer createAppServer();
@@ -68,9 +71,9 @@ public abstract class AppServerTestBase {
 
   @AfterAll
   public static void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-      driver = null;
+    if (cachedDriver != null) {
+      cachedDriver.quit();
+      cachedDriver = null;
     }
   }
 
