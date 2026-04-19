@@ -14,14 +14,12 @@ npm install selenium-webdriver
 ## Quick Start
 
 ```javascript
-const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
+const { Builder, Browser } = require('selenium-webdriver')
 
 ;(async function example() {
   let driver = await new Builder().forBrowser(Browser.CHROME).build()
   try {
     await driver.get('https://www.selenium.dev')
-    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
-    await driver.wait(until.titleContains('webdriver'), 1000)
     console.log(await driver.getTitle())
   } finally {
     await driver.quit()
