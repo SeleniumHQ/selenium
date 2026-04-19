@@ -3,7 +3,11 @@
 Java language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
 
+Requires Java 11+.
+
 ## Installation
+
+Replace `4.x.y` with the latest version from [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java).
 
 ### Maven
 
@@ -11,17 +15,15 @@ Selenium automates browsers for testing and web-based task automation.
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
-    <version>${selenium.version}</version>
+    <version>4.x.y</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation "org.seleniumhq.selenium:selenium-java:4.x.x"
+implementation "org.seleniumhq.selenium:selenium-java:4.x.y"
 ```
-
-Replace `4.x.x` with the latest version from [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java).
 
 ## Quick Start
 

@@ -1,7 +1,9 @@
 # Selenium.WebDriver
 
-.NET language bindings for [Selenium WebDriver](https://selenium.dev).
+.NET language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
+
+Supports .NET Framework 4.6.2+ and .NET 8.0+.
 
 ## Installation
 

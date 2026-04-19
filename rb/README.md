@@ -1,6 +1,6 @@
 # selenium-webdriver
 
-Ruby language bindings for [Selenium WebDriver](https://selenium.dev).
+Ruby language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
 
 Supports MRI >= 3.2.

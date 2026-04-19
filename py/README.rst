@@ -32,13 +32,13 @@ Quick Start
     driver.quit()
 
 Selenium Manager automatically handles browser driver installation — no manual driver setup required.
-See `Selenium Manager <https://www.selenium.dev/documentation/selenium_manager/>`_ for details.
 
 Documentation
 =============
 
 - `Getting Started <https://www.selenium.dev/documentation/webdriver/getting_started/>`_
 - `Python API Docs <https://www.selenium.dev/selenium/docs/api/py/api.html>`_
+- `Selenium Manager <https://www.selenium.dev/documentation/selenium_manager/>`_
 - `Selenium Grid <https://www.selenium.dev/documentation/grid/>`_
 
 Support
