@@ -166,27 +166,22 @@ struct Cli {
 fn main() {
     let mut cli = Cli::parse();
 
-    if cli.init_skills {
-        let debug = cli.debug || BooleanKey("debug", false).get_value();
-        let trace = cli.trace || BooleanKey("trace", false).get_value();
-        let log_level =
-            StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
-        let log = Logger::create(&cli.output, debug, trace, &log_level);
-        if let Err(err) = write_skills_file(Path::new("skills.md"), &log) {
-            log.error(format!("Error creating skills.md: {}", err));
-            exit(DATAERR);
-        }
-        log.info("skills.md file successfully created");
-        exit(OK);
-    }
-
-    let cache_path =
-        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
-
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
     let log = Logger::create(&cli.output, debug, trace, &log_level);
+
+    if cli.init_skills {
+        if let Err(err) = write_skills_file(Path::new("skills.md"), &log) {
+            log.error(format!("Error creating skills.md: {}", err));
+            flush_and_exit(DATAERR, &log, Some(err));
+        }
+        log.info("skills.md file successfully created");
+        flush_and_exit(OK, &log, None);
+    }
+
+    let cache_path =
+        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
     let mut driver_name: String = cli.driver.unwrap_or_default();

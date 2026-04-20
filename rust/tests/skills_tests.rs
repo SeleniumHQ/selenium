@@ -15,21 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::fs;
-use std::path::Path;
+use tempfile::tempdir;
 
 mod common;
 use common::get_selenium_manager;
 
 #[test]
 fn skills_test() {
-    let mut cmd = get_selenium_manager();
-    cmd.arg("--init-skills").assert().success();
+    let tmp_dir = tempdir().expect("Unable to create temp directory");
+    let skills_file = tmp_dir.path().join("skills.md");
 
-    let skills_file = Path::new("skills.md");
+    let mut cmd = get_selenium_manager();
+    cmd.current_dir(tmp_dir.path())
+        .arg("--init-skills")
+        .assert()
+        .success();
+
     assert!(skills_file.exists());
 
-    let content = fs::read_to_string(skills_file).expect("Unable to read skills.md");
+    let content = std::fs::read_to_string(skills_file).expect("Unable to read skills.md");
     assert!(content.contains("# Selenium Skills & Best Practices"));
     assert!(content.contains("### Java"));
     assert!(content.contains("### Python"));
@@ -37,7 +41,20 @@ fn skills_test() {
     assert!(content.contains("### .NET (C#)"));
     assert!(content.contains("### Ruby"));
     assert!(content.contains("## Best Practices"));
+}
 
-    // Clean up
-    fs::remove_file(skills_file).expect("Unable to delete skills.md");
+#[test]
+fn skills_no_overwrite_test() {
+    let tmp_dir = tempdir().expect("Unable to create temp directory");
+    let skills_file = tmp_dir.path().join("skills.md");
+    std::fs::write(&skills_file, "Original content").expect("Unable to write file");
+
+    let mut cmd = get_selenium_manager();
+    cmd.current_dir(tmp_dir.path())
+        .arg("--init-skills")
+        .assert()
+        .failure();
+
+    let content = std::fs::read_to_string(skills_file).expect("Unable to read skills.md");
+    assert_eq!(content, "Original content");
 }

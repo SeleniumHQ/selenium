@@ -16,8 +16,9 @@
 // under the License.
 
 use crate::Logger;
-use anyhow::Error;
-use std::fs;
+use anyhow::{anyhow, Error};
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::path::Path;
 
 pub const SKILLS_CONTENT: &str = r#"# Selenium Skills & Best Practices
@@ -141,6 +142,16 @@ You're already using it! Selenium Manager (this tool) automatically downloads an
 
 pub fn write_skills_file(path: &Path, log: &Logger) -> Result<(), Error> {
     log.debug(format!("Creating skills file at: {}", path.display()));
-    fs::write(path, SKILLS_CONTENT)?;
+    if path.exists() {
+        return Err(anyhow!(
+            "The file {} already exists. Please remove it or choose a different location.",
+            path.display()
+        ));
+    }
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)?;
+    file.write_all(SKILLS_CONTENT.as_bytes())?;
     Ok(())
 }
