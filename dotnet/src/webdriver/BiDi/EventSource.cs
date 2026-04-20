@@ -38,8 +38,6 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         _filter = filter;
     }
 
-    public EventDescriptor<TEventArgs> Descriptor => _descriptor;
-
     public Task<ISubscription> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
