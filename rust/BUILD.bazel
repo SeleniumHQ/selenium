@@ -91,13 +91,13 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
+    compile_data = ["src/resources/skills.md"],
     crate_features = select({
         "//common:stamp": [],
         "//conditions:default": ["avoid_stats"],
     }),
     edition = "2024",
     visibility = ["//rust:__subpackages__"],
-    compile_data = ["src/resources/skills.md"],
     deps = all_crate_deps(normal = True),
 )
 

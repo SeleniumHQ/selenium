@@ -16,7 +16,7 @@
 // under the License.
 
 use crate::Logger;
-use anyhow::{anyhow, Error};
+use anyhow::{Error, anyhow};
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::Path;
@@ -37,10 +37,7 @@ pub fn write_skills_file(path: &Path, log: &Logger) -> Result<(), Error> {
             std::fs::create_dir_all(parent)?;
         }
     }
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(path)?;
+    let mut file = OpenOptions::new().write(true).create_new(true).open(path)?;
     file.write_all(SKILLS_CONTENT.as_bytes())?;
     Ok(())
 }
