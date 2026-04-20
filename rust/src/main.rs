@@ -26,6 +26,7 @@ use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
+use selenium_manager::skills::write_skills_file;
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use selenium_manager::{
     SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
@@ -156,10 +157,29 @@ struct Cli {
     /// Not using browsers found in the PATH
     #[clap(long)]
     skip_browser_in_path: bool,
+
+    /// Add a skills.md file with Selenium best practices to the repository
+    #[clap(long)]
+    init_skills: bool,
 }
 
 fn main() {
     let mut cli = Cli::parse();
+
+    if cli.init_skills {
+        let debug = cli.debug || BooleanKey("debug", false).get_value();
+        let trace = cli.trace || BooleanKey("trace", false).get_value();
+        let log_level =
+            StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
+        let log = Logger::create(&cli.output, debug, trace, &log_level);
+        if let Err(err) = write_skills_file(Path::new("skills.md"), &log) {
+            log.error(format!("Error creating skills.md: {}", err));
+            exit(DATAERR);
+        }
+        log.info("skills.md file successfully created");
+        exit(OK);
+    }
+
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
