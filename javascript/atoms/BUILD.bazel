@@ -7,7 +7,13 @@ package(default_visibility = ["//visibility:public"])
 js_binary(
     name = "strip_trailing_semicolon",
     data = ["typescript/strip-trailing-semicolon.js"],
-    entry_point = ":typescript/strip-trailing-semicolon.js",
+    entry_point = "typescript/strip-trailing-semicolon.js",
+)
+
+js_binary(
+    name = "wrap_as_global",
+    data = ["typescript/wrap-as-global.js"],
+    entry_point = "typescript/wrap-as-global.js",
 )
 
 js_run_binary(
@@ -40,6 +46,17 @@ js_run_binary(
     tool = ":strip_trailing_semicolon",
 )
 
+js_run_binary(
+    name = "is-displayed-global",
+    srcs = [":is-displayed-typescript-compiled"],
+    outs = ["typescript/is-displayed-global.js"],
+    args = [
+        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed-global.js)",
+    ],
+    tool = ":wrap_as_global",
+)
+
 filegroup(
     name = "atoms",
     srcs = glob([
@@ -49,7 +66,7 @@ filegroup(
         "**/*.png",
         "**/*.svg",
         "**/*.ts",
-    ]),
+    ]) + [":is-displayed-global"],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
