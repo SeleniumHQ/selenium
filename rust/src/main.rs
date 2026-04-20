@@ -158,9 +158,9 @@ struct Cli {
     #[clap(long)]
     skip_browser_in_path: bool,
 
-    /// Add a skills.md file with Selenium best practices to the repository
-    #[clap(long)]
-    init_skills: bool,
+    /// Add a skills file with Selenium best practices to the repository
+    #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
+    init_skills: Option<String>,
 }
 
 fn main() {
@@ -171,12 +171,20 @@ fn main() {
     let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
     let log = Logger::create(&cli.output, debug, trace, &log_level);
 
-    if cli.init_skills {
-        if let Err(err) = write_skills_file(Path::new("skills.md"), &log) {
-            log.error(format!("Error creating skills.md: {}", err));
+    if let Some(mut skills_file) = cli.init_skills {
+        if skills_file.is_empty() {
+            let default_path = Path::new("skills").join("skills.md");
+            if default_path.exists() {
+                skills_file = "selenium.md".to_string();
+            } else {
+                skills_file = default_path.to_string_lossy().to_string();
+            }
+        }
+        if let Err(err) = write_skills_file(Path::new(&skills_file), &log) {
+            log.error(format!("Error creating {}: {}", skills_file, err));
             flush_and_exit(DATAERR, &log, Some(err));
         }
-        log.info("skills.md file successfully created");
+        log.info(format!("{} file successfully created", skills_file));
         flush_and_exit(OK, &log, None);
     }
 

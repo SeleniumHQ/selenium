@@ -148,6 +148,12 @@ pub fn write_skills_file(path: &Path, log: &Logger) -> Result<(), Error> {
             path.display()
         ));
     }
+    if let Some(parent) = path.parent() {
+        if !parent.exists() {
+            log.debug(format!("Creating directory: {}", parent.display()));
+            std::fs::create_dir_all(parent)?;
+        }
+    }
     let mut file = OpenOptions::new()
         .write(true)
         .create_new(true)
