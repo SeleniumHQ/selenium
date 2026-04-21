@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Runtime.ExceptionServices;
 using System.Threading.Channels;
 
 namespace OpenQA.Selenium.BiDi;
@@ -33,7 +34,7 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, ValueTask> _handler;
-    private volatile Exception? _handlerError;
+    private ExceptionDispatchInfo? _handlerError;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
@@ -70,10 +71,7 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
 
             GC.SuppressFinalize(this);
 
-            if (_handlerError is { } error)
-            {
-                throw new BiDiException("Event handler threw an unhandled exception.", error);
-            }
+            _handlerError?.Throw();
         }
     }
 
@@ -89,7 +87,7 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
                 }
                 catch (Exception ex)
                 {
-                    _handlerError = ex;
+                    _handlerError = ExceptionDispatchInfo.Capture(ex);
                     _channel.Writer.TryComplete(ex);
                     return;
                 }
