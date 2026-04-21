@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Concurrent;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -43,7 +42,6 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
     private readonly Task _dispatchTask;
-    private readonly ConcurrentDictionary<Task, byte> _activeHandlers = [];
 
     internal EventSubscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
     {
@@ -72,12 +70,6 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
 
             await _dispatchTask.ConfigureAwait(false);
 
-            var remaining = _activeHandlers.Keys.ToArray();
-            if (remaining.Length > 0)
-            {
-                await Task.WhenAll(remaining).ConfigureAwait(false);
-            }
-
             GC.SuppressFinalize(this);
         }
     }
@@ -88,39 +80,18 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
         {
             while (_channel.Reader.TryRead(out var args))
             {
-                var handlerTask = Task.Run(async () =>
+                try
                 {
-                    try
+                    await _handler(args).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    if (Logger.IsEnabled(LogEventLevel.Error))
                     {
-                        await _handler(args).ConfigureAwait(false);
+                        Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
                     }
-                    catch (Exception ex)
-                    {
-                        if (Logger.IsEnabled(LogEventLevel.Error))
-                        {
-                            Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                        }
-                    }
-                });
-
-                if (handlerTask.IsCompleted)
-                    continue;
-
-                _activeHandlers.TryAdd(handlerTask, 0);
-                _ = AwaitAndRemoveAsync(handlerTask);
+                }
             }
-        }
-    }
-
-    private async Task AwaitAndRemoveAsync(Task handlerTask)
-    {
-        try
-        {
-            await handlerTask.ConfigureAwait(false);
-        }
-        finally
-        {
-            _activeHandlers.TryRemove(handlerTask, out _);
         }
     }
 }
