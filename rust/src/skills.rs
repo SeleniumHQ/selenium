@@ -21,7 +21,7 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::Path;
 
-pub const SKILLS_CONTENT: &str = include_str!("resources/skills.md");
+const SKILLS_CONTENT: &str = include_str!("resources/skills.md");
 
 pub fn write_skills_file(path: &Path, log: &Logger) -> Result<(), Error> {
     log.debug(format!("Creating skills file at: {}", path.display()));

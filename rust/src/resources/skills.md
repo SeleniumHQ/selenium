@@ -96,8 +96,13 @@ This guide provides a comprehensive overview of how to write effective Selenium 
 
 ## Best Practices
 
-### 1. Don't use `Thread.sleep()`
-Static sleeps make tests slow and flaky. Instead, use **Explicit Waits** (`WebDriverWait`) to wait for specific conditions (e.g., element visibility, title contains).
+### 1. Avoid fixed sleeps
+Static sleeps make tests slow and flaky. Instead, use **Explicit Waits** (`WebDriverWait`) to wait for specific conditions (e.g., element visibility, title contains). Language-specific sleep calls to avoid:
+- Java: `Thread.sleep()`
+- Python: `time.sleep()`
+- Ruby: `sleep()`
+- JavaScript: `setTimeout()` / `await new Promise(r => setTimeout(r, ms))`
+- C#: `Thread.Sleep()`
 
 ### 2. Page Object Model (POM)
 Organize your tests by grouping elements and actions of each page into separate classes. This makes tests more readable and easier to maintain when the UI changes.
