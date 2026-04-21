@@ -54,6 +54,7 @@ JavaScript files are formatted with **Prettier**.
 Run `./go format` after changes; it will auto-fix all style issues.
 
 Active Prettier config (`.prettierrc`):
+
 - `printWidth`: **120** characters
 - `singleQuote`: **true** (use `'` not `"`)
 - `semi`: **false** (no semicolons)
