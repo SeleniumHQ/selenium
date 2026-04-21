@@ -21,7 +21,7 @@ using System.Threading.Channels;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSubscription
+public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, ISubscriptionSink
     where TEventArgs : EventArgs
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
@@ -35,12 +35,12 @@ public sealed class EventReader<TEventArgs> : IEventReader<TEventArgs>, IEventSu
         _unsubscribe = unsubscribe;
     }
 
-    void IEventSubscription.Deliver(EventArgs args)
+    void ISubscriptionSink.Deliver(EventArgs args)
     {
         _channel.Writer.TryWrite((TEventArgs)args);
     }
 
-    void IEventSubscription.Complete(Exception? error)
+    void ISubscriptionSink.Complete(Exception? error)
     {
         _channel.Writer.TryComplete(error);
     }

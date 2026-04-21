@@ -57,13 +57,13 @@ public interface IBiDi : IAsyncDisposable
 
     Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default);
 
-    Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventSubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventSubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventSubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventSubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
     Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 

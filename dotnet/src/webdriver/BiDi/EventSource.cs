@@ -38,7 +38,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         _filter = filter;
     }
 
-    public Task<ISubscription> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventSubscription> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -46,7 +46,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { wrapped(e); return default; }, options, cancellationToken);
     }
 
-    public Task<ISubscription> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventSubscription> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 

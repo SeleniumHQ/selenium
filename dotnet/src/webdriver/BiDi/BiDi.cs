@@ -80,21 +80,21 @@ public sealed class BiDi : IBiDi
         return Session.EndAsync(options, cancellationToken);
     }
 
-    public Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<IEventSubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
 
         return OnEventAsync([descriptor], handler, options, cancellationToken);
     }
 
-    public Task<ISubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public Task<IEventSubscription> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptor);
 
         return OnEventAsync([descriptor], handler, options, cancellationToken);
     }
 
-    public async Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventSubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
@@ -102,7 +102,7 @@ public sealed class BiDi : IBiDi
         return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ISubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventSubscription> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
