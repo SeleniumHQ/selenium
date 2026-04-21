@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Threading.Channels;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -32,10 +31,9 @@ internal interface ISubscriptionSink
 internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubscriptionSink
     where TEventArgs : EventArgs
 {
-    private static readonly ILogger Logger = Internal.Logging.Log.GetLogger(typeof(EventSubscription<>));
-
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, ValueTask> _handler;
+    private volatile Exception? _handlerError;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
@@ -71,6 +69,11 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
             await _dispatchTask.ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
+
+            if (_handlerError is { } error)
+            {
+                throw new BiDiException("Event handler threw an unhandled exception.", error);
+            }
         }
     }
 
@@ -86,10 +89,9 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
                 }
                 catch (Exception ex)
                 {
-                    if (Logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        Logger.Error($"Unhandled error processing BiDi event handler: {ex}");
-                    }
+                    _handlerError = ex;
+                    _channel.Writer.TryComplete(ex);
+                    return;
                 }
             }
         }
