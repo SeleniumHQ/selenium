@@ -52,4 +52,4 @@ Key rules enforced:
 - 2-space indentation (no tabs)
 - Column limit: 100 characters
 - Braces on the same line (K&R style), including single-statement bodies
-- Imports: sorted, no wildcards, no unused imports
+- Imports: organized and sorted consistently
