@@ -94,8 +94,8 @@ def method(param: str) -> bool:
 ## Formatting
 
 Python files are formatted with **ruff format** and checked with **ruff check**.
-Run `./go format` after changes; it will auto-fix formatting.
-Run `./go format --lint` to also run linting (stricter).
+Run `./go format` after changes; it will auto-fix formatting. Then check `git diff` to see what changed.
+Run `./go lint` to also run linting (stricter).
 
 Key rules enforced (from `py/pyproject.toml`):
 - Line length: **120 characters**

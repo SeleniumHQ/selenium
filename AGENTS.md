@@ -71,13 +71,15 @@ After making code changes, always run (or instruct the user to run):
 ```
 ./go format
 ```
-This invokes `scripts/format.sh` which:
+This invokes the Rake `:format` task, which:
 - Runs `buildifier` on all Bazel (`BUILD`, `*.bzl`, `WORKSPACE`) files — always, for every change
 - Runs `update_copyright` to add/refresh Apache license headers — always, for every change
 - Runs the appropriate language formatter(s) for files that changed (see language-specific `AGENTS.md`)
 
-`./go format` exits non-zero if it had to modify any file, so CI will fail if formatters were not run.
-For stricter lint checks beyond formatting, use `./go format --lint` or `./go lint`.
+`./go format` auto-fixes files in place. After running it, check `git diff` to see if any files were
+modified — if so, those changes must be committed. CI uses `scripts/format.sh` (which exits non-zero
+if files are modified), so un-formatted code will fail CI.
+For stricter lint checks beyond formatting, use `./go lint`.
 
 ## General Guidelines
 - Comments should explain *why*, not *what* - prefer well-named methods over comments
