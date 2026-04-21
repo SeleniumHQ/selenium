@@ -49,3 +49,13 @@ Use YARD for public APIs:
 # @return [Type] description
 # @raise [ErrorClass] when condition
 ```
+
+## Formatting
+Ruby files are formatted with **RuboCop** (target Ruby 3.2).
+Run `./go format` after changes; it will auto-fix most violations (`-a` flag).
+
+Key rules enforced (from `rb/.rubocop.yml`):
+- No spaces inside hash literal braces: `{key: val}` not `{ key: val }`
+- Line length limit applies (comments excluded); keep lines reasonably short
+- RuboCop plugins active: `rubocop-performance`, `rubocop-rake`, `rubocop-rspec`
+- Any violation at `Fatal` severity (`--fail-level F`) blocks CI

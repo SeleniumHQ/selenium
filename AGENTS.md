@@ -66,12 +66,25 @@ See language-specific AGENTS.md for applicable logging usage
 This project does not follow semantic versioning (semver); before removing public functionality, mark it as deprecated with a message pointing to the alternative.
 See language-specific AGENTS.md for applicable deprecation usage
 
+## Formatting
+After making code changes, always run (or instruct the user to run):
+```
+./go format
+```
+This invokes `scripts/format.sh` which:
+- Runs `buildifier` on all Bazel (`BUILD`, `*.bzl`, `WORKSPACE`) files — always, for every change
+- Runs `update_copyright` to add/refresh Apache license headers — always, for every change
+- Runs the appropriate language formatter(s) for files that changed (see language-specific `AGENTS.md`)
+
+`./go format` exits non-zero if it had to modify any file, so CI will fail if formatters were not run.
+For stricter lint checks beyond formatting, use `./go format --lint` or `./go lint`.
+
 ## General Guidelines
 - Comments should explain *why*, not *what* - prefer well-named methods over comments
 - PRs should focus on one thing; we squash PRs to default `trunk` branch
 - Prefer copying files to deleting and recreating to maintain git history
 - Avoid running `bazel clean --expunge`
-- Run or suggest running `./scripts/format.sh` or `./go all:lint` before pushing to prevent CI failures
+- Run or suggest running `./go format` before pushing to prevent CI failures
 
 ## High risk changes (request verification before modifying unless explicitly instructed)
 - Everything referenced above as high risk
