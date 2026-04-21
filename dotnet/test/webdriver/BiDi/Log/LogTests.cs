@@ -29,7 +29,7 @@ internal class LogTests : BiDiTestFixture
     {
         TaskCompletionSource<EntryAddedEventArgs> tcs = new();
 
-        await using var subscription = await context.Log.EntryAddedEvent.OnAsync(tcs.SetResult);
+        await using var subscription = await context.Log.EntryAddedEvent.OnAsync(e => tcs.TrySetResult(e));
 
         driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
         driver.FindElement(By.Id("consoleLog")).Click();
@@ -58,7 +58,7 @@ internal class LogTests : BiDiTestFixture
     {
         TaskCompletionSource<EntryAddedEventArgs> tcs = new();
 
-        await using var subscription = await context.Log.EntryAddedEvent.OnAsync(tcs.SetResult);
+        await using var subscription = await context.Log.EntryAddedEvent.OnAsync(e => tcs.TrySetResult(e));
 
         driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
         driver.FindElement(By.Id("jsException")).Click();
@@ -79,7 +79,7 @@ internal class LogTests : BiDiTestFixture
     {
         TaskCompletionSource<EntryAddedEventArgs> tcs = new();
 
-        await using var subscription = await bidi.Log.EntryAddedEvent.OnAsync(tcs.SetResult);
+        await using var subscription = await bidi.Log.EntryAddedEvent.OnAsync(e => tcs.TrySetResult(e));
 
         driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
         driver.FindElement(By.Id("logWithStacktrace")).Click();
