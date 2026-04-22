@@ -21,10 +21,10 @@ js_run_binary(
 
 js_run_binary(
     name = "is_displayed_typescript",
-    srcs = ["//javascript/atoms/fragments:is-displayed-typescript"],
+    srcs = ["//javascript/atoms/fragments:is-displayed-typescript.js"],
     outs = ["is-displayed-typescript.js"],
     args = [
-        "$(rootpath //javascript/atoms/fragments:is-displayed-typescript)",
+        "$(rootpath //javascript/atoms/fragments:is-displayed-typescript.js)",
         "$(rootpath :is-displayed-typescript.js)",
     ],
     tool = ":make_atoms_module",

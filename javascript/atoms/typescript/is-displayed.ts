@@ -353,7 +353,15 @@ interface Coordinate {
     }
 
     if (isElement(elem, 'OPTION') || isElement(elem, 'OPTGROUP')) {
-      var select = (elem as Element).closest('select');
+      var select: Element | null = null;
+      var ancestor: Node | null = elem.parentNode;
+      while (ancestor) {
+        if (isElement(ancestor, 'SELECT')) {
+          select = ancestor as Element;
+          break;
+        }
+        ancestor = ancestor.parentNode;
+      }
       return !!select && isShownInternal(select, true, displayedFn);
     }
 
@@ -470,7 +478,7 @@ interface Coordinate {
         return true;
       }
 
-      if (parent instanceof HTMLDetailsElement && !parent.open && !isElement(node, 'SUMMARY')) {
+      if (isElement(parent, 'DETAILS') && !(<HTMLDetailsElement>parent).open && !isElement(node, 'SUMMARY')) {
         return false;
       }
 
