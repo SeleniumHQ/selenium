@@ -169,3 +169,7 @@ dotnet-bin
 # Common generated transcripts
 *_cline_transcript.json
 .copilot-chat-history.json
+
+# Mempalace
+mempalace.yaml
+entities.json
