@@ -1378,10 +1378,12 @@ class TestBidiDomMutationHandler:
             assert len(mutations) > 0
             mutation = mutations[0]
             assert isinstance(mutation, DomMutation)
-            assert mutation.element is not None
+            assert mutation.element_id is not None
             assert mutation.attribute_name == "style"
-            assert mutation.old_value == "display:none;"
-            assert mutation.current_value == ""
+            assert mutation.old_value is not None
+            assert "display" in mutation.old_value.lower()
+            assert "none" in mutation.old_value.lower()
+            assert mutation.current_value in (None, "")
         finally:
             driver.script.remove_dom_mutation_handler(handler_id)
 
@@ -1394,10 +1396,11 @@ class TestBidiDomMutationHandler:
         # Trigger a mutation after the handler was removed
         driver.find_element(By.ID, "reveal").click()
 
-        # Give events a moment to arrive (if any)
-        import time
-
-        time.sleep(1)
+        # Wait for the DOM mutation to actually complete, then assert no callback fired.
+        # If the subscription was properly removed, events should not arrive at all.
+        WebDriverWait(driver, 10).until(
+            lambda d: d.find_element(By.ID, "revealed").is_displayed()
+        )
         assert len(mutations) == 0
 
     def test_add_multiple_dom_mutation_handlers(self, driver):

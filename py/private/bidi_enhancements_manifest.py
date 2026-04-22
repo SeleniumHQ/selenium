@@ -623,9 +623,19 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         "extra_dataclasses": [
             '''@dataclass
 class DomMutation:
-    """Represents a DOM attribute mutation event from add_dom_mutation_handler."""
+    """Represents a DOM attribute mutation event from add_dom_mutation_handler.
 
-    element: Any
+    Attributes:
+        element_id: The ``data-__webdriver_id`` attribute value set on the
+            mutated element by the MutationObserver. Use this to locate the
+            element from the main thread if needed.
+        attribute_name: The name of the changed attribute.
+        current_value: The attribute value after the mutation (may be ``None``
+            if the attribute was removed).
+        old_value: The attribute value before the mutation.
+    """
+
+    element_id: str | None = None
     attribute_name: str | None = None
     current_value: str | None = None
     old_value: str | None = None
@@ -1029,9 +1039,7 @@ class DomMutation:
                 raise ValueError("Failed to load bidi-mutation-listener.js")
             self._bidi_mutation_listener_js = _js_bytes.decode("utf8").strip()
 
-        # Register the preload script with a BiDi channel argument
         _channel_arg = {"type": "channel", "value": {"channel": "channel_name"}}
-        self._add_preload_script(self._bidi_mutation_listener_js, arguments=[_channel_arg])
 
         def _on_message(message):
             # Filter to only our channel
@@ -1049,17 +1057,9 @@ class DomMutation:
             target_id = payload.get("target")
             if not target_id and target_id != 0:
                 return
-            if self._driver is None:
-                return
-            elements = self._driver.find_elements(
-                "css selector",
-                f\'\'\'*[data-__webdriver_id="{target_id}"]\'\'\',
-            )
-            if not elements:
-                return
             from selenium.webdriver.common.bidi.script import DomMutation as _DomMutation
             event = _DomMutation(
-                element=elements[0],
+                element_id=str(target_id),
                 attribute_name=payload.get("name"),
                 current_value=payload.get("value"),
                 old_value=payload.get("oldValue"),
@@ -1075,6 +1075,27 @@ class DomMutation:
         _wrapper = _BidiRef()
         callback_id = self._conn.add_callback(_wrapper, _on_message)
         with self._mutation_lock:
+            # Register the preload script only once per Script instance to avoid
+            # accumulating duplicate MutationObservers across handler registrations.
+            if not hasattr(self, "_mutation_preload_script_id"):
+                self._mutation_preload_script_id = self._add_preload_script(
+                    self._bidi_mutation_listener_js, arguments=[_channel_arg]
+                )
+                # Also invoke immediately on the current page since the preload
+                # script only fires on future document creations.
+                if self._driver is not None:
+                    _context = None
+                    try:
+                        _context = self._driver.current_window_handle
+                    except Exception:
+                        pass
+                    if _context is not None:
+                        self.call_function(
+                            function_declaration=self._bidi_mutation_listener_js,
+                            target={"context": _context},
+                            await_promise=False,
+                            arguments=[_channel_arg],
+                        )
             if bidi_event not in self._mutation_subscriptions:
                 session = _Session(self._conn)
                 result = session.subscribe([bidi_event])
