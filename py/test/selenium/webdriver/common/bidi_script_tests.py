@@ -1398,9 +1398,7 @@ class TestBidiDomMutationHandler:
 
         # Wait for the DOM mutation to actually complete, then assert no callback fired.
         # If the subscription was properly removed, events should not arrive at all.
-        WebDriverWait(driver, 10).until(
-            lambda d: d.find_element(By.ID, "revealed").is_displayed()
-        )
+        WebDriverWait(driver, 10).until(lambda d: d.find_element(By.ID, "revealed").is_displayed())
         assert len(mutations) == 0
 
     def test_add_multiple_dom_mutation_handlers(self, driver):
