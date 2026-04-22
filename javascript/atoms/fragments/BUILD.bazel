@@ -1,3 +1,4 @@
+load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "closure_fragment")
 
 closure_fragment(
@@ -228,5 +229,20 @@ closure_fragment(
     ],
     deps = [
         "//javascript/atoms:action",
+    ],
+)
+
+copy_file(
+    name = "get-attribute-typescript",
+    src = "//javascript/atoms:typescript/get-attribute.generated.js",
+    out = "get-attribute-typescript.js",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
     ],
 )

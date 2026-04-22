@@ -1,7 +1,61 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
+
+js_binary(
+    name = "strip_trailing_semicolon",
+    data = ["typescript/strip-trailing-semicolon.js"],
+    entry_point = "typescript/strip-trailing-semicolon.js",
+)
+
+js_binary(
+    name = "wrap_get_attribute_as_global",
+    data = ["typescript/wrap-get-attribute-as-global.js"],
+    entry_point = "typescript/wrap-get-attribute-as-global.js",
+)
+
+js_run_binary(
+    name = "get-attribute-typescript-compiled",
+    srcs = ["typescript/get-attribute.ts"],
+    outs = ["typescript/get-attribute.compiled.js"],
+    args = [
+        "--target",
+        "ES2017",
+        "--module",
+        "none",
+        "--removeComments",
+        "--pretty",
+        "false",
+        "--outFile",
+        "$(rootpath :typescript/get-attribute.compiled.js)",
+        "$(rootpath typescript/get-attribute.ts)",
+    ],
+    tool = "@npm_typescript//:tsc",
+)
+
+js_run_binary(
+    name = "get-attribute-typescript-generated",
+    srcs = [":get-attribute-typescript-compiled"],
+    outs = ["typescript/get-attribute.generated.js"],
+    args = [
+        "$(rootpath :get-attribute-typescript-compiled)",
+        "$(rootpath :typescript/get-attribute.generated.js)",
+    ],
+    tool = ":strip_trailing_semicolon",
+)
+
+js_run_binary(
+    name = "get-attribute-global",
+    srcs = [":get-attribute-typescript-compiled"],
+    outs = ["typescript/get-attribute-global.js"],
+    args = [
+        "$(rootpath :get-attribute-typescript-compiled)",
+        "$(rootpath :typescript/get-attribute-global.js)",
+    ],
+    tool = ":wrap_get_attribute_as_global",
+)
 
 filegroup(
     name = "atoms",
@@ -11,7 +65,8 @@ filegroup(
         "**/*.js",
         "**/*.png",
         "**/*.svg",
-    ]),
+        "**/*.ts",
+    ]) + [":get-attribute-global"],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",

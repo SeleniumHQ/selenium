@@ -118,7 +118,7 @@ copy_file(
 
 copy_file(
     name = "get-attribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
+    src = "//javascript/atoms/fragments:get-attribute-typescript.js",
     out = "selenium/webdriver/remote/getAttribute.js",
 )
 
