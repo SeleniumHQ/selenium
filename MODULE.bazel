@@ -406,6 +406,28 @@ use_repo(
     "download_sm_windows",
 )
 
+webref_cddl_extension = use_extension("//common:webref_cddl.bzl", "webref_cddl_extension")
+use_repo(
+    webref_cddl_extension,
+    "at_driver_all_cddl",
+    "at_driver_local_cddl",
+    "at_driver_remote_cddl",
+    "permissions_all_cddl",
+    "permissions_local_cddl",
+    "permissions_remote_cddl",
+    "prefetch_all_cddl",
+    "prefetch_local_cddl",
+    "ua_client_hints_all_cddl",
+    "ua_client_hints_local_cddl",
+    "ua_client_hints_remote_cddl",
+    "web_bluetooth_all_cddl",
+    "web_bluetooth_local_cddl",
+    "web_bluetooth_remote_cddl",
+    "webdriver_bidi_all_cddl",
+    "webdriver_bidi_local_cddl",
+    "webdriver_bidi_remote_cddl",
+)
+
 pin_browsers_extension = use_extension("//common:repositories.bzl", "pin_browsers_extension")
 use_repo(
     pin_browsers_extension,
