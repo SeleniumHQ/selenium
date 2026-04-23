@@ -1039,12 +1039,17 @@ class DomMutation:
                 raise ValueError("Failed to load bidi-mutation-listener.js")
             self._bidi_mutation_listener_js = _js_bytes.decode("utf8").strip()
 
-        _channel_arg = {"type": "channel", "value": {"channel": "channel_name"}}
+        # Use a stable, namespaced channel to avoid collisions with user scripts.
+        if not hasattr(self, "_mutation_channel_name"):
+            import uuid as _uuid
+            self._mutation_channel_name = f"selenium.domMutation.{_uuid.uuid4().hex}"
+        _channel_name = self._mutation_channel_name
+        _channel_arg = {"type": "channel", "value": {"channel": _channel_name}}
 
         def _on_message(message):
             # Filter to only our channel
             channel = message.get("channel") if isinstance(message, dict) else None
-            if channel != "channel_name":
+            if channel != _channel_name:
                 return
             data = message.get("data", {}) if isinstance(message, dict) else {}
             value = data.get("value") if isinstance(data, dict) else None
@@ -1072,8 +1077,6 @@ class DomMutation:
             def from_json(self2, p):
                 return p
 
-        _wrapper = _BidiRef()
-        callback_id = self._conn.add_callback(_wrapper, _on_message)
         with self._mutation_lock:
             # Register the preload script only once per Script instance to avoid
             # accumulating duplicate MutationObservers across handler registrations.
@@ -1106,6 +1109,9 @@ class DomMutation:
                     "callbacks": [],
                     "subscription_id": sub_id,
                 }
+            # Register the callback AFTER setup to avoid leaking it if setup fails.
+            _wrapper = _BidiRef()
+            callback_id = self._conn.add_callback(_wrapper, _on_message)
             self._mutation_subscriptions[bidi_event]["callbacks"].append(callback_id)
         return callback_id''',
             '''    def _unsubscribe_mutation_handler(self, callback_id):
@@ -1135,7 +1141,13 @@ class DomMutation:
                     session.unsubscribe(subscriptions=[sub_id])
                 else:
                     session.unsubscribe(events=[bidi_event])
-                del self._mutation_subscriptions[bidi_event]''',
+                del self._mutation_subscriptions[bidi_event]
+                if hasattr(self, "_mutation_preload_script_id"):
+                    preload_script_id = self._mutation_preload_script_id
+                    try:
+                        self._remove_preload_script(preload_script_id)
+                    finally:
+                        del self._mutation_preload_script_id''',
             '''    def add_dom_mutation_handler(self, callback: Callable) -> int:
         """Add a handler for DOM attribute mutation events.
 
