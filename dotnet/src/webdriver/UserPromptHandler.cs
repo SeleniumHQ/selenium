@@ -21,7 +21,7 @@ namespace OpenQA.Selenium;
 
 /// <summary>
 /// Represents a WebDriver session's user prompt handler, which defines how unhandled browser prompts
-/// (alerts, confirms, prompts, beforeunload dialogs) are managed during automation.
+/// (alerts, confirms, prompts, beforeunload dialogs, file selection dialogs) are managed during automation.
 /// </summary>
 /// <remarks>
 /// This corresponds to the W3C WebDriver <c>unhandledPromptBehavior</c> capability, which may be expressed
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium;
 /// Available variants:
 /// <list type="bullet">
 /// <item><description><see cref="Uniform"/> - Wraps a single <see cref="UnhandledPromptBehavior"/> value applied to all prompt types. Create via the implicit conversion from <see cref="UnhandledPromptBehavior"/> or by constructing <see cref="Uniform"/> directly.</description></item>
-/// <item><description><see cref="PerPromptType"/> - Allows configuring per-prompt behaviors (Alert, Confirm, Prompt, BeforeUnload, Default).</description></item>
+/// <item><description><see cref="PerPromptType"/> - Allows configuring per-prompt behaviors (Alert, Confirm, Prompt, BeforeUnload, File, Default).</description></item>
 /// </list>
 /// </para>
 /// </remarks>
@@ -81,11 +81,11 @@ public abstract record UserPromptHandler
 
     /// <summary>
     /// Represents a user prompt handler that specifies distinct <see cref="UnhandledPromptBehavior"/> values
-    /// for individual prompt types (alert, confirm, prompt, beforeunload), with a fallback default.
+    /// for individual prompt types (alert, confirm, prompt, beforeunload, file), with a fallback default.
     /// </summary>
-    /// <remarks>Use this variant to configure distinct behaviors for alert, confirm, prompt, and beforeunload dialogs
-    /// encountered during browser automation. Each property allows you to control the response to a specific type of
-    /// unhandled prompt, enabling fine-grained handling beyond a single global setting.</remarks>
+    /// <remarks>Use this variant to configure distinct behaviors for alert, confirm, prompt, beforeunload, and file
+    /// selection dialogs encountered during browser automation. Each property allows you to control the response to a
+    /// specific type of unhandled prompt, enabling fine-grained handling beyond a single global setting.</remarks>
     public sealed record PerPromptType : UserPromptHandler
     {
         /// <summary>
