@@ -43,7 +43,7 @@ public interface IKeySourceAction : ISourceAction;
 public sealed record KeySourceActions(string Id, IEnumerable<IKeySourceAction> Actions)
     : SourceActions<IKeySourceAction>(Id, Actions)
 {
-    // TODO move out as extension method
+    [Obsolete("This helper method will be removed in v4.45. Use KeyDown and KeyUp actions directly instead.")]
     public KeySourceActions Type(string text) => this with
     {
         Actions = [.. Actions, .. text.SelectMany<char, IKeySourceAction>(c => [new KeyDownAction(c), new KeyUpAction(c)])]
