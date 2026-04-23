@@ -56,9 +56,6 @@ public abstract record UserPromptHandler
             UnhandledPromptBehavior.Dismiss => "dismiss",
             UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
             UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
-#pragma warning disable CS0618 // UnhandledPromptBehavior.Default is obsolete
-            UnhandledPromptBehavior.Default => throw new InvalidOperationException("UnhandledPromptBehavior.Default has no wire representation; pass null instead."),
-#pragma warning restore CS0618
             _ => throw new InvalidOperationException($"UnhandledPromptBehavior value '{behavior}' is not recognized."),
         };
 
@@ -92,41 +89,41 @@ public abstract record UserPromptHandler
     public sealed record PerPromptType : UserPromptHandler
     {
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected alert is encountered during automation,
+        /// Gets the behavior to use when an unexpected alert is encountered during automation,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior? Alert { get; set; }
+        public UnhandledPromptBehavior? Alert { get; init; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when a confirmation prompt is encountered,
+        /// Gets the behavior to use when a confirmation prompt is encountered,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior? Confirm { get; set; }
+        public UnhandledPromptBehavior? Confirm { get; init; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected prompt is encountered during automation,
+        /// Gets the behavior to use when an unexpected prompt is encountered during automation,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior? Prompt { get; set; }
+        public UnhandledPromptBehavior? Prompt { get; init; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected beforeunload dialog is encountered,
+        /// Gets the behavior to use when an unexpected beforeunload dialog is encountered,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior? BeforeUnload { get; set; }
+        public UnhandledPromptBehavior? BeforeUnload { get; init; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected file selection dialog is encountered,
+        /// Gets the behavior to use when an unexpected file selection dialog is encountered,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
         /// <remarks>The "file" prompt type is respected only in WebDriver BiDi sessions.</remarks>
-        public UnhandledPromptBehavior? File { get; set; }
+        public UnhandledPromptBehavior? File { get; init; }
 
         /// <summary>
-        /// Gets or sets the fallback behavior to use when no specific handler is defined for a given prompt type,
+        /// Gets the fallback behavior to use when no specific handler is defined for a given prompt type,
         /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior? Default { get; set; }
+        public UnhandledPromptBehavior? Default { get; init; }
 
         internal override object? ToCapabilities()
         {
@@ -144,10 +141,10 @@ public abstract record UserPromptHandler
         {
 #pragma warning disable CS0618 // UnhandledPromptBehavior.Default is obsolete
             if (value is { } v && v != UnhandledPromptBehavior.Default)
-#pragma warning restore CS0618
             {
                 capabilities[key] = ConvertBehaviorToString(v);
             }
+#pragma warning restore CS0618
         }
     }
 }
@@ -158,7 +155,7 @@ public abstract record UserPromptHandler
 public enum UnhandledPromptBehavior
 {
     /// <summary>
-    /// Indicates the behavior is not set.
+    /// Sentinel value meaning "behavior not set". Not part of the W3C WebDriver spec.
     /// </summary>
     [Obsolete("Use a nullable UnhandledPromptBehavior? and pass null to leave the behavior unset. This member will be removed in v4.46.")]
     Default,
