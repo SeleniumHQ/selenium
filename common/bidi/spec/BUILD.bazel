@@ -5,157 +5,123 @@ package(
 )
 
 # All CDDL spec files from https://github.com/w3c/webref/tree/5301ec52f85f9156ae696f24523d722193fc0817/ed/cddl
-# http_file downloads files as "downloaded" (no extension), so we use genrule to expose
-# each file with its proper .cddl name so consumers can use allow_single_file = [".cddl"].
+# http_file exposes each downloaded artifact as the @<repo>//file target; downloaded_file_path
+# preserves the .cddl filename so consumers using allow_single_file = [".cddl"] work correctly.
 
-genrule(
-    name = "at_driver_all_cddl",
-    srcs = ["@at_driver_all_cddl//file"],
-    outs = ["at-driver-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "at-driver-all.cddl",
+    actual = "@at_driver_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "at_driver_local_cddl",
-    srcs = ["@at_driver_local_cddl//file"],
-    outs = ["at-driver-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "at-driver-local-cddl.cddl",
+    actual = "@at_driver_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "at_driver_remote_cddl",
-    srcs = ["@at_driver_remote_cddl//file"],
-    outs = ["at-driver-remote-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "at-driver-remote-cddl.cddl",
+    actual = "@at_driver_remote_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "permissions_all_cddl",
-    srcs = ["@permissions_all_cddl//file"],
-    outs = ["permissions-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "permissions-all.cddl",
+    actual = "@permissions_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "permissions_local_cddl",
-    srcs = ["@permissions_local_cddl//file"],
-    outs = ["permissions-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "permissions-local-cddl.cddl",
+    actual = "@permissions_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "permissions_remote_cddl",
-    srcs = ["@permissions_remote_cddl//file"],
-    outs = ["permissions-remote-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "permissions-remote-cddl.cddl",
+    actual = "@permissions_remote_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "prefetch_all_cddl",
-    srcs = ["@prefetch_all_cddl//file"],
-    outs = ["prefetch-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "prefetch-all.cddl",
+    actual = "@prefetch_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "prefetch_local_cddl",
-    srcs = ["@prefetch_local_cddl//file"],
-    outs = ["prefetch-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "prefetch-local-cddl.cddl",
+    actual = "@prefetch_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "ua_client_hints_all_cddl",
-    srcs = ["@ua_client_hints_all_cddl//file"],
-    outs = ["ua-client-hints-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "ua-client-hints-all.cddl",
+    actual = "@ua_client_hints_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "ua_client_hints_local_cddl",
-    srcs = ["@ua_client_hints_local_cddl//file"],
-    outs = ["ua-client-hints-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "ua-client-hints-local-cddl.cddl",
+    actual = "@ua_client_hints_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "ua_client_hints_remote_cddl",
-    srcs = ["@ua_client_hints_remote_cddl//file"],
-    outs = ["ua-client-hints-remote-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "ua-client-hints-remote-cddl.cddl",
+    actual = "@ua_client_hints_remote_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "web_bluetooth_all_cddl",
-    srcs = ["@web_bluetooth_all_cddl//file"],
-    outs = ["web-bluetooth-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "web-bluetooth-all.cddl",
+    actual = "@web_bluetooth_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "web_bluetooth_local_cddl",
-    srcs = ["@web_bluetooth_local_cddl//file"],
-    outs = ["web-bluetooth-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "web-bluetooth-local-cddl.cddl",
+    actual = "@web_bluetooth_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "web_bluetooth_remote_cddl",
-    srcs = ["@web_bluetooth_remote_cddl//file"],
-    outs = ["web-bluetooth-remote-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "web-bluetooth-remote-cddl.cddl",
+    actual = "@web_bluetooth_remote_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "webdriver_bidi_all_cddl",
-    srcs = ["@webdriver_bidi_all_cddl//file"],
-    outs = ["webdriver-bidi-all.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "webdriver-bidi-all.cddl",
+    actual = "@webdriver_bidi_all_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "webdriver_bidi_local_cddl",
-    srcs = ["@webdriver_bidi_local_cddl//file"],
-    outs = ["webdriver-bidi-local-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "webdriver-bidi-local-cddl.cddl",
+    actual = "@webdriver_bidi_local_cddl//file",
     visibility = ["//visibility:public"],
 )
 
-genrule(
-    name = "webdriver_bidi_remote_cddl",
-    srcs = ["@webdriver_bidi_remote_cddl//file"],
-    outs = ["webdriver-bidi-remote-cddl.cddl"],
-    cmd = "cp $< $@",
+alias(
+    name = "webdriver-bidi-remote-cddl.cddl",
+    actual = "@webdriver_bidi_remote_cddl//file",
     visibility = ["//visibility:public"],
 )
 
 # Backward-compatible aliases for existing consumers
 alias(
     name = "all.cddl",
-    actual = ":webdriver_bidi_all_cddl",
+    actual = ":webdriver-bidi-all.cddl",
 )
 
 alias(
     name = "local.cddl",
-    actual = ":webdriver_bidi_local_cddl",
+    actual = ":webdriver-bidi-local-cddl.cddl",
 )
 
 alias(
     name = "remote.cddl",
-    actual = ":webdriver_bidi_remote_cddl",
+    actual = ":webdriver-bidi-remote-cddl.cddl",
 )
