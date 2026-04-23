@@ -17,10 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions;
 
@@ -515,7 +513,7 @@ public class PointerInputDevice : InputDevice
         private readonly IWebElement? target;
         private readonly int x = 0;
         private readonly int y = 0;
-        private TimeSpan duration = TimeSpan.MinValue;
+        private readonly TimeSpan duration = TimeSpan.MinValue;
         private readonly CoordinateOrigin origin = CoordinateOrigin.Pointer;
         private readonly PointerEventProperties eventProperties;
 
@@ -595,15 +593,21 @@ public class PointerInputDevice : InputDevice
             if (elementReference == null)
             {
                 IWrapsElement? elementWrapper = this.target as IWrapsElement;
-                if (elementWrapper != null)
+                while (elementWrapper != null)
                 {
                     elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
+                    if (ReferenceEquals(elementWrapper, elementWrapper.WrappedElement))
+                    {
+                        throw new InvalidOperationException("Cannot determine root element: element wrapper wraps itself");
+                    }
+
+                    elementWrapper = elementWrapper.WrappedElement as IWrapsElement;
                 }
             }
 
             if (elementReference == null)
             {
-                throw new ArgumentException("Target element cannot be converted to IWebElementReference");
+                throw new ArgumentException($"Target element cannot be converted to {nameof(IWebDriverObjectReference)}");
             }
 
             Dictionary<string, object> elementDictionary = elementReference.ToDictionary();

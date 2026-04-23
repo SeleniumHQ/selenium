@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.SearchContext;
@@ -86,6 +86,7 @@ class ShadowDomTest {
 
     driver =
         new RemoteWebDriver(executor, new ImmutableCapabilities()) {
+          @NullMarked
           @Override
           protected void startSession(Capabilities capabilities) {
             setSessionId(id.toString());
@@ -223,8 +224,7 @@ class ShadowDomTest {
                         "value", singletonMap("shadow-6066-11e4-a52e-4f735466cecf", shadowId)))));
 
     ShadowRoot shadowContext = (ShadowRoot) element.getShadowRoot();
-    ShadowRoot executeContext =
-        (ShadowRoot) ((JavascriptExecutor) driver).executeScript("return Arguments[0].shadowRoot");
+    ShadowRoot executeContext = (ShadowRoot) driver.executeScript("return Arguments[0].shadowRoot");
     assertThat(shadowContext).isEqualTo(executeContext);
   }
 }

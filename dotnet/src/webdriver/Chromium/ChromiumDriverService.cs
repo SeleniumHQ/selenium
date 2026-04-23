@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Globalization;
 using System.Text;
 
@@ -93,18 +92,12 @@ public abstract class ChromiumDriverService : DriverService
     /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
-    [Obsolete($"Use {nameof(AllowedIPAddresses)}")]
-    public string? WhitelistedIPAddresses
-    {
-        get => this.AllowedIPAddresses;
-        set => this.AllowedIPAddresses = value;
-    }
+    public string? AllowedIPAddresses { get; set; }
 
     /// <summary>
-    /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
-    /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
+    /// Adds readable timestamps to log
     /// </summary>
-    public string? AllowedIPAddresses { get; set; }
+    public bool ReadableTimestamp { get; set; }
 
     /// <summary>
     /// Gets the command-line arguments for the driver service.
@@ -119,24 +112,46 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --adb-port={0}", adb);
             }
 
-            if (this.SuppressInitialDiagnosticInformation)
-            {
-                argsBuilder.Append(" --silent");
-            }
-
             if (this.DisableBuildCheck)
             {
                 argsBuilder.Append(" --disable-build-check");
             }
 
-            if (this.EnableVerboseLogging)
+            if (Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
+                if (this.SuppressInitialDiagnosticInformation ||
+                    (this.LogLevel != ChromiumDriverLogLevel.Default && this.LogLevel != ChromiumDriverLogLevel.All))
+                {
+                    Console.Error.WriteLine("WARNING: Environment Variable `SE_DEBUG` is set; forcing ChromiumDriver --verbose and overriding --silent/--log-level settings.");
+                }
                 argsBuilder.Append(" --verbose");
+            }
+            else
+            {
+                if (this.EnableVerboseLogging)
+                {
+                    argsBuilder.Append(" --verbose");
+                }
+
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" --silent");
+                }
+
+                if (this.LogLevel != ChromiumDriverLogLevel.Default)
+                {
+                    argsBuilder.Append($" --log-level={this.LogLevel.ToString().ToUpperInvariant()}");
+                }
             }
 
             if (this.EnableAppendLog)
             {
                 argsBuilder.Append(" --append-log");
+            }
+
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
             }
 
             if (!string.IsNullOrEmpty(this.LogPath))
@@ -156,17 +171,11 @@ public abstract class ChromiumDriverService : DriverService
 
             if (!string.IsNullOrEmpty(this.AllowedIPAddresses))
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -allowed-ips={0}", this.AllowedIPAddresses));
+                argsBuilder.Append($" -allowed-ips={this.AllowedIPAddresses}");
             }
 
-            if (this.LogLevel != ChromiumDriverLogLevel.Default)
-            {
-                if (Enum.IsDefined(typeof(ChromiumDriverLogLevel), this.LogLevel))
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
-                }
-            }
-
+            // Unconditionally redirect browser logs to the same log as the driver
+            argsBuilder.Append(" --enable-chrome-logs");
 
             return argsBuilder.ToString();
         }

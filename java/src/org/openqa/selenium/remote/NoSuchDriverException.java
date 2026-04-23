@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverFinder;
 
@@ -25,11 +26,11 @@ public class NoSuchDriverException extends WebDriverException {
 
   private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
 
-  public NoSuchDriverException(String reason) {
+  public NoSuchDriverException(@Nullable String reason) {
     super(reason);
   }
 
-  public NoSuchDriverException(String reason, Throwable cause) {
+  public NoSuchDriverException(@Nullable String reason, @Nullable Throwable cause) {
     super(reason, cause);
   }
 

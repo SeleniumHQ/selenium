@@ -20,12 +20,13 @@ package org.openqa.selenium.grid.graphql;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
-public class SessionData implements DataFetcher {
+public class SessionData implements DataFetcher<org.openqa.selenium.grid.graphql.Session> {
 
   private final Distributor distributor;
 
@@ -34,10 +35,10 @@ public class SessionData implements DataFetcher {
   }
 
   @Override
-  public Object get(DataFetchingEnvironment environment) {
+  public org.openqa.selenium.grid.graphql.Session get(DataFetchingEnvironment environment) {
     String sessionId = environment.getArgument("id");
 
-    if (sessionId.isEmpty()) {
+    if (sessionId == null || sessionId.isEmpty()) {
       throw new SessionNotFoundException("Session id is empty. A valid session id is required.");
     }
 
@@ -62,6 +63,7 @@ public class SessionData implements DataFetcher {
     }
   }
 
+  @Nullable
   private SessionInSlot findSession(String sessionId, Set<NodeStatus> nodeStatuses) {
     for (NodeStatus status : nodeStatuses) {
       for (Slot slot : status.getSlots()) {

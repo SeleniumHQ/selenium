@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.Firefox;
 
 /// <summary>
@@ -87,16 +84,6 @@ public class FirefoxOptions : DriverOptions
     /// Gets or sets the path and file name of the Firefox browser executable.
     /// </summary>
     public override string? BinaryLocation { get; set; }
-
-    /// <summary>
-    /// Gets or sets the path and file name of the Firefox browser executable.
-    /// </summary>
-    [Obsolete("Use BinaryLocation property instead of BrowserExecutableLocation. This one will be removed soon.")]
-    public string? BrowserExecutableLocation
-    {
-        get => this.BinaryLocation;
-        set => this.BinaryLocation = value;
-    }
 
     /// <summary>
     /// Gets or sets the logging level of the Firefox driver.

@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import json
 import logging
 import os
@@ -22,7 +23,6 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Optional
 
 from selenium.common import WebDriverException
 
@@ -38,11 +38,12 @@ class SeleniumManager:
     def binary_paths(self, args: list) -> dict:
         """Determines the locations of the requested assets.
 
-        :Args:
-         - args: the commands to send to the selenium manager binary.
-        :Returns: dictionary of assets and their path
-        """
+        Args:
+            args: the commands to send to the selenium manager binary.
 
+        Returns:
+            Dictionary of assets and their path.
+        """
         args = [str(self._get_binary())] + args
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
@@ -55,40 +56,63 @@ class SeleniumManager:
 
     @staticmethod
     def _get_binary() -> Path:
-        """Determines the path of the correct Selenium Manager binary.
+        """Determines the path of the Selenium Manager binary.
 
-        :Returns: The Selenium Manager executable location
+        Location of the binary is checked in this order:
 
-        :Raises: WebDriverException if the platform is unsupported
+        1. location set in an environment variable
+        2. location where setuptools-rust places the compiled binary (built from the sdist package)
+        3. location where we ship binaries in the wheel package for the platform this is running on
+        4. give up
+
+        Returns:
+            The Selenium Manager executable location.
+
+        Raises:
+            WebDriverException: If the platform is unsupported or Selenium Manager executable can't be found.
         """
-
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
         exe = sysconfig.get_config_var("EXE")
         if exe is not None:
             compiled_path = compiled_path.with_suffix(exe)
 
-        path: Optional[Path] = None
+        path: Path | None = None
 
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
-            logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", env_path)
-            path = Path(env_path)
-        elif compiled_path.exists():
+            logger.debug(f"Selenium Manager set by env SE_MANAGER_PATH to: {env_path}")
+            path_candidate = Path(env_path)
+            if not path_candidate.is_file():
+                raise WebDriverException(f"SE_MANAGER_PATH does not point to a file: {env_path}")
+            path = path_candidate
+        elif compiled_path.is_file():
             path = compiled_path
         else:
             allowed = {
                 ("darwin", "any"): "macos/selenium-manager",
-                ("win32", "any"): "windows/selenium-manager.exe",
-                ("cygwin", "any"): "windows/selenium-manager.exe",
+                ("win32", "x86_64"): "windows/selenium-manager.exe",
+                ("cygwin", "x86_64"): "windows/selenium-manager.exe",
                 ("linux", "x86_64"): "linux/selenium-manager",
                 ("freebsd", "x86_64"): "linux/selenium-manager",
                 ("openbsd", "x86_64"): "linux/selenium-manager",
             }
 
-            arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
-            if sys.platform in ["freebsd", "openbsd"]:
-                logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
+            # some operating systems report x86-64 architecture as amd64/AMD64
+            platform_name = sys.platform
+            arch = "any" if platform_name == "darwin" else platform.machine().lower()
+            arch = "x86_64" if arch == "amd64" else arch
 
-            location = allowed.get((sys.platform, arch))
+            # in Python < 3.14, sys.platform appends version number to BSD platform names
+            if platform_name.startswith("freebsd"):
+                logger.warning(
+                    "Selenium Manager binary may not be compatible with FreeBSD; you may need to run "
+                    "'brandelf -t linux' on it and load linux64.ko"
+                )
+                platform_name = "freebsd"
+            elif platform_name.startswith("openbsd"):
+                logger.warning("Selenium Manager binary may not be compatible with OpenBSD; verify settings")
+                platform_name = "openbsd"
+
+            location = allowed.get((platform_name, arch))
             if location is None:
                 raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
@@ -97,7 +121,7 @@ class SeleniumManager:
         if path is None or not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
-        logger.debug("Selenium Manager binary found at: %s", path)
+        logger.debug(f"Selenium Manager binary found at: {path}")
 
         return path
 
@@ -105,9 +129,11 @@ class SeleniumManager:
     def _run(args: list[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
-        :Args:
-         - args: the components of the command being executed.
-        :Returns: The log string containing the driver location.
+        Args:
+            args: the components of the command being executed.
+
+        Returns:
+            The log string containing the driver location.
         """
         command = " ".join(args)
         logger.debug("Executing process: %s", command)

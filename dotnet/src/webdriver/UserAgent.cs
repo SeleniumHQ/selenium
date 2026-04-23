@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -26,15 +24,6 @@ namespace OpenQA.Selenium.DevTools;
 /// </summary>
 public class UserAgent
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserAgent"/> type.
-    /// </summary>
-    [Obsolete("Use the constructor which sets the userAgentString")]
-    public UserAgent()
-    {
-        UserAgentString = null!;
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAgent"/> type.
     /// </summary>

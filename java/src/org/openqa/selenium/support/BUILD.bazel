@@ -35,6 +35,7 @@ java_export(
         "//java/src/org/openqa/selenium/support/ui:components",
         "//java/src/org/openqa/selenium/support/ui:elements",
         "//java/src/org/openqa/selenium/support/ui:wait",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 

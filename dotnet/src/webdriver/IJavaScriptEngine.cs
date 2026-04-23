@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium;
 
@@ -88,7 +86,7 @@ public interface IJavaScriptEngine : IDisposable
     /// <param name="script">The JavaScript to be loaded on every page.</param>
     /// <returns>A task containing an <see cref="InitializationScript"/> object representing the script to be loaded on each page.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="scriptName"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
-    Task<InitializationScript> AddInitializationScript(string scriptName, string script);
+    Task<InitializationScript> AddInitializationScript(string scriptName, [StringSyntax(StringSyntaxConstants.JavaScript)] string script);
 
     /// <summary>
     /// Asynchronously removes JavaScript from being loaded on every document load.
@@ -112,7 +110,7 @@ public interface IJavaScriptEngine : IDisposable
     /// <param name="script">The JavaScript to pin</param>
     /// <returns>A task containing a <see cref="PinnedScript"/> object to use to execute the script.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="script"/> is <see langword="null"/>.</exception>
-    Task<PinnedScript> PinScript(string script);
+    Task<PinnedScript> PinScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script);
 
     /// <summary>
     /// Unpins a previously pinned script from the browser.

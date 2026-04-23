@@ -55,6 +55,28 @@ class DecoratedRemoteWebDriverTest {
     RemoteWebDriver underlying =
         (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
     assertThat(underlying.getSessionId()).isEqualTo(sessionId);
+    assertThat(underlying).isSameAs(originalDriver);
+  }
+
+  @Test
+  void canWrapDriverMultipleTimes() {
+    SessionId sessionId = new SessionId(UUID.randomUUID());
+    RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
+    when(originalDriver.getSessionId()).thenReturn(sessionId);
+
+    RemoteWebDriver decorated1 =
+        new WebDriverDecorator<>(RemoteWebDriver.class).decorate(originalDriver);
+    RemoteWebDriver decorated2 =
+        new WebDriverDecorator<>(RemoteWebDriver.class).decorate(decorated1);
+    RemoteWebDriver decoratedDriver =
+        new WebDriverDecorator<>(RemoteWebDriver.class).decorate(decorated2);
+
+    assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
+
+    RemoteWebDriver underlying =
+        (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
+    assertThat(underlying.getSessionId()).isEqualTo(sessionId);
+    assertThat(underlying).isSameAs(originalDriver);
   }
 
   @Test

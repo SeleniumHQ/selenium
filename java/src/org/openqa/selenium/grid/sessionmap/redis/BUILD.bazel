@@ -24,5 +24,6 @@ java_export(
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
         artifact("io.lettuce:lettuce-core"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

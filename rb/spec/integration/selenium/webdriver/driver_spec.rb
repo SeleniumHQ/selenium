@@ -82,13 +82,7 @@ module Selenium
           expect(driver.find_element(name: 'x').attribute('value')).to eq('name')
         end
 
-        it 'finds by class name' do # rubocop:disable RSpec/RepeatedExample
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
-        end
-
-        # TODO: Rewrite this test so it's not a duplicate of above or remove
-        it 'finds elements with a hash selector' do # rubocop:disable RSpec/RepeatedExample
+        it 'finds by class name' do
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
@@ -149,7 +143,7 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(id: 'not-there')
-          }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
+          }.to raise_error(Error::NoSuchElementError, /errors#nosuchelementexception/)
         end
 
         it 'raises if invalid locator',
@@ -157,7 +151,7 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
-          }.to raise_error(Error::InvalidSelectorError, /errors#invalid-selector-exception/)
+          }.to raise_error(Error::InvalidSelectorError, /errors#invalidselectorexception/)
         end
       end
 

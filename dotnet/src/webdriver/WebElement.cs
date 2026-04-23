@@ -17,23 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
 /// <summary>
 /// A base class representing an HTML element on a page.
 /// </summary>
-public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference
+public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference, IEquatable<IWebElement>
 {
     /// <summary>
     /// The property name that represents a web element in the wire protocol.
@@ -50,8 +46,10 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
     public WebElement(WebDriver parentDriver, string id)
     {
-        this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
-        this.Id = id ?? throw new ArgumentNullException(nameof(id));
+        ArgumentNullException.ThrowIfNull(parentDriver);
+        ArgumentNullException.ThrowIfNull(id);
+        this.driver = parentDriver;
+        this.Id = id;
     }
 
     /// <summary>
@@ -200,7 +198,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         get
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetAtom("is-displayed.js");
+            string atom = GetWrappedAtom("is_displayed", ResourceUtilities.IsDisplayedAtom);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
 
@@ -435,7 +433,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     public virtual string? GetAttribute(string attributeName)
     {
         Dictionary<string, object> parameters = new Dictionary<string, object>();
-        string atom = GetAtom("get-attribute.js");
+        string atom = GetWrappedAtom("get_attribute", ResourceUtilities.GetAttributeAtom);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
 
@@ -652,18 +650,24 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     }
 
     /// <summary>
-    /// Compares if two elements are equal
+    /// Indicates whether the current <see cref="WebElement"/> is equal to another object.
     /// </summary>
-    /// <param name="obj">Object to compare against</param>
-    /// <returns>A boolean if it is equal or not</returns>
+    /// <param name="obj">An object to compare with this <see cref="WebElement"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="WebElement"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        if (obj is not IWebElement other)
-        {
-            return false;
-        }
+        return Equals(obj as IWebElement);
+    }
 
-        if (obj is IWrapsElement objAsWrapsElement)
+    /// <summary>
+    /// Indicates whether the current <see cref="WebElement"/> is equal to another <see cref="IWebElement"/>.
+    /// </summary>
+    /// <param name="other">An <see cref="IWebElement"/> to compare with this <see cref="WebElement"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="WebElement"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method only returns <see langword="true"/> if <paramref name="other"/> is or wraps a <see cref="WebElement"/>.</remarks>
+    public bool Equals(IWebElement? other)
+    {
+        if (other is IWrapsElement objAsWrapsElement)
         {
             other = objAsWrapsElement.WrappedElement;
         }
@@ -706,20 +710,9 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         return this.driver.Execute(commandToExecute, parameters);
     }
 
-    private static string GetAtom(string atomResourceName)
+    private static string GetWrappedAtom(string name, string content)
     {
-        string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
-        {
-            using (StreamReader atomReader = new StreamReader(atomStream))
-            {
-                atom = atomReader.ReadToEnd();
-            }
-        }
-
-        string atomName = atomResourceName.Replace(".js", "");
-        string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", atomName, atom);
-        return wrappedAtom;
+        return string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", name, content);
     }
 
     private string UploadFile(string localFile)

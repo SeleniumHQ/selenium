@@ -14,13 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-"""The Utils methods."""
 
+"""Utility functions."""
+
+import json
 import socket
+import urllib.request
 from collections.abc import Iterable
-from typing import Optional, Union
 
-from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
@@ -44,6 +45,8 @@ def free_port() -> int:
             free_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             free_socket.bind(("::1", 0))
         except OSError:
+            if free_socket:
+                free_socket.close()
             raise RuntimeError("Can't find free port (Unable to bind to IPv4 or IPv6)")
     try:
         port: int = free_socket.getsockname()[1]
@@ -54,7 +57,7 @@ def free_port() -> int:
     return port
 
 
-def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional[int] = None) -> Optional[str]:
+def find_connectable_ip(host: str | bytes | bytearray | None, port: int | None = None) -> str | None:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
@@ -64,11 +67,11 @@ def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional
     If the optional port number is provided, only IPs that listen on the given
     port are considered.
 
-    :Args:
-        - host - A hostname.
-        - port - Optional port number.
+    Args:
+        host: hostname
+        port: port number
 
-    :Returns:
+    Returns:
         A single IP address, as a string. If any IPv4 address is found, one is
         returned. Otherwise, if any IPv6 address is found, one is returned. If
         neither, then None is returned.
@@ -97,20 +100,21 @@ def join_host_port(host: str, port: int) -> str:
     This is a minimal implementation intended to cope with IPv6 literals. For
     example, _join_host_port('::1', 80) == '[::1]:80'.
 
-    :Args:
-        - host - A hostname.
-        - port - An integer port.
+    Args:
+        host: hostname or IP
+        port: port number
     """
     if ":" in host and not host.startswith("["):
         return f"[{host}]:{port}"
     return f"{host}:{port}"
 
 
-def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
+def is_connectable(port: int, host: str | None = "localhost") -> bool:
     """Tries to connect to the server at port to see if it is running.
 
-    :Args:
-     - port - The port to connect.
+    Args:
+        port: port number
+        host: hostname or IP
     """
     socket_ = None
     try:
@@ -128,23 +132,44 @@ def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
     return result
 
 
-def is_url_connectable(port: Union[int, str]) -> bool:
-    """Tries to connect to the HTTP server at /status path and specified port
-    to see if it responds successfully.
+def is_url_connectable(
+    port: int | str,
+    host: str = "localhost",
+    scheme: str = "http",
+) -> bool:
+    """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
-    :Args:
-     - port - The port to connect.
+    Args:
+        port: port number
+        host: hostname or IP
+        scheme: URL scheme
+
+    Returns:
+        True if the service is ready to accept new sessions, False otherwise.
     """
-    from urllib import request as url_request
-
     try:
-        res = url_request.urlopen(f"http://127.0.0.1:{port}/status")
-        return res.getcode() == 200
+        # Disable proxy for localhost connections
+        proxy_handler = urllib.request.ProxyHandler({})
+        opener = urllib.request.build_opener(proxy_handler)
+
+        request = urllib.request.Request(f"{scheme}://{host}:{port}/status")
+        with opener.open(request, timeout=1) as res:
+            if res.getcode() != 200:
+                return False
+
+            body = res.read().decode("utf-8")
+            data = json.loads(body)
+
+            # Check top-level and value.ready, some browsers wrap it under 'value', e.g., ChromeDriver
+            ready = data.get("ready")
+            if ready is None:
+                ready = data.get("value", {}).get("ready")
+            return ready is True
     except Exception:
         return False
 
 
-def keys_to_typing(value: Iterable[AnyKey]) -> list[str]:
+def keys_to_typing(value: Iterable[str | int | float]) -> list[str]:
     """Processes the values that will be typed in the element."""
     characters: list[str] = []
     for val in value:

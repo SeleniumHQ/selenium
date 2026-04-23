@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
+
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An encapsulation of {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String,
@@ -32,5 +36,35 @@ public interface ExecuteMethod {
    * @param parameters The parameters to execute that command with
    * @return The result of {@link Response#getValue()}.
    */
-  Object execute(String commandName, Map<String, ?> parameters);
+  @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters);
+
+  /**
+   * Execute the given command and return the default value if the command return null.
+   *
+   * @return non-nullable value of type T.
+   */
+  @SuppressWarnings("unchecked")
+  default <T> T execute(String commandName, @Nullable Map<String, ?> parameters, T defaultValue) {
+    return (T) requireNonNullElse(execute(commandName, parameters), defaultValue);
+  }
+
+  /**
+   * Execute the given command and cast the returned value to T.
+   *
+   * @return non-nullable value of type T.
+   */
+  @SuppressWarnings("unchecked")
+  default <T> T executeAs(String commandName, @Nullable Map<String, ?> parameters) {
+    return (T) requireNonNull(execute(commandName, parameters));
+  }
+
+  /**
+   * Execute the given command without parameters and cast the returned value to T.
+   *
+   * @return non-nullable value of type T.
+   */
+  @SuppressWarnings("unchecked")
+  default <T> T execute(String commandName) {
+    return (T) requireNonNull(execute(commandName, null));
+  }
 }

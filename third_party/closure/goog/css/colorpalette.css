@@ -7,11 +7,11 @@
 
 /*
  * Standard styling for color palettes.
- *
- * @author pupius@google.com (Daniel Pupius)
- * @author attila@google.com (Attila Bodis)
  */
 
+@provide 'goog.css.colorpalette';
+
+@require './palette';
 
 .goog-palette-cell .goog-palette-colorswatch {
   border: none;

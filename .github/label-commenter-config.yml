@@ -117,7 +117,7 @@ labels:
           This is related to code in the Support packages. The support packages contain example code that
           many users find helpful, but they do not necessarily represent the best practices for using Selenium,
           and the Selenium team is not prioritizing work on them right now.
-          This doesn't mean that we won't ever work on them, but it is not on our roadmap as we push to release Selenium 5.
+          This doesn't mean that we won't ever work on them, but it is not on our long term roadmap.
 
           We actively encourage people to create their own wrapper and helper code that makes sense for them.
           If you have any questions, please [contact us](https://www.selenium.dev/support)
@@ -127,10 +127,12 @@ labels:
 
           The support packages contain example code that many users find helpful, but they do not necessarily represent
           the best practices for using Selenium, and the Selenium team is not currently merging changes to them.
+          
+          After reviewing the change, unless it is a critical fix or a feature that is needed for Selenium 
+          to work, we will likely close the PR.
 
           We actively encourage people to add the wrapper and helper code that makes sense for them to their own frameworks.
           If you have any questions, please [contact us](https://www.selenium.dev/support)
-        action: close
 
 
 

@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -133,7 +134,7 @@ public class ProtocolHandshake {
 
   public static class Result {
 
-    private static final Function<Object, Proxy> massageProxy =
+    private static final Function<Object, @Nullable Proxy> massageProxy =
         obj -> {
           if (obj instanceof Proxy) {
             return (Proxy) obj;

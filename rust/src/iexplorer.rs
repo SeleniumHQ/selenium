@@ -17,13 +17,13 @@
 
 use crate::config::ManagerConfig;
 use crate::downloads::parse_json_from_url;
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
-    REG_VERSION_ARG, STABLE, WINDOWS,
+    Logger, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE, SeleniumManager, WINDOWS,
+    create_http_client, parse_version,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -33,7 +33,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::mirror::{Assets, SeleniumRelease, MIRROR_URL};
+use crate::mirror::{Assets, MIRROR_URL, SeleniumRelease};
 
 pub const IE_NAMES: &[&str] = &[
     "iexplorer",

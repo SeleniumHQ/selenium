@@ -39,7 +39,13 @@ module Selenium
 
           begin
             Zip::File.open("#{file_name}.zip") do |zip|
-              zip.each { |entry| zip.extract(entry, "#{target_directory}#{file_name}") }
+              zip.each do |entry|
+                if Zipper::RUBYZIP_V3
+                  zip.extract(entry, file_name, destination_directory: target_directory)
+                else
+                  zip.extract(entry, "#{target_directory}#{file_name}")
+                end
+              end
             end
           ensure
             FileUtils.rm_f("#{file_name}.zip")

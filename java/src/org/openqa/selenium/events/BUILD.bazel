@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "events",
@@ -13,5 +13,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/status",
+        artifact("org.jspecify:jspecify"),
     ],
 )

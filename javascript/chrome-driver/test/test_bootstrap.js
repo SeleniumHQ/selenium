@@ -40,6 +40,11 @@
  */
 
 (function() {
+  // Enable the debug loader for the Closure Library (required for goog.require to work)
+  window.CLOSURE_UNCOMPILED_DEFINES = {'goog.ENABLE_DEBUG_LOADER': true};
+
+  window.errors = [];
+  window.onerror = function() { window.errors.push(arguments); console.log(arguments); };
   var scripts = document.getElementsByTagName('script');
   var directoryPath = './';
   var thisFile = 'test_bootstrap.js';
@@ -63,7 +68,7 @@
   if (location.pathname.lastIndexOf('/filez/_main/javascript/', 0) === 0) {
     directoryPath = '';
     files = [
-      '/filez/com_google_javascript_closure_library/closure/goog/base.js',
+      '/filez/_main/third_party/closure/goog/base.js',
       '/filez/_main/javascript/chrome-driver/deps.js',
     ];
   }

@@ -19,50 +19,54 @@ import errno
 import logging
 import os
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from io import IOBase
-from platform import system
 from subprocess import PIPE
 from time import sleep
-from typing import IO, Any, Optional, Union, cast
+from typing import IO, Any
 from urllib import request
 from urllib.error import URLError
 
 from selenium.common.exceptions import WebDriverException
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
 logger = logging.getLogger(__name__)
 
 
 class Service(ABC):
-    """The abstract base class for all service objects.  Services typically
-    launch a child program in a new process as an interim process to
+    """Abstract base class for all service objects that manage driver processes.
+
+    Services typically launch a child program in a new process as an interim process to
     communicate with a browser.
 
-    :param executable: install path of the executable.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[Any, Any]] = None,
-        driver_path_env_key: Optional[str] = None,
+        log_output: int | str | IO[Any] | None = None,
+        env: Mapping[Any, Any] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
+        self._owns_log_output = False
+        self.log_output: int | IO[Any] | None
         if isinstance(log_output, str):
-            self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
+            self.log_output = open(log_output, "a+", encoding="utf-8")
+            self._owns_log_output = True
         elif log_output == subprocess.STDOUT:
-            self.log_output = cast(Optional[Union[int, IOBase]], None)
+            self.log_output = None
         elif log_output is None or log_output == subprocess.DEVNULL:
-            self.log_output = cast(Optional[Union[int, IOBase]], subprocess.DEVNULL)
+            self.log_output = subprocess.DEVNULL
         else:
             self.log_output = log_output
 
@@ -95,9 +99,9 @@ class Service(ABC):
     def start(self) -> None:
         """Starts the Service.
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+        Raises:
+            WebDriverException: Raised either when it can't start the service
+                or when it can't connect to the service
         """
         if self._path is None:
             raise WebDriverException("Service path cannot be None.")
@@ -121,13 +125,17 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establishes a socket connection to determine if the service running
-        on the port is accessible."""
-        return utils.is_connectable(self.port)
+        """Check if the service is ready via the W3C WebDriver /status endpoint.
+
+        This makes an HTTP request to the /status endpoint and verifies if it is ready to accept new sessions.
+
+        Returns:
+            True if the service is ready to accept new sessions, False otherwise.
+        """
+        return utils.is_url_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
-        """Dispatch an HTTP request to the shutdown endpoint for the service in
-        an attempt to stop it."""
+        """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
@@ -140,9 +148,8 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
-            if isinstance(self.log_output, IOBase):
+            if isinstance(self.log_output, IOBase) and self._owns_log_output:
                 self.log_output.close()
             elif isinstance(self.log_output, int):
                 os.close(self.log_output)
@@ -200,24 +207,25 @@ class Service(ABC):
     def _start_process(self, path: str) -> None:
         """Creates a subprocess by executing the command provided.
 
-        :param cmd: full command to execute
+        Args:
+            path: full command to execute
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
-        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
+        close_file_descriptors = self.popen_kw.pop("close_fds", sys.platform != "win32")
         try:
             start_info = None
-            if system() == "Windows":
-                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
-                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
+            if sys.platform == "win32":
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=cast(Optional[Union[int, IO[Any]]], self.log_output),
-                stderr=cast(Optional[Union[int, IO[Any]]], self.log_output),
+                stdout=self.log_output,
+                stderr=self.log_output,
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 startupinfo=start_info,
@@ -241,7 +249,7 @@ class Service(ABC):
                 ) from err
             raise
 
-    def env_path(self) -> Optional[str]:
+    def env_path(self) -> str | None:
         if self.DRIVER_PATH_ENV_KEY:
             return os.getenv(self.DRIVER_PATH_ENV_KEY, None)
         return None

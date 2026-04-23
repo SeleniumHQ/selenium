@@ -63,6 +63,7 @@ webdriver.common
    selenium.webdriver.common.timeouts
    selenium.webdriver.common.utils
    selenium.webdriver.common.virtual_authenticator
+   selenium.webdriver.common.webdriver
    selenium.webdriver.common.window
 
 webdriver.common.actions
@@ -96,6 +97,7 @@ webdriver.common.bidi
    selenium.webdriver.common.bidi.common
    selenium.webdriver.common.bidi.console
    selenium.webdriver.common.bidi.emulation
+   selenium.webdriver.common.bidi.input
    selenium.webdriver.common.bidi.log
    selenium.webdriver.common.bidi.network
    selenium.webdriver.common.bidi.permissions
@@ -133,7 +135,6 @@ webdriver.firefox
 .. autosummary::
    :toctree: selenium_webdriver_firefox
 
-   selenium.webdriver.firefox.firefox_binary
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.options
    selenium.webdriver.firefox.remote_connection

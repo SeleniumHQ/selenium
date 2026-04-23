@@ -157,8 +157,8 @@ def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_firefox(reason="Fails on travis")
-@pytest.mark.xfail_remote(reason="Fails on travis")
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_safari
 def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
     pages.load("alerts.html")
@@ -171,8 +171,8 @@ def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_firefox(reason="Fails on travis")
-@pytest.mark.xfail_remote(reason="Fails on travis")
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_safari
 def test_should_allow_users_to_accept_an_alert_in_anested_frame(driver, pages):
     pages.load("alerts.html")

@@ -26,6 +26,7 @@ const SameSite = {
   STRICT: 'strict',
   LAX: 'lax',
   NONE: 'none',
+  DEFAULT: 'default',
 
   findByName(name) {
     return (
@@ -117,6 +118,17 @@ class Header {
    */
   get value() {
     return this._value
+  }
+
+  /**
+   * Converts the Header to a map.
+   * @returns {Map<string, any>} A map representation of the Header.
+   */
+  asMap() {
+    return new Map([
+      ['name', this.name],
+      ['value', Object.fromEntries(this.value.asMap())],
+    ])
   }
 }
 

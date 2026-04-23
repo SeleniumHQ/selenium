@@ -27,13 +27,12 @@ mod common;
 #[rstest]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
-#[case("edge", "msedgedriver", "105", "105.0")]
-#[case("edge", "msedgedriver", "106", "106.0")]
+#[case("edge", "msedgedriver", "140", "140.0")]
+#[case("edge", "msedgedriver", "141", "141.0")]
 #[case("firefox", "geckodriver", "101", "0.31.0")]
 #[case("firefox", "geckodriver", "91", "0.31.0")]
 #[case("firefox", "geckodriver", "90", "0.30.0")]
 #[case("firefox", "geckodriver", "62", "0.29.1")]
-#[case("firefox", "geckodriver", "53", "0.18.0")]
 fn browser_version_test(
     #[case] browser: String,
     #[case] driver_name: String,

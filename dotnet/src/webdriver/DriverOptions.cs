@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium;
@@ -251,10 +247,7 @@ public abstract class DriverOptions
     /// <exception cref="ArgumentNullException">If <paramref name="other"/> is <see langword="null"/>.</exception>
     public virtual DriverOptionsMergeResult GetMergeResult(DriverOptions other)
     {
-        if (other is null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
+        ArgumentNullException.ThrowIfNull(other);
 
         DriverOptionsMergeResult result = new DriverOptionsMergeResult();
         if (this.BrowserName != null && other.BrowserName != null)

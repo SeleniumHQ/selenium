@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.Json.Serialization;
@@ -72,7 +70,6 @@ public class Proxy
 {
     private ProxyKind proxyKind = ProxyKind.Unspecified;
     private bool isAutoDetect;
-    private string? ftpProxyLocation;
     private string? httpProxyLocation;
     private string? proxyAutoConfigUrl;
     private string? sslProxyLocation;
@@ -80,7 +77,7 @@ public class Proxy
     private string? socksUserName;
     private string? socksPassword;
     private int? socksVersion;
-    private List<string> noProxyAddresses = new List<string>();
+    private readonly List<string> noProxyAddresses = new List<string>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -114,11 +111,6 @@ public class Proxy
                 ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), proxyType, ignoreCase: true);
                 this.Kind = rawType;
             }
-        }
-
-        if (settings.TryGetValue("ftpProxy", out object? ftpProxyObj) && ftpProxyObj?.ToString() is string ftpProxy)
-        {
-            this.FtpProxy = ftpProxy;
         }
 
         if (settings.TryGetValue("httpProxy", out object? httpProxyObj) && httpProxyObj?.ToString() is string httpProxy)
@@ -233,24 +225,6 @@ public class Proxy
             this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
             this.proxyKind = ProxyKind.AutoDetect;
             this.isAutoDetect = value;
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the value of the proxy for the FTP protocol.
-    /// </summary>
-    [JsonPropertyName("ftpProxy")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    [Obsolete("FTP proxy support is deprecated and will be removed in the 4.37 version.")]
-    public string? FtpProxy
-    {
-        get => this.ftpProxyLocation;
-
-        set
-        {
-            this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-            this.proxyKind = ProxyKind.Manual;
-            this.ftpProxyLocation = value;
         }
     }
 
@@ -494,11 +468,6 @@ public class Proxy
                 serializedDictionary["sslProxy"] = this.sslProxyLocation;
             }
 
-            if (!string.IsNullOrEmpty(this.ftpProxyLocation))
-            {
-                serializedDictionary["ftpProxy"] = this.ftpProxyLocation;
-            }
-
             if (!string.IsNullOrEmpty(this.socksProxyLocation))
             {
                 if (!this.socksVersion.HasValue)
@@ -529,7 +498,7 @@ public class Proxy
 
     private object? GetNoProxyAddressList(bool isSpecCompliant)
     {
-        object? addresses = null;
+        object? addresses;
         if (isSpecCompliant)
         {
             List<object> addressList = [.. this.noProxyAddresses];

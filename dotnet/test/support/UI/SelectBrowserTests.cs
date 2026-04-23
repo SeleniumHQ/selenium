@@ -17,30 +17,14 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Tests;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class SelectBrowserTests : DriverTestFixture
 {
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
-    {
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-    }
-
     [SetUp]
     public void Setup()
     {
@@ -161,7 +145,7 @@ public class SelectBrowserTests : DriverTestFixture
         Assert.That(firstSelected.Text, Is.EqualTo("Eggs"));
     }
 
-    // [Test]
+    //[Test]
     // [ExpectedException(typeof(NoSuchElementException))]
     // The .NET bindings do not have a "FirstSelectedOption" property,
     // and no one has asked for it to this point. Given that, this test

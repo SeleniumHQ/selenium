@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -33,7 +31,8 @@ public class WebSocketConnectionDataReceivedEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="data"/> is <see langword="null"/>.</exception>
     public WebSocketConnectionDataReceivedEventArgs(string data)
     {
-        this.Data = data ?? throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(data);
+        this.Data = data;
     }
 
     /// <summary>

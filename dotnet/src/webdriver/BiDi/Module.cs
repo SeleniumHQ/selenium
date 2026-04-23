@@ -17,11 +17,39 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class Module(Broker broker)
+public abstract class Module
 {
-    protected Broker Broker { get; } = broker;
+    private Broker Broker { get; set; } = null!;
+
+    protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
+        where TResult : EmptyResult
+    {
+        return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
+    }
+
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, action, options, cancellationToken);
+    }
+
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, func, options, cancellationToken);
+    }
+
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
+        where TModule : Module, new()
+    {
+        TModule module = new()
+        {
+            Broker = broker
+        };
+
+        return module;
+    }
 }

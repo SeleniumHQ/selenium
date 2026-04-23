@@ -93,9 +93,7 @@ module Selenium
           expect(height).to be <= viewport_height
         end
 
-        it 'takes full page screenshot', except: [{platform: :windows,
-                                                   reason: 'Some issues with resolution?'},
-                                                  {platform: :macosx,
+        it 'takes full page screenshot', except: [{platform: :macosx,
                                                    reason: 'showing half resolution of what expected'}],
                                          exclusive: {browser: :firefox} do
           viewport_width = driver.execute_script('return window.innerWidth;')

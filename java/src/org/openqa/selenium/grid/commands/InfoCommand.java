@@ -17,18 +17,20 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
 import com.google.auto.service.AutoService;
-import com.google.common.io.Resources;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -104,6 +106,11 @@ public class InfoCommand implements CliCommand {
           toDisplay = "sessionmaps.txt";
           break;
 
+        case "kubernetes":
+          title = "Dynamic Grid on Kubernetes";
+          toDisplay = "kubernetes.txt";
+          break;
+
         case "help":
         case "info":
         default:
@@ -130,8 +137,7 @@ public class InfoCommand implements CliCommand {
   }
 
   private String readContent(String path) throws IOException {
-    String unformattedText =
-        Resources.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+    String unformattedText = unformattedText(path);
     StringBuilder formattedText = new StringBuilder();
     try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText))) {
       boolean inCode = false;
@@ -160,5 +166,12 @@ public class InfoCommand implements CliCommand {
     }
 
     return formattedText.toString();
+  }
+
+  private String unformattedText(String path) throws IOException {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream(path)) {
+      requireNonNull(in, () -> "Resource is not found in classpath: " + path);
+      return new String(in.readAllBytes(), UTF_8);
+    }
   }
 }

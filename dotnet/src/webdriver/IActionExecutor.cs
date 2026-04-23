@@ -18,8 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Interactions;
-using System;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium;
 

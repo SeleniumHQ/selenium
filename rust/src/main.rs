@@ -20,16 +20,17 @@ use clap::Parser;
 use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
-use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
-use selenium_manager::grid::GridManager;
-use selenium_manager::lock::clear_lock_if_required;
-use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
-use selenium_manager::metadata::clear_metadata;
 use selenium_manager::TTL_SEC;
-use selenium_manager::{
-    clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
-};
+use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
+use selenium_manager::grid::GridManager;
+use selenium_manager::jre::ensure_jre;
+use selenium_manager::lock::clear_lock_if_required;
+use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
+use selenium_manager::metadata::clear_metadata;
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
+use selenium_manager::{
+    SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
+};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
@@ -237,9 +238,31 @@ fn main() {
         clear_metadata(selenium_manager.get_logger(), &cache_path);
     }
 
+    let proxy = cli.proxy.clone().unwrap_or_default();
+
     selenium_manager
         .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_proxy(proxy.clone()))
+        .and_then(|_| {
+            if selenium_manager.is_grid() {
+                ensure_jre(
+                    Some(cache_path.as_str()),
+                    cli.timeout,
+                    Some(proxy.as_str()),
+                    selenium_manager.is_offline(),
+                    selenium_manager.get_logger(),
+                )
+                .map(|runtime| {
+                    selenium_manager.get_logger().debug(format!(
+                        "Java runtime resolved from {}: {}",
+                        runtime.source,
+                        runtime.java_path.display()
+                    ));
+                })
+            } else {
+                Ok(())
+            }
+        })
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
@@ -254,35 +277,37 @@ fn main() {
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if selenium_manager.is_fallback_driver_from_cache() {
-                if let Some(best_driver_from_cache) =
+            let browser_path = selenium_manager.get_browser_path_or_latest_from_cache();
+            if selenium_manager.is_fallback_driver_from_cache()
+                && let Some(best_driver_from_cache) =
                     selenium_manager.find_best_driver_from_cache().unwrap()
-                {
-                    log.debug_or_warn(
-                        format!(
-                            "There was an error managing {} ({}); using driver found in the cache",
-                            selenium_manager.get_driver_name(),
-                            err
-                        ),
-                        selenium_manager.is_offline(),
-                    );
-                    log_driver_and_browser_path(
-                        log,
-                        &best_driver_from_cache,
-                        &selenium_manager.get_browser_path_or_latest_from_cache(),
-                        selenium_manager.get_receiver(),
-                    );
-                    flush_and_exit(OK, log, Some(err));
-                }
+            {
+                log.debug_or_warn(
+                    format!(
+                        "There was an error managing {} ({}); using driver found in the cache",
+                        selenium_manager.get_driver_name(),
+                        err
+                    ),
+                    selenium_manager.is_offline(),
+                );
+                log_driver_and_browser_path(
+                    log,
+                    &best_driver_from_cache,
+                    &browser_path,
+                    selenium_manager.get_receiver(),
+                );
+                flush_and_exit(OK, log, Some(err));
             }
             if selenium_manager.is_offline() {
                 log.warn(&err);
+                log_browser_path(&log, &browser_path);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                let error_msg = log
-                    .is_debug_enabled()
-                    .then(|| format!("{:?}", err))
-                    .unwrap_or_else(|| err.to_string());
+                let error_msg = if log.is_debug_enabled() {
+                    format!("{:?}", err)
+                } else {
+                    err.to_string()
+                };
                 log.error(error_msg);
                 flush_and_exit(DATAERR, log, Some(err));
             }
@@ -304,6 +329,10 @@ fn log_driver_and_browser_path(
         log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
+    log_browser_path(log, browser_path);
+}
+
+fn log_browser_path(log: &Logger, browser_path: &str) {
     if !browser_path.is_empty() {
         log.info(format!("{}{}", BROWSER_PATH, browser_path));
     }

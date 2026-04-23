@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium;
 
 /// <summary>
@@ -78,7 +75,7 @@ internal class Alert : IAlert
             throw new ArgumentNullException(nameof(keysToSend), "Keys to send must not be null.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("text", keysToSend);
 
         this.driver.Execute(DriverCommand.SetAlertValue, parameters);

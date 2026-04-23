@@ -17,18 +17,16 @@
 
 package org.openqa.selenium.bidi.log;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.Source;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry">BiDi
+ *     spec</a>
+ */
 public class JavascriptLogEntry extends GenericLogEntry {
-
-  private final String type;
 
   public JavascriptLogEntry(
       LogLevel level,
@@ -36,20 +34,15 @@ public class JavascriptLogEntry extends GenericLogEntry {
       String text,
       long timestamp,
       String type,
-      StackTrace stackTrace) {
-    super(level, source, text, timestamp, "javascript", stackTrace);
-    this.type = "javascript";
-  }
-
-  public String getType() {
-    return type;
+      @Nullable StackTrace stackTrace) {
+    super(level, source, text, timestamp, type, stackTrace);
   }
 
   public static JavascriptLogEntry fromJson(JsonInput input) {
     LogLevel level = null;
     Source source = null;
     String text = null;
-    long timestamp = 0;
+    Long timestamp = null;
     String type = null;
     StackTrace stackTrace = null;
 
@@ -88,17 +81,12 @@ public class JavascriptLogEntry extends GenericLogEntry {
 
     input.endObject();
 
-    return new JavascriptLogEntry(level, source, text, timestamp, type, stackTrace);
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("type", type);
-    toReturn.put("level", super.getLevel());
-    toReturn.put("text", super.getText());
-    toReturn.put("timestamp", super.getTimestamp());
-    toReturn.put("stackTrace", super.getStackTrace());
-
-    return unmodifiableMap(toReturn);
+    return new JavascriptLogEntry(
+        Require.nonNull("Log level", level),
+        Require.nonNull("Log source", source),
+        Require.nonNull("Log text", text),
+        Require.nonNull("Log timestamp", timestamp),
+        Require.nonNull("Log type", type),
+        stackTrace);
   }
 }

@@ -37,7 +37,8 @@ module Selenium
         @timeout  = opts.fetch(:timeout, DEFAULT_TIMEOUT)
         @interval = opts.fetch(:interval, DEFAULT_INTERVAL)
         @message  = opts[:message]
-        @ignored  = Array(opts[:ignore] || Error::NoSuchElementError)
+        @message_provider = opts[:message_provider]
+        @ignored = Array(opts[:ignore] || Error::NoSuchElementError)
       end
 
       #
@@ -64,6 +65,8 @@ module Selenium
 
         msg = if @message
                 @message.dup
+              elsif @message_provider
+                @message_provider.call
               else
                 "timed out after #{@timeout} seconds"
               end

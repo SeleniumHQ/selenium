@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
+using System.Text;
 using System.Text.Json.Nodes;
 using System.Xml;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -37,7 +36,6 @@ public class FirefoxExtension
     private const string JsonManifestFileName = "manifest.json";
 
     private readonly string extensionFileName;
-    private readonly string extensionResourceId;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxExtension"/> class.
@@ -48,27 +46,9 @@ public class FirefoxExtension
     /// then using the full path to the file, if a full path is provided.</remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="fileName"/> is <see langword="null"/>.</exception>
     public FirefoxExtension(string fileName)
-        : this(fileName, string.Empty)
     {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FirefoxExtension"/> class.
-    /// </summary>
-    /// <param name="fileName">The name of the file containing the Firefox extension.</param>
-    /// <param name="resourceId">The ID of the resource within the assembly containing the extension
-    /// if the file is not present in the file system.</param>
-    /// <remarks>WebDriver attempts to resolve the <paramref name="fileName"/> parameter
-    /// by looking first for the specified file in the directory of the calling assembly,
-    /// then using the full path to the file, if a full path is provided. If the file is
-    /// not found in the file system, WebDriver attempts to locate a resource in the
-    /// executing assembly with the name specified by the <paramref name="resourceId"/>
-    /// parameter.</remarks>
-    /// <exception cref="ArgumentNullException">If <paramref name="fileName"/> or <paramref name="resourceId"/> are <see langword="null"/>.</exception>
-    internal FirefoxExtension(string fileName, string resourceId)
-    {
-        this.extensionFileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
-        this.extensionResourceId = resourceId ?? throw new ArgumentNullException(nameof(resourceId));
+        ArgumentNullException.ThrowIfNull(fileName);
+        this.extensionFileName = fileName;
     }
 
     /// <summary>
@@ -88,7 +68,7 @@ public class FirefoxExtension
 
         // First, expand the .xpi archive into a temporary location.
         Directory.CreateDirectory(tempFileName);
-        Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
+        using Stream zipFileStream = new MemoryStream(Encoding.UTF8.GetBytes(ResourceUtilities.WebDriverPrefsJson));
         using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
         {
             extensionZipArchive.ExtractToDirectory(tempFileName);

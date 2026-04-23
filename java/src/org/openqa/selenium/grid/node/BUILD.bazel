@@ -13,7 +13,9 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/grid/component",
+        "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/jmx",
         "//java/src/org/openqa/selenium/grid/security",
@@ -22,5 +24,6 @@ java_library(
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/status",
         artifact("com.google.guava:guava"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

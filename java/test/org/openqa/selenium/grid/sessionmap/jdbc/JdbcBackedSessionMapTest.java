@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,41 +60,41 @@ class JdbcBackedSessionMapTest {
 
   @AfterAll
   public static void killDBConnection() throws SQLException {
-    connection.close();
-    bus.close();
+    if (connection != null) {
+      connection.close();
+      connection = null;
+    }
+    if (bus != null) {
+      bus.close();
+      bus = null;
+    }
   }
 
   @Test
   void shouldThrowNoSuchSessionExceptionIfSessionDoesNotExists() {
-    assertThrows(
-        NoSuchSessionException.class,
-        () -> {
-          SessionMap sessions = getSessionMap();
-
-          sessions.get(new SessionId(UUID.randomUUID()));
-        });
+    SessionMap sessions = getSessionMap();
+    UUID sessionId = randomUUID();
+    assertThatThrownBy(() -> sessions.get(new SessionId(sessionId)))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageStartingWith("Unable to find session with id: " + sessionId);
   }
 
   @Test
   void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          SessionMap sessions = new JdbcBackedSessionMap(tracer, null, bus);
-        });
+    assertThatThrownBy(() -> new JdbcBackedSessionMap(tracer, null, bus))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("JDBC Connection Object must be set");
   }
 
   @Test
   void shouldThrowNoSuchSessionExceptionIfTableDoesNotExist() throws SQLException {
-    assertThrows(
-        JdbcException.class,
-        () -> {
-          Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb2", "SA", "");
+    Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb2", "SA", "");
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection2, bus);
+    UUID sessionId = randomUUID();
 
-          SessionMap sessions = new JdbcBackedSessionMap(tracer, connection2, bus);
-
-          sessions.get(new SessionId(UUID.randomUUID()));
-        });
+    assertThatThrownBy(() -> sessions.get(new SessionId(sessionId)))
+        .isInstanceOf(JdbcException.class)
+        .hasMessageContaining("object not found: SESSIONS_MAP");
   }
 
   @Test
@@ -103,7 +103,7 @@ class JdbcBackedSessionMapTest {
 
     Session expected =
         new Session(
-            new SessionId(UUID.randomUUID()),
+            new SessionId(randomUUID()),
             new URI("http://example.com/foo"),
             new ImmutableCapabilities("foo", "bar"),
             new ImmutableCapabilities("key", "value"),
@@ -123,23 +123,21 @@ class JdbcBackedSessionMapTest {
 
     Session expected =
         new Session(
-            new SessionId(UUID.randomUUID()),
+            new SessionId(randomUUID()),
             new URI("http://example.com/foo"),
             new ImmutableCapabilities("foo", "bar"),
             new ImmutableCapabilities("key", "value"),
             Instant.now());
     sessions.add(expected);
+    SessionId sessionId = expected.getId();
 
     SessionMap reader = getSessionMap();
 
-    reader.remove(expected.getId());
+    reader.remove(sessionId);
 
-    try {
-      reader.get(expected.getId());
-      fail("Oh noes!");
-    } catch (NoSuchSessionException ignored) {
-      // This is expected
-    }
+    assertThatThrownBy(() -> reader.get(sessionId))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageStartingWith("Unable to find session with id: " + sessionId);
   }
 
   private JdbcBackedSessionMap getSessionMap() {

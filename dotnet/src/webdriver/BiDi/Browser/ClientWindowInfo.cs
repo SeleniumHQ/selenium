@@ -17,10 +17,14 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed record ClientWindowInfo(bool Active, ClientWindow ClientWindow, ClientWindowState State, int Height, int Width, int X, int Y);
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ClientWindowState>))]
 public enum ClientWindowState
 {
     Fullscreen,

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.net;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -26,7 +25,6 @@ import org.jspecify.annotations.Nullable;
  * <p>Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
  * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */
-@NullMarked
 public interface NetworkInterfaceProvider {
   Iterable<NetworkInterface> getNetworkInterfaces();
 

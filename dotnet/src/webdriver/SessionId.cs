@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium;
 
 /// <summary>
 /// Provides a mechanism for maintaining a session for a test
 /// </summary>
-public class SessionId
+public class SessionId : IEquatable<SessionId>
 {
     private readonly string sessionOpaqueKey;
 
@@ -35,7 +33,8 @@ public class SessionId
     /// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
     public SessionId(string opaqueKey)
     {
-        this.sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
+        ArgumentNullException.ThrowIfNull(opaqueKey);
+        this.sessionOpaqueKey = opaqueKey;
     }
 
     /// <summary>
@@ -63,6 +62,16 @@ public class SessionId
     /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        return obj is SessionId otherSession && this.sessionOpaqueKey.Equals(otherSession.sessionOpaqueKey);
+        return Equals(obj as SessionId);
+    }
+
+    /// <summary>
+    /// Indicates whether the current session ID value is the same as <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">The session to compare to.</param>
+    /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(SessionId? other)
+    {
+        return other is not null && string.Equals(this.sessionOpaqueKey, other.sessionOpaqueKey);
     }
 }

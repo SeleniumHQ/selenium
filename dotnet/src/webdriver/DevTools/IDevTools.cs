@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.DevTools;
@@ -49,16 +48,6 @@ public interface IDevTools
     [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     DevToolsSession GetDevToolsSession(DevToolsOptions options);
-
-    /// <summary>
-    /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
-    /// </summary>
-    /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
-    /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-    [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
-    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    DevToolsSession GetDevToolsSession(int protocolVersion);
 
     /// <summary>
     /// Closes a DevTools session

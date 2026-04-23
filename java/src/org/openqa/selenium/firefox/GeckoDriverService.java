@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +34,7 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -147,6 +147,8 @@ public class GeckoDriverService extends FirefoxDriverService {
     private @Nullable FirefoxDriverLogLevel logLevel;
     private @Nullable Boolean logTruncate;
     private @Nullable File profileRoot;
+    private @Nullable Integer marionettePort;
+    private @Nullable Integer websocketPort;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -204,14 +206,44 @@ public class GeckoDriverService extends FirefoxDriverService {
       return this;
     }
 
+    /**
+     * Configures geckodriver to connect to an existing Firefox instance via the specified
+     * Marionette port.
+     *
+     * @param marionettePort The port where Marionette is listening on the existing Firefox
+     *     instance.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder connectToExisting(int marionettePort) {
+      this.marionettePort = marionettePort;
+      return this;
+    }
+
+    /**
+     * Configures the WebSocket port for BiDi. A value of 0 will automatically allocate a free port.
+     *
+     * @param websocketPort The port to use for WebSocket communication, or 0 for automatic
+     *     allocation.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder withWebSocketPort(@Nullable Integer websocketPort) {
+      this.websocketPort = websocketPort;
+      return this;
+    }
+
     @Override
     protected void loadSystemProperties() {
       parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
-      if (logLevel == null) {
-        String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
-        if (logFilePath != null) {
-          this.logLevel = FirefoxDriverLogLevel.fromString(logFilePath);
+      if (Debug.isDebugAll()) {
+        if (logLevel != null || System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY) != null) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing GeckoDriver log level to"
+                  + " DEBUG and overriding configured log level.");
         }
+        logLevel = FirefoxDriverLogLevel.DEBUG;
+      } else if (logLevel == null) {
+        logLevel =
+            FirefoxDriverLogLevel.fromString(System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY));
       }
       if (logTruncate == null) {
         logTruncate = !Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);
@@ -229,13 +261,27 @@ public class GeckoDriverService extends FirefoxDriverService {
       List<String> args = new ArrayList<>();
       args.add(String.format(Locale.ROOT, "--port=%d", getPort()));
 
-      int wsPort = PortProber.findFreePort();
-      args.add(String.format("--websocket-port=%d", wsPort));
+      // Check if marionette port is specified via connectToExisting method
+      if (marionettePort != null) {
+        args.add("--connect-existing");
+        args.add("--marionette-port");
+        args.add(String.valueOf(marionettePort));
+      } else {
+        // Configure websocket port for BiDi communication
+        if (websocketPort != null) {
+          args.add("--websocket-port");
+          args.add(String.valueOf(websocketPort));
 
-      args.add("--allow-origins");
-      args.add(String.format("http://127.0.0.1:%d", wsPort));
-      args.add(String.format("http://localhost:%d", wsPort));
-      args.add(String.format("http://[::1]:%d", wsPort));
+          args.add("--allow-origins");
+          args.add(String.format("http://127.0.0.1:%d", websocketPort));
+          args.add(String.format("http://localhost:%d", websocketPort));
+          args.add(String.format("http://[::1]:%d", websocketPort));
+        } else {
+          // Use 0 to auto-allocate a free port
+          args.add("--websocket-port");
+          args.add("0");
+        }
+      }
 
       if (logLevel != null) {
         args.add("--log");
@@ -251,7 +297,7 @@ public class GeckoDriverService extends FirefoxDriverService {
 
       if (allowHosts != null) {
         args.add("--allow-hosts");
-        args.addAll(Arrays.asList(allowHosts.split(" ")));
+        args.addAll(List.of(allowHosts.split(" ")));
       }
       return unmodifiableList(args);
     }

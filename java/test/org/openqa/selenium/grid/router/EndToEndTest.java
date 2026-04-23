@@ -18,17 +18,13 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -98,7 +94,7 @@ class EndToEndTest {
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
-    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2), Arguments.of(s3));
   }
 
   private Server<?> server;
@@ -130,8 +126,7 @@ class EndToEndTest {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 System.out.println(Contents.string(response));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                return status != null && Boolean.parseBoolean(status.get("ready").toString());
               });
     }
   }
@@ -194,27 +189,33 @@ class EndToEndTest {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "se:type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-
-    // The node is still open. Now create a second session. It will be added to the queue.
-    // An retry will be attempted and once request times out, it should fail
     try {
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
-      disposable.quit();
-      fail("Should not have been able to create driver");
-    } catch (SessionNotCreatedException expected) {
-      // Fall through
+      driver.get("https://www.google.com");
+
+      // The node is still open. Now try to create a second session. It will be added to the queue.
+      // A retry will be attempted and once request times out, it should fail.
+      assertThatThrownBy(
+              () -> {
+                WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
+                disposable.quit();
+              })
+          .as("Should not have been able to create driver")
+          .isInstanceOf(SessionNotCreatedException.class)
+          .hasMessageContaining("browserName: cheese, se:type: cheddar");
+    } finally {
+      driver.quit();
     }
 
-    // Kill the session, and wait until the grid says it's ready
-    driver.quit();
-
+    // and wait until the grid says it's ready
     waitUntilReady(server, Duration.ofSeconds(100));
 
-    // And now we're good to go.
-    driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-    driver.quit();
+    // And now we can open another browser (because the previous one has been closed).
+    RemoteWebDriver newWebDriver = new RemoteWebDriver(server.getUrl(), caps);
+    try {
+      newWebDriver.get("https://www.google.com");
+    } finally {
+      newWebDriver.quit();
+    }
   }
 
   @ParameterizedTest
@@ -224,26 +225,24 @@ class EndToEndTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(
-        asJson(
-            ImmutableMap.of(
-                "capabilities",
-                ImmutableMap.of("alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
+        asJson(Map.of("capabilities", Map.of("alwaysMatch", Map.of("browserName", "cheese")))));
 
     HttpResponse response = client.execute(request);
 
-    assertEquals(200, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(200);
 
     Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
-    // There should not be a numeric status field
-    assertFalse(topLevel.containsKey("status"), string(request));
+    assertThat(topLevel)
+        .as("There should not be a numeric status field")
+        .doesNotContainKey("status");
 
     // And the value should have all the good stuff in it: the session id and the capabilities
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
     assertThat(value.get("sessionId")).isInstanceOf(String.class);
 
     Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
-    assertEquals("cheese", caps.get("browserName"));
+    assertThat(caps.get("browserName")).isEqualTo("cheese");
   }
 
   @ParameterizedTest
@@ -251,14 +250,15 @@ class EndToEndTest {
   void shouldRejectSessionRequestIfCapsNotSupported(Supplier<Deployment> values) {
     setFields(values);
 
-    try {
-      Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
-      disposable.quit();
-      fail("Should not have been able to create driver");
-    } catch (SessionNotCreatedException expected) {
-      // Fall through
-    }
+    assertThatThrownBy(
+            () -> {
+              Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
+              WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
+              disposable.quit();
+            })
+        .as("Should not have been able to create driver")
+        .isInstanceOf(SessionNotCreatedException.class)
+        .hasMessageContaining("Capabilities {browserName: brie}");
   }
 
   @ParameterizedTest

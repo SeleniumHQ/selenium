@@ -19,6 +19,7 @@ package org.openqa.selenium.docker;
 
 import java.util.Optional;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
@@ -27,9 +28,22 @@ public class Docker {
   private static final Logger LOG = Logger.getLogger(Docker.class.getName());
   protected final HttpHandler client;
   private volatile Optional<DockerProtocol> dockerClient;
+  private final @Nullable String apiVersion;
 
   public Docker(HttpHandler client) {
+    this(client, null);
+  }
+
+  /**
+   * Creates a Docker client with an optional API version override.
+   *
+   * @param client HTTP client for Docker communication
+   * @param apiVersion Optional API version to use (e.g., "1.40" or "1.44"). If null, the version
+   *     will be auto-detected.
+   */
+  public Docker(HttpHandler client, @Nullable String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = apiVersion;
     this.dockerClient = Optional.empty();
   }
 
@@ -82,8 +96,12 @@ public class Docker {
     }
 
     synchronized (this) {
-      if (!dockerClient.isPresent()) {
-        dockerClient = new VersionCommand(client).getDockerProtocol();
+      if (dockerClient.isEmpty()) {
+        VersionCommand versionCommand = new VersionCommand(client);
+        dockerClient =
+            apiVersion != null
+                ? versionCommand.getDockerProtocol(apiVersion)
+                : versionCommand.getDockerProtocol();
       }
     }
 

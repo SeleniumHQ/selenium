@@ -37,6 +37,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIRE_SESSION_EVENT;
 import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.GET;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACCOUNTS;
@@ -46,6 +47,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
+import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADED_FILE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
@@ -90,6 +92,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -199,7 +202,10 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
+    defineCommand(GET_DOWNLOADED_FILE, get(sessionId + "/se/files/:name"));
     defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
+
+    defineCommand(FIRE_SESSION_EVENT, post(sessionId + "/se/event"));
   }
 
   protected static CommandSpec delete(String path) {
@@ -237,7 +243,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       byte[] data = content.getBytes(UTF_8);
 
       request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
-      request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8.toString());
+      request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
       request.setContent(bytes(data));
     }
 
@@ -316,7 +322,10 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   private String buildUri(
-      String commandName, SessionId sessionId, Map<String, ?> parameters, CommandSpec spec) {
+      String commandName,
+      @Nullable SessionId sessionId,
+      Map<String, ?> parameters,
+      CommandSpec spec) {
     StringBuilder builder = new StringBuilder();
     for (String part : spec.pathSegments) {
       if (part.isEmpty()) {
@@ -334,10 +343,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   private String getParameter(
-      String parameterName, String commandName, SessionId sessionId, Map<String, ?> parameters) {
+      String parameterName,
+      String commandName,
+      @Nullable SessionId sessionId,
+      Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      Require.argument("Session id", sessionId)
-          .nonNull("Session ID may not be null for command %s", commandName);
+      Require.nonNull("Session id", sessionId, "may not be null for command %s", commandName);
       return sessionId.toString();
     }
 
@@ -362,7 +373,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
       if (o instanceof CommandSpec) {
         CommandSpec that = (CommandSpec) o;
         return this.method.equals(that.method) && this.path.equals(that.path);

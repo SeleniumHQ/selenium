@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Internal;
-using System;
 
 namespace OpenQA.Selenium;
 

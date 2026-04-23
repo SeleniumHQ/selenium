@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.Chromium;

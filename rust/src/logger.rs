@@ -18,8 +18,8 @@
 use crate::config::{BooleanKey, StringKey};
 use crate::metadata::now_unix_timestamp;
 
-use env_logger::Target::{Stderr, Stdout};
 use env_logger::DEFAULT_FILTER_ENV;
+use env_logger::Target::{Stderr, Stdout};
 use log::LevelFilter::{Debug, Info, Trace};
 use log::{Level, LevelFilter};
 use serde::{Deserialize, Serialize};

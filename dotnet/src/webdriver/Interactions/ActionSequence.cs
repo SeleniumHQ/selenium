@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -59,13 +57,6 @@ public class ActionSequence
     /// Gets the count of actions in the sequence.
     /// </summary>
     public int Count => this.interactions.Count;
-
-    /// <summary>
-    /// Gets the input device for this Action sequence.
-    /// </summary>
-    [Obsolete("This property has been renamed to InputDevice and will be removed in a future version")]
-    [CLSCompliant(false)]
-    public InputDevice inputDevice => InputDevice;
 
     /// <summary>
     /// Gets the input device for this Action sequence.

@@ -18,11 +18,9 @@
 package org.openqa.selenium;
 
 import java.util.Objects;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** Represents a point in a two-dimensional space with x and y coordinates. */
-@NullMarked
 public class Point {
   public final int x;
   public final int y;

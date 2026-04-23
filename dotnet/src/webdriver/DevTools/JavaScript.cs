@@ -17,8 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -85,7 +84,7 @@ public abstract class JavaScript
     /// </summary>
     /// <param name="script">The script to add to be evaluated when a new document is opened.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the internal ID of the script.</returns>
-    public abstract Task<string> AddScriptToEvaluateOnNewDocument(string script);
+    public abstract Task<string> AddScriptToEvaluateOnNewDocument([StringSyntax(StringSyntaxConstants.JavaScript)] string script);
 
     /// <summary>
     /// Removes a JavaScript snippet from evaluate when a new document is opened.
@@ -103,7 +102,7 @@ public abstract class JavaScript
     /// This method is internal to the operation of pinned scripts in Selenium, and
     /// is therefore internal by design.
     /// </remarks>
-    internal abstract Task Evaluate(string script);
+    internal abstract Task Evaluate([StringSyntax(StringSyntaxConstants.JavaScript)] string script);
 
     /// <summary>
     /// Raises the BindingCalled event.
@@ -111,10 +110,7 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="BindingCalledEventArgs"/> that contains the event data.</param>
     protected virtual void OnBindingCalled(BindingCalledEventArgs e)
     {
-        if (this.BindingCalled != null)
-        {
-            this.BindingCalled(this, e);
-        }
+        this.BindingCalled?.Invoke(this, e);
     }
 
     /// <summary>
@@ -123,10 +119,7 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="ConsoleApiCalledEventArgs"/> that contains the event data.</param>
     protected virtual void OnConsoleApiCalled(ConsoleApiCalledEventArgs e)
     {
-        if (this.ConsoleApiCalled != null)
-        {
-            this.ConsoleApiCalled(this, e);
-        }
+        this.ConsoleApiCalled?.Invoke(this, e);
     }
 
     /// <summary>
@@ -135,9 +128,6 @@ public abstract class JavaScript
     /// <param name="e">An <see cref="ExceptionThrownEventArgs"/> that contains the event data.</param>
     protected virtual void OnExceptionThrown(ExceptionThrownEventArgs e)
     {
-        if (this.ExceptionThrown != null)
-        {
-            this.ExceptionThrown(this, e);
-        }
+        this.ExceptionThrown?.Invoke(this, e);
     }
 }

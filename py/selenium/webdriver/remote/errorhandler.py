@@ -53,9 +53,9 @@ from selenium.common.exceptions import (
 
 
 class ExceptionMapping:
-    """
-    :Maps each errorcode in ErrorCode object to corresponding exception
-    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification
+    """Maps each errorcode in ErrorCode object to corresponding exception.
+
+    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification.
     """
 
     NO_SUCH_ELEMENT = NoSuchElementException
@@ -143,14 +143,14 @@ class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
     def check_response(self, response: dict[str, Any]) -> None:
-        """Checks that a JSON response from the WebDriver does not have an
-        error.
+        """Check that a JSON response from the WebDriver does not have an error.
 
-        :Args:
-         - response - The JSON response from the WebDriver server as a dictionary
-           object.
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
 
-        :Raises: If the response contains an error message.
+        Raises:
+            WebDriverException: If the response contains an error message.
         """
         status = response.get("status", None)
         if not status or status == ErrorCode.SUCCESS:
@@ -173,7 +173,7 @@ class ErrorHandler:
                             message = value.get("value") or value.get("message")
                             if not isinstance(message, str):
                                 value = message
-                                message = message.get("message")
+                                message = message.get("message") if isinstance(message, dict) else None
                         else:
                             message = value.get("message", None)
                 except ValueError:
@@ -228,5 +228,5 @@ class ErrorHandler:
                 alert_text = value["data"].get("text")
             elif "alert" in value:
                 alert_text = value["alert"].get("text")
-            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
+            raise exception_class(message, screen, stacktrace, alert_text)
         raise exception_class(message, screen, stacktrace)

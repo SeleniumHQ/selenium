@@ -28,14 +28,13 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 public class DefaultActiveSession extends BaseActiveSession {
 
-  private final HttpHandler handler;
+  private final ReverseProxyHandler handler;
   private final String killUrl;
 
   protected DefaultActiveSession(
@@ -68,6 +67,6 @@ public class DefaultActiveSession extends BaseActiveSession {
 
   @Override
   public void stop() {
-    // no-op
+    handler.close();
   }
 }

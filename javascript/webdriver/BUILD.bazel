@@ -1,5 +1,5 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
-load("//javascript:defs.bzl", "closure_test_suite")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 closure_js_library(
     name = "http",
@@ -64,7 +64,7 @@ closure_js_deps(
 )
 
 closure_test_suite(
-    name = "test",
+    name = "closure-test",
     data = [
         ":all_files",
         ":deps",

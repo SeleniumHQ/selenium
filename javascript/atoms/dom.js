@@ -311,13 +311,13 @@ bot.dom.isInputType = function (element, inputType) {
  */
 bot.dom.isContentEditable = function (element) {
   // Check if browser supports contentEditable.
-  if (!goog.isDef(element['contentEditable'])) {
+  if (element['contentEditable'] === undefined) {
     return false;
   }
 
   // Checking the element's isContentEditable property is preferred except for
   // IE where that property is not reliable on IE versions 7, 8, and 9.
-  if (!goog.userAgent.IE && goog.isDef(element['isContentEditable'])) {
+  if (!goog.userAgent.IE && element['isContentEditable'] !== undefined) {
     return element.isContentEditable;
   }
 
@@ -434,12 +434,12 @@ bot.dom.getEffectiveStyle = function (elem, propertyName) {
 bot.dom.getCascadedStyle_ = function (elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
-  if (!goog.isDef(value) && goog.isFunction(style.getPropertyValue)) {
+  if (value === undefined && typeof style.getPropertyValue === 'function') {
     value = style.getPropertyValue(styleName);
   }
 
   if (value != 'inherit') {
-    return goog.isDef(value) ? value : null;
+    return value !== undefined ? value : null;
   }
   var parent = bot.dom.getParentElement(elem);
   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;
@@ -452,12 +452,12 @@ bot.dom.getCascadedStyle_ = function (elem, styleName) {
  * @param {!Element} elem The element to consider.
  * @param {boolean} ignoreOpacity Whether to ignore the element's opacity
  *     when determining whether it is shown.
- * @param {function(!Element):boolean} parentsDisplayedFn a function that's used
- *     to tell if the chain of ancestors are all shown.
+ * @param {function(!Element):boolean} displayedFn a function that's used
+ *     to tell if the chain of ancestors or descendants are all shown.
  * @return {boolean} Whether or not the element is visible.
  * @private
  */
-bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
+bot.dom.isShown_ = function (elem, ignoreOpacity, displayedFn) {
   if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
   }
@@ -476,7 +476,7 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function (e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
-    return !!select && bot.dom.isShown_(select, true, parentsDisplayedFn);
+    return !!select && bot.dom.isShown_(select, true, displayedFn);
   }
 
   // Image map elements are shown if image that uses it is shown, and
@@ -486,7 +486,7 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
     return !!imageMap.image &&
       imageMap.rect.width > 0 && imageMap.rect.height > 0 &&
       bot.dom.isShown_(
-        imageMap.image, ignoreOpacity, parentsDisplayedFn);
+        imageMap.image, ignoreOpacity, displayedFn);
   }
 
   // Any hidden input is not shown.
@@ -506,7 +506,7 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
     return false;
   }
 
-  if (!parentsDisplayedFn(elem)) {
+  if (!displayedFn(elem)) {
     return false;
   }
 
@@ -527,13 +527,34 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
       var strokeWidth = bot.dom.getEffectiveStyle(e, 'stroke-width');
       return !!strokeWidth && (parseInt(strokeWidth, 10) > 0);
     }
+
+    // Any element with hidden/collapsed visibility is not shown.
+    var visibility = bot.dom.getEffectiveStyle(e, 'visibility');
+    if (visibility == 'collapse' || visibility == 'hidden') {
+      return false;
+    }
+
+    if (!displayedFn(e)) {
+      return false;
+    }
     // Zero-sized elements should still be considered to have positive size
     // if they have a child element or text node with positive size, unless
     // the element has an 'overflow' style of 'hidden'.
+    // Note: Text nodes containing only structural whitespace (with newlines
+    // or tabs) are ignored as they are likely just HTML formatting, not
+    // visible content.
     return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
       goog.array.some(e.childNodes, function (n) {
-        return n.nodeType == goog.dom.NodeType.TEXT ||
-          (bot.dom.isElement(n) && positiveSize(n));
+        if (n.nodeType == goog.dom.NodeType.TEXT) {
+          var text = n.nodeValue;
+          // Ignore text nodes that are purely structural whitespace
+          // (contain newlines or tabs and nothing else besides spaces)
+          if (/^[\s]*$/.test(text) && /[\n\r\t]/.test(text)) {
+            return false;
+          }
+          return true;
+        }
+        return bot.dom.isElement(n) && positiveSize(n);
       });
   }
   if (!positiveSize(elem)) {
@@ -572,7 +593,7 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
  */
 bot.dom.isShown = function (elem, opt_ignoreOpacity) {
   /**
-   * Determines whether an element or its parents have `display: none` set
+   * Determines whether an element or its parents have `display: none` or similar CSS properties set
    * @param {!Node} e the element
    * @return {!boolean}
    */
@@ -1173,10 +1194,17 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function (textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    // the unicode regex ending with /gu does not work in IE
-    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|\s|\b)(\S)/gu;
+    // 1) don't treat '_' as a separator (protects snake_case)
+    var re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])/g;
     text = text.replace(re, function () {
       return arguments[1] + arguments[2].toUpperCase();
+    });
+
+    // 2) capitalize after opening "_" or "*"
+    // Preceded by start or a non-word (so it won't fire for snake_case)
+    re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])([_*])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24D0-\u24E9])/g;
+    text = text.replace(re, function () {
+      return arguments[1] + arguments[2] + arguments[3].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
     text = text.toUpperCase();
@@ -1395,9 +1423,13 @@ bot.dom.isNodeDistributedIntoShadowDom = function (node) {
 bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function (
   elem, lines) {
   if (elem.shadowRoot) {
+    // Get the effective styles from the shadow host element for text nodes in shadow DOM
+    var whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
+    var textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+
     goog.array.forEach(elem.shadowRoot.childNodes, function (node) {
       bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-        node, lines, true, null, null);
+        node, lines, true, whitespace, textTransform);
     });
   }
 

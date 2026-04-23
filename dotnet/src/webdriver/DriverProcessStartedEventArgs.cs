@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace OpenQA.Selenium;
 
@@ -35,37 +33,13 @@ public class DriverProcessStartedEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driverProcess"/> is <see langword="null"/>.</exception>
     public DriverProcessStartedEventArgs(Process driverProcess)
     {
-        if (driverProcess is null)
-        {
-            throw new ArgumentNullException(nameof(driverProcess));
-        }
+        ArgumentNullException.ThrowIfNull(driverProcess);
 
         this.ProcessId = driverProcess.Id;
-        if (driverProcess.StartInfo.RedirectStandardOutput && !driverProcess.StartInfo.UseShellExecute)
-        {
-            this.StandardOutputStreamReader = driverProcess.StandardOutput;
-        }
-
-        if (driverProcess.StartInfo.RedirectStandardError && !driverProcess.StartInfo.UseShellExecute)
-        {
-            this.StandardErrorStreamReader = driverProcess.StandardError;
-        }
     }
 
     /// <summary>
     /// Gets the unique ID of the driver executable process.
     /// </summary>
     public int ProcessId { get; }
-
-    /// <summary>
-    /// Gets a <see cref="StreamReader"/> object that can be used to read the contents
-    /// printed to <c>stdout</c> by a driver service process.
-    /// </summary>
-    public StreamReader? StandardOutputStreamReader { get; }
-
-    /// <summary>
-    /// Gets a <see cref="StreamReader"/> object that can be used to read the contents
-    /// printed to <c>stderr</c> by a driver service process.
-    /// </summary>
-    public StreamReader? StandardErrorStreamReader { get; }
 }

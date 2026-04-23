@@ -1,0 +1,11 @@
+--- a/jest/private/jest_config_template.mjs
++++ b/jest/private/jest_config_template.mjs
+@@ -41,7 +41,7 @@
+
+ function _resolveRunfilesPath(rootpath) {
+   return path.join(
+-    process.env.RUNFILES,
++    process.env.JS_BINARY__RUNFILES ?? process.env.RUNFILES,
+     process.env.JS_BINARY__WORKSPACE,
+     rootpath,
+   );

@@ -9,19 +9,19 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used to automate web browser interaction from Python.
 
-+-------------------+------------------------------------------------+
-| **Home**:         | https://selenium.dev                           |
-+-------------------+------------------------------------------------+
-| **GitHub**:       | https://github.com/SeleniumHQ/Selenium         |
-+-------------------+------------------------------------------------+
-| **PyPI**:         | https://pypi.org/project/selenium              |
-+-------------------+------------------------------------------------+
-| **IRC/Slack**:    | https://www.selenium.dev/support/#ChatRoom     |
-+-------------------+------------------------------------------------+
-| **Docs**:         | https://www.selenium.dev/selenium/docs/api/py  |
-+-------------------+------------------------------------------------+
-| **API Docs**:     | `api.html <api.html>`_                         |
-+-------------------+------------------------------------------------+
++-------------------+--------------------------------------------------------+
+| **Home**:         | https://selenium.dev                                   |
++-------------------+--------------------------------------------------------+
+| **GitHub**:       | https://github.com/SeleniumHQ/Selenium                 |
++-------------------+--------------------------------------------------------+
+| **PyPI**:         | https://pypi.org/project/selenium                      |
++-------------------+--------------------------------------------------------+
+| **IRC/Slack**:    | https://selenium.dev/support/#ChatRoom                 |
++-------------------+--------------------------------------------------------+
+| **Docs**:         | https://selenium.dev/selenium/docs/api/py              |
++-------------------+--------------------------------------------------------+
+| **API Reference**:| https://selenium.dev/selenium/docs/api/py/api.html     |
++-------------------+--------------------------------------------------------+
 
 Updated documentation published with each commit is available at: `readthedocs.io <https://selenium-python-api-docs.readthedocs.io/en/latest>`_
 
@@ -30,7 +30,7 @@ Updated documentation published with each commit is available at: `readthedocs.i
 Supported Python Versions
 =========================
 
-* Python 3.9+
+* Python 3.10+
 
 Supported Browsers
 ==================
@@ -47,24 +47,32 @@ Several browsers are supported, as well as the Remote protocol:
 Installing
 ==========
 
-If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install or upgrade the Python bindings::
+Install or upgrade the Python bindings with `pip <https://pip.pypa.io/>`.
+
+Latest official release::
 
     pip install -U selenium
 
-You may want to consider using a `virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_
-to create isolated Python environments.
+Nightly development release::
+
+    pip install -U --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
+
+Note: you should consider using a
+`virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_
+to create an isolated Python environment for installation.
 
 Drivers
 =======
 
 Selenium requires a driver to interface with the chosen browser (chromedriver, edgedriver, geckodriver, etc).
 
-In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the driver
-executable was available on your system `PATH`, or specified explicitly in code. Modern versions of Selenium handle browser and
-driver installation for you with `Selenium Manager <https://www.selenium.dev/documentation/selenium_manager>`_. You generally
-don't have to worry about driver installation or configuration now that it's done for you when you instantiate a WebDriver.
-Selenium Manager works with most supported platforms and browsers. If it doesn't meet your needs, you can still install and
-specify browsers and drivers yourself.
+In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the
+driver executable was available on your system `PATH`, or specified explicitly in code. Modern versions of Selenium
+handle browser and driver installation for you with
+`Selenium Manager <https://selenium.dev/documentation/selenium_manager>`_. You generally don't have to worry about
+driver installation or configuration now that it's done for you when you instantiate a WebDriver. Selenium Manager works
+with most supported platforms and browsers. If it doesn't meet your needs, you can still install and specify browsers
+and drivers yourself.
 
 Links to some of the more popular browser drivers:
 
@@ -91,7 +99,7 @@ Example 0:
 
 
     driver = webdriver.Chrome()
-    driver.get('https://selenium.dev/')
+    driver.get("https://selenium.dev")
     driver.quit()
 
 Example 1:
@@ -99,7 +107,7 @@ Example 1:
 
 * launch a new Chrome browser
 * load the Selenium documentation page
-* find the "Webdriver" link
+* find the "WebDriver" link
 * click the "WebDriver" link
 * close the browser
 
@@ -111,20 +119,20 @@ Example 1:
 
     driver = webdriver.Chrome()
 
-    driver.get('https://selenium.dev/documentation')
-    assert 'Selenium' in driver.title
+    driver.get("https://selenium.dev/documentation")
+    assert "Selenium" in driver.title
 
-    elem = driver.find_element(By.ID, 'm-documentationwebdriver')
+    elem = driver.find_element(By.ID, "m-documentationwebdriver")
     elem.click()
-    assert 'WebDriver' in driver.title
+    assert "WebDriver" in driver.title
 
     driver.quit()
 
 Example 2:
 ==========
 
-Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python's standard
-`unittest <http://docs.python.org/3/library/unittest.html>`_ library:
+Selenium WebDriver is often used as a basis for testing web applications. Here is an example using Python's
+standard `unittest <https://docs.python.org/3/library/unittest.html>`_ framework:
 
 .. code-block:: python
 
@@ -132,28 +140,48 @@ Selenium WebDriver is often used as a basis for testing web applications. Here i
     from selenium import webdriver
 
 
-    class GoogleTestCase(unittest.TestCase):
+    class SeleniumTestCase(unittest.TestCase):
 
         def setUp(self):
-            self.driver = webdriver.Firefox()
+            self.driver = webdriver.Chrome()
             self.addCleanup(self.driver.quit)
 
         def test_page_title(self):
-            self.driver.get('https://www.google.com')
-            self.assertIn('Google', self.driver.title)
+            self.driver.get("https://selenium.dev")
+            self.assertIn("Selenium", self.driver.title)
 
-    if __name__ == '__main__':
-        unittest.main(verbosity=2)
+Example 3:
+==========
+
+Here is an example using `pytest <https://pytest.org>`_ framework:
+
+.. code-block:: python
+
+    import pytest
+    from selenium import webdriver
+
+
+    @pytest.fixture
+    def driver():
+        driver = webdriver.Chrome()
+        yield driver
+        driver.quit()
+
+
+    def test_page_title(driver):
+        driver.get("https://selenium.dev")
+        assert "Selenium" in driver.title
+
 
 Selenium Grid (optional)
-==========================
+========================
 
 For local Selenium scripts, the Java server is not needed.
 
-To use Selenium remotely, you need to also run the Selenium grid.
-For information on running Selenium Grid: https://www.selenium.dev/documentation/grid/getting_started/
+To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
+https://selenium.dev/documentation/grid/getting_started/
 
-To use Remote WebDriver see: https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
+To use Remote WebDriver see: https://selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
 
 Use The Source Luke!
 ====================
@@ -163,19 +191,3 @@ View source code online:
 +---------------+-------------------------------------------------------+
 | **Official**: | https://github.com/SeleniumHQ/selenium/tree/trunk/py  |
 +---------------+-------------------------------------------------------+
-
-Contributing
-=============
-
- - Fork the selenium repo and clone it locally
- - Create a branch for your work
-     - Run: `git checkout -b my-cool-branch-name`
- - Create a virtual environment and install tox
-     - Run: `python -m venv venv && source venv/bin/activate && pip install tox`
- - Make your changes
- - Run: `tox -e linting`
- - If tox exits `0`, commit and push. Otherwise, fix the newly introduced style violations
-     - `flake8` requires manual fixes
-     - `black` will rewrite the violations automatically, however the files are unstaged and should be staged again
-     - `isort` will rewrite the violations automatically, however the files are unstaged and should be staged again
- - Submit a Pull Request

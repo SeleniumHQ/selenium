@@ -16,16 +16,20 @@
 // under the License.
 package org.openqa.selenium.bidi.storage;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-storagesetcookieparameters">BiDi
+ *     spec</a>
+ */
 public class SetCookieParameters {
   private final PartialCookie cookie;
-  private Optional<PartitionDescriptor> partitionDescriptor = Optional.empty();
+  private final Optional<PartitionDescriptor> partitionDescriptor;
 
   public SetCookieParameters(PartialCookie cookie) {
     this.cookie = cookie;
+    this.partitionDescriptor = Optional.empty();
   }
 
   public SetCookieParameters(PartialCookie cookie, PartitionDescriptor partitionDescriptor) {
@@ -34,10 +38,6 @@ public class SetCookieParameters {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("cookie", cookie.toMap());
-    partitionDescriptor.ifPresent(descriptor -> map.put("partition", descriptor));
-
-    return Map.copyOf(map);
+    return Map.of("cookie", cookie.toMap(), "partition", partitionDescriptor);
   }
 }

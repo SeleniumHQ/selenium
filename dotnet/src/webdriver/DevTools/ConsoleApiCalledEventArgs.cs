@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.DevTools;
@@ -38,7 +37,8 @@ public class ConsoleApiCalledEventArgs : EventArgs
     {
         Timestamp = timestamp;
         Type = type;
-        Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
+        ArgumentNullException.ThrowIfNull(arguments);
+        Arguments = arguments;
     }
 
     /// <summary>

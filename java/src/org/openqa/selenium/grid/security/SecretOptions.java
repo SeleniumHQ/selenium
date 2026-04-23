@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -41,7 +42,7 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    if ((isSecure()) && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
+    if ((isSecure()) && config.get(SERVER_SECTION, "registration-secret").isEmpty()) {
       try {
         secret =
             getEncoder()
@@ -58,11 +59,12 @@ public class SecretOptions {
         .orElse(new Secret(secret));
   }
 
+  @Nullable
   public UsernameAndPassword getServerAuthentication() {
     Optional<String> username = config.get(ROUTER_SECTION, "username");
     Optional<String> password = config.get(ROUTER_SECTION, "password");
 
-    if (!username.isPresent() || !password.isPresent()) {
+    if (username.isEmpty() || password.isEmpty()) {
       return null;
     }
 

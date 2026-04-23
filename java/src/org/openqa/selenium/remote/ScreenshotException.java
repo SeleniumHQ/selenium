@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 public class ScreenshotException extends WebDriverException {
@@ -29,7 +30,7 @@ public class ScreenshotException extends WebDriverException {
     super(cause);
   }
 
-  public ScreenshotException(String message, Throwable cause) {
+  public ScreenshotException(String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

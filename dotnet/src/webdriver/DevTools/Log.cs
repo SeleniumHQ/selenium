@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -56,9 +53,6 @@ public abstract class Log
     /// <param name="e">An <see cref="EntryAddedEventArgs"/> that contains the event data.</param>
     protected virtual void OnEntryAdded(EntryAddedEventArgs e)
     {
-        if (this.EntryAdded != null)
-        {
-            this.EntryAdded(this, e);
-        }
+        this.EntryAdded?.Invoke(this, e);
     }
 }

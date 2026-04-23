@@ -23,15 +23,17 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class Select:
     def __init__(self, webelement: WebElement) -> None:
-        """Constructor. A check is made that the given element is, indeed, a
-        SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.
+        """Constructor. A check is made that the given element is a SELECT tag.
 
-        :Args:
-         - webelement - SELECT element to wrap
+        Args:
+            webelement: SELECT element to wrap
 
         Example:
-            from selenium.webdriver.support.ui import Select \n
+            from selenium.webdriver.support.ui import Select
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
+
+        Raises:
+            UnexpectedTagNameException: If the element is not a SELECT tag
         """
         if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(f"Select only works on <select> elements, not on {webelement.tag_name}")
@@ -46,29 +48,30 @@ class Select:
 
     @property
     def all_selected_options(self) -> list[WebElement]:
-        """Returns a list of all selected options belonging to this select
-        tag."""
+        """Return a list of all selected options belonging to this select tag."""
         return [opt for opt in self.options if opt.is_selected()]
 
     @property
     def first_selected_option(self) -> WebElement:
-        """The first selected option in this select tag (or the currently
-        selected option in a normal select)"""
+        """Return the first selected option or the currently selected option."""
         for opt in self.options:
             if opt.is_selected():
                 return opt
         raise NoSuchElementException("No options are selected")
 
     def select_by_value(self, value: str) -> None:
-        """Select all options that have a value matching the argument. That is,
-        when given "foo" this would select an option like:
+        """Select all options that have a value matching the argument.
 
-        <option value="foo">Bar</option>
+        Example:
+            When given "foo" this would select an option like:
 
-        :Args:
-         - value - The value to match against
+                `<option value="foo">Bar</option>`
 
-        throws NoSuchElementException If there is no option with specified value in SELECT
+        Args:
+            value: The value to match against
+
+        Raises:
+            NoSuchElementException: If there is no option with specified value in SELECT
         """
         css = f"option[value ={self._escape_string(value)}]"
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
@@ -82,13 +85,13 @@ class Select:
             raise NoSuchElementException(f"Cannot locate option with value: {value}")
 
     def select_by_index(self, index: int) -> None:
-        """Select the option at the given index. This is done by examining the
-        "index" attribute of an element, and not merely by counting.
+        """Select the option at the given index by examining the "index" attribute.
 
-        :Args:
-         - index - The option at this index will be selected
+        Args:
+            index: The option at this index will be selected
 
-        throws NoSuchElementException If there is no option with specified index in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified index in SELECT
         """
         match = str(index)
         for opt in self.options:
@@ -98,15 +101,18 @@ class Select:
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def select_by_visible_text(self, text: str) -> None:
-        """Select all options that display text matching the argument. That is,
-        when given "Bar" this would select an option like:
+        """Select all options that display text matching the argument.
 
-         <option value="foo">Bar</option>
+        Example:
+            When given "Bar" this would select an option like:
 
-        :Args:
-         - text - The visible text to match against
+            `<option value="foo">Bar</option>`
 
-         throws NoSuchElementException If there is no option with specified text in SELECT
+        Args:
+            text: The visible text to match against
+
+        Raises:
+            NoSuchElementException: If there is no option with specified text in SELECT
         """
         xpath = f".//option[normalize-space(.) = {self._escape_string(text)}]"
         opts = self._el.find_elements(By.XPATH, xpath)
@@ -151,15 +157,18 @@ class Select:
             self._unset_selected(opt)
 
     def deselect_by_value(self, value: str) -> None:
-        """Deselect all options that have a value matching the argument. That
-        is, when given "foo" this would deselect an option like:
+        """Deselect all options that have a value matching the argument.
 
-         <option value="foo">Bar</option>
+        Example:
+            When given "foo" this would deselect an option like:
 
-        :Args:
-         - value - The value to match against
+                `<option value="foo">Bar</option>`
 
-         throws NoSuchElementException If there is no option with specified value in SELECT
+        Args:
+            value: The value to match against
+
+        Raises:
+            NoSuchElementException: If there is no option with specified value in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -173,13 +182,13 @@ class Select:
             raise NoSuchElementException(f"Could not locate element with value: {value}")
 
     def deselect_by_index(self, index: int) -> None:
-        """Deselect the option at the given index. This is done by examining
-        the "index" attribute of an element, and not merely by counting.
+        """Deselect the option at the given index by examining the "index" attribute.
 
-        :Args:
-         - index - The option at this index will be deselected
+        Args:
+            index: The option at this index will be deselected
 
-         throws NoSuchElementException If there is no option with specified index in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified index in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -190,13 +199,15 @@ class Select:
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def deselect_by_visible_text(self, text: str) -> None:
-        """Deselect all options that display text matching the argument. That
-        is, when given "Bar" this would deselect an option like:
+        """Deselect all options that display text matching the argument.
 
-        <option value="foo">Bar</option>
+        Example:
+            when given "Bar" this would deselect an option like:
 
-        :Args:
-         - text - The visible text to match against
+                `<option value="foo">Bar</option>`
+
+        Args:
+            text: The visible text to match against
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -250,8 +261,8 @@ class Select:
         css_value_candidates = ["hidden", "none", "0", "0.0"]
         css_property_candidates = ["visibility", "display", "opacity"]
 
-        for property in css_property_candidates:
-            css_value = option.value_of_css_property(property)
+        for css_property in css_property_candidates:
+            css_value = option.value_of_css_property(css_property)
             if css_value in css_value_candidates:
                 return False
         return True

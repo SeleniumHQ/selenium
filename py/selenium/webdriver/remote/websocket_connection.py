@@ -14,30 +14,84 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import dataclasses
 import json
 import logging
 from ssl import CERT_NONE
 from threading import Thread
 from time import sleep
 
-from websocket import WebSocketApp  # type: ignore
+from websocket import WebSocketApp
 
 from selenium.common import WebDriverException
+
+
+def _snake_to_camel(name: str) -> str:
+    """Convert snake_case field name to camelCase for BiDi protocol."""
+    parts = name.split("_")
+    return parts[0] + "".join(p.title() for p in parts[1:])
+
+
+class _BiDiEncoder(json.JSONEncoder):
+    """JSON encoder for BiDi dataclass instances.
+
+    Converts snake_case field names to camelCase, strips ``None`` values,
+    and flattens a ``properties`` field (e.g. ``PointerCommonProperties``)
+    directly into its parent action dict as required by the BiDi spec.
+    """
+
+    def _convert(self, value):
+        """Recursively convert a value, handling nested dataclasses, lists, and dicts."""
+        if dataclasses.is_dataclass(value) and not isinstance(value, type):
+            return self.default(value)
+        if isinstance(value, list):
+            return [self._convert(item) for item in value]
+        if isinstance(value, dict):
+            return {k: self._convert(v) for k, v in value.items()}
+        return value
+
+    def default(self, o):
+        if dataclasses.is_dataclass(o) and not isinstance(o, type):
+            result = {}
+            for f in dataclasses.fields(o):
+                value = getattr(o, f.name)
+                # Skip None values unless the field is explicitly marked
+                # retain_none=True in its metadata (e.g. for required-but-nullable
+                # BiDi fields that must be sent as JSON null rather than omitted).
+                if value is None and not f.metadata.get("retain_none"):
+                    continue
+                camel_key = _snake_to_camel(f.name)
+                # Flatten PointerCommonProperties fields inline into the parent
+                if camel_key == "properties" and dataclasses.is_dataclass(value):
+                    for pf in dataclasses.fields(value):
+                        pv = getattr(value, pf.name)
+                        if pv is not None:
+                            result[_snake_to_camel(pf.name)] = self._convert(pv)
+                else:
+                    result[camel_key] = self._convert(value)
+            return result
+        return super().default(o)
+
 
 logger = logging.getLogger(__name__)
 
 
 class WebSocketConnection:
-    _response_wait_timeout = 30
-    _response_wait_interval = 0.1
-
     _max_log_message_size = 9999
 
-    def __init__(self, url):
+    def __init__(self, url, timeout, interval):
+        if not isinstance(timeout, (int, float)) or timeout < 0:
+            raise WebDriverException("timeout must be a positive number")
+        if not isinstance(interval, (int, float)) or timeout < 0:
+            raise WebDriverException("interval must be a positive number")
+
+        self.url = url
+        self.response_wait_timeout = timeout
+        self.response_wait_interval = interval
+
         self.callbacks = {}
         self.session_id = None
-        self.url = url
-
         self._id = 0
         self._messages = {}
         self._started = False
@@ -46,7 +100,7 @@ class WebSocketConnection:
         self._wait_until(lambda: self._started)
 
     def close(self):
-        self._ws_thread.join(timeout=self._response_wait_timeout)
+        self._ws_thread.join(timeout=self.response_wait_timeout)
         self._ws.close()
         self._started = False
         self._ws = None
@@ -58,7 +112,7 @@ class WebSocketConnection:
         if self.session_id:
             payload["sessionId"] = self.session_id
 
-        data = json.dumps(payload)
+        data = json.dumps(payload, cls=_BiDiEncoder)
         logger.debug(f"-> {data}"[: self._max_log_message_size])
         self._ws.send(data)
 
@@ -126,7 +180,7 @@ class WebSocketConnection:
                 self._ws.run_forever(suppress_origin=True)
 
         self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
-        self._ws_thread = Thread(target=run_socket)
+        self._ws_thread = Thread(target=run_socket, daemon=True)
         self._ws_thread.start()
 
     def _process_message(self, message):
@@ -139,11 +193,11 @@ class WebSocketConnection:
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
-                Thread(target=callback, args=(params,)).start()
+                Thread(target=callback, args=(params,), daemon=True).start()
 
     def _wait_until(self, condition):
-        timeout = self._response_wait_timeout
-        interval = self._response_wait_interval
+        timeout = self.response_wait_timeout
+        interval = self.response_wait_interval
 
         while timeout > 0:
             result = condition()

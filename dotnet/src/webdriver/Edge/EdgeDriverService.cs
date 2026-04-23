@@ -19,8 +19,6 @@
 
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
-using System;
-using System.IO;
 
 namespace OpenQA.Selenium.Edge;
 
@@ -46,16 +44,6 @@ public sealed class EdgeDriverService : ChromiumDriverService
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new EdgeOptions();
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the service should use verbose logging.
-    /// </summary>
-    [Obsolete("Use EnableVerboseLogging")]
-    public bool UseVerboseLogging
-    {
-        get => this.EnableVerboseLogging;
-        set => this.EnableVerboseLogging = value;
     }
 
     /// <summary>

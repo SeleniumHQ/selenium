@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.jspecify.annotations.Nullable;
+
 public enum UserPromptType {
   ALERT("alert"),
   CONFIRM("confirm"),
@@ -34,6 +36,7 @@ public enum UserPromptType {
     return type;
   }
 
+  @Nullable
   public static UserPromptType findByName(String name) {
     UserPromptType result = null;
     for (UserPromptType type : values()) {

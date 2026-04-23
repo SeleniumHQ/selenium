@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -63,5 +65,36 @@ class VersionTest {
     assertThat(first.isGreaterThan(second))
         .describedAs("%s > %s", first, second)
         .isEqualTo(greaterThan);
+  }
+
+  @Test
+  void toStringShowsVersion() {
+    assertThat(new Version("1.2.3").toString()).isEqualTo("1.2.3");
+    assertThat(new Version("a.b.c.d").toString()).isEqualTo("a.b.c.d");
+  }
+
+  @Nested
+  class VersionWithNonNumbers {
+    @Test
+    void compareToSelf() {
+      Version v1 = new Version("1.2.beta");
+      assertThat(v1.equalTo(v1)).isTrue();
+      assertThat(v1.isLessThan(v1)).isFalse();
+      assertThat(v1.isGreaterThan(v1)).isFalse();
+    }
+
+    @Test
+    void compareToOther() {
+      Version v1 = new Version("1.2.alpha");
+      Version v2 = new Version("1.2.beta");
+
+      assertThat(v1.equalTo(v2)).isFalse();
+      assertThat(v1.isLessThan(v2)).isTrue();
+      assertThat(v1.isGreaterThan(v2)).isFalse();
+
+      assertThat(v2.equalTo(v1)).isFalse();
+      assertThat(v2.isLessThan(v1)).isFalse();
+      assertThat(v2.isGreaterThan(v1)).isTrue();
+    }
   }
 }

@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -47,11 +48,12 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
   public final HttpClient client;
-  private final HttpClient.Factory httpClientFactory;
-  private final Map<String, CommandInfo> additionalCommands;
-  protected CommandCodec<HttpRequest> commandCodec;
-  protected ResponseCodec<HttpResponse> responseCodec;
+  protected final HttpClient.Factory httpClientFactory;
+  protected final Map<String, CommandInfo> additionalCommands;
+  protected @Nullable CommandCodec<HttpRequest> commandCodec;
+  protected @Nullable ResponseCodec<HttpResponse> responseCodec;
 
+  @SuppressWarnings("deprecation")
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   private static class DefaultClientFactoryHolder {
@@ -153,11 +155,17 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
+  /**
+   * @deprecated logging is not in the W3C WebDriver spec and is no longer supported.
+   */
   @Override
+  @Deprecated(forRemoval = true)
+  @SuppressWarnings("deprecation")
   public void setLocalLogs(LocalLogs logs) {
     this.logs = logs;
   }
 
+  @SuppressWarnings("deprecation")
   private void log(String logType, LogEntry entry) {
     logs.addEntry(logType, entry);
   }
@@ -167,6 +175,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public Response execute(Command command) throws IOException {
     if (command.getSessionId() == null) {
       if (QUIT.equals(command.getName())) {

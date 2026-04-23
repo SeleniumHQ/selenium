@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -71,12 +72,15 @@ class UnboundZmqEventBus implements EventBus {
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
   private final String encodedSecret;
   private final ZMQ.Poller poller;
-
-  private ZMQ.Socket pub;
-  private ZMQ.Socket sub;
+  private final ZMQ.Socket pub;
+  private final ZMQ.Socket sub;
 
   UnboundZmqEventBus(
-      ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+      ZContext context,
+      String publishConnection,
+      String subscribeConnection,
+      Secret secret,
+      Duration heartbeatPeriod) {
     Require.nonNull("Secret", secret);
     StringBuilder builder = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(builder)) {
@@ -131,18 +135,26 @@ class UnboundZmqEventBus implements EventBus {
             .build();
 
     // Access to the zmq socket is safe here: no threads.
-    Failsafe.with(retryPolicy)
-        .run(
-            () -> {
-              sub = context.createSocket(SocketType.SUB);
-              sub.setIPv6(isSubAddressIPv6(publishConnection));
-              sub.connect(publishConnection);
-              sub.subscribe(new byte[0]);
+    ZMQ.Socket[] pubSub =
+        Failsafe.with(retryPolicy)
+            .get(
+                () -> {
+                  ZMQ.Socket sub = context.createSocket(SocketType.SUB);
+                  sub.setIPv6(isSubAddressIPv6(publishConnection));
+                  ZmqUtils.configureHeartbeat(sub, heartbeatPeriod, "SUB");
+                  sub.connect(publishConnection);
+                  sub.subscribe(new byte[0]);
 
-              pub = context.createSocket(SocketType.PUB);
-              pub.setIPv6(isSubAddressIPv6(subscribeConnection));
-              pub.connect(subscribeConnection);
-            });
+                  ZMQ.Socket pub = context.createSocket(SocketType.PUB);
+                  pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+                  ZmqUtils.configureHeartbeat(pub, heartbeatPeriod, "PUB");
+                  pub.connect(subscribeConnection);
+
+                  return new ZMQ.Socket[] {pub, sub};
+                });
+    this.pub = pubSub[0];
+    this.sub = pubSub[1];
+
     // Connections are already established
     this.poller = context.createPoller(1);
     this.poller.register(Objects.requireNonNull(sub), ZMQ.Poller.POLLIN);
@@ -220,13 +232,8 @@ class UnboundZmqEventBus implements EventBus {
     ExecutorServices.shutdownGracefully(
         "Event Bus Listener Notifier", listenerNotificationExecutor);
     poller.close();
-
-    if (sub != null) {
-      sub.close();
-    }
-    if (pub != null) {
-      pub.close();
-    }
+    sub.close();
+    pub.close();
   }
 
   private class PollingRunnable implements Runnable {

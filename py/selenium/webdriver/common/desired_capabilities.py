@@ -26,19 +26,17 @@ class DesiredCapabilities:
     Usage Example::
 
         from selenium import webdriver
+        from selenium.webdriver.firefox.options import Options
 
         selenium_grid_url = "http://198.0.0.1:4444/wd/hub"
 
-        # Create a desired capabilities object as a starting point.
-        capabilities = DesiredCapabilities.FIREFOX.copy()
-        capabilities["platform"] = "WINDOWS"
-        capabilities["version"] = "10"
+        # Create a new Options object for the desired browser.
+        options = Options()
+        options.set_capability("platformName", "windows")
+        options.browser_version = "142"
 
-        # Instantiate an instance of Remote WebDriver with the desired capabilities.
-        driver = webdriver.Remote(desired_capabilities=capabilities, command_executor=selenium_grid_url)
-
-    Note: Always use '.copy()' on the DesiredCapabilities object to avoid the side
-    effects of altering the Global class instance.
+        # Instantiate an instance of Remote WebDriver with the new options.
+        driver = webdriver.Remote(command_executor=selenium_grid_url, options=options)
     """
 
     FIREFOX = {

@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.bidi.permissions;
 
+/**
+ * @see <a
+ *     href="https://www.w3.org/TR/permissions/#webdriver-bidi-type-permissions-PermissionState">BiDi
+ *     spec</a>
+ */
 public enum PermissionState {
   GRANTED("granted"),
   DENIED("denied"),
@@ -34,13 +39,11 @@ public enum PermissionState {
   }
 
   public static PermissionState findByName(String name) {
-    PermissionState result = null;
     for (PermissionState state : values()) {
       if (state.toString().equalsIgnoreCase(name)) {
-        result = state;
-        break;
+        return state;
       }
     }
-    return result;
+    throw new IllegalArgumentException("Unsupported permission state: " + name);
   }
 }

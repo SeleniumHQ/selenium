@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.distributor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -338,7 +337,7 @@ class DistributorTest extends DistributorTestBase {
             Instant.now(),
             Set.of(W3C),
             // Insertion order is assumed to be preserved
-            ImmutableSet.of(
+            Set.of(
                 // There's no capacity for this
                 new ImmutableCapabilities("browserName", "not cheese"),
                 // But there is for this, so we expect this to be created.
@@ -386,7 +385,7 @@ class DistributorTest extends DistributorTestBase {
             Instant.now(),
             Set.of(W3C),
             // Insertion order is assumed to be preserved
-            ImmutableSet.of(
+            Set.of(
                 // There's no capacity for this
                 new ImmutableCapabilities("browserName", "not cheese"),
                 // But there is for this, so we expect this to be created.

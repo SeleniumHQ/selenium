@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.auto.service.AutoService;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -68,10 +69,11 @@ class HttpClientFactoryTest {
   @AutoService(HttpClient.Factory.class)
   @HttpClientName("cheesy")
   @SuppressWarnings("unused")
+  @NullMarked
   public static class CheesyFactory implements HttpClient.Factory {
     @Override
     public HttpClient createClient(ClientConfig config) {
-      return null;
+      throw new UnsupportedOperationException("No cheese, sorry");
     }
   }
 
@@ -96,21 +98,23 @@ class HttpClientFactoryTest {
 
   @AutoService(HttpClient.Factory.class)
   @HttpClientName("duplicated")
+  @NullMarked
   @SuppressWarnings("unused")
   public static class Factory1 implements HttpClient.Factory {
     @Override
     public HttpClient createClient(ClientConfig config) {
-      return null;
+      throw new UnsupportedOperationException();
     }
   }
 
   @AutoService(HttpClient.Factory.class)
   @HttpClientName("duplicated")
+  @NullMarked
   @SuppressWarnings("unused")
   public static class Factory2 implements HttpClient.Factory {
     @Override
     public HttpClient createClient(ClientConfig config) {
-      return null;
+      throw new UnsupportedOperationException();
     }
   }
 }

@@ -1,0 +1,50 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+alias(
+    name = "browsertestchannel",
+    actual = ":browserchannel",
+)
+
+alias(
+    name = "channelrequest",
+    actual = ":browserchannel",
+)
+
+closure_js_library(
+    name = "wrapperxmlhttpfactory",
+    srcs = ["wrapperxmlhttpfactory.js"],
+    lenient = True,
+    deps = [
+        ":xhrlike",
+        ":xmlhttpfactory",
+    ],
+)
+
+closure_js_library(
+    name = "xhrlike",
+    srcs = ["xhrlike.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "xmlhttp",
+    srcs = ["xmlhttp.js"],
+    lenient = True,
+    deps = [
+        ":wrapperxmlhttpfactory",
+        ":xhrlike",
+        ":xmlhttpfactory",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "xmlhttpfactory",
+    srcs = ["xmlhttpfactory.js"],
+    lenient = True,
+    deps = [":xhrlike"],
+)

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .command import Command
+from selenium.webdriver.remote.command import Command
 
 
 class _ConnectionType:

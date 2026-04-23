@@ -33,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -99,11 +100,11 @@ public class EdgeDriverService extends DriverService {
   public EdgeDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -267,8 +268,18 @@ public class EdgeDriverService extends DriverService {
       if (appendLog == null) {
         this.appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
       }
-      if (verbose == null && Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY)) {
-        withVerbose(Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY));
+      if (Debug.isDebugAll()
+          || (verbose == null && Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY))) {
+        if (Debug.isDebugAll()
+            && (logLevel != null
+                || silent != null
+                || Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY)
+                || System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY) != null)) {
+          System.err.println(
+              "WARNING: Environment Variable `SE_DEBUG` is set; forcing EdgeDriver --verbose and"
+                  + " overriding --silent/--log-level settings.");
+        }
+        withVerbose(true);
       }
       if (silent == null && Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY)) {
         withSilent(Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY));
@@ -324,7 +335,7 @@ public class EdgeDriverService extends DriverService {
     protected EdgeDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

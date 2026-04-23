@@ -17,20 +17,20 @@
 
 package org.openqa.selenium.grid.distributor.httpd;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultDistributorConfig extends MapConfig {
 
   DefaultDistributorConfig() {
     super(
-        ImmutableMap.of(
+        Map.of(
             "events",
-            ImmutableMap.of(
+            Map.of(
                 "publish", "tcp://*:4442",
                 "subscribe", "tcp://*:4443",
                 "bind", true),
             "server",
-            ImmutableMap.of("port", 5553)));
+            Map.of("port", 5553)));
   }
 }

@@ -21,12 +21,12 @@ use crate::files::BrowserPath;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::mirror::{Assets, SeleniumRelease, MIRROR_URL};
+use crate::mirror::{Assets, MIRROR_URL, SeleniumRelease};
 use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT,
+    Logger, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT, SeleniumManager, create_http_client, parse_version,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;

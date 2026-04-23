@@ -21,6 +21,7 @@ require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
+require 'json'
 
 module Selenium
   #
@@ -118,7 +119,7 @@ module Selenium
           json = http.get('/repos/seleniumhq/selenium/releases').body
           all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
           server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
-          server_assets.each_with_object({}) { |asset, hash| hash[asset.delete('name')] = asset }
+          server_assets.to_h { |asset| [asset.delete('name'), asset] }
         end
       end
 
@@ -203,7 +204,7 @@ module Selenium
 
     def start
       process.start
-      poll_for_service
+      poll_for_ready
 
       process.wait unless @background
     end
@@ -217,6 +218,20 @@ module Selenium
 
     def webdriver_url
       "http://#{@host}:#{@port}/wd/hub"
+    end
+
+    def status_ok?
+      return false unless @process&.alive? && socket_connected?
+
+      Net::HTTP.start(@host, @port, open_timeout: 2, read_timeout: 2) do |http|
+        response = http.get('/status')
+        return false unless response.is_a?(Net::HTTPSuccess)
+
+        status = JSON.parse(response.body)
+        status.dig('value', 'ready') == true
+      end
+    rescue StandardError
+      false
     end
 
     def <<(arg)
@@ -257,10 +272,20 @@ module Selenium
       end
     end
 
-    def poll_for_service
-      return if socket.connected?
+    def poll_for_ready
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      loop do
+        return if status_ok?
 
-      raise Error, "remote server not launched in #{@timeout} seconds"
+        elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+        raise Error, "remote server not ready in #{@timeout} seconds" if elapsed > @timeout
+
+        sleep 0.5
+      end
+    end
+
+    def socket_connected?
+      @socket_connected ||= socket.connected?
     end
 
     def poll_for_shutdown

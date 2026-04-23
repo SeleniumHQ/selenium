@@ -17,16 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -54,20 +50,13 @@ public class DevToolsSession : IDevToolsSession
     private string? attachedTargetId;
 
     private WebSocketConnection? connection;
-    private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
+    private readonly ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
     private readonly BlockingCollection<string> messageQueue = new BlockingCollection<string>();
     private readonly Task messageQueueMonitorTask;
     private long currentCommandId = 0;
     private readonly DevToolsOptions options;
 
     private readonly static ILogger logger = Internal.Logging.Log.GetLogger<DevToolsSession>();
-
-    /// <summary>
-    /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
-    /// </summary>
-    /// <param name="endpointAddress"></param>
-    [Obsolete("Use DevToolsSession(string endpointAddress, DevToolsOptions options)")]
-    public DevToolsSession(string endpointAddress) : this(endpointAddress, new DevToolsOptions()) { }
 
     /// <summary>
     /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint and specified DevTools options.
@@ -82,7 +71,8 @@ public class DevToolsSession : IDevToolsSession
             throw new ArgumentNullException(nameof(endpointAddress));
         }
 
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+        this.options = options;
         this.CommandTimeout = TimeSpan.FromSeconds(30);
         this.debuggerEndpoint = endpointAddress;
         if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))
@@ -154,10 +144,7 @@ public class DevToolsSession : IDevToolsSession
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
@@ -188,10 +175,7 @@ public class DevToolsSession : IDevToolsSession
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, string sessionId, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, sessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
@@ -224,10 +208,7 @@ public class DevToolsSession : IDevToolsSession
         where TCommand : ICommand
         where TCommandResponse : ICommandResponse<TCommand>
     {
-        if (command == null)
-        {
-            throw new ArgumentNullException(nameof(command));
-        }
+        ArgumentNullException.ThrowIfNull(command);
 
         JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
@@ -640,10 +621,7 @@ public class DevToolsSession : IDevToolsSession
 
     private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
     {
-        if (DevToolsEventReceived != null)
-        {
-            DevToolsEventReceived(this, e);
-        }
+        DevToolsEventReceived?.Invoke(this, e);
     }
 
     private void OnConnectionDataReceived(object? sender, WebSocketConnectionDataReceivedEventArgs e)
@@ -653,17 +631,11 @@ public class DevToolsSession : IDevToolsSession
 
     private void LogTrace(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Trace, message, args));
     }
 
     private void LogError(string message, params object?[] args)
     {
-        if (LogMessage != null)
-        {
-            LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
-        }
+        LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
     }
 }

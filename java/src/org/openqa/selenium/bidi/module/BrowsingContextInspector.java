@@ -29,6 +29,8 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
+import org.openqa.selenium.bidi.browsingcontext.DownloadEnded;
+import org.openqa.selenium.bidi.browsingcontext.DownloadInfo;
 import org.openqa.selenium.bidi.browsingcontext.HistoryUpdated;
 import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptClosed;
@@ -45,57 +47,80 @@ public class BrowsingContextInspector implements AutoCloseable {
 
   private final BiDi bidi;
 
-  private final Function<Map<String, Object>, BrowsingContextInfo> browsingContextInfoMapper =
+  private static final Function<Map<String, Object>, BrowsingContextInfo>
+      browsingContextInfoMapper =
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.readNonNull(BrowsingContextInfo.class);
+            }
+          };
+
+  private static final Function<Map<String, Object>, NavigationInfo> navigationInfoMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(BrowsingContextInfo.class);
+          return input.readNonNull(NavigationInfo.class);
         }
       };
 
-  private final Function<Map<String, Object>, NavigationInfo> navigationInfoMapper =
+  private static final Function<Map<String, Object>, DownloadInfo> downloadWillBeginMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(NavigationInfo.class);
+          return input.readNonNull(DownloadInfo.class);
+        }
+      };
+
+  private static final Function<Map<String, Object>, DownloadEnded> downloadEndMapper =
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.readNonNull(DownloadEnded.class);
         }
       };
 
   private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
-  private final Event<BrowsingContextInfo> browsingContextDestroyed =
+  private static final Event<BrowsingContextInfo> browsingContextDestroyed =
       new Event<>("browsingContext.contextDestroyed", browsingContextInfoMapper);
 
-  private final Event<UserPromptClosed> userPromptClosed =
+  private static final Event<UserPromptClosed> userPromptClosed =
       new Event<>(
           "browsingContext.userPromptClosed",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(UserPromptClosed.class);
+              return input.readNonNull(UserPromptClosed.class);
             }
           });
 
   private final Set<Event<NavigationInfo>> navigationEventSet = new HashSet<>();
 
-  private final Event<UserPromptOpened> userPromptOpened =
+  private static final Event<DownloadInfo> downloadWillBeginEvent =
+      new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
+
+  private static final Event<DownloadEnded> downloadEndEvent =
+      new Event<>("browsingContext.downloadEnd", downloadEndMapper);
+
+  private static final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
           "browsingContext.userPromptOpened",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(UserPromptOpened.class);
+              return input.readNonNull(UserPromptOpened.class);
             }
           });
 
-  private final Event<HistoryUpdated> historyUpdated =
+  private static final Event<HistoryUpdated> historyUpdated =
       new Event<>(
           "browsingContext.historyUpdated",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(HistoryUpdated.class);
+              return input.readNonNull(HistoryUpdated.class);
             }
           });
 
@@ -151,8 +176,20 @@ public class BrowsingContextInspector implements AutoCloseable {
     addNavigationEventListener("browsingContext.load", consumer);
   }
 
-  public void onDownloadWillBegin(Consumer<NavigationInfo> consumer) {
-    addNavigationEventListener("browsingContext.downloadWillBegin", consumer);
+  public void onDownloadWillBegin(Consumer<DownloadInfo> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadWillBeginEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadWillBeginEvent, consumer);
+    }
+  }
+
+  public void onDownloadEnd(Consumer<DownloadEnded> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadEndEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadEndEvent, consumer);
+    }
   }
 
   public void onNavigationAborted(Consumer<NavigationInfo> consumer) {
@@ -210,6 +247,8 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(userPromptOpened);
     this.bidi.clearListener(userPromptClosed);
     this.bidi.clearListener(historyUpdated);
+    this.bidi.clearListener(downloadWillBeginEvent);
+    this.bidi.clearListener(downloadEndEvent);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }

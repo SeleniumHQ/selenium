@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNullElse;
+
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
@@ -41,7 +44,7 @@ public class ErrorHandler {
   private static final String FILE_NAME = "fileName";
   private static final String UNKNOWN_CLASS = "<anonymous class>";
   private static final String UNKNOWN_METHOD = "<anonymous method>";
-  private static final String UNKNOWN_FILE = null;
+  private static final @Nullable String UNKNOWN_FILE = null;
 
   private final ErrorCodes errorCodes;
 
@@ -74,8 +77,9 @@ public class ErrorHandler {
     return includeServerErrors;
   }
 
-  public void setIncludeServerErrors(boolean includeServerErrors) {
+  public ErrorHandler setIncludeServerErrors(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
+    return this;
   }
 
   @SuppressWarnings("unchecked")
@@ -95,8 +99,9 @@ public class ErrorHandler {
       throw new RuntimeException(throwable);
     }
 
+    int responseStatus = requireNonNullElse(response.getStatus(), -1);
     Class<? extends WebDriverException> outerErrorType =
-        errorCodes.getExceptionType(response.getStatus());
+        errorCodes.getExceptionType(responseStatus);
 
     Object value = response.getValue();
     String message = null;
@@ -118,7 +123,7 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      Throwable serverError = rebuildServerError(rawErrorData, response.getStatus());
+      Throwable serverError = rebuildServerError(rawErrorData, responseStatus);
 
       // If serverError is null, then the server did not provide a className (only expected if
       // the server is a Java process) or a stack trace. The lack of a className is OK, but
@@ -185,6 +190,7 @@ public class ErrorHandler {
     throw toThrow;
   }
 
+  @Nullable
   @SuppressWarnings("unchecked")
   private UnhandledAlertException createUnhandledAlertException(Object value) {
     Map<String, Object> rawErrorData = (Map<String, Object>) value;
@@ -225,6 +231,7 @@ public class ErrorHandler {
     return null;
   }
 
+  @Nullable
   private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
     if (rawErrorData.get(CLASS) == null && rawErrorData.get(STACK_TRACE) == null) {
@@ -251,9 +258,9 @@ public class ErrorHandler {
       clazz = errorCodes.getExceptionType(responseStatus);
     }
 
-    if (clazz.equals(UnhandledAlertException.class)) {
+    if (UnhandledAlertException.class.equals(clazz)) {
       toReturn = createUnhandledAlertException(rawErrorData);
-    } else if (Throwable.class.isAssignableFrom(clazz)) {
+    } else if (clazz != null && Throwable.class.isAssignableFrom(clazz)) {
       @SuppressWarnings({"unchecked"})
       Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
       toReturn =
@@ -296,8 +303,9 @@ public class ErrorHandler {
    */
   private static class FrameInfoToStackFrame
       implements Function<Map<String, Object>, StackTraceElement> {
+    @Nullable
     @Override
-    public StackTraceElement apply(Map<String, Object> frameInfo) {
+    public StackTraceElement apply(@Nullable Map<String, Object> frameInfo) {
       if (frameInfo == null) {
         return null;
       }
@@ -338,7 +346,8 @@ public class ErrorHandler {
       return new StackTraceElement(className, methodName, fileName, lineNumber);
     }
 
-    private static String toStringOrNull(Object o) {
+    @Nullable
+    private static String toStringOrNull(@Nullable Object o) {
       return o == null ? null : o.toString();
     }
   }

@@ -17,30 +17,46 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class PreloadScript : IAsyncDisposable
+[JsonConverter(typeof(Converter))]
+public sealed record PreloadScript : IIdentifiable
 {
-    private readonly BiDi _bidi;
-
-    public PreloadScript(BiDi bidi, string id)
+    public PreloadScript(IBiDi bidi, string id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
     public string Id { get; }
 
-    public Task RemoveAsync()
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(PreloadScript? other)
     {
-        return _bidi.Script.RemovePreloadScriptAsync(this);
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
-    public async ValueTask DisposeAsync()
+    public override int GetHashCode()
     {
-        await RemoveAsync().ConfigureAwait(false);
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<PreloadScript>
+    {
+        protected override PreloadScript Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

@@ -19,11 +19,10 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
@@ -43,6 +42,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
@@ -55,6 +55,7 @@ import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.MBean;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -111,6 +112,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
             return thread;
           });
 
+  @Nullable private final MBean jmxBean;
+
   public LocalNewSessionQueue(
       Tracer tracer,
       SlotMatcher slotMatcher,
@@ -139,7 +142,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         requestTimeoutCheck.toMillis(),
         MILLISECONDS);
 
-    new JMXHelper().register(this);
+    // Manage JMX and unregister on close()
+    this.jmxBean = new JMXHelper().register(this);
   }
 
   public static NewSessionQueue create(Config config) {
@@ -177,7 +181,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                                   sessionRequest.getRequestId().equals(entry.getKey())))
               .filter(entry -> isTimedOut(now, entry.getValue()))
               .map(Map.Entry::getKey)
-              .collect(ImmutableSet.toImmutableSet());
+              .collect(toUnmodifiableSet());
     } finally {
       readLock.unlock();
     }
@@ -255,9 +259,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setStatus(HTTP_INTERNAL_ERROR)
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "error", "session not created",
                             "message", result.left().getMessage(),
                             "stacktrace", result.left().getStackTrace()))));
@@ -502,6 +506,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   @Override
   public void close() {
     shutdownGracefully(NAME, service);
+
+    if (jmxBean != null) {
+      new JMXHelper().unregister(jmxBean.getObjectName());
+    }
   }
 
   private void failDueToTimeout(RequestId reqId) {

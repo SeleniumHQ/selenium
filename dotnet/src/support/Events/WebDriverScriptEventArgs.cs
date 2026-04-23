@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.Support.Events;
 
@@ -32,10 +32,12 @@ public class WebDriverScriptEventArgs : EventArgs
     /// <param name="driver">The WebDriver instance used to execute the script.</param>
     /// <param name="script">The script executed by the driver.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
-    public WebDriverScriptEventArgs(IWebDriver driver, string script)
+    public WebDriverScriptEventArgs(IWebDriver driver, [StringSyntax(StringSyntaxConstants.JavaScript)] string script)
     {
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        this.Script = script ?? throw new ArgumentNullException(nameof(script));
+        ArgumentNullException.ThrowIfNull(driver);
+        ArgumentNullException.ThrowIfNull(script);
+        this.Driver = driver;
+        this.Script = script;
     }
 
     /// <summary>

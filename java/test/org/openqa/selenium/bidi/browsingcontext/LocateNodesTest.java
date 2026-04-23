@@ -16,8 +16,8 @@
 // under the License.
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class LocateNodesTest extends JupiterTestBase {
     LocateNodeParameters parameters = new LocateNodeParameters(Locator.css("div"));
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(13);
+    assertThat(elements).hasSize(13);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class LocateNodesTest extends JupiterTestBase {
     driver.get(pages.xhtmlTestPage);
 
     List<RemoteValue> elements = browsingContext.locateNodes(Locator.css("div"));
-    assertThat(elements.size()).isEqualTo(13);
+    assertThat(elements).hasSize(13);
   }
 
   @Test
@@ -92,11 +92,10 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
     NodeProperties properties = (NodeProperties) value.getValue().get();
-    assertThat(properties.getLocalName().get()).isEqualTo("div");
-    assertThat(properties.getAttributes().get().size()).isEqualTo(1);
-    assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
+    assertThat(properties.getLocalName()).hasValue("div");
+    assertThat(properties.getAttributes()).hasValue(Map.of("class", "content"));
   }
 
   @Test
@@ -115,11 +114,10 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
     NodeProperties properties = (NodeProperties) value.getValue().get();
-    assertThat(properties.getLocalName().get()).isEqualTo("div");
-    assertThat(properties.getAttributes().get().size()).isEqualTo(1);
-    assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
+    assertThat(properties.getLocalName()).hasValue("div");
+    assertThat(properties.getAttributes()).hasValue(Map.of("class", "content"));
   }
 
   @Test
@@ -139,7 +137,7 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
   }
 
   @Test
@@ -154,7 +152,7 @@ public class LocateNodesTest extends JupiterTestBase {
         new LocateNodeParameters(Locator.css("div")).setMaxNodeCount(4);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(4);
+    assertThat(elements).hasSize(4);
   }
 
   @Test
@@ -193,7 +191,7 @@ public class LocateNodesTest extends JupiterTestBase {
             .setMaxNodeCount(50);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(35);
+    assertThat(elements).hasSize(35);
   }
 
   @Test
@@ -209,7 +207,7 @@ public class LocateNodesTest extends JupiterTestBase {
         new LocateNodeParameters(Locator.css("div")).setSandbox(sandbox).setMaxNodeCount(1);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(1);
+    assertThat(elements).hasSize(1);
 
     String nodeId = elements.get(0).getSharedId().get();
 

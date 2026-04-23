@@ -25,12 +25,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
-/** Contains the logs for a session divided by supported log types. */
+/**
+ * Contains the logs for a session divided by supported log types.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
 @Beta
 @NullMarked
+@Deprecated(forRemoval = true)
 public class SessionLogs {
   private final Map<String, LogEntries> logTypeToEntriesMap;
 
@@ -38,7 +45,7 @@ public class SessionLogs {
     this.logTypeToEntriesMap = new HashMap<>();
   }
 
-  public LogEntries getLogs(String logType) {
+  public LogEntries getLogs(@Nullable String logType) {
     if (logType == null || !logTypeToEntriesMap.containsKey(logType)) {
       return new LogEntries(Collections.emptyList());
     }

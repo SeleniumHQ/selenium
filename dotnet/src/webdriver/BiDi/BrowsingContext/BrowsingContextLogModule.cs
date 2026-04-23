@@ -18,32 +18,44 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Log;
-using System.Threading.Tasks;
-using System;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
+internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return logModule.OnEntryAddedAsync(async args =>
-        {
-            if (args.Source.Context?.Equals(context) is true)
-            {
-                await handler(args).ConfigureAwait(false);
-            }
-        }, options);
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAddedAsync(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return logModule.OnEntryAddedAsync(args =>
+        ArgumentNullException.ThrowIfNull(handler);
+
+        return logModule.OnEntryAddedAsync(
+            e => HandleEntryAdded(e, handler),
+            ContextSubscriptionOptions.WithContext(options, context),
+            cancellationToken);
+    }
+
+    private async Task HandleEntryAddedAsync(EntryAddedEventArgs e, Func<EntryAddedEventArgs, Task> handler)
+    {
+        if (context.Equals(e.Source.Context))
         {
-            if (args.Source.Context?.Equals(context) is true)
-            {
-                handler(args);
-            }
-        }, options);
+            await handler(e).ConfigureAwait(false);
+        }
+    }
+
+    private void HandleEntryAdded(EntryAddedEventArgs e, Action<EntryAddedEventArgs> handler)
+    {
+        if (context.Equals(e.Source.Context))
+        {
+            handler(e);
+        }
     }
 }

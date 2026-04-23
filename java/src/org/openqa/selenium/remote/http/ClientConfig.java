@@ -24,7 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Optional;
 import javax.net.ssl.SSLContext;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.internal.Require;
 
@@ -32,13 +34,14 @@ public class ClientConfig {
 
   private static final Filter RETRY_FILTER = new RetryRequest();
   private static final Filter DEFAULT_FILTER = new AddSeleniumUserAgent();
-  private final URI baseUri;
+  private final @Nullable URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
+  private final Duration wsTimeout;
   private final Filter filters;
-  private final Proxy proxy;
-  private final Credentials credentials;
-  private final SSLContext sslContext;
+  private final @Nullable Proxy proxy;
+  private final @Nullable Credentials credentials;
+  private final @Nullable SSLContext sslContext;
   private final String version;
 
   protected ClientConfig(
@@ -50,9 +53,32 @@ public class ClientConfig {
       Credentials credentials,
       SSLContext sslContext,
       String version) {
+    this(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        defaultWsTimeout(),
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
+  }
+
+  protected ClientConfig(
+      @Nullable URI baseUri,
+      Duration connectionTimeout,
+      Duration readTimeout,
+      Duration wsTimeout,
+      Filter filters,
+      @Nullable Proxy proxy,
+      @Nullable Credentials credentials,
+      @Nullable SSLContext sslContext,
+      String version) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
+    this.wsTimeout = Require.nonNegative("WebSocket timeout", wsTimeout);
     this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
     this.credentials = credentials;
@@ -63,10 +89,9 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
         null,
-        Duration.ofSeconds(
-            Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10"))),
-        Duration.ofSeconds(
-            Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180"))),
+        defaultConnectionTimeout(),
+        defaultReadTimeout(),
+        defaultWsTimeout(),
         DEFAULT_FILTER,
         null,
         null,
@@ -74,11 +99,27 @@ public class ClientConfig {
         System.getProperty("webdriver.httpclient.version", null));
   }
 
+  private static Duration defaultWsTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.wsTimeout", "30")));
+  }
+
+  private static Duration defaultReadTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180")));
+  }
+
+  private static Duration defaultConnectionTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10")));
+  }
+
   public ClientConfig baseUri(URI baseUri) {
     return new ClientConfig(
         Require.nonNull("Base URI", baseUri),
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters,
         proxy,
         credentials,
@@ -94,13 +135,19 @@ public class ClientConfig {
     }
   }
 
+  @Nullable
   public URI baseUri() {
     return baseUri;
   }
 
+  @Nullable
   public URL baseUrl() {
+    return Optional.ofNullable(baseUri()).map(this::toURL).orElse(null);
+  }
+
+  private URL toURL(URI uri) {
     try {
-      return baseUri().toURL();
+      return uri.toURL();
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }
@@ -111,6 +158,7 @@ public class ClientConfig {
         baseUri,
         Require.nonNull("Connection timeout", timeout),
         readTimeout,
+        wsTimeout,
         filters,
         proxy,
         credentials,
@@ -127,6 +175,20 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         Require.nonNull("Read timeout", timeout),
+        wsTimeout,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
+  }
+
+  public ClientConfig wsTimeout(Duration timeout) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        Require.nonNull("WebSocket timeout", timeout),
         filters,
         proxy,
         credentials,
@@ -138,12 +200,17 @@ public class ClientConfig {
     return readTimeout;
   }
 
+  public Duration wsTimeout() {
+    return wsTimeout;
+  }
+
   public ClientConfig withFilter(Filter filter) {
     Require.nonNull("Filter", filter);
     return new ClientConfig(
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filter.andThen(DEFAULT_FILTER),
         proxy,
         credentials,
@@ -156,6 +223,7 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters.andThen(RETRY_FILTER),
         proxy,
         credentials,
@@ -172,6 +240,7 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters,
         Require.nonNull("Proxy", proxy),
         credentials,
@@ -179,6 +248,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public Proxy proxy() {
     return proxy;
   }
@@ -188,6 +258,7 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters,
         proxy,
         Require.nonNull("Credentials", credentials),
@@ -195,6 +266,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public Credentials credentials() {
     return credentials;
   }
@@ -204,6 +276,7 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters,
         proxy,
         credentials,
@@ -211,6 +284,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public SSLContext sslContext() {
     return sslContext;
   }
@@ -220,6 +294,7 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        wsTimeout,
         filters,
         proxy,
         credentials,
@@ -240,6 +315,8 @@ public class ClientConfig {
         + connectionTimeout
         + ", readTimeout="
         + readTimeout
+        + ", wsTimeout="
+        + wsTimeout
         + ", filters="
         + filters
         + ", proxy="

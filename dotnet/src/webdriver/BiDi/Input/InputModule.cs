@@ -17,32 +17,69 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Input.InputJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule(Broker broker) : Module(broker)
+internal sealed class InputModule : Module, IInputModule
 {
-    public async Task<EmptyResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
-    {
-        var @params = new PerformActionsCommandParameters(context, actions);
+    private static readonly Command<PerformActionsParameters, PerformActionsResult> PerformActionsCommand = new(
+        "input.performActions", Default.PerformActionsParameters, Default.PerformActionsResult);
 
-        return await Broker.ExecuteCommandAsync<PerformActionsCommand, EmptyResult>(new PerformActionsCommand(@params), options).ConfigureAwait(false);
+    private static readonly Command<ReleaseActionsParameters, ReleaseActionsResult> ReleaseActionsCommand = new(
+        "input.releaseActions", Default.ReleaseActionsParameters, Default.ReleaseActionsResult);
+
+    private static readonly Command<SetFilesParameters, SetFilesResult> SetFilesCommand = new(
+        "input.setFiles", Default.SetFilesParameters, Default.SetFilesResult);
+
+    private static readonly Event<FileDialogOpenedEventArgs, FileDialogInfo> FileDialogOpenedEvent = new(
+        "input.fileDialogOpened",
+        static (bidi, p) => new FileDialogOpenedEventArgs(bidi, p.Context, p.UserContext, p.Multiple, p.Element),
+        Default.FileDialogInfo);
+
+    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new PerformActionsParameters(context, actions);
+
+        return await ExecuteAsync(PerformActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
+    public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new ReleaseActionsCommandParameters(context);
+        var @params = new ReleaseActionsParameters(context);
 
-        return await Broker.ExecuteCommandAsync<ReleaseActionsCommand, EmptyResult>(new ReleaseActionsCommand(@params), options).ConfigureAwait(false);
+        return await ExecuteAsync(ReleaseActionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new SetFilesCommandParameters(context, element, files);
+        var @params = new SetFilesParameters(context, element, files);
 
-        return await Broker.ExecuteCommandAsync<SetFilesCommand, EmptyResult>(new SetFilesCommand(@params), options).ConfigureAwait(false);
+        return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogOpenedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogOpenedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return await SubscribeAsync(FileDialogOpenedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 }
+
+[JsonSerializable(typeof(PerformActionsParameters))]
+[JsonSerializable(typeof(PerformActionsResult))]
+[JsonSerializable(typeof(ReleaseActionsParameters))]
+[JsonSerializable(typeof(ReleaseActionsResult))]
+[JsonSerializable(typeof(SetFilesParameters))]
+[JsonSerializable(typeof(SetFilesResult))]
+
+[JsonSerializable(typeof(FileDialogInfo))]
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+internal partial class InputJsonSerializerContext : JsonSerializerContext;

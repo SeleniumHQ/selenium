@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -42,11 +43,12 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
 
 public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver {
 
-  private String foundBy;
+  private @Nullable String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
   protected FileDetector fileDetector;
@@ -59,6 +61,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     this.parent = parent;
   }
 
+  @Nullable
   public String getId() {
     return id;
   }
@@ -88,18 +91,17 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public void sendKeys(CharSequence... keysToSend) {
-    if (keysToSend == null || keysToSend.length == 0) {
+    Require.nonNull("Keys to send", keysToSend);
+    if (keysToSend.length == 0) {
       throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
     }
     for (CharSequence cs : keysToSend) {
-      if (cs == null) {
-        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
-      }
+      Require.nonNull("Keys to send", cs);
     }
 
     String allKeysToSend = String.join("", keysToSend);
 
-    List<File> files =
+    List<@Nullable File> files =
         Arrays.stream(allKeysToSend.split("\n"))
             .map(fileDetector::getLocalFile)
             .collect(Collectors.toList());

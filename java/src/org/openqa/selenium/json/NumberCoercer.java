@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -31,21 +29,22 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   private static final Map<Class<?>, Class<?>> PRIMITIVE_NUMBER_TYPES;
 
   static {
-    Map<Class<?>, Class<?>> builder = new HashMap<>();
-    builder.put(byte.class, Byte.class);
-    builder.put(double.class, Double.class);
-    builder.put(float.class, Float.class);
-    builder.put(int.class, Integer.class);
-    builder.put(long.class, Long.class);
-    builder.put(short.class, Short.class);
-
-    PRIMITIVE_NUMBER_TYPES = Collections.unmodifiableMap(builder);
+    PRIMITIVE_NUMBER_TYPES =
+        Map.ofEntries(
+            Map.entry(byte.class, Byte.class),
+            Map.entry(double.class, Double.class),
+            Map.entry(float.class, Float.class),
+            Map.entry(int.class, Integer.class),
+            Map.entry(long.class, Long.class),
+            Map.entry(short.class, Short.class));
   }
 
+  private final JsonTypeCoercer typeCoercer;
   private final Class<T> stereotype;
   private final Function<Number, T> mapper;
 
-  NumberCoercer(Class<T> stereotype, Function<Number, T> mapper) {
+  NumberCoercer(JsonTypeCoercer typeCoercer, Class<T> stereotype, Function<Number, T> mapper) {
+    this.typeCoercer = Require.nonNull("TypeCoercer", typeCoercer);
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.mapper = Require.nonNull("Mapper", mapper);
   }
@@ -65,10 +64,16 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
           break;
 
         case STRING:
-          try {
-            number = new BigDecimal(jsonInput.nextString());
-          } catch (NumberFormatException e) {
-            throw new JsonException(e);
+          String numberAsString = jsonInput.nextString();
+          // any PropertySetting is okay here, as we know it won't be used
+          try (JsonInput nestedInput =
+              new JsonInput(new StringReader(numberAsString), typeCoercer, setting)) {
+            number = nestedInput.nextNumber();
+            // ensure the 'numberAsString' string has been read to the end
+            nestedInput.nextEnd();
+          } catch (JsonException e) {
+            throw new JsonException(
+                String.format("Not a numeric value: \"%s\"", numberAsString), e);
           }
           break;
 

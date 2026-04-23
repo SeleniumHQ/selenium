@@ -74,6 +74,18 @@ public class RouterFlags implements HasRoles {
   @ConfigValue(section = ROUTER_SECTION, name = "disable-ui", example = "true")
   public boolean disableUi = false;
 
+  @Parameter(
+      names = {"--tcp-tunnel"},
+      arity = 1,
+      description =
+          "Enable the transparent TCP tunnel for WebSocket connections (BiDi, CDP). "
+              + "When disabled, all WebSocket traffic is routed through ProxyWebsocketsIntoGrid "
+              + "instead of the direct byte-bridge. Disable for benchmarking the proxy path "
+              + "or in network topologies where the Router cannot open direct TCP connections "
+              + "to Nodes (e.g. Kubernetes port-forward setups).")
+  @ConfigValue(section = ROUTER_SECTION, name = "tcp-tunnel", example = "false")
+  public boolean tcpTunnel = true;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(ROUTER_ROLE);

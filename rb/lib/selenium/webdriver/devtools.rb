@@ -84,7 +84,7 @@ module Selenium
       def start_session(target_type:)
         targets = target.get_targets.dig('result', 'targetInfos')
         found_target = targets.find { |target| target['type'] == target_type }
-        raise Error::WebDriverError, "Target type '#{target_type}' not found" unless found_target
+        raise Error::NoSuchTargetError, "Target type '#{target_type}' not found" unless found_target
 
         session = target.attach_to_target(target_id: found_target['targetId'], flatten: true)
         @session_id = session.dig('result', 'sessionId')

@@ -21,9 +21,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 
 # @pytest.mark.xfail_ie
-# @pytest.mark.xfail_edge(reason="Fails on Travis")
-# @pytest.mark.xfail_firefox(reason="Fails on Travis")
-# @pytest.mark.xfail_remote(reason="Fails on Travis")
 # def test_should_maximize_the_window(driver):
 #     resize_timeout = 5
 #     wait = WebDriverWait(driver, resize_timeout)
@@ -138,8 +135,6 @@ def test_set_window_rect_throws_when_height_and_width_are_0(driver):
 
 # @pytest.mark.xfail_safari(raises=WebDriverException,
 #                           reason='Fullscreen command not implemented')
-# @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
-#                     reason='Fullscreen command causes Travis to hang')
 # @pytest.mark.no_driver_after_test
 # def test_should_fullscreen_the_current_window(driver):
 #     start_width = driver.execute_script('return window.innerWidth;')
@@ -161,8 +156,6 @@ def test_set_window_rect_throws_when_height_and_width_are_0(driver):
 
 # @pytest.mark.xfail_safari(raises=WebDriverException,
 #                           reason='Minimize command not implemented')
-# @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
-#                     reason='Minimize command causes Travis to hang')
 # @pytest.mark.no_driver_after_test
 # def test_should_minimize_the_current_window(driver):
 #     driver.minimize_window()

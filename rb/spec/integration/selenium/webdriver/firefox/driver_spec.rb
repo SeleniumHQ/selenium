@@ -44,9 +44,7 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'prints full page', except: [{platform: :windows,
-                                           reason: 'Some issues with resolution?'},
-                                          {platform: :macosx,
+          it 'prints full page', except: [{platform: :macosx,
                                            reason: 'showing half resolution of what expected'}] do
             viewport_width = driver.execute_script('return window.innerWidth;')
             viewport_height = driver.execute_script('return window.innerHeight;')

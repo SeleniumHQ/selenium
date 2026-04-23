@@ -23,6 +23,7 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Propagator;
@@ -40,7 +41,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
   // humanity. This implies that we're never going to need to configure
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
-  private static volatile OpenTelemetryTracer singleton;
+  @Nullable private static volatile OpenTelemetryTracer singleton;
 
   public static void setHttpLogs(boolean value) {
     HTTP_LOGS = value;
@@ -92,7 +93,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   private final Tracer tracer;
   private final OpenTelemetryPropagator telemetryPropagator;
-  private Context context;
+  private @Nullable Context context;
 
   public OpenTelemetryTracer(Tracer tracer, TextMapPropagator propagator) {
     this.tracer = Require.nonNull("Tracer", tracer);

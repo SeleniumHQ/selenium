@@ -22,11 +22,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.net.HostIdentifier;
 
-@NullMarked
 public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";

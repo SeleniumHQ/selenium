@@ -3,6 +3,7 @@ load(
     "csharp_library",
     "generated_assembly_info",
     "nuget_pack",
+    "nuget_package",
 )
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -28,13 +29,13 @@ generated_assembly_info(
 csharp_library(
     name = "support",
     srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "UI/*.cs",
-    ]) + [":assembly-info"],
+        "**/*.cs",
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
     out = "WebDriver.Support",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "netstandard2.0",
@@ -44,6 +45,8 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-netstandard2.0",
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
     ],
 )
 
@@ -67,14 +70,14 @@ nuget_pack(
 csharp_library(
     name = "support-strongnamed",
     srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "UI/*.cs",
-    ]) + [":assembly-info"],
+        "**/*.cs",
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "netstandard2.0",
@@ -84,6 +87,8 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-netstandard2.0-strongnamed",
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
     ],
 )
 

@@ -19,15 +19,12 @@ package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -122,6 +119,7 @@ class SessionCleanUpTest {
   }
 
   @AfterEach
+  @SuppressWarnings("ConstantValue")
   public void stopServer() {
     if (server != null) {
       server.stop();
@@ -169,7 +167,7 @@ class SessionCleanUpTest {
       Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
       handler.addHandler(router);
 
-      server = new NettyServer(new BaseServerOptions(new MapConfig(ImmutableMap.of())), handler);
+      server = new NettyServer(new BaseServerOptions(new MapConfig()), handler);
 
       server.start();
 
@@ -208,17 +206,14 @@ class SessionCleanUpTest {
               new CompoundConfig(
                   additionalConfig,
                   new TomlConfig(new StringReader(String.join("\n", rawConfig))),
-                  new MapConfig(
-                      ImmutableMap.of(
-                          "server", ImmutableMap.of("port", PortProber.findFreePort())))));
+                  new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))));
 
       Server<?> nodeServer = new NodeServer().asServer(nodeConfig).start();
 
       waitToHaveCapacity(distributor);
 
       HttpRequest request = new HttpRequest(POST, "/session");
-      request.setContent(
-          asJson(ImmutableMap.of("capabilities", ImmutableMap.of("alwaysMatch", capabilities))));
+      request.setContent(asJson(Map.of("capabilities", Map.of("alwaysMatch", capabilities))));
 
       HttpClient client = clientFactory.createClient(server.getUrl());
       HttpResponse httpResponse = client.execute(request);
@@ -240,11 +235,7 @@ class SessionCleanUpTest {
 
       waitTillNodesAreRemoved(distributor);
 
-      try {
-        waitTillSessionIsRemoved(sessions, id);
-      } catch (Exception e) {
-        fail("Session not removed");
-      }
+      waitTillSessionIsRemoved(sessions, id);
     }
   }
 
@@ -305,10 +296,10 @@ class SessionCleanUpTest {
               new SessionRequest(
                   new RequestId(UUID.randomUUID()),
                   Instant.now(),
-                  ImmutableSet.of(W3C),
-                  ImmutableSet.of(capabilities),
-                  ImmutableMap.of(),
-                  ImmutableMap.of()));
+                  Set.of(W3C),
+                  Set.of(capabilities),
+                  Map.of(),
+                  Map.of()));
       assertThat(result.isRight()).isTrue();
 
       SessionId id = result.right().getSession().getId();
@@ -321,23 +312,19 @@ class SessionCleanUpTest {
 
       waitTillNodesAreRemoved(distributor);
 
-      try {
-        waitTillSessionIsRemoved(sessions, id);
-      } catch (Exception e) {
-        fail("Session not removed");
-      }
+      waitTillSessionIsRemoved(sessions, id);
 
       Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
           distributor.newSession(
               new SessionRequest(
                   new RequestId(UUID.randomUUID()),
                   Instant.now(),
-                  ImmutableSet.of(W3C),
-                  ImmutableSet.of(capabilities),
-                  ImmutableMap.of(),
-                  ImmutableMap.of()));
+                  Set.of(W3C),
+                  Set.of(capabilities),
+                  Map.of(),
+                  Map.of()));
       assertThat(sessionResponse.isLeft()).isTrue();
-      assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
+      assertThat(distributor.getStatus().getNodes()).isEmpty();
     }
   }
 

@@ -17,20 +17,18 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record Cookie(string Name, BytesValue Value, string Domain, string Path, long Size, bool HttpOnly, bool Secure, SameSite SameSite)
-{
-    [JsonInclude]
-    public DateTimeOffset? Expiry { get; internal set; }
-}
+public sealed record Cookie(string Name, BytesValue Value, string Domain, string Path, long Size, bool HttpOnly, bool Secure, SameSite SameSite, [property: JsonConverter(typeof(DateTimeOffsetSecondsConverter))] DateTimeOffset? Expiry);
 
+[JsonConverter(typeof(CamelCaseEnumConverter<SameSite>))]
 public enum SameSite
 {
     Strict,
     Lax,
-    None
+    None,
+    Default
 }

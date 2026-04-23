@@ -121,14 +121,14 @@ class ArchitectureTest {
   void determineArchEmpty() {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> Architecture.extractFromSysProperty(""))
-        .withMessageContaining("Unknown architecture");
+        .withMessage("Unknown architecture: \"\"");
   }
 
   @Test
   void determineArchBogus() {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> Architecture.extractFromSysProperty("hoobaflooba"))
-        .withMessageContaining("Unknown architecture");
+        .withMessage("Unknown architecture: \"hoobaflooba\"");
   }
 
   @Test
@@ -139,7 +139,7 @@ class ArchitectureTest {
   @Test
   void dataModelIs32Or64BitOnCurrentArchitecture() {
     int model = Architecture.getCurrent().getDataModel();
-    assertThat(model == 32 || model == 64).isTrue();
+    assertThat(model).isIn(32, 64);
   }
 
   @Test

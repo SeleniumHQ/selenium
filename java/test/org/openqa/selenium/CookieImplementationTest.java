@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -108,8 +108,7 @@ class CookieImplementationTest extends JupiterTestBase {
     assertCookieIsNotPresentWithName(key1);
     assertCookieIsNotPresentWithName(key2);
 
-    Set<Cookie> cookies = driver.manage().getCookies();
-    int countBefore = cookies.size();
+    int countBefore = driver.manage().getCookies().size();
 
     Cookie one = new Cookie.Builder(key1, "value").build();
     Cookie two = new Cookie.Builder(key2, "value").build();
@@ -118,11 +117,10 @@ class CookieImplementationTest extends JupiterTestBase {
     driver.manage().addCookie(two);
 
     openAnotherPage();
-    cookies = driver.manage().getCookies();
-    assertThat(cookies.size()).isEqualTo(countBefore + 2);
+    Set<Cookie> cookies = driver.manage().getCookies();
+    assertThat(cookies).hasSize(countBefore + 2);
 
-    assertThat(cookies.contains(one)).isTrue();
-    assertThat(cookies.contains(two)).isTrue();
+    assertThat(cookies).contains(one, two);
   }
 
   @Test
@@ -313,9 +311,7 @@ class CookieImplementationTest extends JupiterTestBase {
     assertThat(driver.manage().getCookieNamed("rodent")).isNull();
 
     Set<Cookie> cookies = driver.manage().getCookies();
-    assertThat(cookies).hasSize(2);
-    assertThat(cookies).contains(cookie1);
-    assertThat(cookies).contains(cookie3);
+    assertThat(cookies).containsExactlyInAnyOrder(cookie1, cookie3);
 
     driver.manage().deleteAllCookies();
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
@@ -487,14 +483,22 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   public void testDeleteEmptyNamedCookie() {
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().deleteCookieNamed(""));
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().deleteCookieNamed(" "));
+    assertThatThrownBy(() -> driver.manage().deleteCookieNamed(""))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name must not be blank");
+    assertThatThrownBy(() -> driver.manage().deleteCookieNamed(" "))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name must not be blank");
   }
 
   @Test
   public void testGetEmptyNamedCookie() {
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().getCookieNamed(""));
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().getCookieNamed(" "));
+    assertThatThrownBy(() -> driver.manage().getCookieNamed(""))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name must not be blank");
+    assertThatThrownBy(() -> driver.manage().getCookieNamed(" "))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name must not be blank");
   }
 
   @Test
@@ -556,7 +560,7 @@ class CookieImplementationTest extends JupiterTestBase {
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat(documentCookie)
-          .as("Cookie was not present with name " + key + ", got: " + documentCookie)
+          .as(() -> "Cookie was not present with name " + key + ", got: " + documentCookie)
           .contains(key + "=");
     }
   }

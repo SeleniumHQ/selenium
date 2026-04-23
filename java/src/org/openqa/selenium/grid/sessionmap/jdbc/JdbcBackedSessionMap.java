@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -69,21 +70,21 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String DATABASE_USER = AttributeKey.DATABASE_USER.getKey();
   private static final String DATABASE_CONNECTION_STRING =
       AttributeKey.DATABASE_CONNECTION_STRING.getKey();
-  private static String jdbcUser;
-  private static String jdbcUrl;
-  private final EventBus bus;
+  private static @Nullable String jdbcUser;
+  private static @Nullable String jdbcUrl;
   private final Connection connection;
 
   public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection, EventBus bus) {
     super(tracer);
 
     Require.nonNull("JDBC Connection Object", jdbcConnection);
-    this.bus = Require.nonNull("Event bus", bus);
+    Require.nonNull("Event bus", bus);
 
     this.connection = jdbcConnection;
-    this.bus.addListener(SessionClosedEvent.listener(this::remove));
+    // Listen to SessionClosedEvent and extract the sessionId
+    bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
-    this.bus.addListener(
+    bus.addListener(
         NodeRemovedEvent.listener(
             nodeStatus ->
                 nodeStatus.getSlots().stream()
@@ -220,7 +221,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         try (ResultSet sessions = statement.executeQuery()) {
           if (!sessions.next()) {
             NoSuchSessionException exception =
-                new NoSuchSessionException("Unable to find session.");
+                new NoSuchSessionException("Unable to find session with id: " + id);
             span.setAttribute("error", true);
             span.setStatus(Status.NOT_FOUND);
             EXCEPTION.accept(attributeMap, exception);
@@ -271,6 +272,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         }
 
         span.addEvent("Retrieved session from the database", attributeMap);
+        //noinspection DataFlowIssue
         return new Session(id, uri, stereotype, caps, start);
       } catch (SQLException e) {
         span.setAttribute("error", true);

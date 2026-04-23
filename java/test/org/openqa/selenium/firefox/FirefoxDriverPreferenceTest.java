@@ -39,9 +39,10 @@ class FirefoxDriverPreferenceTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedProfile() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference("browser.startup.page", 1);
-    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+    FirefoxProfile profile =
+        new FirefoxProfile()
+            .setPreference("browser.startup.page", 1)
+            .setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     localDriver = new WebDriverBuilder().get(getDefaultOptions().setProfile(profile));
 
