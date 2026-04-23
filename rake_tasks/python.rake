@@ -98,6 +98,8 @@ task :docs do |_task, arguments|
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
+  # Run this task so generated modules are copied into the source tree before generating docs
+  Rake::Task['py:local_dev'].invoke
   Rake::Task['py:docs_generate'].invoke
 
   FileUtils.mkdir_p('build/docs/api')
