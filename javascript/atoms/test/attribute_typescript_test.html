@@ -182,6 +182,18 @@ under the License.
       assertAttributeEquals(assert, 'lovely', byId('cheddar'), 'unknown');
     });
 
+    // --- event handler attributes ---
+
+    QUnit.test('event handler attribute falls back to getAttribute, not function stringification', function (assert) {
+      // elem.onclick is a function; without the isObject() function check the
+      // old code would have returned String(fn) — the function source code.
+      // With the fix, isObject(fn) is true, so we fall back to getAttribute().
+      var elem = byId('with-onclick');
+      var result = getAttribute(elem, 'onclick');
+      assert.ok(result === null || result.indexOf('function') === -1,
+        'onclick attribute should not return stringified function, got: ' + result);
+    });
+
   </script>
 </head>
 
@@ -213,6 +225,7 @@ under the License.
   </form>
 
   <li id="aValue" value="4b273a33fbbd29013nN93dy4F1A~" class="cur"></li>
+  <button id="with-onclick" onclick="return false;">click me</button>
 </body>
 
 </html>
