@@ -336,7 +336,7 @@ public abstract class DriverOptions
     {
         if (capabilityName is null || string.IsNullOrEmpty(capabilityName))
         {
-            throw new ArgumentException("Capability name may not be null an empty string.", nameof(capabilityName));
+            throw new ArgumentException("Capability name may not be null or an empty string.", nameof(capabilityName));
         }
     }
 
