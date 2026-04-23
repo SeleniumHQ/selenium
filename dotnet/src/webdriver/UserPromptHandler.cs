@@ -150,8 +150,14 @@ public abstract record UserPromptHandler
 }
 
 /// <summary>
-/// Specifies the behavior of handling unexpected alerts in the IE driver.
+/// Specifies how a WebDriver session handles an unhandled user prompt.
 /// </summary>
+/// <remarks>
+/// Corresponds to the handler values defined for the W3C WebDriver
+/// <c>unhandledPromptBehavior</c> capability:
+/// <c>dismiss</c>, <c>accept</c>, <c>dismiss and notify</c>, <c>accept and notify</c>, and <c>ignore</c>.
+/// When no handler is configured, the spec's implicit default is <see cref="DismissAndNotify"/>.
+/// </remarks>
 public enum UnhandledPromptBehavior
 {
     /// <summary>
