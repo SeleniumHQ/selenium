@@ -119,6 +119,12 @@ public abstract record UserPromptHandler
         public UnhandledPromptBehavior BeforeUnload { get; set; } = UnhandledPromptBehavior.Default;
 
         /// <summary>
+        /// Gets or sets the behavior to use when an unexpected file selection dialog is encountered.
+        /// </summary>
+        /// <remarks>The "file" prompt type is respected only in WebDriver BiDi sessions.</remarks>
+        public UnhandledPromptBehavior File { get; set; } = UnhandledPromptBehavior.Default;
+
+        /// <summary>
         /// Gets or sets the default behavior to use when an unexpected browser prompt is encountered.
         /// </summary>
         public UnhandledPromptBehavior Default { get; set; } = UnhandledPromptBehavior.Default;
@@ -150,6 +156,11 @@ public abstract record UserPromptHandler
             if (BeforeUnload != default)
             {
                 capabilities["beforeUnload"] = ConvertBehaviorToString(BeforeUnload);
+            }
+
+            if (File != default)
+            {
+                capabilities["file"] = ConvertBehaviorToString(File);
             }
 
             if (Default != default)
