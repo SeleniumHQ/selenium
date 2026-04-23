@@ -24,5 +24,6 @@ java_library(
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
         artifact("dev.failsafe:failsafe"),
+        artifact("org.jspecify:jspecify"),
     ],
 )

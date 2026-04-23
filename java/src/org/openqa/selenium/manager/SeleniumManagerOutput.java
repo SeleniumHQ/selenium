@@ -20,28 +20,33 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class SeleniumManagerOutput {
 
-  private List<Log> logs;
-  private Result result;
+  private @Nullable List<Log> logs;
+  private @Nullable Result result;
 
+  @Nullable
   public List<Log> getLogs() {
     return logs;
   }
 
-  public void setLogs(List<Log> logs) {
+  public SeleniumManagerOutput setLogs(List<Log> logs) {
     this.logs = logs;
+    return this;
   }
 
+  @Nullable
   public Result getResult() {
     return result;
   }
 
-  public void setResult(Result result) {
+  public SeleniumManagerOutput setResult(Result result) {
     this.result = result;
+    return this;
   }
 
   public static class Log {
@@ -113,15 +118,19 @@ public class SeleniumManagerOutput {
 
   public static class Result {
     private final int code;
-    private final String message;
-    private final String driverPath;
-    private final String browserPath;
+    private final @Nullable String message;
+    private final @Nullable String driverPath;
+    private final @Nullable String browserPath;
 
     public Result(String driverPath) {
       this(0, null, driverPath, null);
     }
 
-    public Result(int code, String message, String driverPath, String browserPath) {
+    public Result(
+        int code,
+        @Nullable String message,
+        @Nullable String driverPath,
+        @Nullable String browserPath) {
       this.code = code;
       this.message = message;
       this.driverPath = driverPath;
@@ -132,14 +141,17 @@ public class SeleniumManagerOutput {
       return code;
     }
 
+    @Nullable
     public String getMessage() {
       return message;
     }
 
+    @Nullable
     public String getDriverPath() {
       return driverPath;
     }
 
+    @Nullable
     public String getBrowserPath() {
       return browserPath;
     }

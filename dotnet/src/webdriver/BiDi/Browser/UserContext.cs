@@ -17,36 +17,27 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed record UserContext
+[JsonConverter(typeof(Converter))]
+public sealed record UserContext : IIdentifiable
 {
-    public UserContext(BiDi bidi, string id)
-        : this(id)
+    public UserContext(IBiDi bidi, string id)
     {
-        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
-    }
-
-    [JsonConstructor]
-    internal UserContext(string id)
-    {
+        ArgumentNullException.ThrowIfNull(bidi);
+        BiDi = bidi;
         Id = id;
     }
 
-    internal string Id { get; }
-
-    private BiDi? _bidi;
+    public string Id { get; }
 
     [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
+    public IBiDi BiDi { get; }
 
     public bool Equals(UserContext? other)
     {
@@ -55,13 +46,18 @@ public sealed record UserContext
 
     public override int GetHashCode()
     {
-        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+        return StringComparer.Ordinal.GetHashCode(Id);
     }
 
-    // Includes Id only for brevity
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
     private bool PrintMembers(StringBuilder builder)
     {
         builder.Append($"Id = {Id}");
         return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<UserContext>
+    {
+        protected override UserContext Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

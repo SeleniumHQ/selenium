@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WrapsElement;
 
 /**
@@ -37,9 +38,10 @@ import org.openqa.selenium.WrapsElement;
  *     href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#webelement-json-object">
  *     WebDriver JSON Wire Protocol</a>
  */
-public class WebElementToJsonConverter implements Function<Object, Object> {
+public class WebElementToJsonConverter implements Function<@Nullable Object, @Nullable Object> {
+  @Nullable
   @Override
-  public Object apply(Object arg) {
+  public Object apply(@Nullable Object arg) {
     if (arg == null || arg instanceof String || arg instanceof Boolean || arg instanceof Number) {
       return arg;
     }
@@ -67,7 +69,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
 
     if (arg instanceof Map<?, ?>) {
       Map<?, ?> args = (Map<?, ?>) arg;
-      Map<String, Object> converted = new HashMap<>(args.size());
+      Map<String, @Nullable Object> converted = new HashMap<>(args.size());
       for (Map.Entry<?, ?> entry : args.entrySet()) {
         Object key = entry.getKey();
         if (!(key instanceof String)) {

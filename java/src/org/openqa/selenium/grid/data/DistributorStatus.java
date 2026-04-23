@@ -52,6 +52,7 @@ public class DistributorStatus {
     return Collections.singletonMap("nodes", getNodes());
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static DistributorStatus fromJson(JsonInput input) {
     Set<NodeStatus> nodes = null;
 

@@ -5,13 +5,9 @@ java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
     srcs = glob(["*.java"]),
-    browsers = [
-        "chrome",
-    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/chrome",
-        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/chromium",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:annotations",
@@ -19,5 +15,6 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

@@ -25,11 +25,12 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class FileContentSupplier implements Contents.Supplier {
   private final File file;
-  private volatile InputStream inputStream;
+  private @Nullable InputStream inputStream;
 
   FileContentSupplier(File file) {
     this.file = Require.nonNull("File", file);

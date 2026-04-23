@@ -15,65 +15,96 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.chrome.options import Options as ChromeOptions  # noqa
-from selenium.webdriver.chrome.service import Service as ChromeService  # noqa
-from selenium.webdriver.chrome.webdriver import WebDriver as Chrome  # noqa
-from selenium.webdriver.common.action_chains import ActionChains  # noqa
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities  # noqa
-from selenium.webdriver.common.keys import Keys  # noqa
-from selenium.webdriver.common.proxy import Proxy  # noqa
-from selenium.webdriver.edge.options import Options as EdgeOptions  # noqa
-from selenium.webdriver.edge.service import Service as EdgeService  # noqa
-from selenium.webdriver.edge.webdriver import WebDriver as ChromiumEdge  # noqa
-from selenium.webdriver.edge.webdriver import WebDriver as Edge  # noqa
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile  # noqa
-from selenium.webdriver.firefox.options import Options as FirefoxOptions  # noqa
-from selenium.webdriver.firefox.service import Service as FirefoxService  # noqa
-from selenium.webdriver.firefox.webdriver import WebDriver as Firefox  # noqa
-from selenium.webdriver.ie.options import Options as IeOptions  # noqa
-from selenium.webdriver.ie.service import Service as IeService  # noqa
-from selenium.webdriver.ie.webdriver import WebDriver as Ie  # noqa
-from selenium.webdriver.remote.webdriver import WebDriver as Remote  # noqa
-from selenium.webdriver.safari.options import Options as SafariOptions
-from selenium.webdriver.safari.service import Service as SafariService  # noqa
-from selenium.webdriver.safari.webdriver import WebDriver as Safari  # noqa
-from selenium.webdriver.webkitgtk.options import Options as WebKitGTKOptions  # noqa
-from selenium.webdriver.webkitgtk.service import Service as WebKitGTKService  # noqa
-from selenium.webdriver.webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
-from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions  # noqa
-from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService  # noqa
-from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
+import importlib
+import logging
+import os
 
-__version__ = "4.40.0.202512070022"
+# Enable debug logging if SE_DEBUG environment variable is set
+if os.environ.get("SE_DEBUG"):
+    logger = logging.getLogger("selenium")
+    logger.setLevel(logging.DEBUG)
+    if not logger.handlers:
+        logger.addHandler(logging.StreamHandler())
+    logger.warning(
+        "Environment Variable `SE_DEBUG` is set; "
+        "Selenium is forcing verbose logging which may override user-specified settings."
+    )
 
-# We need an explicit __all__ because the above won't otherwise be exported.
-__all__ = [
-    "ActionChains",
-    "Chrome",
-    "ChromeOptions",
-    "ChromeService",
-    "ChromiumEdge",
-    "DesiredCapabilities",
-    "Edge",
-    "EdgeOptions",
-    "EdgeService",
-    "Firefox",
-    "FirefoxOptions",
-    "FirefoxProfile",
-    "FirefoxService",
-    "Ie",
-    "IeOptions",
-    "IeService",
-    "Keys",
-    "Proxy",
-    "Remote",
-    "Safari",
-    "SafariOptions",
-    "SafariService",
-    "WPEWebKit",
-    "WPEWebKitOptions",
-    "WPEWebKitService",
-    "WebKitGTK",
-    "WebKitGTKOptions",
-    "WebKitGTKService",
-]
+__version__ = "4.44.0.202604101016"
+
+# Lazy import mapping: name -> (module_path, attribute_name)
+_LAZY_IMPORTS = {
+    # Chrome
+    "Chrome": ("selenium.webdriver.chrome.webdriver", "WebDriver"),
+    "ChromeOptions": ("selenium.webdriver.chrome.options", "Options"),
+    "ChromeService": ("selenium.webdriver.chrome.service", "Service"),
+    # Edge
+    "Edge": ("selenium.webdriver.edge.webdriver", "WebDriver"),
+    "ChromiumEdge": ("selenium.webdriver.edge.webdriver", "WebDriver"),
+    "EdgeOptions": ("selenium.webdriver.edge.options", "Options"),
+    "EdgeService": ("selenium.webdriver.edge.service", "Service"),
+    # Firefox
+    "Firefox": ("selenium.webdriver.firefox.webdriver", "WebDriver"),
+    "FirefoxOptions": ("selenium.webdriver.firefox.options", "Options"),
+    "FirefoxProfile": ("selenium.webdriver.firefox.firefox_profile", "FirefoxProfile"),
+    "FirefoxService": ("selenium.webdriver.firefox.service", "Service"),
+    # IE
+    "Ie": ("selenium.webdriver.ie.webdriver", "WebDriver"),
+    "IeOptions": ("selenium.webdriver.ie.options", "Options"),
+    "IeService": ("selenium.webdriver.ie.service", "Service"),
+    # Safari
+    "Safari": ("selenium.webdriver.safari.webdriver", "WebDriver"),
+    "SafariOptions": ("selenium.webdriver.safari.options", "Options"),
+    "SafariService": ("selenium.webdriver.safari.service", "Service"),
+    # Remote
+    "Remote": ("selenium.webdriver.remote.webdriver", "WebDriver"),
+    # WebKitGTK
+    "WebKitGTK": ("selenium.webdriver.webkitgtk.webdriver", "WebDriver"),
+    "WebKitGTKOptions": ("selenium.webdriver.webkitgtk.options", "Options"),
+    "WebKitGTKService": ("selenium.webdriver.webkitgtk.service", "Service"),
+    # WPEWebKit
+    "WPEWebKit": ("selenium.webdriver.wpewebkit.webdriver", "WebDriver"),
+    "WPEWebKitOptions": ("selenium.webdriver.wpewebkit.options", "Options"),
+    "WPEWebKitService": ("selenium.webdriver.wpewebkit.service", "Service"),
+    # Common utilities
+    "ActionChains": ("selenium.webdriver.common.action_chains", "ActionChains"),
+    "DesiredCapabilities": ("selenium.webdriver.common.desired_capabilities", "DesiredCapabilities"),
+    "Keys": ("selenium.webdriver.common.keys", "Keys"),
+    "Proxy": ("selenium.webdriver.common.proxy", "Proxy"),
+}
+
+# Submodules that can be lazily imported as modules
+_LAZY_SUBMODULES = {
+    "chrome": "selenium.webdriver.chrome",
+    "chromium": "selenium.webdriver.chromium",
+    "common": "selenium.webdriver.common",
+    "edge": "selenium.webdriver.edge",
+    "firefox": "selenium.webdriver.firefox",
+    "ie": "selenium.webdriver.ie",
+    "remote": "selenium.webdriver.remote",
+    "safari": "selenium.webdriver.safari",
+    "support": "selenium.webdriver.support",
+    "webkitgtk": "selenium.webdriver.webkitgtk",
+    "wpewebkit": "selenium.webdriver.wpewebkit",
+}
+
+
+def __getattr__(name):
+    if name in _LAZY_IMPORTS:
+        module_path, attr_name = _LAZY_IMPORTS[name]
+        module = importlib.import_module(module_path)
+        value = getattr(module, attr_name)
+        globals()[name] = value
+        return value
+    if name in _LAZY_SUBMODULES:
+        module = importlib.import_module(_LAZY_SUBMODULES[name])
+        globals()[name] = module
+        return module
+    raise AttributeError(f"module 'selenium.webdriver' has no attribute {name!r}")
+
+
+def __dir__():
+    return sorted(set(__all__) | set(_LAZY_SUBMODULES.keys()))
+
+
+__all__ = sorted(_LAZY_IMPORTS.keys())

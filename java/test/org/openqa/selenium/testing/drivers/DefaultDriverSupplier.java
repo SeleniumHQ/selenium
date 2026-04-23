@@ -24,7 +24,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 class DefaultDriverSupplier implements Supplier<WebDriver> {
 
@@ -48,7 +49,7 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
               () ->
                   new RuntimeException(
                       "No driver can be provided for capabilities " + capabilities))
-          .createDriver(capabilities)
+          .createDriver(capabilities, ClientConfig.defaultConfig())
           .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {
       String className = System.getProperty("selenium.browser.class_name");

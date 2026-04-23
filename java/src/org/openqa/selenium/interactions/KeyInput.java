@@ -21,13 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * Models a <a href="https://www.w3.org/TR/webdriver/#dfn-key-input-source">key input source</a>.
  */
-@NullMarked
 public class KeyInput implements InputSource, Encodable {
 
   private final String name;
@@ -55,8 +53,8 @@ public class KeyInput implements InputSource, Encodable {
   }
 
   @Override
-  public Map<String, Object> encode() {
-    Map<String, Object> toReturn = new HashMap<>();
+  public Map<String, @Nullable Object> encode() {
+    Map<String, @Nullable Object> toReturn = new HashMap<>();
 
     toReturn.put("type", getInputType().getType());
     toReturn.put("id", name);

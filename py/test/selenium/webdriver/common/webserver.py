@@ -25,19 +25,12 @@ import logging
 import os
 import re
 import threading
+import urllib.parse
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
+from urllib import request as urllib_request
 
 import filetype
-
-try:
-    from urllib import request as urllib_request
-except ImportError:
-    import urllib as urllib_request
-try:
-    from http.server import BaseHTTPRequestHandler, HTTPServer
-    from socketserver import ThreadingMixIn
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-    from SocketServer import ThreadingMixIn
 
 
 def updir():
@@ -47,18 +40,16 @@ def updir():
 
 LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
-HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
-if not os.path.isdir(HTML_ROOT):
-    message = (
-        "Can't find 'common_web' directory, try setting WEBDRIVER"
-        " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT
-    )
-    LOGGER.error(message)
-    assert 0, message
-
 DEFAULT_HOST = "localhost"
 DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
+HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
+
+if not os.path.isdir(HTML_ROOT):
+    raise Exception(
+        "Can't find 'common_web' directory, try setting WEBDRIVER environment variable.\n"
+        f"WEBDRIVER: {WEBDRIVER}\nHTML_ROOT: {HTML_ROOT}"
+    )
 
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
@@ -99,6 +90,32 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         """GET method handler."""
         try:
             path = self.path[1:].split("?")[0]
+
+            if path == "echo_headers":
+                self._send_response("text/plain")
+                header_lines = [f"{k}: {v}" for k, v in self.headers.items()]
+                self.wfile.write("\n".join(header_lines).encode("utf-8"))
+                return
+
+            if path == "echo_json":
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"status": "ok"}')
+                return
+
+            if path == "set_cookie":
+                qs = urllib.parse.urlparse(self.path).query
+                params = urllib.parse.parse_qs(qs)
+                name = params.get("name", ["test"])[0]
+                value = params.get("value", ["value"])[0]
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.send_header("Set-Cookie", f"{name}={value}; Path=/")
+                self.end_headers()
+                self.wfile.write(b"cookie set")
+                return
+
             file_path = os.path.join(HTML_ROOT, path)
             if path.startswith("page/"):
                 html = self._serve_page(path[5:])
@@ -113,11 +130,31 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         except OSError:
             self.send_error(404, f"File Not Found: {path}")
 
+    def do_HEAD(self):
+        """HEAD method handler — same routing as GET but no body."""
+        try:
+            path = self.path[1:].split("?")[0]
+            file_path = os.path.join(HTML_ROOT, path)
+            if path.startswith("page/") or os.path.isfile(file_path):
+                self._send_response("text/html")
+            else:
+                self.send_error(404, f"File Not Found: {path}")
+        except OSError:
+            self.send_error(404, f"File Not Found: {path}")
+
     def do_POST(self):
         """POST method handler."""
         try:
-            remaining_bytes = int(self.headers["content-length"])
+            remaining_bytes = int(self.headers.get("content-length", 0))
             contents = self.rfile.read(remaining_bytes).decode("utf-8")
+
+            path = self.path[1:].split("?")[0]
+
+            if path == "echo_body":
+                self._send_response("text/plain")
+                self.wfile.write(contents.encode("utf-8"))
+                return
+
             fn_match = re.search(r'Content-Disposition.*name="upload"; filename="(.*)"', contents)
             if not fn_match:
                 self.send_error(500, f"File not found in content. {contents}")

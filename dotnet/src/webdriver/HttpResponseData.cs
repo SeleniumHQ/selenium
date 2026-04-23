@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium;
@@ -37,7 +36,7 @@ public class HttpResponseData
     /// <summary>
     /// Gets or sets the ID of the request that generated this response.
     /// </summary>
-    public string? RequestId { get; set; }
+    public string RequestId { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the URL of the HTTP response.

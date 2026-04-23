@@ -18,9 +18,7 @@
 package org.openqa.selenium.print;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class PageMargin {
   private final double top;
   private final double bottom;

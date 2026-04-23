@@ -56,6 +56,7 @@ public class CreateSessionRequest {
     return metadata;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static CreateSessionRequest fromJson(JsonInput input) {
     Set<Dialect> downstreamDialects = null;
     Capabilities capabilities = null;

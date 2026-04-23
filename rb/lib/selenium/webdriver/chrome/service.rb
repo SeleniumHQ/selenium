@@ -26,6 +26,16 @@ module Selenium
         SHUTDOWN_SUPPORTED = true
         DRIVER_PATH_ENV_KEY = 'SE_CHROMEDRIVER'
 
+        def initialize(args: nil, **)
+          if ENV.key?('SE_DEBUG')
+            args = Array(args.dup)
+            warn_driver_log_override if args.reject! { |arg| arg.include?('log-level') || arg.include?('silent') }
+            args << '--verbose'
+          end
+
+          super
+        end
+
         def log
           return @log unless @log.is_a? String
 

@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class StackFrame {
@@ -33,8 +34,8 @@ public class StackFrame {
   private StackFrame(String scriptUrl, String function, int lineNumber, int columnNumber) {
     this.url = scriptUrl;
     this.functionName = function;
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber;
+    this.lineNumber = Require.nonNegative("lineNumber", lineNumber);
+    this.columnNumber = Require.nonNegative("columnNumber", columnNumber);
   }
 
   public String getUrl() {
@@ -56,8 +57,8 @@ public class StackFrame {
   public static StackFrame fromJson(JsonInput input) {
     String url = null;
     String functionName = null;
-    int lineNumber = 0;
-    int columnNumber = 0;
+    Integer lineNumber = null;
+    Integer columnNumber = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -86,7 +87,11 @@ public class StackFrame {
 
     input.endObject();
 
-    return new StackFrame(url, functionName, lineNumber, columnNumber);
+    return new StackFrame(
+        Require.nonNull("url", url),
+        Require.nonNull("functionName", functionName),
+        Require.nonNull("lineNumber", lineNumber),
+        Require.nonNull("columnNumber", columnNumber));
   }
 
   private Map<String, Object> toJson() {

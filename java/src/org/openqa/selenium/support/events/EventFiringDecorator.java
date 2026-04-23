@@ -19,12 +19,12 @@ package org.openqa.selenium.support.events;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
@@ -173,7 +173,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    * @param listeners the listeners to notify about events happening in the decorated WebDriver
    */
   public EventFiringDecorator(WebDriverListener... listeners) {
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   /**
@@ -182,7 +182,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
     super(targetClass);
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   @Override
@@ -323,6 +323,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         + originalMethodName.substring(1);
   }
 
+  @Nullable
   private Method findMatchingMethod(WebDriverListener listener, String methodName, Object[] args) {
     for (Method m : listener.getClass().getMethods()) {
       if (m.getName().equals(methodName) && parametersMatch(m, args)) {

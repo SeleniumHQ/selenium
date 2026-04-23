@@ -25,10 +25,12 @@ java_library(
         "//java/src/org/openqa/selenium/bidi/network",
         "//java/src/org/openqa/selenium/bidi/permissions",
         "//java/src/org/openqa/selenium/bidi/script",
+        "//java/src/org/openqa/selenium/bidi/speculation",
         "//java/src/org/openqa/selenium/bidi/storage",
         "//java/src/org/openqa/selenium/bidi/webextension",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.auto.service:auto-service-annotations"),
+        "@maven//:org_jspecify_jspecify",
     ],
 )

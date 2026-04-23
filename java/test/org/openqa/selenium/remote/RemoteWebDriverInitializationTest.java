@@ -34,13 +34,14 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +54,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 @Tag("UnitTests")
 class RemoteWebDriverInitializationTest {
@@ -97,6 +99,21 @@ class RemoteWebDriverInitializationTest {
         .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
     verifyNoCommands(executor);
+  }
+
+  @Test
+  void closesDriverCommandExecutorWhenSessionCreationFailsAfterNewSessionResponse()
+      throws IOException {
+    DriverCommandExecutor executor = mock(DriverCommandExecutor.class);
+    Response response = new Response();
+    response.setState("success");
+    response.setValue(null);
+    when(executor.execute(any())).thenReturn(response);
+
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+
+    verify(executor).close();
   }
 
   @Test
@@ -169,7 +186,7 @@ class RemoteWebDriverInitializationTest {
     Response resp = new Response();
     resp.setSessionId(UUID.randomUUID().toString());
     resp.setState("success");
-    resp.setValue(ImmutableMap.of("platformName", "xxx"));
+    resp.setValue(Map.of("platformName", "xxx"));
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -187,7 +204,7 @@ class RemoteWebDriverInitializationTest {
                     Contents.asJson(
                         singletonMap(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "sessionId", UUID.randomUUID().toString(),
                                 "capabilities", new ImmutableCapabilities().asMap())))));
 
@@ -219,6 +236,7 @@ class RemoteWebDriverInitializationTest {
     verifyNoMoreInteractions(executor);
   }
 
+  @NullMarked
   private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {
     public BadStartSessionRemoteWebDriver(
         CommandExecutor executor, Capabilities desiredCapabilities) {

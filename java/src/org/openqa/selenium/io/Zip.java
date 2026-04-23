@@ -26,12 +26,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.jspecify.annotations.Nullable;
 
 public class Zip {
+  private static final Logger LOG = Logger.getLogger(Zip.class.getName());
   private static final int BUF_SIZE = 16384; // "big"
 
   public static String zip(File input) throws IOException {
@@ -49,18 +57,23 @@ public class Zip {
 
   private static void addToZip(String basePath, ZipOutputStream zos, File toAdd)
       throws IOException {
-    if (toAdd.isDirectory()) {
-      File[] files = toAdd.listFiles();
-      if (files != null) {
-        for (File file : files) {
-          addToZip(basePath, zos, file);
+    Path dirPath = toAdd.toPath();
+
+    if (Files.isDirectory(dirPath)) {
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
+        for (Path path : stream) {
+          addToZip(basePath, zos, path.toFile());
         }
+      } catch (IOException e) {
+        LOG.warning(() -> String.format("Failed to read directory %s for zipping: %s", toAdd, e));
       }
     } else {
       try (FileInputStream fis = new FileInputStream(toAdd)) {
         String name = toAdd.getAbsolutePath().substring(basePath.length() + 1);
 
         ZipEntry entry = new ZipEntry(name.replace('\\', '/'));
+        entry.setTime(toAdd.lastModified());
+        entry.setLastModifiedTime(FileTime.fromMillis(toAdd.lastModified()));
         zos.putNextEntry(entry);
 
         int len;
@@ -107,6 +120,18 @@ public class Zip {
         }
 
         unzipFile(outputDir, zis, entry.getName());
+        setLastModified(file, entry.getLastModifiedTime());
+      }
+    }
+  }
+
+  private static void setLastModified(File file, @Nullable FileTime time) {
+    if (time != null) {
+      boolean ok = file.setLastModified(time.toMillis());
+      if (!ok) {
+        LOG.log(
+            Level.WARNING,
+            () -> String.format("Failed to set last modified %s for file %s", time, file));
       }
     }
   }

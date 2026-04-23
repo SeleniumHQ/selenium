@@ -18,7 +18,6 @@
 package org.openqa.selenium.safari;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
@@ -28,10 +27,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -69,12 +67,7 @@ public class SafariTechPreviewDriverService extends DriverService {
       List<String> args,
       Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -83,6 +76,11 @@ public class SafariTechPreviewDriverService extends DriverService {
 
   public String getDriverProperty() {
     return TP_SAFARI_DRIVER_EXE_PROPERTY;
+  }
+
+  @Override
+  protected String getDriverEnvironmentVariable() {
+    return "";
   }
 
   public File getDriverExecutable() {
@@ -122,7 +120,7 @@ public class SafariTechPreviewDriverService extends DriverService {
       extends DriverService.Builder<
           SafariTechPreviewDriverService, SafariTechPreviewDriverService.Builder> {
 
-    private Boolean diagnose;
+    @Nullable private Boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -156,11 +154,13 @@ public class SafariTechPreviewDriverService extends DriverService {
 
     @Override
     protected List<String> createArgs() {
-      List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
+      List<String> args = new ArrayList<>(3);
+      args.add("--port");
+      args.add(String.valueOf(getPort()));
       if (Boolean.TRUE.equals(diagnose)) {
         args.add("--diagnose");
       }
-      return args;
+      return unmodifiableList(args);
     }
 
     @Override

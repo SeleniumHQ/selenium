@@ -1,3 +1,22 @@
+0.4.43
+======
+
+
+0.4.42
+======
+
+
+0.4.41
+======
+* Fix suppport for webview2 (#15797)
+
+0.4.40
+======
+* fix support for Edge beta versions on Windows (#16806)
+* ignore force download for Safari (#16825)
+* only collect stats on stamped builds (#16826)
+* Replace fs::rename by file::move_file for Grid artifacts (#16911)
+
 0.4.39
 ======
 *no changes*

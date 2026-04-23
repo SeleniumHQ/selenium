@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
-@NullMarked
 public class ConnectionFailedException extends WebDriverException {
 
-  public ConnectionFailedException(@Nullable String message) {
+  public ConnectionFailedException(String message) {
     super(message);
   }
 
-  public ConnectionFailedException(@Nullable String message, @Nullable Throwable cause) {
+  public ConnectionFailedException(String message, Throwable cause) {
     super(message, cause);
   }
 }

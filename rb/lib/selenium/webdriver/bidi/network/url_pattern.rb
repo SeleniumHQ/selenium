@@ -22,6 +22,10 @@ require 'uri'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       module UrlPattern
         module_function
 

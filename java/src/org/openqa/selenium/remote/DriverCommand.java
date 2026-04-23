@@ -24,7 +24,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -41,7 +40,6 @@ import org.openqa.selenium.print.PrintOptions;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@NullMarked
 public interface DriverCommand {
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
@@ -109,18 +107,79 @@ public interface DriverCommand {
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
-  String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
-  String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
-  String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
-  String REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem";
-  String CLEAR_LOCAL_STORAGE = "clearLocalStorage";
-  String GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize";
-  String GET_SESSION_STORAGE_ITEM = "getSessionStorageItem";
-  String GET_SESSION_STORAGE_KEYS = "getSessionStorageKey";
-  String SET_SESSION_STORAGE_ITEM = "setSessionStorageItem";
-  String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
-  String CLEAR_SESSION_STORAGE = "clearSessionStorage";
-  String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.localStorage.getItem('key')") instead.
+   */
+  @Deprecated String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return Object.keys(window.localStorage)") instead.
+   */
+  @Deprecated String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.setItem('key', 'value')") instead.
+   */
+  @Deprecated String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.removeItem('key')") instead.
+   */
+  @Deprecated String REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.clear()") instead.
+   */
+  @Deprecated String CLEAR_LOCAL_STORAGE = "clearLocalStorage";
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.localStorage.length") instead.
+   */
+  @Deprecated String GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.sessionStorage.getItem('key')") instead.
+   */
+  @Deprecated String GET_SESSION_STORAGE_ITEM = "getSessionStorageItem";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return Object.keys(window.sessionStorage)") instead.
+   */
+  @Deprecated String GET_SESSION_STORAGE_KEYS = "getSessionStorageKey";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.setItem('key', 'value')") instead.
+   */
+  @Deprecated String SET_SESSION_STORAGE_ITEM = "setSessionStorageItem";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.removeItem('key')") instead.
+   */
+  @Deprecated String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.clear()") instead.
+   */
+  @Deprecated String CLEAR_SESSION_STORAGE = "clearSessionStorage";
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.sessionStorage.length") instead.
+   */
+  @Deprecated String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
+
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
@@ -157,8 +216,20 @@ public interface DriverCommand {
   String RESET_COOLDOWN = "resetCooldown";
   String GET_DOWNLOADABLE_FILES = "getDownloadableFiles";
   String DOWNLOAD_FILE = "downloadFile";
-  String GET_DOWNLOADED_FILE = "getDownloadedFile";
+
+  /**
+   * This endpoint was introduced in 4.39.0, but not used anymore since 4.40.0. Left here for
+   * backward compatibility (if someone uses Grid 4.40+, but Client 4.39.0).
+   *
+   * <p>Remove it in 4.41, 4.42 or 4.43.
+   *
+   * @deprecated use {@link #DOWNLOAD_FILE} instead
+   */
+  @Deprecated String GET_DOWNLOADED_FILE = "getDownloadedFile";
+
   String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
+
+  String FIRE_SESSION_EVENT = "fireSessionEvent";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
@@ -378,5 +449,15 @@ public interface DriverCommand {
 
   static CommandPayload SET_DELAY_ENABLED(boolean enabled) {
     return new CommandPayload(SET_DELAY_ENABLED, Map.of("enabled", enabled));
+  }
+
+  static CommandPayload FIRE_SESSION_EVENT(
+      String eventType, @Nullable Map<String, Object> payload) {
+    Require.nonNull("Event type", eventType);
+    if (payload == null || payload.isEmpty()) {
+      return new CommandPayload(FIRE_SESSION_EVENT, Map.of("eventType", eventType));
+    }
+    return new CommandPayload(
+        FIRE_SESSION_EVENT, Map.of("eventType", eventType, "payload", payload));
   }
 }

@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.router;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -94,7 +93,7 @@ class ReverseProxyEndToEndTest {
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
-    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2), Arguments.of(s3));
   }
 
   private Server<?> server;
@@ -125,8 +124,7 @@ class ReverseProxyEndToEndTest {
               c -> {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                return status != null && Boolean.parseBoolean(status.get("ready").toString());
               });
     }
   }
@@ -165,7 +163,7 @@ class ReverseProxyEndToEndTest {
 
   private static URL url(Server<?> server) {
     try {
-      return new URL(server.getUrl().toString() + SUB_PATH);
+      return new URL(server.getUrl() + SUB_PATH);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
@@ -173,7 +171,7 @@ class ReverseProxyEndToEndTest {
 
   private static String gridUi(Server<?> server) {
     try {
-      return new URL(server.getUrl().toString() + SUB_PATH + "/ui").toString();
+      return new URL(server.getUrl() + SUB_PATH + "/ui").toString();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }

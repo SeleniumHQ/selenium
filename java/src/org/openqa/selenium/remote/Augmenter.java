@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableSet;
 import static net.bytebuddy.matcher.ElementMatchers.anyOf;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -39,13 +40,13 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.HasLogEvents;
@@ -183,11 +184,7 @@ public class Augmenter {
     // Grab a remote execution method, if possible
     RemoteWebDriver remote = extractRemoteWebDriver(driver);
     ExecuteMethod execute =
-        remote == null
-            ? (commandName, parameters) -> {
-              throw new WebDriverException("Cannot execute remote command: " + commandName);
-            }
-            : new RemoteExecuteMethod(remote);
+        remote == null ? new LocalExecuteMethod() : new RemoteExecuteMethod(remote);
 
     DynamicType.Builder<? extends WebDriver> builder =
         new ByteBuddy()
@@ -216,7 +213,9 @@ public class Augmenter {
             .asSubclass(driver.getClass());
 
     try {
-      WebDriver toReturn = definition.getDeclaredConstructor().newInstance();
+      Constructor<? extends WebDriver> constructor = definition.getDeclaredConstructor();
+      constructor.setAccessible(true);
+      WebDriver toReturn = constructor.newInstance();
 
       copyFields(driver.getClass(), driver, toReturn);
 
@@ -256,6 +255,7 @@ public class Augmenter {
     return toReturn;
   }
 
+  @Nullable
   private RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
 
@@ -288,7 +288,7 @@ public class Augmenter {
   }
 
   private void copyField(Object source, Object target, Field field) {
-    if (Modifier.isFinal(field.getModifiers())) {
+    if (Modifier.isStatic(field.getModifiers())) {
       return;
     }
 
@@ -318,6 +318,11 @@ public class Augmenter {
           interfaceClass.isInterface(),
           "%s must be an interface, not a concrete class",
           interfaceClass);
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%s(%s)", getClass().getSimpleName(), interfaceClass.getSimpleName());
     }
   }
 }

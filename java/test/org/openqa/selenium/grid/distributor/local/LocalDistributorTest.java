@@ -44,6 +44,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -249,7 +250,7 @@ class LocalDistributorTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }
@@ -293,7 +294,7 @@ class LocalDistributorTest {
             Map.of(),
             Map.of());
 
-    List<Callable<SessionId>> callables = new ArrayList<>();
+    List<Callable<@Nullable SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(
           () -> {

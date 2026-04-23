@@ -19,7 +19,7 @@ package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
 
-public class ExtensionBase64Encoded extends ExtensionData {
+public class ExtensionBase64Encoded implements ExtensionData {
   private final String value;
 
   public ExtensionBase64Encoded(String value) {
@@ -28,7 +28,6 @@ public class ExtensionBase64Encoded extends ExtensionData {
 
   @Override
   public Map<String, Object> toMap() {
-    String type = "base64";
-    return Map.of("extensionData", Map.of("type", type, "value", value));
+    return Map.of("extensionData", Map.of("type", "base64", "value", value));
   }
 }

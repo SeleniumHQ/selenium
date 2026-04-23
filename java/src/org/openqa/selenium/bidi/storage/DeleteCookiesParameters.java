@@ -16,13 +16,17 @@
 // under the License.
 package org.openqa.selenium.bidi.storage;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @see <a
+ *     href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-storagedeletecookiesparameters">BiDi
+ *     spec</a>
+ */
 public class DeleteCookiesParameters {
-  private Optional<CookieFilter> cookieFilter = Optional.empty();
-  private Optional<PartitionDescriptor> partitionDescriptor = Optional.empty();
+  private final Optional<CookieFilter> cookieFilter;
+  private final Optional<PartitionDescriptor> partitionDescriptor;
 
   public DeleteCookiesParameters(
       CookieFilter cookieFilter, PartitionDescriptor partitionDescriptor) {
@@ -32,17 +36,17 @@ public class DeleteCookiesParameters {
 
   public DeleteCookiesParameters(CookieFilter cookieFilter) {
     this.cookieFilter = Optional.of(cookieFilter);
+    this.partitionDescriptor = Optional.empty();
   }
 
   public DeleteCookiesParameters(PartitionDescriptor partitionDescriptor) {
+    this.cookieFilter = Optional.empty();
     this.partitionDescriptor = Optional.of(partitionDescriptor);
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    cookieFilter.ifPresent(filter -> map.put("filter", cookieFilter));
-    partitionDescriptor.ifPresent(descriptor -> map.put("partition", partitionDescriptor));
-
-    return Map.copyOf(map);
+    return Map.of(
+        "filter", cookieFilter,
+        "partition", partitionDescriptor);
   }
 }

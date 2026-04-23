@@ -30,8 +30,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -51,7 +53,7 @@ public class LoggingOptions {
   private Level level = Level.INFO;
   public static final String DEFAULT_LOG_TIMESTAMP_FORMAT = "HH:mm:ss.SSS";
   private static final List<Level> DEFAULT_LOG_LEVELS =
-      Arrays.asList(
+      List.of(
           Level.ALL,
           Level.INFO,
           Level.CONFIG,
@@ -78,12 +80,19 @@ public class LoggingOptions {
     return config.getBool(LOGGING_SECTION, "plain-logs").orElse(DEFAULT_PLAIN_LOGS);
   }
 
+  @Nullable
   public String getLogEncoding() {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
-  public void setLoggingLevel() {
+  public LoggingOptions setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
+    if (Debug.isDebugAll()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; forcing Grid log level to FINE and"
+              + " overriding configured log level.");
+      configLevel = Level.FINE.getName();
+    }
 
     try {
       level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
@@ -98,6 +107,7 @@ public class LoggingOptions {
                   + DEFAULT_LOG_LEVELS)
           .printStackTrace();
     }
+    return this;
   }
 
   public Tracer getTracer() {
@@ -161,7 +171,7 @@ public class LoggingOptions {
     }
   }
 
-  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+  private void configureLogEncoding(Logger logger, @Nullable String encoding, Handler handler) {
     String message;
     try {
       if (encoding != null) {
@@ -179,6 +189,11 @@ public class LoggingOptions {
   }
 
   private OutputStream getOutputStream() {
+    if (Debug.isDebugAll() && config.get(LOGGING_SECTION, "log-file").isEmpty()) {
+      System.err.println(
+          "WARNING: Environment Variable `SE_DEBUG` is set; defaulting Grid log output to stderr"
+              + " instead of stdout.");
+    }
     return config
         .get(LOGGING_SECTION, "log-file")
         .map(
@@ -189,7 +204,7 @@ public class LoggingOptions {
                 throw new UncheckedIOException(e);
               }
             })
-        .orElse(System.out);
+        .orElseGet(() -> Debug.isDebugAll() ? System.err : System.out);
   }
 
   public String getLogTimestampFormat() {

@@ -17,23 +17,24 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
 /// <summary>
 /// Represents a JavaScript script that is loaded and run on every document load.
 /// </summary>
-public class InitializationScript
+public class InitializationScript : IEquatable<InitializationScript>
 {
     internal InitializationScript(string scriptId, string scriptName, string scriptSource)
     {
-        this.ScriptId = scriptId ?? throw new ArgumentNullException(nameof(scriptId));
-        this.ScriptName = scriptName ?? throw new ArgumentNullException(nameof(scriptName));
-        this.ScriptSource = scriptSource ?? throw new ArgumentNullException(nameof(scriptSource));
+        ArgumentNullException.ThrowIfNull(scriptId);
+        ArgumentNullException.ThrowIfNull(scriptName);
+        ArgumentNullException.ThrowIfNull(scriptSource);
+        this.ScriptId = scriptId;
+        this.ScriptName = scriptName;
+        this.ScriptSource = scriptSource;
     }
 
     /// <summary>
@@ -59,7 +60,17 @@ public class InitializationScript
     /// <returns><see langword="true"/> if the current <see cref="InitializationScript"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {
-        return obj is InitializationScript other && this.ScriptId == other.ScriptId && this.ScriptName == other.ScriptName && this.ScriptSource == other.ScriptSource;
+        return Equals(obj as InitializationScript);
+    }
+
+    /// <summary>
+    /// Indicates whether the current <see cref="InitializationScript"/> is equal to another <see cref="InitializationScript"/> of the same type.
+    /// </summary>
+    /// <param name="other">An <see cref="InitializationScript"/> to compare with this <see cref="InitializationScript"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="InitializationScript"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(InitializationScript? other)
+    {
+        return other is not null && this.ScriptId == other.ScriptId && this.ScriptName == other.ScriptName && this.ScriptSource == other.ScriptSource;
     }
 
     /// <summary>

@@ -71,6 +71,7 @@ public class SlotId implements Serializable {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static SlotId fromJson(JsonInput input) {
     NodeId nodeId = null;
     UUID id = null;

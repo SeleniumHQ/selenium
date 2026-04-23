@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Edge;
-using System;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Remote;
 public class EdgeRemoteWebDriver : RemoteWebDriver
 {
     public EdgeRemoteWebDriver()
-        : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new EdgeOptions())
+        : base(RemoteSeleniumServer.ServerUri, new EdgeOptions())
     {
     }
 }

@@ -17,10 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium;
 
 /// <summary>
@@ -37,7 +33,8 @@ internal sealed class Navigator : INavigation
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is null.</exception>
     public Navigator(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -106,7 +103,7 @@ internal sealed class Navigator : INavigation
             throw new ArgumentNullException(nameof(url), "URL cannot be null.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
         {
             { "url", url }
         };

@@ -278,8 +278,8 @@ If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development,
 you can configure it use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
-2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
-3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
+2. From the `selenium` (parent) directory, run `./go rb:local_dev` to create up-to-date artifacts.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby++ruby+ruby/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust
@@ -287,7 +287,7 @@ you can configure it use Bazel artifacts:
 To keep `Cargo.Bazel.lock` synchronized with `Cargo.lock`, run:
 
 ```shell
-CARGO_BAZEL_REPIN=true bazel sync --only=crates
+CARGO_BAZEL_REPIN=true bazel run @crates//:all
 ```
 
 ## Testing
@@ -297,7 +297,7 @@ There are a number of bazel configurations specific for testing.
 ### Common Options Examples
 
 Here are examples of arguments we make use of in testing the Selenium code:
-* `--pin_browsers` - run specific browser versions defined in the build (versions are updated regularly)
+* `--pin_browsers=false` - use Selenium Manager to locate browsers/drivers
 * `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
@@ -387,22 +387,16 @@ Run unit tests with:
 bazel test //py:unit
 ```
 
-To run common tests with a specific browser:
+To run all tests with a specific browser:
 
 ```shell
-bazel test //py:common-<browsername>
+bazel test //py:test-<browsername>
 ```
 
 To run common tests with a specific browser (include BiDi tests):
 
 ```shell
-bazel test //py:common-<browsername>-bidi
-```
-
-To run tests with a specific browser:
-
-```shell
-bazel test //py:test-<browsername>
+bazel test //py:test-<browsername>-bidi
 ```
 
 To run all Python tests:
@@ -410,6 +404,12 @@ To run all Python tests:
 ```shell
 bazel test //py:all
 ```
+
+To run tests headless:
+```shell
+bazel test //py:test-<browsername> --//common:headless=true
+```
+
 
 </details>
 
@@ -491,19 +491,19 @@ echo '<X.Y.Z>' > rb/.ruby-version
 Run all tests with:
 
 ```shell
-bazel test //dotnet/test/common:AllTests --pin_browsers=true
+bazel test //dotnet/test/common
 ```
 
 You can run specific tests by specifying the class name:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTests
 ```
 
 If the module supports multiple browsers:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest-edge --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTests-edge
 ```
 
 </details>

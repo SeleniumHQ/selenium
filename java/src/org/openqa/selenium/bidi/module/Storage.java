@@ -38,15 +38,15 @@ public class Storage {
 
   private final BiDi bidi;
 
-  private final Function<JsonInput, GetCookiesResult> getCookiesResultMapper =
-      jsonInput -> jsonInput.read(GetCookiesResult.class);
+  private static final Function<JsonInput, GetCookiesResult> getCookiesResultMapper =
+      jsonInput -> jsonInput.readNonNull(GetCookiesResult.class);
 
-  private final Function<JsonInput, PartitionKey> partitionKeyResultMapper =
+  private static final Function<JsonInput, PartitionKey> partitionKeyResultMapper =
       jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        try (StringReader reader = new StringReader(JSON.toJson(response.get("partitionKey")));
+        Map<String, String> partitionKey = jsonInput.readMapElement("partitionKey");
+        try (StringReader reader = new StringReader(JSON.toJson(partitionKey));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(PartitionKey.class);
+          return input.readNonNull(PartitionKey.class);
         }
       };
 

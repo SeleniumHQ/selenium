@@ -17,16 +17,26 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import static java.util.logging.Level.FINE;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
+import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
@@ -38,12 +48,14 @@ public class DockerSession extends DefaultActiveSession {
 
   private static final Logger LOG = Logger.getLogger(DockerSession.class.getName());
   private final Container container;
-  private final Container videoContainer;
+  private final @Nullable Container videoContainer;
   private final DockerAssetsPath assetsPath;
+  private final Duration containerStopTimeout;
+  private final Duration videoContainerStopTimeout;
 
   DockerSession(
       Container container,
-      Container videoContainer,
+      @Nullable Container videoContainer,
       Tracer tracer,
       HttpClient client,
       SessionId id,
@@ -53,31 +65,67 @@ public class DockerSession extends DefaultActiveSession {
       Dialect downstream,
       Dialect upstream,
       Instant startTime,
-      DockerAssetsPath assetsPath) {
+      DockerAssetsPath assetsPath,
+      Duration containerStopTimeout,
+      Duration videoContainerStopTimeout) {
     super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
     this.videoContainer = videoContainer;
     this.assetsPath = Require.nonNull("Assets path", assetsPath);
+    this.containerStopTimeout = Require.nonNull("Container stop timeout", containerStopTimeout);
+    this.videoContainerStopTimeout =
+        Require.nonNull("Video container stop timeout", videoContainerStopTimeout);
   }
 
   @Override
   public void stop() {
-    if (videoContainer != null) {
-      videoContainer.stop(Duration.ofSeconds(10));
+    try {
+      if (videoContainer != null) {
+        videoContainer.stop(videoContainerStopTimeout);
+      }
+      saveLogs();
+    } finally {
+      container.stop(containerStopTimeout);
+      super.stop();
     }
-    saveLogs();
-    container.stop(Duration.ofMinutes(1));
-    super.stop();
   }
 
   private void saveLogs() {
+    if (!container.isRunning()) {
+      LOG.log(
+          FINE, () -> "Skip saving logs because container is not running: " + container.getId());
+      return;
+    }
+
     String sessionAssetsPath = assetsPath.getContainerPath(getId());
-    String seleniumServerLog = String.format("%s/selenium-server.log", sessionAssetsPath);
-    try {
-      List<String> logs = container.getLogs().getLogLines();
-      Files.write(Paths.get(seleniumServerLog), logs);
-    } catch (Exception e) {
+    File seleniumServerLog = new File(sessionAssetsPath, "selenium-server.log");
+    ContainerLogs containerLogs = container.getLogs();
+
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(seleniumServerLog))) {
+      parseMultiplexedStream(containerLogs.getLogs(), out);
+      LOG.log(
+          FINE,
+          () ->
+              String.format(
+                  "Saved container %s logs to file %s", container.getId(), seleniumServerLog));
+    } catch (IOException e) {
       LOG.log(Level.WARNING, "Error saving logs", e);
+    }
+  }
+
+  @SuppressWarnings("InfiniteLoopStatement")
+  private void parseMultiplexedStream(InputStream stream, OutputStream out) throws IOException {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(stream))) {
+      while (true) {
+        in.readFully(new byte[1]); // Skip "stream type" byte (1 = stdout, 2 = stderr)
+        in.readFully(new byte[3]); // Skip the 3 empty padding bytes
+        int payloadSize = in.readInt(); // Read the 4-byte payload size
+        byte[] payload = new byte[payloadSize];
+        in.readFully(payload);
+        out.write(payload);
+      }
+    } catch (EOFException done) {
+      LOG.log(FINE, () -> "Finished reading multiplexed stream: " + done);
     }
   }
 }

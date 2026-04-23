@@ -23,10 +23,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class UnpinnedScriptKey extends ScriptKey {
 
   private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts =
@@ -113,5 +111,18 @@ public class UnpinnedScriptKey extends ScriptKey {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), script);
+  }
+
+  @Override
+  public String toString() {
+    // Avoid dumping raw JavaScript into logs: in UnpinnedScriptKey the identifier is the script.
+    return "UnpinnedScriptKey{"
+        + "scriptHash="
+        + script.hashCode()
+        + ", scriptId="
+        + Objects.toString(scriptId, "unset")
+        + ", length="
+        + script.length()
+        + "}";
   }
 }

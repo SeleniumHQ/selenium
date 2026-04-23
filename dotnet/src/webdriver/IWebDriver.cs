@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium;
@@ -44,7 +43,7 @@ namespace OpenQA.Selenium;
 /// more fully featured browser when there is a requirement for one.
 /// </para>
 /// </remarks>
-public interface IWebDriver : ISearchContext, IDisposable
+public interface IWebDriver : ISearchContext, IDisposable, IAsyncDisposable
 {
     /// <summary>
     /// Gets or sets the URL the browser is currently displaying.

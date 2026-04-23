@@ -17,11 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -39,7 +37,8 @@ internal sealed class TargetLocator : ITargetLocator
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
     public TargetLocator(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -49,7 +48,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>A WebDriver instance that is currently in use</returns>
     public IWebDriver Frame(int frameIndex)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", frameIndex);
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
@@ -112,7 +111,7 @@ internal sealed class TargetLocator : ITargetLocator
 
         Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", elementDictionary);
         this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
         return this.driver;
@@ -124,7 +123,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
     public IWebDriver ParentFrame()
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         this.driver.Execute(DriverCommand.SwitchToParentFrame, parameters);
         return this.driver;
     }
@@ -137,12 +136,9 @@ internal sealed class TargetLocator : ITargetLocator
     /// <exception cref="ArgumentNullException">If <paramref name="windowHandleOrName"/> is <see langword="null"/>.</exception>
     public IWebDriver Window(string windowHandleOrName)
     {
-        if (windowHandleOrName is null)
-        {
-            throw new ArgumentNullException(nameof(windowHandleOrName));
-        }
+        ArgumentNullException.ThrowIfNull(windowHandleOrName);
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("handle", windowHandleOrName);
         try
         {
@@ -190,7 +186,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
     public IWebDriver NewWindow(WindowType typeHint)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("type", typeHint.ToString().ToLowerInvariant());
 
         Response response = this.driver.Execute(DriverCommand.NewWindow, parameters);

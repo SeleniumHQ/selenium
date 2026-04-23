@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
@@ -34,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
@@ -44,66 +47,71 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     extends MutableCapabilities {
   public DO setBrowserVersion(String browserVersion) {
     setCapability(BROWSER_VERSION, Require.nonNull("Browser version", browserVersion));
-    return (DO) this;
+    return self();
   }
 
   public DO setPlatformName(String platformName) {
     setCapability(PLATFORM_NAME, Require.nonNull("Platform Name", platformName));
-    return (DO) this;
+    return self();
   }
 
   public DO setImplicitWaitTimeout(Duration timeout) {
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("implicit", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
+    return self();
   }
 
   public DO setPageLoadTimeout(Duration timeout) {
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("pageLoad", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
+    return self();
   }
 
   public DO setScriptTimeout(Duration timeout) {
     Map<String, Number> timeouts = getTimeouts();
     timeouts.put("script", timeout.toMillis());
 
-    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
-    return (DO) this;
+    setCapability(TIMEOUTS, unmodifiableMap(timeouts));
+    return self();
   }
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(PAGE_LOAD_STRATEGY, Require.nonNull("Page load strategy", strategy));
-    return (DO) this;
+    return self();
   }
 
   public DO setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
         UNHANDLED_PROMPT_BEHAVIOUR, Require.nonNull("Unhandled prompt behavior", behaviour));
-    return (DO) this;
+    return self();
   }
 
   public DO setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
-    return (DO) this;
+    return self();
   }
 
   public DO setStrictFileInteractability(boolean strictFileInteractability) {
     setCapability(STRICT_FILE_INTERACTABILITY, strictFileInteractability);
-    return (DO) this;
+    return self();
   }
 
   public DO setProxy(Proxy proxy) {
     setCapability(PROXY, Require.nonNull("Proxy", proxy));
-    return (DO) this;
+    return self();
   }
 
   public DO setEnableDownloads(boolean enableDownloads) {
     setCapability(ENABLE_DOWNLOADS, enableDownloads);
+    return self();
+  }
+
+  @SuppressWarnings("unchecked")
+  private DO self() {
     return (DO) this;
   }
 
@@ -117,7 +125,7 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
   protected abstract Set<String> getExtraCapabilityNames();
 
   @Override
-  public Object getCapability(String capabilityName) {
+  public @Nullable Object getCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
 
     if (getExtraCapabilityNames().contains(capabilityName)) {
@@ -126,13 +134,15 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     return super.getCapability(capabilityName);
   }
 
+  @Nullable
   protected abstract Object getExtraCapability(String capabilityName);
 
   @Override
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
-    getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
-    return Collections.unmodifiableMap(toReturn);
+    getExtraCapabilityNames()
+        .forEach(name -> toReturn.put(name, requireNonNull(getCapability(name))));
+    return unmodifiableMap(toReturn);
   }
 
   private Map<String, Number> getTimeouts() {

@@ -28,12 +28,12 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -123,18 +123,16 @@ class FirefoxDriverTest extends JupiterTestBase {
   @Test
   void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
-    driver.quit();
     removeDriver();
 
-    driver = new WebDriverBuilder().get();
+    localDriver = new WebDriverBuilder().get();
 
-    driver.get(pages.formPage);
-    WebElement textarea = driver.findElement(By.id("withText"));
+    localDriver.get(pages.formPage);
+    WebElement textarea = localDriver.findElement(By.id("withText"));
     String sentText = "I like cheese\n\nIt's really nice";
     String expectedText = textarea.getAttribute("value") + sentText;
     textarea.sendKeys(sentText);
-    wait.until(elementValueToEqual(textarea, expectedText));
-    driver.quit();
+    wait(localDriver).until(elementValueToEqual(textarea, expectedText));
   }
 
   @Test
@@ -143,7 +141,7 @@ class FirefoxDriverTest extends JupiterTestBase {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
     assumeTrue(profile != null);
 
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
+    localDriver = new WebDriverBuilder().get(new FirefoxOptions(profile));
   }
 
   @Test
@@ -152,10 +150,10 @@ class FirefoxDriverTest extends JupiterTestBase {
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     GeckoDriverService service =
         new GeckoDriverService.Builder()
-            .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
+            .withEnvironment(Map.of("NSPR_LOG_MODULES", "all:5"))
             .build();
 
-    new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities()).quit();
+    localDriver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
   }
 
   @Test
@@ -251,10 +249,9 @@ class FirefoxDriverTest extends JupiterTestBase {
       int port = PortProber.findFreePort();
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
       builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (GeckoDriverService driverService = builder.build()) {
+        assertThat(driverService.getDriverName()).isNotBlank();
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

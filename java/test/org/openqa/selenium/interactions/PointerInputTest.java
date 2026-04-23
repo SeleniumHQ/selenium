@@ -52,8 +52,8 @@ class PointerInputTest {
         new Json().toType(rawJson, ActionSequenceJson.class, PropertySetting.BY_FIELD);
 
     assertThat(json.actions).hasSize(1);
-    ActionJson firstAction = json.actions.get(0);
-    assertThat(firstAction.origin).containsEntry(W3C.getEncodedElementKey(), "12345");
+    assertThat(json.actions.get(0).origin)
+        .containsExactlyInAnyOrderEntriesOf(Map.of(W3C.getEncodedElementKey(), "12345"));
   }
 
   @Test

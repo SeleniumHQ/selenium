@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import java.util.Locale;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents the known architectures used in WebDriver. It attempts to smooth over some of Java's
@@ -121,7 +122,7 @@ public enum Architecture {
    * @return the most likely architecture based on the given architecture name
    * @throws UnsupportedOperationException if the architecture given is unknown or unsupported
    */
-  public static Architecture extractFromSysProperty(String arch) {
+  public static Architecture extractFromSysProperty(@Nullable String arch) {
     if (arch != null) {
       arch = arch.toLowerCase(Locale.ENGLISH);
     }

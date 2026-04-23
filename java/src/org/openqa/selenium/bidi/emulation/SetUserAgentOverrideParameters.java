@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
+import org.jspecify.annotations.Nullable;
+
 public class SetUserAgentOverrideParameters extends AbstractOverrideParameters {
-  public SetUserAgentOverrideParameters(String userAgent) {
+  public SetUserAgentOverrideParameters(@Nullable String userAgent) {
     map.put("userAgent", userAgent);
   }
 
   @Override
-  public SetUserAgentOverrideParameters contexts(java.util.List<String> contexts) {
+  public SetUserAgentOverrideParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetUserAgentOverrideParameters userContexts(java.util.List<String> userContexts) {
+  public SetUserAgentOverrideParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

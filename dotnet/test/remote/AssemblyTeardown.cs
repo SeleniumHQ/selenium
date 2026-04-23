@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly
@@ -31,10 +30,7 @@ public class AssemblyTeardown
     public async Task RunBeforeAnyTestAsync()
     {
         await EnvironmentManager.Instance.WebServer.StartAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StartAsync();
-        }
+        await EnvironmentManager.Instance.RemoteServer.StartAsync();
     }
 
     [OneTimeTearDown]
@@ -42,9 +38,6 @@ public class AssemblyTeardown
     {
         EnvironmentManager.Instance.CloseCurrentDriver();
         await EnvironmentManager.Instance.WebServer.StopAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StopAsync();
-        }
+        await EnvironmentManager.Instance.RemoteServer.StopAsync();
     }
 }

@@ -18,13 +18,10 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
   private final RemoteWebDriver driver;
 
@@ -46,7 +43,7 @@ public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
   }
 
   @Override
-  public WebDriver getWrappedDriver() {
+  public RemoteWebDriver getWrappedDriver() {
     return this.driver;
   }
 }

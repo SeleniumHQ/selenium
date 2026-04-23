@@ -7,9 +7,11 @@
 
 /*
  * Styling for custom buttons rendered by goog.ui.CustomButtonRenderer.
- *
- * @author attila@google.com (Attila Bodis)
  */
+
+@provide 'goog.css.custombutton';
+
+@require './common';
 
 .goog-custom-button {
   margin: 2px;
@@ -53,12 +55,14 @@
   left: -1px;
 }
 /* Pre-IE7 BiDi fixes. */
+/* rtl:begin:ignore */
 * html .goog-custom-button-rtl .goog-custom-button-outer-box {
   /* @noflip */ left: -1px;
 }
 * html .goog-custom-button-rtl .goog-custom-button-inner-box {
   /* @noflip */ right: auto;
 }
+/* rtl:end:ignore */
 
 /* IE7-only hack; ignored by all other browsers. */
 *:first-child+html .goog-custom-button-inner-box {
@@ -67,7 +71,9 @@
 }
 /* IE7 BiDi fix. */
 *:first-child+html .goog-custom-button-rtl .goog-custom-button-inner-box {
+  /* rtl:begin:ignore */
   /* @noflip */ left: 1px;
+  /* rtl:end:ignore */
 }
 
 /* Safari-only hacks. */

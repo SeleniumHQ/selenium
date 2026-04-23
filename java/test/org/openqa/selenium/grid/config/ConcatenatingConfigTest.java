@@ -19,8 +19,7 @@ package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ConcatenatingConfigTest {
@@ -31,14 +30,14 @@ class ConcatenatingConfigTest {
         new ConcatenatingConfig(
             "FOO",
             '_',
-            ImmutableMap.of(
+            Map.of(
                 "FOO_CHEESE_SELECTED", "brie",
                 "FOO_CHEESE_CURRENT", "cheddar",
                 "FOO_VEGETABLES_GREEN", "peas",
                 "FOO_", "should not show up",
                 "BAR_FOOD_IS", "cheese sticks"));
 
-    assertThat(config.getSectionNames()).isEqualTo(ImmutableSet.of("cheese", "vegetables"));
+    assertThat(config.getSectionNames()).containsExactlyInAnyOrder("cheese", "vegetables");
   }
 
   @Test
@@ -47,13 +46,13 @@ class ConcatenatingConfigTest {
         new ConcatenatingConfig(
             "FOO",
             '_',
-            ImmutableMap.of(
+            Map.of(
                 "FOO_CHEESE_SELECTED", "brie",
                 "FOO_CHEESE_CURRENT", "cheddar",
                 "FOO_VEGETABLES_GREEN", "peas",
                 "FOO_", "should not show up",
                 "BAR_FOOD_IS", "cheese sticks"));
 
-    assertThat(config.getOptions("cheese")).isEqualTo(ImmutableSet.of("current", "selected"));
+    assertThat(config.getOptions("cheese")).containsExactlyInAnyOrder("current", "selected");
   }
 }

@@ -21,20 +21,18 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class ChromeDriverInfo extends ChromiumDriverInfo {
-  private static final Logger LOG = Logger.getLogger(ChromeDriverInfo.class.getName());
-
   @Override
   public String getDisplayName() {
     return "Chrome";
@@ -73,13 +71,13 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
-  public Optional<WebDriver> createDriver(Capabilities capabilities)
+  public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
       throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }
 
-    WebDriver driver = new ChromeDriver(new ChromeOptions().merge(capabilities));
+    WebDriver driver = new ChromeDriver(new ChromeOptions().merge(capabilities), clientConfig);
 
     return Optional.of(driver);
   }

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.time.Duration.ofMillis;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.chromium.ChromiumNetworkConditions.withLatency;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -35,11 +35,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -66,10 +66,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void builderOverridesDefaultChromeOptions() {
     ChromeOptions options = (ChromeOptions) CHROME.getCapabilities();
-    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    options.setImplicitWaitTimeout(ofMillis(1));
     localDriver = ChromeDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout())
-        .isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(ofMillis(1));
   }
 
   @Test
@@ -89,14 +88,14 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  void builderWithClientConfigThrowsException() {
+  void canUseCustomClientConfigWithLocalWebDriver() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder =
         ChromeDriver.builder().oneOf(CHROME.getCapabilities()).config(clientConfig);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(builder::build)
-        .withMessage("ClientConfig instances do not work for Local Drivers");
+    localDriver = builder.build();
+    assertThat(localDriver).isInstanceOf(ChromeDriver.class);
+    assertThat(localDriver).extracting("clientConfig").isEqualTo(clientConfig);
   }
 
   @Test
@@ -128,17 +127,17 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
                         + "name: arguments[0]"
                         + "}));",
                     permission);
-    return result.get("state").toString();
+    return Require.nonNull("Result", result).get("state").toString();
   }
 
   @Test
   @Ignore(gitHubActions = true)
-  void canCast() {
+  void canCast() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -152,12 +151,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCastOnDesktop() {
+  public void canCastOnDesktop() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -173,11 +172,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
-    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-    networkConditions.setLatency(Duration.ofMillis(200));
+    conditions.setNetworkConditions(withLatency(ofMillis(200)));
 
-    conditions.setNetworkConditions(networkConditions);
-    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(ofMillis(200));
 
     conditions.deleteNetworkConditions();
 

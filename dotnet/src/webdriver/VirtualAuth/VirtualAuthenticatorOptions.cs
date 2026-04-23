@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium.VirtualAuth;
 
 /// <summary>
@@ -170,9 +167,9 @@ public class VirtualAuthenticatorOptions
     /// Serializes this set of options into a dictionary of key-value pairs.
     /// </summary>
     /// <returns>The dictionary containing the values of this set of options.</returns>
-    public Dictionary<string, object> ToDictionary()
+    public Dictionary<string, object?> ToDictionary()
     {
-        Dictionary<string, object> toReturn = new Dictionary<string, object>();
+        Dictionary<string, object?> toReturn = new Dictionary<string, object?>();
 
         toReturn["protocol"] = this.protocol;
         toReturn["transport"] = this.transport;

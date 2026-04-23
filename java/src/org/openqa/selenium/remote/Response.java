@@ -20,10 +20,8 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class Response {
 
   private volatile @Nullable Object value;
@@ -75,7 +73,8 @@ public class Response {
   @Override
   public String toString() {
     return String.format(
-        "(Response: SessionID: %s, State: %s, Value: %s)", getSessionId(), getState(), getValue());
+        "(Response: SessionID: %s, Status: %s, State: %s, Value: %s)",
+        getSessionId(), getStatus(), getState(), getValue());
   }
 
   @Override

@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
     "ExtensionsTest.java",
@@ -39,6 +39,7 @@ java_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -56,6 +57,7 @@ java_selenium_test_suite(
     srcs = LARGE_TESTS,
     browsers = [
         "firefox",
+        "firefox-beta",
     ],
     data = [
         "//common/extensions",
@@ -77,6 +79,7 @@ java_selenium_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 
@@ -86,6 +89,7 @@ java_selenium_test_suite(
     srcs = REMOTE_TESTS,
     browsers = [
         "firefox",
+        "firefox-beta",
     ],
     data = [
         "//common/extensions",
@@ -106,6 +110,7 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 

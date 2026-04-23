@@ -123,6 +123,9 @@ class Command:
     DOWNLOAD_FILE: str = "downloadFile"
     DELETE_DOWNLOADABLE_FILES: str = "deleteDownloadableFiles"
 
+    # Remote Session Events
+    FIRE_SESSION_EVENT: str = "fireSessionEvent"
+
     # Federated Credential Management (FedCM)
     GET_FEDCM_TITLE: str = "getFedcmTitle"
     GET_FEDCM_DIALOG_TYPE: str = "getFedcmDialogType"

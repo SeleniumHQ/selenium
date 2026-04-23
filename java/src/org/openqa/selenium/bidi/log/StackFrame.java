@@ -17,14 +17,12 @@
 
 package org.openqa.selenium.bidi.log;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
-// @see <a
-// href="https://w3c.github.io/webdriver-bidi/#types-script-StackFrame">https://w3c.github.io/webdriver-bidi/#types-script-StackFrame</a>
+/**
+ * @see <a href="https://w3c.github.io/webdriver-bidi/#type-script-StackFrame">BiDi spec</a>
+ */
 public class StackFrame {
 
   private final String url;
@@ -35,8 +33,8 @@ public class StackFrame {
   public StackFrame(String scriptUrl, String function, int lineNumber, int columnNumber) {
     this.url = scriptUrl;
     this.functionName = function;
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber;
+    this.lineNumber = Require.nonNegative("Line number", lineNumber);
+    this.columnNumber = Require.nonNegative("Column number", columnNumber);
   }
 
   public String getUrl() {
@@ -58,8 +56,8 @@ public class StackFrame {
   public static StackFrame fromJson(JsonInput input) {
     String url = null;
     String functionName = null;
-    int lineNumber = 0;
-    int columnNumber = 0;
+    Integer lineNumber = null;
+    Integer columnNumber = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -88,17 +86,10 @@ public class StackFrame {
 
     input.endObject();
 
-    return new StackFrame(url, functionName, lineNumber, columnNumber);
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("url", url);
-    toReturn.put("functionName", functionName);
-    toReturn.put("lineNumber", lineNumber);
-    toReturn.put("columnNumber", columnNumber);
-
-    return unmodifiableMap(toReturn);
+    return new StackFrame(
+        Require.nonNull("URL", url),
+        Require.nonNull("Function name", functionName),
+        Require.nonNull("Line number", lineNumber),
+        Require.nonNull("Column number", columnNumber));
   }
 }

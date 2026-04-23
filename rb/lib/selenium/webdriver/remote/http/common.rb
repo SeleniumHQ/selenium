@@ -28,6 +28,7 @@ module Selenium
             'Accept' => CONTENT_TYPE,
             'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8"
           }.freeze
+          BINARY_ENCODINGS = [Encoding::BINARY, Encoding::ASCII_8BIT].freeze
 
           class << self
             attr_accessor :extra_headers
@@ -55,6 +56,7 @@ module Selenium
             headers['Cache-Control'] = 'no-cache' if verb == :get
 
             if command_hash
+              command_hash              = ensure_utf8_encoding(command_hash)
               payload                   = JSON.generate(command_hash)
               headers['Content-Length'] = payload.bytesize.to_s if %i[post put].include?(verb)
 
@@ -89,6 +91,36 @@ module Selenium
 
           def request(*)
             raise NotImplementedError, 'subclass responsibility'
+          end
+
+          def ensure_utf8_encoding(obj)
+            case obj
+            when String
+              encode_string_to_utf8(obj)
+            when Array
+              obj.map { |item| ensure_utf8_encoding(item) }
+            when Hash
+              obj.each_with_object({}) do |(key, value), result|
+                result[ensure_utf8_encoding(key)] = ensure_utf8_encoding(value)
+              end
+            else
+              obj
+            end
+          end
+
+          def encode_string_to_utf8(str)
+            return str if str.encoding == Encoding::UTF_8 && str.valid_encoding?
+
+            if BINARY_ENCODINGS.include?(str.encoding)
+              result = str.dup.force_encoding(Encoding::UTF_8)
+              return result if result.valid_encoding?
+            end
+
+            str.encode(Encoding::UTF_8)
+          rescue EncodingError => e
+            raise Error::WebDriverError,
+                  "Unable to encode string to UTF-8: #{e.message}. " \
+                  "String encoding: #{str.encoding}, content: #{str.inspect}"
           end
 
           def create_response(code, body, content_type)

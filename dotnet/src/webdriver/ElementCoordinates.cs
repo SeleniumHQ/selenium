@@ -19,7 +19,6 @@
 
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
-using System;
 
 namespace OpenQA.Selenium;
 
@@ -36,7 +35,8 @@ internal sealed class ElementCoordinates : ICoordinates
     /// <param name="element">The <see cref="WebElement"/> to be located.</param>
     public ElementCoordinates(WebElement element)
     {
-        this.element = element ?? throw new ArgumentNullException(nameof(element));
+        ArgumentNullException.ThrowIfNull(element);
+        this.element = element;
     }
 
     /// <summary>

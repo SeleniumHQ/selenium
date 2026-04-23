@@ -18,11 +18,13 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
+import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -83,6 +86,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -92,6 +96,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.jdk.ConnectionException;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -113,6 +118,10 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  static {
+    org.openqa.selenium.internal.Debug.configureLogger();
+  }
+
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
 
   /** Boolean system property that defines whether the tracing is enabled or not. */
@@ -121,24 +130,31 @@ public class RemoteWebDriver
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
+  private final ClientConfig clientConfig;
   private CommandExecutor executor;
   protected Capabilities capabilities;
-  private SessionId sessionId;
+  private @Nullable SessionId sessionId;
   private FileDetector fileDetector = new UselessFileDetector();
-  private ExecuteMethod executeMethod;
+  private final ExecuteMethod executeMethod = new RemoteExecuteMethod(this);
 
-  private JsonToWebElementConverter converter;
+  private JsonToWebElementConverter converter = new JsonToWebElementConverter(this);
 
-  private Logs remoteLogs;
+  private final Logs remoteLogs = new RemoteLogs(executeMethod);
+
+  @SuppressWarnings("deprecation")
   private LocalLogs localLogs;
 
-  private Script remoteScript;
+  @Nullable private Script remoteScript;
 
-  private Network remoteNetwork;
+  @Nullable private Network remoteNetwork;
 
   // For cglib
+  @SuppressWarnings("DataFlowIssue")
   protected RemoteWebDriver() {
-    this.capabilities = init(new ImmutableCapabilities());
+    this.capabilities = new ImmutableCapabilities();
+    this.localLogs = initLocalLogs();
+    this.clientConfig = ClientConfig.defaultConfig();
+    this.executor = null;
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -153,22 +169,45 @@ public class RemoteWebDriver
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
+    this(remoteAddress, capabilities, ClientConfig.defaultConfig());
+  }
+
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, ClientConfig clientConfig) {
     this(
         createExecutor(
             Require.nonNull("Server URL", remoteAddress),
-            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true"))),
-        Require.nonNull("Capabilities", capabilities));
+            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
+            clientConfig),
+        Require.nonNull("Capabilities", capabilities),
+        clientConfig);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
-    this(
-        createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
-        Require.nonNull("Capabilities", capabilities));
+    this(remoteAddress, capabilities, ClientConfig.defaultConfig(), enableTracing);
   }
 
+  public RemoteWebDriver(
+      URL remoteAddress,
+      Capabilities capabilities,
+      ClientConfig clientConfig,
+      boolean enableTracing) {
+    this(
+        createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
+        Require.nonNull("Capabilities", capabilities),
+        clientConfig);
+  }
+
+  @SuppressWarnings("deprecation")
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
+    this(executor, capabilities, ClientConfig.defaultConfig());
+  }
+
+  public RemoteWebDriver(
+      CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
+    this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
-    this.capabilities = init(capabilities);
+    this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
+    this.localLogs = initLocalLogs();
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -195,8 +234,9 @@ public class RemoteWebDriver
     }
   }
 
-  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
-    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
+  private static CommandExecutor createExecutor(
+      URL remoteAddress, boolean enableTracing, ClientConfig clientConfig) {
+    ClientConfig config = clientConfig.baseUrl(remoteAddress);
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor =
@@ -215,25 +255,19 @@ public class RemoteWebDriver
     return new RemoteWebDriverBuilder();
   }
 
-  private Capabilities init(Capabilities capabilities) {
-    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
-
+  @SuppressWarnings("deprecation")
+  private static LocalLogs initLocalLogs() {
     LOG.addHandler(LoggingHandler.getInstance());
-
-    converter = new JsonToWebElementConverter(this);
-    executeMethod = new RemoteExecuteMethod(this);
 
     Set<String> logTypesToIgnore = Set.of();
 
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
     LocalLogs clientLogs =
         LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
-    localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
-    remoteLogs = new RemoteLogs(executeMethod, localLogs);
-
-    return capabilities;
+    return LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
   }
 
+  @Nullable
   public SessionId getSessionId() {
     return sessionId;
   }
@@ -270,20 +304,7 @@ public class RemoteWebDriver
       @SuppressWarnings("unchecked")
       Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
       MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-      String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
-      Platform platform;
-      try {
-        if (platformString == null || platformString.isEmpty()) {
-          platform = Platform.ANY;
-        } else {
-          platform = Platform.fromString(platformString);
-        }
-      } catch (WebDriverException e) {
-        // The server probably responded with a name matching the os.name
-        // system property. Try to recover and parse this.
-        platform = Platform.extractFromSysProperty(platformString);
-      }
-      returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+      returnedCapabilities.setCapability(PLATFORM_NAME, resolvePlatform(rawCapabilities));
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
@@ -300,12 +321,31 @@ public class RemoteWebDriver
     }
   }
 
+  static Platform resolvePlatform(Map<String, Object> rawCapabilities) {
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
+    try {
+      if (platformString == null || platformString.isEmpty()) {
+        return Platform.ANY;
+      } else {
+        return Platform.fromString(platformString);
+      }
+    } catch (WebDriverException e) {
+      // The server probably responded with a name matching the os.name
+      // system property. Try to recover and parse this.
+      return Platform.extractFromSysProperty(platformString);
+    }
+  }
+
   public ErrorHandler getErrorHandler() {
     return errorHandler;
   }
 
   public void setErrorHandler(ErrorHandler handler) {
     this.errorHandler = handler;
+  }
+
+  public ClientConfig getClientConfig() {
+    return clientConfig;
   }
 
   public CommandExecutor getCommandExecutor() {
@@ -318,9 +358,6 @@ public class RemoteWebDriver
 
   @Override
   public Capabilities getCapabilities() {
-    if (capabilities == null) {
-      return new ImmutableCapabilities();
-    }
     return capabilities;
   }
 
@@ -368,7 +405,7 @@ public class RemoteWebDriver
     Response response = execute(DriverCommand.PRINT_PAGE(printOptions));
 
     Object result = response.getValue();
-    return new Pdf((String) result);
+    return new Pdf((String) requireNonNull(result));
   }
 
   @Override
@@ -485,15 +522,16 @@ public class RemoteWebDriver
   }
 
   @Override
-  public Object executeScript(String script, Object... args) {
+  public @Nullable Object executeScript(String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
     return execute(DriverCommand.EXECUTE_SCRIPT(script, convertedArgs)).getValue();
   }
 
+  @Nullable
   @Override
-  public Object executeAsyncScript(String script, Object... args) {
+  public Object executeAsyncScript(String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
@@ -547,6 +585,7 @@ public class RemoteWebDriver
     LOG.setLevel(level);
   }
 
+  @Nullable
   protected Response execute(CommandPayload payload) {
     Command command = new Command(sessionId, payload);
     Response response;
@@ -588,6 +627,11 @@ public class RemoteWebDriver
         }
       } else if (e instanceof WebDriverException) {
         toThrow = (WebDriverException) e;
+      } else if (e instanceof ConnectionException) {
+        ConnectionException cause = (ConnectionException) e;
+        toThrow =
+            new UnreachableBrowserException(
+                "Error communicating with the remote browser at " + cause.uri(), cause);
       } else {
         toThrow =
             new UnreachableBrowserException(
@@ -730,11 +774,23 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
-
-    Contents.Supplier content = (Contents.Supplier) response.getValue();
-    try (InputStream fileContent = content.get()) {
-      Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+    Response response =
+        execute(
+            DriverCommand.DOWNLOAD_FILE,
+            Map.of("name", fileName, "format", MediaType.OCTET_STREAM.toString()));
+    if (response.getValue() instanceof Contents.Supplier) {
+      // Selenium Grid 4.40.0 or newer
+      Contents.Supplier content = (Contents.Supplier) response.getValue();
+      try (InputStream fileContent = content.get()) {
+        Files.createDirectories(targetLocation);
+        Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+      }
+    } else if (response.getValue() instanceof Map) {
+      // Selenium Grid 4.39.0 or older
+      String contents = ((Map<String, String>) response.getValue()).get("contents");
+      Zip.unzip(contents, targetLocation.toFile());
+    } else {
+      throw new UnsupportedOperationException("Unexpected grid response: " + response);
     }
   }
 
@@ -750,6 +806,46 @@ public class RemoteWebDriver
     execute(DriverCommand.DELETE_DOWNLOADABLE_FILES);
   }
 
+  /**
+   * Fires a custom session event to the remote server event bus. This allows test code to trigger
+   * server-side utilities that subscribe to the event bus.
+   *
+   * <p>Example usage:
+   *
+   * <pre>{@code
+   * // Simple event
+   * driver.fireSessionEvent("test:started");
+   *
+   * // Event with payload
+   * driver.fireSessionEvent("test:failed", Map.of(
+   *     "testName", "LoginTest",
+   *     "error", "Element not found"
+   * ));
+   * }</pre>
+   *
+   * @param eventType the type of event (e.g., "test:failed", "log:collect", "marker:add")
+   * @param payload optional data to include with the event (maybe null or empty)
+   * @return the response data from the server
+   * @throws WebDriverException if the event cannot be fired
+   */
+  public Map<String, Object> fireSessionEvent(
+      String eventType, @Nullable Map<String, Object> payload) {
+    Response response = execute(DriverCommand.FIRE_SESSION_EVENT(eventType, payload));
+    return (Map<String, Object>) response.getValue();
+  }
+
+  /**
+   * Fires a custom session event to the remote server event bus without a payload.
+   *
+   * @param eventType the type of event (e.g., "test:started", "log:collect")
+   * @return the response data from the server
+   * @throws WebDriverException if the event cannot be fired
+   * @see #fireSessionEvent(String, Map)
+   */
+  public Map<String, Object> fireSessionEvent(String eventType) {
+    return fireSessionEvent(eventType, null);
+  }
+
   @Override
   public void setDelayEnabled(boolean enabled) {
     execute(DriverCommand.SET_DELAY_ENABLED(enabled));
@@ -760,6 +856,7 @@ public class RemoteWebDriver
     execute(DriverCommand.RESET_COOLDOWN);
   }
 
+  @Nullable
   @Override
   public FederatedCredentialManagementDialog getFederatedCredentialManagementDialog() {
     FederatedCredentialManagementDialog dialog = new FedCmDialogImpl(executeMethod);
@@ -780,7 +877,7 @@ public class RemoteWebDriver
    * @param toLog any data that might be interesting.
    * @param when verb tense of "Execute" to prefix message
    */
-  protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+  protected void log(@Nullable SessionId sessionId, String commandName, Object toLog, When when) {
     if (!LOG.isLoggable(level)) {
       return;
     }
@@ -879,9 +976,7 @@ public class RemoteWebDriver
    * @see UselessFileDetector
    */
   public void setFileDetector(FileDetector detector) {
-    if (detector == null) {
-      throw new WebDriverException("You may not set a file detector that is null");
-    }
+    Require.nonNull("File detector", detector);
     fileDetector = detector;
   }
 
@@ -924,9 +1019,7 @@ public class RemoteWebDriver
 
     @Override
     public void deleteCookieNamed(String name) {
-      if (name == null || name.isBlank()) {
-        throw new IllegalArgumentException("Cookie name cannot be empty");
-      }
+      Require.nonBlank("Cookie name", name);
       execute(DriverCommand.DELETE_COOKIE(name));
     }
 
@@ -983,11 +1076,10 @@ public class RemoteWebDriver
       return toReturn;
     }
 
+    @Nullable
     @Override
     public Cookie getCookieNamed(String name) {
-      if (name == null || name.isBlank()) {
-        throw new IllegalArgumentException("Cookie name cannot be empty");
-      }
+      Require.nonBlank("Cookie name", name);
       Set<Cookie> allCookies = getCookies();
       for (Cookie cookie : allCookies) {
         if (cookie.getName().equals(name)) {
@@ -1055,9 +1147,6 @@ public class RemoteWebDriver
 
     @Beta
     protected class RemoteWindow implements Window {
-
-      Map<String, Object> rawPoint;
-
       @Override
       @SuppressWarnings({"unchecked"})
       public Dimension getSize() {
@@ -1080,7 +1169,7 @@ public class RemoteWebDriver
       @SuppressWarnings("unchecked")
       public Point getPosition() {
         Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION());
-        rawPoint = (Map<String, Object>) response.getValue();
+        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();
@@ -1258,9 +1347,7 @@ public class RemoteWebDriver
      */
     @Override
     public void sendKeys(String keysToSend) {
-      if (keysToSend == null) {
-        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
-      }
+      Require.nonNull("Keys to send", keysToSend, "should be a not null CharSequence");
       execute(DriverCommand.SET_ALERT_VALUE(keysToSend));
     }
   }

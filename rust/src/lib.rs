@@ -45,6 +45,8 @@ use crate::shell::{
 use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
 use anyhow::anyhow;
+use fs_extra::file;
+use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -63,6 +65,7 @@ pub mod files;
 pub mod firefox;
 pub mod grid;
 pub mod iexplorer;
+pub mod jre;
 pub mod lock;
 pub mod logger;
 pub mod metadata;
@@ -222,7 +225,7 @@ pub trait SeleniumManager {
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
-            fs::rename(driver_zip_file, driver_path_in_cache)?;
+            file::move_file(driver_zip_file, driver_path_in_cache, &CopyOptions::new())?;
         } else {
             uncompress(
                 &driver_zip_file,
@@ -313,56 +316,77 @@ pub trait SeleniumManager {
             browser_version
         ));
 
-        // Checking if browser version is in the cache
+        // Checking if browser version already in expected location
         let browser_binary_path = self.get_browser_binary_path(original_browser_version)?;
         if browser_binary_path.exists() {
+            let location_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+                " (Edge uses system path, not cache)"
+            } else {
+                ""
+            };
             self.get_logger().debug(format!(
-                "{} {} already exists",
+                "{} {} already exists at {}{}",
                 self.get_browser_name(),
-                browser_version
+                browser_version,
+                browser_binary_path.display(),
+                location_note
             ));
-        } else {
-            // If browser is not available, download it
-            if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
-                return Err(anyhow!(format_one_arg(
-                    NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
-                    self.get_browser_name(),
-                )));
-            }
-
-            let browser_path_in_cache = self.get_browser_path_in_cache()?;
-            let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
-            if !lock.exists() && browser_binary_path.exists() {
-                self.get_logger().debug(format!(
-                    "Browser already in cache: {}",
-                    browser_binary_path.display()
-                ));
-                self.set_browser_path(path_to_string(&browser_binary_path));
-                return Ok(Some(browser_binary_path.clone()));
-            }
-
-            let browser_url = self.get_browser_url_for_download(original_browser_version)?;
-            self.get_logger().debug(format!(
-                "Downloading {} {} from {}",
-                self.get_browser_name(),
-                self.get_browser_version(),
-                browser_url
-            ));
-            let (_tmp_folder, driver_zip_file) =
-                download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
-
-            let browser_label_for_download =
-                self.get_browser_label_for_download(original_browser_version)?;
-            uncompress(
-                &driver_zip_file,
-                &browser_path_in_cache,
-                self.get_logger(),
-                self.get_os(),
-                None,
-                browser_label_for_download,
-            )?;
-            lock.release();
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path));
         }
+
+        // Browser not available, download it
+        if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
+            return Err(anyhow!(format_one_arg(
+                NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
+                self.get_browser_name(),
+            )));
+        }
+
+        let browser_path_in_cache = self.get_browser_path_in_cache()?;
+        let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
+        // If lock file was deleted, another process held it and released (deleting the file).
+        // Check if that process already downloaded the browser.
+        if !lock.exists() && browser_binary_path.exists() {
+            self.get_logger().debug(format!(
+                "{} {} now available at {}",
+                self.get_browser_name(),
+                browser_version,
+                browser_binary_path.display()
+            ));
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path.clone()));
+        }
+
+        let browser_url = self.get_browser_url_for_download(original_browser_version)?;
+        // Edge on Windows: MSI installs to system path, not cache
+        let install_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+            " (will install to system path via MSI)"
+        } else {
+            ""
+        };
+        self.get_logger().debug(format!(
+            "Downloading {} {} from {}{}",
+            self.get_browser_name(),
+            self.get_browser_version(),
+            browser_url,
+            install_note
+        ));
+        let (_tmp_folder, driver_zip_file) =
+            download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+
+        let browser_label_for_download =
+            self.get_browser_label_for_download(original_browser_version)?;
+        uncompress(
+            &driver_zip_file,
+            &browser_path_in_cache,
+            self.get_logger(),
+            self.get_os(),
+            None,
+            browser_label_for_download,
+        )?;
+        lock.release();
+
         if browser_binary_path.exists() {
             self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
@@ -479,6 +503,12 @@ pub trait SeleniumManager {
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
+        if download_browser && self.is_safari() {
+            self.get_logger().debug(
+                "Force browser download requested for Safari, but downloads are not supported; using local discovery",
+            );
+            download_browser = false;
+        }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
@@ -1173,7 +1203,7 @@ pub trait SeleniumManager {
 
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
-            if !escaped_browser_path.is_empty() {
+            if !escaped_browser_path.is_empty() && !self.is_webview2() {
                 return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {

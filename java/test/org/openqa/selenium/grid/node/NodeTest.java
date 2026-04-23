@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,8 +32,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -44,9 +44,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +75,8 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.LocalNode.Builder;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -162,7 +166,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     node2 =
         new RemoteNode(
@@ -172,7 +176,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local2.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
   }
 
   @Test
@@ -187,7 +191,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of());
+            emptySet());
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));
@@ -239,7 +243,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
@@ -363,7 +367,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     Either<WebDriverException, CreateSessionResponse> response =
         remote.newSession(createSessionRequest(caps));
@@ -691,7 +695,7 @@ class NodeTest {
       HttpResponse deleteResponse = node.execute(deleteRequest);
       assertThat(deleteResponse.isSuccessful()).isTrue();
 
-      assertThat(listFileDownloads(session.getId()).isEmpty()).isTrue();
+      assertThat(listFileDownloads(session.getId())).isEmpty();
     } finally {
       node.stop(session.getId());
     }
@@ -913,6 +917,119 @@ class NodeTest {
     assertThat(latch.getCount()).isEqualTo(1);
   }
 
+  @Test
+  void shouldFireSessionEventAndReceiveItViaEventBus() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
+
+    bus.addListener(
+        SessionEvent.listener(
+            data -> {
+              receivedEvent.set(data);
+              latch.countDown();
+            }));
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload =
+        Map.of(
+            "eventType",
+            "test:failed",
+            "payload",
+            Map.of("testName", "MyTest", "error", "Element not found"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    HttpResponse httpResponse = node.execute(req);
+
+    assertThat(httpResponse.getStatus()).isEqualTo(200);
+
+    boolean eventReceived = latch.await(5, SECONDS);
+    assertThat(eventReceived).as("Event should be received via EventBus").isTrue();
+
+    SessionEventData eventData = receivedEvent.get();
+    assertThat(eventData).isNotNull();
+    assertThat(eventData.getSessionId()).isEqualTo(session.getId());
+    assertThat(eventData.getEventType()).isEqualTo("test:failed");
+    assertThat(eventData.getPayload()).containsEntry("testName", "MyTest");
+    assertThat(eventData.getNodeId()).isNotNull();
+    assertThat(eventData.getNodeUri()).isNotNull();
+
+    Map<String, Object> responseBody = new Json().toType(string(httpResponse), MAP_TYPE);
+    assertThat(responseBody).containsKey("value");
+    @SuppressWarnings("unchecked")
+    Map<String, Object> value = (Map<String, Object>) responseBody.get("value");
+    assertThat(value).containsEntry("success", true);
+    assertThat(value).containsEntry("eventType", "test:failed");
+    assertThat(value).containsKey("timestamp");
+  }
+
+  @Test
+  void firingSessionEventForNonExistentSessionShouldThrow() {
+    SessionId fakeId = new SessionId(UUID.randomUUID());
+    Map<String, Object> eventPayload = Map.of("eventType", "test:failed");
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", fakeId));
+    req.setContent(Contents.asJson(eventPayload));
+
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.execute(req));
+  }
+
+  @Test
+  void firingSessionEventWithoutEventTypeShouldThrow() {
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload = Map.of("payload", Map.of("data", "value"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> local.execute(req))
+        .withMessageContaining("eventType");
+  }
+
+  @Test
+  void firingSessionEventWithEmptyPayloadShouldSucceed() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
+
+    bus.addListener(
+        SessionEvent.listener(
+            data -> {
+              receivedEvent.set(data);
+              latch.countDown();
+            }));
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    Map<String, Object> eventPayload = Map.of("eventType", "log:collect");
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/event", session.getId()));
+    req.setContent(Contents.asJson(eventPayload));
+
+    HttpResponse httpResponse = node.execute(req);
+
+    assertThat(httpResponse.getStatus()).isEqualTo(200);
+
+    boolean eventReceived = latch.await(5, SECONDS);
+    assertThat(eventReceived).isTrue();
+
+    SessionEventData eventData = receivedEvent.get();
+    assertThat(eventData.getEventType()).isEqualTo("log:collect");
+    assertThat(eventData.getPayload()).isEmpty();
+  }
+
   private File createFile(String content, File directory) {
     try {
       File f = new File(directory.getAbsolutePath(), UUID.randomUUID().toString());
@@ -943,10 +1060,10 @@ class NodeTest {
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
-    return new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), caps, ImmutableMap.of());
+    return new CreateSessionRequest(EnumSet.allOf(Dialect.class), caps, emptyMap());
   }
 
-  private String simulateFileDownload(SessionId id, String text) throws IOException {
+  private String simulateFileDownload(SessionId id, String text) {
     File zip = createTmpFile(text);
     TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(id);
     File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);

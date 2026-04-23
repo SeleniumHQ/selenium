@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>keyboard_test</title>
-<script src="test_bootstrap.js"></script>
-<script type="text/javascript">
-  goog.require('bot.Device');
-  goog.require('bot.Keyboard');
-  goog.require('bot.Keyboard.Key');
-  goog.require('bot.action');
-  goog.require('goog.Promise');
-  goog.require('goog.events');
-  goog.require('goog.testing.jsunit');
-  goog.require('goog.userAgent');
-</script>
+  <meta charset="utf-8">
+  <title>keyboard_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.Device');
+    goog.require('bot.Keyboard');
+    goog.require('bot.Keyboard.Key');
+    goog.require('bot.action');
+    goog.require('goog.Promise');
+    goog.require('goog.events');
+    goog.require('goog.userAgent');
+  </script>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <input id="target">
 <script type="text/javascript">
   var browser, target, keyboard;
 
-  function setUpPage() {
-    if (goog.userAgent.GECKO) {
-      browser = 'GECKO';
-    } else if (goog.userAgent.IE) {
-      browser = 'IE';
-    } else if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
-      browser = 'WEBKIT';
-    } else {
-      fail('unknown browser');
-    }
-    target = document.getElementById('target');
-    keyboard = new bot.Keyboard();
-    keyboard.moveCursor(target);
+  if (goog.userAgent.GECKO) {
+    browser = 'GECKO';
+  } else if (goog.userAgent.IE) {
+    browser = 'IE';
+  } else if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
+    browser = 'WEBKIT';
+  } else {
+    browser = 'UNKNOWN';
   }
+  target = document.getElementById('target');
+  keyboard = new bot.Keyboard();
+  keyboard.moveCursor(target);
 
-  function assertKeyEvents(key, shift, browser2Codes) {
+  function assertKeyEvents(assert, key, shift, browser2Codes) {
+    if (browser === 'UNKNOWN') {
+      assert.ok(false, 'unknown browser');
+      return goog.Promise.resolve();
+    }
+
     if (shift) {
       keyboard.pressKey(bot.Keyboard.Keys.SHIFT);
     }
 
     return new goog.Promise(function(success, failure) {
-      // Get the expected codes for this browser and sanity check them.
-      // An up/down code must be provided, and a a keypress keyCode must
-      // be provided if and only if a keypress charCode is provided.
       var codes = browser2Codes[browser];
       var downFired = false, pressFired = false, expectPress = !!codes.press;
 
@@ -52,25 +57,25 @@
             case 'keydown':
               downFired = true;
               var downCodes = codes.downUp;
-              assertEquals('wrong down keycode', downCodes.key, e.keyCode);
-              assertEquals('wrong down charcode', downCodes.char, e.charCode);
+              assert.strictEqual(e.keyCode, downCodes.key, 'wrong down keycode');
+              assert.strictEqual(e.charCode, downCodes.char, 'wrong down charcode');
               return;
             case 'keypress':
               pressFired = true;
-              assertTrue('keydown expected', downFired);
-              assertTrue('keypress not expected', expectPress);
+              assert.ok(downFired, 'keydown expected');
+              assert.ok(expectPress, 'keypress not expected');
               var pressCodes = codes.press;
-              assertEquals('wrong press keycode', pressCodes.key, e.keyCode);
-              assertEquals('wrong press charcode', pressCodes.char, e.charCode);
+              assert.strictEqual(e.keyCode, pressCodes.key, 'wrong press keycode');
+              assert.strictEqual(e.charCode, pressCodes.char, 'wrong press charcode');
               return;
             case 'keyup':
-              assertTrue('keydown expected', downFired);
+              assert.ok(downFired, 'keydown expected');
               if (expectPress) {
-                assertTrue('keypress expected', pressFired);
+                assert.ok(pressFired, 'keypress expected');
               }
               var upCodes = codes.downUp;
-              assertEquals('wrong up keycode', upCodes.key, e.keyCode);
-              assertEquals('wrong up charcode', upCodes.char, e.charCode);
+              assert.strictEqual(e.keyCode, upCodes.key, 'wrong up keycode');
+              assert.strictEqual(e.charCode, upCodes.char, 'wrong up charcode');
               success();
               return;
           }
@@ -91,125 +96,136 @@
 
   var U = undefined;
 
-  function testLowerCase() {
-    return assertKeyEvents(bot.Keyboard.Keys.G, false, {
+  QUnit.test('lower case', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.G, false, {
       GECKO:  {downUp: {key: 71, char: 0}, press: {key:   0, char: 103}},
       IE:     {downUp: {key: 71, char: U}, press: {key: 103, char:   U}},
       WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 103, char: 103}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testUpperCase() {
-    return assertKeyEvents(bot.Keyboard.Keys.G, true, {
+  QUnit.test('upper case', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.G, true, {
       GECKO:  {downUp: {key: 71, char: 0}, press: {key:  0, char: 71}},
       IE:     {downUp: {key: 71, char: U}, press: {key: 71, char:  U}},
       WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 71, char: 71}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testSpace() {
-    return assertKeyEvents(bot.Keyboard.Keys.SPACE, false, {
+  QUnit.test('space', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.SPACE, false, {
       GECKO:  {downUp: {key: 32, char: 0}, press: {key:  0, char: 32}},
       IE:     {downUp: {key: 32, char: U}, press: {key: 32, char:  U}},
       WEBKIT: {downUp: {key: 32, char: 0}, press: {key: 32, char: 32}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testPunctuationWithoutShift() {
-    return assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, false, {
+  QUnit.test('punctuation without shift', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.SEMICOLON, false, {
       GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 59}},
       IE:     {downUp: {key: 186, char: U}, press: {key: 59, char:  U}},
       WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 59, char: 59}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testPunctuationWithShift() {
-    return assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, true, {
+  QUnit.test('punctuation with shift', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.SEMICOLON, true, {
       GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 58}},
       IE:     {downUp: {key: 186, char: U}, press: {key: 58, char:  U}},
       WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 58, char: 58}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testEnter() {
-    return assertKeyEvents(bot.Keyboard.Keys.ENTER, false, {
+  QUnit.test('enter', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.ENTER, false, {
       GECKO:  {downUp: {key: 13, char: 0}, press: {key: 13, char:  0}},
       IE:     {downUp: {key: 13, char: U}, press: {key: 13, char:  U}},
       WEBKIT: {downUp: {key: 13, char: 0}, press: {key: 13, char: 13}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testArrow() {
-    return assertKeyEvents(bot.Keyboard.Keys.DOWN, false, {
+  QUnit.test('arrow', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.DOWN, false, {
       GECKO:  {downUp: {key: 40, char: 0}, press: {key: 40, char: 0}},
       IE:     {downUp: {key: 40, char: U}, press: U},
       WEBKIT: {downUp: {key: 40, char: 0}, press: U}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testEsc() {
-    return assertKeyEvents(bot.Keyboard.Keys.ESC, false, {
+  QUnit.test('esc', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.ESC, false, {
       GECKO:  {downUp: {key: 27, char: 0}, press: {key: 27, char: 0}},
       IE:     {downUp: {key: 27, char: U}, press: {key: 27, char: U}},
       WEBKIT: {downUp: {key: 27, char: 0}, press: U}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testControl() {
-    return assertKeyEvents(bot.Keyboard.Keys.CONTROL, false, {
+  QUnit.test('control', function(assert) {
+    var done = assert.async();
+    assertKeyEvents(assert, bot.Keyboard.Keys.CONTROL, false, {
       GECKO:  {downUp: {key: 17, char: 0}, press: U},
       IE:     {downUp: {key: 17, char: U}, press: U},
       WEBKIT: {downUp: {key: 17, char: 0}, press: U}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testUnknownCharacter() {
+  QUnit.test('unknown character', function(assert) {
+    var done = assert.async();
     var unknownChar = '\u7231';
     var unknownKey = bot.Keyboard.Key.fromChar(unknownChar).key;
     var cc = unknownKey.character.charCodeAt(0);
-    return assertKeyEvents(unknownKey, false, {
+    assertKeyEvents(assert, unknownKey, false, {
       GECKO:  {downUp: {key: cc, char: 0}, press: {key:  0, char: cc}},
       IE:     {downUp: {key: cc, char: U}, press: {key: cc, char:  U}},
       WEBKIT: {downUp: {key: cc, char: 0}, press: {key: cc, char: cc}}
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testEventCancel() {
+  QUnit.test('event cancel', function(assert) {
+    var done = assert.async();
     var cancelEvent = function(event) {
       if (event.keyCode == 69) {
         event.preventDefault();
       }
     };
     var cancelKeydownId = goog.events.listen(target, 'keydown', cancelEvent);
-    return assertKeyEvents(bot.Keyboard.Keys.E, false, {
+    assertKeyEvents(assert, bot.Keyboard.Keys.E, false, {
       GECKO:  {downUp: {key: 69, char: 0}, press: {key: 0, char: 101}},
       IE:     {downUp: {key: 69, char: U}, press: U},
       WEBKIT: {downUp: {key: 69, char: 0}, press: U}
     }).thenAlways(function() {
       goog.events.unlistenByKey(cancelKeydownId);
-    });
-  }
+    }).then(done, function(err) { assert.ok(false, err); done(); });
+  });
 
-  function testModifierStatesStored() {
+  QUnit.test('modifier states stored', function(assert) {
     var modifiersState = new bot.Device.ModifiersState();
 
-    assertFalse(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    assert.notOk(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
     modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
-    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
-    assertTrue(modifiersState.isShiftPressed());
-    assertFalse(modifiersState.isPressed(bot.Device.Modifier.CONTROL));
+    assert.ok(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    assert.ok(modifiersState.isShiftPressed());
+    assert.notOk(modifiersState.isPressed(bot.Device.Modifier.CONTROL));
 
     modifiersState.setPressed(bot.Device.Modifier.SHIFT, false);
-    assertFalse(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
-  }
+    assert.notOk(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+  });
 
-  function testSettingModifierTwice() {
+  QUnit.test('setting modifier twice', function(assert) {
     var modifiersState = new bot.Device.ModifiersState();
     modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
-    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    assert.ok(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
     modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
-    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
-  }
+    assert.ok(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+  });
 </script>
 </body>
 </html>

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import java.io.UncheckedIOException;
@@ -31,7 +32,8 @@ public class SleepingHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    String duration = req.getQueryParameter("time");
+    String duration =
+        requireNonNull(req.getQueryParameter("time"), "Required query parameter 'time' is missing");
     long timeout = Long.parseLong(duration) * 1000;
 
     reallySleep(timeout);

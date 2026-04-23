@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium;
 
 /// <summary>
@@ -56,5 +54,5 @@ public class HttpRequestData
     /// <summary>
     /// Gets the ID of the HTTP request.
     /// </summary>
-    public string? RequestId { get; internal set; }
+    public string RequestId { get; internal set; } = null!;
 }

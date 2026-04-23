@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace OpenQA.Selenium;
@@ -45,7 +43,8 @@ internal class Timeouts : ITimeouts
     /// <param name="driver">The driver that is currently in use</param>
     public Timeouts(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -139,7 +138,7 @@ internal class Timeouts : ITimeouts
             }
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
 
         this.driver.Execute(DriverCommand.SetTimeouts, parameters);

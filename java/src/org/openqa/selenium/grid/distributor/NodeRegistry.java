@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import java.io.Closeable;
 import java.net.URI;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
@@ -137,7 +138,7 @@ public interface NodeRegistry extends HasReadyState, Closeable {
    * @param slotId The slot ID.
    * @param session The session to associate with the slot, or null to clear.
    */
-  void setSession(SlotId slotId, Session session);
+  void setSession(SlotId slotId, @Nullable Session session);
 
   /** Get the number of active slots. */
   int getActiveSlots();
@@ -151,5 +152,5 @@ public interface NodeRegistry extends HasReadyState, Closeable {
    * @param uri The node URI to look up.
    * @return The node if found, null otherwise.
    */
-  Node getNode(URI uri);
+  @Nullable Node getNode(URI uri);
 }

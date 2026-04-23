@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-LEVELS = %w[warning info deprecated].freeze
+LEVELS = %w[error warning info deprecated].freeze
 
 LEVELS.each do |level|
   RSpec::Matchers.define "have_#{level}" do |entry|

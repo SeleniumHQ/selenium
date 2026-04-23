@@ -123,7 +123,7 @@ class ClickScrollingTest extends JupiterTestBase {
     WebElement list = driver.findElement(By.tagName("ul"));
     WebElement item = list.findElement(By.id("desired"));
     item.click();
-    long yOffset =
+    Long yOffset =
         (Long) ((JavascriptExecutor) driver).executeScript("return arguments[0].scrollTop;", list);
     assertThat(yOffset).describedAs("Should not have scrolled").isZero();
   }
@@ -235,7 +235,7 @@ class ClickScrollingTest extends JupiterTestBase {
     assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 
-  private long getScrollTop() {
+  private Long getScrollTop() {
     wait.until(presenceOfElementLocated(By.tagName("body")));
     return (Long) ((JavascriptExecutor) driver).executeScript("return document.body.scrollTop;");
   }

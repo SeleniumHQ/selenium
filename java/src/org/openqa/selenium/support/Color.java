@@ -100,7 +100,7 @@ public class Color {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(@Nullable Object other) {
     if (other == null) {
       return false;
     }
