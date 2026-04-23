@@ -39,7 +39,7 @@ public class AlertsTests : DriverTestFixture
     {
         using var driver = EnvironmentManager.Instance.CreateDriverInstance(new CustomAlertDriverOptions
         {
-            UnhandledPromptBehavior = new UnhandledPromptBehaviorMultiOption { Default = UnhandledPromptBehavior.Dismiss }
+            UnhandledPromptBehavior = new UserPromptHandler.PerPromptType { Default = UnhandledPromptBehavior.Dismiss }
         });
 
         driver.Url = CreateAlertPage("cheese");

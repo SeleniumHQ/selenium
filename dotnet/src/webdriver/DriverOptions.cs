@@ -124,7 +124,7 @@ public abstract class DriverOptions
     /// Gets or sets the value for describing how unexpected alerts are to be handled in the browser.
     /// Defaults to <see cref="UnhandledPromptBehavior.Default"/>.
     /// </summary>
-    public UnhandledPromptBehaviorOption? UnhandledPromptBehavior { get; set; } = Selenium.UnhandledPromptBehavior.Default;
+    public UserPromptHandler? UnhandledPromptBehavior { get; set; } = Selenium.UnhandledPromptBehavior.Default;
 
     /// <summary>
     /// Gets or sets the value for describing how the browser is to wait for pages to load in the browser.
