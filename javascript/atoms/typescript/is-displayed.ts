@@ -47,17 +47,18 @@ interface Coordinate {
   }
 
   function isElement(node: unknown, tagName?: string): node is Element {
-    if (!node || !(node instanceof Element)) {
+    // Use nodeType instead of instanceof to handle cross-realm Elements
+    // (e.g., from iframes), where instanceof checks against a different Element.
+    if (!node || (node as Node).nodeType !== 1 /* ELEMENT_NODE */) {
       return false;
     }
+    var asElement = node as Element;
+    var upperTagName = typeof asElement.tagName === 'string' ? asElement.tagName.toUpperCase() : '';
     var normalizedTagName = toUpperCaseTag(tagName);
-    if (node instanceof HTMLFormElement) {
+    if (upperTagName === 'FORM') {
       return !normalizedTagName || normalizedTagName === 'FORM';
     }
-    return (
-      typeof node.tagName === 'string' &&
-      (!normalizedTagName || node.tagName.toUpperCase() === normalizedTagName)
-    );
+    return !!upperTagName && (!normalizedTagName || upperTagName === normalizedTagName);
   }
 
   function getParentElement(node: Node): Element | null {
@@ -70,7 +71,7 @@ interface Coordinate {
     ) {
       current = current.parentNode;
     }
-    return current instanceof Element ? current : null;
+    return current && current.nodeType === 1 /* ELEMENT_NODE */ ? (current as Element) : null;
   }
 
   function getEffectiveStyle(elem: Element, propertyName: string): string | null {
@@ -197,11 +198,11 @@ interface Coordinate {
     var image: Element | null = null;
     var rect = createRect(0, 0, 0, 0);
 
-    if (map instanceof HTMLMapElement && map.name) {
-      image = findImageUsingMap(map.name, map.ownerDocument);
+    if (isElement(map, 'MAP') && (map as HTMLMapElement).name) {
+      image = findImageUsingMap((map as HTMLMapElement).name, (map as HTMLMapElement).ownerDocument);
       if (image) {
         rect = getClientRect(image);
-        if (!isMap && elem instanceof HTMLAreaElement && elem.shape.toLowerCase() !== 'default') {
+        if (!isMap && isElement(elem, 'AREA') && (elem as HTMLAreaElement).shape.toLowerCase() !== 'default') {
           var relativeRect = getAreaRelativeRect(elem);
           var relativeX = Math.min(Math.max(relativeRect.left, 0), rect.width);
           var relativeY = Math.min(Math.max(relativeRect.top, 0), rect.height);
@@ -426,7 +427,7 @@ interface Coordinate {
           return true;
         }
 
-        if (child instanceof Element && positiveSize(child)) {
+        if (isElement(child) && positiveSize(child)) {
           return true;
         }
       }
@@ -445,7 +446,7 @@ interface Coordinate {
 
       for (var index = 0; index < element.childNodes.length; index += 1) {
         var child = element.childNodes[index];
-        if (child instanceof Element && !hiddenByOverflow(child) && positiveSize(child)) {
+        if (isElement(child) && !hiddenByOverflow(child) && positiveSize(child)) {
           return false;
         }
       }
