@@ -272,7 +272,8 @@ class SpeculationInspectorTest extends JupiterTestBase {
         String.format(
             "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget2);
 
-    addSpeculationRulesAndLink(speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
+    addSpeculationRulesAndLink(
+        speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
 
     newLatch.await(5, TimeUnit.SECONDS);
     assertThat(newEvents).hasSizeGreaterThanOrEqualTo(1);
@@ -328,7 +329,8 @@ class SpeculationInspectorTest extends JupiterTestBase {
         String.format(
             "{\"prefetch\": [{\"source\": \"list\", \"urls\": [\"%s\"]}]}", prefetchTarget2);
 
-    addSpeculationRulesAndLink(speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
+    addSpeculationRulesAndLink(
+        speculationRules2, prefetchTarget2, "Test Link 2", "prefetch-page-2");
 
     newLatch.await(5, TimeUnit.SECONDS);
     assertThat(newEvents).hasSizeGreaterThanOrEqualTo(1);
