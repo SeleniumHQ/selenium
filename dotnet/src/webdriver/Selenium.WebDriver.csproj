@@ -4,7 +4,7 @@
     <TargetFrameworks>net462;netstandard2.0;net8.0;</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -47,14 +47,10 @@
     <BaseSeleniumManagerPath>$(MSBuildThisFileDirectory)..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
-  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14480-->
+  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14780-->
   <!--<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
-  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
@@ -94,10 +90,10 @@
   </Target>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
 
     <ItemGroup>
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
     </ItemGroup>
   </Target>
 

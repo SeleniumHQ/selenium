@@ -10,12 +10,10 @@ try-import %workspace%/.bazelrc.windows.local
 
 common --lockfile_mode=off
 
-# Prepare for Bazel 8. These become the default in 8.0.0
-common --incompatible_disallow_empty_glob
-common --incompatible_use_plus_in_repo_names
+# Bazel 8 compatibility flags. We should find ways to avoid needing these
+common --legacy_external_runfiles
 
 # Ensure Windows support is accurate.
-
 startup --windows_enable_symlinks
 build --enable_runfiles
 
@@ -23,14 +21,12 @@ build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
-
 build --java_language_version=21
 build --java_runtime_version=remotejdk_21
 build --tool_java_language_version=21
 build --tool_java_runtime_version=remotejdk_21
 
 # We target java 11 by default
-
 build --javacopt="--release 11"
 
 # Require java dependencies to be used and first-order
@@ -45,7 +41,7 @@ build --javacopt="-Xep:WildcardImport:ERROR"
 build --nobuild_runfile_links
 
 # More JS magic
-build --experimental_allow_unresolved_symlinks
+build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound
 startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
 
@@ -62,7 +58,17 @@ query --@aspect_rules_ts//ts:default_to_tsc_transpiler
 
 build --incompatible_strict_action_env
 
+# Required for prebuilt protoc to be used
+common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
+
+# Ensure that we don't accidentally build protobuf or gRPC
+common --per_file_copt=external/.*protobuf.*@--PROTOBUF_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --host_per_file_copt=external/.*protobuf.*@--PROTOBUF_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUILT
+
 # Required to get `protobuf` compiling, which is required for `rules_closure`
+common --incompatible_enable_proto_toolchain_resolution
 build --incompatible_enable_cc_toolchain_resolution
 build:linux --cxxopt=-std=c++17
 build:linux --host_cxxopt=-std=c++17
@@ -75,19 +81,16 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --define=protobuf_allow_msvc=true
 
 # For build stamping
-
 build --enable_platform_specific_config
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
 
 # Make sure we get something helpful when tests fail
-
 build --verbose_failures
 build --test_output=errors
 
 # pass environment variables to the test environment
-
 test --test_env=CI
 test --test_env=DASHBOARD_URL
 test --test_env=DISPLAY
@@ -99,7 +102,6 @@ test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
 
 # Remove once rules_ruby support proper $LOAD_PATH expansion.
-
 test --test_env=RUBYOPT="-Irb/lib -w"
 
 # Speed up JRuby startup.
@@ -109,7 +111,6 @@ build --action_env=JRUBY_OPTS="--dev"
 test --test_env=JRUBY_OPTS="--dev"
 
 # Expose necessary variables for Selenium-Manager.
-
 test:windows --test_env=PATH
 test:windows --test_env=LOCALAPPDATA
 test:windows --test_env=PROCESSOR_ARCHITECTURE

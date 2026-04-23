@@ -36,15 +36,9 @@ public class CommandResponseTypeMap
     /// <exception cref="ArgumentNullException">If <paramref name="commandSettingsType"/> or <paramref name="commandResponseType"/> are <see langword="null"/>.</exception>
     public void AddCommandResponseType(Type commandSettingsType, Type commandResponseType)
     {
-        if (commandSettingsType is null)
-        {
-            throw new ArgumentNullException(nameof(commandSettingsType));
-        }
+        ArgumentNullException.ThrowIfNull(commandSettingsType);
 
-        if (commandResponseType is null)
-        {
-            throw new ArgumentNullException(nameof(commandResponseType));
-        }
+        ArgumentNullException.ThrowIfNull(commandResponseType);
 
         if (!commandResponseTypeDictionary.ContainsKey(commandSettingsType))
         {

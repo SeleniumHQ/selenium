@@ -17,6 +17,8 @@
 
 """The Proxy implementation."""
 
+from __future__ import annotations
+
 
 class ProxyTypeFactory:
     """Factory for proxy types."""

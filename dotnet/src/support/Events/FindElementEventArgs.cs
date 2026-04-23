@@ -44,9 +44,11 @@ public class FindElementEventArgs : EventArgs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="method"/> are <see langword="null"/>.</exception>
     public FindElementEventArgs(IWebDriver driver, IWebElement? element, By method)
     {
-        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        ArgumentNullException.ThrowIfNull(method);
+        this.Driver = driver;
         this.Element = element;
-        this.FindMethod = method ?? throw new ArgumentNullException(nameof(method));
+        this.FindMethod = method;
     }
 
     /// <summary>

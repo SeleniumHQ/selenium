@@ -17,33 +17,31 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using static OpenQA.Selenium.BiDi.Speculation.SpeculationJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Speculation;
 
-public sealed class SpeculationModule : Module, ISpeculationModule
+internal sealed class SpeculationModule : Module, ISpeculationModule
 {
-    private SpeculationJsonSerializerContext _jsonContext = null!;
+    private static readonly Event<PrefetchStatusUpdatedEventArgs, PrefetchStatusUpdatedParameters> PrefetchStatusUpdatedEvent = new(
+        "speculation.prefetchStatusUpdated",
+        static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
+        Default.PrefetchStatusUpdatedParameters);
 
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Func<PrefetchStatusUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnPrefetchStatusUpdatedAsync(Action<PrefetchStatusUpdatedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SubscribeAsync("speculation.prefetchStatusUpdated", handler, options, _jsonContext.PrefetchStatusUpdatedEventArgs, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(bidi));
-
-        _jsonContext = new SpeculationJsonSerializerContext(jsonSerializerOptions);
+        return await SubscribeAsync(PrefetchStatusUpdatedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(PrefetchStatusUpdatedEventArgs))]
+[JsonSerializable(typeof(PrefetchStatusUpdatedParameters))]
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class SpeculationJsonSerializerContext : JsonSerializerContext;

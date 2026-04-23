@@ -23,10 +23,7 @@ public static class PermissionsBiDiExtensions
 {
     public static IPermissionsModule AsPermissions(this IBiDi bidi)
     {
-        if (bidi is null)
-        {
-            throw new ArgumentNullException(nameof(bidi));
-        }
+        ArgumentNullException.ThrowIfNull(bidi);
 
         return bidi.AsModule<PermissionsModule>();
     }

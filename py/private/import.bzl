@@ -1,3 +1,5 @@
+load("@rules_python//python:py_info.bzl", "PyInfo")
+
 def _py_import_impl(ctx):
     # Unpack the file somewhere, and present as a python library. We need to
     # know all the files in the zip, and that's problematic. For now, we might

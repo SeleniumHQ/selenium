@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support.Tests</AssemblyName>
+    <RootNamespace>OpenQA.Selenium.Support.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\support\Selenium.WebDriver.Support.csproj" />
-    <ProjectReference Include="..\common\Selenium.WebDriver.Common.Tests.csproj" />
+    <ProjectReference Include="..\webdriver\Selenium.WebDriver.Tests.csproj" />
+    <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

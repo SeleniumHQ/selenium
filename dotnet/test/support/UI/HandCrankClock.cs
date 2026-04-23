@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.Support.UI;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 public class HandCrankClock : IClock
 {

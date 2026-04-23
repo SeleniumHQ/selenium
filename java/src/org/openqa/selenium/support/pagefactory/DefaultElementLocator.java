@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -33,8 +34,8 @@ public class DefaultElementLocator implements ElementLocator {
   private final SearchContext searchContext;
   private final boolean shouldCache;
   private final By by;
-  private WebElement cachedElement;
-  private List<WebElement> cachedElementList;
+  private @Nullable WebElement cachedElement;
+  private @Nullable List<WebElement> cachedElementList;
 
   /**
    * Creates a new element locator.

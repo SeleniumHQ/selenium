@@ -225,11 +225,11 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
                 env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
                 tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
-                deps = depset(
+                deps = {d: True for d in (
                     ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
                     BROWSERS[browser]["deps"] +
-                    deps,
-                ),
+                    deps
+                )}.keys(),
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )

@@ -1,6 +1,8 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_link_package")
 load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@package_metadata//licenses/rules:license.bzl", "license")
+load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
 load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
 load("//java:defs.bzl", "artifact", "java_binary")
@@ -19,6 +21,24 @@ filegroup(
         "NOTICE",
     ],
     visibility = ["//visibility:public"],
+)
+
+package_metadata(
+    name = "package_metadata",
+    attributes = [
+        ":apache2",
+    ],
+    purl = "pkg:bazel/{}@{}".format(
+        module_name(),
+        module_version(),
+    ) if module_version() else "pkg:bazel/{}".format(module_name()),
+    visibility = ["//visibility:public"],
+)
+
+license(
+    name = "apache2",
+    kind = "@package_metadata//licenses/spdx:Apache-2.0",
+    text = "LICENSE",
 )
 
 filegroup(

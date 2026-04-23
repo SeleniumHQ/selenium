@@ -42,7 +42,7 @@ class ReadTest {
 
   @Test
   void canReadResourceFromClasspath() {
-    String script = Read.resourceAsString("/org/openqa/selenium/remote/isDisplayed.js");
+    String script = Read.resourceAsString(Read.class, "/org/openqa/selenium/remote/isDisplayed.js");
     assertThat(script).isNotBlank().contains("function(){");
   }
 }

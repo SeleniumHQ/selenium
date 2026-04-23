@@ -38,7 +38,7 @@ public abstract class FirefoxDriverService extends DriverService {
   protected FirefoxDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {

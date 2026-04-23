@@ -79,7 +79,7 @@ public class InternetExplorerDriverService extends DriverService {
   public InternetExplorerDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -240,7 +240,7 @@ public class InternetExplorerDriverService extends DriverService {
     protected InternetExplorerDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

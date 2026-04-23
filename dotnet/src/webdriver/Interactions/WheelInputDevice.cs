@@ -88,10 +88,7 @@ public class WheelInputDevice : InputDevice
     /// <exception cref="ArgumentNullException">If <paramref name="target"/> is <see langword="null"/>.</exception>
     public Interaction CreateWheelScroll(IWebElement target, int xOffset, int yOffset, int deltaX, int deltaY, TimeSpan duration)
     {
-        if (target is null)
-        {
-            throw new ArgumentNullException(nameof(target));
-        }
+        ArgumentNullException.ThrowIfNull(target);
 
         return new WheelScrollInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, deltaX, deltaY, duration);
     }

@@ -1,0 +1,7 @@
+repo(
+    default_package_metadata = [
+        "//:package_metadata",
+    ],
+)
+
+ignore_directories(["**/node_modules"])

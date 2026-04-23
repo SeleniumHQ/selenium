@@ -32,10 +32,12 @@ public sealed class Credential
 
     private Credential(byte[] id, bool isResidentCredential, string? rpId, string privateKey, byte[]? userHandle, int signCount)
     {
-        this.id = id ?? throw new ArgumentNullException(nameof(id));
+        ArgumentNullException.ThrowIfNull(id);
+        ArgumentNullException.ThrowIfNull(privateKey);
+        this.id = id;
         this.IsResidentCredential = isResidentCredential;
         this.RpId = rpId;
-        this.PrivateKey = privateKey ?? throw new ArgumentNullException(nameof(privateKey));
+        this.PrivateKey = privateKey;
         this.userHandle = userHandle;
         this.SignCount = signCount;
     }

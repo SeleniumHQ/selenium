@@ -46,11 +46,10 @@ collect_closure_js_srcs = rule(
 )
 
 def _closure_js_deps_gen_impl(ctx):
-    """Rule that generates deps.js using closure-make-deps via a Node.js wrapper.
+    """Rule that generates deps.js by scanning JS sources for goog.provide/require/module.
 
-    The wrapper reads file paths from a response file to avoid Windows command
-    line length limits. It imports google-closure-deps as a module and calls
-    it programmatically, so the file list never appears on any command line.
+    Uses a Python script that reads file paths from a response file to avoid
+    Windows command line length limits.
     """
     srcs_depset = ctx.attr.srcs_collector[ClosureJsSrcsInfo].files
     srcs_list = srcs_depset.to_list()
@@ -66,8 +65,6 @@ def _closure_js_deps_gen_impl(ctx):
         content = "\n".join([f.path for f in srcs_list]),
     )
 
-    # Run via Node.js wrapper which reads the file list and calls closure-make-deps
-    # programmatically, avoiding any command line length limits
     ctx.actions.run(
         outputs = [output],
         inputs = srcs_list + [ctx.file._closure_library, files_list],
@@ -77,7 +74,6 @@ def _closure_js_deps_gen_impl(ctx):
             output.path,
             closure_path,
         ],
-        env = {"BAZEL_BINDIR": "."},
         mnemonic = "ClosureJsDeps",
         progress_message = "Generating deps.js for %s" % ctx.label,
     )
@@ -97,7 +93,7 @@ _closure_js_deps_gen = rule(
     attrs = {
         "srcs_collector": attr.label(mandatory = True, providers = [ClosureJsSrcsInfo]),
         "_wrapper": attr.label(
-            default = "//javascript/private:closure_make_deps_wrapper",
+            default = "//javascript/private:closure_make_deps",
             executable = True,
             cfg = "exec",
         ),
@@ -112,11 +108,9 @@ _closure_js_deps_gen = rule(
 def closure_js_deps(name, deps = [], testonly = None, **kwargs):
     """Generate a deps.js file from closure_js_library dependencies.
 
-    This macro replaces the old closure_js_deps rule from rules_closure by using
-    the closure-make-deps binary from the google-closure-deps npm package.
-
-    Uses a proper Starlark rule with param file support to avoid Windows
-    command line length limits.
+    Scans JS sources for goog.provide/goog.require/goog.module calls and
+    generates goog.addDependency entries. Uses a response file to avoid
+    Windows command line length limits.
 
     Args:
         name: Name of the target. The output will be 'deps.js'.

@@ -42,14 +42,14 @@ public interface ILogContext : IDisposable
     /// </summary>
     /// <typeparam name="T">The type for which to retrieve the logger.</typeparam>
     /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-    internal ILogger GetLogger<T>();
+    ILogger GetLogger<T>();
 
     /// <summary>
     /// Gets a logger for the specified type.
     /// </summary>
     /// <param name="type">The type for which to retrieve the logger.</param>
     /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-    internal ILogger GetLogger(Type type);
+    ILogger GetLogger(Type type);
 
     /// <summary>
     /// Checks whether logs emitting is enabled for a logger and a log event level.

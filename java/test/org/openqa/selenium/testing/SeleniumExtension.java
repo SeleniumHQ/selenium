@@ -206,8 +206,6 @@ public class SeleniumExtension
   public void testFailed(ExtensionContext context, Throwable cause) {
     TestWatcher.super.testFailed(context, cause);
 
-    logWebdriverDetails(context);
-
     // ManageDriverRule.failed
     Browser current = Objects.requireNonNull(Browser.detect());
     Optional<Method> testMethod = context.getTestMethod();
@@ -219,6 +217,8 @@ public class SeleniumExtension
         System.out.println("Restarting driver after failed test " + context.getDisplayName());
         removeDriver();
       }
+    } else {
+      logWebdriverDetails(context);
     }
 
     captureLoggingRule.endLogCapture(Level.ALL);

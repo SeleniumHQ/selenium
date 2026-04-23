@@ -8,8 +8,9 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
 load("//common:defs.bzl", "copy_file")
-load("//py:defs.bzl", "generate_devtools", "py_test_suite")
+load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+load("//py/private:generate_bidi.bzl", "generate_bidi")
 load("//py/private:import.bzl", "py_import")
 
 exports_files(
@@ -62,6 +63,7 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    extra_args = ["--no-strip-extras"],
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
     tags = [
@@ -69,11 +71,11 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.42.0.202602192150"
+SE_VERSION = "4.44.0.202604101016"
 
 BROWSER_VERSIONS = [
-    "v143",
-    "v144",
+    "v146",
+    "v147",
     "v145",
 ]
 
@@ -260,8 +262,10 @@ py_library(
 # BiDi protocol support
 py_library(
     name = "bidi",
-    srcs = glob(["selenium/webdriver/common/bidi/**/*.py"]),
-    data = [":mutation-listener"],
+    srcs = [":create-bidi-src"],
+    data = [
+        ":mutation-listener",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -278,7 +282,10 @@ py_library(
     name = "common",
     srcs = glob(
         ["selenium/webdriver/common/**/*.py"],
-        exclude = ["selenium/webdriver/common/bidi/**"],
+        exclude = [
+            "selenium/webdriver/common/bidi/**",
+            "selenium/webdriver/common/devtools/**",
+        ],
     ),
     data = [
         ":manager-linux",
@@ -290,9 +297,18 @@ py_library(
     deps = [
         ":bidi",
         ":exceptions",
+        ":latest",
         ":remote",
         requirement("typing_extensions"),
     ],
+)
+
+# Module that points to the latest devtools module
+py_library(
+    name = "latest",
+    srcs = [":create-latest-devtools"],
+    imports = ["selenium.webdriver.common.devtools"],
+    visibility = ["//visibility:public"],
 )
 
 # Support utilities (wait conditions, event listeners, etc.)
@@ -446,6 +462,7 @@ py_package(
         "py.selenium.webdriver.common",
         "py.selenium.webdriver.common.bidi",
         "py.selenium.webdriver.common.devtools",
+        "py.selenium.webdriver.common.devtools.latest",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -519,7 +536,7 @@ py_wheel(
     python_requires = ">=3.10",
     python_tag = "py3",
     requires = [
-        "certifi>=2026.1.4",
+        "certifi>=2026.2.25",
         "trio>=0.31.0,<1.0",
         "trio-websocket>=0.12.2,<1.0",
         "typing_extensions>=4.15.0,<5.0",
@@ -582,6 +599,12 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
+py_binary(
+    name = "generate_bidi",
+    srcs = ["generate_bidi.py"],
+    srcs_version = "PY3",
+)
+
 [generate_devtools(
     name = "create-cdp-srcs-{}".format(devtools_version),
     browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
@@ -590,6 +613,25 @@ py_binary(
     outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
     protocol_version = devtools_version,
 ) for devtools_version in BROWSER_VERSIONS]
+
+generate_devtools_latest(
+    name = "create-latest-devtools",
+    browser_versions = BROWSER_VERSIONS,
+)
+
+# Generate BiDi source files from CDDL specification
+generate_bidi(
+    name = "create-bidi-src",
+    cddl_file = "//common/bidi/spec:all.cddl",
+    enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
+    extra_srcs = [
+        "//py/private:_event_manager.py",
+        "//py/private:cdp.py",
+    ],
+    generator = ":generate_bidi",
+    module_name = "selenium/webdriver/common/bidi",
+    spec_version = "1.0",
+)
 
 py_test_suite(
     name = "unit",

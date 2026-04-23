@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>WebDriver.Remote.Tests</AssemblyName>
   </PropertyGroup>
 
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\common\Selenium.WebDriver.Common.Tests.csproj" />
+    <ProjectReference Include="..\webdriver\Selenium.WebDriver.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

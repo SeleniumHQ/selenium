@@ -67,11 +67,10 @@ public class ReverseProxyHandler implements HttpHandler, AutoCloseable {
         toUpstream.setAttribute(attributeName, req.getAttribute(attributeName));
       }
 
-      for (String name : req.getQueryParameterNames()) {
-        for (String value : req.getQueryParameters(name)) {
-          toUpstream.addQueryParameter(name, value);
-        }
-      }
+      req.forEachQueryParameter(
+          (name, value) -> {
+            toUpstream.addQueryParameter(name, value);
+          });
 
       req.forEachHeader(
           (name, value) -> {

@@ -18,7 +18,6 @@
 package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.chromium.ChromiumNetworkConditions.withLatency;
@@ -54,6 +53,9 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void builderGeneratesDefaultEdgeOptions() {
+    // This test won't pass if we want to use Edge in a non-standard location
+    assumeThat(System.getProperty("webdriver.edge.binary")).isNull();
+
     localDriver = EdgeDriver.builder().build();
     Capabilities capabilities = ((EdgeDriver) localDriver).getCapabilities();
 
@@ -64,7 +66,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void builderOverridesDefaultEdgeOptions() {
-    EdgeOptions options = new EdgeOptions();
+    EdgeOptions options = (EdgeOptions) EDGE.getCapabilities();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = EdgeDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout())
@@ -86,13 +88,15 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  void builderWithClientConfigThrowsException() {
+  @NoDriverBeforeTest
+  void canUseCustomClientConfigWithLocalWebDriver() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
-    RemoteWebDriverBuilder builder = EdgeDriver.builder().config(clientConfig);
+    RemoteWebDriverBuilder builder =
+        EdgeDriver.builder().oneOf(EDGE.getCapabilities()).config(clientConfig);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(builder::build)
-        .withMessage("ClientConfig instances do not work for Local Drivers");
+    localDriver = builder.build();
+    assertThat(localDriver).isInstanceOf(EdgeDriver.class);
+    assertThat(localDriver).extracting("clientConfig").isEqualTo(clientConfig);
   }
 
   @Test
@@ -112,6 +116,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = EDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350")
   @NoDriverBeforeTest
   public void canSetPermissionHeadless() {
     EdgeOptions options = new EdgeOptions();

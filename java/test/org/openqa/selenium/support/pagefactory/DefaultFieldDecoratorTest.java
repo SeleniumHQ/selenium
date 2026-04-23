@@ -22,9 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
@@ -158,20 +156,5 @@ class DefaultFieldDecoratorTest {
         .isNull();
     assertThat(decorator.decorate(getClass().getClassLoader(), getClass().getDeclaredField("num")))
         .isNull();
-  }
-
-  private interface AllDriver extends WebDriver {
-    // Place holder
-  }
-
-  private interface AllElement
-      extends WebElement, WrapsElement, org.openqa.selenium.interactions.Locatable {
-    // Place holder
-  }
-
-  private static class Page {
-
-    @FindBy(id = "foo")
-    public WebElement foo;
   }
 }

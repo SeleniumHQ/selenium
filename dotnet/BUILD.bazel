@@ -32,6 +32,9 @@ pkg_zip(
 filegroup(
     name = "source_files_support_needs_from_core",
     srcs = [
+        "//dotnet/src/webdriver:Properties/ArgumentNullExceptionExtensions.cs",
+        "//dotnet/src/webdriver:Properties/CallerArgumentExpressionAttribute.cs",
+        "//dotnet/src/webdriver:Properties/NullableAttributes.cs",
         "//dotnet/src/webdriver:Properties/StringSyntaxAttribute.cs",
         "//dotnet/src/webdriver:Properties/StringSyntaxConstants.cs",
     ],

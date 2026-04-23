@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNullElse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +53,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @param key attribute name
    * @return attribute object
    */
+  @Nullable
   public Object getAttribute(String key) {
     return attributes.get(key);
   }
@@ -116,6 +118,10 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     String lcName = name.toLowerCase(Locale.ENGLISH);
     List<String> values = headers.getOrDefault(lcName, emptyList());
     return !values.isEmpty() ? values.get(0) : null;
+  }
+
+  public String getHeader(HttpHeader header, String defaultValue) {
+    return requireNonNullElse(getHeader(header.getName()), defaultValue);
   }
 
   /**

@@ -35,7 +35,8 @@ internal sealed class Window : IWindow
     /// <param name="driver">Instance of the driver currently in use</param>
     public Window(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>

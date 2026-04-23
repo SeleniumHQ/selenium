@@ -1,1 +1,2 @@
-Always read AGENTS.md before answering
+Always read AGENTS.md before answering.
+After any code change, run or suggest running `./go format` to prevent CI failures from formatter checks.

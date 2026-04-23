@@ -266,10 +266,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="script" /> is <see langword="null"/>.</exception>
     public object? ExecuteScript(PinnedScript script, params object?[]? args)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         return this.ExecuteScript(script.MakeExecutionScript(), args);
     }
@@ -372,10 +369,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="printOptions"/> is <see langword="null"/>.</exception>
     public PrintDocument Print(PrintOptions printOptions)
     {
-        if (printOptions is null)
-        {
-            throw new ArgumentNullException(nameof(printOptions));
-        }
+        ArgumentNullException.ThrowIfNull(printOptions);
 
         Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
 
@@ -648,10 +642,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="capabilitiesToConvert"/> is <see langword="null"/>.</exception>
     protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
     {
-        if (capabilitiesToConvert is null)
-        {
-            throw new ArgumentNullException(nameof(capabilitiesToConvert));
-        }
+        ArgumentNullException.ThrowIfNull(capabilitiesToConvert);
 
         Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
 
@@ -1033,10 +1024,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
     public string AddVirtualAuthenticator(VirtualAuthenticatorOptions options)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         Response commandResponse = this.Execute(DriverCommand.AddVirtualAuthenticator, options.ToDictionary());
 
@@ -1053,10 +1041,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="authenticatorId"/> is <see langword="null"/>.</exception>
     public void RemoveVirtualAuthenticator(string authenticatorId)
     {
-        if (authenticatorId is null)
-        {
-            throw new ArgumentNullException(nameof(authenticatorId));
-        }
+        ArgumentNullException.ThrowIfNull(authenticatorId);
 
         Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
@@ -1078,10 +1063,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void AddCredential(Credential credential)
     {
-        if (credential is null)
-        {
-            throw new ArgumentNullException(nameof(credential));
-        }
+        ArgumentNullException.ThrowIfNull(credential);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
@@ -1140,10 +1122,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void RemoveCredential(string credentialId)
     {
-        if (credentialId is null)
-        {
-            throw new ArgumentNullException(nameof(credentialId));
-        }
+        ArgumentNullException.ThrowIfNull(credentialId);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 

@@ -427,6 +427,124 @@ class LocalNodeTest {
         .isEqualTo("файл+with+tähtedega.png");
   }
 
+  @Test
+  void commandInterceptorIsCalledForEachWebDriverCommand() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> interceptedCommands = new ArrayList<>();
+
+    LocalNode nodeWithInterceptor =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(
+                new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+                  @Override
+                  public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+                    return true;
+                  }
+
+                  @Override
+                  public void initialize(
+                      org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+                  @Override
+                  public HttpResponse intercept(
+                      SessionId id, HttpRequest req, Callable<HttpResponse> next) throws Exception {
+                    interceptedCommands.add(req.getMethod() + " " + req.getUri());
+                    return next.call();
+                  }
+                })
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptor.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+
+    SessionId sessionId = response.right().getSession().getId();
+    nodeWithInterceptor.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(interceptedCommands).hasSize(1);
+    assertThat(interceptedCommands.get(0)).contains("/title");
+  }
+
+  @Test
+  void multipleInterceptorsAreChainedOuterToInner() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> callOrder = new ArrayList<>();
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor outer =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("outer-before");
+            HttpResponse resp = next.call();
+            callOrder.add("outer-after");
+            return resp;
+          }
+        };
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor inner =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("inner-before");
+            HttpResponse resp = next.call();
+            callOrder.add("inner-after");
+            return resp;
+          }
+        };
+
+    LocalNode nodeWithInterceptors =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(outer)
+            .addInterceptor(inner)
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptors.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+    SessionId sessionId = response.right().getSession().getId();
+
+    nodeWithInterceptors.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(callOrder)
+        .containsExactly("outer-before", "inner-before", "inner-after", "outer-after");
+  }
+
   private void waitUntilNodeStopped(SessionId sessionId) {
     long timeout = Duration.ofSeconds(5).toMillis();
 

@@ -26,7 +26,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from conftest import get_extensions_location
+from conftest import _resolve_bazel_path, get_extensions_location
 
 EXTENSIONS = get_extensions_location()
 EXTENSION_ID = "webextensions-selenium-example-v3@example.com"
@@ -138,11 +138,11 @@ class TestChromiumWebExtension:
         chromium_options.add_argument("--no-sandbox")
         chromium_options.add_argument("--disable-dev-shm-usage")
 
-        binary = request.config.option.binary
+        binary = _resolve_bazel_path(request.config.option.binary)
         if binary:
             chromium_options.binary_location = binary
 
-        executable = request.config.option.executable
+        executable = _resolve_bazel_path(request.config.option.executable)
         if executable:
             service = browser_service(executable_path=executable)
         else:
@@ -341,11 +341,11 @@ class TestChromiumWebExtensionEdgeCases:
         chromium_options.add_argument("--no-sandbox")
         chromium_options.add_argument("--disable-dev-shm-usage")
 
-        binary = request.config.option.binary
+        binary = _resolve_bazel_path(request.config.option.binary)
         if binary:
             chromium_options.binary_location = binary
 
-        executable = request.config.option.executable
+        executable = _resolve_bazel_path(request.config.option.executable)
         if executable:
             service = browser_service(executable_path=executable)
         else:

@@ -37,7 +37,8 @@ internal sealed class TargetLocator : ITargetLocator
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
     public TargetLocator(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -135,10 +136,7 @@ internal sealed class TargetLocator : ITargetLocator
     /// <exception cref="ArgumentNullException">If <paramref name="windowHandleOrName"/> is <see langword="null"/>.</exception>
     public IWebDriver Window(string windowHandleOrName)
     {
-        if (windowHandleOrName is null)
-        {
-            throw new ArgumentNullException(nameof(windowHandleOrName));
-        }
+        ArgumentNullException.ThrowIfNull(windowHandleOrName);
 
         Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("handle", windowHandleOrName);

@@ -78,6 +78,11 @@ public class SafariTechPreviewDriverService extends DriverService {
     return TP_SAFARI_DRIVER_EXE_PROPERTY;
   }
 
+  @Override
+  protected String getDriverEnvironmentVariable() {
+    return "";
+  }
+
   public File getDriverExecutable() {
     return TP_SAFARI_DRIVER_EXECUTABLE;
   }

@@ -9,6 +9,12 @@ def ruby_version
   end
 end
 
+def devtools_version
+  File.foreach('rb/lib/selenium/devtools/version.rb') do |line|
+    return line.split('=').last.strip.tr("'", '') if line.include?('VERSION')
+  end
+end
+
 def setup_gem_credentials
   gem_dir = File.join(Dir.home, '.gem')
   credentials = File.join(gem_dir, 'credentials')
@@ -92,7 +98,7 @@ task :verify do
 
   SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
   unless patch_release
-    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{ruby_version}.json")
+    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{devtools_version}.json")
   end
 end
 

@@ -14,7 +14,7 @@ load("//dotnet/private:paket_deps.bzl", _paket_deps = "paket_deps")
 def devtools_version_targets():
     targets = []
     for devtools_version in SUPPORTED_DEVTOOLS_VERSIONS:
-        targets.append("//dotnet/src/webdriver/cdp:generate-{}".format(devtools_version))
+        targets.append("//dotnet/src/webdriver/DevTools:generate-{}".format(devtools_version))
     return targets
 
 csharp_binary = _csharp_binary

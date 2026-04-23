@@ -20,6 +20,7 @@
 import base64
 import contextlib
 import copy
+import inspect
 import os
 import pkgutil
 import tempfile
@@ -28,6 +29,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
+from collections.abc import Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, cast
@@ -41,6 +43,7 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
+from selenium.webdriver.common.api_request_context import APIRequestContext
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
@@ -284,6 +287,7 @@ class WebDriver(BaseWebDriver):
         self._permissions: Permissions | None = None
         self._emulation: Emulation | None = None
         self._input: Input | None = None
+        self._request: APIRequestContext | None = None
         self._devtools: Any | None = None
 
     def __repr__(self) -> str:
@@ -424,16 +428,32 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
-    def execute(self, driver_command: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+    def execute(
+        self,
+        driver_command: str | Generator[dict[str, Any], Any, Any],
+        params: dict[str, Any] | None = None,
+    ) -> Any:
         """Sends a command to be executed by a command.CommandExecutor.
 
         Args:
             driver_command: The name of the command to execute as a string.
+                Can also be a BiDi protocol command generator.
             params: A dictionary of named parameters to send with the command.
+                Ignored when ``driver_command`` is a BiDi generator.
 
         Returns:
             The command's JSON response loaded into a dictionary object.
         """
+        # Handle BiDi generator commands
+        if inspect.isgenerator(driver_command):
+            # BiDi command: route through the WebSocket connection, not the
+            # HTTP RemoteConnection which only accepts (command, params) pairs.
+            if not self._websocket_connection:
+                self._start_bidi()
+            assert self._websocket_connection is not None
+            return self._websocket_connection.execute(driver_command)
+
+        # Legacy WebDriver command: handle normally
         params = self._wrap_value(params)
 
         if self.session_id:
@@ -571,6 +591,9 @@ class WebDriver(BaseWebDriver):
         try:
             self.execute(Command.QUIT)
         finally:
+            if self._request is not None:
+                self._request.dispose()
+                self._request = None
             self.stop_client()
             executor = cast(RemoteConnection, self.command_executor)
             executor.close()
@@ -755,7 +778,10 @@ class WebDriver(BaseWebDriver):
         try:
             self.execute(Command.SET_TIMEOUTS, {"pageLoad": int(float(time_to_wait) * 1000)})
         except WebDriverException:
-            self.execute(Command.SET_TIMEOUTS, {"ms": float(time_to_wait) * 1000, "type": "page load"})
+            self.execute(
+                Command.SET_TIMEOUTS,
+                {"ms": float(time_to_wait) * 1000, "type": "page load"},
+            )
 
     @property
     def timeouts(self) -> Timeouts:
@@ -971,7 +997,10 @@ class WebDriver(BaseWebDriver):
     def _check_if_window_handle_is_current(self, windowHandle: str) -> None:
         """Warns if the window handle is not equal to `current`."""
         if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
+            warnings.warn(
+                "Only 'current' window is supported for W3C compatible browsers.",
+                stacklevel=2,
+            )
 
     def get_window_rect(self) -> dict:
         """Get the window's position and size.
@@ -1315,6 +1344,24 @@ class WebDriver(BaseWebDriver):
 
         return self._input
 
+    @property
+    def request(self) -> APIRequestContext:
+        """Returns an APIRequestContext for making HTTP requests with browser cookie sync.
+
+        Returns:
+            An APIRequestContext instance bound to this driver.
+
+        Examples:
+            ```
+            response = driver.request.get("https://api.example.com/data")
+            assert response.ok
+            data = response.json()
+            ```
+        """
+        if self._request is None:
+            self._request = APIRequestContext(self)
+        return self._request
+
     def _get_cdp_details(self):
         import json
 
@@ -1367,7 +1414,10 @@ class WebDriver(BaseWebDriver):
         The authenticator is no longer valid after removal, so no
         methods may be called.
         """
-        self.execute(Command.REMOVE_VIRTUAL_AUTHENTICATOR, {"authenticatorId": self._authenticator_id})
+        self.execute(
+            Command.REMOVE_VIRTUAL_AUTHENTICATOR,
+            {"authenticatorId": self._authenticator_id},
+        )
         self._authenticator_id = None
 
     @required_virtual_authenticator
@@ -1382,7 +1432,10 @@ class WebDriver(BaseWebDriver):
             driver.add_credential(credential)
             ```
         """
-        self.execute(Command.ADD_CREDENTIAL, {**credential.to_dict(), "authenticatorId": self._authenticator_id})
+        self.execute(
+            Command.ADD_CREDENTIAL,
+            {**credential.to_dict(), "authenticatorId": self._authenticator_id},
+        )
 
     @required_virtual_authenticator
     def get_credentials(self) -> list[Credential]:
@@ -1403,7 +1456,8 @@ class WebDriver(BaseWebDriver):
             credential_id = urlsafe_b64encode(credential_id).decode()
 
         self.execute(
-            Command.REMOVE_CREDENTIAL, {"credentialId": credential_id, "authenticatorId": self._authenticator_id}
+            Command.REMOVE_CREDENTIAL,
+            {"credentialId": credential_id, "authenticatorId": self._authenticator_id},
         )
 
     @required_virtual_authenticator
@@ -1422,7 +1476,10 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.set_user_verified(True)`
         """
-        self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
+        self.execute(
+            Command.SET_USER_VERIFIED,
+            {"authenticatorId": self._authenticator_id, "isUserVerified": verified},
+        )
 
     def get_downloadable_files(self) -> list:
         """Retrieves the downloadable files as a list of file names."""
@@ -1566,5 +1623,10 @@ class WebDriver(BaseWebDriver):
             except NoAlertPresentException:
                 return None
 
-        wait = WebDriverWait(self, timeout, poll_frequency=poll_frequency, ignored_exceptions=ignored_exceptions)
+        wait = WebDriverWait(
+            self,
+            timeout,
+            poll_frequency=poll_frequency,
+            ignored_exceptions=ignored_exceptions,
+        )
         return wait.until(lambda _: _check_fedcm())

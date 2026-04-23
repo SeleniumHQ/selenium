@@ -36,7 +36,8 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
     public EventFiringWebDriver(IWebDriver parentDriver)
     {
-        this.WrappedDriver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+        ArgumentNullException.ThrowIfNull(parentDriver);
+        this.WrappedDriver = parentDriver;
     }
 
     /// <summary>
@@ -537,10 +538,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// </remarks>
     public object? ExecuteScript(PinnedScript script, params object?[] args)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
@@ -808,7 +806,8 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// <param name="driver">Driver in use</param>
         public EventFiringNavigation(EventFiringWebDriver driver)
         {
-            this.parentDriver = driver ?? throw new ArgumentNullException(nameof(driver));
+            ArgumentNullException.ThrowIfNull(driver);
+            this.parentDriver = driver;
             this.wrappedNavigation = this.parentDriver.WrappedDriver.Navigate();
         }
 
@@ -1025,7 +1024,8 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// <param name="driver">The driver that is currently in use</param>
         public EventFiringTargetLocator(EventFiringWebDriver driver)
         {
-            this.parentDriver = driver ?? throw new ArgumentNullException(nameof(driver));
+            ArgumentNullException.ThrowIfNull(driver);
+            this.parentDriver = driver;
             this.wrappedLocator = this.parentDriver.WrappedDriver.SwitchTo();
         }
 
@@ -1297,8 +1297,10 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// <param name="element">The <see cref="IWebElement"/> to wrap for event firing.</param>
         public EventFiringWebElement(EventFiringWebDriver driver, IWebElement element)
         {
-            this.WrappedElement = element ?? throw new ArgumentNullException(nameof(element));
-            this.parentDriver = driver ?? throw new ArgumentNullException(nameof(driver));
+            ArgumentNullException.ThrowIfNull(element);
+            ArgumentNullException.ThrowIfNull(driver);
+            this.WrappedElement = element;
+            this.parentDriver = driver;
         }
 
         /// <summary>
@@ -1773,7 +1775,8 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// <param name="searchContext">The <see cref="ISearchContext"/> to wrap for event firing.</param>
         public EventFiringShadowRoot(EventFiringWebDriver driver, ISearchContext searchContext)
         {
-            this.WrappedSearchContext = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
+            ArgumentNullException.ThrowIfNull(searchContext);
+            this.WrappedSearchContext = searchContext;
             this.parentDriver = driver;
         }
 

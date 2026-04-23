@@ -18,9 +18,7 @@
 package org.openqa.selenium.remote;
 
 import java.util.Optional;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class HttpSessionId {
 
   private HttpSessionId() {

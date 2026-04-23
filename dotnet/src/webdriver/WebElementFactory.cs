@@ -31,7 +31,8 @@ public class WebElementFactory
     /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> is <see langword="null"/>.</exception>
     public WebElementFactory(WebDriver parentDriver)
     {
-        this.ParentDriver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+        ArgumentNullException.ThrowIfNull(parentDriver);
+        this.ParentDriver = parentDriver;
     }
 
     /// <summary>

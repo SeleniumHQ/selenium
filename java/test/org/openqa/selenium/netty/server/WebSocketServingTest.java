@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.netty.server;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,11 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -76,6 +74,7 @@ class WebSocketServingTest {
   }
 
   @Test
+  @NullMarked
   void shouldUseUriToChooseWhichWebSocketHandlerToUse() throws InterruptedException {
     AtomicBoolean foo = new AtomicBoolean(false);
     AtomicBoolean bar = new AtomicBoolean(false);
@@ -159,6 +158,7 @@ class WebSocketServingTest {
   }
 
   @Test
+  @NullMarked
   void webSocketHandlersShouldBeAbleToFireMoreThanOneMessage() {
     server =
         new NettyServer(
@@ -187,49 +187,6 @@ class WebSocketServingTest {
     socket.send(new TextMessage("Hello"));
 
     new FluentWait<>(messages).until(msgs -> msgs.size() == 2);
-  }
-
-  public void serverShouldBeAbleToPushAMessageWithoutNeedingTheClientToSendAMessage()
-      throws InterruptedException {
-    class MyHandler implements Consumer<Message> {
-
-      private final Consumer<Message> sink;
-      private final ScheduledExecutorService executor =
-          Executors.newSingleThreadScheduledExecutor();
-
-      public MyHandler(Consumer<Message> sink) {
-        this.sink = sink;
-
-        // Send a message every 250ms
-        executor.scheduleAtFixedRate(
-            () -> sink.accept(new TextMessage("Calling home.")), 100, 250, MILLISECONDS);
-      }
-
-      @Override
-      public void accept(Message message) {
-        // Do nothing
-      }
-    }
-
-    server =
-        new NettyServer(
-                defaultOptions(),
-                req -> new HttpResponse(),
-                (uri, sink) -> Optional.of(new MyHandler(sink)))
-            .start();
-
-    CountDownLatch latch = new CountDownLatch(2);
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-    client.openSocket(
-        new HttpRequest(GET, "/pushit"),
-        new WebSocket.Listener() {
-          @Override
-          public void onText(CharSequence data) {
-            latch.countDown();
-          }
-        });
-
-    latch.await(2, SECONDS);
   }
 
   private BaseServerOptions defaultOptions() {

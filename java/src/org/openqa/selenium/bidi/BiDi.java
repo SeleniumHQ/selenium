@@ -25,9 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
 public class BiDi implements Closeable {
+  private static final Logger LOG = Logger.getLogger(BiDi.class.getName());
 
   private final Duration timeout;
   private final Connection connection;
@@ -47,9 +50,19 @@ public class BiDi implements Closeable {
 
   @Override
   public void close() {
-    clearListeners();
+    try {
+      clearListeners();
+    } catch (WebDriverException e) {
+      LOG.warning(() -> "Failed to clear BiDi listeners: " + e);
+    }
+
     disconnectSession();
-    connection.close();
+
+    try {
+      connection.close();
+    } catch (WebDriverException e) {
+      LOG.warning(() -> "Failed to close BiDi connection: " + e);
+    }
   }
 
   public void disconnectSession() {

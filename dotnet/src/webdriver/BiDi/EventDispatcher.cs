@@ -18,10 +18,7 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
-using OpenQA.Selenium.BiDi.Session;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
@@ -30,9 +27,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly Func<ISessionModule> _sessionProvider;
-
-    private readonly ConcurrentDictionary<string, EventRegistration> _eventRegistrations = new();
+    private readonly ConcurrentDictionary<string, HandlerRegistration> _handlerRegistrations = new();
 
     private readonly ConcurrentDictionary<Task, byte> _runningHandlers = new();
 
@@ -44,36 +39,28 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private readonly Task _eventEmitterTask;
 
-    public EventDispatcher(Func<ISessionModule> sessionProvider)
+    public EventDispatcher()
     {
-        _sessionProvider = sessionProvider;
         _eventEmitterTask = Task.Run(ProcessEventsAwaiterAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
+    public void AddHandler(string eventName, Func<EventArgs, ValueTask> handler)
     {
-        var registration = _eventRegistrations.GetOrAdd(eventName, _ => new EventRegistration(jsonTypeInfo));
-
-        var subscribeResult = await _sessionProvider().SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken).ConfigureAwait(false);
-
-        registration.AddHandler(eventHandler);
-
-        return new Subscription(subscribeResult.Subscription, this, eventHandler);
+        var registration = _handlerRegistrations.GetOrAdd(eventName, _ => new HandlerRegistration());
+        registration.AddHandler(handler);
     }
 
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
+    public void RemoveHandler(string eventName, Func<EventArgs, ValueTask> handler)
     {
-        if (_eventRegistrations.TryGetValue(subscription.EventHandler.EventName, out var registration))
+        if (_handlerRegistrations.TryGetValue(eventName, out var registration))
         {
-            await _sessionProvider().UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-            registration.RemoveHandler(subscription.EventHandler);
+            registration.RemoveHandler(handler);
         }
     }
 
-    public void EnqueueEvent(string method, EventArgs eventArgs)
+    public void EnqueueEvent(string eventName, EventArgs eventArgs)
     {
-        _pendingEvents.Writer.TryWrite(new PendingEvent(method, eventArgs));
+        _pendingEvents.Writer.TryWrite(new PendingEvent(eventName, eventArgs));
     }
 
     private async Task ProcessEventsAwaiterAsync()
@@ -83,7 +70,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         {
             while (reader.TryRead(out var result))
             {
-                if (_eventRegistrations.TryGetValue(result.Method, out var registration))
+                if (_handlerRegistrations.TryGetValue(result.EventName, out var registration))
                 {
                     foreach (var handler in registration.GetHandlers()) // copy-on-write array, safe to iterate
                     {
@@ -100,11 +87,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
         }
     }
 
-    private async Task InvokeHandlerAsync(EventHandler handler, EventArgs eventArgs)
+    private async Task InvokeHandlerAsync(Func<EventArgs, ValueTask> handler, EventArgs eventArgs)
     {
         try
         {
-            await handler.InvokeAsync(eventArgs).ConfigureAwait(false);
+            await handler(eventArgs).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -126,35 +113,21 @@ internal sealed class EventDispatcher : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    public bool TryGetJsonTypeInfo(string eventName, [NotNullWhen(true)] out JsonTypeInfo? jsonTypeInfo)
-    {
-        if (_eventRegistrations.TryGetValue(eventName, out var registration))
-        {
-            jsonTypeInfo = registration.TypeInfo;
-            return true;
-        }
+    private readonly record struct PendingEvent(string EventName, EventArgs EventArgs);
 
-        jsonTypeInfo = null;
-        return false;
-    }
-
-    private readonly record struct PendingEvent(string Method, EventArgs EventArgs);
-
-    private sealed class EventRegistration(JsonTypeInfo typeInfo)
+    private sealed class HandlerRegistration
     {
         private readonly object _lock = new();
-        private volatile EventHandler[] _handlers = [];
+        private volatile Func<EventArgs, ValueTask>[] _handlers = [];
 
-        public JsonTypeInfo TypeInfo { get; } = typeInfo;
+        public Func<EventArgs, ValueTask>[] GetHandlers() => _handlers;
 
-        public EventHandler[] GetHandlers() => _handlers;
-
-        public void AddHandler(EventHandler handler)
+        public void AddHandler(Func<EventArgs, ValueTask> handler)
         {
             lock (_lock) _handlers = [.. _handlers, handler];
         }
 
-        public void RemoveHandler(EventHandler handler)
+        public void RemoveHandler(Func<EventArgs, ValueTask> handler)
         {
             lock (_lock) _handlers = Array.FindAll(_handlers, h => h != handler);
         }
