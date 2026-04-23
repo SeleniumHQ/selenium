@@ -39,11 +39,12 @@ public abstract record UserPromptHandler
     private UserPromptHandler() { }
 
     /// <summary>
-    /// Converts a value of type <see cref="UnhandledPromptBehavior"/> to a <see cref="UserPromptHandler"/> instance.
+    /// Converts a nullable <see cref="UnhandledPromptBehavior"/> to a <see cref="UserPromptHandler"/> instance,
+    /// or <see langword="null"/> when <paramref name="value"/> is <see langword="null"/>.
     /// </summary>
     /// <param name="value">The <see cref="UnhandledPromptBehavior"/> value to convert.</param>
-    public static implicit operator UserPromptHandler(UnhandledPromptBehavior value)
-        => new Uniform(value);
+    public static implicit operator UserPromptHandler?(UnhandledPromptBehavior? value)
+        => value is { } v ? new Uniform(v) : null;
 
     internal abstract object? ToCapabilities();
 
@@ -55,6 +56,9 @@ public abstract record UserPromptHandler
             UnhandledPromptBehavior.Dismiss => "dismiss",
             UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
             UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
+#pragma warning disable CS0618 // UnhandledPromptBehavior.Default is obsolete
+            UnhandledPromptBehavior.Default => throw new InvalidOperationException("UnhandledPromptBehavior.Default has no wire representation; pass null instead."),
+#pragma warning restore CS0618
             _ => throw new InvalidOperationException($"UnhandledPromptBehavior value '{behavior}' is not recognized."),
         };
 
@@ -67,10 +71,12 @@ public abstract record UserPromptHandler
     {
         internal override object? ToCapabilities()
         {
+#pragma warning disable CS0618 // UnhandledPromptBehavior.Default is obsolete
             if (Value == UnhandledPromptBehavior.Default)
             {
                 return null;
             }
+#pragma warning restore CS0618
 
             return ConvertBehaviorToString(Value);
         }
@@ -86,86 +92,62 @@ public abstract record UserPromptHandler
     public sealed record PerPromptType : UserPromptHandler
     {
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected alert is encountered during automation.
+        /// Gets or sets the behavior to use when an unexpected alert is encountered during automation,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior Alert { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? Alert { get; set; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when a confirmation prompt is encountered.
+        /// Gets or sets the behavior to use when a confirmation prompt is encountered,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        /// <remarks>Set this property to specify how the system should respond to confirmation dialogs, such as
-        /// JavaScript confirm boxes, during automated operations. The default value is <see
-        /// cref="UnhandledPromptBehavior.Default"/>, which applies the standard handling defined by the
-        /// environment.</remarks>
-        public UnhandledPromptBehavior Confirm { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? Confirm { get; set; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected prompt is encountered during automation.
+        /// Gets or sets the behavior to use when an unexpected prompt is encountered during automation,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        /// <remarks>Set this property to control how the system responds to unhandled prompts, such as alerts or
-        /// confirmation dialogs, that appear unexpectedly. The default behavior is determined by the value of
-        /// <see cref="UnhandledPromptBehavior.Default"/>.</remarks>
-        public UnhandledPromptBehavior Prompt { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? Prompt { get; set; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected beforeunload dialog is encountered.
+        /// Gets or sets the behavior to use when an unexpected beforeunload dialog is encountered,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        /// <remarks>Use this property to specify how the application should respond to beforeunload dialogs that
-        /// appear unexpectedly during automated browser interactions. This setting determines whether such dialogs are
-        /// automatically accepted, dismissed, or cause an error.</remarks>
-        public UnhandledPromptBehavior BeforeUnload { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? BeforeUnload { get; set; }
 
         /// <summary>
-        /// Gets or sets the behavior to use when an unexpected file selection dialog is encountered.
+        /// Gets or sets the behavior to use when an unexpected file selection dialog is encountered,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
         /// <remarks>The "file" prompt type is respected only in WebDriver BiDi sessions.</remarks>
-        public UnhandledPromptBehavior File { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? File { get; set; }
 
         /// <summary>
-        /// Gets or sets the default behavior to use when an unexpected browser prompt is encountered.
+        /// Gets or sets the fallback behavior to use when no specific handler is defined for a given prompt type,
+        /// or <see langword="null"/> to leave it unset.
         /// </summary>
-        public UnhandledPromptBehavior Default { get; set; } = UnhandledPromptBehavior.Default;
+        public UnhandledPromptBehavior? Default { get; set; }
 
         internal override object? ToCapabilities()
         {
-            if (this == new PerPromptType())
-            {
-                return null;
-            }
-
             Dictionary<string, string> capabilities = [];
+            AddIfSet(capabilities, "alert", Alert);
+            AddIfSet(capabilities, "confirm", Confirm);
+            AddIfSet(capabilities, "prompt", Prompt);
+            AddIfSet(capabilities, "beforeUnload", BeforeUnload);
+            AddIfSet(capabilities, "file", File);
+            AddIfSet(capabilities, "default", Default);
+            return capabilities.Count == 0 ? null : capabilities;
+        }
 
-            if (Alert != default)
+        private static void AddIfSet(Dictionary<string, string> capabilities, string key, UnhandledPromptBehavior? value)
+        {
+#pragma warning disable CS0618 // UnhandledPromptBehavior.Default is obsolete
+            if (value is { } v && v != UnhandledPromptBehavior.Default)
+#pragma warning restore CS0618
             {
-                capabilities["alert"] = ConvertBehaviorToString(Alert);
+                capabilities[key] = ConvertBehaviorToString(v);
             }
-
-            if (Confirm != default)
-            {
-                capabilities["confirm"] = ConvertBehaviorToString(Confirm);
-            }
-
-            if (Prompt != default)
-            {
-                capabilities["prompt"] = ConvertBehaviorToString(Prompt);
-            }
-
-            if (BeforeUnload != default)
-            {
-                capabilities["beforeUnload"] = ConvertBehaviorToString(BeforeUnload);
-            }
-
-            if (File != default)
-            {
-                capabilities["file"] = ConvertBehaviorToString(File);
-            }
-
-            if (Default != default)
-            {
-                capabilities["default"] = ConvertBehaviorToString(Default);
-            }
-
-            return capabilities;
         }
     }
 }
@@ -178,6 +160,7 @@ public enum UnhandledPromptBehavior
     /// <summary>
     /// Indicates the behavior is not set.
     /// </summary>
+    [Obsolete("Use a nullable UnhandledPromptBehavior? and pass null to leave the behavior unset. This member will be removed in v4.46.")]
     Default,
 
     /// <summary>

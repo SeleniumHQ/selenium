@@ -71,7 +71,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
     [Test]
     public void CanDismissUnhandledAlertsByDefault()
     {
-        ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Default, "null");
+        ExecuteTestWithUnhandledPrompt(null, "null");
     }
 
     [Test]
@@ -82,14 +82,13 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
         localDriver.SwitchTo().Alert().Dismiss();
     }
 
-    private void ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior behavior, string expectedAlertText)
+    private void ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior? behavior, string expectedAlertText)
     {
         bool silentlyHandlePrompt = behavior == UnhandledPromptBehavior.Accept || behavior == UnhandledPromptBehavior.Dismiss;
-        UnhandledPromptBehaviorOptions options = new UnhandledPromptBehaviorOptions();
-        if (behavior != UnhandledPromptBehavior.Default)
+        UnhandledPromptBehaviorOptions options = new()
         {
-            options.UnhandledPromptBehavior = behavior;
-        }
+            UnhandledPromptBehavior = behavior,
+        };
 
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
         localDriver.Url = alertsPage;
