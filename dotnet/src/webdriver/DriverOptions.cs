@@ -18,6 +18,8 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium;
 
