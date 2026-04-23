@@ -7,6 +7,8 @@ _BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".form
 
 # All CDDL files in https://github.com/w3c/webref/tree/{commit}/ed/cddl
 # Each entry is (repo_name, filename, sha256).
+# Files are downloaded as "spec.cddl" in each repo, so consumers can reference
+# them consistently as @<repo_name>//file:spec.cddl.
 _CDDL_FILES = [
     ("at_driver_all_cddl", "at-driver-all.cddl", "f8502ca866e494d9c46a5209eb0cfec57107fffe587d154a365a19e8b93dd7aa"),
     ("at_driver_local_cddl", "at-driver-local-cddl.cddl", "f1b64b2d852c5ea826cc9a6431196979cdf7c73a0182c98dc7c3c40005bdbcba"),
@@ -31,7 +33,7 @@ def webref_cddl():
     for name, filename, sha256 in _CDDL_FILES:
         http_file(
             name = name,
-            downloaded_file_path = filename,
+            downloaded_file_path = "spec.cddl",
             sha256 = sha256,
             url = _BASE_URL + "/" + filename,
         )

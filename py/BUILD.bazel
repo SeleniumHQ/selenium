@@ -622,7 +622,7 @@ generate_devtools_latest(
 # Generate BiDi source files from CDDL specification
 generate_bidi(
     name = "create-bidi-src",
-    cddl_file = "//common/bidi/spec:all.cddl",
+    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
     enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
     extra_srcs = [
         "//py/private:_event_manager.py",
