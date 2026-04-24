@@ -121,7 +121,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
     HttpResponse response = client.with(addSecret).execute(upstream);
-    return Values.get(response, Boolean.class);
+    return Values.parseBoolean(response);
   }
 
   @Override
@@ -156,7 +156,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    return Values.get(response, SESSION_REQUEST_TYPE);
+    return Require.nonNull("Next session request", Values.get(response, SESSION_REQUEST_TYPE));
   }
 
   @Override
@@ -178,7 +178,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
 
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
-    return Values.get(response, Boolean.class);
+    return Values.parseBoolean(response);
   }
 
   @Override
@@ -187,7 +187,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    return Values.get(response, Integer.class);
+    return Values.parse(response, Integer.class);
   }
 
   @Override
@@ -196,7 +196,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
 
-    return Values.get(response, QUEUE_CONTENTS_TYPE);
+    return Require.nonNull("Queue contents", Values.get(response, QUEUE_CONTENTS_TYPE));
   }
 
   @Override

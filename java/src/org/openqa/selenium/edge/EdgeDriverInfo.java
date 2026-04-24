@@ -21,20 +21,18 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class EdgeDriverInfo extends ChromiumDriverInfo {
-  private static final Logger LOG = Logger.getLogger(EdgeDriverInfo.class.getName());
-
   @Override
   public String getDisplayName() {
     return "Edge";
@@ -76,12 +74,12 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
-  public Optional<WebDriver> createDriver(Capabilities capabilities)
+  public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
       throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }
 
-    return Optional.of(new EdgeDriver(new EdgeOptions().merge(capabilities)));
+    return Optional.of(new EdgeDriver(new EdgeOptions().merge(capabilities), clientConfig));
   }
 }

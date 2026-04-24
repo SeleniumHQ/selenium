@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Union
 
 from selenium.webdriver.common.actions.input_device import InputDevice
 
@@ -43,5 +42,5 @@ class Pause(Interaction):
         super().__init__(source)
         self.duration = duration
 
-    def encode(self) -> dict[str, Union[str, int]]:
+    def encode(self) -> dict[str, str | int]:
         return {"type": self.PAUSE, "duration": int(self.duration * 1000)}

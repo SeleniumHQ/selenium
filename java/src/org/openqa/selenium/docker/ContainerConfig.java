@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
+import static java.util.Collections.emptyList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 
 @Beta
@@ -44,6 +44,8 @@ public class ContainerConfig {
   private final boolean autoRemove;
   private final long shmSize;
   private final Map<String, Object> hostConfig;
+  private final Map<String, String> labels;
+  private final @Nullable String name;
 
   public ContainerConfig(
       Image image,
@@ -61,7 +63,8 @@ public class ContainerConfig {
         devices,
         networkName,
         shmSize,
-        ImmutableMap.of());
+        Map.of(),
+        Map.of());
   }
 
   public ContainerConfig(
@@ -73,6 +76,52 @@ public class ContainerConfig {
       String networkName,
       long shmSize,
       Map<String, Object> hostConfig) {
+    this(
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        Map.of());
+  }
+
+  public ContainerConfig(
+      Image image,
+      Multimap<String, Map<String, Object>> portBindings,
+      Map<String, String> envVars,
+      Map<String, String> volumeBinds,
+      List<Device> devices,
+      String networkName,
+      long shmSize,
+      Map<String, Object> hostConfig,
+      Map<String, String> labels) {
+    this(
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        null);
+  }
+
+  public ContainerConfig(
+      Image image,
+      Multimap<String, Map<String, Object>> portBindings,
+      Map<String, String> envVars,
+      Map<String, String> volumeBinds,
+      List<Device> devices,
+      String networkName,
+      long shmSize,
+      Map<String, Object> hostConfig,
+      Map<String, String> labels,
+      @Nullable String name) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
@@ -82,6 +131,13 @@ public class ContainerConfig {
     this.autoRemove = true;
     this.shmSize = shmSize;
     this.hostConfig = hostConfig;
+    this.labels = labels;
+    this.name = name;
+  }
+
+  @Nullable
+  public String getName() {
+    return this.name;
   }
 
   public Image getImage() {
@@ -91,10 +147,10 @@ public class ContainerConfig {
   public static ContainerConfig image(Image image) {
     return new ContainerConfig(
         image,
-        HashMultimap.create(),
-        ImmutableMap.of(),
-        ImmutableMap.of(),
-        ImmutableList.of(),
+        new Multimap<>(),
+        Map.of(),
+        Map.of(),
+        emptyList(),
         DEFAULT_DOCKER_NETWORK,
         DEFAULT_SHM_SIZE);
   }
@@ -108,46 +164,100 @@ public class ContainerConfig {
           String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
     }
 
-    Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
+    Multimap<String, Map<String, Object>> updatedBindings = new Multimap<>(portBindings);
     updatedBindings.put(
         containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
+        Map.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerConfig(
-        image, updatedBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        updatedBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig env(Map<String, String> envVars) {
     Require.nonNull("Container env vars", envVars);
 
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig bind(Map<String, String> volumeBinds) {
     Require.nonNull("Container volume binds", volumeBinds);
 
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig network(String networkName) {
     Require.nonNull("Container network name", networkName);
 
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig shmMemorySize(long shmSize) {
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig devices(List<Device> devices) {
     Require.nonNull("Container device files", devices);
 
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   public ContainerConfig applyHostConfig(Map<String, Object> hostConfig, List<String> configKeys) {
@@ -158,7 +268,46 @@ public class ContainerConfig {
             .collect(Collectors.toMap(key -> key, hostConfig::get));
 
     return new ContainerConfig(
-        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize, setHostConfig);
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        setHostConfig,
+        labels,
+        name);
+  }
+
+  public ContainerConfig labels(Map<String, String> labels) {
+    Require.nonNull("Container labels", labels);
+
+    return new ContainerConfig(
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
+  }
+
+  public ContainerConfig name(String name) {
+    return new ContainerConfig(
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        hostConfig,
+        labels,
+        name);
   }
 
   @Override
@@ -200,14 +349,14 @@ public class ContainerConfig {
         this.devices.stream()
             .map(
                 device ->
-                    ImmutableMap.of(
+                    Map.of(
                         "PathOnHost", device.getPathOnHost(),
                         "PathInContainer", device.getPathInContainer(),
                         "CgroupPermissions", device.getCgroupPermissions()))
             .collect(Collectors.toList());
 
     Map<String, Object> hostConfig =
-        ImmutableMap.of(
+        Map.of(
             "PortBindings", portBindings.asMap(),
             "AutoRemove", autoRemove,
             "NetworkMode", networkName,
@@ -218,12 +367,16 @@ public class ContainerConfig {
     if (!this.hostConfig.isEmpty()) {
       Map<String, Object> copyMap = new HashMap<>(hostConfig);
       copyMap.putAll(this.hostConfig);
-      hostConfig = ImmutableMap.copyOf(copyMap);
+      hostConfig = Map.copyOf(copyMap);
     }
 
-    return ImmutableMap.of(
-        "Image", image.getId(),
-        "Env", envVars,
-        "HostConfig", hostConfig);
+    Map<String, Object> config = new HashMap<>();
+    config.put("Image", image.getId());
+    config.put("Env", envVars);
+    config.put("HostConfig", hostConfig);
+    if (!labels.isEmpty()) {
+      config.put("Labels", labels);
+    }
+    return Map.copyOf(config);
   }
 }

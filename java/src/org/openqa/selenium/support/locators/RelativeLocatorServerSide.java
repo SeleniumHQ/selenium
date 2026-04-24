@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.locators;
 
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
 import com.google.auto.service.AutoService;
@@ -65,7 +66,7 @@ public class RelativeLocatorServerSide implements CustomLocator {
         @SuppressWarnings("unchecked")
         List<WebElement> elements =
             (List<WebElement>) js.executeScript(FIND_ELEMENTS, Map.of("relative", converted));
-        return elements;
+        return requireNonNull(elements);
       }
 
       throw new InvalidArgumentException("Unable to find element");

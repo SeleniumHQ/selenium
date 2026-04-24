@@ -17,16 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.VirtualAuth;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium;
 
@@ -40,7 +37,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
     private IFileDetector fileDetector = new DefaultFileDetector();
-    private NetworkManager network;
+    private NetworkManager? network;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -53,6 +50,16 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
     {
         this.CommandExecutor = executor;
+        this.elementFactory = new WebElementFactory(this);
+        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
+
+        if (this is ISupportsLogs)
+        {
+            // Only add the legacy log commands if the driver supports
+            // retrieving the logs via the extension end points.
+            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
+        }
 
         try
         {
@@ -63,24 +70,13 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             try
             {
                 // Failed to start driver session, disposing of driver
-                this.Quit();
+                this.Dispose();
             }
             catch
             {
                 // Ignore the clean-up exception. We'll propagate the original failure.
             }
             throw;
-        }
-
-        this.elementFactory = new WebElementFactory(this);
-        this.registeredCommands.AddRange(DriverCommand.KnownCommands);
-
-        if (this is ISupportsLogs)
-        {
-            // Only add the legacy log commands if the driver supports
-            // retrieving the logs via the extension end points.
-            this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
-            this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
         }
     }
 
@@ -228,13 +224,24 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     /// <summary>
+    /// Asynchronously disposes the WebDriver Instance
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsyncCore().ConfigureAwait(false);
+        this.Dispose(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Executes JavaScript "asynchronously" in the context of the currently selected frame or window,
     /// executing the callback function specified as the last argument in the list of arguments.
     /// </summary>
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteAsyncScript(string script, params object?[]? args)
+    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[]? args)
     {
         return this.ExecuteScriptCommand(script, DriverCommand.ExecuteAsyncScript, args);
     }
@@ -245,7 +252,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteScript(string script, params object?[]? args)
+    public object? ExecuteScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[]? args)
     {
         return this.ExecuteScriptCommand(script, DriverCommand.ExecuteScript, args);
     }
@@ -259,10 +266,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="script" /> is <see langword="null"/>.</exception>
     public object? ExecuteScript(PinnedScript script, params object?[]? args)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         return this.ExecuteScript(script.MakeExecutionScript(), args);
     }
@@ -297,7 +301,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
     public virtual IWebElement FindElement(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("using", mechanism);
         parameters.Add("value", value);
 
@@ -335,7 +339,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
     public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("using", mechanism);
         parameters.Add("value", value);
 
@@ -365,10 +369,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="printOptions"/> is <see langword="null"/>.</exception>
     public PrintDocument Print(PrintOptions printOptions)
     {
-        if (printOptions is null)
-        {
-            throw new ArgumentNullException(nameof(printOptions));
-        }
+        ArgumentNullException.ThrowIfNull(printOptions);
 
         Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
 
@@ -394,7 +395,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             objectList.Add(sequence.ToDictionary());
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters["actions"] = objectList;
 
         this.Execute(DriverCommand.Actions, parameters);
@@ -458,7 +459,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
     /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
     /// <exception cref="WebDriverException">The command returned an exceptional value.</exception>
-    public object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object> parameters)
+    public object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object?> parameters)
     {
         if (this.registeredCommands.Contains(driverCommandToExecute))
         {
@@ -558,11 +559,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
     /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="driverCommandToExecute"/> is <see langword="null"/>.</exception>
-    protected internal virtual Response Execute(string driverCommandToExecute, Dictionary<string,
-#nullable disable
-        object
-#nullable enable
-        >? parameters)
+    protected internal virtual Response Execute(string driverCommandToExecute, Dictionary<string, object?>? parameters)
     {
         return Task.Run(() => this.ExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
     }
@@ -574,11 +571,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
     /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="driverCommandToExecute"/> is <see langword="null"/>.</exception>
-    protected internal virtual async Task<Response> ExecuteAsync(string driverCommandToExecute, Dictionary<string,
-#nullable disable
-        object
-#nullable enable
-        >? parameters)
+    protected internal virtual async Task<Response> ExecuteAsync(string driverCommandToExecute, Dictionary<string, object?>? parameters)
     {
         Command commandToExecute = new Command(SessionId, driverCommandToExecute, parameters);
 
@@ -600,7 +593,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     [MemberNotNull(nameof(Capabilities))]
     protected void StartSession(ICapabilities capabilities)
     {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
 
         // If the object passed into the RemoteWebDriver constructor is a
         // RemoteSessionSettings object, it is expected that all intermediate
@@ -649,10 +642,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="capabilitiesToConvert"/> is <see langword="null"/>.</exception>
     protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
     {
-        if (capabilitiesToConvert is null)
-        {
-            throw new ArgumentNullException(nameof(capabilitiesToConvert));
-        }
+        ArgumentNullException.ThrowIfNull(capabilitiesToConvert);
 
         Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
 
@@ -684,25 +674,60 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="disposing">if its in the process of disposing</param>
     protected virtual void Dispose(bool disposing)
     {
-        try
+        if (disposing)
         {
             if (this.SessionId is not null)
             {
-                this.Execute(DriverCommand.Quit, null);
+                try
+                {
+
+                    this.Execute(DriverCommand.Quit, null);
+
+                }
+                catch (NotImplementedException)
+                {
+                }
+                catch (InvalidOperationException)
+                {
+                }
+                catch (WebDriverException)
+                {
+                }
+                finally
+                {
+                    this.SessionId = null!;
+                }
             }
+
+            this.CommandExecutor.Dispose();
         }
-        catch (NotImplementedException)
+    }
+
+    /// <summary>
+    /// Asynchronously performs the core dispose logic.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (this.SessionId is not null)
         {
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        catch (WebDriverException)
-        {
-        }
-        finally
-        {
-            this.SessionId = null!;
+            try
+            {
+                await this.ExecuteAsync(DriverCommand.Quit, null).ConfigureAwait(false);
+            }
+            catch (NotImplementedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (WebDriverException)
+            {
+            }
+            finally
+            {
+                this.SessionId = null!;
+            }
         }
 
         this.CommandExecutor.Dispose();
@@ -834,11 +859,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="commandName">The name of the command to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    protected object? ExecuteScriptCommand(string script, string commandName, params object?[]? args)
+    protected object? ExecuteScriptCommand([StringSyntax(StringSyntaxConstants.JavaScript)] string script, string commandName, params object?[]? args)
     {
         object?[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("script", script);
 
         if (convertedArgs != null && convertedArgs.Length > 0)
@@ -999,10 +1024,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
     public string AddVirtualAuthenticator(VirtualAuthenticatorOptions options)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         Response commandResponse = this.Execute(DriverCommand.AddVirtualAuthenticator, options.ToDictionary());
 
@@ -1019,12 +1041,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="authenticatorId"/> is <see langword="null"/>.</exception>
     public void RemoveVirtualAuthenticator(string authenticatorId)
     {
-        if (authenticatorId is null)
-        {
-            throw new ArgumentNullException(nameof(authenticatorId));
-        }
+        ArgumentNullException.ThrowIfNull(authenticatorId);
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(DriverCommand.RemoveVirtualAuthenticator, parameters);
@@ -1044,14 +1063,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void AddCredential(Credential credential)
     {
-        if (credential is null)
-        {
-            throw new ArgumentNullException(nameof(credential));
-        }
+        ArgumentNullException.ThrowIfNull(credential);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>(credential.ToDictionary());
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>(credential.ToDictionary());
         parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(driverCommandToExecute: DriverCommand.AddCredential, parameters);
@@ -1066,7 +1082,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
 
         Response getCredentialsResponse = this.Execute(driverCommandToExecute: DriverCommand.GetCredentials, parameters);
@@ -1106,14 +1122,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void RemoveCredential(string credentialId)
     {
-        if (credentialId is null)
-        {
-            throw new ArgumentNullException(nameof(credentialId));
-        }
+        ArgumentNullException.ThrowIfNull(credentialId);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
         parameters.Add("credentialId", credentialId);
 
@@ -1128,7 +1141,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
 
         this.Execute(driverCommandToExecute: DriverCommand.RemoveAllCredentials, parameters);
@@ -1142,7 +1155,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
         parameters.Add("isUserVerified", verified);
 

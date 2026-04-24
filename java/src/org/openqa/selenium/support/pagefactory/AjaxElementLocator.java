@@ -22,6 +22,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -134,8 +135,8 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   private class SlowLoadingElement extends SlowLoadableComponent<SlowLoadingElement> {
-    private NoSuchElementException lastException;
-    private WebElement element;
+    private @Nullable NoSuchElementException lastException;
+    private @Nullable WebElement element;
 
     public SlowLoadingElement(Clock clock, int timeOutInSeconds) {
       super(clock, Duration.ofSeconds(timeOutInSeconds));
@@ -165,18 +166,20 @@ public class AjaxElementLocator extends DefaultElementLocator {
       }
     }
 
+    @Nullable
     public NoSuchElementException getLastException() {
       return lastException;
     }
 
+    @Nullable
     public WebElement getElement() {
       return element;
     }
   }
 
   private class SlowLoadingElementList extends SlowLoadableComponent<SlowLoadingElementList> {
-    private NoSuchElementException lastException;
-    private List<WebElement> elements;
+    private @Nullable NoSuchElementException lastException;
+    private @Nullable List<WebElement> elements;
 
     public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
       super(clock, Duration.ofSeconds(timeOutInSeconds));
@@ -211,10 +214,12 @@ public class AjaxElementLocator extends DefaultElementLocator {
       }
     }
 
+    @Nullable
     public NoSuchElementException getLastException() {
       return lastException;
     }
 
+    @Nullable
     public List<WebElement> getElements() {
       return elements;
     }

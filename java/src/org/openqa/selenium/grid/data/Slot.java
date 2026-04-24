@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -33,16 +34,17 @@ public class Slot implements Serializable {
 
   private final SlotId id;
   private final Capabilities stereotype;
-  private final Session session;
+  private final @Nullable Session session;
   private final Instant lastStarted;
 
-  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
+  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, @Nullable Session session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
     this.session = session;
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static Slot fromJson(JsonInput input) {
     SlotId id = null;
     Capabilities stereotype = null;
@@ -79,8 +81,8 @@ public class Slot implements Serializable {
     return new Slot(id, stereotype, lastStarted, session);
   }
 
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
+  private Map<String, @Nullable Object> toJson() {
+    Map<String, @Nullable Object> toReturn = new TreeMap<>();
     toReturn.put("id", getId());
     toReturn.put("lastStarted", getLastStarted());
     toReturn.put("session", getSession());
@@ -100,6 +102,7 @@ public class Slot implements Serializable {
     return lastStarted;
   }
 
+  @Nullable
   public Session getSession() {
     return session;
   }

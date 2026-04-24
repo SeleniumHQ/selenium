@@ -12,6 +12,8 @@
  * Author: wcrosby@google.com (Wayne Crosby)
  */
 
+@provide 'goog.css.dragdropdetector';
+
 .goog-dragdrop-w3c-editable-iframe {
   position: absolute;
   width: 100%;

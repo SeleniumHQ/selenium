@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import java.util.Locale;
+import org.openqa.selenium.internal.Require;
 
 public enum HttpMethod {
   DELETE,
@@ -31,9 +32,7 @@ public enum HttpMethod {
   TRACE;
 
   public static HttpMethod getHttpMethod(String method) {
-    if (method == null) {
-      throw new IllegalArgumentException("Method cannot be null");
-    }
+    Require.nonNull("Method", method);
 
     try {
       return HttpMethod.valueOf(method.toUpperCase(Locale.ENGLISH));

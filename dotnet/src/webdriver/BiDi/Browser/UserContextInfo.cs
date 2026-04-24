@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Browser;
 
 public record UserContextInfo(UserContext UserContext) : EmptyResult;

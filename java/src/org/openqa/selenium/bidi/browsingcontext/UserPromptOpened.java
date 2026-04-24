@@ -17,30 +17,36 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 
-import java.util.Map;
-import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class UserPromptOpened {
 
   private final String browsingContextId;
-
   private final UserPromptType type;
-
   private final String message;
 
-  private UserPromptOpened(String browsingContextId, UserPromptType type, String message) {
+  @Nullable private final String defaultValue;
+
+  private UserPromptOpened(
+      String browsingContextId,
+      UserPromptType type,
+      String message,
+      @Nullable String defaultValue) {
     this.browsingContextId = browsingContextId;
     this.type = type;
     this.message = message;
+    this.defaultValue = defaultValue;
   }
 
   public static UserPromptOpened fromJson(JsonInput input) {
     String browsingContextId = null;
     UserPromptType type = null;
     String message = null;
+    String defaultValue = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -51,11 +57,15 @@ public class UserPromptOpened {
 
         case "type":
           String userPromptType = input.read(String.class);
-          type = UserPromptType.findByName(userPromptType);
+          type = UserPromptType.findByName(requireNonNull(userPromptType));
           break;
 
         case "message":
           message = input.read(String.class);
+          break;
+
+        case "defaultValue":
+          defaultValue = input.read(String.class);
           break;
 
         default:
@@ -66,7 +76,11 @@ public class UserPromptOpened {
 
     input.endObject();
 
-    return new UserPromptOpened(browsingContextId, type, message);
+    return new UserPromptOpened(
+        Require.nonNull("browsingContext", browsingContextId),
+        Require.nonNull("User prompt type", type),
+        Require.nonNull("User prompt message", message),
+        defaultValue);
   }
 
   public String getBrowsingContextId() {
@@ -81,13 +95,8 @@ public class UserPromptOpened {
     return message;
   }
 
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("browsingContextId", this.getBrowsingContextId());
-    toReturn.put("type", this.getType());
-    toReturn.put("message", this.getMessage());
-
-    return unmodifiableMap(toReturn);
+  @Nullable
+  public String getDefaultValue() {
+    return defaultValue;
   }
 }

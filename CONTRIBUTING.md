@@ -59,6 +59,34 @@ on Github.
 
 This document will guide you through the contribution process.
 
+### AI-assisted contributions (Copilot, LLMs, code generators)
+
+We allow contributors to use AI tools to help write code, tests, and documentation. However:
+
+**Human-in-the-loop is required:**
+- You are the author. You must read, review, and understand all AI-assisted output before requesting review.
+- You must be able to explain the change and rationale without referring back to the tool.
+
+**Disclosure:**
+- If substantial parts of the PR are AI-assisted, disclose it in the PR description 
+(tool name + what was generated). This is for reviewer context, not for judgment.
+
+**No autonomous agents:**
+- Do not use agents/bots to open PRs, push commits, or post review comments without
+direct human approval and ownership of the result.
+- Do not add `Co-Authored-By` tags for AI tools in commits. 
+AI tools are not authors; disclosure belongs in the PR description, not commit metadata.
+
+**Quality bar / reviewer time:**
+- Using AI assistance should not lower the bar. Bug fixes and features must include tests where possible
+- Maintainers may ask you to reduce scope, add tests, or justify value if a PR appears to be low-effort generated content.
+
+**Copyright and licensing:**
+- You are responsible for ensuring you have the rights to contribute your work under the project license. 
+Using AI tools does not remove third-party copyrights; content found to violate this will be removed.
+
+(Policy inspired by the [LLVM Project AI Tool Use Policy](https://llvm.org/docs/AIToolPolicy.html))
+
 ### Step 1: Fork & Clone
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)

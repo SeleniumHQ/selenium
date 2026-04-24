@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import java.io.File;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 
 /** Detects files on the local disk. */
 public class LocalFileDetector implements FileDetector {
@@ -26,7 +27,7 @@ public class LocalFileDetector implements FileDetector {
   private static final Logger LOG = Logger.getLogger(LocalFileDetector.class.getName());
 
   @Override
-  public File getLocalFile(CharSequence... keys) {
+  public @Nullable File getLocalFile(CharSequence... keys) {
     StringBuilder builder = new StringBuilder();
     for (CharSequence chars : keys) {
       builder.append(chars);

@@ -27,6 +27,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -90,16 +93,19 @@ public class Bootstrap {
         continue;
       }
 
-      if (file.isDirectory()) {
-        File[] files = file.listFiles();
-        if (files == null) {
-          LOG.warning("Cannot list files in directory: " + file);
-        } else {
-          for (File subdirFile : files) {
+      Path dir = file.toPath();
+
+      if (Files.isDirectory(dir)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+          for (Path path : stream) {
+            File subdirFile = path.toFile();
             if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
               jars.add(subdirFile);
             }
           }
+        } catch (IOException e) {
+          LOG.warning(
+              () -> String.format("Cannot list files in directory: %s due to: %s", file, e));
         }
       } else {
         jars.add(file);

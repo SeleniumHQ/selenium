@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.actions.input_device import InputDevice
@@ -39,7 +39,7 @@ class PointerInput(InputDevice):
         duration=DEFAULT_MOVE_DURATION,
         x: float = 0,
         y: float = 0,
-        origin: Optional[WebElement] = None,
+        origin: WebElement | None = None,
         **kwargs,
     ):
         action = {"type": "pointerMove", "duration": duration, "x": x, "y": y, **kwargs}
@@ -59,7 +59,7 @@ class PointerInput(InputDevice):
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
 
-    def create_pause(self, pause_duration: Union[int, float] = 0) -> None:
+    def create_pause(self, pause_duration: int | float = 0) -> None:
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):

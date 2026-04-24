@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace OpenQA.Selenium.Support.Extensions;
@@ -71,7 +71,7 @@ public static class WebDriverExtensions
     /// <param name="args">The arguments to the script.</param>
     /// <exception cref="WebDriverException">Thrown if this <see cref="IWebDriver"/> instance
     /// does not implement <see cref="IJavaScriptExecutor"/></exception>
-    public static void ExecuteJavaScript(this IWebDriver driver, string script, params object?[] args)
+    public static void ExecuteJavaScript(this IWebDriver driver, [StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         ExecuteJavaScriptInternal(driver, script, args);
     }
@@ -87,7 +87,7 @@ public static class WebDriverExtensions
     /// <exception cref="WebDriverException">Thrown if this <see cref="IWebDriver"/> instance
     /// does not implement <see cref="IJavaScriptExecutor"/>, or if the actual return type
     /// of the JavaScript execution does not match the expected type.</exception>
-    public static T? ExecuteJavaScript<T>(this IWebDriver driver, string script, params object?[] args)
+    public static T? ExecuteJavaScript<T>(this IWebDriver driver, [StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         var value = ExecuteJavaScriptInternal(driver, script, args);
         if (value == null)

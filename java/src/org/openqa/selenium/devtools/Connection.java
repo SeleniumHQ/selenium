@@ -47,6 +47,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.internal.Either;
@@ -78,15 +80,21 @@ public class Connection implements Closeable {
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, List<BiConsumer<Long, ?>>> eventCallbacks = new HashMap<>();
   private HttpClient client;
-  private final String url;
   private final AtomicBoolean isClosed;
+  private final ClientConfig wsConfig;
 
+  /**
+   * @deprecated Use constructor with {@link ClientConfig} parameter
+   */
+  @Deprecated
   public Connection(HttpClient client, String url) {
-    Require.nonNull("HTTP client", client);
-    Require.nonNull("URL to connect to", url);
-    this.url = url;
-    this.client = client;
-    this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    this(client, url, ClientConfig.defaultConfig());
+  }
+
+  public Connection(HttpClient client, String url, ClientConfig clientConfig) {
+    this.client = Require.nonNull("HTTP client", client);
+    this.wsConfig = wsClientConfig(clientConfig, url);
+    this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
     this.isClosed = new AtomicBoolean();
   }
 
@@ -96,17 +104,21 @@ public class Connection implements Closeable {
 
   void reopen() {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = null;
-    try {
-      wsConfig = ClientConfig.defaultConfig().baseUri(new URI(this.url));
-    } catch (URISyntaxException e) {
-      LOG.warning(e.getMessage());
-    }
     this.client = clientFactory.createClient(wsConfig);
-    this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    this.socket = this.client.openSocket(new HttpRequest(GET, wsConfig.baseUri()), new Listener());
   }
 
-  private static class NamedConsumer<X> implements Consumer<X> {
+  private static ClientConfig wsClientConfig(ClientConfig clientConfig, String uri) {
+    Require.nonNull("Client config", clientConfig);
+    try {
+      return clientConfig.baseUri(new URI(uri));
+    } catch (URISyntaxException e) {
+      LOG.log(Level.WARNING, "Invalid WebSockets URI: " + uri, e);
+      return clientConfig;
+    }
+  }
+
+  private static final class NamedConsumer<X> implements Consumer<X> {
 
     private final String name;
     private final Consumer<X> delegate;
@@ -131,7 +143,7 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
+  public <X> CompletableFuture<X> send(@Nullable SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
@@ -174,13 +186,16 @@ public class Connection implements Closeable {
     socket.sendText(json);
 
     if (!command.getSendsResponse()) {
+      // As far as I see, it never happens.
+      // All DevTools commands return something - at least empty map.
+      //noinspection DataFlowIssue
       result.complete(null);
     }
 
     return result;
   }
 
-  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
+  public <X> X sendAndWait(@Nullable SessionID sessionId, Command<X> command, Duration timeout) {
     try {
       CompletableFuture<X> future = send(sessionId, command);
       return future.get(timeout.toMillis(), MILLISECONDS);
@@ -228,6 +243,7 @@ public class Connection implements Closeable {
     this.isClosed.set(true);
   }
 
+  @NullMarked
   private class Listener implements WebSocket.Listener {
 
     @Override

@@ -22,10 +22,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -100,6 +101,7 @@ public abstract class WebSocketTestBase {
     WebSocket.Listener listener =
         new WebSocket.Listener() {
           @Override
+          @NullMarked
           public void onText(CharSequence data) {
             message.set(data.toString());
             latch.countDown();
@@ -111,7 +113,7 @@ public abstract class WebSocketTestBase {
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
 
-    assertThat(message.get()).isEqualTo("Hello, World!");
+    assertThat(message).hasValue("Hello, World!");
   }
 
   @Test
@@ -122,6 +124,7 @@ public abstract class WebSocketTestBase {
     WebSocket.Listener listener =
         new WebSocket.Listener() {
           @Override
+          @NullMarked
           public void onBinary(byte[] data) {
             message.set(data);
             latch.countDown();
@@ -134,12 +137,11 @@ public abstract class WebSocketTestBase {
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
 
-    assertThat(message.get()).isEqualTo("brie".getBytes(UTF_8));
+    assertThat(message).hasValue("brie".getBytes(UTF_8));
   }
 
   private static BaseServerOptions defaultOptions() {
     return new BaseServerOptions(
-        new MapConfig(
-            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+        new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
   }
 }

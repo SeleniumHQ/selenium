@@ -3,29 +3,36 @@ module Selenium
     class Network
       @network: BiDi::Network
 
-      @callbacks: Hash[String, String]
+      @callbacks: Hash[Integer, Hash[String, String]]
 
-      attr_reader callbacks: Hash[String, String]
+      attr_reader callbacks: Hash[Integer, Hash[String, String]]
 
       attr_reader network: BiDi::Network
 
       alias bidi network
 
+      # Delegated methods from BiDi::Network
+      def continue_with_auth: (*untyped) -> untyped
+
+      def continue_with_request: (*untyped) -> untyped
+
+      def continue_with_response: (*untyped) -> untyped
+
       def initialize: (Remote::Bridge bridge) -> void
 
-      def remove_handler: (Numeric id) -> untyped
+      def remove_handler: (Integer id) -> void
 
-      def clear_handlers: () -> untyped
+      def clear_handlers: () -> void
 
-      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> untyped
+      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> Integer
 
-      def add_request_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_request_handler: (*String filter, ?pattern_type: Symbol?) ?{ (untyped) -> untyped } -> Integer
 
-      def add_response_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_response_handler: (*String filter, ?pattern_type: Symbol?) ?{ (untyped) -> untyped } -> Integer
 
       private
 
-      def add_handler: (Symbol event_type, String phase, BiDi::InterceptedRequest | BiDi::InterceptedAuth | BiDi::InterceptedResponse intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> untyped
+      def add_handler: (Symbol event_type, String phase, untyped intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> Integer
     end
   end
 end

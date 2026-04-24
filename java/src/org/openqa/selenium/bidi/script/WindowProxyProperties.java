@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class WindowProxyProperties {
@@ -44,7 +45,7 @@ public class WindowProxyProperties {
 
     input.endObject();
 
-    return new WindowProxyProperties(browsingContext);
+    return new WindowProxyProperties(Require.nonNull("browsingContext", browsingContext));
   }
 
   public String getBrowsingContext() {

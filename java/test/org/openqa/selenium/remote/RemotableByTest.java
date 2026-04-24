@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -56,8 +56,7 @@ class RemotableByTest {
             });
     driver.findElement(By.cssSelector("#foo"));
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -74,13 +73,13 @@ class RemotableByTest {
     driver.findElement(
         new By() {
           @Override
+          @NullMarked
           public List<WebElement> findElements(SearchContext context) {
             return context.findElements(By.cssSelector("#foo"));
           }
         });
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -94,6 +93,7 @@ class RemotableByTest {
               return createResponse(new RemoteWebElement());
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       @Override
       public Parameters getRemoteParameters() {
@@ -108,8 +108,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "magic", "value", "abracadabra"));
+    assertThat(parameters).hasValue(Map.of("using", "magic", "value", "abracadabra"));
   }
 
   @Test
@@ -124,6 +123,7 @@ class RemotableByTest {
               return createResponse(singletonList(new RemoteWebElement()));
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       @Override
       public Parameters getRemoteParameters() {
@@ -138,8 +138,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "not-magic"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "not-magic"));
   }
 
   @Test
@@ -169,6 +168,7 @@ class RemotableByTest {
               return createResponse(singletonList(new RemoteWebElement()));
             });
 
+    @NullMarked
     class CustomBy extends By implements By.Remotable {
       private final String arg;
 
@@ -192,8 +192,7 @@ class RemotableByTest {
     driver.findElement(new CustomBy("two"));
     driver.findElement(new CustomBy("three"));
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "three"));
+    assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "three"));
   }
 
   private Response createResponse(Object value) {
@@ -212,6 +211,7 @@ class RemotableByTest {
     return res;
   }
 
+  @NullMarked
   @SafeVarargs
   private WebDriver createDriver(Function<Command, Response>... responses) {
     Iterator<Function<Command, Response>> iterator = Arrays.stream(responses).iterator();

@@ -22,35 +22,30 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 
 public class SessionCapabilitiesMutatorTest {
-
-  private SessionCapabilitiesMutator sessionCapabilitiesMutator;
-  private Capabilities stereotype;
-  private Capabilities capabilities;
-
   @Test
   void shouldMergeStereotypeWithoutOptionsWithCapsWithOptions() {
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "unhandledPromptBehavior", "accept");
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> chromeOptions = new HashMap<>();
-    chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
+    chromeOptions.put("args", List.of("incognito", "window-size=500,500"));
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "goog:chromeOptions", chromeOptions,
@@ -73,17 +68,18 @@ public class SessionCapabilitiesMutatorTest {
   @Test
   void shouldMergeStereotypeWithOptionsWithCapsWithoutOptions() {
     Map<String, Object> chromeOptions = new HashMap<>();
-    chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
+    chromeOptions.put("args", List.of("incognito", "window-size=500,500"));
 
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "goog:chromeOptions", chromeOptions,
             "unhandledPromptBehavior", "accept");
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "pageLoadStrategy", "normal");
@@ -108,26 +104,26 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put(
-        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
-    stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
+    stereotypeOptions.put("args", List.of("incognito", "window-size=500,500"));
+    stereotypeOptions.put("extensions", List.of(ext1));
     stereotypeOptions.put("binary", "/path/to/binary");
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities("browserName", "chrome", "goog:chromeOptions", stereotypeOptions);
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> capabilityOptions = new HashMap<>();
-    capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
-    capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("args", List.of("incognito", "--headless"));
+    capabilityOptions.put("extensions", List.of(ext2));
     capabilityOptions.put("binary", "/path/to/caps/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities("browserName", "chrome", "goog:chromeOptions", capabilityOptions);
 
     Map<String, Object> modifiedCapabilities =
@@ -168,26 +164,26 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put(
-        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
-    stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
+    stereotypeOptions.put("args", List.of("incognito", "window-size=500,500"));
+    stereotypeOptions.put("extensions", List.of(ext1));
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities(
             "browserName", "microsoftedge", "ms:edgeOptions", stereotypeOptions);
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> capabilityOptions = new HashMap<>();
-    capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
-    capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("args", List.of("incognito", "--headless"));
+    capabilityOptions.put("extensions", List.of(ext2));
     capabilityOptions.put("binary", "/path/to/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities(
             "browserName", "microsoftedge", "ms:edgeOptions", capabilityOptions);
 
@@ -225,7 +221,7 @@ public class SessionCapabilitiesMutatorTest {
   @Test
   void shouldMergeFirefoxSpecificOptionsFromStereotypeAndCaps() {
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put("args", new ArrayList<>(Arrays.asList("verbose", "silent")));
+    stereotypeOptions.put("args", List.of("verbose", "silent"));
 
     Map<String, String> prefs = new HashMap<>();
     prefs.put("opt1", "val1");
@@ -240,11 +236,12 @@ public class SessionCapabilitiesMutatorTest {
     stereotypeOptions.put("profile", "profile-string");
     stereotypeOptions.put("androidDeviceSerial", "emulator-5556");
 
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities(
             "browserName", "firefox", "moz:firefoxOptions", stereotypeOptions);
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> capabilityOptions = new HashMap<>();
     capabilityOptions.put("args", Collections.singletonList("-headless"));
@@ -263,7 +260,7 @@ public class SessionCapabilitiesMutatorTest {
     capabilityOptions.put("binary", "/path/to/caps/binary");
     capabilityOptions.put("androidPackage", "com.android.chrome");
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities(
             "browserName", "firefox", "moz:firefoxOptions", capabilityOptions);
 
@@ -324,15 +321,16 @@ public class SessionCapabilitiesMutatorTest {
 
   @Test
   void shouldMergeTopLevelStereotypeAndCaps() {
-    stereotype =
+    Capabilities stereotype =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "unhandledPromptBehavior", "accept",
             "pageLoadStrategy", "eager");
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
-    capabilities =
+    Capabilities capabilities =
         new ImmutableCapabilities(
             "browserName", "chrome",
             "pageLoadStrategy", "normal");
@@ -346,12 +344,33 @@ public class SessionCapabilitiesMutatorTest {
   }
 
   @Test
+  void shouldPropagateVncCapsWhenRequestHasNoBrowserName() {
+    // Requests without browserName (e.g. proxy-only caps) are still routed to a VNC-enabled slot;
+    // the VNC address must be present in the merged capabilities.
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            "browserName", "chrome", "se:vncEnabled", true, "se:noVncPort", 7900);
+
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
+
+    Capabilities capabilities = new ImmutableCapabilities("proxy", Map.of("proxyType", "direct"));
+
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
+
+    assertThat(modifiedCapabilities.get("se:vncEnabled")).isEqualTo(true);
+    assertThat(modifiedCapabilities.get("se:noVncPort")).isEqualTo(7900);
+  }
+
+  @Test
   void shouldAllowUnknownBrowserNames() {
-    stereotype = new ImmutableCapabilities("browserName", "safari");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "safari");
 
-    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+    SessionCapabilitiesMutator sessionCapabilitiesMutator =
+        new SessionCapabilitiesMutator(stereotype);
 
-    capabilities = new ImmutableCapabilities("browserName", "safari");
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "safari");
 
     Map<String, Object> modifiedCapabilities =
         sessionCapabilitiesMutator.apply(capabilities).asMap();

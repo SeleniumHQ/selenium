@@ -17,10 +17,9 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using System;
+using OpenQA.Selenium.Support.UI;
 
-namespace OpenQA.Selenium.Support.UI;
+namespace OpenQA.Selenium.Support.Tests.UI;
 
 [TestFixture]
 public class LoadableComponentTests

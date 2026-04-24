@@ -20,16 +20,17 @@ package org.openqa.selenium;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class UnhandledAlertException extends WebDriverException {
 
-  private final String alertText;
+  @Nullable private final String alertText;
 
   public UnhandledAlertException(String message) {
     this(message, null);
   }
 
-  public UnhandledAlertException(String message, String alertText) {
+  public UnhandledAlertException(String message, @Nullable String alertText) {
     super(message + ": " + alertText);
     this.alertText = alertText;
   }
@@ -37,14 +38,15 @@ public class UnhandledAlertException extends WebDriverException {
   /**
    * @return the text of the unhandled alert.
    */
+  @Nullable
   public String getAlertText() {
     return alertText;
   }
 
   // Used for serialising. Some of the drivers return the alert text like this.
   @Beta
-  public Map<String, String> getAlert() {
-    HashMap<String, String> toReturn = new HashMap<>();
+  public Map<String, @Nullable String> getAlert() {
+    HashMap<String, @Nullable String> toReturn = new HashMap<>();
     toReturn.put("text", getAlertText());
     return Collections.unmodifiableMap(toReturn);
   }

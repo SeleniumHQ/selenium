@@ -24,6 +24,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -84,7 +85,7 @@ class SharedCapabilitiesMethods {
     return "Capabilities " + abbreviate(seen, caps.asMap());
   }
 
-  private static String abbreviate(Map<Object, String> seen, Object stringify) {
+  private static String abbreviate(Map<Object, String> seen, @Nullable Object stringify) {
     if (stringify == null) {
       return "null";
     }

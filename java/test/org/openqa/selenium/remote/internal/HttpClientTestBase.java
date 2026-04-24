@@ -17,24 +17,19 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +44,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
@@ -79,7 +75,7 @@ public abstract class HttpClientTestBase {
 
   @Test
   void responseShouldCaptureASingleHeader() {
-    HashMultimap<String, String> headers = HashMultimap.create();
+    Multimap<String, String> headers = new Multimap<>();
     headers.put("Cake", "Delicious");
 
     HttpResponse response = getResponseWithHeaders(headers);
@@ -96,7 +92,7 @@ public abstract class HttpClientTestBase {
    */
   @Test
   void responseShouldKeepMultipleHeadersSeparate() {
-    HashMultimap<String, String> headers = HashMultimap.create();
+    Multimap<String, String> headers = new Multimap<>();
     headers.put("Cheese", "Cheddar");
     headers.put("Cheese", "Brie, Gouda");
 
@@ -126,9 +122,9 @@ public abstract class HttpClientTestBase {
     request.addQueryParameter("cheese", "cheddar");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(response.contentAsString(), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", singletonList("cheddar"));
+    assertThat(values).containsEntry("cheese", List.of("cheddar"));
   }
 
   @Test
@@ -137,9 +133,9 @@ public abstract class HttpClientTestBase {
     request.addQueryParameter("cheese type", "tasty cheese");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(response.contentAsString(), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese type", singletonList("tasty cheese"));
+    assertThat(values).containsEntry("cheese type", List.of("tasty cheese"));
   }
 
   @Test
@@ -150,10 +146,10 @@ public abstract class HttpClientTestBase {
     request.addQueryParameter("vegetable", "peas");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(response.contentAsString(), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", Arrays.asList("cheddar", "gouda"));
-    assertThat(values).containsEntry("vegetable", singletonList("peas"));
+    assertThat(values).containsEntry("cheese", List.of("cheddar", "gouda"));
+    assertThat(values).containsEntry("vegetable", List.of("peas"));
   }
 
   @Test
@@ -169,7 +165,7 @@ public abstract class HttpClientTestBase {
 
       HttpResponse response = client.execute(request);
 
-      assertThat(string(response)).isEqualTo("Hello, World!");
+      assertThat(response.contentAsString()).isEqualTo("Hello, World!");
     }
   }
 
@@ -184,7 +180,7 @@ public abstract class HttpClientTestBase {
     Platform platform = Platform.getCurrent();
     Platform family = platform.family() == null ? platform : platform.family();
 
-    assertThat(string(response))
+    assertThat(response.contentAsString())
         .isEqualTo(String.format("selenium/%s (java %s)", label, family.toString().toLowerCase()));
   }
 
@@ -261,7 +257,8 @@ public abstract class HttpClientTestBase {
                     executing.countDown();
                     return handler.execute(request);
                   } catch (WebDriverException ex) {
-                    if (ex.getCause() instanceof InterruptedException) {
+                    if (ex.getCause() instanceof InterruptedException
+                        || ex.getCause() instanceof HttpTimeoutException) {
                       interrupted.countDown();
                     }
 
@@ -337,11 +334,7 @@ public abstract class HttpClientTestBase {
     return executeWithinServer(
         request,
         req -> {
-          Map<String, Iterable<String>> params = new TreeMap<>();
-          req.getQueryParameterNames()
-              .forEach(name -> params.put(name, req.getQueryParameters(name)));
-
-          return new HttpResponse().setContent(Contents.asJson(params));
+          return new HttpResponse().setContent(Contents.asJson(req.getQueryParameters()));
         });
   }
 

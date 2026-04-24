@@ -30,6 +30,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -43,14 +44,17 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.AttributeKey;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
@@ -64,7 +68,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
   private static final Logger LOG = Logger.getLogger(WebSocketUpgradeHandler.class.getName());
   private final AttributeKey<Consumer<Message>> key;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory;
-  private WebSocketServerHandshaker handshaker;
+  private @Nullable WebSocketServerHandshaker handshaker;
 
   public WebSocketUpgradeHandler(
       AttributeKey<Consumer<Message>> key,
@@ -136,7 +140,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     Optional<Consumer<Message>> maybeHandler =
         factory.apply(
             req.uri(), msg -> ctx.channel().writeAndFlush(Require.nonNull("Message to send", msg)));
-    if (!maybeHandler.isPresent()) {
+    if (maybeHandler.isEmpty()) {
       sendHttpResponse(
           ctx, req, new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
       return;
@@ -157,7 +161,27 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
                 if (!future.isSuccess()) {
                   ctx.fireExceptionCaught(future.cause());
                 } else {
-                  ctx.channel().attr(key).setIfAbsent(maybeHandler.get());
+                  Consumer<Message> handler = maybeHandler.get();
+                  ctx.channel().attr(key).setIfAbsent(handler);
+
+                  // Install application-level keepalive for all WebSocket connections.
+                  // Cloud LBs (AWS ALB: 60 s, k8s ingress-nginx: 60 s) silently drop idle
+                  // TCP connections; OS-level SO_KEEPALIVE alone is not enough because
+                  // most LBs ignore TCP keepalive probes. A WS ping every 30 s resets
+                  // the LB's idle timer at the application level.
+                  ChannelPipeline pipeline = ctx.pipeline();
+                  pipeline.addAfter(
+                      "ws-protocol",
+                      "ws-idle",
+                      new IdleStateHandler(
+                          0, WebSocketKeepAliveHandler.PING_INTERVAL_SECONDS, 0, TimeUnit.SECONDS));
+                  pipeline.addAfter("ws-idle", "ws-keepalive", new WebSocketKeepAliveHandler());
+
+                  // Allow the handler to rewire the pipeline now that the channel
+                  // is fully in WebSocket mode (HTTP codec no longer active).
+                  if (handler instanceof PostUpgradeHook) {
+                    ((PostUpgradeHook) handler).onUpgradeComplete(ctx);
+                  }
                 }
               });
     }
@@ -167,11 +191,21 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     if (frame instanceof CloseWebSocketFrame) {
       try {
         CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
+        // Invoke the consumer synchronously BEFORE sending the close response.
+        // This avoids race conditions when trying to reuse the connection slot.
+        Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
+        if (consumer != null) {
+          try {
+            consumer.accept(new CloseMessage(close.statusCode(), close.reasonText()));
+          } catch (Exception ex) {
+            LOG.log(Level.FINE, "failed to handle close message", ex);
+          }
+        }
         handshaker.close(ctx.channel(), close);
-        // Pass on to the rest of the channel
+        // Pass on to the rest of the channel for any other handlers
         ctx.fireChannelRead(close);
       } finally {
-        // set null to ensure we do not send another close
+        // ensure attribute is cleared even if consumer invocation failed
         ctx.channel().attr(key).set(null);
       }
     } else if (frame instanceof PingWebSocketFrame) {
@@ -223,10 +257,11 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
       Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
 
       if (consumer != null) {
+        CloseMessage channelGotInactive = new CloseMessage(1001, "channel got inactive");
         try {
-          consumer.accept(new CloseMessage(1001, "channel got inactive"));
-        } catch (Exception ex) {
-          LOG.log(Level.FINE, "failed to send the close message, code: 1001", ex);
+          consumer.accept(channelGotInactive);
+        } catch (RuntimeException ex) {
+          LOG.log(Level.FINE, ex, () -> "failed to send " + channelGotInactive);
         }
       }
     }

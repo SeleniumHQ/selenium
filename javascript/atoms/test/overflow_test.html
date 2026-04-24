@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>overflow_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.userAgent');
     goog.require('goog.array');
     goog.require('goog.dom');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
 
@@ -17,14 +20,11 @@
     var HIDDEN = bot.dom.OverflowState.HIDDEN;
     var SCROLL = bot.dom.OverflowState.SCROLL;
 
-    function tearDown() {
+    QUnit.testDone(function() {
       document.documentElement.style.position = '';
-    }
+    });
 
-    function testElemHiddenByParent() {
-      // Column 1: position style of the element
-      // Column 2: position style of the element's parent
-      // Column 3: expected overflow state of the element
+    QUnit.test('elemHiddenByParent', function(assert) {
       var positionStylesToOverflowStateTable = [
         ['absolute', 'absolute', HIDDEN],
         ['absolute', 'fixed',    HIDDEN],
@@ -61,16 +61,12 @@
         parent.appendChild(elem);
         document.body.appendChild(parent);
 
-        assertEquals('position: ' + position + '; parent position: ' +
-            parentPosition, expectedState, bot.dom.getOverflowState(elem));
+        assert.strictEqual(bot.dom.getOverflowState(elem), expectedState,
+            'position: ' + position + '; parent position: ' + parentPosition);
       });
-    }
+    });
 
-    function testElemHiddenByGrandparent() {
-      // Column 1: position style of the element
-      // Column 2: position style of the element's parent
-      // Column 3: position style of the element's grandparent
-      // Column 4: expected overflow state of the element
+    QUnit.test('elemHiddenByGrandparent', function(assert) {
       var positionStylesToOverflowStateTable = [
         ['absolute', 'absolute', 'absolute', HIDDEN],
         ['absolute', 'absolute', 'fixed'   , HIDDEN],
@@ -161,41 +157,38 @@
         grandparent.appendChild(parent);
         document.body.appendChild(grandparent);
 
-        assertEquals('position: ' + position + '; parent position: ' +
-            parentPosition + '; grandparent position: ' + grandparentPosition,
-            expectedState, bot.dom.getOverflowState(elem));
+        assert.strictEqual(bot.dom.getOverflowState(elem), expectedState,
+            'position: ' + position + '; parent position: ' +
+            parentPosition + '; grandparent position: ' + grandparentPosition);
       });
-    }
+    });
 
-    function testChildOfScrollStyleHasScrollStatus() {
+    QUnit.test('childOfScrollStyleHasScrollStatus', function(assert) {
       var e = document.getElementById('overflowScroll');
-      assertEquals(SCROLL, bot.dom.getOverflowState(e));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(e), SCROLL);
+    });
 
-    function testChildOfAutoStyleHasScrollStatus() {
+    QUnit.test('childOfAutoStyleHasScrollStatus', function(assert) {
       var e = document.getElementById('overflowAuto');
-      assertEquals(SCROLL, bot.dom.getOverflowState(e));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(e), SCROLL);
+    });
 
-    function testChildOfScrollStyleInHiddenHasScrollStatusWhenParentNotInOverflow() {
+    QUnit.test('childOfScrollStyleInHiddenHasScrollStatusWhenParentNotInOverflow', function(assert) {
       var e = document.getElementById('overflowScrollInHiddenIsScroll');
-      assertEquals(SCROLL, bot.dom.getOverflowState(e));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(e), SCROLL);
+    });
 
-    function testChildOfScrollStyleInHiddenHasHiddenStatusWhenParentInOverflow() {
+    QUnit.test('childOfScrollStyleInHiddenHasHiddenStatusWhenParentInOverflow', function(assert) {
       var e = document.getElementById('overflowScrollInHiddenIsHidden');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(e));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(e), HIDDEN);
+    });
 
-    function testOverflowOfHtmlAndBodyElements() {
+    QUnit.test('overflowOfHtmlAndBodyElements', function(assert) {
       if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+        assert.ok(true, 'Skipping: Android pre-Gingerbread');
         return;
       }
 
-      // Column 1: overflow style of the <html> element
-      // Column 2: overflow style of the <body> element
-      // Column 3: expected overflow state of the overflowsBodyNotDoc element
-      // Column 4: expected overflow state of the overflowsBodyAndDoc element
       var overflowStylesToOverflowStateTable = [
         ['auto'   , 'auto'   , SCROLL, SCROLL],
         ['auto'   , 'hidden' , HIDDEN, HIDDEN],
@@ -232,53 +225,49 @@
         var msg = 'html overflow style: ' + htmlOverflowStyle + '; ' +
                   'body overflow style: ' + bodyOverflowStyle;
         overflowsNothing.innerHTML = msg;
-        assertEquals(msg, NONE,
-            bot.dom.getOverflowState(overflowsNothing));
-        assertEquals(msg, expectedOverflowsBodyNotDocState,
-            bot.dom.getOverflowState(overflowsBodyNotDoc));
-        assertEquals(msg, expectedOverflowsBodyAndDocState,
-            bot.dom.getOverflowState(overflowsBodyAndDoc));
+        assert.strictEqual(bot.dom.getOverflowState(overflowsNothing), NONE, msg);
+        assert.strictEqual(bot.dom.getOverflowState(overflowsBodyNotDoc),
+            expectedOverflowsBodyNotDocState, msg);
+        assert.strictEqual(bot.dom.getOverflowState(overflowsBodyAndDoc),
+            expectedOverflowsBodyAndDocState, msg);
       });
-    }
+    });
 
-    function testChildOfAnElementWithZeroHeightAndWidthAndOverflowHiddenIsNotVisible() {
+    QUnit.test('childOfAnElementWithZeroHeightAndWidthAndOverflowHiddenIsNotVisible', function(assert) {
       var child = document.getElementById('bug5140-1-child');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(child), HIDDEN);
+    });
 
-    function testFarShiftedChildOfAnElementWitOverflowHiddenIsNotVisible() {
+    QUnit.test('farShiftedChildOfAnElementWitOverflowHiddenIsNotVisible', function(assert) {
       var child = document.getElementById('bug5140-2-child');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(child), HIDDEN);
+    });
 
-    function testNotFarShiftedChildOfAnElementWithOverflowHiddenIsVisible() {
+    QUnit.test('notFarShiftedChildOfAnElementWithOverflowHiddenIsVisible', function(assert) {
       var child = document.getElementById('bug5140-3-child');
-      assertEquals(NONE, bot.dom.getOverflowState(child));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(child), NONE);
+    });
 
-    function testFarShiftedGrandchildOfAnElementWitOverflowHiddenIsNotVisible() {
+    QUnit.test('farShiftedGrandchildOfAnElementWitOverflowHiddenIsNotVisible', function(assert) {
       var child = document.getElementById('bug5140-4-grandchild');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(child), HIDDEN);
+    });
 
-    function testFloatingElemHiddenByBlockParent() {
+    QUnit.test('floatingElemHiddenByBlockParent', function(assert) {
       var elem = document.getElementById('floatingInsideBlockParent');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem), HIDDEN);
+    });
 
-    function testFloatingElemNotHiddenByInlineParent() {
+    QUnit.test('floatingElemNotHiddenByInlineParent', function(assert) {
       var elem = document.getElementById('floatingInsideInlineParent');
-      assertEquals(NONE, bot.dom.getOverflowState(elem));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem), NONE);
+    });
 
-    function testNegativePositionInOverflowVisibleParent() {
-      // IE 6 does not support fixed-position elements properly.
+    QUnit.test('negativePositionInOverflowVisibleParent', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support fixed-position elements properly');
         return;
       }
-      // Column 1: position style of the element
-      // Column 2: position style of the element's parent
-      // Column 3: expected overflow state of element
       var positionStylesToOverflowStateTable = [
         ['absolute', 'absolute', NONE  ],
         ['absolute', 'fixed',    NONE  ],
@@ -322,19 +311,16 @@
         parent.appendChild(elem);
         parentContainer.appendChild(parent);
 
-        assertEquals('position: ' + position + '; parent position: ' +
-            parentPosition, expectedState, bot.dom.getOverflowState(elem));
+        assert.strictEqual(bot.dom.getOverflowState(elem), expectedState,
+            'position: ' + position + '; parent position: ' + parentPosition);
       });
-    }
+    });
 
-    function testNegativePositionNotInOverflowVisibleParent() {
-      // IE 6 does not support fixed-position elements properly.
+    QUnit.test('negativePositionNotInOverflowVisibleParent', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support fixed-position elements properly');
         return;
       }
-      // Column 1: position style of the element
-      // Column 2: position style of the element's parent
-      // Column 3: expected overflow state
       var positionStylesToOverflowStateTable = [
         ['absolute', 'absolute', HIDDEN],
         ['absolute', 'fixed',    HIDDEN],
@@ -381,93 +367,93 @@
 
         goog.array.forEach(nonVisibleOverflowStyles, function(parentOverflowStyle) {
           parent.style['overflow'] = parentOverflowStyle;
-          assertEquals('position: ' + position + '; parent position: ' +
-              parentPosition, expectedState, bot.dom.getOverflowState(elem));
+          assert.strictEqual(bot.dom.getOverflowState(elem), expectedState,
+              'position: ' + position + '; parent position: ' + parentPosition);
         });
       });
-    }
+    });
 
-    function testScrollingInAndOutOfView() {
+    QUnit.test('scrollingInAndOutOfView', function(assert) {
       var line1 = document.getElementById('line1');
       var line5 = document.getElementById('line5');
-      assertEquals(NONE, bot.dom.getOverflowState(line1));
-      assertEquals(SCROLL, bot.dom.getOverflowState(line5));
+      assert.strictEqual(bot.dom.getOverflowState(line1), NONE);
+      assert.strictEqual(bot.dom.getOverflowState(line5), SCROLL);
 
       line5.scrollIntoView();
-      assertEquals(SCROLL, bot.dom.getOverflowState(line1));
-      assertEquals(NONE, bot.dom.getOverflowState(line5));
+      assert.strictEqual(bot.dom.getOverflowState(line1), SCROLL);
+      assert.strictEqual(bot.dom.getOverflowState(line5), NONE);
 
       line1.scrollIntoView();
-      assertEquals(NONE, bot.dom.getOverflowState(line1));
-      assertEquals(SCROLL, bot.dom.getOverflowState(line5));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(line1), NONE);
+      assert.strictEqual(bot.dom.getOverflowState(line5), SCROLL);
+    });
 
-    function testInOverflowHiddenByTransform() {
-      // IE versions < 9 do not support CSS transform styles.
+    QUnit.test('inOverflowHiddenByTransform', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+        assert.ok(true, 'Skipping: IE versions < 9 do not support CSS transform styles');
         return;
       }
       var hiddenTransformX = document.getElementById('hidden-transformX');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(hiddenTransformX));
+      assert.strictEqual(bot.dom.getOverflowState(hiddenTransformX), HIDDEN);
       var hiddenTransformY = document.getElementById('hidden-transformY');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(hiddenTransformY));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(hiddenTransformY), HIDDEN);
+    });
 
-    function testOverflowStateOfRelativeCoordinate() {
-      // IE 6 does not support overflow state properly.
+    QUnit.test('overflowStateOfRelativeCoordinate', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support overflow state properly');
         return;
       }
       var elem = document.getElementById('halfHidden');
-      assertEquals(NONE, bot.dom.getOverflowState(elem,
-          new goog.math.Coordinate(1, 1)));
-      assertEquals(HIDDEN, bot.dom.getOverflowState(elem,
-          new goog.math.Coordinate(60, 60)));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem,
+          new goog.math.Coordinate(1, 1)), NONE);
+      assert.strictEqual(bot.dom.getOverflowState(elem,
+          new goog.math.Coordinate(60, 60)), HIDDEN);
+    });
 
-    function testOverflowStateOfRelativeRectangle() {
-      // IE 6 does not support overflow state properly.
+    QUnit.test('overflowStateOfRelativeRectangle', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support overflow state properly');
         return;
       }
       var elem = document.getElementById('halfHidden');
-      assertEquals(NONE, bot.dom.getOverflowState(elem,
-          new goog.math.Rect(25, 25, 50, 50)));
-      assertEquals(HIDDEN, bot.dom.getOverflowState(elem,
-          new goog.math.Coordinate(60, 60, 50, 50)));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem,
+          new goog.math.Rect(25, 25, 50, 50)), NONE);
+      assert.strictEqual(bot.dom.getOverflowState(elem,
+          new goog.math.Coordinate(60, 60, 50, 50)), HIDDEN);
+    });
 
-    function testFixedPositionOffscreenIsHidden() {
-      // IE 6 does not support fixed-position elements properly.
+    QUnit.test('fixedPositionOffscreenIsHidden', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support fixed-position elements properly');
         return;
       }
       var fixedOffscreen = document.getElementById('fixed-offscreen');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(fixedOffscreen));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(fixedOffscreen), HIDDEN);
+    });
 
-    function testChildOfFixedTreatedAsFixed() {
-      // IE 6 does not support fixed-position elements properly.
+    QUnit.test('childOfFixedTreatedAsFixed', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: IE 6 does not support fixed-position elements properly');
         return;
       }
       var fixedParent = document.getElementById('fixed-parent');
-      assertEquals(NONE, bot.dom.getOverflowState(fixedParent));
+      assert.strictEqual(bot.dom.getOverflowState(fixedParent), NONE);
 
       var childOfFixed = document.getElementById('child-of-fixed');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(childOfFixed));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(childOfFixed), HIDDEN);
+    });
 
-    function testElementHiddenByZeroSizedContainer() {
+    QUnit.test('elementHiddenByZeroSizedContainer', function(assert) {
       var elem = document.getElementById('hasZeroSizedContainer');
-      assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem), HIDDEN);
+    });
 
-    function testElementWithHtmlElementFixed() {
+    QUnit.test('elementWithHtmlElementFixed', function(assert) {
       document.documentElement.style.position = 'fixed';
       var elem = document.getElementById('line1');
-      assertEquals(NONE, bot.dom.getOverflowState(elem));
-    }
+      assert.strictEqual(bot.dom.getOverflowState(elem), NONE);
+    });
   </script>
   <style>
     #hidden-transformX {
@@ -487,6 +473,8 @@
   </style>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <div style="overflow:scroll; height:40px">
   <div>scroll down to see element</div>
   <br><br><br><br><br><br><br><br><br>

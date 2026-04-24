@@ -22,7 +22,6 @@ import java.util.Map;
 public class GeolocationPositionError {
 
   public Map<String, Object> toMap() {
-    String type = "positionUnavailable";
-    return Map.of("type", type);
+    return Map.of("type", "positionUnavailable");
   }
 }

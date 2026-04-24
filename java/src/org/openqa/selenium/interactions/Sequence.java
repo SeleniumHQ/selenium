@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A sequence of action objects for a given {@link InputSource} for use with the W3C <a
@@ -31,7 +31,6 @@ import org.jspecify.annotations.NullMarked;
  * Interaction}s, with the first item in each sequence being executed at the same time, then the
  * second, and so on, until all interactions in all sequences have been executed.
  */
-@NullMarked
 public class Sequence implements Encodable {
 
   private final List<Encodable> actions = new LinkedList<>();
@@ -66,12 +65,12 @@ public class Sequence implements Encodable {
   }
 
   @Override
-  public Map<String, Object> encode() {
-    Map<String, Object> toReturn = new HashMap<>(((Encodable) device).encode());
+  public Map<String, @Nullable Object> encode() {
+    Map<String, @Nullable Object> toReturn = new HashMap<>(((Encodable) device).encode());
 
-    List<Map<String, Object>> encodedActions = new LinkedList<>();
+    List<Map<String, @Nullable Object>> encodedActions = new LinkedList<>();
     for (Encodable action : actions) {
-      Map<String, Object> encodedAction = new HashMap<>(action.encode());
+      Map<String, @Nullable Object> encodedAction = new HashMap<>(action.encode());
       encodedActions.add(encodedAction);
     }
     toReturn.put("actions", encodedActions);
@@ -79,7 +78,7 @@ public class Sequence implements Encodable {
     return toReturn;
   }
 
-  public Map<String, Object> toJson() {
+  public Map<String, @Nullable Object> toJson() {
     return encode();
   }
 

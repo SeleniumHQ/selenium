@@ -1,42 +1,13 @@
-// Copyright 2010 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 /**
- * @fileoverview Event Types.
- *
- * @author arv@google.com (Erik Arvidsson)
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 
 goog.provide('goog.events.EventType');
 
+goog.require('goog.events.eventTypeHelpers');
 goog.require('goog.userAgent');
-
-
-/**
- * Returns a prefixed event name for the current browser.
- * @param {string} eventName The name of the event.
- * @return {string} The prefixed event name.
- * @suppress {missingRequire|missingProvide}
- * @private
- */
-goog.events.getVendorPrefixedName_ = function(eventName) {
-  return goog.userAgent.WEBKIT ?
-      'webkit' + eventName :
-      (goog.userAgent.OPERA ? 'o' + eventName.toLowerCase() :
-                              eventName.toLowerCase());
-};
 
 
 /**
@@ -48,6 +19,7 @@ goog.events.EventType = {
   CLICK: 'click',
   RIGHTCLICK: 'rightclick',
   DBLCLICK: 'dblclick',
+  AUXCLICK: 'auxclick',
   MOUSEDOWN: 'mousedown',
   MOUSEUP: 'mouseup',
   MOUSEOVER: 'mouseover',
@@ -55,6 +27,10 @@ goog.events.EventType = {
   MOUSEMOVE: 'mousemove',
   MOUSEENTER: 'mouseenter',
   MOUSELEAVE: 'mouseleave',
+
+  // Non-existent event; will never fire. This exists as a mouse counterpart to
+  // POINTERCANCEL.
+  MOUSECANCEL: 'mousecancel',
 
   // Selection events.
   // https://www.w3.org/TR/selection-api/
@@ -74,16 +50,8 @@ goog.events.EventType = {
   BLUR: 'blur',
   FOCUS: 'focus',
   DEACTIVATE: 'deactivate',  // IE only
-  // NOTE: The following two events are not stable in cross-browser usage.
-  //     WebKit and Opera implement DOMFocusIn/Out.
-  //     IE implements focusin/out.
-  //     Gecko implements neither see bug at
-  //     https://bugzilla.mozilla.org/show_bug.cgi?id=396927.
-  // The DOM Events Level 3 Draft deprecates DOMFocusIn in favor of focusin:
-  //     http://dev.w3.org/2006/webapi/DOM-Level-3-Events/html/DOM3-Events.html
-  // You can use FOCUS in Capture phase until implementations converge.
-  FOCUSIN: goog.userAgent.IE ? 'focusin' : 'DOMFocusIn',
-  FOCUSOUT: goog.userAgent.IE ? 'focusout' : 'DOMFocusOut',
+  FOCUSIN: 'focusin',
+  FOCUSOUT: 'focusout',
 
   // Forms
   CHANGE: 'change',
@@ -114,6 +82,7 @@ goog.events.EventType = {
   BEFOREUNLOAD: 'beforeunload',
   CONSOLEMESSAGE: 'consolemessage',
   CONTEXTMENU: 'contextmenu',
+  DEVICECHANGE: 'devicechange',
   DEVICEMOTION: 'devicemotion',
   DEVICEORIENTATION: 'deviceorientation',
   DOMCONTENTLOADED: 'DOMContentLoaded',
@@ -138,6 +107,7 @@ goog.events.EventType = {
   PAUSE: 'pause',
   PLAY: 'play',
   PLAYING: 'playing',
+  PROGRESS: 'progress',
   RATECHANGE: 'ratechange',
   SEEKED: 'seeked',
   SEEKING: 'seeking',
@@ -201,17 +171,17 @@ goog.events.EventType = {
   CONTROLLERCHANGE: 'controllerchange',
 
   // CSS animation events.
-  /** @suppress {missingRequire} */
-  ANIMATIONSTART: goog.events.getVendorPrefixedName_('AnimationStart'),
-  /** @suppress {missingRequire} */
-  ANIMATIONEND: goog.events.getVendorPrefixedName_('AnimationEnd'),
-  /** @suppress {missingRequire} */
-  ANIMATIONITERATION: goog.events.getVendorPrefixedName_('AnimationIteration'),
+  ANIMATIONSTART:
+      goog.events.eventTypeHelpers.getVendorPrefixedName('AnimationStart'),
+  ANIMATIONEND:
+      goog.events.eventTypeHelpers.getVendorPrefixedName('AnimationEnd'),
+  ANIMATIONITERATION:
+      goog.events.eventTypeHelpers.getVendorPrefixedName('AnimationIteration'),
 
   // CSS transition events. Based on the browser support described at:
   // https://developer.mozilla.org/en/css/css_transitions#Browser_compatibility
-  /** @suppress {missingRequire} */
-  TRANSITIONEND: goog.events.getVendorPrefixedName_('TransitionEnd'),
+  TRANSITIONEND:
+      goog.events.eventTypeHelpers.getVendorPrefixedName('TransitionEnd'),
 
   // W3C Pointer Events
   // http://www.w3.org/TR/pointerevents/
@@ -261,8 +231,15 @@ goog.events.EventType = {
   // implementation tracking.
   BEFOREINPUT: 'beforeinput',
 
+  // Fullscreen API events. See https://fullscreen.spec.whatwg.org/.
+  FULLSCREENCHANGE: 'fullscreenchange',
+  // iOS-only fullscreen events. See
+  // https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/ControllingMediaWithJavaScript/ControllingMediaWithJavaScript.html
+  WEBKITBEGINFULLSCREEN: 'webkitbeginfullscreen',
+  WEBKITENDFULLSCREEN: 'webkitendfullscreen',
+
   // Webview tag events
-  // See http://developer.chrome.com/dev/apps/webview_tag.html
+  // See https://developer.chrome.com/apps/tags/webview
   EXIT: 'exit',
   LOADABORT: 'loadabort',
   LOADCOMMIT: 'loadcommit',
@@ -274,7 +251,7 @@ goog.events.EventType = {
   UNRESPONSIVE: 'unresponsive',
 
   // HTML5 Page Visibility API.  See details at
-  // {@code goog.labs.dom.PageVisibilityMonitor}.
+  // `goog.labs.dom.PageVisibilityMonitor`.
   VISIBILITYCHANGE: 'visibilitychange',
 
   // LocalStorage event.
@@ -291,5 +268,15 @@ goog.events.EventType = {
 
   // Print events.
   BEFOREPRINT: 'beforeprint',
-  AFTERPRINT: 'afterprint'
+  AFTERPRINT: 'afterprint',
+
+  // Web app manifest events.
+  BEFOREINSTALLPROMPT: 'beforeinstallprompt',
+  APPINSTALLED: 'appinstalled',
+
+  // Web Animation API (WAAPI) playback events
+  // https://www.w3.org/TR/web-animations-1/#animation-playback-event-types
+  CANCEL: 'cancel',
+  FINISH: 'finish',
+  REMOVE: 'remove'
 };

@@ -17,9 +17,15 @@
 // under the License.
 // </copyright>
 
-using System;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record NavigationInfo(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : BrowsingContextEventArgs(BiDi, Context), IBaseNavigationInfo;
+public sealed record NavigationInfo(
+    BrowsingContext Context,
+    Navigation? Navigation,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : IBaseNavigationInfo;

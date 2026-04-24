@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static com.google.common.base.Throwables.getRootCause;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -28,7 +30,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
-import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,28 +54,25 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   @NotYetImplemented(value = FIREFOX, reason = "Default to 5s")
   @NotYetImplemented(value = SAFARI, reason = "Default to 5s")
   public void shouldSetAndGetScriptTimeout() {
-    Duration timeout = driver.manage().timeouts().getScriptTimeout();
-    assertThat(timeout).hasMillis(30000);
+    assertThat(driver.manage().timeouts().getScriptTimeout()).hasSeconds(30);
+
     driver.manage().timeouts().scriptTimeout(Duration.ofMillis(3000));
-    Duration timeout2 = driver.manage().timeouts().getScriptTimeout();
-    assertThat(timeout2).hasMillis(3000);
+
+    assertThat(driver.manage().timeouts().getScriptTimeout()).hasSeconds(3);
   }
 
   @Test
   void shouldNotTimeoutIfCallbackInvokedImmediately() {
     driver.get(pages.ajaxyPage);
-    Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
-    assertThat(result).isInstanceOf(Number.class);
-    assertThat(((Number) result).intValue()).isEqualTo(123);
+    Object result = executor.executeAsyncScript("arguments[arguments.length - 1]('123');");
+    assertThat(result).isEqualTo("123");
   }
 
   @Test
   void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
-    assertThat(
-            ((Number) executor.executeAsyncScript("arguments[arguments.length - 1](123);"))
-                .longValue())
-        .isEqualTo(123);
+    assertThat(executor.executeAsyncScript("arguments[arguments.length - 1](123456789012345);"))
+        .isEqualTo(123456789012345L);
     assertThat(executor.executeAsyncScript("arguments[arguments.length - 1]('abc');"))
         .isEqualTo("abc");
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](false);"))
@@ -95,8 +93,7 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1]([]);");
-    assertThat(result).isNotNull().isInstanceOf(List.class);
-    assertThat(((List<?>) result)).isEmpty();
+    assertThat(result).asInstanceOf(LIST).isEmpty();
   }
 
   @Test
@@ -104,8 +101,7 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](new Array());");
-    assertThat(result).isNotNull().isInstanceOf(List.class);
-    assertThat(((List<?>) result)).isEmpty();
+    assertThat(result).asInstanceOf(LIST).isEmpty();
   }
 
   @Test
@@ -114,18 +110,11 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
 
     Object result =
         executor.executeAsyncScript(
-            "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
+            "arguments[arguments.length - 1]([null, 123456789012345, 'abc', true, false]);");
 
-    assertThat(result).isNotNull();
-    assertThat(result).isInstanceOf(List.class);
-
-    Iterator<?> results = ((List<?>) result).iterator();
-    assertThat(results.next()).isNull();
-    assertThat(((Number) results.next()).longValue()).isEqualTo(123);
-    assertThat(results.next()).isEqualTo("abc");
-    assertThat((Boolean) results.next()).isTrue();
-    assertThat((Boolean) results.next()).isFalse();
-    assertThat(results.hasNext()).isFalse();
+    assertThat(result)
+        .asInstanceOf(LIST)
+        .containsExactly(null, 123456789012345L, "abc", true, false);
   }
 
   @Test
@@ -133,8 +122,9 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](document.body);");
-    assertThat(result).isInstanceOf(WebElement.class);
-    assertThat(((WebElement) result).getTagName()).isEqualToIgnoringCase("body");
+    assertThat(result)
+        .asInstanceOf(type(WebElement.class))
+        .satisfies(webElement -> assertThat(webElement.getTagName()).isEqualToIgnoringCase("body"));
   }
 
   @Test
@@ -146,13 +136,21 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
         executor.executeAsyncScript(
             "arguments[arguments.length - 1]([document.body, document.body]);");
     assertThat(result).isNotNull().isInstanceOf(List.class);
-
-    List<?> list = (List<?>) result;
-    assertThat(list).hasSize(2);
-    assertThat(list.get(0)).isInstanceOf(WebElement.class);
-    assertThat(list.get(1)).isInstanceOf(WebElement.class);
-    assertThat(((WebElement) list.get(0)).getTagName()).isEqualToIgnoringCase("body");
-    assertThat(list.get(1)).isEqualTo(list.get(0));
+    assertThat(result)
+        .asInstanceOf(LIST)
+        .hasSize(2)
+        .satisfies(
+            list -> {
+              assertThat(list.get(0))
+                  .asInstanceOf(type(WebElement.class))
+                  .satisfies(
+                      element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
+              assertThat(list.get(1))
+                  .asInstanceOf(type(WebElement.class))
+                  .satisfies(
+                      element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
+              assertThat(list.get(1)).isEqualTo(list.get(0));
+            });
   }
 
   @Test

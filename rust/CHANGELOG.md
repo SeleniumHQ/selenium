@@ -1,3 +1,36 @@
+0.4.43
+======
+
+
+0.4.42
+======
+
+
+0.4.41
+======
+* Fix suppport for webview2 (#15797)
+
+0.4.40
+======
+* fix support for Edge beta versions on Windows (#16806)
+* ignore force download for Safari (#16825)
+* only collect stats on stamped builds (#16826)
+* Replace fs::rename by file::move_file for Grid artifacts (#16911)
+
+0.4.39
+======
+*no changes*
+
+0.4.38
+======
+*no changes*
+
+0.4.37
+======
+
+* Honor full browser version even if major version is installed (#15517)
+* Log browser path also in offline mode (#16215)
+
 0.4.36
 ======
 * Use DEBUG level for WARN traces in offline mode (#15836)

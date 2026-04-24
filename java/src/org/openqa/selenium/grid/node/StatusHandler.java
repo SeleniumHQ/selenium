@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.node;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -39,10 +39,10 @@ class StatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     NodeStatus status = node.getStatus();
 
-    ImmutableMap<String, Object> report =
-        ImmutableMap.of(
+    Map<String, Object> report =
+        Map.of(
             "value",
-            ImmutableMap.of(
+            Map.of(
                 "ready",
                 status.hasCapacity(),
                 "message",

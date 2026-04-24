@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.build;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
@@ -24,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.openqa.selenium.Platform;
@@ -35,7 +33,7 @@ public class Build {
   private final List<String> targets = new ArrayList<>();
 
   public Build of(String... targets) {
-    this.targets.addAll(Arrays.asList(targets));
+    this.targets.addAll(List.of(targets));
     return this;
   }
 
@@ -57,7 +55,7 @@ public class Build {
       executeBuild(builder);
     } catch (Exception e) {
       e.printStackTrace(System.err);
-      fail("Cannot build");
+      throw new AssertionError("Cannot build", e);
     }
   }
 
@@ -83,7 +81,7 @@ public class Build {
     buildWatcher.start();
     int exitValue = process.waitFor();
     if (exitValue != 0) {
-      fail("Unable to build artifacts");
+      throw new AssertionError("Unable to build artifacts");
     }
   }
 

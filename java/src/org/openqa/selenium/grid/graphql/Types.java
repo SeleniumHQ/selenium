@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.jspecify.annotations.Nullable;
 
 class Types {
 
@@ -53,10 +54,6 @@ class Types {
 
               @Override
               public URI parseValue(Object input) throws CoercingParseValueException {
-                if (input == null) {
-                  return null;
-                }
-
                 if (input instanceof URI) {
                   return (URI) input;
                 }
@@ -110,8 +107,9 @@ class Types {
                 throw new CoercingSerializeException("Unable to coerce " + o);
               }
 
+              @Nullable
               @Override
-              public URL parseValue(Object input) throws CoercingParseValueException {
+              public URL parseValue(@Nullable Object input) throws CoercingParseValueException {
                 if (input == null) {
                   return null;
                 }

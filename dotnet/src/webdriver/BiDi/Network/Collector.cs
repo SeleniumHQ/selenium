@@ -17,42 +17,47 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed class Collector : IAsyncDisposable
+[JsonConverter(typeof(Converter))]
+public sealed record Collector : IIdentifiable
 {
-    private readonly BiDi _bidi;
-
-    internal Collector(BiDi bidi, string id)
+    public Collector(IBiDi bidi, string id)
     {
-        _bidi = bidi;
+        ArgumentNullException.ThrowIfNull(bidi);
+        BiDi = bidi;
         Id = id;
     }
 
-    internal string Id { get; }
+    public string Id { get; }
 
-    public async Task RemoveAsync()
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(Collector? other)
     {
-        await _bidi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await RemoveAsync();
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is Collector collectortObj) return collectortObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Collector>
+    {
+        protected override Collector Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }

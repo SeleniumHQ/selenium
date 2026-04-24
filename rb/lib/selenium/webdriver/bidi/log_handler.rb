@@ -20,6 +20,11 @@
 module Selenium
   module WebDriver
     class BiDi
+      # Implements the Log of the WebDriver-BiDi specification
+      # This functionality should be accessed through `driver.script` method
+      #
+      # @api private
+      #
       class LogHandler
         ConsoleLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :stack_trace, :type, :source, :method, :args)
         JavaScriptLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :stack_trace, :type, :source)

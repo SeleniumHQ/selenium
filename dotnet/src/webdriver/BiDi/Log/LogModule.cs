@@ -17,21 +17,71 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using System;
-using OpenQA.Selenium.BiDi.Communication;
+using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Log.LogJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public sealed class LogModule : Module
+internal sealed class LogModule : Module, ILogModule
 {
-    public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
+    private static readonly Event<EntryAddedEventArgs, LogEntry> EntryAddedEvent = new(
+        "log.entryAdded",
+        static (bidi, p) => p switch
+        {
+            ConsoleLogEntry c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
+            JavascriptLogEntry j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
+            GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
+            _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
+        },
+        Default.LogEntry);
+
+    public async Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext.LogEntry).ConfigureAwait(false);
+        return await SubscribeAsync(EntryAddedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext.LogEntry).ConfigureAwait(false);
+        return await SubscribeAsync(EntryAddedEvent, handler, options, cancellationToken).ConfigureAwait(false);
     }
 }
+
+#region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency
+[JsonSerializable(typeof(Script.NumberRemoteValue))]
+[JsonSerializable(typeof(Script.BooleanRemoteValue))]
+[JsonSerializable(typeof(Script.BigIntRemoteValue))]
+[JsonSerializable(typeof(Script.StringRemoteValue))]
+[JsonSerializable(typeof(Script.NullRemoteValue))]
+[JsonSerializable(typeof(Script.UndefinedRemoteValue))]
+[JsonSerializable(typeof(Script.SymbolRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ObjectRemoteValue))]
+[JsonSerializable(typeof(Script.FunctionRemoteValue))]
+[JsonSerializable(typeof(Script.RegExpRemoteValue))]
+[JsonSerializable(typeof(Script.DateRemoteValue))]
+[JsonSerializable(typeof(Script.MapRemoteValue))]
+[JsonSerializable(typeof(Script.SetRemoteValue))]
+[JsonSerializable(typeof(Script.WeakMapRemoteValue))]
+[JsonSerializable(typeof(Script.WeakSetRemoteValue))]
+[JsonSerializable(typeof(Script.GeneratorRemoteValue))]
+[JsonSerializable(typeof(Script.ErrorRemoteValue))]
+[JsonSerializable(typeof(Script.ProxyRemoteValue))]
+[JsonSerializable(typeof(Script.PromiseRemoteValue))]
+[JsonSerializable(typeof(Script.TypedArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayBufferRemoteValue))]
+[JsonSerializable(typeof(Script.NodeListRemoteValue))]
+[JsonSerializable(typeof(Script.HtmlCollectionRemoteValue))]
+[JsonSerializable(typeof(Script.NodeRemoteValue))]
+[JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
+#endregion
+
+[JsonSerializable(typeof(LogEntry))]
+// https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+internal partial class LogJsonSerializerContext : JsonSerializerContext;

@@ -16,6 +16,7 @@ java_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 

@@ -17,12 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -37,14 +34,7 @@ public sealed class RelativeBy : By
 
     private static string GetWrappedAtom()
     {
-        string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream("find-elements.js", "find-elements.js"))
-        {
-            using (StreamReader atomReader = new StreamReader(atomStream))
-            {
-                atom = atomReader.ReadToEnd();
-            }
-        }
+        string atom = ResourceUtilities.FindElementsAtom;
 
         return string.Format(CultureInfo.InvariantCulture, "/* findElements */return ({0}).apply(null, arguments);", atom);
     }

@@ -1,22 +1,13 @@
-// Copyright 2015 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
- * @fileoverview Defines the goog.dom.InputType enum.  This enumerates
- * all input element types (for INPUT, BUTTON, SELECT and TEXTAREA
- * elements) in either the the W3C HTML 4.01 index of elements or the
- * HTML5 draft specification.
+ * @fileoverview Defines the goog.dom.InputType enum.  This enumerates all
+ * input element types (for INPUT, BUTTON, SELECT and TEXTAREA elements) in
+ * either the W3C HTML 4.01 index of elements or the HTML5 draft specification.
  *
  * References:
  * http://www.w3.org/TR/html401/sgml/dtd.html#InputType
@@ -25,8 +16,6 @@
  * https://html.spec.whatwg.org/multipage/forms.html#dom-button-type
  * https://html.spec.whatwg.org/multipage/forms.html#dom-select-type
  * https://html.spec.whatwg.org/multipage/forms.html#dom-textarea-type
- *
- * @author mpn@google.com (Michal Nazarewicz)
  */
 goog.provide('goog.dom.InputType');
 

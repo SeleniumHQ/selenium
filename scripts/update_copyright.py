@@ -29,14 +29,12 @@ under the License."""
 
     def update(self, files):
         for file in files:
-            with open(file, "r", encoding="utf-8-sig") as f:
+            with open(file, encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
             index = -1
             for i, line in enumerate(lines):
-                if line.startswith(
-                    self._comment_characters
-                ) or self.valid_copyright_notice_line(line, index, file):
+                if line.startswith(self._comment_characters) or self.valid_copyright_notice_line(line, index, file):
                     index += 1
                 else:
                     break
@@ -57,11 +55,7 @@ under the License."""
         return "".join(self.copyright_notice_lines(file))
 
     def copyright_notice_lines(self, file):
-        return (
-            self.dotnet(file)
-            if file.endswith("cs")
-            else self._prefix + self.commented_notice_lines
-        )
+        return self.dotnet(file) if file.endswith("cs") else self._prefix + self.commented_notice_lines
 
     def dotnet(self, file):
         file_name = os.path.basename(file)
@@ -71,19 +65,24 @@ under the License."""
 
     @property
     def commented_notice_lines(self):
-        return [
-            f"{self._comment_characters} {line}".rstrip() + "\n"
-            for line in self.NOTICE.split("\n")
-        ]
+        return [f"{self._comment_characters} {line}".rstrip() + "\n" for line in self.NOTICE.split("\n")]
 
     def write_update_notice(self, file, lines):
+        # Build new content
+        new_content = self.copyright_notice(file) + "\n"
+        if lines and lines[0] != "\n":
+            new_content += "\n"
+        new_content += "".join(line.rstrip() + "\n" for line in lines)
+
+        # Only write if different
+        with open(file, encoding="utf-8-sig") as f:
+            old_content = f.read()
+        if new_content == old_content:
+            return
+
         print(f"Adding notice to {file}")
         with open(file, "w") as f:
-            f.write(self.copyright_notice(file) + "\n")
-            if lines and lines[0] != "\n":
-                f.write("\n")
-            trimmed_lines = [line.rstrip() + "\n" for line in lines]
-            f.writelines(trimmed_lines)
+            f.write(new_content)
 
 
 ROOT = Path(os.path.realpath(__file__)).parent.parent
@@ -103,7 +102,6 @@ JS_EXCLUSIONS = [
 ]
 
 PY_EXCLUSIONS = [
-    f"{ROOT}/py/selenium/webdriver/common/bidi/cdp.py",
     f"{ROOT}/py/generate.py",
     f"{ROOT}/py/selenium/webdriver/common/devtools/**/*",
     f"{ROOT}/py/venv/**/*",

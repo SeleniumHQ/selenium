@@ -23,6 +23,7 @@ import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -191,7 +192,7 @@ class WindowSwitchingTest extends JupiterTestBase {
 
     driver.switchTo().window("result");
 
-    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
+    wait.until(visibilityOfElementLocated(By.id("close"))).click();
 
     if (isIE) {
       Alert alert = wait.until(alertIsPresent());

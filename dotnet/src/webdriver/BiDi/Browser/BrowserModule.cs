@@ -17,61 +17,80 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Browser.BrowserJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class BrowserModule : Module
+internal sealed class BrowserModule : Module, IBrowserModule
 {
-    public async Task<CloseResult> CloseAsync(CloseOptions? options = null)
+    private static readonly Command<Parameters, CloseResult> CloseCommand = new(
+        "browser.close", Default.Parameters, Default.CloseResult);
+
+    private static readonly Command<CreateUserContextParameters, CreateUserContextResult> CreateUserContextCommand = new(
+        "browser.createUserContext", Default.CreateUserContextParameters, Default.CreateUserContextResult);
+
+    private static readonly Command<Parameters, GetUserContextsResult> GetUserContextsCommand = new(
+        "browser.getUserContexts", Default.Parameters, Default.GetUserContextsResult);
+
+    private static readonly Command<RemoveUserContextParameters, RemoveUserContextResult> RemoveUserContextCommand = new(
+        "browser.removeUserContext", Default.RemoveUserContextParameters, Default.RemoveUserContextResult);
+
+    private static readonly Command<Parameters, GetClientWindowsResult> GetClientWindowsCommand = new(
+        "browser.getClientWindows", Default.Parameters, Default.GetClientWindowsResult);
+
+    private static readonly Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult> SetDownloadBehaviorCommand = new(
+        "browser.setDownloadBehavior", Default.SetDownloadBehaviorParameters, Default.SetDownloadBehaviorResult);
+
+    public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.ExecuteCommandAsync(new CloseCommand(), options, JsonContext.Browser_CloseCommand, JsonContext.Browser_CloseResult).ConfigureAwait(false);
+        return await ExecuteAsync(CloseCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null)
+    public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
-        return await Broker.ExecuteCommandAsync(new CreateUserContextCommand(@params), options, JsonContext.CreateUserContextCommand, JsonContext.CreateUserContextResult).ConfigureAwait(false);
+        return await ExecuteAsync(CreateUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null)
+    public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.ExecuteCommandAsync(new GetUserContextsCommand(), options, JsonContext.GetUserContextsCommand, JsonContext.GetUserContextsResult).ConfigureAwait(false);
+        return await ExecuteAsync(GetUserContextsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)
+    public async Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveUserContextParameters(userContext);
 
-        return await Broker.ExecuteCommandAsync(new RemoveUserContextCommand(@params), options, JsonContext.RemoveUserContextCommand, JsonContext.RemoveUserContextResult).ConfigureAwait(false);
+        return await ExecuteAsync(RemoveUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null)
+    public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.ExecuteCommandAsync(new(), options, JsonContext.GetClientWindowsCommand, JsonContext.GetClientWindowsResult
-            ).ConfigureAwait(false);
+        return await ExecuteAsync(GetClientWindowsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null)
+    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAsync(DownloadBehavior? downloadBehavior, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
+        var @params = new SetDownloadBehaviorParameters(downloadBehavior, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult).ConfigureAwait(false);
-    }
-
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null)
-    {
-        var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
-
-        return await Broker.ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult).ConfigureAwait(false);
-    }
-
-    public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null)
-    {
-        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
-
-        return await Broker.ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, JsonContext.SetDownloadBehaviorCommand, JsonContext.SetDownloadBehaviorResult).ConfigureAwait(false);
+        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
+
+[JsonSerializable(typeof(Parameters))]
+[JsonSerializable(typeof(CloseResult))]
+[JsonSerializable(typeof(CreateUserContextParameters))]
+[JsonSerializable(typeof(CreateUserContextResult))]
+[JsonSerializable(typeof(GetUserContextsResult))]
+[JsonSerializable(typeof(RemoveUserContextParameters))]
+[JsonSerializable(typeof(RemoveUserContextResult))]
+[JsonSerializable(typeof(GetClientWindowsResult))]
+[JsonSerializable(typeof(SetDownloadBehaviorParameters))]
+[JsonSerializable(typeof(SetDownloadBehaviorResult))]
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+internal partial class BrowserJsonSerializerContext : JsonSerializerContext;

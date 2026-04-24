@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "nuget_pack")
+load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -11,7 +11,11 @@ load(
 )
 
 exports_files([
-    "WebDriver.csproj",
+    "Properties/ArgumentNullExceptionExtensions.cs",
+    "Properties/CallerArgumentExpressionAttribute.cs",
+    "Properties/NullableAttributes.cs",
+    "Properties/StringSyntaxAttribute.cs",
+    "Properties/StringSyntaxConstants.cs",
 ])
 
 generated_assembly_info(
@@ -25,26 +29,60 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
+generated_resource_utilities(
+    name = "resource-utilities",
+    out = "ResourceUtilities.g.cs",
+    resources = {
+        "//javascript/atoms/fragments:find-elements.js": "FindElementsAtom",
+        "//javascript/atoms/fragments:is-displayed.js": "IsDisplayedAtom",
+        "//javascript/cdp-support:mutation-listener.js": "MutationListenerAtom",
+        "//javascript/webdriver/atoms:get-attribute.js": "GetAttributeAtom",
+        "//third_party/js/selenium:webdriver_json": "WebDriverPrefsJson",
+    },
+)
+
+csharp_library(
+    name = "webdriver-net462",
+    srcs = [
+        ":assembly-info",
+        ":resource-utilities",
+    ] + glob([
+        "**/*.cs",
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
+    out = "WebDriver",
+    langversion = "14.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net462",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
+        nuget_package("System.Threading.Channels"),
+        nuget_package("System.ValueTuple"),
+    ],
+)
+
 csharp_library(
     name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    internals_visible_to = [
-        "WebDriver.Common.Tests",
-    ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -52,13 +90,15 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
-        framework("nuget", "System.Threading.Tasks.Extensions"),
-        framework("nuget", "System.Memory"),
-        framework("nuget", "System.Runtime.CompilerServices.Unsafe"),
-        framework("nuget", "System.Text.Encodings.Web"),
-        framework("nuget", "System.Text.Json"),
+        nuget_package("NETStandard.Library"),
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
     ],
 )
 
@@ -66,32 +106,54 @@ csharp_library(
     name = "webdriver-net8.0",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
     ],
-    internals_visible_to = [
-        "WebDriver.Common.Tests",
-    ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "net8.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
+    deps = [],
+)
+
+csharp_library(
+    name = "webdriver-net462-strongnamed",
+    srcs = [
+        ":assembly-info",
+        ":resource-utilities",
+    ] + glob([
+        "**/*.cs",
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    keyfile = "//dotnet:Selenium.snk",
+    langversion = "14.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net462",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
+        nuget_package("System.ValueTuple"),
     ],
 )
 
@@ -99,20 +161,15 @@ csharp_library(
     name = "webdriver-netstandard2.0-strongnamed",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -120,13 +177,15 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
-        framework("nuget", "System.Threading.Tasks.Extensions"),
-        framework("nuget", "System.Memory"),
-        framework("nuget", "System.Runtime.CompilerServices.Unsafe"),
-        framework("nuget", "System.Text.Encodings.Web"),
-        framework("nuget", "System.Text.Json"),
+        nuget_package("NETStandard.Library"),
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Channels"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
     ],
 )
 
@@ -134,31 +193,25 @@ csharp_library(
     name = "webdriver-net8.0-strongnamed",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
-    ]) + devtools_version_targets(),
+    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     defines = [
         "NET8_0_OR_GREATER",
     ],
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "net8.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
-    ],
+    deps = [],
 )
 
 copy_file(
@@ -168,36 +221,36 @@ copy_file(
 )
 
 copy_file(
-    name = "assets-nuget-build-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.targets",
-    out = "Selenium.WebDriver.targets",
+    name = "assets-nuget-build-props",
+    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.props",
+    out = "Selenium.WebDriver.props",
 )
 
 copy_file(
-    name = "assets-nuget-buildtransitive-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.targets",
-    out = "transitiveSelenium.WebDriver.targets",
+    name = "assets-nuget-buildtransitive-props",
+    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.props",
+    out = "transitiveSelenium.WebDriver.props",
 )
 
 copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",
     out = "manager/linux/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
-    visibility = ["//dotnet/test/common:__pkg__"],
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
 nuget_pack(
@@ -208,11 +261,12 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",
     },
     id = "Selenium.WebDriver",
     libs = {
+        ":webdriver-net462": "WebDriver",
         ":webdriver-net8.0": "WebDriver",
         ":webdriver-netstandard2.0": "WebDriver",
     },
@@ -234,19 +288,16 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-targets": "build/Selenium.WebDriver.StrongNamed.targets",
-        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-build-props": "build/Selenium.WebDriver.StrongNamed.props",
+        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.props",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
+        ":webdriver-net462-strongnamed": "WebDriver.StrongNamed",
         ":webdriver-net8.0-strongnamed": "WebDriver.StrongNamed",
         ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "Selenium.WebDriver.StrongNamed.nuspec",
-    property_group_vars = {
-        "BaseImagePath": "images",
-        "BaseSeleniumManagerPath": "manager",
-    },
     tags = [
         "block-network",
     ],

@@ -17,42 +17,71 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using static OpenQA.Selenium.BiDi.Session.SessionJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule : Module
+internal sealed class SessionModule : Module, ISessionModule
 {
-    public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
+    private static readonly Command<Parameters, StatusResult> StatusCommand = new(
+        "session.status", Default.Parameters, Default.StatusResult);
+
+    private static readonly Command<NewParameters, NewResult> NewCommand = new(
+        "session.new", Default.NewParameters, Default.NewResult);
+
+    private static readonly Command<Parameters, EndResult> EndCommand = new(
+        "session.end", Default.Parameters, Default.EndResult);
+
+    private static readonly Command<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
+        "session.subscribe", Default.SubscribeParameters, Default.SubscribeResult);
+
+    private static readonly Command<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
+        "session.unsubscribe", Default.UnsubscribeByIdParameters, Default.UnsubscribeResult);
+
+    public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, JsonContext.StatusCommand, JsonContext.StatusResult).ConfigureAwait(false);
+        return await ExecuteAsync(StatusCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
+    public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync(new(@params), options, JsonContext.SubscribeCommand, JsonContext.SubscribeResult).ConfigureAwait(false);
+        return await ExecuteAsync(SubscribeCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
+    public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, JsonContext.UnsubscribeByIdCommand, JsonContext.UnsubscribeResult).ConfigureAwait(false);
+        return await ExecuteAsync(UnsubscribeByIdCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
+    public async Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new NewParameters(capabilitiesRequest);
+        var @params = new NewParameters(capabilities);
 
-        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, JsonContext.NewCommand, JsonContext.NewResult).ConfigureAwait(false);
+        return await ExecuteAsync(NewCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<EndResult> EndAsync(EndOptions? options = null)
+    public async Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await Broker.ExecuteCommandAsync(new EndCommand(), options, JsonContext.EndCommand, JsonContext.EndResult).ConfigureAwait(false);
+        return await ExecuteAsync(EndCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
     }
 }
+
+[JsonSerializable(typeof(Parameters))]
+[JsonSerializable(typeof(StatusResult))]
+[JsonSerializable(typeof(NewParameters))]
+[JsonSerializable(typeof(NewResult))]
+[JsonSerializable(typeof(EndResult))]
+[JsonSerializable(typeof(SubscribeParameters))]
+[JsonSerializable(typeof(SubscribeResult))]
+[JsonSerializable(typeof(UnsubscribeByIdParameters))]
+[JsonSerializable(typeof(UnsubscribeResult))]
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+internal partial class SessionJsonSerializerContext : JsonSerializerContext;

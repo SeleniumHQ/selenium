@@ -12,6 +12,9 @@ on:
   workflow_dispatch:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   grid-ui-tests:
     runs-on: ubuntu-latest
@@ -19,8 +22,6 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

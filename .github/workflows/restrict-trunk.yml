@@ -1,0 +1,86 @@
+name: Manage Trunk Restrictions
+
+permissions: {}
+
+concurrency:
+  group: manage-trunk-restrictions
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+    inputs:
+      restrict:
+        description: 'Restrict trunk branch'
+        required: true
+        type: boolean
+  workflow_call:
+    inputs:
+      restrict:
+        description: 'Restrict trunk branch'
+        required: true
+        type: boolean
+      message:
+        description: 'Slack message override (optional)'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+
+jobs:
+  get-approval:
+    name: Get Approval
+    if: inputs.restrict || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/get-approval.yml
+    with:
+      title: ${{ inputs.restrict && 'Trunk branch locking' || 'Trunk branch unlocking' }}
+      message: ${{ inputs.restrict && 'Approval is required to begin release process.' || 'Approval is required to unlock trunk.' }}
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  manage-trunk:
+    name: Manage Trunk Branch
+    needs: [get-approval]
+    runs-on: ubuntu-latest
+    if: always() && (needs.get-approval.result == 'success' || (!inputs.restrict && github.event_name != 'workflow_dispatch'))
+    strategy:
+      matrix:
+        ruleset_id:
+          - 11911909  # Release In Progress Access (restrict updates to trunk to release managers)
+          - 11912022  # Release In Progress Flow (requires branches to be up to date before merging)
+    env:
+      TRUNK_RESTRICTED: ${{ inputs.restrict }}
+    steps:
+      - name: Update ruleset enforcement
+        uses: octokit/request-action@v2.4.0
+        with:
+          route: PUT /repos/{owner}/{repo}/rulesets/{ruleset_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          ruleset_id: ${{ matrix.ruleset_id }}
+          enforcement: ${{ env.TRUNK_RESTRICTED == 'true' && 'active' || 'disabled' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  notify:
+    name: Send Notification
+    needs: [manage-trunk]
+    if: always() && needs.manage-trunk.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      TRUNK_RESTRICTED: ${{ inputs.restrict }}
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ${{ env.TRUNK_RESTRICTED == 'true' && ':lock:' || ':unlock:' }}
+          SLACK_COLOR: ${{ env.TRUNK_RESTRICTED == 'true' && 'danger' || 'good' }}
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: ${{ env.TRUNK_RESTRICTED == 'true' && 'Trunk locked' || 'Trunk unlocked' }}
+          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (env.TRUNK_RESTRICTED == 'true' && 'Trunk has been locked.' || 'Trunk has been unlocked.') }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

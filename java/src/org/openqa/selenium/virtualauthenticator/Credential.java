@@ -23,7 +23,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
@@ -33,12 +32,11 @@ import org.openqa.selenium.internal.Require;
  * @see <a
  *     href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
-@NullMarked
 public class Credential {
 
   private final byte[] id;
   private final boolean isResidentCredential;
-  private final String rpId;
+  private final @Nullable String rpId;
   private final PKCS8EncodedKeySpec privateKey;
   private final byte @Nullable [] userHandle;
   private final int signCount;
@@ -83,7 +81,7 @@ public class Credential {
   private Credential(
       byte[] id,
       boolean isResidentCredential,
-      String rpId,
+      @Nullable String rpId,
       PKCS8EncodedKeySpec privateKey,
       byte @Nullable [] userHandle,
       int signCount) {
@@ -103,7 +101,7 @@ public class Credential {
     return isResidentCredential;
   }
 
-  public String getRpId() {
+  public @Nullable String getRpId() {
     return rpId;
   }
 
@@ -119,9 +117,9 @@ public class Credential {
     return signCount;
   }
 
-  public Map<String, Object> toMap() {
+  public Map<String, @Nullable Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
-    Map<String, Object> map = new HashMap<>();
+    Map<String, @Nullable Object> map = new HashMap<>();
     map.put("credentialId", encoder.encodeToString(id));
     map.put("isResidentCredential", isResidentCredential);
     map.put("rpId", rpId);

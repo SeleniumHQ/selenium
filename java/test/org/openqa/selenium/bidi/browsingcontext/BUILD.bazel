@@ -1,19 +1,16 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
+load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = glob(["*Test.java"]),
-    browsers = [
-        "chrome",
-        "edge",
-        "firefox",
-    ],
+    browsers = BIDI_BROWSERS,
     tags = [
         "selenium-remote",
     ],
     deps = [
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/bidi",
         "//java/src/org/openqa/selenium/bidi/browsingcontext",
         "//java/src/org/openqa/selenium/bidi/log",
@@ -32,5 +29,6 @@ java_selenium_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

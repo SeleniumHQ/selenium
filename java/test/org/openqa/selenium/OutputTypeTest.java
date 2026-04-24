@@ -45,7 +45,7 @@ class OutputTypeTest {
   @Test
   void testFiles() {
     File tmpFile = OutputType.FILE.convertFromBase64Png(TEST_BASE64);
-    assertThat(tmpFile.exists()).isTrue();
+    assertThat(tmpFile).exists();
     assertThat(tmpFile.length()).isEqualTo(TEST_BYTES.length);
     assertThat(tmpFile.delete()).isTrue();
   }

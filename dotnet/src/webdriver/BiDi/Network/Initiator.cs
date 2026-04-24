@@ -17,20 +17,20 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record Initiator(InitiatorType Type)
 {
-    public long? ColumnNumber { get; set; }
+    public long? ColumnNumber { get; init; }
 
-    public long? LineNumber { get; set; }
+    public long? LineNumber { get; init; }
 
-    public Script.StackTrace? StackTrace { get; set; }
+    public Script.StackTrace? StackTrace { get; init; }
 
-    public Request? Request { get; set; }
+    public Request? Request { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<InitiatorType>))]

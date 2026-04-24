@@ -44,6 +44,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -141,7 +142,7 @@ class LocalDistributorTest {
 
     // Check the size
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
 
     // Check a couple attributes
     NodeStatus distributorNode = nodes.iterator().next();
@@ -182,7 +183,7 @@ class LocalDistributorTest {
     // Check the size
     DistributorStatus statusBefore = distributor.getStatus();
     final Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
 
     // Recheck the status--should be zero
     distributor.remove(localNode.getId());
@@ -223,7 +224,7 @@ class LocalDistributorTest {
 
     // Should only be one node after dupe check
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
   }
 
   @Test
@@ -249,7 +250,7 @@ class LocalDistributorTest {
       @Override
       public HttpResponse execute(HttpRequest req) {
         Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
-        assertThat(id).isEqualTo(Optional.of(getId()));
+        assertThat(id).contains(getId());
         return new HttpResponse();
       }
     }
@@ -293,7 +294,7 @@ class LocalDistributorTest {
             Map.of(),
             Map.of());
 
-    List<Callable<SessionId>> callables = new ArrayList<>();
+    List<Callable<@Nullable SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(
           () -> {
@@ -353,7 +354,7 @@ class LocalDistributorTest {
     // Check the size - there should be one node
     DistributorStatus statusBefore = distributor.getStatus();
     Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
     NodeStatus nodeBefore = nodesBefore.iterator().next();
     assertThat(nodeBefore.getAvailability()).isNotEqualTo(DRAINING);
 
@@ -482,7 +483,7 @@ class LocalDistributorTest {
           try {
             f.get();
           } catch (InterruptedException e) {
-            fail("Interrupted");
+            fail(e.toString(), e);
           } catch (ExecutionException e) {
             throw new RuntimeException(e);
           }

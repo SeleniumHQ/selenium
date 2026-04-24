@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.locators;
 
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
@@ -236,7 +237,7 @@ public class RelativeLocator {
       @SuppressWarnings("unchecked")
       List<WebElement> elements =
           (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
-      return elements;
+      return requireNonNull(elements);
     }
 
     private RelativeBy simpleDirection(String direction, Object locator) {
@@ -288,6 +289,7 @@ public class RelativeLocator {
     return Map.of((String) raw.get("using"), raw.get("value"));
   }
 
+  @SuppressWarnings("CheckReturnValue")
   private static void assertLocatorCanBeSerialized(Object locator) {
     Require.nonNull("Locator", locator);
 

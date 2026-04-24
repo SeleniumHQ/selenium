@@ -60,6 +60,7 @@ public class NewSessionResponse {
     return unmodifiableMap(toReturn);
   }
 
+  @SuppressWarnings({"unused", "DataFlowIssue"})
   private static NewSessionResponse fromJson(JsonInput input) {
     RequestId requestId = null;
     Session session = null;

@@ -16,12 +16,12 @@
 # under the License.
 
 import json
-from typing import Any, Union
+from typing import Any
 
 
 def dump_json(json_struct: Any) -> str:
     return json.dumps(json_struct)
 
 
-def load_json(s: Union[str, bytes]) -> Any:
+def load_json(s: str | bytes) -> Any:
     return json.loads(s)

@@ -22,7 +22,6 @@ import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.ImmutableMap;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import java.io.File;
@@ -31,8 +30,10 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -56,8 +57,8 @@ public class NettyAppServer implements AppServer {
   private static final Config sslConfig =
       new MapConfig(singletonMap("server", singletonMap("https-self-signed", true)));
   private static final Logger LOG = Logger.getLogger(NettyAppServer.class.getName());
-  private Server<?> server;
-  private Server<?> secure;
+  private @Nullable Server<?> server;
+  private @Nullable Server<?> secure;
   private final RetryPolicy<Object> retryPolicy =
       RetryPolicy.builder()
           .withMaxAttempts(5)
@@ -165,7 +166,9 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public void stop() {
-    server.stop();
+    if (server != null) {
+      server.stop();
+    }
     if (secure != null) {
       secure.stop();
     }
@@ -187,6 +190,10 @@ public class NettyAppServer implements AppServer {
       throw new IllegalStateException("Server not configured to return HTTPS url");
     }
     return createUrl(secure, "https", getHostName(), relativeUrl);
+  }
+
+  public boolean isSecure() {
+    return secure != null;
   }
 
   @Override
@@ -214,7 +221,7 @@ public class NettyAppServer implements AppServer {
         HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")))) {
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8);
-      request.setContent(Contents.asJson(ImmutableMap.of("content", page.toString())));
+      request.setContent(Contents.asJson(Map.of("content", page.toString())));
       HttpResponse response = client.execute(request);
       return string(response);
     } catch (IOException ex) {
@@ -227,6 +234,7 @@ public class NettyAppServer implements AppServer {
     return AppServer.detectHostname();
   }
 
+  @Nullable
   @Override
   public String getAlternateHostName() {
     return AppServer.detectAlternateHostname();

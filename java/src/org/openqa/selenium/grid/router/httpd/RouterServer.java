@@ -29,19 +29,22 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
@@ -68,6 +71,8 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.HttpSessionId;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -94,8 +99,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(
-        DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -110,7 +114,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   protected Config getDefaultConfig() {
-    return new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)));
+    return new MapConfig(Map.of("server", Map.of("port", 4444)));
   }
 
   @Override
@@ -185,7 +189,29 @@ public class RouterServer extends TemplateGridServerCommand {
     // access to it.
     Routable routeWithLiveness = Route.combine(route, get("/readyz").to(() -> readinessCheck));
 
-    return new Handlers(routeWithLiveness, new ProxyWebsocketsIntoGrid(clientFactory, sessions)) {
+    // Resolve a request URI to the Node URI for direct TCP tunnelling of WebSocket connections.
+    // Falls back to ProxyWebsocketsIntoGrid (the websocketHandler) when the session is not found.
+    // Passing null disables the tunnel entirely (--tcp-tunnel false), forcing all WebSocket traffic
+    // through ProxyWebsocketsIntoGrid — useful for benchmarking or restricted network topologies.
+    Function<String, Optional<URI>> tcpTunnelResolver =
+        routerOptions.tcpTunnel()
+            ? uri ->
+                HttpSessionId.getSessionId(uri)
+                    .map(SessionId::new)
+                    .flatMap(
+                        id -> {
+                          try {
+                            return Optional.of(sessions.getUri(id));
+                          } catch (NoSuchSessionException e) {
+                            return Optional.empty();
+                          }
+                        })
+            : null;
+
+    return new Handlers(
+        routeWithLiveness,
+        new ProxyWebsocketsIntoGrid(clientFactory, sessions),
+        tcpTunnelResolver) {
       @Override
       public void close() {
         router.close();

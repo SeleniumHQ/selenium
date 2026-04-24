@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class MergedResource implements Resource {
@@ -31,7 +32,7 @@ public class MergedResource implements Resource {
     this(base, null);
   }
 
-  private MergedResource(Resource base, Resource next) {
+  private MergedResource(Resource base, @Nullable Resource next) {
     this.base = Require.nonNull("Base resource", base);
     this.next = Optional.ofNullable(next);
   }
@@ -52,7 +53,7 @@ public class MergedResource implements Resource {
       return resource;
     }
 
-    if (!next.isPresent()) {
+    if (next.isEmpty()) {
       return Optional.empty();
     }
 
@@ -66,10 +67,9 @@ public class MergedResource implements Resource {
 
   @Override
   public Set<Resource> list() {
-    ImmutableSet.Builder<Resource> resources = ImmutableSet.builder();
-    resources.addAll(base.list());
+    Set<Resource> resources = new HashSet<>(base.list());
     next.ifPresent(res -> resources.addAll(res.list()));
-    return resources.build();
+    return Set.copyOf(resources);
   }
 
   @Override
@@ -79,7 +79,7 @@ public class MergedResource implements Resource {
       return data;
     }
 
-    if (!next.isPresent()) {
+    if (next.isEmpty()) {
       return Optional.empty();
     }
 

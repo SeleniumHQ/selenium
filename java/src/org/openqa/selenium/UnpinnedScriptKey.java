@@ -23,13 +23,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import org.jspecify.annotations.Nullable;
 
 public class UnpinnedScriptKey extends ScriptKey {
 
   private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts =
       new WeakHashMap<>();
   private final String script;
-  private String scriptId;
+  private @Nullable String scriptId;
   private final String scriptHandle;
 
   static UnpinnedScriptKey pin(JavascriptExecutor executor, String script) {
@@ -61,11 +62,11 @@ public class UnpinnedScriptKey extends ScriptKey {
     this.script = script;
   }
 
-  public void setScriptId(String id) {
+  public void setScriptId(@Nullable String id) {
     this.scriptId = id;
   }
 
-  public String getScriptId() {
+  public @Nullable String getScriptId() {
     return this.scriptId;
   }
 
@@ -91,7 +92,7 @@ public class UnpinnedScriptKey extends ScriptKey {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
@@ -110,5 +111,18 @@ public class UnpinnedScriptKey extends ScriptKey {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), script);
+  }
+
+  @Override
+  public String toString() {
+    // Avoid dumping raw JavaScript into logs: in UnpinnedScriptKey the identifier is the script.
+    return "UnpinnedScriptKey{"
+        + "scriptHash="
+        + script.hashCode()
+        + ", scriptId="
+        + Objects.toString(scriptId, "unset")
+        + ", length="
+        + script.length()
+        + "}";
   }
 }

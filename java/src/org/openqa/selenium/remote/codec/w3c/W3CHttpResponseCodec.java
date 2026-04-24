@@ -21,16 +21,17 @@ import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Objects.requireNonNullElse;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
 
+import com.google.common.net.MediaType;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
@@ -39,7 +40,6 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
-import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 /**
@@ -73,13 +73,17 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String content = string(encodedResponse).trim();
-    LOG.log(
-        Level.FINER,
-        "Decoding response. Response code was: {0} and content: {1}",
-        new Object[] {encodedResponse.getStatus(), content});
-    String contentType =
-        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
+    if (LOG.isLoggable(Level.FINER)) {
+      LOG.log(
+          Level.FINER,
+          "Decoding response (status was: {0}, content type: {1}, content length: {2})",
+          new @Nullable Object[] {
+            encodedResponse.getStatus(),
+            encodedResponse.getContentType(),
+            encodedResponse.getContentLength()
+          });
+    }
+    String contentType = requireNonNullElse(encodedResponse.getContentType(), "");
 
     Response response = new Response();
 
@@ -88,6 +92,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     // text"}
     if (!encodedResponse.isSuccessful()) {
       LOG.fine("Processing an error");
+      String content = encodedResponse.contentAsString().trim();
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setState("unknown command");
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
@@ -143,6 +148,13 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
     response.setState("success");
     response.setStatus(ErrorCodes.SUCCESS);
+
+    if (contentType.startsWith(MediaType.OCTET_STREAM.toString())) {
+      response.setValue(encodedResponse.getContent());
+      return response;
+    }
+
+    String content = encodedResponse.contentAsString().trim();
     if (!content.isEmpty()) {
       if (contentType.startsWith("application/json")) {
         Map<String, Object> parsed = json.toType(content, MAP_TYPE);
@@ -156,11 +168,12 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       }
     }
 
-    if (response.getValue() instanceof String) {
+    Object value = response.getValue();
+    if (value instanceof String) {
       // We normalise to \n because Java will translate this to \r\n
       // if this is suitable on our platform, and if we have \r\n, java will
       // turn this into \r\r\n, which would be Bad!
-      response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
+      response.setValue(((String) value).replace("\r\n", "\n"));
     }
 
     return response;

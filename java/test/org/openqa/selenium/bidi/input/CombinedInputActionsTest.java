@@ -18,15 +18,20 @@
 package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +44,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.bidi.module.Script;
@@ -318,14 +322,9 @@ class CombinedInputActionsTest extends JupiterTestBase {
       y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
     }
 
-    assertThat(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y)).isTrue();
-  }
-
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
     // Everything within 5 pixels range is OK
-    final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION
-        && Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
+    assertThat(x).isCloseTo(location.getX() + 20, offset(5));
+    assertThat(y).isCloseTo(location.getY() + 10, offset(5));
   }
 
   /**
@@ -420,28 +419,32 @@ class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
+  public void canClickOnASuckerFishStyleMenu() {
     driver.get(pages.javascriptPage);
+    unfocusMenu();
 
-    // Move to a different element to make sure the mouse is not over the
-    // element with id 'item1' (from a previous test).
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
+
+    // Hover the menu icon
+    input.perform(windowHandle, new Actions(driver).moveToElement(menu).getSequences());
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
+
+    // Wait until the menu items appear
+    shortWait.until(visibilityOf(menuItem));
+
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
+
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
     new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
-
-    WebElement element = driver.findElement(By.id("menu1"));
-
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    input.perform(windowHandle, new Actions(driver).moveToElement(element).getSequences());
-
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    item.click();
-
-    WebElement result = driver.findElement(By.id("result"));
-    wait.until(WaitingConditions.elementTextToContain(result, "item 1"));
   }
 
   @Test

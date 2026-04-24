@@ -17,19 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Internal.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -249,17 +243,12 @@ public class HttpCommandExecutor : ICommandExecutor
     /// <returns>An instance of <see cref="HttpClient"/>.</returns>
     protected virtual HttpClient CreateHttpClient()
     {
-        var httpClientHandler = CreateHttpClientHandler()
+        HttpClientHandler httpClientHandler = CreateHttpClientHandler()
             ?? throw new InvalidOperationException($"{nameof(CreateHttpClientHandler)} method returned null");
 
-        HttpMessageHandler handler = httpClientHandler;
+        var diagnosticsHttpHandler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
 
-        if (_logger.IsEnabled(LogEventLevel.Trace))
-        {
-            handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
-        }
-
-        var client = new HttpClient(handler);
+        var client = new HttpClient(diagnosticsHttpHandler);
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
         client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
@@ -385,10 +374,7 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpRequestInfo(Uri serverUri, Command commandToExecute, HttpCommandInfo commandInfo)
         {
-            if (commandInfo is null)
-            {
-                throw new ArgumentNullException(nameof(commandInfo));
-            }
+            ArgumentNullException.ThrowIfNull(commandInfo);
 
             this.FullUri = commandInfo.CreateCommandUri(serverUri, commandToExecute);
             this.HttpMethod = commandInfo.Method;
@@ -404,7 +390,8 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpResponseInfo(string body, string? contentType, HttpStatusCode statusCode)
         {
-            this.Body = body ?? throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(body);
+            this.Body = body;
             this.ContentType = contentType;
             this.StatusCode = statusCode;
         }
@@ -424,12 +411,10 @@ public class HttpCommandExecutor : ICommandExecutor
         public DiagnosticsHttpHandler(HttpMessageHandler messageHandler, ILogger logger)
             : base(messageHandler)
         {
-            if (messageHandler is null)
-            {
-                throw new ArgumentNullException(nameof(messageHandler));
-            }
+            ArgumentNullException.ThrowIfNull(messageHandler);
 
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(logger);
+            _logger = logger;
         }
 
         /// <summary>
@@ -440,41 +425,67 @@ public class HttpCommandExecutor : ICommandExecutor
         /// <returns>The http response message content.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            StringBuilder requestLogMessageBuilder = new();
-            requestLogMessageBuilder.AppendFormat(">> {0} {1}",
-                request.Method,
-                request.RequestUri?.ToString() ?? "null");
+            bool isTracingEnabled = _logger.IsEnabled(LogEventLevel.Trace);
+            string? correlationId = isTracingEnabled ? request.GetHashCode().ToString("x8") : null;
 
-            if (request.Content is not null)
+            if (isTracingEnabled)
             {
+                StringBuilder requestLogMessageBuilder = new();
+                requestLogMessageBuilder.AppendFormat(">> [{0}] {1} {2}",
+                    correlationId,
+                    request.Method,
+                    request.RequestUri?.ToString() ?? "null");
+
+                if (request.Content is not null)
+                {
 #if NET8_0_OR_GREATER
-                var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
-                var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
 #endif
-                requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
+                    requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
+                }
+
+                _logger.Trace(requestLogMessageBuilder.ToString());
             }
 
-            _logger.Trace(requestLogMessageBuilder.ToString());
+            HttpResponseMessage response;
 
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            StringBuilder responseLogMessageBuilder = new();
-
-            responseLogMessageBuilder.AppendFormat("<< {0} {1}", (int)response.StatusCode, response.ReasonPhrase);
-
-            if (!response.IsSuccessStatusCode && response.Content != null)
+            try
             {
-#if NET8_0_OR_GREATER
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-#else
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-#endif
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (isTracingEnabled)
+                {
+                    _logger.Trace($"!! [{correlationId}] {ex}");
+                }
 
-                responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
+                throw;
             }
 
-            _logger.Trace(responseLogMessageBuilder.ToString());
+            if (isTracingEnabled)
+            {
+                StringBuilder responseLogMessageBuilder = new();
+                responseLogMessageBuilder.AppendFormat("<< [{0}] {1} {2}",
+                    correlationId,
+                    (int)response.StatusCode,
+                    response.ReasonPhrase);
+
+                if (!response.IsSuccessStatusCode && response.Content != null)
+                {
+#if NET8_0_OR_GREATER
+                    var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
+
+                    responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
+                }
+
+                _logger.Trace(responseLogMessageBuilder.ToString());
+            }
 
             return response;
         }

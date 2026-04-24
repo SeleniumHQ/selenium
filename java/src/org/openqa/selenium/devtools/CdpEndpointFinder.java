@@ -19,7 +19,6 @@ package org.openqa.selenium.devtools;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.UncheckedIOException;
@@ -41,11 +40,20 @@ public class CdpEndpointFinder {
   private static final Logger LOG = Logger.getLogger(CdpEndpointFinder.class.getName());
   private static final Json JSON = new Json();
 
+  /**
+   * @deprecated Use {@link #getHttpClient(HttpClient.Factory, URI, ClientConfig)} instead
+   */
+  @Deprecated
   public static HttpClient getHttpClient(HttpClient.Factory clientFactory, URI reportedUri) {
+    return getHttpClient(clientFactory, reportedUri, ClientConfig.defaultConfig());
+  }
+
+  public static HttpClient getHttpClient(
+      HttpClient.Factory clientFactory, URI reportedUri, ClientConfig clientConfig) {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("DevTools URI", reportedUri);
 
-    ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
+    ClientConfig config = clientConfig.baseUri(reportedUri);
 
     return clientFactory.createClient(config);
   }
@@ -64,7 +72,7 @@ public class CdpEndpointFinder {
       return Optional.empty();
     }
 
-    Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
+    Map<String, Object> versionData = JSON.toType(res.contentAsString(), MAP_TYPE);
     Object raw = versionData.get("webSocketDebuggerUrl");
 
     if (!(raw instanceof String)) {

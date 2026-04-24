@@ -47,8 +47,8 @@ class Alert:
     def __init__(self, driver) -> None:
         """Creates a new Alert.
 
-        :Args:
-         - driver: The WebDriver instance which performs user actions.
+        Args:
+            driver: The WebDriver instance which performs user actions.
         """
         self.driver = driver
 
@@ -64,17 +64,15 @@ class Alert:
     def accept(self) -> None:
         """Accepts the alert available.
 
-        :Usage:
-            ::
-
-                Alert(driver).accept()  # Confirm a alert dialog.
+        Example:
+            Alert(driver).accept()  # Confirm a alert dialog.
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
     def send_keys(self, keysToSend: str) -> None:
         """Send Keys to the Alert.
 
-        :Args:
-         - keysToSend: The text to be sent to Alert.
+        Args:
+            keysToSend: The text to be sent to Alert.
         """
         self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keysToSend), "text": keysToSend})

@@ -1,0 +1,40 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "const",
+    srcs = ["const.js"],
+    lenient = True,
+    deps = [
+        ":typedstring",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "internal",
+    srcs = ["internal.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "string",
+    srcs = ["string.js"],
+    lenient = True,
+    deps = [
+        ":const",
+        ":internal",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/utils",
+    ],
+)
+
+closure_js_library(
+    name = "typedstring",
+    srcs = ["typedstring.js"],
+    lenient = True,
+)

@@ -17,15 +17,13 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.Map;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
 
 public class Emulation {
-  private final BiDi bidi;
+  private final HasBiDi driver;
 
   public Emulation(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
@@ -34,13 +32,39 @@ public class Emulation {
       throw new IllegalArgumentException("WebDriver must implement BiDi interface");
     }
 
-    this.bidi = ((HasBiDi) driver).getBiDi();
+    this.driver = (HasBiDi) driver;
   }
 
-  public Map<String, Object> setGeolocationOverride(SetGeolocationOverrideParameters parameters) {
-    Require.nonNull("SetGeolocationOverride parameters", parameters);
+  public void setGeolocationOverride(SetGeolocationOverrideParameters parameters) {
+    send("emulation.setGeolocationOverride", parameters);
+  }
 
-    return bidi.send(
-        new Command<>("emulation.setGeolocationOverride", parameters.toMap(), Map.class));
+  public void setTimezoneOverride(SetTimezoneOverrideParameters parameters) {
+    send("emulation.setTimezoneOverride", parameters);
+  }
+
+  public void setScriptingEnabled(SetScriptingEnabledParameters parameters) {
+    send("emulation.setScriptingEnabled", parameters);
+  }
+
+  public void setUserAgentOverride(SetUserAgentOverrideParameters parameters) {
+    send("emulation.setUserAgentOverride", parameters);
+  }
+
+  public void setScreenOrientationOverride(SetScreenOrientationOverrideParameters parameters) {
+    send("emulation.setScreenOrientationOverride", parameters);
+  }
+
+  public void setNetworkConditions(SetNetworkConditionsParameters parameters) {
+    send("emulation.setNetworkConditions", parameters);
+  }
+
+  public void setScreenSettingsOverride(SetScreenSettingsOverrideParameters parameters) {
+    send("emulation.setScreenSettingsOverride", parameters);
+  }
+
+  private void send(String command, OverrideParameters parameters) {
+    Require.nonNull("Parameters", parameters);
+    driver.getBiDi().send(new Command<>(command, parameters.toMap()));
   }
 }

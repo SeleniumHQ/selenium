@@ -36,21 +36,21 @@ def _wrap_elements(result, ef_driver):
 
 
 class EventFiringWebDriver:
-    """A wrapper around an arbitrary WebDriver instance which supports firing
-    events."""
+    """Wrap an arbitrary WebDriver instance and support firing events.
+
+    This wrapper allows you to hook into various WebDriver events through an
+    AbstractEventListener implementation.
+    """
 
     def __init__(self, driver: WebDriver, event_listener: AbstractEventListener) -> None:
         """Creates a new instance of the EventFiringWebDriver.
 
-        :Args:
-         - driver : A WebDriver instance
-         - event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully
-                            or partially
+        Args:
+            driver: A WebDriver instance
+            event_listener: Instance of a class that subclasses AbstractEventListener and implements it fully
+                           or partially
 
         Example:
-
-        ::
-
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 
@@ -72,13 +72,13 @@ class EventFiringWebDriver:
         if not isinstance(event_listener, AbstractEventListener):
             raise WebDriverException("Event listener must be a subclass of AbstractEventListener")
         self._driver = driver
-        self._driver._wrap_value = self._wrap_value
+        # this is valid, but type checkers don't like dynamically assigning to a method
+        self._driver._wrap_value = self._wrap_value  # type: ignore
         self._listener = event_listener
 
     @property
     def wrapped_driver(self) -> WebDriver:
-        """Returns the WebDriver instance wrapped by this
-        EventsFiringWebDriver."""
+        """Returns the WebDriver instance wrapped by this EventsFiringWebDriver."""
         return self._driver
 
     def get(self, url: str) -> None:
@@ -173,8 +173,7 @@ class EventFiringWebElement:
 
     @property
     def wrapped_element(self) -> WebElement:
-        """Returns the WebElement wrapped by this EventFiringWebElement
-        instance."""
+        """Returns the WebElement wrapped by this EventFiringWebElement instance."""
         return self._webelement
 
     def click(self) -> None:

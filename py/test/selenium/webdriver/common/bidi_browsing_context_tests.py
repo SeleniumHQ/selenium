@@ -92,7 +92,10 @@ def test_create_context_with_all_parameters(driver):
     user_context = driver.browser.create_user_context()
 
     context_id = driver.browsing_context.create(
-        type=WindowTypes.WINDOW, reference_context=reference_context, user_context=user_context, background=True
+        type=WindowTypes.WINDOW,
+        reference_context=reference_context,
+        user_context=user_context,
+        background=True,
     )
     assert context_id is not None
     assert context_id != reference_context
@@ -348,12 +351,15 @@ def test_set_viewport(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(context=context_id, viewport={"width": 250, "height": 300})
+    try:
+        driver.browsing_context.set_viewport(context=context_id, viewport={"width": 251, "height": 301})
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 251
+        assert viewport_size[1] == 301
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_set_viewport_with_device_pixel_ratio(driver, pages):
@@ -361,18 +367,78 @@ def test_set_viewport_with_device_pixel_ratio(driver, pages):
     context_id = driver.current_window_handle
     driver.get(pages.url("formPage.html"))
 
-    driver.browsing_context.set_viewport(
-        context=context_id, viewport={"width": 250, "height": 300}, device_pixel_ratio=5
-    )
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id,
+            viewport={"width": 252, "height": 302},
+            device_pixel_ratio=5,
+        )
 
-    viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
 
-    assert viewport_size[0] == 250
-    assert viewport_size[1] == 300
+        assert viewport_size[0] == 252
+        assert viewport_size[1] == 302
 
-    device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 
-    assert device_pixel_ratio == 5
+        assert device_pixel_ratio == 5
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
+    """Test setting the viewport with no args doesn't change viewport or device pixel ratio."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id,
+            viewport={"width": 253, "height": 303},
+            device_pixel_ratio=6,
+        )
+
+        driver.browsing_context.set_viewport(context=context_id)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+
+        assert viewport_size[0] == 253
+        assert viewport_size[1] == 303
+
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        assert device_pixel_ratio == 6
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+
+@pytest.mark.xfail_chrome
+def test_set_viewport_back_to_default(driver, pages):
+    """Test resetting the viewport and device pixel ratio to defaults."""
+    context_id = driver.current_window_handle
+    driver.get(pages.url("formPage.html"))
+
+    default_viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+    default_device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+    try:
+        driver.browsing_context.set_viewport(
+            context=context_id,
+            viewport={"width": 254, "height": 304},
+            device_pixel_ratio=10,
+        )
+
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
+
+        viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
+        device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
+
+        # Allow some tolerance since some window managers might not put it to the exact value
+        assert abs(viewport_size[0] - default_viewport_size[0]) <= 5
+        assert abs(viewport_size[1] - default_viewport_size[1]) <= 5
+        assert device_pixel_ratio == default_device_pixel_ratio
+    finally:
+        driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
 def test_print_page(driver, pages):
@@ -438,7 +504,9 @@ def test_locate_nodes_with_css_locator(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "css", "value": "div.extraDiv, div.content"}, max_node_count=1
+        context=context_id,
+        locator={"type": "css", "value": "div.extraDiv, div.content"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1
@@ -460,7 +528,9 @@ def test_locate_nodes_with_xpath_locator(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "xpath", "value": "/html/body/div[2]"}, max_node_count=1
+        context=context_id,
+        locator={"type": "xpath", "value": "/html/body/div[2]"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1
@@ -483,7 +553,9 @@ def test_locate_nodes_with_inner_text(driver, pages):
     driver.get(pages.url("xhtmlTest.html"))
 
     elements = driver.browsing_context.locate_nodes(
-        context=context_id, locator={"type": "innerText", "value": "Spaced out"}, max_node_count=1
+        context=context_id,
+        locator={"type": "innerText", "value": "Spaced out"},
+        max_node_count=1,
     )
 
     assert len(elements) >= 1
@@ -721,6 +793,7 @@ def test_add_event_handler_user_prompt_opened(driver, pages):
     create_alert_page(driver, pages)
     driver.find_element(By.ID, "alert").click()
     WebDriverWait(driver, 5).until(EC.alert_is_present())
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
     assert events_received[0].type == "alert"
@@ -781,7 +854,6 @@ def test_add_event_handler_history_updated(driver, pages):
     driver.browsing_context.remove_event_handler("history_updated", callback_id)
 
 
-@pytest.mark.xfail_firefox
 def test_add_event_handler_download_will_begin(driver, pages):
     """Test adding event handler for download_will_begin event."""
     events_received = []
@@ -802,12 +874,12 @@ def test_add_event_handler_download_will_begin(driver, pages):
     WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
-    assert events_received[0].suggested_filename == "file_1.txt"
+    # filename maybe file_1.txt or file_1(1).txt depending on existing files in download dir
+    assert "file_1" in events_received[0].suggested_filename
 
     driver.browsing_context.remove_event_handler("download_will_begin", callback_id)
 
 
-@pytest.mark.xfail_firefox
 def test_add_event_handler_download_end(driver, pages):
     """Test adding event handler for download_end event."""
     events_received = []

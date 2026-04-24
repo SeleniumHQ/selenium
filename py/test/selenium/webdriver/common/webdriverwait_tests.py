@@ -364,8 +364,10 @@ def test_expected_condition_attribute_to_be_include_in_element(driver, pages):
 
 
 def test_driver_with_http_timeout(driver, pages):
-    """This test starts a webdriver with an http client timeout set less than the implicit
-    wait, and verifies the http timeout is triggered first when waiting for an element.
+    """This test starts a webdriver with an http client timeout.
+
+    It verifies the http timeout is triggered first when waiting for an element,
+    with the timeout set less than the implicit wait.
     """
     pages.load("simpleTest.html")
     driver.command_executor.client_config.timeout = 6

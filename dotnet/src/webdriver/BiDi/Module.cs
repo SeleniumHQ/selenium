@@ -17,30 +17,38 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
-using System.Text.Json;
-
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
-    protected Broker Broker { get; private set; }
+    private Broker Broker { get; set; } = null!;
 
-    internal BiDiJsonSerializerContext JsonContext { get; private set; }
+    protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
+        where TResult : EmptyResult
+    {
+        return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
+    }
 
-    protected virtual void Initialize(JsonSerializerOptions options) { }
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, action, options, cancellationToken);
+    }
 
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonOptions, BiDiJsonSerializerContext context)
+    protected Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
+        where TEventArgs : EventArgs
+    {
+        return Broker.SubscribeAsync(descriptor, func, options, cancellationToken);
+    }
+
+    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            Broker = broker,
-            JsonContext = context
+            Broker = broker
         };
-
-        module.Initialize(jsonOptions);
 
         return module;
     }

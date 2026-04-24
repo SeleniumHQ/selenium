@@ -22,7 +22,6 @@ import static org.openqa.selenium.grid.server.EventBusOptions.EVENTS_SECTION;
 
 import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
@@ -65,8 +64,14 @@ public class EventBusFlags implements HasRoles {
       example = "\"org.openqa.selenium.events.zeromq.ZeroMqEventBus\"")
   private String implementation;
 
+  @Parameter(
+      names = {"--eventbus-heartbeat-period"},
+      description = "How often, in seconds, will the EventBus socket send heartbeats")
+  @ConfigValue(section = EVENTS_SECTION, name = "eventbus-heartbeat-period", example = "30")
+  private int eventbusHeartbeatPeriod;
+
   @Override
   public Set<Role> getRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE);
+    return Set.of(EVENT_BUS_ROLE);
   }
 }

@@ -69,7 +69,8 @@ public class NodeStatus {
     this.osInfo = Require.nonNull("Node host OS info", osInfo);
   }
 
-  public static NodeStatus fromJson(JsonInput input) {
+  @SuppressWarnings({"unused", "DataFlowIssue"})
+  private static NodeStatus fromJson(JsonInput input) {
     NodeId nodeId = null;
     URI externalUri = null;
     int maxSessions = 0;
@@ -247,5 +248,11 @@ public class NodeStatus {
     toReturn.put("osInfo", osInfo);
 
     return unmodifiableMap(toReturn);
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "NodeStatus(availability: %s, slots:%s, uri:%s)", availability, slots.size(), externalUri);
   }
 }

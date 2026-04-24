@@ -57,6 +57,12 @@ def test_execute_custom_command(mock_request, remote_connection):
     assert response == {"status": 200, "value": "OK"}
 
 
+def test_default_websocket_settings():
+    config = ClientConfig(remote_server_addr="http://localhost:4444")
+    assert config.websocket_timeout == 30.0
+    assert config.websocket_interval == 0.1
+
+
 def test_get_remote_connection_headers_defaults():
     url = "http://remote"
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
@@ -324,7 +330,7 @@ class MockResponse:
         pass
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("HTTPS_PROXY", raising=False)
     monkeypatch.delenv("HTTP_PROXY", raising=False)
@@ -332,7 +338,7 @@ def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("http_proxy", raising=False)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_socks_proxy_settings(monkeypatch):
     http_proxy = "SOCKS5://http_proxy.com:8080"
     https_proxy = "SOCKS5://https_proxy.com:8080"
@@ -342,7 +348,7 @@ def mock_socks_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_settings(monkeypatch):
     http_proxy = "http://http_proxy.com:8080"
     https_proxy = "http://https_proxy.com:8080"
@@ -352,7 +358,7 @@ def mock_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_proxy_auth_settings(monkeypatch):
     http_proxy = "http://user:password@http_proxy.com:8080"
     https_proxy = "https://user:password@https_proxy.com:8080"
@@ -362,7 +368,7 @@ def mock_proxy_auth_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_no_proxy_settings(monkeypatch):
     http_proxy = "http://http_proxy.com:8080"
     https_proxy = "http://https_proxy.com:8080"
@@ -564,7 +570,7 @@ def test_proxy_auth_with_special_characters_url_encoded():
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, ProxyManager)
 
-    expected_auth = base64.b64encode("user:passw#rd".encode()).decode()  # Decoded password
+    expected_auth = base64.b64encode(b"user:passw#rd").decode()  # Decoded password
     expected_headers = make_headers(proxy_basic_auth="user:passw#rd")  # Unquoted password
 
     assert conn.proxy_headers == expected_headers

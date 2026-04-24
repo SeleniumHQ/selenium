@@ -23,6 +23,10 @@ require_relative 'headers'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedRequest < InterceptedItem
         attr_accessor :method, :url
         attr_reader :body
@@ -32,14 +36,18 @@ module Selenium
           @method = nil
           @url = nil
           @body = nil
+          @headers = nil
+          @cookies = nil
         end
 
         def continue
+          cookies = @cookies&.as_json
+          headers = @headers&.as_json
           network.continue_request(
             id: id,
             body: body,
-            cookies: cookies.as_json,
-            headers: headers.as_json,
+            cookies: cookies,
+            headers: headers,
             method: method,
             url: url
           )
@@ -56,12 +64,20 @@ module Selenium
           }
         end
 
-        def headers
-          @headers ||= Headers.new
+        def headers=(headers = {})
+          @headers = Headers.new(headers)
+        end
+
+        def headers(headers = {})
+          @headers ||= Headers.new(headers)
         end
 
         def cookies(cookies = {})
           @cookies ||= Cookies.new(cookies)
+        end
+
+        def cookies=(cookies = {})
+          @cookies = Cookies.new(cookies)
         end
       end
     end # BiDi

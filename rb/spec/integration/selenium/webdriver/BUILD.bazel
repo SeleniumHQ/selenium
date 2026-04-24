@@ -42,19 +42,30 @@ rb_library(
             "driver_spec.rb",
             "devtools_spec.rb",
             "element_spec.rb",
+            "navigation_spec.rb",
+            "network_spec.rb",
         ],
     )
 ]
 
-rb_integration_test(
-    name = "bidi",
-    srcs = ["bidi_spec.rb"],
-    tags = ["exclusive-if-local"],
-    deps = [
-        "//rb/lib/selenium/devtools",
-        "//rb/lib/selenium/webdriver:bidi",
-    ],
-)
+_BIDI_FILES = [
+    "bidi_spec.rb",
+    "navigation_spec.rb",
+    "network_spec.rb",
+]
+
+[
+    rb_integration_test(
+        name = f[:-8],
+        srcs = [f],
+        tags = ["bidi"],
+        deps = [
+            "//rb/lib/selenium/devtools",
+            "//rb/lib/selenium/webdriver:bidi",
+        ],
+    )
+    for f in _BIDI_FILES
+]
 
 rb_integration_test(
     name = "devtools",

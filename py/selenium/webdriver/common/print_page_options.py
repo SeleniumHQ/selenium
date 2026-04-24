@@ -16,7 +16,7 @@
 # under the License.
 
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Literal, TypedDict
@@ -55,7 +55,7 @@ class _PageSettingsDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._page.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
@@ -76,7 +76,7 @@ class _MarginSettingsDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._margin.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
@@ -91,7 +91,7 @@ class _ScaleDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._print_options.get(self.name)
 
     def __set__(self, obj, value) -> None:
@@ -109,7 +109,7 @@ class _PageOrientationDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[Orientation]:
+    def __get__(self, obj, cls) -> Orientation | None:
         return obj._print_options.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
@@ -159,243 +159,166 @@ class PrintOptions:
     page_height = _PageSettingsDescriptor("height")
     """Gets and Sets page_height:
 
-    Usage
-    -----
-    - Get
-        - `self.page_height`
-    - Set
-        - `self.page_height` = `value`
+    Usage:
+        - Get: `self.page_height`
+        - Set: `self.page_height = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for page height.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     page_width = _PageSettingsDescriptor("width")
     """Gets and Sets page_width:
 
     Usage:
-    ------
-    - Get
-        - `self.page_width`
-    - Set
-        - `self.page_width` = `value`
+        - Get: `self.page_width`
+        - Set: `self.page_width = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for page width.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     margin_top = _MarginSettingsDescriptor("top")
     """Gets and Sets margin_top:
 
     Usage:
-    ------
-    - Get
-        - `self.margin_top`
-    - Set
-        - `self.margin_top` = `value`
+        - Get: `self.margin_top`
+        - Set: `self.margin_top = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for top margin.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     margin_bottom = _MarginSettingsDescriptor("bottom")
     """Gets and Sets margin_bottom:
 
     Usage:
-    ------
-    - Get
-        - `self.margin_bottom`
-    - Set
-        - `self.margin_bottom` = `value`
+        - Get: `self.margin_bottom`
+        - Set: `self.margin_bottom = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for bottom margin.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     margin_left = _MarginSettingsDescriptor("left")
     """Gets and Sets margin_left:
 
     Usage:
-    ------
-    - Get
-        - `self.margin_left`
-    - Set
-        - `self.margin_left` = `value`
+        - Get: `self.margin_left`
+        - Set: `self.margin_left = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for left margin.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     margin_right = _MarginSettingsDescriptor("right")
     """Gets and Sets margin_right:
 
     Usage:
-    ------
-    - Get
-        - `self.margin_right`
-    - Set
-        - `self.margin_right` = `value`
+        - Get: `self.margin_right`
+        - Set: `self.margin_right = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for right margin.
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     scale = _ScaleDescriptor("scale")
     """Gets and Sets scale:
 
     Usage:
-    ------
-    - Get
-        - `self.scale`
-    - Set
-        - `self.scale` = `value`
+        - Get: `self.scale`
+        - Set: `self.scale = value`
 
-    Parameters:
-    -----------
-    `value`: `float`
+    Args:
+        value: float value for scale (between 0.1 and 2).
 
     Returns:
-    --------
-    - Get
-        - `Optional[float]`
-    - Set
-        - `None`
+        - Get: Optional[float]
+        - Set: None
     """
 
     orientation = _PageOrientationDescriptor("orientation")
     """Gets and Sets orientation:
 
     Usage:
-    ------
-    - Get
-        - `self.orientation`
-    - Set
-        - `self.orientation` = `value`
+        - Get: `self.orientation`
+        - Set: `self.orientation = value`
 
-    Parameters:
-    -----------
-    `value`: `Orientation`
+    Args:
+        value: Orientation value ("portrait" or "landscape").
 
     Returns:
-    --------
-    - Get
-        - `Optional[Orientation]`
-    - Set
-        - `None`
+        - Get: Optional[Orientation]
+        - Set: None
     """
 
     background = _ValidateBackGround("background")
     """Gets and Sets background:
 
     Usage:
-    ------
-    - Get
-        - `self.background`
-    - Set
-        - `self.background` = `value`
+        - Get: `self.background`
+        - Set: `self.background = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool value for background printing.
 
     Returns:
-    --------
-    - Get
-        - `Optional[bool]`
-    - Set
-        - `None`
+        - Get: Optional[bool]
+        - Set: None
     """
 
     shrink_to_fit = _ValidateShrinkToFit("shrinkToFit")
     """Gets and Sets shrink_to_fit:
 
     Usage:
-    ------
-    - Get
-        - `self.shrink_to_fit`
-    - Set
-        - `self.shrink_to_fit` = `value`
+        - Get: `self.shrink_to_fit`
+        - Set: `self.shrink_to_fit = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool value for shrink to fit.
 
     Returns:
-    --------
-    - Get
-        - `Optional[bool]`
-    - Set
-        - `None`
+        - Get: Optional[bool]
+        - Set: None
     """
 
     page_ranges = _ValidatePageRanges("pageRanges")
     """Gets and Sets page_ranges:
 
     Usage:
-    ------
-    - Get
-        - `self.page_ranges`
-    - Set
-        - `self.page_ranges` = `value`
+        - Get: `self.page_ranges`
+        - Set: `self.page_ranges = value`
 
-    Parameters:
-    -----------
-    `value`: ` List[str]`
+    Args:
+        value: list of page range strings.
 
     Returns:
-    --------
-    - Get
-        - `Optional[List[str]]`
-    - Set
-        - `None`
+        - Get: Optional[List[str]]
+        - Set: None
     """
     # Reference for predefined page size constants: https://www.agooddaytoprint.com/page/paper-size-chart-faq
     A4 = {"height": 29.7, "width": 21.0}  # size in cm
@@ -412,21 +335,19 @@ class PrintOptions:
         self._margin: _MarginOpts = {}
 
     def to_dict(self) -> _PrintOpts:
-        """:Returns: A hash of print options configured."""
+        """Returns a hash of print options configured."""
         return self._print_options
 
     def set_page_size(self, page_size: dict) -> None:
         """Sets the page size to predefined or custom dimensions.
 
-        Parameters:
-        -----------
-        page_size: dict
-        A dictionary containing `height` and `width` as keys with respective values.
+        Args:
+            page_size: A dictionary containing 'height' and 'width' keys with
+                respective values in cm.
 
         Example:
-        --------
-        self.set_page_size(PageSize.A4)  # A4 predefined size
-        self.set_page_size({"height": 15.0, "width": 20.0})  # Custom size in cm
+            self.set_page_size(PageSize.A4)  # A4 predefined size
+            self.set_page_size({"height": 15.0, "width": 20.0})  # Custom size
         """
         self._validate_num_property("height", page_size["height"])
         self._validate_num_property("width", page_size["width"])

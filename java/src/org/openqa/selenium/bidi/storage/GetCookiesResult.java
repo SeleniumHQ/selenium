@@ -20,12 +20,16 @@ package org.openqa.selenium.bidi.storage;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.bidi.network.Cookie;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-storagegetcookiesresult">BiDi
+ *     spec</a>
+ */
 public class GetCookiesResult {
   private final List<Cookie> cookies;
-
   private final PartitionKey partitionKey;
 
   public GetCookiesResult(List<Cookie> cookies, PartitionKey partitionKey) {
@@ -55,7 +59,8 @@ public class GetCookiesResult {
 
     input.endObject();
 
-    return new GetCookiesResult(cookies, partitionKey);
+    return new GetCookiesResult(
+        Require.nonNull("cookies", cookies), Require.nonNull("partitionKey", partitionKey));
   }
 
   public List<Cookie> getCookies() {

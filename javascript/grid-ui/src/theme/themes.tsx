@@ -30,6 +30,9 @@ export const lightTheme: Theme = createTheme({
     error: {
       main: '#FF1744'
     },
+    warning: {
+      main: '#FF9800'
+    },
     background: {
       default: '#F7F8F8'
     }
@@ -48,6 +51,9 @@ export const darkTheme: Theme = createTheme({
     },
     error: {
       main: '#F04747'
+    },
+    warning: {
+      main: '#FFA726'
     },
     background: {
       default: '#0c1117',

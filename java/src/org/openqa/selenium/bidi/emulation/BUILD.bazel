@@ -19,5 +19,6 @@ java_library(
         "//java/src/org/openqa/selenium/bidi/browsingcontext",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
+        "@maven//:org_jspecify_jspecify",
     ],
 )

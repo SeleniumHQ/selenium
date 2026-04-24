@@ -16,48 +16,41 @@
 # under the License.
 
 import shutil
-import warnings
 from collections.abc import Mapping, Sequence
-from typing import Optional
+from typing import IO, Any
 
 from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH: str = shutil.which("WebKitWebDriver")
+DEFAULT_EXECUTABLE_PATH: str | None = shutil.which("WebKitWebDriver")
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `WebKitWebDriver`.
+    """Service class that is responsible for the starting and stopping of `WebKitWebDriver`.
 
-    :param executable_path: install path of the WebKitWebDriver executable, defaults to the first
-        `WebKitWebDriver` in `$PATH`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_output: (Optional) File path for the file to be opened and passed as the subprocess
-        stdout/stderr handler.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    Args:
+        executable_path: Install path of the WebKitWebDriver executable, defaults to the first `WebKitWebDriver`
+            in `$PATH`.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str | None = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        log_path: Optional[str] = None,
-        log_output: Optional[str] = None,
-        service_args: Optional[Sequence[str]] = None,
-        env: Optional[Mapping[str, str]] = None,
+        log_output: int | str | IO[Any] | None = None,
+        service_args: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])
-        if log_path is not None:
-            warnings.warn("log_path is deprecated, use log_output instead", DeprecationWarning, stacklevel=2)
-            log_path = open(log_path, "wb")
-        log_output = open(log_output, "wb") if log_output else None
 
         super().__init__(
             executable_path=executable_path,
             port=port,
-            log_output=log_path or log_output,
+            log_output=log_output,
             env=env,
             **kwargs,
         )
@@ -67,6 +60,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

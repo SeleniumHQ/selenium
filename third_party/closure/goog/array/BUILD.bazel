@@ -1,0 +1,15 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "array",
+    srcs = ["array.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/utils",
+    ],
+)

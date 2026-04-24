@@ -17,24 +17,46 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class Extension
+[JsonConverter(typeof(Converter))]
+public sealed record Extension : IIdentifiable
 {
-    private readonly BiDi _bidi;
-
-    public Extension(BiDi bidi, string id)
+    public Extension(IBiDi bidi, string id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
         Id = id;
     }
 
-    internal string Id { get; }
+    public string Id { get; }
 
-    public Task UninstallAsync(UninstallOptions? options = null)
+    [JsonIgnore]
+    public IBiDi BiDi { get; }
+
+    public bool Equals(Extension? other)
     {
-        return _bidi.WebExtension.UninstallAsync(this, options);
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return StringComparer.Ordinal.GetHashCode(Id);
+    }
+
+    [SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by compiler-generated ToString()")]
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
+    }
+
+    public sealed class Converter : IdentifiableConverter<Extension>
+    {
+        protected override Extension Create(IBiDi bidi, string id) => new(bidi, id);
     }
 }
