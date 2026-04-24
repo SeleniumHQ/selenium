@@ -114,10 +114,13 @@ _HEADLESS_ARGS = select({
 
 _TEST_SUFFIXES = ("Test.cs", "Tests.cs")
 
-# MTP runs tests serially within a single host by default. NUnit-level
-# parallelism is opt-in via [Parallelizable], which the test code already
-# avoids except where intended. No global --workers flag is needed.
-_NUNIT_ARGS = []
+# Exit code 8 = "Zero tests ran". Treated as success: a target whose tests
+# are all filtered out (e.g. [IgnoreBrowser], [Ignore], commented-out source)
+# should not fail the build. Real test failures still exit with code 2.
+_NUNIT_ARGS = [
+    "--ignore-exit-code",
+    "8",
+]
 
 _NUNIT_SHIM = "//dotnet/private:mtp_shim.cs"
 
