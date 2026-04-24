@@ -7,7 +7,6 @@ def _generate_bidi_impl(ctx):
     extra_cddl_files = ctx.files.extra_cddl_files
     manifest_file = ctx.file.enhancements_manifest
     generator = ctx.executable.generator
-    merge_tool = ctx.executable.merge_tool
     output_dir = ctx.attr.module_name
     spec_version = ctx.attr.spec_version
 
@@ -37,11 +36,13 @@ def _generate_bidi_impl(ctx):
     # single file and pass that to the generator instead of the raw primary.
     all_cddl = [cddl_file] + extra_cddl_files
     if extra_cddl_files:
+        if not ctx.executable.merge_tool:
+            fail("merge_tool is required when extra_cddl_files is non-empty")
         merged_cddl = ctx.actions.declare_file("merged_bidi.cddl")
         ctx.actions.run(
             inputs = all_cddl,
             outputs = [merged_cddl],
-            executable = merge_tool,
+            executable = ctx.executable.merge_tool,
             arguments = [merged_cddl.path] + [f.path for f in all_cddl],
         )
         input_cddl = merged_cddl
@@ -127,8 +128,9 @@ generate_bidi = rule(
         "merge_tool": attr.label(
             executable = True,
             cfg = "exec",
-            mandatory = True,
-            doc = "Tool that concatenates multiple CDDL files into one (e.g., merge_cddl.py)",
+            mandatory = False,
+            default = None,
+            doc = "Tool that concatenates multiple CDDL files into one (e.g., merge_cddl.py). Required when extra_cddl_files is non-empty.",
         ),
         "module_name": attr.string(
             mandatory = True,

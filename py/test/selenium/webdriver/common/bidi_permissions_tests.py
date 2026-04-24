@@ -158,13 +158,17 @@ def test_embedded_origin_is_keyword_only(driver, pages):
     finally:
         driver.browser.remove_user_context(user_context)
 
+    # embedded_origin is keyword-only — a 5th positional arg must raise TypeError
+    with pytest.raises(TypeError):
+        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin, None, origin)
+
 
 def test_can_set_permission_with_embedded_origin(driver, pages):
-    """Test that embedded_origin is serialised as embeddedOrigin in the BiDi params.
+    """Verify that embedded_origin can be passed as a keyword argument without error.
 
     Uses the same origin for both origin and embedded_origin since the test
-    environment is single-origin; the goal is to verify parameter serialization
-    rather than cross-origin policy enforcement.
+    environment is single-origin; the goal is to confirm that the keyword argument
+    is accepted and the permission change is applied, not to test cross-origin policy.
     """
     pages.load("blank.html")
     origin = get_origin(driver)

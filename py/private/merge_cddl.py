@@ -25,10 +25,19 @@ import sys
 
 
 def main() -> None:
+    if len(sys.argv) < 3:
+        usage = (__doc__ or "Usage:\n    merge_cddl.py <output> <input1> [<input2> ...]\n").strip()
+        print(usage, file=sys.stderr)
+        raise SystemExit(1)
+
     out_path = sys.argv[1]
     input_paths = sys.argv[2:]
     with open(out_path, "wb") as out_f:
-        for input_path in input_paths:
+        for index, input_path in enumerate(input_paths):
+            if index > 0:
+                # Ensure files that lack a trailing newline don't accidentally
+                # join their last and first tokens across the boundary.
+                out_f.write(b"\n")
             with open(input_path, "rb") as in_f:
                 out_f.write(in_f.read())
 
