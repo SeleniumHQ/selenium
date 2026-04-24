@@ -637,6 +637,7 @@ generate_bidi(
         "//py/private:cdp.py",
     ],
     generator = ":generate_bidi",
+    merge_tool = "//py/private:merge_cddl",
     module_name = "selenium/webdriver/common/bidi",
     spec_version = "1.0",
 )

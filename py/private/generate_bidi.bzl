@@ -7,6 +7,7 @@ def _generate_bidi_impl(ctx):
     extra_cddl_files = ctx.files.extra_cddl_files
     manifest_file = ctx.file.enhancements_manifest
     generator = ctx.executable.generator
+    merge_tool = ctx.executable.merge_tool
     output_dir = ctx.attr.module_name
     spec_version = ctx.attr.spec_version
 
@@ -34,37 +35,14 @@ def _generate_bidi_impl(ctx):
     # Merge extra CDDL files into the primary spec before generation.
     # Bazel requires inputs to be declared upfront, so we concatenate into a
     # single file and pass that to the generator instead of the raw primary.
-    # A hermetic Python script is used for the merge so the rule works on all
-    # platforms (including Windows, which does not have `cat`).
     all_cddl = [cddl_file] + extra_cddl_files
     if extra_cddl_files:
         merged_cddl = ctx.actions.declare_file("merged_bidi.cddl")
-        merge_tool = ctx.actions.declare_file("merge_bidi_cddl.py")
-        ctx.actions.write(
-            output = merge_tool,
-            is_executable = True,
-            content = """\
-#!/usr/bin/env python3
-import sys
-
-def main():
-    out_path = sys.argv[1]
-    input_paths = sys.argv[2:]
-    with open(out_path, "wb") as out_f:
-        for input_path in input_paths:
-            with open(input_path, "rb") as in_f:
-                out_f.write(in_f.read())
-
-if __name__ == "__main__":
-    main()
-""",
-        )
         ctx.actions.run(
             inputs = all_cddl,
             outputs = [merged_cddl],
             executable = merge_tool,
             arguments = [merged_cddl.path] + [f.path for f in all_cddl],
-            use_default_shell_env = True,
         )
         input_cddl = merged_cddl
     else:
@@ -145,6 +123,12 @@ generate_bidi = rule(
             cfg = "exec",
             mandatory = True,
             doc = "Generator script (e.g., generate_bidi.py)",
+        ),
+        "merge_tool": attr.label(
+            executable = True,
+            cfg = "exec",
+            mandatory = True,
+            doc = "Tool that concatenates multiple CDDL files into one (e.g., merge_cddl.py)",
         ),
         "module_name": attr.string(
             mandatory = True,
