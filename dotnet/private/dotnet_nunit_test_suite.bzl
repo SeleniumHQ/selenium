@@ -45,7 +45,7 @@ _BROWSERS = {
                 "--test-parameter",
                 "DriverServiceLocation=$(location @mac_edgedriver//:msedgedriver)",
                 "--test-parameter",
-                "\"BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
+                "BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge",
             ],
             "//conditions:default": [],
         }),
