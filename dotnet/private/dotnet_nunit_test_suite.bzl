@@ -192,7 +192,7 @@ def dotnet_nunit_test_suite(
             all_browser_data += _BROWSERS[browser]["data"]
 
     # Compile all tests into a single binary once,
-    # then create wrapper tests that execute it with --where filters.
+    # then create wrapper tests that execute it with --filter arguments.
     csharp_test(
         name = name,
         srcs = srcs + [_NUNIT_SHIM],
