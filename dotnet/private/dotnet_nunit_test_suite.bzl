@@ -78,30 +78,19 @@ _BROWSERS = {
         "args": [
             "--test-parameter",
             "ActiveDriverConfig=IE",
-        ] + select({
-            "//common:windows": [],
-            "//conditions:default": [
-                # Force zero matches on platforms where IE cannot run.
-                "--filter",
-                "FullyQualifiedName~__SkipAll__",
-            ],
-        }),
+        ],
         "data": [],
         "tags": ["skip-rbe"],
+        "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
         "args": [
             "--test-parameter",
             "ActiveDriverConfig=Safari",
-        ] + select({
-            "//common:macos": [],
-            "//conditions:default": [
-                "--filter",
-                "FullyQualifiedName~__SkipAll__",
-            ],
-        }),
+        ],
         "data": [],
         "tags": ["skip-rbe"],
+        "target_compatible_with": ["@platforms//os:osx"],
     },
     "remote": {
         "args": [
@@ -236,4 +225,5 @@ def dotnet_nunit_test_suite(
                 data = browser_data,
                 tags = tags + browser_tags,
                 size = size,
+                target_compatible_with = browser_cfg["target_compatible_with"] if browser_cfg and "target_compatible_with" in browser_cfg else [],
             )
