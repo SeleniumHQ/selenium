@@ -1700,8 +1700,9 @@ class PointerDownAction:
         descriptor: "PermissionDescriptor | str",
         state: "PermissionState | str",
         origin: str | None = None,
-        embedded_origin: str | None = None,
         user_context: str | None = None,
+        *,
+        embedded_origin: str | None = None,
     ) -> None:
         """Set a browser permission.
 
@@ -1709,8 +1710,9 @@ class PointerDownAction:
             descriptor: The permission descriptor or permission name as a string.
             state: The desired permission state (granted, denied, or prompt).
             origin: The origin to scope the permission to.
-            embedded_origin: Optional embedded origin for cross-origin iframes.
             user_context: Optional user context ID to scope the permission.
+            embedded_origin: Keyword-only. Embedded origin for cross-origin
+                iframes; scopes the permission to that iframe's origin.
 
         Raises:
             ValueError: If *state* is not a valid permission state.
