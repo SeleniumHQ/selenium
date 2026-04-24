@@ -371,14 +371,11 @@ public static class Keys
     public static readonly string RightCommand = Convert.ToString(Convert.ToChar(0xE053, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// Represents the macOS Options key (same Unicode value as RightShift).
+    /// Represents the macOS Options key. This is a macOS-only convenience alias for the Right Alt key
+    /// (<see cref="RightAlt"/>, Unicode value \uE052) and is not a key defined by the W3C WebDriver specification.
+    /// On macOS, the operating system treats the Option key as equivalent to Alt.
     /// </summary>
     public static readonly string Options = Convert.ToString(Convert.ToChar(0xE052, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Represents the macOS Function key (same Unicode value as RightControl).
-    /// </summary>
-    public static readonly string Function = Convert.ToString(Convert.ToChar(0xE051, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
     private static Dictionary<string, string>? descriptions;
 
@@ -393,69 +390,67 @@ public static class Keys
         if (descriptions == null)
         {
             descriptions = new Dictionary<string, string>();
-            descriptions.Add(Null, "Null");
-            descriptions.Add(Cancel, "Cancel");
-            descriptions.Add(Help, "Help");
-            descriptions.Add(Backspace, "Backspace");
-            descriptions.Add(Tab, "Tab");
-            descriptions.Add(Clear, "Clear");
-            descriptions.Add(Return, "Return");
-            descriptions.Add(Enter, "Enter");
-            descriptions.Add(Shift, "Shift");
-            descriptions.Add(Control, "Control");
-            descriptions.Add(Alt, "Alt");
-            descriptions.Add(Pause, "Pause");
-            descriptions.Add(Escape, "Escape");
-            descriptions.Add(Space, "Space");
-            descriptions.Add(PageUp, "Page Up");
-            descriptions.Add(PageDown, "PageDown");
-            descriptions.Add(End, "End");
-            descriptions.Add(Home, "Home");
-            descriptions.Add(Left, "Left");
-            descriptions.Add(Up, "Up");
-            descriptions.Add(Right, "Right");
-            descriptions.Add(Down, "Down");
-            descriptions.Add(Insert, "Insert");
-            descriptions.Add(Delete, "Delete");
-            descriptions.Add(Semicolon, "Semicolon");
-            descriptions.Add(Equal, "Equal");
-            descriptions.Add(NumberPad0, "Number Pad 0");
-            descriptions.Add(NumberPad1, "Number Pad 1");
-            descriptions.Add(NumberPad2, "Number Pad 2");
-            descriptions.Add(NumberPad3, "Number Pad 3");
-            descriptions.Add(NumberPad4, "Number Pad 4");
-            descriptions.Add(NumberPad5, "Number Pad 5");
-            descriptions.Add(NumberPad6, "Number Pad 6");
-            descriptions.Add(NumberPad7, "Number Pad 7");
-            descriptions.Add(NumberPad8, "Number Pad 8");
-            descriptions.Add(NumberPad9, "Number Pad 9");
-            descriptions.Add(Multiply, "Multiply");
-            descriptions.Add(Add, "Add");
-            descriptions.Add(Separator, "Separator");
-            descriptions.Add(Subtract, "Subtract");
-            descriptions.Add(Decimal, "Decimal");
-            descriptions.Add(Divide, "Divide");
-            descriptions.Add(F1, "F1");
-            descriptions.Add(F2, "F2");
-            descriptions.Add(F3, "F3");
-            descriptions.Add(F4, "F4");
-            descriptions.Add(F5, "F5");
-            descriptions.Add(F6, "F6");
-            descriptions.Add(F7, "F7");
-            descriptions.Add(F8, "F8");
-            descriptions.Add(F9, "F9");
-            descriptions.Add(F10, "F10");
-            descriptions.Add(F11, "F11");
-            descriptions.Add(F12, "F12");
-            descriptions.Add(Meta, "Meta");
-            descriptions.Add(Command, "Command");
-            descriptions.Add(ZenkakuHankaku, "Zenkaku Hankaku");
-            descriptions.Add(RightShift, "Right Shift");
-            descriptions.Add(RightControl, "Right Control");
-            descriptions.Add(RightAlt, "Right Alt");
-            descriptions.Add(RightCommand, "Right Command");
-            descriptions.Add(Options, "Options");
-            descriptions.Add(Function, "Function");
+            descriptions[Null] = "Null";
+            descriptions[Cancel] = "Cancel";
+            descriptions[Help] = "Help";
+            descriptions[Backspace] = "Backspace";
+            descriptions[Tab] = "Tab";
+            descriptions[Clear] = "Clear";
+            descriptions[Return] = "Return";
+            descriptions[Enter] = "Enter";
+            descriptions[Shift] = "Shift";
+            descriptions[Control] = "Control";
+            descriptions[Alt] = "Alt";
+            descriptions[Pause] = "Pause";
+            descriptions[Escape] = "Escape";
+            descriptions[Space] = "Space";
+            descriptions[PageUp] = "Page Up";
+            descriptions[PageDown] = "PageDown";
+            descriptions[End] = "End";
+            descriptions[Home] = "Home";
+            descriptions[Left] = "Left";
+            descriptions[Up] = "Up";
+            descriptions[Right] = "Right";
+            descriptions[Down] = "Down";
+            descriptions[Insert] = "Insert";
+            descriptions[Delete] = "Delete";
+            descriptions[Semicolon] = "Semicolon";
+            descriptions[Equal] = "Equal";
+            descriptions[NumberPad0] = "Number Pad 0";
+            descriptions[NumberPad1] = "Number Pad 1";
+            descriptions[NumberPad2] = "Number Pad 2";
+            descriptions[NumberPad3] = "Number Pad 3";
+            descriptions[NumberPad4] = "Number Pad 4";
+            descriptions[NumberPad5] = "Number Pad 5";
+            descriptions[NumberPad6] = "Number Pad 6";
+            descriptions[NumberPad7] = "Number Pad 7";
+            descriptions[NumberPad8] = "Number Pad 8";
+            descriptions[NumberPad9] = "Number Pad 9";
+            descriptions[Multiply] = "Multiply";
+            descriptions[Add] = "Add";
+            descriptions[Separator] = "Separator";
+            descriptions[Subtract] = "Subtract";
+            descriptions[Decimal] = "Decimal";
+            descriptions[Divide] = "Divide";
+            descriptions[F1] = "F1";
+            descriptions[F2] = "F2";
+            descriptions[F3] = "F3";
+            descriptions[F4] = "F4";
+            descriptions[F5] = "F5";
+            descriptions[F6] = "F6";
+            descriptions[F7] = "F7";
+            descriptions[F8] = "F8";
+            descriptions[F9] = "F9";
+            descriptions[F10] = "F10";
+            descriptions[F11] = "F11";
+            descriptions[F12] = "F12";
+            descriptions[Meta] = "Meta";
+            descriptions[Command] = "Command";
+            descriptions[ZenkakuHankaku] = "Zenkaku Hankaku";
+            descriptions[RightShift] = "Right Shift";
+            descriptions[RightControl] = "Right Control";
+            descriptions[RightAlt] = "Right Alt";
+            descriptions[RightCommand] = "Right Command";
         }
 
         if (descriptions.TryGetValue(value, out string? description))
