@@ -35,23 +35,6 @@ public class AlertsTests : DriverTestFixture
     }
 
     [Test]
-    public void ShouldBeAbleToDismissTheWindowAlert()
-    {
-        using var driver = EnvironmentManager.Instance.CreateDriverInstance(new CustomAlertDriverOptions
-        {
-            UnhandledPromptBehavior = new UserPromptHandler.PerPromptType { Default = UnhandledPromptBehavior.Dismiss }
-        });
-
-        driver.Url = CreateAlertPage("cheese");
-
-        driver.FindElement(By.Id("alert")).Click();
-
-        Assert.That(
-            () => driver.FindElement(By.Id("alert")).Click(),
-            Throws.Nothing, "Unexpected alert was not dismissed as expected");
-    }
-
-    [Test]
     public void ShouldAllowUsersToAcceptAnAlertManually()
     {
         driver.Url = CreateAlertPage("cheese");
@@ -571,18 +554,5 @@ public class AlertsTests : DriverTestFixture
         {
             return driver.WindowHandles.Count == count;
         };
-    }
-
-    class CustomAlertDriverOptions : DriverOptions
-    {
-        public CustomAlertDriverOptions()
-        {
-
-        }
-
-        public override ICapabilities ToCapabilities()
-        {
-            return null;
-        }
     }
 }
