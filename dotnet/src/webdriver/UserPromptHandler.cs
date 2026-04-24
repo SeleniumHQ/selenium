@@ -134,7 +134,7 @@ public abstract record UserPromptHandler
             AddIfSet(capabilities, "beforeUnload", BeforeUnload);
             AddIfSet(capabilities, "file", File);
             AddIfSet(capabilities, "default", Default);
-            return capabilities.Count == 0 ? null : capabilities;
+            return capabilities;
         }
 
         private static void AddIfSet(Dictionary<string, string> capabilities, string key, UnhandledPromptBehavior? value)
