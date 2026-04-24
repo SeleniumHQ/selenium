@@ -3,12 +3,16 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>WebDriver.Remote.Tests</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+    <EnableMicrosoftTestingPlatform>true</EnableMicrosoftTestingPlatform>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <EnableNUnitRunner>true</EnableNUnitRunner>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="NUnit" Version="4.5.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,15 +10,20 @@ load(
 _BROWSERS = {
     "chrome": {
         "args": [
-            "--params=ActiveDriverConfig=Chrome",
+            "--test-parameter",
+            "ActiveDriverConfig=Chrome",
         ] + select({
             "@selenium//common:use_pinned_linux_chrome": [
-                "--params=DriverServiceLocation=$(location @linux_chromedriver//:chromedriver)",
-                "--params=BrowserLocation=$(location @linux_chrome//:chrome-linux64/chrome)",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @linux_chromedriver//:chromedriver)",
+                "--test-parameter",
+                "BrowserLocation=$(location @linux_chrome//:chrome-linux64/chrome)",
             ],
             "@selenium//common:use_pinned_macos_chrome": [
-                "--params=DriverServiceLocation=$(location @mac_chromedriver//:chromedriver)",
-                "--params=BrowserLocation=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @mac_chromedriver//:chromedriver)",
+                "--test-parameter",
+                "BrowserLocation=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             ],
             "//conditions:default": [],
         }),
@@ -27,15 +32,20 @@ _BROWSERS = {
     },
     "edge": {
         "args": [
-            "--params=ActiveDriverConfig=Edge",
+            "--test-parameter",
+            "ActiveDriverConfig=Edge",
         ] + select({
             "@selenium//common:use_pinned_linux_edge": [
-                "--params=DriverServiceLocation=$(location @linux_edgedriver//:msedgedriver)",
-                "--params=BrowserLocation=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @linux_edgedriver//:msedgedriver)",
+                "--test-parameter",
+                "BrowserLocation=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
             ],
             "@selenium//common:use_pinned_macos_edge": [
-                "--params=DriverServiceLocation=$(location @mac_edgedriver//:msedgedriver)",
-                "\"--params=BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @mac_edgedriver//:msedgedriver)",
+                "--test-parameter",
+                "\"BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
             ],
             "//conditions:default": [],
         }),
@@ -44,15 +54,20 @@ _BROWSERS = {
     },
     "firefox": {
         "args": [
-            "--params=ActiveDriverConfig=Firefox",
+            "--test-parameter",
+            "ActiveDriverConfig=Firefox",
         ] + select({
             "@selenium//common:use_pinned_linux_firefox": [
-                "--params=DriverServiceLocation=$(location @linux_geckodriver//:geckodriver)",
-                "--params=BrowserLocation=$(location @linux_firefox//:firefox/firefox)",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @linux_geckodriver//:geckodriver)",
+                "--test-parameter",
+                "BrowserLocation=$(location @linux_firefox//:firefox/firefox)",
             ],
             "@selenium//common:use_pinned_macos_firefox": [
-                "--params=DriverServiceLocation=$(location @mac_geckodriver//:geckodriver)",
-                "--params=BrowserLocation=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
+                "--test-parameter",
+                "DriverServiceLocation=$(location @mac_geckodriver//:geckodriver)",
+                "--test-parameter",
+                "BrowserLocation=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
             ],
             "//conditions:default": [],
         }),
@@ -61,11 +76,14 @@ _BROWSERS = {
     },
     "ie": {
         "args": [
-            "--params=ActiveDriverConfig=IE",
+            "--test-parameter",
+            "ActiveDriverConfig=IE",
         ] + select({
             "//common:windows": [],
             "//conditions:default": [
-                "--where=SkipTest==True",
+                # Force zero matches on platforms where IE cannot run.
+                "--filter",
+                "FullyQualifiedName~__SkipAll__",
             ],
         }),
         "data": [],
@@ -73,11 +91,13 @@ _BROWSERS = {
     },
     "safari": {
         "args": [
-            "--params=ActiveDriverConfig=Safari",
+            "--test-parameter",
+            "ActiveDriverConfig=Safari",
         ] + select({
             "//common:macos": [],
             "//conditions:default": [
-                "--where=SkipTest==True",
+                "--filter",
+                "FullyQualifiedName~__SkipAll__",
             ],
         }),
         "data": [],
@@ -85,7 +105,8 @@ _BROWSERS = {
     },
     "remote": {
         "args": [
-            "--params=ActiveDriverConfig=Remote",
+            "--test-parameter",
+            "ActiveDriverConfig=Remote",
         ],
         "data": [
             "//:grid",
@@ -96,18 +117,28 @@ _BROWSERS = {
 
 _HEADLESS_ARGS = select({
     "@selenium//common:use_headless_browser": [
-        "--params=Headless=true",
+        "--test-parameter",
+        "Headless=true",
     ],
     "//conditions:default": [],
 })
 
 _TEST_SUFFIXES = ("Test.cs", "Tests.cs")
 
-_NUNIT_ARGS = [
-    "--workers=1",  # Bazel tests share a single driver instance; prevent NUnit parallelism
-]
+# MTP runs tests serially within a single host by default. NUnit-level
+# parallelism is opt-in via [Parallelizable], which the test code already
+# avoids except where intended. No global --workers flag is needed.
+_NUNIT_ARGS = []
 
-_NUNIT_SHIM = "@rules_dotnet//dotnet/private/rules/common/nunit:shim.cs"
+_NUNIT_SHIM = "//dotnet/private:mtp_shim.cs"
+
+_MTP_DEPS = [
+    "@paket.nuget//nunit",
+    "//dotnet/private:nunit3testadapter_runtime",
+    "@paket.nuget//microsoft.testing.platform",
+    "@paket.nuget//microsoft.testing.extensions.vstestbridge",
+    "@paket.nuget//microsoft.extensions.dependencymodel",
+]
 
 def _test_wrapper_impl(ctx):
     binary = ctx.executable.test_binary
@@ -173,7 +204,7 @@ def dotnet_nunit_test_suite(
     csharp_test(
         name = name,
         srcs = srcs + [_NUNIT_SHIM],
-        deps = deps + ["@paket.nuget//nunitlite"],
+        deps = depset(deps + _MTP_DEPS).to_list(),
         target_frameworks = target_frameworks,
         data = data + all_browser_data,
         tags = ["manual"] + tags,
@@ -201,7 +232,7 @@ def dotnet_nunit_test_suite(
             _test_wrapper_test(
                 name = browser_test_name,
                 test_binary = ":" + name,
-                args = _NUNIT_ARGS + ["--where=class=~\\.%s$$" % class_name] + browser_args,
+                args = _NUNIT_ARGS + ["--filter", "FullyQualifiedName~.%s" % class_name] + browser_args,
                 data = browser_data,
                 tags = tags + browser_tags,
                 size = size,
