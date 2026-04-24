@@ -18,8 +18,8 @@ exports_files(
 # This wrapper exposes the DLLs as a usable compile + runtime reference.
 import_library(
     name = "nunit3testadapter_runtime",
+    framework_list = {},
     library_name = "NUnit3.TestAdapter",
-    version = "6.2.0",
     libs = [
         "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/NUnit3.TestAdapter.dll",
         "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/nunit.engine.dll",
@@ -28,7 +28,7 @@ import_library(
         "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/testcentric.engine.metadata.dll",
     ],
     refs = ["@nuget.nunit3testadapter.v6.2.0//:build/net8.0/NUnit3.TestAdapter.dll"],
-    framework_list = {},
     targeting_pack_overrides = {},
+    version = "6.2.0",
     visibility = ["//visibility:public"],
 )
