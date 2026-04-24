@@ -46,8 +46,9 @@ public class AlertsTests : DriverTestFixture
 
         driver.FindElement(By.Id("alert")).Click();
 
-        // If we can perform any action again, we're good to go
-        driver.FindElement(By.Id("alert")).Click();
+        Assert.That(
+            () => driver.FindElement(By.Id("alert")).Click(),
+            Throws.Nothing, "Unexpected alert was not dismissed as expected");
     }
 
     [Test]
