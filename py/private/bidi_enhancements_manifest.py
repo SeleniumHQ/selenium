@@ -1048,8 +1048,20 @@ disownDataParameters = DisownDataParameters''',
         params.update(kwargs)
         self._conn.execute(_cb("network.continueRequest", params))''',
         ],
+        # Override auth_required to use raw dict so _auth_callback receives all
+        # fields (including "request") from the BiDi event params.  The
+        # generated AuthRequiredParameters dataclass only contains "response",
+        # losing the "request" field that holds the request ID required to call
+        # network.continueWithAuth.  extra_events entries appear last in the
+        # EVENT_CONFIGS dict literal, so this duplicate key overrides the
+        # CDDL-generated entry.
         # Add before_request event (maps to network.beforeRequestSent)
         "extra_events": [
+            {
+                "event_key": "auth_required",
+                "bidi_event": "network.authRequired",
+                "event_class": "dict",
+            },
             {
                 "event_key": "before_request",
                 "bidi_event": "network.beforeRequestSent",
