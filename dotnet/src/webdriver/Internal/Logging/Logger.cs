@@ -37,27 +37,67 @@ internal sealed class Logger : ILogger
 
     public void Trace(string message)
     {
-        LogMessage(LogEventLevel.Trace, message);
+        if (IsEnabled(LogEventLevel.Trace))
+        {
+            LogMessage(LogEventLevel.Trace, message);
+        }
+    }
+
+    public void Trace(ref TraceLogStringHandler handler)
+    {
+        LogMessage(LogEventLevel.Trace, handler.ToStringAndClear());
     }
 
     public void Debug(string message)
     {
-        LogMessage(LogEventLevel.Debug, message);
+        if (IsEnabled(LogEventLevel.Debug))
+        {
+            LogMessage(LogEventLevel.Debug, message);
+        }
+    }
+
+    public void Debug(ref DebugLogStringHandler handler)
+    {
+        LogMessage(LogEventLevel.Debug, handler.ToStringAndClear());
     }
 
     public void Info(string message)
     {
-        LogMessage(LogEventLevel.Info, message);
+        if (IsEnabled(LogEventLevel.Info))
+        {
+            LogMessage(LogEventLevel.Info, message);
+        }
+    }
+
+    public void Info(ref InfoLogStringHandler handler)
+    {
+        LogMessage(LogEventLevel.Info, handler.ToStringAndClear());
     }
 
     public void Warn(string message)
     {
-        LogMessage(LogEventLevel.Warn, message);
+        if (IsEnabled(LogEventLevel.Warn))
+        {
+            LogMessage(LogEventLevel.Warn, message);
+        }
+    }
+
+    public void Warn(ref WarnLogStringHandler handler)
+    {
+        LogMessage(LogEventLevel.Warn, handler.ToStringAndClear());
     }
 
     public void Error(string message)
     {
-        LogMessage(LogEventLevel.Error, message);
+        if (IsEnabled(LogEventLevel.Error))
+        {
+            LogMessage(LogEventLevel.Error, message);
+        }
+    }
+
+    public void Error(ref ErrorLogStringHandler handler)
+    {
+        LogMessage(LogEventLevel.Error, handler.ToStringAndClear());
     }
 
     public bool IsEnabled(LogEventLevel level)
