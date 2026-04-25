@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -213,6 +214,7 @@ class WebElementToJsonConverterTest {
 
   private static RemoteWebDriver createIdleDriver() {
     return new RemoteWebDriver(cmd -> new Response(), new ImmutableCapabilities()) {
+      @NullMarked
       @Override
       protected void startSession(Capabilities capabilities) {
         // Do nothing

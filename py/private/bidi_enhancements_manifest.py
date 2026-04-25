@@ -1048,8 +1048,20 @@ disownDataParameters = DisownDataParameters''',
         params.update(kwargs)
         self._conn.execute(_cb("network.continueRequest", params))''',
         ],
+        # Override auth_required to use raw dict so _auth_callback receives all
+        # fields (including "request") from the BiDi event params.  The
+        # generated AuthRequiredParameters dataclass only contains "response",
+        # losing the "request" field that holds the request ID required to call
+        # network.continueWithAuth.  extra_events entries appear last in the
+        # EVENT_CONFIGS dict literal, so this duplicate key overrides the
+        # CDDL-generated entry.
         # Add before_request event (maps to network.beforeRequestSent)
         "extra_events": [
+            {
+                "event_key": "auth_required",
+                "bidi_event": "network.authRequired",
+                "event_class": "dict",
+            },
             {
                 "event_key": "before_request",
                 "bidi_event": "network.beforeRequestSent",
@@ -1087,24 +1099,37 @@ disownDataParameters = DisownDataParameters''',
         self._conn.execute(_cb("network.removeIntercept", {"intercept": intercept_id}))
         if intercept_id in self.intercepts:
             self.intercepts.remove(intercept_id)''',
+            '''    def _canonical_request_handler_event(self, event):
+        """Map public request-handler aliases to supported event keys."""
+        event_aliases = {
+            "auth_required": "auth_required",
+            "before_request": "before_request",
+            "before_request_sent": "before_request",
+        }
+        canonical_event = event_aliases.get(event)
+        if canonical_event is None:
+            available_events = ", ".join(sorted(event_aliases))
+            raise ValueError(
+                f"Unsupported request handler event '{event}'. Available events: {available_events}"
+            )
+        return canonical_event''',
             '''    def add_request_handler(self, event, callback, url_patterns=None):
         """Add a handler for network requests at the specified phase.
 
         Args:
-            event: Event name, e.g. ``"before_request"``.
+            event: Event name, e.g. ``"before_request"`` or ``"before_request_sent"``.
             callback: Callable receiving a :class:`Request` instance.
             url_patterns: optional list of URL pattern dicts to filter.
 
         Returns:
             callback_id int for later removal via remove_request_handler.
         """
+        canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",
-            "before_request_sent": "beforeRequestSent",
-            "response_started": "responseStarted",
             "auth_required": "authRequired",
         }
-        phase = phase_map.get(event, "beforeRequestSent")
+        phase = phase_map[canonical_event]
         intercept_result = self._add_intercept(phases=[phase], url_patterns=url_patterns)
         intercept_id = intercept_result.get("intercept") if intercept_result else None
 
@@ -1117,7 +1142,7 @@ disownDataParameters = DisownDataParameters''',
             request = Request(self._conn, raw)
             callback(request)
 
-        callback_id = self.add_event_handler(event, _request_callback)
+        callback_id = self.add_event_handler(canonical_event, _request_callback)
         if intercept_id:
             self._handler_intercepts[callback_id] = intercept_id
         return callback_id''',
@@ -1128,7 +1153,8 @@ disownDataParameters = DisownDataParameters''',
             event: The event name used when adding the handler.
             callback_id: The int returned by add_request_handler.
         """
-        self.remove_event_handler(event, callback_id)
+        canonical_event = self._canonical_request_handler_event(event)
+        self.remove_event_handler(canonical_event, callback_id)
         intercept_id = self._handler_intercepts.pop(callback_id, None)
         if intercept_id:
             self._remove_intercept(intercept_id)''',

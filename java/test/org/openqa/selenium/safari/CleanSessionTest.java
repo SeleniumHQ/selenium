@@ -79,7 +79,7 @@ class CleanSessionTest extends JupiterTestBase {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     executor.executeScript("setTimeout = function() {}");
 
-    long result =
+    Long result =
         (Long)
             executor.executeAsyncScript(
                 "var callback = arguments[arguments.length - 1];"
@@ -96,7 +96,7 @@ class CleanSessionTest extends JupiterTestBase {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     executor.executeScript("window.postMessage('hi', '*');");
 
-    long numMessages = (Long) executor.executeScript("return window.messages.length;");
+    Long numMessages = (Long) executor.executeScript("return window.messages.length;");
 
     assertThat(numMessages).isEqualTo(1L);
   }

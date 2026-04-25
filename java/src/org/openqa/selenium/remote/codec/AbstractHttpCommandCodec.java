@@ -322,7 +322,10 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   private String buildUri(
-      String commandName, SessionId sessionId, Map<String, ?> parameters, CommandSpec spec) {
+      String commandName,
+      @Nullable SessionId sessionId,
+      Map<String, ?> parameters,
+      CommandSpec spec) {
     StringBuilder builder = new StringBuilder();
     for (String part : spec.pathSegments) {
       if (part.isEmpty()) {
@@ -340,10 +343,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   private String getParameter(
-      String parameterName, String commandName, SessionId sessionId, Map<String, ?> parameters) {
+      String parameterName,
+      String commandName,
+      @Nullable SessionId sessionId,
+      Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      Require.argument("Session id", sessionId)
-          .nonNull("Session ID may not be null for command %s", commandName);
+      Require.nonNull("Session id", sessionId, "may not be null for command %s", commandName);
       return sessionId.toString();
     }
 

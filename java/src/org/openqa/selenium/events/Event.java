@@ -20,6 +20,7 @@ package org.openqa.selenium.events;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -31,11 +32,11 @@ public class Event {
   private final EventName eventName;
   private final String data;
 
-  public Event(EventName eventName, Object data) {
+  public Event(EventName eventName, @Nullable Object data) {
     this(UUID.randomUUID(), eventName, data);
   }
 
-  public Event(UUID id, EventName eventName, Object data) {
+  public Event(UUID id, EventName eventName, @Nullable Object data) {
     this.id = Require.nonNull("Message id", id);
     this.eventName = Require.nonNull("Event type", eventName);
 

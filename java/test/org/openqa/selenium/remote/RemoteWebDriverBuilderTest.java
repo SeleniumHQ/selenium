@@ -47,6 +47,7 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -235,7 +236,7 @@ class RemoteWebDriverBuilderTest {
 
     assertThat(seen).hasValue(uri);
     assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
-    assertThat(((RemoteWebDriver) webDriver).capabilities.asMap())
+    assertThat(((HasCapabilities) webDriver).getCapabilities().asMap())
         .containsEntry("se:cheese", "primula");
   }
 

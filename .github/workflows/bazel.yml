@@ -96,6 +96,19 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
+      - name: Remove extra tools to free disk space
+        if: inputs.os == 'ubuntu'
+        run: |
+          echo "Removing extra tools to free disk space..."
+          echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /usr/local/julia* || true
+          sync
+          after=$(df -BG / | tail -1 | awk '{print $4}')
+          echo "Space after: ${after}"
       - name: Calculate fetch depth
         id: depth
         shell: bash

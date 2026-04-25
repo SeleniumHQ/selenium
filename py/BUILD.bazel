@@ -262,8 +262,10 @@ py_library(
 # BiDi protocol support
 py_library(
     name = "bidi",
-    srcs = glob(["selenium/webdriver/common/bidi/**/*.py"]),
-    data = [":mutation-listener"],
+    srcs = [":create-bidi-src"],
+    data = [
+        ":mutation-listener",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -534,7 +536,7 @@ py_wheel(
     python_requires = ">=3.10",
     python_tag = "py3",
     requires = [
-        "certifi>=2026.1.4",
+        "certifi>=2026.2.25",
         "trio>=0.31.0,<1.0",
         "trio-websocket>=0.12.2,<1.0",
         "typing_extensions>=4.15.0,<5.0",
@@ -617,10 +619,10 @@ generate_devtools_latest(
     browser_versions = BROWSER_VERSIONS,
 )
 
-# Pilot BiDi code generation from CDDL specification
+# Generate BiDi source files from CDDL specification
 generate_bidi(
     name = "create-bidi-src",
-    cddl_file = "//common/bidi/spec:all.cddl",
+    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
     enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
     extra_srcs = [
         "//py/private:_event_manager.py",

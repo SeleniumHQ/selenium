@@ -124,8 +124,7 @@ class ReverseProxyEndToEndTest {
               c -> {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                return status != null && Boolean.parseBoolean(status.get("ready").toString());
               });
     }
   }
@@ -164,7 +163,7 @@ class ReverseProxyEndToEndTest {
 
   private static URL url(Server<?> server) {
     try {
-      return new URL(server.getUrl().toString() + SUB_PATH);
+      return new URL(server.getUrl() + SUB_PATH);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
@@ -172,7 +171,7 @@ class ReverseProxyEndToEndTest {
 
   private static String gridUi(Server<?> server) {
     try {
-      return new URL(server.getUrl().toString() + SUB_PATH + "/ui").toString();
+      return new URL(server.getUrl() + SUB_PATH + "/ui").toString();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }

@@ -30,7 +30,7 @@ thread_local!(static LOCK_PATH: RefCell<Option<PathBuf>> = const { RefCell::new(
 const LOCK_FILE: &str = "sm.lock";
 
 pub struct Lock {
-    file: File,
+    file: Option<File>,
     path: PathBuf,
 }
 
@@ -55,17 +55,28 @@ impl Lock {
         file.lock_exclusive().unwrap_or_default();
         set_lock_path(Some(path.to_path_buf()));
 
-        Ok(Self { file, path })
+        Ok(Self {
+            file: Some(file),
+            path,
+        })
     }
 
     pub fn release(&mut self) {
-        fs::remove_file(&self.path).unwrap_or_default();
-        FileExt::unlock(&self.file).unwrap_or_default();
+        if let Some(file) = self.file.take() {
+            FileExt::unlock(&file).unwrap_or_default();
+            fs::remove_file(&self.path).unwrap_or_default();
+        }
         set_lock_path(None);
     }
 
     pub fn exists(&mut self) -> bool {
         self.path.exists()
+    }
+}
+
+impl Drop for Lock {
+    fn drop(&mut self) {
+        self.release();
     }
 }
 
@@ -85,4 +96,56 @@ fn set_lock_path(path: Option<PathBuf>) {
 
 fn get_lock_path() -> Option<PathBuf> {
     LOCK_PATH.with(|lock_path| lock_path.borrow().clone())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{LOCK_FILE, Lock};
+    use crate::logger::Logger;
+    use std::fs;
+    use std::path::PathBuf;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    fn create_test_dir(prefix: &str) -> PathBuf {
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let dir = std::env::temp_dir().join(format!("{}_{}", prefix, unique));
+        fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    #[test]
+    fn release_is_idempotent_and_removes_lock_file() {
+        let root = create_test_dir("lock_release");
+        let lock_path = root.join(LOCK_FILE);
+        let logger = Logger::new();
+        let mut lock = Lock::acquire(&logger, &root, None).unwrap();
+
+        assert!(lock_path.exists());
+
+        lock.release();
+        assert!(!lock_path.exists());
+
+        lock.release();
+        assert!(!lock_path.exists());
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn drop_releases_lock_file() {
+        let root = create_test_dir("lock_drop");
+        let lock_path = root.join(LOCK_FILE);
+        let logger = Logger::new();
+
+        {
+            let _lock = Lock::acquire(&logger, &root, None).unwrap();
+            assert!(lock_path.exists());
+        }
+
+        assert!(!lock_path.exists());
+        fs::remove_dir_all(root).unwrap();
+    }
 }

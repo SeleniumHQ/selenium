@@ -90,3 +90,17 @@ def method(param: str) -> bool:
         ValueError: When condition.
     """
 ```
+
+## Formatting
+
+Python files are formatted with **ruff format** and checked with **ruff check**.
+Run `./go format` after changes; it will auto-fix formatting. Then check `git diff` to see what changed.
+Run `./go lint` to also run linting (stricter).
+
+Key rules enforced (from `py/pyproject.toml`):
+- Line length: **120 characters**
+- Target version: Python 3.10+
+- Ruff lint rules active: `D, E, F, I, PT, UP, RUF, TID252`
+  - `I` = import ordering (imports must be sorted; `isort`-compatible)
+  - `UP` = use modern Python idioms (e.g. `X | None` instead of `Optional[X]`)
+  - `E/F` = pycodestyle / pyflakes errors (unused imports, undefined names, etc.)

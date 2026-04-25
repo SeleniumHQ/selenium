@@ -23,6 +23,7 @@ use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
+use selenium_manager::jre::ensure_jre;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
@@ -237,9 +238,31 @@ fn main() {
         clear_metadata(selenium_manager.get_logger(), &cache_path);
     }
 
+    let proxy = cli.proxy.clone().unwrap_or_default();
+
     selenium_manager
         .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_proxy(proxy.clone()))
+        .and_then(|_| {
+            if selenium_manager.is_grid() {
+                ensure_jre(
+                    Some(cache_path.as_str()),
+                    cli.timeout,
+                    Some(proxy.as_str()),
+                    selenium_manager.is_offline(),
+                    selenium_manager.get_logger(),
+                )
+                .map(|runtime| {
+                    selenium_manager.get_logger().debug(format!(
+                        "Java runtime resolved from {}: {}",
+                        runtime.source,
+                        runtime.java_path.display()
+                    ));
+                })
+            } else {
+                Ok(())
+            }
+        })
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
