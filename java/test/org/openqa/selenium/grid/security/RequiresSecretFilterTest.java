@@ -17,51 +17,30 @@
 
 package org.openqa.selenium.grid.security;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import java.net.HttpURLConnection;
-import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-class BasicAuthenticationFilterTest {
+class RequiresSecretFilterTest {
 
   @Test
-  void shouldAskAnUnauthenticatedRequestToAuthenticate() {
+  void shouldRequireSecretForRegularRequests() {
     HttpHandler handler =
-        new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
+        new RequiresSecretFilter(new Secret("cheddar")).apply(req -> new HttpResponse());
 
-    HttpResponse res = handler.execute(new HttpRequest(GET, "/"));
+    HttpResponse res = handler.execute(new HttpRequest(GET, "/status"));
 
-    assertThat(res.getStatus()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
-    assertThat(res.getHeader("Www-Authenticate")).startsWith("Basic ");
-    assertThat(res.getHeader("Www-Authenticate")).contains("Basic ");
+    assertThat(res.isSuccessful()).isFalse();
   }
 
   @Test
-  void shouldAllowAuthenticatedTrafficThrough() {
+  void shouldAllowReadinessCheckWithoutSecret() {
     HttpHandler handler =
-        new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
-
-    HttpResponse res =
-        handler.execute(
-            new HttpRequest(GET, "/")
-                .setHeader(
-                    "Authorization",
-                    "Basic "
-                        + Base64.getEncoder().encodeToString("cheese:cheddar".getBytes(UTF_8))));
-
-    assertThat(res.isSuccessful()).isTrue();
-  }
-
-  @Test
-  void shouldAllowReadinessCheckWithoutAuthentication() {
-    HttpHandler handler =
-        new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
+        new RequiresSecretFilter(new Secret("cheddar")).apply(req -> new HttpResponse());
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/readyz"));
 

@@ -253,7 +253,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   @Override
   public boolean isReady() {
     try {
-      return Set.of(bus, sessions).parallelStream()
+      return Set.of(bus, sessions, sessionQueue).parallelStream()
           .map(HasReadyState::isReady)
           .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {

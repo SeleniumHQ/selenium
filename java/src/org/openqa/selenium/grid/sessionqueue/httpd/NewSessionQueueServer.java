@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue.httpd;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -41,6 +40,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -87,6 +87,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
     NewSessionQueueOptions queueOptions = new NewSessionQueueOptions(config);
 
     NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEW_SESSION_QUEUE);
+    ReadinessCheck readinessCheck = new ReadinessCheck("New Session Queue", sessionQueue::isReady);
 
     return new Handlers(
         Route.combine(
@@ -106,10 +107,11 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
                                                 true,
                                                 "message",
                                                 "New Session Queue is ready."))))),
-            get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
+            get("/readyz").to(() -> readinessCheck)),
         null) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         if (sessionQueue instanceof Closeable) {
           try {
             ((Closeable) sessionQueue).close();

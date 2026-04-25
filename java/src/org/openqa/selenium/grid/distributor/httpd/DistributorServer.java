@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.httpd;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
@@ -28,7 +26,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.net.MediaType;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -45,9 +42,9 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
@@ -93,14 +90,7 @@ public class DistributorServer extends TemplateGridServerCommand {
 
     Distributor distributor = distributorOptions.getDistributor();
 
-    HttpHandler readinessCheck =
-        req -> {
-          boolean ready = distributor.isReady();
-          return new HttpResponse()
-              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-              .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-              .setContent(Contents.utf8String("Distributor is " + ready));
-        };
+    ReadinessCheck readinessCheck = new ReadinessCheck("Distributor", distributor::isReady);
 
     return new Handlers(
         Route.combine(
@@ -123,6 +113,7 @@ public class DistributorServer extends TemplateGridServerCommand {
         null) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         if (distributor instanceof Closeable) {
           try {
             ((Closeable) distributor).close();

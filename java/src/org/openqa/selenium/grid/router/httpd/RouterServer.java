@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
@@ -70,14 +68,12 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -177,13 +173,7 @@ public class RouterServer extends TemplateGridServerCommand {
       route = route.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
     }
 
-    HttpHandler readinessCheck =
-        req -> {
-          boolean ready = router.isReady();
-          return new HttpResponse()
-              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-              .setContent(Contents.utf8String("Router is " + ready));
-        };
+    ReadinessCheck readinessCheck = new ReadinessCheck("Router", router::isReady);
 
     // Since k8s doesn't make it easy to do an authenticated liveness probe, allow unauthenticated
     // access to it.
@@ -214,6 +204,7 @@ public class RouterServer extends TemplateGridServerCommand {
         tcpTunnelResolver) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         router.close();
         if (sessions instanceof Closeable) {
           try {

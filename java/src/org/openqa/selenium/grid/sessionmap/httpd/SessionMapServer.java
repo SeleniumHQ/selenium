@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.httpd;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
@@ -42,6 +41,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -87,6 +87,7 @@ public class SessionMapServer extends TemplateGridServerCommand {
 
     SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionMapOptions.getSessionMap();
+    ReadinessCheck readinessCheck = new ReadinessCheck("Session map", sessions::isReady);
 
     return new Handlers(
         Route.combine(
@@ -106,10 +107,11 @@ public class SessionMapServer extends TemplateGridServerCommand {
                                                 true,
                                                 "message",
                                                 "Session map is ready."))))),
-            get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
+            get("/readyz").to(() -> readinessCheck)),
         null) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         if (sessions instanceof Closeable) {
           try {
             ((Closeable) sessions).close();

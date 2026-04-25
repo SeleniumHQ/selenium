@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
@@ -26,7 +24,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.net.MediaType;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import java.io.Closeable;
@@ -60,12 +57,10 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -126,20 +121,9 @@ public class NodeServer extends TemplateGridServerCommand {
     NodeOptions nodeOptions = new NodeOptions(config);
     this.node = nodeOptions.getNode();
 
-    HttpHandler readinessCheck =
-        req -> {
-          if (node.isReady() && node.getStatus().hasCapacity()) {
-            return new HttpResponse()
-                .setStatus(HTTP_OK)
-                .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-                .setContent(Contents.utf8String("Node has capacity available"));
-          }
-
-          return new HttpResponse()
-              .setStatus(HTTP_UNAVAILABLE)
-              .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-              .setContent(Contents.utf8String("Node has no capacity available"));
-        };
+    ReadinessCheck readinessCheck =
+        new ReadinessCheck(
+            "Node", () -> node.isReady() && !node.isDraining() && node.getStatus().hasCapacity());
 
     bus.addListener(
         NodeAddedEvent.listener(
@@ -179,6 +163,7 @@ public class NodeServer extends TemplateGridServerCommand {
         httpHandler, new ProxyNodeWebsockets(clientFactory, node, nodeOptions.getGridSubPath())) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         if (node instanceof Closeable) {
           try {
             ((Closeable) node).close();

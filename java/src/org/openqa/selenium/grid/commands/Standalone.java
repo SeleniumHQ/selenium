@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.commands;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
@@ -67,12 +65,10 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -174,14 +170,17 @@ public class Standalone extends TemplateGridServerCommand {
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
+    Node node = createNode(config, bus, distributor, combinedHandler);
 
-    HttpHandler readinessCheck =
-        req -> {
-          boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
-          return new HttpResponse()
-              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-              .setContent(Contents.utf8String("Standalone is " + ready));
-        };
+    ReadinessCheck readinessCheck =
+        new ReadinessCheck(
+            "Standalone",
+            () ->
+                router.isReady()
+                    && bus.isReady()
+                    && node.isReady()
+                    && !node.isDraining()
+                    && node.getStatus().hasCapacity());
 
     GraphqlHandler graphqlHandler =
         new GraphqlHandler(
@@ -216,11 +215,11 @@ public class Standalone extends TemplateGridServerCommand {
     // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate
     // these checks
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
-    Node node = createNode(config, bus, distributor, combinedHandler);
 
     return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node, subPath)) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         router.close();
         distributor.close();
         queue.close();

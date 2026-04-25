@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class RequiresSecretFilter implements Filter {
 
   private static final Logger LOG = Logger.getLogger(RequiresSecretFilter.class.getName());
+  private static final String READINESS_ENDPOINT = "/readyz";
   private final Secret secret;
 
   public RequiresSecretFilter(Secret secret) {
@@ -44,6 +45,10 @@ public class RequiresSecretFilter implements Filter {
     Require.nonNull("HTTP handler", httpHandler);
 
     return req -> {
+      if (READINESS_ENDPOINT.equals(req.getUri())) {
+        return httpHandler.execute(req);
+      }
+
       if (!isSecretMatch(secret, req)) {
         return new HttpResponse()
             .setStatus(HTTP_UNAUTHORIZED)

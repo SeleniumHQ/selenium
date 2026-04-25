@@ -17,6 +17,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionmap",
         "//java/src/org/openqa/selenium/grid/sessionmap/config",
+        "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),

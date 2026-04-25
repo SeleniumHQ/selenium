@@ -20,6 +20,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/config",
         "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),

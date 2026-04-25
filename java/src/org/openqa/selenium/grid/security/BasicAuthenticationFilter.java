@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class BasicAuthenticationFilter implements Filter {
 
   private static final Logger LOG = Logger.getLogger(BasicAuthenticationFilter.class.getName());
+  private static final String READINESS_ENDPOINT = "/readyz";
   private final String passphrase;
 
   public BasicAuthenticationFilter(String user, String password) {
@@ -41,6 +42,10 @@ public class BasicAuthenticationFilter implements Filter {
   public HttpHandler apply(HttpHandler next) {
     return req -> {
       Require.nonNull("Request", req);
+
+      if (READINESS_ENDPOINT.equals(req.getUri())) {
+        return next.execute(req);
+      }
 
       String auth = req.getHeader("Authorization");
       if (!isAuthorized(auth)) {

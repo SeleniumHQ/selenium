@@ -21,6 +21,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventListener;
@@ -32,6 +33,7 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 
   private final EventBus guavaBus;
   private final List<Listener> allListeners = new LinkedList<>();
+  private final AtomicBoolean ready = new AtomicBoolean(true);
 
   public GuavaEventBus() {
     guavaBus = new EventBus();
@@ -39,7 +41,7 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 
   @Override
   public boolean isReady() {
-    return true;
+    return ready.get();
   }
 
   @Override
@@ -58,6 +60,7 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 
   @Override
   public void close() {
+    ready.set(false);
     allListeners.forEach(guavaBus::unregister);
     allListeners.clear();
   }

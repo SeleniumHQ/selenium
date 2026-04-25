@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.commands;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -48,6 +47,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -126,6 +126,7 @@ public class EventBusCommand extends TemplateGridCommand {
                     });
               }
             }));
+    ReadinessCheck readinessCheck = new ReadinessCheck("Event bus", bus::isReady);
 
     return new NettyServer(
         serverOptions,
@@ -154,11 +155,12 @@ public class EventBusCommand extends TemplateGridCommand {
                             return httpResponse(false, "Status checking was interrupted");
                           }
                         }),
-            Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)))) {
+            Route.get("/readyz").to(() -> readinessCheck))) {
 
       @Override
       public void stop() {
         try {
+          readinessCheck.stopAcceptingTraffic();
           bus.close();
         } finally {
           super.stop();

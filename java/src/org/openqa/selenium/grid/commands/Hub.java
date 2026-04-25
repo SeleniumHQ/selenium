@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.commands;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
@@ -60,12 +58,10 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
+import org.openqa.selenium.grid.web.ReadinessCheck;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -169,13 +165,8 @@ public class Hub extends TemplateGridServerCommand {
         new GraphqlHandler(
             tracer, distributor, queue, serverOptions.getExternalUri(), getServerVersion());
 
-    HttpHandler readinessCheck =
-        req -> {
-          boolean ready = router.isReady() && bus.isReady();
-          return new HttpResponse()
-              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-              .setContent(Contents.utf8String("Router is " + ready));
-        };
+    ReadinessCheck readinessCheck =
+        new ReadinessCheck("Hub", () -> router.isReady() && bus.isReady());
 
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
@@ -212,6 +203,7 @@ public class Hub extends TemplateGridServerCommand {
     return new Handlers(httpHandler, new ProxyWebsocketsIntoGrid(clientFactory, sessions)) {
       @Override
       public void close() {
+        readinessCheck.stopAcceptingTraffic();
         router.close();
         distributor.close();
         queue.close();
