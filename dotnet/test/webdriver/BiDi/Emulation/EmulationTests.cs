@@ -251,7 +251,6 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsOffline()
     {
         Assert.That(async () =>
@@ -262,7 +261,6 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetNetworkConditionsToDefault()
     {
         Assert.That(async () =>

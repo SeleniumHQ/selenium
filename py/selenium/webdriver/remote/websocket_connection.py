@@ -18,6 +18,7 @@
 import dataclasses
 import json
 import logging
+import threading
 from ssl import CERT_NONE
 from threading import Thread
 from time import sleep
@@ -93,6 +94,7 @@ class WebSocketConnection:
         self.callbacks = {}
         self.session_id = None
         self._id = 0
+        self._id_lock = threading.Lock()
         self._messages = {}
         self._started = False
 
@@ -106,9 +108,11 @@ class WebSocketConnection:
         self._ws = None
 
     def execute(self, command):
-        self._id += 1
+        with self._id_lock:
+            self._id += 1
+            current_id = self._id
         payload = self._serialize_command(command)
-        payload["id"] = self._id
+        payload["id"] = current_id
         if self.session_id:
             payload["sessionId"] = self.session_id
 
@@ -116,8 +120,9 @@ class WebSocketConnection:
         logger.debug(f"-> {data}"[: self._max_log_message_size])
         self._ws.send(data)
 
-        current_id = self._id
         self._wait_until(lambda: current_id in self._messages)
+        if current_id not in self._messages:
+            raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
         response = self._messages.pop(current_id)
 
         if "error" in response:

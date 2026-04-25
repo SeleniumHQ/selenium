@@ -118,7 +118,7 @@ dotnet.toolchain(dotnet_version = "10.0.100")
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
-use_repo(selenium_paket, "paket.nuget")
+use_repo(selenium_paket, "nuget.nunit3testadapter.v6.2.0", "paket.nuget")
 
 docfx_ext = use_extension("//dotnet/private:docfx_repo.bzl", "docfx_extension")
 use_repo(docfx_ext, "docfx")
