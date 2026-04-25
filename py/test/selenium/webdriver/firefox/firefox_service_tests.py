@@ -113,7 +113,7 @@ def test_selenium_manager_resolves_browser_and_driver(clean_options) -> None:
 
     These paths should point to executable files downloaded into the SM cache.
     """
-    cache_dir = Path(os.environ.get("SE_CACHE", Path.home() / ".cache" / "selenium"))
+    cache_dir = Path(os.environ.get("SE_CACHE_PATH", Path.home() / ".cache" / "selenium"))
     service = Service()
     driver_finder = DriverFinder(service, clean_options)
 
