@@ -17,8 +17,11 @@
 // under the License.
 // </copyright>
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
+#if !NET8_0_OR_GREATER
 using System.Text;
+#endif
 
 namespace OpenQA.Selenium.Internal.Logging;
 
@@ -27,9 +30,13 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public readonly ref struct TraceLogStringHandler
+public ref struct TraceLogStringHandler
 {
-    private readonly LogInterpolatedStringHandler _inner;
+    // Not readonly: AppendLiteral/AppendFormatted on LogInterpolatedStringHandler mutate the embedded
+    // DefaultInterpolatedStringHandler value (position counter); a readonly field would be defensively copied.
+#pragma warning disable IDE0044 // Add readonly modifier
+    private LogInterpolatedStringHandler _inner;
+#pragma warning restore IDE0044
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TraceLogStringHandler"/> struct.
@@ -37,7 +44,7 @@ public readonly ref struct TraceLogStringHandler
     /// <param name="literalLength">The number of literal characters in the interpolated string.</param>
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public TraceLogStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
     {
         _inner = new LogInterpolatedStringHandler(literalLength, formattedCount, logger, LogEventLevel.Trace, out isEnabled);
@@ -66,9 +73,11 @@ public readonly ref struct TraceLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public readonly ref struct DebugLogStringHandler
+public ref struct DebugLogStringHandler
 {
-    private readonly LogInterpolatedStringHandler _inner;
+#pragma warning disable IDE0044 // Add readonly modifier - see TraceLogStringHandler for rationale
+    private LogInterpolatedStringHandler _inner;
+#pragma warning restore IDE0044
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DebugLogStringHandler"/> struct.
@@ -76,7 +85,7 @@ public readonly ref struct DebugLogStringHandler
     /// <param name="literalLength">The number of literal characters in the interpolated string.</param>
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public DebugLogStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
     {
         _inner = new LogInterpolatedStringHandler(literalLength, formattedCount, logger, LogEventLevel.Debug, out isEnabled);
@@ -105,9 +114,11 @@ public readonly ref struct DebugLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public readonly ref struct InfoLogStringHandler
+public ref struct InfoLogStringHandler
 {
-    private readonly LogInterpolatedStringHandler _inner;
+#pragma warning disable IDE0044 // Add readonly modifier - see TraceLogStringHandler for rationale
+    private LogInterpolatedStringHandler _inner;
+#pragma warning restore IDE0044
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InfoLogStringHandler"/> struct.
@@ -115,7 +126,7 @@ public readonly ref struct InfoLogStringHandler
     /// <param name="literalLength">The number of literal characters in the interpolated string.</param>
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public InfoLogStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
     {
         _inner = new LogInterpolatedStringHandler(literalLength, formattedCount, logger, LogEventLevel.Info, out isEnabled);
@@ -144,9 +155,11 @@ public readonly ref struct InfoLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public readonly ref struct WarnLogStringHandler
+public ref struct WarnLogStringHandler
 {
-    private readonly LogInterpolatedStringHandler _inner;
+#pragma warning disable IDE0044 // Add readonly modifier - see TraceLogStringHandler for rationale
+    private LogInterpolatedStringHandler _inner;
+#pragma warning restore IDE0044
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WarnLogStringHandler"/> struct.
@@ -154,7 +167,7 @@ public readonly ref struct WarnLogStringHandler
     /// <param name="literalLength">The number of literal characters in the interpolated string.</param>
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public WarnLogStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
     {
         _inner = new LogInterpolatedStringHandler(literalLength, formattedCount, logger, LogEventLevel.Warn, out isEnabled);
@@ -183,9 +196,11 @@ public readonly ref struct WarnLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public readonly ref struct ErrorLogStringHandler
+public ref struct ErrorLogStringHandler
 {
-    private readonly LogInterpolatedStringHandler _inner;
+#pragma warning disable IDE0044 // Add readonly modifier - see TraceLogStringHandler for rationale
+    private LogInterpolatedStringHandler _inner;
+#pragma warning restore IDE0044
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ErrorLogStringHandler"/> struct.
@@ -193,7 +208,7 @@ public readonly ref struct ErrorLogStringHandler
     /// <param name="literalLength">The number of literal characters in the interpolated string.</param>
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public ErrorLogStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
     {
         _inner = new LogInterpolatedStringHandler(literalLength, formattedCount, logger, LogEventLevel.Error, out isEnabled);
@@ -221,10 +236,21 @@ public readonly ref struct ErrorLogStringHandler
 /// Core interpolated string handler that defers string construction until the log level is confirmed enabled,
 /// avoiding unnecessary string allocations when logging is disabled.
 /// </summary>
+/// <remarks>
+/// On <c>net8.0</c> and later this delegates to <c>System.Runtime.CompilerServices.DefaultInterpolatedStringHandler</c>,
+/// which uses pooled character buffers and <c>ISpanFormattable</c> to avoid boxing of value-type arguments.
+/// On older target frameworks a <c>System.Text.StringBuilder</c> is used. All formatting is performed using
+/// <see cref="CultureInfo.InvariantCulture"/> so log output is culture-independent.
+/// </remarks>
 [InterpolatedStringHandler]
-public readonly ref struct LogInterpolatedStringHandler
+public ref struct LogInterpolatedStringHandler
 {
+#if NET8_0_OR_GREATER
+    private DefaultInterpolatedStringHandler _handler;
+    private readonly bool _enabled;
+#else
     private readonly StringBuilder? _builder;
+#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LogInterpolatedStringHandler"/> struct.
@@ -233,15 +259,22 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="formattedCount">The number of interpolation holes in the interpolated string.</param>
     /// <param name="logger">The logger to check for enabled status.</param>
     /// <param name="level">The log event level to check.</param>
-    /// <param name="isEnabled">When this method returns, indicates whether the handler is enabled.</param>
+    /// <param name="isEnabled">On return, indicates whether logging is enabled for this level.</param>
     public LogInterpolatedStringHandler(int literalLength, int formattedCount, ILogger logger, LogEventLevel level, out bool isEnabled)
     {
         isEnabled = logger.IsEnabled(level);
 
+#if NET8_0_OR_GREATER
+        _enabled = isEnabled;
+        _handler = isEnabled
+            ? new DefaultInterpolatedStringHandler(literalLength, formattedCount, CultureInfo.InvariantCulture)
+            : default;
+#else
         if (isEnabled)
         {
             _builder = new StringBuilder(literalLength);
         }
+#endif
     }
 
     /// <summary>
@@ -250,7 +283,14 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="s">The literal string to append.</param>
     public void AppendLiteral(string s)
     {
+#if NET8_0_OR_GREATER
+        if (_enabled)
+        {
+            _handler.AppendLiteral(s);
+        }
+#else
         _builder?.Append(s);
+#endif
     }
 
     /// <summary>
@@ -260,7 +300,26 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="value">The value to format and append.</param>
     public void AppendFormatted<T>(T value)
     {
-        _builder?.Append(value);
+#if NET8_0_OR_GREATER
+        if (_enabled)
+        {
+            _handler.AppendFormatted(value);
+        }
+#else
+        if (_builder is null)
+        {
+            return;
+        }
+
+        if (value is IFormattable formattable)
+        {
+            _builder.Append(formattable.ToString(format: null, CultureInfo.InvariantCulture));
+        }
+        else if (value is not null)
+        {
+            _builder.Append(value.ToString());
+        }
+#endif
     }
 
     /// <summary>
@@ -271,7 +330,26 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="format">The format string.</param>
     public void AppendFormatted<T>(T value, string? format)
     {
-        _builder?.AppendFormat($"{{0:{format}}}", value);
+#if NET8_0_OR_GREATER
+        if (_enabled)
+        {
+            _handler.AppendFormatted(value, format);
+        }
+#else
+        if (_builder is null)
+        {
+            return;
+        }
+
+        if (value is IFormattable formattable)
+        {
+            _builder.Append(formattable.ToString(format, CultureInfo.InvariantCulture));
+        }
+        else if (value is not null)
+        {
+            _builder.Append(value.ToString());
+        }
+#endif
     }
 
     /// <summary>
@@ -282,7 +360,7 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="alignment">The alignment for the formatted value.</param>
     public void AppendFormatted<T>(T value, int alignment)
     {
-        _builder?.AppendFormat($"{{0,{alignment}}}", value);
+        AppendFormatted(value, alignment, format: null);
     }
 
     /// <summary>
@@ -294,11 +372,49 @@ public readonly ref struct LogInterpolatedStringHandler
     /// <param name="format">The format string.</param>
     public void AppendFormatted<T>(T value, int alignment, string? format)
     {
-        _builder?.AppendFormat($"{{0,{alignment}:{format}}}", value);
+#if NET8_0_OR_GREATER
+        if (_enabled)
+        {
+            _handler.AppendFormatted(value, alignment, format);
+        }
+#else
+        if (_builder is null)
+        {
+            return;
+        }
+
+        string text;
+        if (value is IFormattable formattable)
+        {
+            text = formattable.ToString(format, CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            text = value?.ToString() ?? string.Empty;
+        }
+
+        int padding = Math.Abs(alignment) - text.Length;
+        if (padding <= 0)
+        {
+            _builder.Append(text);
+        }
+        else if (alignment < 0)
+        {
+            _builder.Append(text).Append(' ', padding);
+        }
+        else
+        {
+            _builder.Append(' ', padding).Append(text);
+        }
+#endif
     }
 
     internal string ToStringAndClear()
     {
+#if NET8_0_OR_GREATER
+        return _enabled ? _handler.ToStringAndClear() : string.Empty;
+#else
         return _builder?.ToString() ?? string.Empty;
+#endif
     }
 }
