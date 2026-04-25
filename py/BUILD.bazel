@@ -828,6 +828,7 @@ BROWSER_TESTS = {
         data = BROWSERS[browser]["data"],
         env = {
             "SE_FORCE_BROWSER_DOWNLOAD": "true",
+            "SE_SKIP_DRIVER_IN_PATH": "true",
         },
         tags = [
             "manager",
