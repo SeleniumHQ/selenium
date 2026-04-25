@@ -19,8 +19,6 @@ import base64
 import os
 from unittest.mock import patch
 
-import pytest
-
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.remote.client_config import AuthType, ClientConfig
 
@@ -208,15 +206,12 @@ def test_proxy_url_direct():
 
 
 def test_proxy_url_system_no_env():
-    """SYSTEM proxy without env vars set should return None or http_proxy/https_proxy."""
+    """SYSTEM proxy returns None when no proxy env vars are configured."""
     config = _make_config(remote_server_addr="http://example.com:4444")
-    # SYSTEM with no env vars → os.environ.get returns None → get_proxy_url returns None
     with patch.dict(os.environ, {}, clear=False):
-        # Make sure no proxy env vars are set
         for key in ["http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "no_proxy", "NO_PROXY"]:
             os.environ.pop(key, None)
         url = config.get_proxy_url()
-        # With no env vars, should be None
         assert url is None
 
 
