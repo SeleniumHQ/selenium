@@ -58,6 +58,13 @@ public class EnvironmentManager
 
         string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
 
+        // Bazel's $(location ...) expands to a runfiles-relative path (e.g.
+        // "../+pin_browsers_extension+mac_chrome/Chrome.app/Contents/MacOS/Chrome")
+        // which is relative to <runfiles>/_main. The driver process runs from a
+        // different cwd and cannot resolve that, so absolutize through TEST_SRCDIR.
+        driverServiceLocation = ResolveRunfilesPath(driverServiceLocation);
+        browserLocation = ResolveRunfilesPath(browserLocation);
+
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
 
         this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
@@ -212,5 +219,22 @@ public class EnvironmentManager
         }
 
         return startDirectory;
+    }
+
+    private static string ResolveRunfilesPath(string path)
+    {
+        if (string.IsNullOrEmpty(path) || Path.IsPathRooted(path))
+        {
+            return path;
+        }
+
+        string srcdir = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
+        if (string.IsNullOrEmpty(srcdir))
+        {
+            return path;
+        }
+
+        // Bazel $(location ...) emits paths relative to <runfiles>/_main.
+        return Path.GetFullPath(Path.Combine(srcdir, "_main", path));
     }
 }

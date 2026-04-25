@@ -1,6 +1,34 @@
+load("@rules_dotnet//dotnet:defs.bzl", "import_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 py_binary(
     name = "generate_resources_tool",
     srcs = ["generate_resources_tool.py"],
+)
+
+exports_files(
+    ["mtp_shim.cs"],
+    visibility = ["//visibility:public"],
+)
+
+# The NUnit3TestAdapter NuGet package ships its assemblies under build/<tfm>/
+# (intended for MSBuild .targets-based wiring) instead of the standard
+# lib/<tfm>/ layout, so rules_dotnet's paket extractor leaves the
+# @paket.nuget//nunit3testadapter alias's libs/refs/data filegroups empty.
+# This wrapper exposes the DLLs as a usable compile + runtime reference.
+import_library(
+    name = "nunit3testadapter_runtime",
+    framework_list = {},
+    library_name = "NUnit3.TestAdapter",
+    libs = [
+        "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/NUnit3.TestAdapter.dll",
+        "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/nunit.engine.dll",
+        "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/nunit.engine.api.dll",
+        "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/nunit.engine.core.dll",
+        "@nuget.nunit3testadapter.v6.2.0//:build/net8.0/testcentric.engine.metadata.dll",
+    ],
+    refs = ["@nuget.nunit3testadapter.v6.2.0//:build/net8.0/NUnit3.TestAdapter.dll"],
+    targeting_pack_overrides = {},
+    version = "6.2.0",
+    visibility = ["//visibility:public"],
 )
