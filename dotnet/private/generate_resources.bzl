@@ -1,7 +1,7 @@
-"""Generate C# partial class with embedded JS resources via a Python tool."""
+"""Generate C# partial class with embedded JS resources."""
 
 def _generate_resource_utilities_impl(ctx):
-    """Invoke a Python script to generate ResourceUtilities.cs from input files.
+    """Invoke a C# tool to generate ResourceUtilities.cs from input files.
 
     The mapping from C# property name to JS file is provided explicitly via the
     'resources' attribute as a dict: { "PropertyName": label }.
