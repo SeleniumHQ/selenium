@@ -812,6 +812,50 @@ BROWSER_TESTS = {
     ]
 ]
 
+# Generate test-<browser>-sm targets (Selenium Manager integration tests)
+# These only run when SE_FORCE_BROWSER_DOWNLOAD=true is set and use
+# --pin_browsers=false to test SM download resolution.
+[
+    py_test_suite(
+        name = "test-%s-sm" % browser,
+        size = "medium",
+        srcs = ["test/selenium/webdriver/%s/%s_service_tests.py" % (browser, browser)],
+        args = [
+            "--instafail",
+            "-k",
+            "selenium_manager",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env = {
+            "SE_FORCE_BROWSER_DOWNLOAD": "true",
+        },
+        tags = [
+            "manager",
+            "no-sandbox",
+            "requires-network",
+        ],
+        deps = [
+            ":init-tree",
+            ":selenium",
+        ] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "edge",
+        "firefox",
+    ]
+]
+
+test_suite(
+    name = "test-sm",
+    tags = ["manager"],
+    tests = [
+        ":test-chrome-sm",
+        ":test-edge-sm",
+        ":test-firefox-sm",
+    ],
+)
+
 test_suite(
     name = "test-remote",
     tags = ["remote"],

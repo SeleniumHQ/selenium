@@ -49,6 +49,20 @@ jobs:
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
+  selenium-manager-tests:
+    name: Selenium Manager Tests (${{ matrix.browser }})
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, edge, firefox]
+    with:
+      name: Selenium Manager Tests (${{ matrix.browser }})
+      os: ubuntu
+      run: |
+        bazel test --local_test_jobs 1 --pin_browsers=false //py:test-${{ matrix.browser }}-sm
+
   browser-tests:
     name: Browser Tests
     needs: build
