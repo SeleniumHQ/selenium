@@ -24,8 +24,8 @@ from unittest.mock import patch
 import pytest
 
 from selenium.common.exceptions import SessionNotCreatedException
-from selenium.webdriver.edge.service import Service
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.edge.service import Service
 
 
 @pytest.mark.no_driver_after_test
