@@ -27,9 +27,9 @@ namespace OpenQA.Selenium.Internal.Logging;
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct TraceLogStringHandler
+public readonly ref struct TraceLogStringHandler
 {
-    private LogInterpolatedStringHandler _inner;
+    private readonly LogInterpolatedStringHandler _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TraceLogStringHandler"/> struct.
@@ -66,9 +66,9 @@ public ref struct TraceLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct DebugLogStringHandler
+public readonly ref struct DebugLogStringHandler
 {
-    private LogInterpolatedStringHandler _inner;
+    private readonly LogInterpolatedStringHandler _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DebugLogStringHandler"/> struct.
@@ -105,9 +105,9 @@ public ref struct DebugLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct InfoLogStringHandler
+public readonly ref struct InfoLogStringHandler
 {
-    private LogInterpolatedStringHandler _inner;
+    private readonly LogInterpolatedStringHandler _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InfoLogStringHandler"/> struct.
@@ -144,9 +144,9 @@ public ref struct InfoLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct WarnLogStringHandler
+public readonly ref struct WarnLogStringHandler
 {
-    private LogInterpolatedStringHandler _inner;
+    private readonly LogInterpolatedStringHandler _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WarnLogStringHandler"/> struct.
@@ -183,9 +183,9 @@ public ref struct WarnLogStringHandler
 /// Defers string construction until the log level is confirmed enabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct ErrorLogStringHandler
+public readonly ref struct ErrorLogStringHandler
 {
-    private LogInterpolatedStringHandler _inner;
+    private readonly LogInterpolatedStringHandler _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ErrorLogStringHandler"/> struct.
@@ -222,9 +222,9 @@ public ref struct ErrorLogStringHandler
 /// avoiding unnecessary string allocations when logging is disabled.
 /// </summary>
 [InterpolatedStringHandler]
-public ref struct LogInterpolatedStringHandler
+public readonly ref struct LogInterpolatedStringHandler
 {
-    private StringBuilder? _builder;
+    private readonly StringBuilder? _builder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LogInterpolatedStringHandler"/> struct.
