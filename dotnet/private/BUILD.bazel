@@ -1,9 +1,9 @@
-load("@rules_dotnet//dotnet:defs.bzl", "import_library")
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary", "import_library")
 
-py_binary(
+csharp_binary(
     name = "generate_resources_tool",
-    srcs = ["generate_resources_tool.py"],
+    srcs = ["GenerateResourcesTool.cs"],
+    target_frameworks = ["net10.0"],
 )
 
 exports_files(
