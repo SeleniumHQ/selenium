@@ -35,6 +35,7 @@ csharp_library(
         "//dotnet:source_files_support_needs_from_core",
     ],
     out = "WebDriver.Support",
+    keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
@@ -60,48 +61,6 @@ nuget_pack(
         ":support": "WebDriver.Support",
     },
     nuspec_template = "Selenium.WebDriver.Support.nuspec",
-    tags = [
-        "block-network",
-    ],
-    version = SE_VERSION,
-    visibility = ["//visibility:public"],
-)
-
-csharp_library(
-    name = "support-strongnamed",
-    srcs = glob([
-        "**/*.cs",
-    ]) + [
-        ":assembly-info",
-        "//dotnet:source_files_support_needs_from_core",
-    ],
-    out = "WebDriver.Support.StrongNamed",
-    keyfile = "//dotnet:Selenium.snk",
-    langversion = "14.0",
-    nullable = "enable",
-    target_frameworks = [
-        "netstandard2.0",
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
-    ],
-    deps = [
-        "//dotnet/src/webdriver:webdriver-netstandard2.0-strongnamed",
-        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
-        nuget_package("System.Threading.Tasks.Extensions"),
-    ],
-)
-
-nuget_pack(
-    name = "support-strongnamed-pack",
-    files = {
-        "//common/images:selenium_logo_small.png": "icon.png",
-    },
-    id = "Selenium.Support.StrongNamed",
-    libs = {
-        ":support-strongnamed": "WebDriver.Support.StrongNamed",
-    },
-    nuspec_template = "Selenium.WebDriver.Support.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],

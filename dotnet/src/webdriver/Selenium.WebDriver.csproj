@@ -6,6 +6,8 @@
     <RootNamespace>OpenQA.Selenium</RootNamespace>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Selenium.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup>

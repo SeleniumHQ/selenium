@@ -50,6 +50,7 @@ csharp_library(
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
+    keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
@@ -80,6 +81,7 @@ csharp_library(
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
+    keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
     resources = [],
@@ -111,93 +113,6 @@ csharp_library(
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
     out = "WebDriver",
-    defines = [
-        "NET8_0_OR_GREATER",
-    ],
-    langversion = "14.0",
-    nullable = "enable",
-    resources = [],
-    target_frameworks = [
-        "net8.0",
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
-    ],
-    deps = [],
-)
-
-csharp_library(
-    name = "webdriver-net462-strongnamed",
-    srcs = [
-        ":assembly-info",
-        ":resource-utilities",
-    ] + glob([
-        "**/*.cs",
-    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver.StrongNamed",
-    keyfile = "//dotnet:Selenium.snk",
-    langversion = "14.0",
-    nullable = "enable",
-    target_frameworks = [
-        "net462",
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
-    ],
-    deps = [
-        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
-        nuget_package("System.Buffers"),
-        nuget_package("System.Threading.Channels"),
-        nuget_package("System.Threading.Tasks.Extensions"),
-        nuget_package("System.Memory"),
-        nuget_package("System.Runtime.CompilerServices.Unsafe"),
-        nuget_package("System.Text.Encodings.Web"),
-        nuget_package("System.Text.Json"),
-        nuget_package("System.ValueTuple"),
-    ],
-)
-
-csharp_library(
-    name = "webdriver-netstandard2.0-strongnamed",
-    srcs = [
-        ":assembly-info",
-        ":resource-utilities",
-    ] + glob([
-        "**/*.cs",
-    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver.StrongNamed",
-    keyfile = "//dotnet:Selenium.snk",
-    langversion = "14.0",
-    nullable = "enable",
-    resources = [],
-    target_frameworks = [
-        "netstandard2.0",
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
-    ],
-    deps = [
-        nuget_package("NETStandard.Library"),
-        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
-        nuget_package("System.Buffers"),
-        nuget_package("System.Threading.Channels"),
-        nuget_package("System.Threading.Tasks.Extensions"),
-        nuget_package("System.Memory"),
-        nuget_package("System.Runtime.CompilerServices.Unsafe"),
-        nuget_package("System.Text.Encodings.Web"),
-        nuget_package("System.Text.Json"),
-    ],
-)
-
-csharp_library(
-    name = "webdriver-net8.0-strongnamed",
-    srcs = [
-        ":assembly-info",
-        ":resource-utilities",
-    ] + glob([
-        "**/*.cs",
-    ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver.StrongNamed",
     defines = [
         "NET8_0_OR_GREATER",
     ],
@@ -271,33 +186,6 @@ nuget_pack(
         ":webdriver-netstandard2.0": "WebDriver",
     },
     nuspec_template = "Selenium.WebDriver.nuspec",
-    tags = [
-        "block-network",
-    ],
-    version = SE_VERSION,
-    visibility = [
-        "//dotnet:__subpackages__",
-    ],
-)
-
-nuget_pack(
-    name = "webdriver-strongnamed-pack",
-    files = {
-        "//common/images:selenium_logo_small.png": "icon.png",
-        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
-        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
-        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
-        ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-props": "build/Selenium.WebDriver.StrongNamed.props",
-        ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.props",
-    },
-    id = "Selenium.WebDriver.StrongNamed",
-    libs = {
-        ":webdriver-net462-strongnamed": "WebDriver.StrongNamed",
-        ":webdriver-net8.0-strongnamed": "WebDriver.StrongNamed",
-        ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
-    },
-    nuspec_template = "Selenium.WebDriver.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],

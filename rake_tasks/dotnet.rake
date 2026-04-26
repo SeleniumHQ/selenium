@@ -20,8 +20,6 @@ task :package do |_task, arguments|
 
   FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
   FileUtils.chmod(0o644, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
-  FileUtils.copy('bazel-bin/dotnet/strongnamed.zip', "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
-  FileUtils.chmod(0o644, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
 end
 
 desc 'Validate .NET release credentials'
