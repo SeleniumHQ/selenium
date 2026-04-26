@@ -252,10 +252,21 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
               status.getSlots().stream()
                   .map(slot -> slot.getStereotype())
                   .collect(Collectors.toSet()));
-      add(remoteNode);
+      nodes.put(status.getNodeId(), remoteNode);
+      model.add(status);
+      allChecks.put(status.getNodeId(), asRunnableHealthCheck(remoteNode));
     } finally {
       writeLock.unlock();
     }
+
+    updateNodeAvailability(status.getExternalUri(), status.getNodeId(), status.getAvailability());
+
+    LOG.info(
+        String.format(
+            "Added node %s at %s. Health check every %ss",
+            status.getNodeId(), status.getExternalUri(), healthcheckInterval.toMillis() / 1000));
+
+    bus.fire(new NodeAddedEvent(status.getNodeId()));
   }
 
   @Override

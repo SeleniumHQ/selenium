@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.redis;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,18 +43,21 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.SessionId;
-import redis.embedded.RedisServer;
+import org.testcontainers.containers.GenericContainer;
 
 class RedisBackedGridModelTest {
 
-  private RedisServer server;
+  @SuppressWarnings("resource")
+  private GenericContainer<?> redisContainer =
+      new GenericContainer<>("redis:8-alpine").withExposedPorts(6379);
+
   private GridRedisClient redis;
   private EventBus bus;
   private RedisBackedGridModel model;
@@ -60,10 +65,9 @@ class RedisBackedGridModelTest {
 
   @BeforeEach
   void setUp() throws URISyntaxException {
-    int port = PortProber.findFreePort();
-    redisUri = new URI("redis://localhost:" + port);
-    server = RedisServer.builder().port(port).build();
-    server.start();
+    redisContainer.start();
+    redisUri =
+        new URI("redis://" + redisContainer.getHost() + ":" + redisContainer.getMappedPort(6379));
     redis = new GridRedisClient(redisUri);
     bus = new GuavaEventBus();
     model = new RedisBackedGridModel(redis, bus);
@@ -72,7 +76,7 @@ class RedisBackedGridModelTest {
   @AfterEach
   void tearDown() {
     safelyCall(() -> redis.close());
-    safelyCall(() -> server.stop());
+    safelyCall(() -> redisContainer.stop());
     safelyCall(() -> bus.close());
   }
 
@@ -141,6 +145,42 @@ class RedisBackedGridModelTest {
     model.remove(id);
 
     assertThat(model.getSnapshot()).isEmpty();
+  }
+
+  @Test
+  void purgeDeadNodesRemovesNodesAfterUnhealthyThreshold() {
+    NodeId id = new NodeId(UUID.randomUUID());
+    model.add(makeNode(id, uri(5678)));
+    model.setAvailability(id, UP);
+
+    model.updateHealthCheckCount(id, DOWN);
+    model.updateHealthCheckCount(id, DOWN);
+    model.updateHealthCheckCount(id, DOWN);
+    model.updateHealthCheckCount(id, DOWN);
+    model.updateHealthCheckCount(id, DOWN);
+    model.purgeDeadNodes();
+
+    assertThat(model.getSnapshot()).isEmpty();
+  }
+
+  @Test
+  void purgeDeadNodesMovesStaleUpNodeDownAndRemovesStaleDownNode() {
+    NodeId upId = new NodeId(UUID.randomUUID());
+    model.add(makeNode(upId, uri(5678)));
+    model.setAvailability(upId, UP);
+
+    NodeId downId = new NodeId(UUID.randomUUID());
+    model.add(makeNode(downId, uri(5679)));
+
+    long staleTouch = Instant.now().minus(Duration.ofMinutes(3)).toEpochMilli();
+    redis.set("grid:node:" + upId + ":lastTouch", String.valueOf(staleTouch));
+    redis.set("grid:node:" + downId + ":lastTouch", String.valueOf(staleTouch));
+
+    model.purgeDeadNodes();
+
+    assertThat(model.getSnapshot())
+        .extracting(NodeStatus::getNodeId, NodeStatus::getAvailability)
+        .containsExactlyInAnyOrder(tuple(upId, DOWN));
   }
 
   @Test
@@ -284,6 +324,60 @@ class RedisBackedGridModelTest {
             .findFirst()
             .orElseThrow();
     assertThat(result.getAvailability()).isEqualTo(DOWN);
+  }
+
+  @Test
+  void reAddingSameUriWithDifferentNodeIdFiresRestartAndRemovesOldNode() {
+    URI nodeUri = uri(5678);
+    NodeId firstId = new NodeId(UUID.randomUUID());
+    NodeStatus first = makeNode(firstId, nodeUri);
+    AtomicReference<NodeStatus> restarted = new AtomicReference<>();
+    bus.addListener(NodeRestartedEvent.listener(restarted::set));
+
+    model.add(first);
+    model.setAvailability(firstId, UP);
+    SlotId firstSlotId = first.getSlots().iterator().next().getId();
+    model.reserve(firstSlotId);
+
+    NodeId secondId = new NodeId(UUID.randomUUID());
+    model.add(makeNode(secondId, nodeUri));
+
+    assertThat(restarted.get()).isNotNull();
+    assertThat(restarted.get().getNodeId()).isEqualTo(firstId);
+    assertThat(model.getSnapshot()).extracting(NodeStatus::getNodeId).containsExactly(secondId);
+    assertThat(
+            redis.get(
+                "grid:slot:"
+                    + firstSlotId.getOwningNodeId()
+                    + ":"
+                    + firstSlotId.getSlotId()
+                    + ":session"))
+        .isNull();
+  }
+
+  @Test
+  void reAddingSameNodeIdWithDifferentUriRemovesOldNodeState() {
+    NodeId id = new NodeId(UUID.randomUUID());
+    NodeStatus first = makeNode(id, uri(5678));
+    model.add(first);
+    model.setAvailability(id, UP);
+    SlotId firstSlotId = first.getSlots().iterator().next().getId();
+    model.reserve(firstSlotId);
+
+    URI newUri = uri(5679);
+    model.add(makeNode(id, newUri));
+
+    NodeStatus status = model.getSnapshot().iterator().next();
+    assertThat(status.getNodeId()).isEqualTo(id);
+    assertThat(status.getExternalUri()).isEqualTo(newUri);
+    assertThat(
+            redis.get(
+                "grid:slot:"
+                    + firstSlotId.getOwningNodeId()
+                    + ":"
+                    + firstSlotId.getSlotId()
+                    + ":session"))
+        .isNull();
   }
 
   @Test

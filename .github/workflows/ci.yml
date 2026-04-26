@@ -56,6 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       java: ${{ steps.read.outputs.java }}
+      grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
       rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
@@ -79,6 +80,7 @@ jobs:
             fi
           }
           check_binding "//java/" "java"
+          check_binding "openqa/selenium/grid" "grid"
           check_binding "//py" "py"
           check_binding "//rb/" "rb"
           check_binding "//dotnet/" "dotnet"
@@ -94,6 +96,12 @@ jobs:
     needs: read-targets
     uses: ./.github/workflows/ci-java.yml
     if: needs.read-targets.outputs.java != ''
+
+  grid:
+    name: Grid
+    needs: read-targets
+    uses: ./.github/workflows/ci-grid.yml
+    if: needs.read-targets.outputs.grid != ''
 
   python:
     name: Python

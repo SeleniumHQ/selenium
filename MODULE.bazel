@@ -217,7 +217,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi",
         "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
-        "it.ozimov:embedded-redis:0.7.3",
+        "org.testcontainers:testcontainers:2.0.5",
         "javax.inject:javax.inject:1",
         "net.bytebuddy:byte-buddy:1.18.8-jdk5",
         "org.htmlunit:htmlunit-core-js:4.21.0",

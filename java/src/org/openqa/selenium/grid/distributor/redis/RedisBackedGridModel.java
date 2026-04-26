@@ -244,10 +244,11 @@ public class RedisBackedGridModel extends GridModel {
   }
 
   private void removeAllKeysForNode(NodeId id) {
-    redis.del(nodeStatusKey(id), lastTouchKey(id), healthFailKey(id));
     removeFromAvailabilitySet(UP, id);
     removeFromAvailabilitySet(DOWN, id);
     removeFromAvailabilitySet(DRAINING, id);
+    redis.del(nodeStatusKey(id), lastTouchKey(id), healthFailKey(id));
+    removeSlotKeysForNode(id);
   }
 
   @Override
@@ -297,6 +298,9 @@ public class RedisBackedGridModel extends GridModel {
   public void remove(NodeId id) {
     Require.nonNull("Node ID", id);
     removeAllKeysForNode(id);
+  }
+
+  private void removeSlotKeysForNode(NodeId id) {
     // Clean up slot keys and any reverse index entries for real sessions on this node.
     for (String slotKey : redis.scanKeys("grid:slot:" + id + ":*:session")) {
       String slotValue = redis.get(slotKey);
@@ -304,7 +308,8 @@ public class RedisBackedGridModel extends GridModel {
         try {
           Session session = JSON.toType(slotValue, Session.class);
           redis.del(sessionSlotKey(session.getId()));
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+          LOG.fine("Could not clean up reverse index for slot " + slotKey + ": " + e.getMessage());
         }
       }
       redis.del(slotKey);

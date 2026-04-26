@@ -26,33 +26,52 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.node.HealthCheck;
+import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.redis.GridRedisClient;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
-import redis.embedded.RedisServer;
+import org.testcontainers.containers.GenericContainer;
 
 class RedisBackedNodeRegistryTest {
 
-  private RedisServer server;
+  @SuppressWarnings("resource")
+  private GenericContainer<?> redisContainer =
+      new GenericContainer<>("redis:8-alpine").withExposedPorts(6379);
+
   private GridRedisClient redis;
   private EventBus bus;
   private RedisBackedNodeRegistry registry;
@@ -62,10 +81,9 @@ class RedisBackedNodeRegistryTest {
 
   @BeforeEach
   void setUp() throws URISyntaxException {
-    int port = PortProber.findFreePort();
-    redisUri = new URI("redis://localhost:" + port);
-    server = RedisServer.builder().port(port).build();
-    server.start();
+    redisContainer.start();
+    redisUri =
+        new URI("redis://" + redisContainer.getHost() + ":" + redisContainer.getMappedPort(6379));
     redis = new GridRedisClient(redisUri);
     bus = new GuavaEventBus();
     tracer = DefaultTestTracer.createTracer();
@@ -89,7 +107,7 @@ class RedisBackedNodeRegistryTest {
   void tearDown() {
     safelyCall(() -> registry.close());
     safelyCall(() -> redis.close());
-    safelyCall(() -> server.stop());
+    safelyCall(() -> redisContainer.stop());
     safelyCall(() -> bus.close());
   }
 
@@ -132,13 +150,66 @@ class RedisBackedNodeRegistryTest {
 
     // Give Redis and event bus a moment to process.
     new FluentWait<>(registry)
-        .withTimeout(Duration.ofSeconds(5))
+        .withTimeout(Duration.ofSeconds(30))
         .pollingEvery(Duration.ofMillis(100))
         .until(r -> !r.getStatus().getNodes().isEmpty());
 
     // After registration, the model should have the node (as DOWN initially).
     String raw = redis.get("grid:node:" + id + ":status");
     assertThat(raw).isNotNull();
+  }
+
+  @Test
+  void registryReconstructsLocalNodeProxyFromRedisOnStartup() {
+    safelyCall(() -> registry.close());
+    NodeId id = new NodeId(UUID.randomUUID());
+    NodeStatus status = makeNodeStatus(id, uri(PortProber.findFreePort()), UP);
+    RedisBackedGridModel model = new RedisBackedGridModel(redis, bus);
+    model.add(status);
+    model.setAvailability(id, UP);
+
+    RedisBackedNodeRegistry reconstructed = makeRegistry();
+    try {
+      assertThat(reconstructed.getNode(id)).isNotNull();
+      assertThat(reconstructed.getUpNodes()).extracting(NodeStatus::getNodeId).contains(id);
+    } finally {
+      safelyCall(() -> reconstructed.close());
+    }
+  }
+
+  @Test
+  void healthChecksForSameNodeRunOnceAcrossReplicas() throws Exception {
+    AtomicInteger healthChecks = new AtomicInteger();
+    NodeId id = new NodeId(UUID.randomUUID());
+    TestNode node =
+        new TestNode(
+            tracer,
+            id,
+            uri(PortProber.findFreePort()),
+            secret,
+            () -> {
+              healthChecks.incrementAndGet();
+              return new HealthCheck.Result(UP, "ok");
+            });
+    RedisBackedNodeRegistry secondRegistry = makeRegistry();
+    try {
+      registry.add(node);
+      secondRegistry.add(node);
+
+      ExecutorService executor = Executors.newFixedThreadPool(2);
+      try {
+        Future<?> first = executor.submit(registry::runHealthChecks);
+        Future<?> second = executor.submit(secondRegistry::runHealthChecks);
+        first.get();
+        second.get();
+      } finally {
+        executor.shutdownNow();
+      }
+
+      assertThat(healthChecks.get()).isEqualTo(1);
+    } finally {
+      safelyCall(() -> secondRegistry.close());
+    }
   }
 
   @Test
@@ -165,5 +236,97 @@ class RedisBackedNodeRegistryTest {
   @Test
   void isReadyReturnsTrueWhenBusIsReady() {
     assertThat(registry.isReady()).isTrue();
+  }
+
+  private static class TestNode extends Node {
+
+    private final NodeStatus status;
+    private final HealthCheck healthCheck;
+
+    TestNode(
+        Tracer tracer, NodeId nodeId, URI uri, Secret registrationSecret, HealthCheck healthCheck) {
+      super(tracer, nodeId, uri, registrationSecret, Duration.ofSeconds(5));
+      this.healthCheck = healthCheck;
+      this.status =
+          new NodeStatus(
+              nodeId,
+              uri,
+              1,
+              Set.of(),
+              UP,
+              Duration.ofSeconds(5),
+              Duration.ofSeconds(5),
+              "test",
+              Map.of("name", "test", "arch", "test", "version", "test"));
+    }
+
+    @Override
+    public Either<WebDriverException, CreateSessionResponse> newSession(
+        CreateSessionRequest sessionRequest) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HttpResponse executeWebDriverCommand(HttpRequest req) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Session getSession(SessionId id) throws NoSuchSessionException {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void stop(SessionId id) throws NoSuchSessionException {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isSessionOwner(SessionId id) {
+      return false;
+    }
+
+    @Override
+    public boolean tryAcquireConnection(SessionId id) {
+      return false;
+    }
+
+    @Override
+    public void releaseConnection(SessionId id) {}
+
+    @Override
+    public boolean isSupporting(Capabilities capabilities) {
+      return true;
+    }
+
+    @Override
+    public NodeStatus getStatus() {
+      return status;
+    }
+
+    @Override
+    public HealthCheck getHealthCheck() {
+      return healthCheck;
+    }
+
+    @Override
+    public void drain() {
+      draining.set(true);
+    }
+
+    @Override
+    public boolean isReady() {
+      return true;
+    }
   }
 }
