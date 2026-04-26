@@ -73,6 +73,12 @@ module Selenium
 
             expect(service.extra_args).to eq ['--foo', '--bar']
           end
+
+          it 'uses provided environment variables' do
+            service = described_class.new(env: {'FOO' => 'bar', 'BAZ' => 'qux'})
+
+            expect(service.env).to eq({'FOO' => 'bar', 'BAZ' => 'qux'})
+          end
         end
 
         context 'when initializing driver' do

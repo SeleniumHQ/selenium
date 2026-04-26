@@ -49,6 +49,23 @@ module Selenium
           }.not_to raise_error
         end
       end
+
+      it 'spawns process with environment variables' do
+        process = described_class.new('ruby', '-e', 'puts ENV["SELENIUM_TEST_VAR"]')
+        process.env = {'SELENIUM_TEST_VAR' => 'test_value'}
+
+        temp_file = Tempfile.new('selenium_test')
+        process.io = temp_file.path
+
+        process.start
+        process.wait
+
+        temp_file.close
+        output = File.read(temp_file.path).strip
+        expect(output).to eq('test_value')
+      ensure
+        temp_file.unlink
+      end
     end
   end
 end
