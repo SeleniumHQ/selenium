@@ -99,7 +99,13 @@ public class DistributorServer extends TemplateGridServerCommand {
           return new HttpResponse()
               .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
               .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-              .setContent(Contents.utf8String("Distributor is " + ready));
+              .setContent(
+                  Contents.asJson(
+                      Map.of(
+                          "ready",
+                          ready,
+                          "message",
+                          ready ? "Distributor is ready" : "Distributor is not ready")));
         };
 
     return new Handlers(

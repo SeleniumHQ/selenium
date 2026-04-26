@@ -17,12 +17,17 @@
 
 package org.openqa.selenium.redis;
 
+import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.ScanArgs;
+import io.lettuce.core.ScanCursor;
+import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import java.io.Closeable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +84,53 @@ public class GridRedisClient implements Closeable {
 
   public List<String> getKeysByPattern(String pattern) {
     return connection.sync().keys(pattern);
+  }
+
+  public void set(String key, String value) {
+    connection.sync().set(key, value);
+  }
+
+  public void setWithTtl(String key, String value, long ttlMillis) {
+    connection.sync().set(key, value, SetArgs.Builder.px(ttlMillis));
+  }
+
+  /** Returns true if the key was set (caller won the race), false if already present. */
+  public boolean setIfAbsent(String key, String value, long ttlMillis) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx().px(ttlMillis));
+    return "OK".equals(result);
+  }
+
+  /** Returns true if the key was set (no TTL variant). */
+  public boolean setIfAbsent(String key, String value) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx());
+    return "OK".equals(result);
+  }
+
+  public void expire(String key, long ttlMillis) {
+    connection.sync().pexpire(key, ttlMillis);
+  }
+
+  @Nullable
+  public Long getAsLong(String key) {
+    String value = connection.sync().get(key);
+    return value == null ? null : Long.parseLong(value);
+  }
+
+  public long incr(String key) {
+    return connection.sync().incr(key);
+  }
+
+  /** Scans keys matching the pattern using SCAN cursor iteration (non-blocking). */
+  public List<String> scanKeys(String pattern) {
+    List<String> result = new ArrayList<>();
+    ScanCursor cursor = ScanCursor.INITIAL;
+    ScanArgs args = ScanArgs.Builder.matches(pattern).limit(100);
+    do {
+      KeyScanCursor<String> scanResult = connection.sync().scan(cursor, args);
+      result.addAll(scanResult.getKeys());
+      cursor = scanResult;
+    } while (!cursor.isFinished());
+    return result;
   }
 
   public boolean isOpen() {
