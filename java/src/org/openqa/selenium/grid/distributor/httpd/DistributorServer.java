@@ -98,7 +98,7 @@ public class DistributorServer extends TemplateGridServerCommand {
           boolean ready = distributor.isReady();
           return new HttpResponse()
               .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-              .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
+              .setHeader("Content-Type", MediaType.JSON_UTF_8.toString())
               .setContent(
                   Contents.asJson(
                       Map.of(

@@ -171,6 +171,15 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
             return thread;
           });
 
+  private final ScheduledExecutorService heartbeatService =
+      Executors.newSingleThreadScheduledExecutor(
+          r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            thread.setName("Redis Distributor - Heartbeat");
+            return thread;
+          });
+
   private final ExecutorService sessionCreatorExecutor;
   private final NewSessionQueue sessionQueue;
   private final boolean rejectUnsupportedCaps;
@@ -243,15 +252,8 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
         TimeUnit.MILLISECONDS);
 
     // Publish this replica's liveness heartbeat to Redis.
-    Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread t = new Thread(r);
-              t.setName("Redis Distributor - Heartbeat");
-              t.setDaemon(true);
-              return t;
-            })
-        .scheduleAtFixedRate(
-            GuardedRunnable.guard(this::publishHeartbeat), 0, 10, TimeUnit.SECONDS);
+    heartbeatService.scheduleAtFixedRate(
+        GuardedRunnable.guard(this::publishHeartbeat), 0, 10, TimeUnit.SECONDS);
 
     new JMXHelper().register(this);
   }
@@ -570,6 +572,7 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
     shutdownGracefully("Redis Distributor - Session Creation", sessionCreatorExecutor);
     shutdownGracefully("Redis Distributor - Node Health Check", nodeHealthCheckService);
     shutdownGracefully("Redis Distributor - Purge Dead Nodes", purgeDeadNodesService);
+    shutdownGracefully("Redis Distributor - Heartbeat", heartbeatService);
     try {
       nodeRegistry.close();
     } catch (IOException e) {
