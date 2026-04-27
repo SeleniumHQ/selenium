@@ -124,6 +124,18 @@ public class DistributorFlags implements HasRoles {
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "purge-nodes-interval", example = "30")
   public int purgeNodesInterval = DEFAULT_PURGE_NODES_INTERVAL;
 
+  @Parameter(
+      names = {"--distributor-backend-url"},
+      description =
+          "Backend datastore URL for the Distributor implementation."
+              + " Used by Redis-backed and other external implementations loaded via --ext."
+              + " Example: redis://localhost:6379")
+  @ConfigValue(
+      section = DISTRIBUTOR_SECTION,
+      name = "backend-url",
+      example = "\"redis://localhost:6379\"")
+  private String backendUrl;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(DISTRIBUTOR_ROLE);

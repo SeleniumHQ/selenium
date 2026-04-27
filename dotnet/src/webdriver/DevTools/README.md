@@ -4,7 +4,7 @@ To add support for a new version of the Chromium DevTools Protocol to the .NET b
 perform the following steps, where `<N>` is the major version of the protocol:
 
 1. Add the new version string (`v<N>`) to the `SUPPORTED_DEVTOOLS_VERSIONS` list in
-[`//dotnet:selenium-dotnet-version.bzl`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/selenium-dotnet-version.bzl).
+[`//dotnet:version.bzl`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/version.bzl).
 2. Create a new directory at `//dotnet/src/webdriver/DevTools/v<N>`, and copy the
 contents of the `//dotnet/src/webdriver/DevTools/v<N-1>` directory into it.
 3. Rename each of the `*.cs` files in `//dotnet/src/webdriver/DevTools/v<N>` so that
@@ -51,5 +51,5 @@ perform the following steps, where `<N>` is the major version of the protocol:
 2. In [`//dotnet/src/webdriver/DevTools/DevToolsDomains.cs`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsDomains.cs),
 remove the entry for version `<N>` from the `SupportedDevToolsVersions` dictionary initialization.
 3. Remove the version string (`v<N>`) from the `SUPPORTED_DEVTOOLS_VERSIONS` list in
-[`//dotnet:selenium-dotnet-version.bzl`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/selenium-dotnet-version.bzl).
+[`//dotnet:version.bzl`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/version.bzl).
 4. Commit the changes.

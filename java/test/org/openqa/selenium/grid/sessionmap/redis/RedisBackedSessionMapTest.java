@@ -24,7 +24,11 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,34 +36,44 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-import redis.embedded.RedisServer;
+import org.testcontainers.containers.GenericContainer;
 
 class RedisBackedSessionMapTest {
 
-  private RedisServer server;
+  @SuppressWarnings("resource")
+  private GenericContainer<?> redis =
+      new GenericContainer<>("redis:8-alpine").withExposedPorts(6379);
+
   private EventBus bus;
   private RedisBackedSessionMap sessions;
+  private URI redisUri;
+  private Tracer tracer;
 
   @BeforeEach
   public void setUp() throws URISyntaxException {
-    URI uri = new URI("redis://localhost:" + PortProber.findFreePort());
-    server = RedisServer.builder().port(uri.getPort()).build();
-    server.start();
+    redis.start();
+    redisUri = new URI("redis://" + redis.getHost() + ":" + redis.getMappedPort(6379));
 
-    Tracer tracer = DefaultTestTracer.createTracer();
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
-    sessions = new RedisBackedSessionMap(tracer, uri, bus);
+    sessions = new RedisBackedSessionMap(tracer, redisUri, bus);
   }
 
   @AfterEach
   public void tearDownRedisServer() {
     sessions.getRedisClient().close();
-    safelyCall(() -> server.stop());
+    safelyCall(() -> redis.stop());
     bus.close();
   }
 
@@ -118,5 +132,126 @@ class RedisBackedSessionMapTest {
 
     assertThatThrownBy(() -> sessions.get(expected.getId()))
         .isInstanceOf(NoSuchSessionException.class);
+  }
+
+  @Test
+  void secondRedisBackedSessionMapCanReadSessionAddedByFirst() throws URISyntaxException {
+    Session expected = createSession(new URI("http://example.com/foo"));
+    sessions.add(expected);
+
+    RedisBackedSessionMap reader = new RedisBackedSessionMap(tracer, redisUri, bus);
+    try {
+      assertThat(reader.get(expected.getId())).isEqualTo(expected);
+    } finally {
+      reader.getRedisClient().close();
+    }
+  }
+
+  @Test
+  void sessionClosedEventRemovesSession() throws URISyntaxException {
+    Session expected = createSession(new URI("http://example.com/foo"));
+    sessions.add(expected);
+
+    bus.fire(new SessionClosedEvent(expected.getId()));
+
+    assertThatThrownBy(() -> sessions.get(expected.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
+  }
+
+  @Test
+  void nodeRemovedEventRemovesOnlySessionsInRemovedNodeSlots() throws URISyntaxException {
+    URI removedNodeUri = new URI("http://example.com/removed");
+    URI survivingNodeUri = new URI("http://example.com/surviving");
+    Session removed = createSession(removedNodeUri);
+    Session surviving = createSession(survivingNodeUri);
+    sessions.add(removed);
+    sessions.add(surviving);
+
+    bus.fire(new NodeRemovedEvent(createNodeStatus(removedNodeUri, removed)));
+
+    assertThatThrownBy(() -> sessions.get(removed.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
+    assertThat(sessions.get(surviving.getId())).isEqualTo(surviving);
+  }
+
+  @Test
+  void nodeRestartedEventRemovesAllSessionsByPreviousNodeUri() throws URISyntaxException {
+    URI restartedNodeUri = new URI("http://example.com/restarted");
+    URI survivingNodeUri = new URI("http://example.com/surviving");
+    Session first = createSession(restartedNodeUri);
+    Session second = createSession(restartedNodeUri);
+    Session surviving = createSession(survivingNodeUri);
+    sessions.add(first);
+    sessions.add(second);
+    sessions.add(surviving);
+
+    bus.fire(new NodeRestartedEvent(createNodeStatus(restartedNodeUri, null)));
+
+    assertThatThrownBy(() -> sessions.get(first.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
+    assertThatThrownBy(() -> sessions.get(second.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
+    assertThat(sessions.get(surviving.getId())).isEqualTo(surviving);
+  }
+
+  @Test
+  void removeByUriDoesNothingWhenNoSessionsMatch() throws URISyntaxException {
+    Session expected = createSession(new URI("http://example.com/foo"));
+    sessions.add(expected);
+
+    sessions.removeByUri(new URI("http://example.com/other"));
+
+    assertThat(sessions.get(expected.getId())).isEqualTo(expected);
+  }
+
+  @Test
+  void removeDeletesAllSessionKeys() throws URISyntaxException {
+    Session expected = createSession(new URI("http://example.com/foo"));
+    SessionId id = expected.getId();
+    sessions.add(expected);
+
+    sessions.remove(id);
+
+    assertThat(sessions.getRedisClient().get("session:" + id + ":uri")).isNull();
+    assertThat(sessions.getRedisClient().get("session:" + id + ":capabilities")).isNull();
+    assertThat(sessions.getRedisClient().get("session:" + id + ":stereotype")).isNull();
+    assertThat(sessions.getRedisClient().get("session:" + id + ":start")).isNull();
+  }
+
+  @Test
+  void isReadyReflectsRedisConnectionState() {
+    assertThat(sessions.isReady()).isTrue();
+
+    sessions.getRedisClient().close();
+
+    assertThat(sessions.isReady()).isFalse();
+  }
+
+  private Session createSession(URI uri) {
+    return new Session(
+        new SessionId(randomUUID()),
+        uri,
+        new ImmutableCapabilities("browserName", "cheese"),
+        new ImmutableCapabilities("cheese", "beyaz peynir"),
+        Instant.now());
+  }
+
+  private org.openqa.selenium.grid.data.NodeStatus createNodeStatus(URI nodeUri, Session session) {
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+    return new org.openqa.selenium.grid.data.NodeStatus(
+        nodeId,
+        nodeUri,
+        1,
+        Set.of(
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                new ImmutableCapabilities("browserName", "cheese"),
+                Instant.now(),
+                session)),
+        Availability.UP,
+        Duration.ofSeconds(30),
+        Duration.ofSeconds(30),
+        "test",
+        Map.of());
   }
 }

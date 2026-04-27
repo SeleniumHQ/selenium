@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def dotnet_version
-  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+  File.foreach('dotnet/version.bzl') do |line|
     return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
   end
 end
@@ -20,8 +20,6 @@ task :package do |_task, arguments|
 
   FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
   FileUtils.chmod(0o644, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
-  FileUtils.copy('bazel-bin/dotnet/strongnamed.zip', "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
-  FileUtils.chmod(0o644, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
 end
 
 desc 'Validate .NET release credentials'
@@ -99,7 +97,7 @@ task :version, [:version] do |_task, arguments|
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
   puts "Updating .NET from #{old_version} to #{new_version}"
 
-  file = 'dotnet/selenium-dotnet-version.bzl'
+  file = 'dotnet/version.bzl'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
 end

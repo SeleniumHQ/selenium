@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <AssemblyName>WebDriver.Support.Tests</AssemblyName>
+    <AssemblyName>Selenium.Support.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support.Tests</RootNamespace>
     <IsTestProject>true</IsTestProject>
     <OutputType>Exe</OutputType>
@@ -19,15 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\support\Selenium.WebDriver.Support.csproj" />
+    <ProjectReference Include="..\..\src\support\Selenium.Support.csproj" />
     <ProjectReference Include="..\webdriver\Selenium.WebDriver.Tests.csproj" />
     <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="WebDriver.Support.Tests.nunit">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -27,6 +27,7 @@ use selenium_manager::jre::ensure_jre;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
+use selenium_manager::skills::write_skills_file;
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use selenium_manager::{
     SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
@@ -157,17 +158,39 @@ struct Cli {
     /// Not using browsers found in the PATH
     #[clap(long)]
     skip_browser_in_path: bool,
+
+    /// Add a skills file with Selenium best practices to the repository
+    #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
+    init_skills: Option<String>,
 }
 
 fn main() {
     let mut cli = Cli::parse();
-    let cache_path =
-        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
     let log = Logger::create(&cli.output, debug, trace, &log_level);
+
+    if let Some(mut skills_file) = cli.init_skills {
+        if skills_file.is_empty() {
+            let default_path = Path::new("skills").join("skills.md");
+            if default_path.exists() {
+                skills_file = "selenium.md".to_string();
+            } else {
+                skills_file = default_path.to_string_lossy().to_string();
+            }
+        }
+        if let Err(err) = write_skills_file(Path::new(&skills_file), &log) {
+            log.error(format!("Error creating {}: {}", skills_file, err));
+            flush_and_exit(DATAERR, &log, Some(err));
+        }
+        log.info(format!("{} file successfully created", skills_file));
+        flush_and_exit(OK, &log, None);
+    }
+
+    let cache_path =
+        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
     let mut driver_name: String = cli.driver.unwrap_or_default();
