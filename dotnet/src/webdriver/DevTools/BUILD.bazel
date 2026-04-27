@@ -1,5 +1,5 @@
 load("//dotnet:defs.bzl", "generate_devtools")
-load("//dotnet:selenium-dotnet-version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
+load("//dotnet:version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
 
 filegroup(
     name = "srcs",

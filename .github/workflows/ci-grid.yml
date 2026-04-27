@@ -1,0 +1,21 @@
+name: CI - Grid Integration Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  redis-backed-tests:
+    name: Redis-backed Grid Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Redis-backed Grid Tests
+      run: >
+        bazel test
+        --test_output=all
+        --test_env=TESTCONTAINERS_RYUK_DISABLED=true
+        //java/test/org/openqa/selenium/grid/distributor/redis/...
+        //java/test/org/openqa/selenium/grid/sessionmap/redis/...

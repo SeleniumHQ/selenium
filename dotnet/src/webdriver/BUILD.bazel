@@ -1,7 +1,7 @@
 load("//common:defs.bzl", "copy_file")
 load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
-    "//dotnet:selenium-dotnet-version.bzl",
+    "//dotnet:version.bzl",
     "ASSEMBLY_COMPANY",
     "ASSEMBLY_COPYRIGHT",
     "ASSEMBLY_INFORMATIONAL_VERSION",

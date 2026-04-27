@@ -6,7 +6,7 @@ load(
     "nuget_package",
 )
 load(
-    "//dotnet:selenium-dotnet-version.bzl",
+    "//dotnet:version.bzl",
     "ASSEMBLY_COMPANY",
     "ASSEMBLY_COPYRIGHT",
     "ASSEMBLY_INFORMATIONAL_VERSION",

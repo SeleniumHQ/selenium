@@ -140,3 +140,46 @@ def test_permission_states_constants():
     assert PermissionState.GRANTED == "granted"
     assert PermissionState.DENIED == "denied"
     assert PermissionState.PROMPT == "prompt"
+
+
+def test_embedded_origin_is_keyword_only(driver, pages):
+    """Verify embedded_origin cannot be passed positionally (backwards compat guard).
+
+    Existing call sites use set_permission(descriptor, state, origin, user_context)
+    as four positional args. embedded_origin must not occupy that 4th slot.
+    """
+    pages.load("blank.html")
+    origin = get_origin(driver)
+    user_context = driver.browser.create_user_context()
+
+    try:
+        # This is the pre-existing positional call pattern — must still work
+        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin, user_context)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+    # embedded_origin is keyword-only — a 5th positional arg must raise TypeError
+    with pytest.raises(TypeError):
+        driver.permissions.set_permission("geolocation", PermissionState.DENIED, origin, None, origin)
+
+
+def test_can_set_permission_with_embedded_origin(driver, pages):
+    """Verify that embedded_origin can be passed as a keyword argument without error.
+
+    Uses the same origin for both origin and embedded_origin since the test
+    environment is single-origin; the goal is to confirm that the keyword argument
+    is accepted and the permission change is applied, not to test cross-origin policy.
+    """
+    pages.load("blank.html")
+    origin = get_origin(driver)
+
+    # embedded_origin is keyword-only — passing it should not raise
+    driver.permissions.set_permission(
+        "geolocation",
+        PermissionState.GRANTED,
+        origin,
+        embedded_origin=origin,
+    )
+
+    result = get_geolocation_permission(driver)
+    assert result == PermissionState.GRANTED

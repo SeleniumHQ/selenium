@@ -1549,123 +1549,6 @@ def generate_console_file(output_path: Path) -> None:
     logger.info(f"Generated: {console_path}")
 
 
-def generate_permissions_file(output_path: Path) -> None:
-    """Generate permissions.py file with permission-related classes."""
-    permissions_path = output_path / "permissions.py"
-
-    code = (
-        "# Licensed to the Software Freedom Conservancy (SFC) under one\n"
-        "# or more contributor license agreements.  See the NOTICE file\n"
-        "# distributed with this work for additional information\n"
-        "# regarding copyright ownership.  The SFC licenses this file\n"
-        "# to you under the Apache License, Version 2.0 (the\n"
-        '# "License"); you may not use this file except in compliance\n'
-        "# with the License.  You may obtain a copy of the License at\n"
-        "#\n"
-        "#   http://www.apache.org/licenses/LICENSE-2.0\n"
-        "#\n"
-        "# Unless required by applicable law or agreed to in writing,\n"
-        "# software distributed under the License is distributed on an\n"
-        '# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n'
-        "# KIND, either express or implied.  See the License for the\n"
-        "# specific language governing permissions and limitations\n"
-        "# under the License.\n"
-        "\n"
-        '"""WebDriver BiDi Permissions module."""\n'
-        "\n"
-        "from __future__ import annotations\n"
-        "\n"
-        "from enum import Enum\n"
-        "from typing import Any\n"
-        "\n"
-        "from selenium.webdriver.common.bidi.common import command_builder\n"
-        "\n"
-        '_VALID_PERMISSION_STATES = {"granted", "denied", "prompt"}\n'
-        "\n"
-        "\n"
-        "class PermissionState(str, Enum):\n"
-        '    """Permission state enumeration."""\n'
-        "\n"
-        '    GRANTED = "granted"\n'
-        '    DENIED = "denied"\n'
-        '    PROMPT = "prompt"\n'
-        "\n"
-        "\n"
-        "class PermissionDescriptor:\n"
-        '    """Descriptor for a permission."""\n'
-        "\n"
-        "    def __init__(self, name: str) -> None:\n"
-        '        """Initialize a PermissionDescriptor.\n'
-        "\n"
-        "        Args:\n"
-        "            name: The name of the permission (e.g., 'geolocation', 'microphone', 'camera')\n"
-        '        """\n'
-        "        self.name = name\n"
-        "\n"
-        "    def __repr__(self) -> str:\n"
-        "        return f\"PermissionDescriptor('{self.name}')\"\n"
-        "\n"
-        "\n"
-        "class Permissions:\n"
-        '    """WebDriver BiDi Permissions module."""\n'
-        "\n"
-        "    def __init__(self, websocket_connection: Any) -> None:\n"
-        '        """Initialize the Permissions module.\n'
-        "\n"
-        "        Args:\n"
-        "            websocket_connection: The WebSocket connection for sending BiDi commands\n"
-        '        """\n'
-        "        self._conn = websocket_connection\n"
-        "\n"
-        "    def set_permission(\n"
-        "        self,\n"
-        "        descriptor: PermissionDescriptor | str,\n"
-        "        state: PermissionState | str,\n"
-        "        origin: str | None = None,\n"
-        "        user_context: str | None = None,\n"
-        "    ) -> None:\n"
-        '        """Set a permission for a given origin.\n'
-        "\n"
-        "        Args:\n"
-        "            descriptor: The permission descriptor or permission name as a string\n"
-        "            state: The desired permission state\n"
-        "            origin: The origin for which to set the permission\n"
-        "            user_context: Optional user context ID to scope the permission\n"
-        "\n"
-        "        Raises:\n"
-        "            ValueError: If the state is not a valid permission state\n"
-        '        """\n'
-        "        state_value = state.value if isinstance(state, PermissionState) else state\n"
-        "        if state_value not in _VALID_PERMISSION_STATES:\n"
-        "            raise ValueError(\n"
-        '                f"Invalid permission state: {state_value!r}. "\n'
-        '                f"Must be one of {sorted(_VALID_PERMISSION_STATES)}"\n'
-        "            )\n"
-        "\n"
-        "        if isinstance(descriptor, str):\n"
-        '            descriptor_dict = {"name": descriptor}\n'
-        "        else:\n"
-        '            descriptor_dict = {"name": descriptor.name}\n'
-        "\n"
-        "        params: dict[str, Any] = {\n"
-        '            "descriptor": descriptor_dict,\n'
-        '            "state": state_value,\n'
-        "        }\n"
-        "        if origin is not None:\n"
-        '            params["origin"] = origin\n'
-        "        if user_context is not None:\n"
-        '            params["userContext"] = user_context\n'
-        "\n"
-        '        cmd = command_builder("permissions.setPermission", params)\n'
-        "        self._conn.execute(cmd)\n"
-    )
-
-    with open(permissions_path, "w", encoding="utf-8") as f:
-        f.write(code)
-
-    logger.info(f"Generated: {permissions_path}")
-
-
 def main(
     cddl_file: str,
     output_dir: str,
@@ -1732,9 +1615,6 @@ def main(
 
     # Generate common.py
     generate_common_file(output_path)
-
-    # Generate permissions.py
-    generate_permissions_file(output_path)
 
     # Generate console.py
     generate_console_file(output_path)
