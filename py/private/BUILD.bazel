@@ -7,6 +7,13 @@ exports_files([
 ])
 
 py_binary(
+    name = "merge_cddl",
+    srcs = ["merge_cddl.py"],
+    legacy_create_init = False,
+    visibility = ["//py:__pkg__"],
+)
+
+py_binary(
     name = "untar",
     srcs = [
         "untar.py",

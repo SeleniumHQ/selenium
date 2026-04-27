@@ -1679,6 +1679,69 @@ class PointerDownAction:
         return self._event_manager.remove_event_handler("file_dialog_opened", handler_id)''',
         ],
     },
+    "permissions": {
+        "extra_dataclasses": [
+            '''class PermissionDescriptor:
+    """Descriptor identifying a permission by name.
+
+    Args:
+        name: The permission name (e.g. 'geolocation', 'microphone', 'camera').
+    """
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def __repr__(self) -> str:
+        return f"PermissionDescriptor(name={self.name!r})"''',
+        ],
+        "extra_methods": [
+            '''    def set_permission(
+        self,
+        descriptor: "PermissionDescriptor | str",
+        state: "PermissionState | str",
+        origin: str | None = None,
+        user_context: str | None = None,
+        *,
+        embedded_origin: str | None = None,
+    ) -> None:
+        """Set a browser permission.
+
+        Args:
+            descriptor: The permission descriptor or permission name as a string.
+            state: The desired permission state (granted, denied, or prompt).
+            origin: The origin to scope the permission to.
+            user_context: Optional user context ID to scope the permission.
+            embedded_origin: Keyword-only. Embedded origin for cross-origin
+                iframes; scopes the permission to that iframe's origin.
+
+        Raises:
+            ValueError: If *state* is not a valid permission state.
+        """
+        state_value = state.value if isinstance(state, PermissionState) else state
+        valid_states = {"granted", "denied", "prompt"}
+        if state_value not in valid_states:
+            raise ValueError(
+                f"Invalid permission state: {state_value!r}. "
+                f"Must be one of {sorted(valid_states)}"
+            )
+
+        descriptor_dict = {"name": descriptor} if isinstance(descriptor, str) else {"name": descriptor.name}
+
+        params: dict = {
+            "descriptor": descriptor_dict,
+            "state": state_value,
+        }
+        if origin is not None:
+            params["origin"] = origin
+        if embedded_origin is not None:
+            params["embeddedOrigin"] = embedded_origin
+        if user_context is not None:
+            params["userContext"] = user_context
+
+        cmd = command_builder("permissions.setPermission", params)
+        self._conn.execute(cmd)''',
+        ],
+    },
 }
 
 

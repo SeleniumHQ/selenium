@@ -619,16 +619,25 @@ generate_devtools_latest(
     browser_versions = BROWSER_VERSIONS,
 )
 
-# Generate BiDi source files from CDDL specification
+# Generate BiDi source files from CDDL specification.
+# extra_cddl_files are merged with the primary WebDriver BiDi spec before
+# generation so that end users get the full set of BiDi-adjacent modules.
 generate_bidi(
     name = "create-bidi-src",
     cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
     enhancements_manifest = "//py/private:bidi_enhancements_manifest.py",
+    extra_cddl_files = [
+        "@permissions_all_cddl//file:spec.cddl",
+        "@prefetch_all_cddl//file:spec.cddl",
+        "@ua_client_hints_all_cddl//file:spec.cddl",
+        "@web_bluetooth_all_cddl//file:spec.cddl",
+    ],
     extra_srcs = [
         "//py/private:_event_manager.py",
         "//py/private:cdp.py",
     ],
     generator = ":generate_bidi",
+    merge_tool = "//py/private:merge_cddl",
     module_name = "selenium/webdriver/common/bidi",
     spec_version = "1.0",
 )

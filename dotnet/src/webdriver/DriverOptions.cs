@@ -25,44 +25,6 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium;
 
 /// <summary>
-/// Specifies the behavior of handling unexpected alerts in the IE driver.
-/// </summary>
-public enum UnhandledPromptBehavior
-{
-    /// <summary>
-    /// Indicates the behavior is not set.
-    /// </summary>
-    Default,
-
-    /// <summary>
-    /// Ignore unexpected alerts, such that the user must handle them.
-    /// </summary>
-    Ignore,
-
-    /// <summary>
-    /// Accept unexpected alerts.
-    /// </summary>
-    Accept,
-
-    /// <summary>
-    /// Dismiss unexpected alerts.
-    /// </summary>
-    Dismiss,
-
-    /// <summary>
-    /// Accepts unexpected alerts and notifies the user that the alert has
-    /// been accepted by throwing an <see cref="UnhandledAlertException"/>
-    /// </summary>
-    AcceptAndNotify,
-
-    /// <summary>
-    /// Dismisses unexpected alerts and notifies the user that the alert has
-    /// been dismissed by throwing an <see cref="UnhandledAlertException"/>
-    /// </summary>
-    DismissAndNotify
-}
-
-/// <summary>
 /// Specifies the behavior of waiting for page loads in the driver.
 /// </summary>
 public enum PageLoadStrategy
@@ -160,9 +122,9 @@ public abstract class DriverOptions
 
     /// <summary>
     /// Gets or sets the value for describing how unexpected alerts are to be handled in the browser.
-    /// Defaults to <see cref="UnhandledPromptBehavior.Default"/>.
+    /// Defaults to <see langword="null"/>, leaving the behavior unset.
     /// </summary>
-    public UnhandledPromptBehavior UnhandledPromptBehavior { get; set; } = UnhandledPromptBehavior.Default;
+    public UserPromptHandler? UnhandledPromptBehavior { get; set; }
 
     /// <summary>
     /// Gets or sets the value for describing how the browser is to wait for pages to load in the browser.
@@ -298,7 +260,7 @@ public abstract class DriverOptions
             return result;
         }
 
-        if (this.UnhandledPromptBehavior != UnhandledPromptBehavior.Default && other.UnhandledPromptBehavior != UnhandledPromptBehavior.Default)
+        if (this.UnhandledPromptBehavior != other.UnhandledPromptBehavior)
         {
             result.IsMergeConflict = true;
             result.MergeConflictOptionName = "UnhandledPromptBehavior";
@@ -503,29 +465,11 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        if (this.UnhandledPromptBehavior != UnhandledPromptBehavior.Default)
+        var unhandledPromptBehaviorCapability = this.UnhandledPromptBehavior?.ToCapabilities();
+
+        if (unhandledPromptBehaviorCapability != null)
         {
-            string unhandledPropmtBehaviorSetting = "ignore";
-            switch (this.UnhandledPromptBehavior)
-            {
-                case UnhandledPromptBehavior.Accept:
-                    unhandledPropmtBehaviorSetting = "accept";
-                    break;
-
-                case UnhandledPromptBehavior.Dismiss:
-                    unhandledPropmtBehaviorSetting = "dismiss";
-                    break;
-
-                case UnhandledPromptBehavior.AcceptAndNotify:
-                    unhandledPropmtBehaviorSetting = "accept and notify";
-                    break;
-
-                case UnhandledPromptBehavior.DismissAndNotify:
-                    unhandledPropmtBehaviorSetting = "dismiss and notify";
-                    break;
-            }
-
-            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, unhandledPropmtBehaviorSetting);
+            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, unhandledPromptBehaviorCapability);
         }
 
         if (this.Proxy != null)
