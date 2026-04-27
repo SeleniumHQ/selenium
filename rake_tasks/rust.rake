@@ -12,22 +12,6 @@ task :build do |_task, arguments|
   Bazel.execute('build', args, '//rust:selenium-manager')
 end
 
-desc 'Update the rust lock files'
-task :update do
-  # The first repin after a version bump can fail due to a stale checksum in
-  # Cargo.Bazel.lock; a second run lets Bazel reconcile and succeeds.
-  puts 'pinning cargo versions'
-  begin
-    Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
-  rescue RuntimeError
-    puts 'repin failed, retrying...'
-    Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
-  end
-end
-
-desc 'Pin Rust dependencies'
-task pin: :update
-
 desc 'Format Rust code with rustfmt'
 task :format do
   puts '  Running rustfmt...'

@@ -81,7 +81,9 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --define=protobuf_allow_msvc=true
 
 # For build stamping
-build --enable_platform_specific_config
+common --enable_platform_specific_config
+common:linux --host_platform=//:local_linux_gnu
+common:windows --host_platform=//:local_windows_msvc
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
