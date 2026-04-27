@@ -34,7 +34,7 @@ csharp_library(
         ":assembly-info",
         "//dotnet:source_files_support_needs_from_core",
     ],
-    out = "Selenium.WebDriver.Support",
+    out = "Selenium.Support",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
@@ -58,9 +58,9 @@ nuget_pack(
     },
     id = "Selenium.Support",
     libs = {
-        ":support": "Selenium.WebDriver.Support",
+        ":support": "Selenium.Support",
     },
-    nuspec_template = "Selenium.WebDriver.Support.nuspec",
+    nuspec_template = "Selenium.Support.nuspec",
     tags = [
         "block-network",
     ],

@@ -31,9 +31,9 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="lib/netstandard2.0/Selenium.WebDriver.Support.dll" target="lib/netstandard2.0/Selenium.WebDriver.Support.dll" />
-    <file src="lib/netstandard2.0/Selenium.WebDriver.Support.pdb" target="lib/netstandard2.0/Selenium.WebDriver.Support.pdb" />
-    <file src="lib/netstandard2.0/Selenium.WebDriver.Support.xml" target="lib/netstandard2.0/Selenium.WebDriver.Support.xml" />
+    <file src="lib/netstandard2.0/Selenium.Support.dll" target="lib/netstandard2.0/Selenium.Support.dll" />
+    <file src="lib/netstandard2.0/Selenium.Support.pdb" target="lib/netstandard2.0/Selenium.Support.pdb" />
+    <file src="lib/netstandard2.0/Selenium.Support.xml" target="lib/netstandard2.0/Selenium.Support.xml" />
 
     <file src="icon.png" />
   </files>

@@ -1,11 +1,11 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/support/Selenium.WebDriver.Support.csproj" />
+    <Project Path="src/support/Selenium.Support.csproj" />
     <Project Path="src/webdriver/Selenium.WebDriver.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/remote/Selenium.WebDriver.Remote.Tests.csproj" />
-    <Project Path="test/support/Selenium.WebDriver.Support.Tests.csproj" />
+    <Project Path="test/support/Selenium.Support.Tests.csproj" />
     <Project Path="test/webdriver/Selenium.WebDriver.Tests.csproj" />
     <Project Path="test/testing.webserver/Selenium.Testing.WebServer.csproj" />
   </Folder>
