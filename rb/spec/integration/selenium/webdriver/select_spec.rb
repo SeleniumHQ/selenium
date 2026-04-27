@@ -126,7 +126,7 @@ module Selenium
                 %w[Apples Pears Oranges Lemons].each do |text|
                   expect {
                     multi_invisible.select_by(:text, text)
-                  }.to raise_exception(Error::ElementNotInteractableError)
+                  }.to raise_exception(Error::NoSuchElementError)
                 end
               end
             end
@@ -156,6 +156,11 @@ module Selenium
               it 'errors when not found' do
                 expect { multi_select.select_by(:index, 5) }.to raise_exception(Error::NoSuchElementError)
               end
+
+              it 'selects invisible option' do
+                multi_invisible.select_by(:index, 1)
+                expect(multi_invisible.selected_options).to include(driver.find_element(css: 'option[value=pears]'))
+              end
             end
 
             context 'when by value' do
@@ -184,6 +189,11 @@ module Selenium
 
               it 'errors when not found' do
                 expect { multi_select.select_by(:value, 'invalid') }.to raise_exception(Error::NoSuchElementError)
+              end
+
+              it 'selects invisible option' do
+                multi_invisible.select_by(:value, 'pears')
+                expect(multi_invisible.selected_options).to include(driver.find_element(css: 'option[value=pears]'))
               end
             end
           end
@@ -308,12 +318,9 @@ module Selenium
               expect { multi_select.deselect_by(:text, 'invalid') }.to raise_exception(Error::NoSuchElementError)
             end
 
-            it 'errors when option is invisible', :aggregate_failures do
-              %w[Apples Pears Oranges Lemons].each do |text|
-                expect {
-                  multi_invisible.deselect_by(:text, text)
-                }.to raise_exception(Error::ElementNotInteractableError)
-              end
+            it 'deselects invisible option' do
+              multi_invisible.deselect_by(:text, 'Apples')
+              expect(multi_invisible.selected_options).not_to include(driver.find_element(css: 'option[value=apples]'))
             end
           end
 
@@ -337,6 +344,11 @@ module Selenium
             it 'errors when not found' do
               expect { multi_select.deselect_by(:index, 5) }.to raise_exception(Error::NoSuchElementError)
             end
+
+            it 'deselects invisible option' do
+              multi_invisible.deselect_by(:index, 0)
+              expect(multi_invisible.selected_options).not_to include(driver.find_element(css: 'option[value=apples]'))
+            end
           end
 
           context 'when by value' do
@@ -358,6 +370,11 @@ module Selenium
 
             it 'errors when not found' do
               expect { multi_select.deselect_by(:value, 'invalid') }.to raise_exception(Error::NoSuchElementError)
+            end
+
+            it 'deselects invisible option' do
+              multi_invisible.deselect_by(:value, 'apples')
+              expect(multi_invisible.selected_options).not_to include(driver.find_element(css: 'option[value=apples]'))
             end
           end
         end

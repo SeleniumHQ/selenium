@@ -21,6 +21,9 @@ module Selenium
   module WebDriver
     module Support
       class Select
+        HIDDEN_CSS_VALUES = %w[hidden none 0 0.0].to_set.freeze
+        VISIBILITY_PROPERTIES = %w[visibility display opacity].freeze
+
         #
         # @param [Element] element The select element to use
         #
@@ -163,9 +166,14 @@ module Selenium
         def select_by_text(text)
           opts = find_by_text text
 
-          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}" if opts.empty?
 
-          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
+          opts.each do |opt|
+            raise Error::NoSuchElementError, "invisible option with text: #{text.inspect}" unless option_visible?(opt)
+
+            select_option(opt)
+            break unless multiple?
+          end
         end
 
         def select_by_index(index)
@@ -217,20 +225,10 @@ module Selenium
         def select_option(option)
           raise Error::UnsupportedOperationError, 'You may not select a disabled option' unless option.enabled?
 
-          unless css_property_and_visible?(option)
-            raise Error::ElementNotInteractableError,
-                  'You may not select an invisible option'
-          end
-
           option.click unless option.selected?
         end
 
         def deselect_option(option)
-          unless css_property_and_visible?(option)
-            raise Error::ElementNotInteractableError,
-                  'You may not deselect an invisible option'
-          end
-
           option.click if option.selected?
         end
 
@@ -277,13 +275,8 @@ module Selenium
           @element.find_elements(xpath: ".//option[@value = #{Escaper.escape value}]")
         end
 
-        def css_property_and_visible?(element)
-          css_value_candidates = %w[hidden none 0 0.0].to_set
-          css_property_candidates = %w[visibility display opacity]
-
-          css_property_candidates.none? do |property|
-            css_value_candidates.include?(element.css_value(property))
-          end
+        def option_visible?(element)
+          VISIBILITY_PROPERTIES.none? { |property| HIDDEN_CSS_VALUES.include?(element.css_value(property)) }
         end
       end # Select
     end # Support
