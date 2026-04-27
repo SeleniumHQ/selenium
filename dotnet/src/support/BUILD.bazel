@@ -34,7 +34,7 @@ csharp_library(
         ":assembly-info",
         "//dotnet:source_files_support_needs_from_core",
     ],
-    out = "WebDriver.Support",
+    out = "Selenium.WebDriver.Support",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
@@ -58,7 +58,7 @@ nuget_pack(
     },
     id = "Selenium.Support",
     libs = {
-        ":support": "WebDriver.Support",
+        ":support": "Selenium.WebDriver.Support",
     },
     nuspec_template = "Selenium.WebDriver.Support.nuspec",
     tags = [

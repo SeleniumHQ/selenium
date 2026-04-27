@@ -49,7 +49,7 @@ csharp_library(
     ] + glob([
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver",
+    out = "Selenium.WebDriver",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
@@ -80,7 +80,7 @@ csharp_library(
     ] + glob([
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver",
+    out = "Selenium.WebDriver",
     keyfile = "//dotnet:Selenium.snk",
     langversion = "14.0",
     nullable = "enable",
@@ -112,7 +112,7 @@ csharp_library(
     ] + glob([
         "**/*.cs",
     ]) + ["//dotnet/src/webdriver/DevTools:srcs"] + devtools_version_targets(),
-    out = "WebDriver",
+    out = "Selenium.WebDriver",
     defines = [
         "NET8_0_OR_GREATER",
     ],
@@ -181,9 +181,9 @@ nuget_pack(
     },
     id = "Selenium.WebDriver",
     libs = {
-        ":webdriver-net462": "WebDriver",
-        ":webdriver-net8.0": "WebDriver",
-        ":webdriver-netstandard2.0": "WebDriver",
+        ":webdriver-net462": "Selenium.WebDriver",
+        ":webdriver-net8.0": "Selenium.WebDriver",
+        ":webdriver-netstandard2.0": "Selenium.WebDriver",
     },
     nuspec_template = "Selenium.WebDriver.nuspec",
     tags = [
