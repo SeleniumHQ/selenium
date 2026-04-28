@@ -1354,3 +1354,67 @@ class TestBidiScriptErrorHandling:
         # This should raise an exception
         with pytest.raises(Exception):
             driver.execute_script("{{invalid syntax}}")
+
+
+class TestBidiDomMutationHandler:
+    """Tests for add_dom_mutation_handler and remove_dom_mutation_handler."""
+
+    @pytest.fixture(autouse=True)
+    def load_page(self, driver, pages):
+        pages.load("dynamic.html")
+
+    def test_add_dom_mutation_handler(self, driver):
+        """Test that add_dom_mutation_handler fires when a DOM attribute changes."""
+        from selenium.webdriver.common.bidi.script import DomMutation
+
+        mutations = []
+        handler_id = driver.script.add_dom_mutation_handler(mutations.append)
+
+        try:
+            # Reveal the hidden element — this changes the style attribute
+            driver.find_element(By.ID, "reveal").click()
+            WebDriverWait(driver, 10).until(lambda _: len(mutations) > 0)
+
+            assert len(mutations) > 0
+            mutation = mutations[0]
+            assert isinstance(mutation, DomMutation)
+            assert mutation.element_id is not None
+            assert mutation.attribute_name == "style"
+            # Firefox BiDi may return None for old_value; accept either case
+            if mutation.old_value is not None:
+                assert "display" in mutation.old_value.lower()
+                assert "none" in mutation.old_value.lower()
+            assert mutation.current_value in (None, "")
+        finally:
+            driver.script.remove_dom_mutation_handler(handler_id)
+
+    def test_remove_dom_mutation_handler(self, driver):
+        """Test that remove_dom_mutation_handler stops further callbacks."""
+        mutations = []
+        handler_id = driver.script.add_dom_mutation_handler(mutations.append)
+        driver.script.remove_dom_mutation_handler(handler_id)
+
+        # Trigger a mutation after the handler was removed
+        driver.find_element(By.ID, "reveal").click()
+
+        # Wait for the DOM mutation to actually complete, then assert no callback fired.
+        # If the subscription was properly removed, events should not arrive at all.
+        WebDriverWait(driver, 10).until(lambda d: d.find_element(By.ID, "revealed").is_displayed())
+        assert len(mutations) == 0
+
+    def test_add_multiple_dom_mutation_handlers(self, driver):
+        """Test that multiple handlers all receive mutations."""
+        mutations1 = []
+        mutations2 = []
+        id1 = driver.script.add_dom_mutation_handler(mutations1.append)
+        id2 = driver.script.add_dom_mutation_handler(mutations2.append)
+
+        try:
+            driver.find_element(By.ID, "reveal").click()
+            WebDriverWait(driver, 10).until(lambda _: len(mutations1) > 0 and len(mutations2) > 0)
+
+            assert len(mutations1) > 0
+            assert len(mutations2) > 0
+        finally:
+            driver.script.remove_dom_mutation_handler(id1)
+            driver.script.remove_dom_mutation_handler(id2)

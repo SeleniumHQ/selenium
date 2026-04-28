@@ -17,6 +17,7 @@
 
 import json
 import pkgutil
+import warnings
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from importlib import import_module
@@ -56,6 +57,10 @@ class Log:
     async def mutation_events(self) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for mutation events and emit them as they are found.
 
+        .. deprecated::
+            Use ``driver.script.add_dom_mutation_handler()`` instead,
+            which uses the WebDriver BiDi protocol.
+
         Example:
                async with driver.log.mutation_events() as event:
                     pages.load("dynamic.html")
@@ -67,16 +72,25 @@ class Log:
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
         """
+        warnings.warn(
+            "mutation_events is deprecated, use driver.script.add_dom_mutation_handler() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         page = self.cdp.get_session_context("page.enable")
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
         await runtime.execute(self.devtools.runtime.enable())
         await runtime.execute(self.devtools.runtime.add_binding("__webdriver_attribute"))
-        self.driver.pin_script(self._mutation_listener_js)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            self.driver.pin_script(self._mutation_listener_js)
         script_key = await page.execute(
             self.devtools.page.add_script_to_evaluate_on_new_document(self._mutation_listener_js)
         )
-        self.driver.pin_script(self._mutation_listener_js, script_key)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            self.driver.pin_script(self._mutation_listener_js, script_key)
         self.driver.execute_script(f"return {self._mutation_listener_js}")
 
         event: dict[str, Any] = {}
@@ -96,12 +110,21 @@ class Log:
     async def add_js_error_listener(self) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for JS errors and check if they occurred when the context manager exits.
 
+        .. deprecated::
+            Use ``driver.script.add_javascript_error_handler()`` instead,
+            which uses the WebDriver BiDi protocol.
+
         Example:
                 async with driver.log.add_js_error_listener() as error:
                     driver.find_element(By.ID, "throwing-mouseover").click()
                 assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
+        warnings.warn(
+            "add_js_error_listener is deprecated, use driver.script.add_javascript_error_handler() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
@@ -116,6 +139,10 @@ class Log:
     async def add_listener(self, event_type) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for certain events that are passed in.
 
+        .. deprecated::
+            Use ``driver.script.add_console_message_handler()`` instead,
+            which uses the WebDriver BiDi protocol.
+
         Args:
             event_type: The type of event that we want to look at.
 
@@ -124,6 +151,11 @@ class Log:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
         """
+        warnings.warn(
+            "add_listener is deprecated, use driver.script.add_console_message_handler() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         from selenium.webdriver.common.bidi.console import Console
 
         session = self.cdp.get_session_context("page.enable")

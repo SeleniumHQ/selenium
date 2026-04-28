@@ -91,6 +91,7 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
+    compile_data = ["src/resources/skills.md"],
     crate_features = select({
         "//common:stamp": [],
         "//conditions:default": ["avoid_stats"],
@@ -105,6 +106,7 @@ filegroup(
     srcs = [
         "Cargo.lock",
         "Cargo.toml",
+        "src/resources/skills.md",
         ":selenium_manager_rs_srcs",
     ],
     visibility = ["//visibility:public"],
