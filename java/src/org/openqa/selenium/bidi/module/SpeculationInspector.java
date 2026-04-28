@@ -81,6 +81,6 @@ public class SpeculationInspector implements AutoCloseable {
 
   @Override
   public void close() {
-    this.bidi.clearListener(Speculation.prefetchStatusUpdated());
+    this.bidi.clearListener(this.prefetchStatusUpdatedEvent);
   }
 }

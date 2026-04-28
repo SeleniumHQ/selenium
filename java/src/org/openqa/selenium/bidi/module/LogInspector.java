@@ -164,6 +164,6 @@ public class LogInspector implements AutoCloseable {
 
   @Override
   public void close() {
-    this.bidi.clearListener(Log.entryAdded());
+    this.bidi.clearListener(this.logEntryAddedEvent);
   }
 }
