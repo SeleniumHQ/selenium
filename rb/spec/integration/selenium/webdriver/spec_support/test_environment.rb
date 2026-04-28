@@ -281,7 +281,7 @@ module Selenium
 
         def firefox_driver(service: nil, **)
           service ||= WebDriver::Service.firefox
-          service.args.push('--log', 'trace') if WebDriver.logger.debug?
+          service.args << '-vv' if WebDriver.logger.debug?
           service.executable_path = rlocation(ENV['GECKODRIVER_BINARY']) if ENV.key?('GECKODRIVER_BINARY')
           WebDriver::Driver.for(:firefox, service: service, **)
         end
