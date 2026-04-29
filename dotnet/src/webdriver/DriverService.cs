@@ -17,15 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium;
@@ -33,12 +27,11 @@ namespace OpenQA.Selenium;
 /// <summary>
 /// Exposes the service provided by a native WebDriver server executable.
 /// </summary>
-public abstract class DriverService : ICommandServer
+public abstract class DriverService : IDisposable, IAsyncDisposable
 {
+    private static readonly ILogger _logger = Log.GetLogger<DriverService>();
     private bool isDisposed;
     private Process? driverServiceProcess;
-
-    private static readonly ILogger _logger = Log.GetLogger(typeof(DriverService));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -180,42 +173,6 @@ public abstract class DriverService : ICommandServer
         Environment.GetEnvironmentVariable("SE_DEBUG") is not null;
 
     /// <summary>
-    /// Gets a value indicating whether the service is responding to HTTP requests.
-    /// </summary>
-    protected virtual bool IsInitialized
-    {
-        get
-        {
-            bool isInitialized = false;
-
-            try
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-                    httpClient.Timeout = TimeSpan.FromSeconds(5);
-
-                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-                    using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
-                    {
-                        // Checking the response from the 'status' end point. Note that we are simply checking
-                        // that the HTTP status returned is a 200 status, and that the response has the correct
-                        // Content-Type header. A more sophisticated check would parse the JSON response and
-                        // validate its values. At the moment we do not do this more sophisticated check.
-                        isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType is { MediaType: string mediaType } && mediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            }
-            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                // Do nothing. The exception is expected, meaning driver service is not initialized.
-            }
-
-            return isInitialized;
-        }
-    }
-
-    /// <summary>
     /// Releases all resources associated with this <see cref="DriverService"/>.
     /// </summary>
     public void Dispose()
@@ -225,10 +182,25 @@ public abstract class DriverService : ICommandServer
     }
 
     /// <summary>
-    /// Starts the DriverService if it is not already running.
+    /// Asynchronously releases all resources associated with this <see cref="DriverService"/>.
     /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await this.DisposeAsync(true).ConfigureAwait(false);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Starts the driver service if it is not already running.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous start operation.</returns>
+    /// <exception cref="InvalidOperationException">If the driver service path is specified but the driver service executable name is not.</exception>
+    /// <exception cref="WebDriverException">If the service fails to initialize within the timeout period or exits unexpectedly.</exception>
+    /// <exception cref="OperationCanceledException">If the operation is cancelled via the cancellation token.</exception>
     [MemberNotNull(nameof(driverServiceProcess))]
-    public void Start()
+    public async ValueTask StartAsync(CancellationToken cancellationToken = default)
     {
         if (this.driverServiceProcess != null)
         {
@@ -248,7 +220,9 @@ public abstract class DriverService : ICommandServer
         }
         else
         {
-            this.driverServiceProcess.StartInfo.FileName = new DriverFinder(this.GetDefaultDriverOptions()).GetDriverPath();
+            var driverFinder = new DriverFinder(this.GetDefaultDriverOptions());
+            var driverPath = await driverFinder.GetDriverPathAsync(cancellationToken).ConfigureAwait(false);
+            this.driverServiceProcess.StartInfo.FileName = driverPath;
         }
 
         this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
@@ -273,15 +247,10 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
-        bool serviceAvailable = this.WaitForServiceInitialization();
+        await this.WaitForServiceInitializationAsync(cancellationToken).ConfigureAwait(false);
 
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
-
-        if (!serviceAvailable)
-        {
-            throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
-        }
     }
 
     /// <summary>
@@ -300,13 +269,37 @@ public abstract class DriverService : ICommandServer
         {
             if (disposing)
             {
-                this.Stop();
-
                 if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
                     this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
                     this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
                 }
+
+                this.StopAsync().GetAwaiter().GetResult();
+            }
+
+            this.isDisposed = true;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously releases all resources associated with this <see cref="DriverService"/>.
+    /// </summary>
+    /// <param name="disposing"><see langword="true"/> if the DisposeAsync method was explicitly called; otherwise, <see langword="false"/>.</param>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    protected virtual async ValueTask DisposeAsync(bool disposing)
+    {
+        if (!this.isDisposed)
+        {
+            if (disposing)
+            {
+                if (EnableProcessRedirection && this.driverServiceProcess is not null)
+                {
+                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                }
+
+                await this.StopAsync().ConfigureAwait(false);
             }
 
             this.isDisposed = true;
@@ -354,82 +347,191 @@ public abstract class DriverService : ICommandServer
         }
     }
 
-    /// <summary>
-    /// Stops the DriverService.
-    /// </summary>
-    private void Stop()
+    private async ValueTask StopAsync()
     {
-        if (this.IsRunning)
+        if (!this.IsRunning)
         {
-            if (this.HasShutdown)
+            return;
+        }
+
+        var process = this.driverServiceProcess;
+        using var timeoutCts = new CancellationTokenSource(this.TerminationTimeout);
+
+        try
+        {
+            // Send graceful shutdown signal
+            _ = SendShutdownSignalAsync(process, timeoutCts.Token);
+
+            // Wait for process to exit
+            await WaitForProcessExitAsync(process, timeoutCts.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Timeout occurred, force kill
+            if (_logger.IsEnabled(LogEventLevel.Warn))
             {
-                Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-
-                    while (this.IsRunning && DateTime.Now < timeout)
-                    {
-                        try
-                        {
-                            // Issue the shutdown HTTP request, then wait a short while for
-                            // the process to have exited. If the process hasn't yet exited,
-                            // we'll retry. We wait for exit here, since catching the exception
-                            // for a failed HTTP request due to a closed socket is particularly
-                            // expensive.
-                            using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl)).GetAwaiter().GetResult())
-                            {
-
-                            }
-
-                            this.driverServiceProcess.WaitForExit(3000);
-                        }
-                        catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
-                        {
-                        }
-                    }
-                }
+                _logger.Warn($"Driver service did not exit within {this.TerminationTimeout.TotalSeconds} seconds. Forcing termination.");
             }
 
-            // If at this point, the process still hasn't exited, wait for one
-            // last-ditch time, then, if it still hasn't exited, kill it. Note
-            // that falling into this branch of code should be exceedingly rare.
-            if (this.IsRunning)
-            {
-                this.driverServiceProcess.WaitForExit(Convert.ToInt32(this.TerminationTimeout.TotalMilliseconds));
-                if (!this.driverServiceProcess.HasExited)
-                {
-                    this.driverServiceProcess.Kill();
-                }
-            }
-
-            this.driverServiceProcess.Dispose();
+            TryKillProcess(process);
+        }
+        catch (InvalidOperationException)
+        {
+            // Process already exited or is in an invalid state, which is acceptable during shutdown
+        }
+        finally
+        {
+            process.Dispose();
             this.driverServiceProcess = null;
         }
     }
 
-    /// <summary>
-    /// Waits until a the service is initialized, or the timeout set
-    /// by the <see cref="InitializationTimeout"/> property is reached.
-    /// </summary>
-    /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
-    /// otherwise; <see langword="false"/>.</returns>
-    private bool WaitForServiceInitialization()
+    private static async Task WaitForProcessExitAsync(Process process, CancellationToken cancellationToken)
     {
-        bool isInitialized = false;
-        DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
-        while (!isInitialized && DateTime.Now < timeout)
+        // Early exit if process already exited
+        if (process.HasExited)
         {
-            // If the driver service process has exited, we can exit early.
-            if (!this.IsRunning)
-            {
-                break;
-            }
-
-            isInitialized = this.IsInitialized;
+            return;
         }
 
-        return isInitialized;
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        void OnProcessExited(object? sender, EventArgs e) => tcs.TrySetResult(true);
+
+        try
+        {
+            process.EnableRaisingEvents = true;
+            process.Exited += OnProcessExited;
+
+            // Check again after attaching handler to avoid race condition
+            if (process.HasExited)
+            {
+                return;
+            }
+
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
+            {
+                await tcs.Task.ConfigureAwait(false);
+            }
+        }
+        finally
+        {
+            process.Exited -= OnProcessExited;
+        }
+    }
+
+    private async Task SendShutdownSignalAsync(Process process, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (HasShutdown)
+            {
+                Uri shutdownUrl = new(this.ServiceUrl, "/shutdown");
+                using var httpClient = new HttpClient();
+                using var _ = await httpClient.GetAsync(shutdownUrl, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                TryKillProcess(process);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Failed to send shutdown signal: {ex.Message}");
+            }
+        }
+        catch (OperationCanceledException ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Shutdown request was cancelled: {ex.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Catch any unexpected exceptions to prevent unobserved task exceptions
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Unexpected error during shutdown signal: {ex.Message}");
+            }
+        }
+    }
+
+    private void TryKillProcess(Process process)
+    {
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill();
+            }
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug($"Failed to kill process: {ex.Message}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Waits until the service is initialized, or the timeout set
+    /// by the <see cref="InitializationTimeout"/> property is reached.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the service to initialize.</param>
+    /// <exception cref="WebDriverException">If the service fails to start within the timeout period.</exception>
+    private async Task WaitForServiceInitializationAsync(CancellationToken cancellationToken = default)
+    {
+        using var timeoutCts = new CancellationTokenSource(this.InitializationTimeout);
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
+        Uri serviceHealthUri = new(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+
+        try
+        {
+            while (true)
+            {
+                linkedCts.Token.ThrowIfCancellationRequested();
+
+                // If the driver service process has exited, we can exit early.
+                if (!this.IsRunning)
+                {
+                    throw new WebDriverException($"Driver service process exited unexpectedly before initialization completed. Service URL: {this.ServiceUrl}");
+                }
+
+                try
+                {
+                    using var response = await httpClient.GetAsync(serviceHealthUri, linkedCts.Token).ConfigureAwait(false);
+
+                    // TODO: Consider checking the content of the response to ensure that the service is fully initialized
+                    // and ready to accept commands, rather than just checking for a successful status code.
+                    if (response.IsSuccessStatusCode)
+                    {
+                        if (_logger.IsEnabled(LogEventLevel.Debug))
+                        {
+                            _logger.Debug($"Driver service initialized successfully and ready to accept commands at {this.ServiceUrl}");
+                        }
+                        return;
+                    }
+                }
+                catch (HttpRequestException)
+                {
+                    // The exception is expected, meaning driver service is not yet initialized.
+                }
+
+                // Avoid busy-waiting by introducing a small delay between polling attempts.
+                await Task.Delay(50, linkedCts.Token).ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
+        {
+            throw new WebDriverException($"Timed out waiting for driver service to initialize after {this.InitializationTimeout.TotalSeconds} seconds. Service URL: {this.ServiceUrl}");
+        }
     }
 }

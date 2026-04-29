@@ -25,6 +25,7 @@ genrule(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
     ],
 )
 
@@ -88,6 +89,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -103,6 +105,7 @@ maven_bom(
         "//java/src/org/openqa/selenium/chromium:chromium",
         "//java/src/org/openqa/selenium/edge:edge",
         "//java/src/org/openqa/selenium/firefox:firefox",
+        "//java/src/org/openqa/selenium/grid/node/kubernetes",
         "//java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc",
         "//java/src/org/openqa/selenium/grid/sessionmap/redis:redis",
         "//java/src/org/openqa/selenium/grid:grid",
@@ -140,6 +143,8 @@ java_export(
         "org.openqa.selenium.remote.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
         "org.openqa.selenium.grid.config.HasRoles",
+        "org.openqa.selenium.grid.node.NodeCommandInterceptor",
+        "org.openqa.selenium.grid.node.NodeSessionFactoryProvider",
         "org.openqa.selenium.remote.locators.CustomLocator",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
@@ -154,6 +159,7 @@ java_export(
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid/commands",
         "//java/src/org/openqa/selenium/grid/distributor/httpd",
+        "//java/src/org/openqa/selenium/grid/distributor/redis",
         "//java/src/org/openqa/selenium/grid/node/httpd",
         "//java/src/org/openqa/selenium/grid/router/httpd",
         "//java/src/org/openqa/selenium/grid/session",
@@ -168,6 +174,7 @@ java_export(
         ":base-command",
         "//java/src/org/openqa/selenium/cli",
         "//java/src/org/openqa/selenium/grid/config",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -185,6 +192,7 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//dotnet/test:__subpackages__",
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",

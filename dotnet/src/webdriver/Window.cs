@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
@@ -29,7 +27,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 internal sealed class Window : IWindow
 {
-    private WebDriver driver;
+    private readonly WebDriver driver;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Window"/> class.
@@ -37,7 +35,8 @@ internal sealed class Window : IWindow
     /// <param name="driver">Instance of the driver currently in use</param>
     public Window(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -59,7 +58,7 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters.Add("x", value.X);
             parameters.Add("y", value.Y);
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);
@@ -85,7 +84,7 @@ internal sealed class Window : IWindow
 
         set
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
             parameters.Add("width", value.Width);
             parameters.Add("height", value.Height);
             this.driver.Execute(DriverCommand.SetWindowRect, parameters);

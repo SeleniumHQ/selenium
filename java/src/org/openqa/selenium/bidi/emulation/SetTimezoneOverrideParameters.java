@@ -17,20 +17,23 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import java.util.List;
+import org.jspecify.annotations.Nullable;
+
 public class SetTimezoneOverrideParameters extends AbstractOverrideParameters {
 
-  public SetTimezoneOverrideParameters(String timezone) {
+  public SetTimezoneOverrideParameters(@Nullable String timezone) {
     map.put("timezone", timezone);
   }
 
   @Override
-  public SetTimezoneOverrideParameters contexts(java.util.List<String> contexts) {
+  public SetTimezoneOverrideParameters contexts(List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetTimezoneOverrideParameters userContexts(java.util.List<String> userContexts) {
+  public SetTimezoneOverrideParameters userContexts(List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

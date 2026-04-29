@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http.jdk;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpHeader.UserAgent;
 
 import com.google.common.net.MediaType;
@@ -25,14 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.openqa.selenium.io.Read;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -55,19 +51,7 @@ class JdkHttpMessages {
     String rawUrl = rawUri.toString();
 
     // Add query string if necessary
-    String queryString =
-        StreamSupport.stream(req.getQueryParameterNames().spliterator(), false)
-            .map(
-                name -> {
-                  return StreamSupport.stream(req.getQueryParameters(name).spliterator(), false)
-                      .map(
-                          value ->
-                              String.format(
-                                  "%s=%s",
-                                  URLEncoder.encode(name, UTF_8), URLEncoder.encode(value, UTF_8)))
-                      .collect(Collectors.joining("&"));
-                })
-            .collect(Collectors.joining("&"));
+    String queryString = req.getQueryString();
 
     if (!queryString.isEmpty()) {
       rawUrl = rawUrl + "?" + queryString;
@@ -147,6 +131,10 @@ class JdkHttpMessages {
         || uri.startsWith("https://")) {
       rawUrl = uri;
     } else {
+      if (baseUrl == null) {
+        throw new IllegalStateException(
+            "Unable to resolve relative URI " + uri + ": base URI is not set in ClientConfig");
+      }
       String base = baseUrl.toString();
       if (base.endsWith("/")) {
         rawUrl = base.substring(0, base.length() - 1) + uri;
@@ -181,7 +169,7 @@ class JdkHttpMessages {
         response
             .headers()
             .firstValue("Content-Type")
-            .map(contentType -> contentType.equalsIgnoreCase(MediaType.OCTET_STREAM.toString()))
+            .map(contentType -> isBinaryStream(contentType))
             .orElse(false);
 
     if (isBinaryStream) {
@@ -191,6 +179,12 @@ class JdkHttpMessages {
       byte[] responseBody = readResponseBody(response);
       return responseBody.length > 0 ? Contents.bytes(responseBody) : Contents.empty();
     }
+  }
+
+  private static boolean isBinaryStream(String contentType) {
+    return MediaType.OCTET_STREAM.toString().equalsIgnoreCase(contentType)
+        || "application/vnd.docker.multiplexed-stream".equalsIgnoreCase(contentType)
+        || "application/vnd.docker.raw-stream".equalsIgnoreCase(contentType);
   }
 
   private byte[] readResponseBody(java.net.http.HttpResponse<InputStream> response) {

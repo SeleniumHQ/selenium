@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node.local;
 
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.time.Instant;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -35,6 +38,8 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.SessionClosedData;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -63,7 +68,7 @@ public class SessionSlot
   private final boolean supportingBiDi;
   private final AtomicLong connectionCounter;
   // volatile ensures memory visibility across threads when session is set after reservation
-  private volatile ActiveSession currentSession;
+  private volatile @Nullable ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
@@ -114,6 +119,7 @@ public class SessionSlot
     return !reserved.get();
   }
 
+  @Nullable
   public ActiveSession getSession() {
     if (isAvailable()) {
       throw new NoSuchSessionException("Session is not running");
@@ -127,11 +133,29 @@ public class SessionSlot
   }
 
   public void stop(SessionClosedReason reason) {
+    stop(reason, null, null);
+  }
+
+  /**
+   * Stops the session with full context for sidecar services.
+   *
+   * @param reason the reason for closing the session
+   * @param nodeId the ID of the node where the session was running (may be null for backward
+   *     compatibility)
+   * @param nodeUri the URI of the node where the session was running (may be null for backward
+   *     compatibility)
+   */
+  public void stop(SessionClosedReason reason, @Nullable NodeId nodeId, @Nullable URI nodeUri) {
     if (isAvailable()) {
       return;
     }
 
+    // Capture session data before clearing
     SessionId id = currentSession.getId();
+    Capabilities capabilities = currentSession.getCapabilities();
+    Instant startTime = currentSession.getStartTime();
+    Instant endTime = Instant.now();
+
     LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
     try {
       currentSession.stop();
@@ -142,7 +166,11 @@ public class SessionSlot
     currentSession = null;
     connectionCounter.set(0);
     release();
-    bus.fire(new SessionClosedEvent(id, reason));
+
+    // Fire event with full context for sidecar services
+    SessionClosedData closedData =
+        new SessionClosedData(id, reason, nodeId, nodeUri, capabilities, startTime, endTime);
+    bus.fire(new SessionClosedEvent(closedData));
   }
 
   @Override

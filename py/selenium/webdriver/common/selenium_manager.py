@@ -89,18 +89,30 @@ class SeleniumManager:
         else:
             allowed = {
                 ("darwin", "any"): "macos/selenium-manager",
-                ("win32", "any"): "windows/selenium-manager.exe",
-                ("cygwin", "any"): "windows/selenium-manager.exe",
+                ("win32", "x86_64"): "windows/selenium-manager.exe",
+                ("cygwin", "x86_64"): "windows/selenium-manager.exe",
                 ("linux", "x86_64"): "linux/selenium-manager",
                 ("freebsd", "x86_64"): "linux/selenium-manager",
                 ("openbsd", "x86_64"): "linux/selenium-manager",
             }
 
-            arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
-            if sys.platform in ["freebsd", "openbsd"]:
-                logger.warning(f"Selenium Manager binary may not be compatible with {sys.platform}; verify settings")
+            # some operating systems report x86-64 architecture as amd64/AMD64
+            platform_name = sys.platform
+            arch = "any" if platform_name == "darwin" else platform.machine().lower()
+            arch = "x86_64" if arch == "amd64" else arch
 
-            location = allowed.get((sys.platform, arch))
+            # in Python < 3.14, sys.platform appends version number to BSD platform names
+            if platform_name.startswith("freebsd"):
+                logger.warning(
+                    "Selenium Manager binary may not be compatible with FreeBSD; you may need to run "
+                    "'brandelf -t linux' on it and load linux64.ko"
+                )
+                platform_name = "freebsd"
+            elif platform_name.startswith("openbsd"):
+                logger.warning("Selenium Manager binary may not be compatible with OpenBSD; verify settings")
+                platform_name = "openbsd"
+
+            location = allowed.get((platform_name, arch))
             if location is None:
                 raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 

@@ -19,9 +19,8 @@ package org.openqa.selenium.print;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
+import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class PageSize {
   private final double height;
   private final double width;
@@ -52,9 +51,7 @@ public class PageSize {
   }
 
   public static PageSize setPageSize(PageSize pageSize) {
-    if (pageSize == null) {
-      throw new IllegalArgumentException("Page size cannot be null");
-    }
+    Require.nonNull("Page size", pageSize);
     return new PageSize(pageSize.getHeight(), pageSize.getWidth());
   }
 

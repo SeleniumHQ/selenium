@@ -1,3 +1,71 @@
+v4.43.0
+======
+* Support CDP versions: v145, v146, v147
+
+v4.42.0
+======
+* Support CDP versions: v144, v145, v146
+* fix "or" condition (#17135)
+* Improve screenshot error message (#17120)
+* Catch exception on .contentAsString with binary content (#17139)
+* [grid] Router bypass WebSocket data path via transparent TCP tunnel (#17146)
+* Guard against NPE in Platform.extractFromSysProperty (#17151)
+* Deduplicate Unicode PUA mappings in Keys; make OPTION an alias of ALT and deprecate FN (#17147)
+* remove `@Nullable` from return value for `ExpectedConditions` that never return null (#17149)
+* Fluent setters in few classes like `PrintOptions` etc. (#17148)
+* Enhance ScriptKey.toString() and mask script content in UnpinnedScriptKey (#17159)
+* specify nullability in packages `org.openqa.selenium.chrom*` (#17152)
+* Nullability for browsers (#17167)
+* Keys: enforce CharSequence contract in charAt() (#17166)
+* [BiDi] implement `speculation` module (#17130)
+* specify nullability in `org.openqa.selenium.grid.*` packages (#17173)
+* make the signature change in `ExecuteMethod` backward compatible (#17183)
+* specify nullability in package `org.openqa.selenium.devtools` (#17185)
+* [grid] Router WebSocket handle dropped close frames, idle disconnects, high-latency proxying (#17197)
+* specify nullability in package `org.openqa.selenium.docker` (#17191)
+* [grid] Align Router-Node read timeout with session pageLoad capability (#17211)
+* specify nullability in other java packages (#17194)
+* Fix saving docker logs to a file (#17218)
+* Fix duplicate field name handling in InstanceCoercer#getFieldWriters (#17187)
+* [grid] Dynamic Grid Docker configure container stop-grace-period (#17222)
+* Add field names to JsonException "Duplicate JSON field name..." (#17225)
+* [build] Fix RBE tests (#17233)
+* [bazel] Update to Bazel 9 (#16757)
+* [grid] Fix VNC caps not propagated for sessions without browserName (#17235)
+* [grid] Add NodeCommandInterceptor for pluggable command interception via --ext (#17242)
+* fix loading "isDisplayed.js" and other resources in OSGI environment (#17257)
+
+v4.41.0
+======
+* Support CDP versions: v143, v144, v145
+* Improve error message for died grid (#16938)
+* fix JSON parsing of numbers with exponent (#16961)
+* SE_DEBUG warns only when overriding user settings (#17009)
+* mark `wait.until` as non-nullable (#17007)
+* restore BiDi constructor without timeout parameter (#17014)
+* [grid] Preventing potential deadlock in Distributor (#17022)
+* Report exactly which JSON value was incorrect (#17003)
+* [Java] JSpecify annotations for `LoadableComponent` , `SlowLoadableComponent` (#16798)
+* parse all JSON numbers the same way (#17038)
+* [grid] Add session event API for server-side event bus integration (#17015)
+* specify nullability in package `org.openqa.selenium.bidi.browser` (#17036)
+* [BiDi] implement `emulation.setScreenSettingsOverride` (#17028)
+* specify nullability in package `org.openqa.selenium.bidi.browsingcontext` (#17040)
+* Nullability annotations in package `org.openqa.selenium.bidi.emulation` (#17055)
+* specify nullability in package `org.openqa.selenium.bidi.module` (#17058)
+* specify nullability in package `org.openqa.selenium.bidi.log` (#17059)
+* [grid] Revert default standalone config (#17060)
+* specify nullability in package `org.openqa.selenium.bidi.network` (#17061)
+* specify nullability in package `org.openqa.selenium.bidi.script` (#17062)
+* Nullability in all BiDi packages (#17064)
+* Remove unneeded protection from BiDi Connection constructor (#17067)
+* [grid] Dynamic Grid standalone support passing basic auth credential (#17072)
+* [grid] Restore stereotype capabilities merging in RelaySessionFactory (#17097)
+* [grid] Support Dynamic Grid in Kubernetes cluster (#17092)
+* [grid] Fix Distributor thread exhaustion in node health-check cycle (#17104)
+* [grid] Fix WebSocket connection counter leaks in ProxyNodeWebsockets (#17106)
+* [grid] Distributor retry session when RemoteNode executor shutting down (#17109)
+
 v4.40.0
 ======
 * [BiDi] implement `emulation.setScreenOrientationOverride` (#16705)

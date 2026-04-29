@@ -17,11 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -94,10 +91,7 @@ public class WebSocketConnection
     /// <exception cref="TimeoutException">Thrown when the connection is not established within the startup timeout.</exception>
     public virtual async Task Start(string url)
     {
-        if (url is null)
-        {
-            throw new ArgumentNullException(nameof(url));
-        }
+        ArgumentNullException.ThrowIfNull(url);
 
         this.Log($"Opening connection to URL {url}", DevToolsSessionLogLevel.Trace);
         bool connected = false;
@@ -162,10 +156,7 @@ public class WebSocketConnection
     /// <returns>The task object representing the asynchronous operation.</returns>
     public virtual async Task SendData(string data)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         ArraySegment<byte> messageBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data));
         this.Log($"SEND >>> {data}");
@@ -220,10 +211,7 @@ public class WebSocketConnection
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnDataReceived(WebSocketConnectionDataReceivedEventArgs e)
     {
-        if (this.DataReceived != null)
-        {
-            this.DataReceived(this, e);
-        }
+        this.DataReceived?.Invoke(this, e);
     }
 
     /// <summary>
@@ -232,10 +220,7 @@ public class WebSocketConnection
     /// <param name="e">The event args used when raising the event.</param>
     protected virtual void OnLogMessage(DevToolsSessionLogMessageEventArgs e)
     {
-        if (this.LogMessage != null)
-        {
-            this.LogMessage(this, e);
-        }
+        this.LogMessage?.Invoke(this, e);
     }
 
     private async Task ReceiveData()

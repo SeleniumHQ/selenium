@@ -18,6 +18,7 @@
 package org.openqa.selenium.support.pagefactory;
 
 import java.lang.reflect.Field;
+import org.jspecify.annotations.Nullable;
 
 /** Allows the PageFactory to decorate fields. */
 public interface FieldDecorator {
@@ -29,5 +30,5 @@ public interface FieldDecorator {
    * @return Value to decorate the field with or null if it shouldn't be decorated. If non-null,
    *     must be assignable to the field.
    */
-  Object decorate(ClassLoader loader, Field field);
+  @Nullable Object decorate(ClassLoader loader, Field field);
 }

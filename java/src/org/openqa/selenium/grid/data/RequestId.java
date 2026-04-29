@@ -57,6 +57,7 @@ public class RequestId {
     return uuid;
   }
 
+  @SuppressWarnings({"unused"})
   private static RequestId fromJson(UUID id) {
     return new RequestId(id);
   }

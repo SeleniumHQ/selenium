@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace OpenQA.Selenium.Support.UI;
 
@@ -86,7 +84,8 @@ public class PopupWindowFinder
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
     public PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
         this.timeout = timeout;
         this.sleepInterval = sleepInterval;
     }

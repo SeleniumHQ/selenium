@@ -19,32 +19,20 @@ permissions:
   contents: read
 
 jobs:
-  get-approval:
-    name: Get Approval
-    uses: ./.github/workflows/get-approval.yml
-    with:
-      title: Release approval needed
-      message: |
-        Selenium ${{ github.event.inputs.tag }} release preparation started.
-        Please approve to lock trunk when ready.
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   parse-tag:
     name: Parse Tag
     uses: ./.github/workflows/parse-release-tag.yml
     with:
       tag: ${{ inputs.tag }}
 
-  # Rust jobs can execute in parallel with approval job since work is in a separate branch
   generate-rust-version:
     name: Generate Rust Version
-    needs: parse-tag
+    needs: [parse-tag, restrict-trunk]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Rust Version
-      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
+      run: ./go rust:version ${{ needs.parse-tag.outputs.version }} && ./go rust:update
       artifact-name: rust-version
 
   push-rust-version:
@@ -74,6 +62,7 @@ jobs:
   cleanup-rust-branch:
     name: Cleanup Rust Branch
     needs: [parse-tag, selenium-manager]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -82,58 +71,92 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Delete rust release branch
         run: |
-          git push origin --delete rust-release-${{ needs.parse-tag.outputs.version }}
+          git push origin --delete rust-release-${{ needs.parse-tag.outputs.version }} || true
 
   restrict-trunk:
     name: Restrict Trunk Branch
-    needs: [parse-tag, get-approval, selenium-manager]
-    if: always() && !cancelled() && needs.get-approval.result == 'success' && (needs.selenium-manager.result == 'success' || needs.selenium-manager.result == 'skipped')
+    needs: parse-tag
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: true
-    secrets: inherit
+      message: |
+        Trunk branch has been restricted for release preparation (${{ inputs.tag }}).
+        To unlock due to release issues, run the "Unlock Trunk" workflow:
+        https://github.com/${{ github.repository }}/actions/workflows/unlock-trunk.yml
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  release-updates:
-    name: Generate ${{ matrix.name }} update
-    needs: [parse-tag, restrict-trunk]
+  update-versions:
+    name: Bump Versions
+    needs: [parse-tag, restrict-trunk, cleanup-rust-branch]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Bump versions
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
+      artifact-name: patch-versions
+
+  commit-versions:
+    name: Commit Versions
+    needs: [parse-tag, update-versions]
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: patch-versions
+      commit-message: "bump versions"
+      push-branch: staging/release-${{ needs.parse-tag.outputs.tag }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  update-devtools:
+    name: Update Devtools
+    needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: browsers
-            run: ./go update_browsers ${{ inputs.chrome_channel }}
-          - name: devtools
-            run: ./go update_cdp ${{ inputs.chrome_channel }}
-          - name: manager
-            run: ./go update_manager
-          - name: multitool
-            run: ./go update_multitool
-          - name: binding-versions
-            run: ./go all:version ${{ needs.parse-tag.outputs.version }} && ./go all:update
-          - name: rust-versions
-            run: ./go rust:version ${{ needs.parse-tag.outputs.version }} && ./go rust:update
-          - name: authors
-            run: ./go authors
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Update ${{ matrix.name }}
-      run: ${{ matrix.run }}
-      artifact-name: patch-${{ matrix.name }}
+      name: Update devtools
+      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
+      run: ./go update_cdp ${{ inputs.chrome_channel }}
+      artifact-name: patch-devtools
 
-  patch-release-updates:
-    name: Generate ${{ needs.parse-tag.outputs.language }} version update
-    needs: [parse-tag, restrict-trunk]
-    if: needs.parse-tag.outputs.language != 'all'
+  commit-devtools:
+    name: Commit Devtools
+    needs: [parse-tag, update-devtools]
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: patch-devtools
+      commit-message: "update devtools versions"
+      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
+      push-branch: staging/release-${{ needs.parse-tag.outputs.tag }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  update-dependencies:
+    name: Run Dependency Updates
+    needs: [parse-tag, commit-versions, commit-devtools]
+    if: >-
+      always() &&
+      needs.commit-versions.result == 'success' &&
+      (needs.parse-tag.outputs.language != 'all' || needs.commit-devtools.result == 'success')
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Update ${{ needs.parse-tag.outputs.language }} version
-      run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }} && ./go ${{ needs.parse-tag.outputs.language }}:update
-      artifact-name: patch-binding-versions
+      name: Run dependency updates
+      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      artifact-name: patch-dep-updates
 
   calculate-changelog-depth:
     name: Calculate Changelog Depth
-    needs: parse-tag
+    needs: [parse-tag, commit-versions, commit-devtools, update-dependencies]
+    if: >-
+      always() &&
+      needs.commit-versions.result == 'success' &&
+      (needs.parse-tag.outputs.language != 'all' || needs.commit-devtools.result == 'success')
     runs-on: ubuntu-latest
     outputs:
       depth: ${{ steps.calc.outputs.depth }}
@@ -143,6 +166,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
+          TAG: ${{ needs.parse-tag.outputs.tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -163,7 +187,7 @@ jobs:
               exit 0
             fi
 
-            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...${{ github.sha }}" --jq '.total_commits' 2>/dev/null) || {
+            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...staging/release-${TAG}" --jq '.total_commits' 2>/dev/null) || {
               echo "::warning::Failed to get commit count, using full history"
               echo "depth=0" >> "$GITHUB_OUTPUT"
               exit 0
@@ -173,31 +197,61 @@ jobs:
             echo "depth=0" >> "$GITHUB_OUTPUT"
           fi
 
-  generate-changelogs:
+  update-changelogs:
     name: Generate Changelogs
-    needs: [parse-tag, restrict-trunk, calculate-changelog-depth]
+    needs: [parse-tag, calculate-changelog-depth]
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Update Changelogs
-      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:changelogs' || '' }}
+      name: Update changelogs
+      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
+      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
+
+  release-updates:
+    name: Update ${{ matrix.name }}
+    needs: [parse-tag, commit-devtools, selenium-manager, calculate-changelog-depth]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - task: browsers
+            name: Pinned Browsers
+            run: ./go update_browsers
+          - task: manager
+            name: Selenium Manager Binaries
+            run: ./go update_manager
+          - task: multitool
+            name: Multitool
+            run: ./go update_multitool
+          - task: authors
+            name: Authors
+            run: ./go authors
+          - task: rust-changelogs
+            name: Rust Changelogs
+            run: ./go rust:changelogs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update ${{ matrix.name }}
+      ref: staging/release-${{ needs.parse-tag.outputs.tag }}
+      run: ${{ matrix.run }}${{ matrix.task == 'browsers' && format(' {0}', inputs.chrome_channel) || '' }}
+      artifact-name: patch-${{ matrix.task }}
       fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   create-pr:
     name: Create Pull Request
-    needs: [parse-tag, release-updates, patch-release-updates, generate-changelogs]
+    needs: [parse-tag, update-dependencies, update-changelogs, release-updates]
     if: >-
-      always() && !cancelled() && needs.release-updates.result != 'failure' && needs.patch-release-updates.result != 'failure' &&
-      needs.generate-changelogs.result == 'success'
+      always() && !cancelled() &&
+      needs.update-dependencies.result == 'success' &&
+      needs.update-changelogs.result == 'success' &&
+      needs.release-updates.result != 'failure'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trunk
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          ref: trunk
-      - name: Get latest trunk
-        run: git pull --ff-only origin trunk
       - name: Download all patches
         uses: actions/download-artifact@v4
         with:
@@ -222,14 +276,16 @@ jobs:
               echo "${name}=false" >> "$GITHUB_OUTPUT"
             fi
           }
-          apply_patch browsers "update pinned browser versions"
+          apply_patch versions "bump versions"
           apply_patch devtools "update devtools versions"
+          apply_patch dep-updates "update dependencies"
+          apply_patch changelogs "changelogs updated"
+          apply_patch rust-changelogs "rust changelogs updated"
+          apply_patch browsers "update pinned browser versions"
           apply_patch manager "update selenium manager versions"
           apply_patch multitool "update multitool binaries"
-          apply_patch binding-versions "bump bindings version and dependencies"
-          apply_patch rust-versions "bump rust version and dependencies"
           apply_patch authors "update authors file"
-          apply_patch changelogs "changelogs updated"
+          rm -rf patches
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -251,16 +307,31 @@ jobs:
             ### Updates Applied
             | Component | Status |
             |-----------|--------|
-            | Browser and driver versions | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.devtools == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
-            | Selenium Manager version | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Binding Dependencies | ${{ steps.apply.outputs.dep-updates == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Rust Changelogs | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Pinned Browsers | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.browsers == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
+            | Selenium Manager | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Multitool binaries | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.multitool == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
-            | Bindings Version & Dependencies | ${{ steps.apply.outputs.binding-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Rust Version & Dependencies | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Authors | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.authors == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
-            | Draft Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
 
             ---
             Auto-generated by [release-preparation workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           labels: C-build
           draft: true
+
+  cleanup-staging-branch:
+    name: Cleanup Staging Branch
+    needs: [parse-tag, create-pr]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+      - name: Delete staging branch
+        run: |
+          git push origin --delete staging/release-${{ needs.parse-tag.outputs.tag }} || true

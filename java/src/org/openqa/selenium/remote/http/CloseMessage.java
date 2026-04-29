@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.util.Objects.requireNonNullElse;
+
 public class CloseMessage implements Message {
 
   private final int code;
@@ -28,7 +30,7 @@ public class CloseMessage implements Message {
 
   public CloseMessage(int code, String reason) {
     this.code = code;
-    this.reason = reason == null ? "" : reason;
+    this.reason = requireNonNullElse(reason, "");
   }
 
   public int code() {

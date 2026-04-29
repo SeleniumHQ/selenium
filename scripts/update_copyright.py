@@ -102,7 +102,6 @@ JS_EXCLUSIONS = [
 ]
 
 PY_EXCLUSIONS = [
-    f"{ROOT}/py/selenium/webdriver/common/bidi/cdp.py",
     f"{ROOT}/py/generate.py",
     f"{ROOT}/py/test/unit/cdp_generate_tests.py",
     f"{ROOT}/py/selenium/webdriver/common/devtools/**/*",

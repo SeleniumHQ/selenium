@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -99,7 +100,8 @@ class CookieHandler implements HttpHandler {
     return response;
   }
 
-  private <X> void append(StringBuilder builder, X fromCookie, Function<X, String> value) {
+  private <X> void append(
+      StringBuilder builder, @Nullable X fromCookie, Function<X, String> value) {
     if (fromCookie == null) {
       return;
     }
@@ -195,7 +197,7 @@ class CookieHandler implements HttpHandler {
     return builder.build();
   }
 
-  private String escapeCookieValue(String value) {
+  private String escapeCookieValue(@Nullable String value) {
     if (value == null || value.isEmpty()) {
       return "";
     }

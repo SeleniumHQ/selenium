@@ -247,8 +247,8 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfAllElementsLocatedBy(
       final By locator) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
-      private int indexOfInvisibleElement;
+    return new ExpectedCondition<>() {
+      private int indexOfInvisibleElement = -1;
       private @Nullable WebElement invisibleElement;
 
       @Override
@@ -304,8 +304,8 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfAllElements(
       final List<WebElement> elements) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
-      private int indexOfInvisibleElement;
+    return new ExpectedCondition<>() {
+      private int indexOfInvisibleElement = -1;
       private @Nullable WebElement invisibleElement;
 
       @Override
@@ -345,7 +345,7 @@ public class ExpectedConditions {
    * @return the (same) WebElement once it is visible
    */
   public static ExpectedCondition<@Nullable WebElement> visibilityOf(final WebElement element) {
-    return new ExpectedCondition<@Nullable WebElement>() {
+    return new ExpectedCondition<>() {
       @Override
       public @Nullable WebElement apply(WebDriver driver) {
         return elementIfVisible(element);
@@ -373,7 +373,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> presenceOfAllElementsLocatedBy(
       final By locator) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       @Override
       public @Nullable List<WebElement> apply(WebDriver driver) {
         List<WebElement> elements = driver.findElements(locator);
@@ -399,7 +399,7 @@ public class ExpectedConditions {
 
     return new ExpectedCondition<>() {
       private @Nullable String elementText;
-      private @Nullable StaleElementReferenceException error;
+      private @Nullable WebDriverException error;
 
       @Override
       public Boolean apply(WebDriver driver) {
@@ -408,7 +408,7 @@ public class ExpectedConditions {
         try {
           elementText = element.getText();
           return elementText.contains(text);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           error = e;
           return false;
         }
@@ -481,7 +481,7 @@ public class ExpectedConditions {
 
     return new ExpectedCondition<>() {
       private @Nullable String actualValue;
-      private @Nullable StaleElementReferenceException error;
+      private @Nullable WebDriverException error;
 
       @Override
       public Boolean apply(WebDriver driver) {
@@ -490,7 +490,7 @@ public class ExpectedConditions {
         try {
           actualValue = element.getAttribute("value");
           return actualValue != null && actualValue.contains(expectedValue);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           error = e;
           return false;
         }
@@ -596,7 +596,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable WebDriver> frameToBeAvailableAndSwitchToIt(
       final By locator) {
-    return new ExpectedCondition<@Nullable WebDriver>() {
+    return new ExpectedCondition<>() {
       private @Nullable NotFoundException error;
 
       @Override
@@ -660,7 +660,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable WebDriver> frameToBeAvailableAndSwitchToIt(
       final WebElement frame) {
-    return new ExpectedCondition<@Nullable WebDriver>() {
+    return new ExpectedCondition<>() {
       private @Nullable NoSuchFrameException error;
 
       @Override
@@ -825,7 +825,7 @@ public class ExpectedConditions {
           // Calling any method forces a staleness check
           element.isEnabled();
           return false;
-        } catch (StaleElementReferenceException expected) {
+        } catch (StaleElementReferenceException | NoSuchElementException expected) {
           return true;
         }
       }
@@ -850,12 +850,12 @@ public class ExpectedConditions {
    * @return the result of the provided condition
    */
   public static <T> ExpectedCondition<@Nullable T> refreshed(final ExpectedCondition<T> condition) {
-    return new ExpectedCondition<@Nullable T>() {
+    return new ExpectedCondition<>() {
       @Override
       public @Nullable T apply(WebDriver driver) {
         try {
           return condition.apply(driver);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
           return null;
         }
       }
@@ -934,7 +934,7 @@ public class ExpectedConditions {
   }
 
   public static ExpectedCondition<@Nullable Alert> alertIsPresent() {
-    return new ExpectedCondition<@Nullable Alert>() {
+    return new ExpectedCondition<>() {
       @Override
       public @Nullable Alert apply(WebDriver driver) {
         try {
@@ -953,7 +953,7 @@ public class ExpectedConditions {
 
   public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
     return new ExpectedCondition<>() {
-      private int actualNumberOfWindows;
+      private int actualNumberOfWindows = -1;
       private @Nullable WebDriverException error;
 
       @Override
@@ -1136,7 +1136,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> numberOfElementsToBeMoreThan(
       final By locator, final Integer expectedNumber) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       private Integer actualNumber = 0;
 
       @Override
@@ -1165,7 +1165,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> numberOfElementsToBeLessThan(
       final By locator, final Integer number) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       private Integer currentNumber = 0;
 
       @Override
@@ -1193,7 +1193,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> numberOfElementsToBe(
       final By locator, final Integer expectedNumberOfElements) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       private Integer actualNumberOfElements = -1;
 
       @Override
@@ -1414,7 +1414,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfNestedElementsLocatedBy(
       final By parent, final By childLocator) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       private int indexOfInvisibleElement = -1;
       private @Nullable WebElement invisibleChild;
 
@@ -1465,7 +1465,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfNestedElementsLocatedBy(
       final WebElement element, final By childLocator) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
       private int indexOfInvisibleElement = -1;
       private @Nullable WebElement invisibleChild;
 
@@ -1575,7 +1575,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> presenceOfNestedElementsLocatedBy(
       final By parent, final By childLocator) {
-    return new ExpectedCondition<@Nullable List<WebElement>>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public @Nullable List<WebElement> apply(WebDriver driver) {
@@ -1610,7 +1610,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> invisibilityOfAllElements(
       final List<WebElement> elements) {
     return new ExpectedCondition<>() {
-      private int indexOfVisibleElement;
+      private int indexOfVisibleElement = -1;
       private @Nullable WebElement visibleElement;
 
       @Override
@@ -1677,15 +1677,21 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> or(final ExpectedCondition<?>... conditions) {
     return new ExpectedCondition<>() {
+      @Nullable final Object[] results = new Object[conditions.length];
+
       @Override
       public Boolean apply(WebDriver driver) {
-        for (ExpectedCondition<?> condition : conditions) {
+        for (int i = 0; i != conditions.length; ++i) {
+          ExpectedCondition<?> condition = conditions[i];
+          results[i] = null;
           try {
             Object result = condition.apply(driver);
             if (Boolean.TRUE.equals(result) || result != null && !(result instanceof Boolean)) {
               return true;
             }
-          } catch (StaleElementReferenceException ignore) {
+            results[i] = result;
+          } catch (RuntimeException e) {
+            results[i] = e;
           }
         }
         return false;
@@ -1696,9 +1702,22 @@ public class ExpectedConditions {
         StringBuilder message =
             new StringBuilder("at least one condition to be valid:").append(lineSeparator());
         for (int i = 0; i < conditions.length; i++) {
-          message.append(i + 1).append(". ").append(conditions[i]).append(lineSeparator());
+          message
+              .append(i + 1)
+              .append(". ")
+              .append(conditions[i])
+              .append(resultAsString(results[i]))
+              .append(lineSeparator());
         }
         return message.toString();
+      }
+
+      private Object resultAsString(@Nullable Object result) {
+        return Boolean.FALSE.equals(result)
+            ? ""
+            : result instanceof WebDriverException
+                ? " (caused by: " + shortDescription((WebDriverException) result) + ")"
+                : " (actual: " + result + ")";
       }
     };
   }
@@ -1789,7 +1808,7 @@ public class ExpectedConditions {
    * @return object once JavaScript executes without errors
    */
   public static ExpectedCondition<@Nullable Object> jsReturnsValue(final String javaScript) {
-    return new ExpectedCondition<@Nullable Object>() {
+    return new ExpectedCondition<>() {
       private @Nullable WebDriverException error;
 
       @Override

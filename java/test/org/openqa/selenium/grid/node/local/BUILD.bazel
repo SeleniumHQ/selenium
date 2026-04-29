@@ -8,6 +8,7 @@ java_test_suite(
     deps = [
         "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/local",
@@ -20,5 +21,6 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )

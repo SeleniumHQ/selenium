@@ -55,24 +55,28 @@ jobs:
     uses: ./.github/workflows/get-approval.yml
     with:
       title: Release approval required
-      message: Approval is needed to publish ${{ needs.parse-tag.outputs.tag }}.
+      message: "Approval is required to publish ${{ needs.parse-tag.outputs.tag }}."
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish:
     name: Build and Publish ${{ matrix.language }}
     needs: [parse-tag, get-approval]
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
-        language: [java, python, ruby, dotnet, javascript]
+        language: [java, ruby, dotnet, javascript, python]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
+      gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
       artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
-      artifact-path: build/dist/*.*
+      artifact-path: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && 'build/dist/*.*' || '' }}
     secrets: inherit
 
   github-release:
@@ -97,6 +101,7 @@ jobs:
         with:
           pattern: release-packages-*
           merge-multiple: true
+          path: "build/dist/"
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
         uses: actions/download-artifact@v4
@@ -144,6 +149,7 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/update-documentation.yml
@@ -168,7 +174,9 @@ jobs:
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
-    secrets: inherit
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   reset-version:
     name: Generate Nightly Versions
@@ -176,7 +184,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
-      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly && ./go rust:update' || '' }}
       artifact-name: version-reset
 
   update-version:
@@ -195,6 +203,9 @@ jobs:
   nightly:
     name: Publish Nightly Packages
     needs: [parse-tag, update-version]
+    permissions:
+      contents: write
+      packages: write
     uses: ./.github/workflows/nightly.yml
     with:
       language: ${{ needs.parse-tag.outputs.language }}

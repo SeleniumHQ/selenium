@@ -64,11 +64,11 @@ public class SafariDriverService extends DriverService {
   public SafariDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -166,7 +166,7 @@ public class SafariDriverService extends DriverService {
     protected SafariDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

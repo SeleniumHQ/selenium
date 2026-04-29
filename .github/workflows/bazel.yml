@@ -76,6 +76,11 @@ on:
         required: false
         type: string
         default: ''
+      gem-trusted-publishing:
+        description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   bazel:
@@ -86,10 +91,24 @@ jobs:
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
+      - name: Remove extra tools to free disk space
+        if: inputs.os == 'ubuntu'
+        run: |
+          echo "Removing extra tools to free disk space..."
+          echo "Space before: $(df -BG / | tail -1 | awk '{print $4}')"
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /usr/local/julia* || true
+          sync
+          after=$(df -BG / | tail -1 | awk '{print $4}')
+          echo "Space after: ${after}"
       - name: Calculate fetch depth
         id: depth
         shell: bash
@@ -113,6 +132,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
+          fetch-tags: ${{ inputs.fetch-depth != '' }}
       - name: Fetch base ref for PR comparison
         if: github.event.pull_request.base.sha
         run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
@@ -168,7 +188,7 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
+              "rules_ruby++ruby+ruby": false
               "+pin_browsers_extension+linux_beta_chrome": false
               "+pin_browsers_extension+linux_beta_chromedriver": true
               "+pin_browsers_extension+linux_beta_firefox": false
@@ -197,7 +217,6 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: rb/.ruby-version
           repository-cache: true
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
@@ -225,6 +244,9 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Configure RubyGems credentials via OIDC
+        if: inputs.gem-trusted-publishing
+        uses: rubygems/configure-rubygems-credentials@main
       - name: Run Bazel
         shell: bash
         env:
@@ -257,7 +279,7 @@ jobs:
           limit-access-to-actor: false
       - name: Save git diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
-        run: git diff --binary > changes.patch
+        run: git add -A && git diff --binary --staged > changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
         uses: actions/upload-artifact@v5

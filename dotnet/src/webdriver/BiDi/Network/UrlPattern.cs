@@ -31,15 +31,15 @@ public abstract record UrlPattern
 
 public sealed record PatternUrlPattern : UrlPattern
 {
-    public string? Protocol { get; set; }
+    public string? Protocol { get; init; }
 
-    public string? Hostname { get; set; }
+    public string? Hostname { get; init; }
 
-    public string? Port { get; set; }
+    public string? Port { get; init; }
 
-    public string? Pathname { get; set; }
+    public string? Pathname { get; init; }
 
-    public string? Search { get; set; }
+    public string? Search { get; init; }
 }
 
 public sealed record StringUrlPattern(string Pattern) : UrlPattern;

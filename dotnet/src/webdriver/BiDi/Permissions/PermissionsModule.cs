@@ -17,34 +17,28 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
+using static OpenQA.Selenium.BiDi.Permissions.PermissionsJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-public sealed class PermissionsModule : Module
+internal sealed class PermissionsModule : Module, IPermissionsModule
 {
-    private PermissionsJsonSerializerContext _jsonContext = null!;
+    private static readonly Command<SetPermissionCommandParameters, SetPermissionResult> SetPermissionCommand = new(
+        "permissions.setPermission", Default.SetPermissionCommandParameters, Default.SetPermissionResult);
 
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteCommandAsync(new SetPermissionCommand(@params), options, _jsonContext.SetPermissionCommand, _jsonContext.SetPermissionResult, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(bidi));
-
-        _jsonContext = new PermissionsJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteAsync(SetPermissionCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(SetPermissionCommand))]
+[JsonSerializable(typeof(SetPermissionCommandParameters))]
 [JsonSerializable(typeof(SetPermissionResult))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class PermissionsJsonSerializerContext : JsonSerializerContext;

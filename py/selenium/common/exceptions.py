@@ -27,7 +27,10 @@ class WebDriverException(Exception):
     """Base webdriver exception."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         super().__init__()
         self.msg = msg
@@ -73,7 +76,10 @@ class NoSuchElementException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#nosuchelementexception"
 
@@ -111,7 +117,10 @@ class StaleElementReferenceException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#staleelementreferenceexception"
 
@@ -161,7 +170,10 @@ class ElementNotVisibleException(InvalidElementStateException):
     """
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotvisibleexception"
 
@@ -172,7 +184,10 @@ class ElementNotInteractableException(InvalidElementStateException):
     """Thrown when element interactions will hit another element due to paint order."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotinteractableexception"
 
@@ -213,7 +228,10 @@ class InvalidSelectorException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidselectorexception"
 
@@ -252,7 +270,10 @@ class ElementClickInterceptedException(WebDriverException):
     """Thrown when element click fails because another element obscures it."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementclickinterceptedexception"
 
@@ -271,7 +292,10 @@ class InvalidSessionIdException(WebDriverException):
     """Thrown when the given session id is not in the list of active sessions."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidsessionidexception"
 
@@ -282,7 +306,10 @@ class SessionNotCreatedException(WebDriverException):
     """A new session could not be created."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#sessionnotcreatedexception"
 
@@ -297,7 +324,10 @@ class NoSuchDriverException(WebDriverException):
     """Raised when driver is not specified and cannot be located."""
 
     def __init__(
-        self, msg: Any | None = None, screen: str | None = None, stacktrace: Sequence[str] | None = None
+        self,
+        msg: Any | None = None,
+        screen: str | None = None,
+        stacktrace: Sequence[str] | None = None,
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}/driver_location"
 

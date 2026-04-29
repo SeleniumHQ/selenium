@@ -17,6 +17,7 @@
 
 import os
 import subprocess
+import sys
 from unittest.mock import patch
 
 import pytest
@@ -71,6 +72,25 @@ def test_driver_is_stopped_if_browser_cant_start(clean_driver) -> None:
         clean_driver(options=options, service=service)
     assert not service.is_connectable()
     assert service.process.poll() is not None
+
+
+def test_service_allows_reusing_stdout_for_logging(clean_driver, clean_options, driver_executable):
+    browser1 = None
+    browser2 = None
+    try:
+        service1 = Service(executable_path=driver_executable, log_output=sys.stdout)
+        browser1 = clean_driver(service=service1, options=clean_options)
+        assert browser1.session_id is not None
+        browser1.quit()
+        service2 = Service(executable_path=driver_executable, log_output=sys.stdout)
+        browser2 = clean_driver(service=service2, options=clean_options)
+        assert browser2.session_id is not None
+        browser2.quit()
+    finally:
+        if browser1:
+            browser1.quit()
+        if browser2:
+            browser2.quit()
 
 
 @pytest.fixture

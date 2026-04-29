@@ -17,16 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
-using OpenQA.Selenium.DevTools;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using System.IO.Compression;
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -448,10 +443,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     public DevToolsSession GetDevToolsSession(DevToolsOptions options)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         if (this.devToolsSession == null)
         {
@@ -533,7 +525,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
             throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
         }
 
-        Dictionary<string, object> parameters = new Dictionary<string, object>
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
         {
             { "name", fileName }
         };
@@ -575,6 +567,53 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
         }
 
         this.Execute(DriverCommand.DeleteDownloadableFiles, null);
+    }
+
+    /// <summary>
+    /// Fires a custom session event to the remote server event bus.
+    /// This allows test code to trigger server-side utilities that subscribe to the event bus.
+    /// </summary>
+    /// <param name="eventType">The type of event (e.g., "test:failed", "log:collect", "marker:add").</param>
+    /// <param name="payload">Optional data to include with the event.</param>
+    /// <returns>A dictionary containing the response data including success status, event type, and timestamp.</returns>
+    /// <exception cref="WebDriverException">If the event cannot be fired.</exception>
+    /// <example>
+    /// <code>
+    /// // Fire a simple event
+    /// driver.FireSessionEvent("test:started");
+    ///
+    /// // Fire an event with payload
+    /// driver.FireSessionEvent("test:failed", new Dictionary&lt;string, object&gt;
+    /// {
+    ///     { "testName", "LoginTest" },
+    ///     { "error", "Element not found" }
+    /// });
+    /// </code>
+    /// </example>
+    public IDictionary<string, object?> FireSessionEvent(string eventType, IDictionary<string, object?>? payload = null)
+    {
+        if (string.IsNullOrEmpty(eventType))
+        {
+            throw new ArgumentException("Event type must not be null or empty", nameof(eventType));
+        }
+
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>
+        {
+            { "eventType", eventType }
+        };
+
+        if (payload != null && payload.Count > 0)
+        {
+            parameters.Add("payload", payload);
+        }
+
+        Response commandResponse = this.Execute(DriverCommand.FireSessionEvent, parameters);
+        if (commandResponse.Value is not Dictionary<string, object?> value)
+        {
+            throw new WebDriverException("FireSessionEvent returned successfully, but response content was not an object: " + commandResponse.Value);
+        }
+
+        return value;
     }
 
     /// <summary>

@@ -19,11 +19,15 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-ResponseData">BiDi spec</a>
+ */
 public class ResponseData {
   private final String url;
 
@@ -34,10 +38,10 @@ public class ResponseData {
   private final List<Header> headers;
   private final String mimeType;
   private final long bytesReceived;
-  private final long headersSize;
-  private final long bodySize;
-  private final Optional<Long> content;
-  private final Optional<AuthChallenge> authChallenge;
+  private final @Nullable Long headersSize;
+  private final @Nullable Long bodySize;
+  private final @Nullable Long contentSize;
+  private final @Nullable AuthChallenge authChallenge;
 
   private ResponseData(
       String url,
@@ -48,10 +52,10 @@ public class ResponseData {
       List<Header> headers,
       String mimeType,
       long bytesReceived,
-      long headersSize,
-      long bodySize,
-      Optional<Long> content,
-      Optional<AuthChallenge> authChallenge) {
+      @Nullable Long headersSize,
+      @Nullable Long bodySize,
+      @Nullable Long contentSize,
+      @Nullable AuthChallenge authChallenge) {
     this.url = url;
     this.protocol = protocol;
     this.status = status;
@@ -62,23 +66,23 @@ public class ResponseData {
     this.bytesReceived = bytesReceived;
     this.headersSize = headersSize;
     this.bodySize = bodySize;
-    this.content = content;
+    this.contentSize = contentSize;
     this.authChallenge = authChallenge;
   }
 
   public static ResponseData fromJson(JsonInput input) {
     String url = null;
     String protocol = null;
-    int status = 0;
+    Integer status = null;
     String statusText = null;
-    boolean fromCache = false;
+    Boolean fromCache = null;
     List<Header> headers = new ArrayList<>();
     String mimeType = null;
-    long bytesReceived = 0;
-    long headersSize = 0;
-    long bodySize = 0;
-    Optional<Long> content = Optional.empty();
-    Optional<AuthChallenge> authChallenge = Optional.empty();
+    Long bytesReceived = null;
+    Long headersSize = null;
+    Long bodySize = null;
+    Long contentSize = null;
+    AuthChallenge authChallenge = null;
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
@@ -113,12 +117,10 @@ public class ResponseData {
           bodySize = input.read(Long.class);
           break;
         case "content":
-          Map<String, Long> responseContent =
-              input.read(new TypeToken<Map<String, Long>>() {}.getType());
-          content = Optional.ofNullable(responseContent.get("size"));
+          contentSize = input.readMapElement("size");
           break;
         case "authChallenge":
-          authChallenge = Optional.of(input.read(AuthChallenge.class));
+          authChallenge = input.read(AuthChallenge.class);
           break;
         default:
           input.skipValue();
@@ -128,17 +130,17 @@ public class ResponseData {
     input.endObject();
 
     return new ResponseData(
-        url,
-        protocol,
-        status,
-        statusText,
-        fromCache,
-        headers,
-        mimeType,
-        bytesReceived,
+        Require.nonNull("url", url),
+        Require.nonNull("protocol", protocol),
+        Require.nonNull("status", status),
+        Require.nonNull("statusText", statusText),
+        Require.nonNull("fromCache", fromCache),
+        Require.nonNull("headers", headers),
+        Require.nonNull("mimeType", mimeType),
+        Require.nonNull("bytesReceived", bytesReceived),
         headersSize,
         bodySize,
-        content,
+        contentSize,
         authChallenge);
   }
 
@@ -174,19 +176,23 @@ public class ResponseData {
     return bytesReceived;
   }
 
-  public long getHeadersSize() {
+  @Nullable
+  public Long getHeadersSize() {
     return headersSize;
   }
 
-  public long getBodySize() {
+  @Nullable
+  public Long getBodySize() {
     return bodySize;
   }
 
+  @SuppressWarnings("NullableProblems")
   public Optional<Long> getContent() {
-    return content;
+    return Optional.ofNullable(contentSize);
   }
 
+  @SuppressWarnings("NullableProblems")
   public Optional<AuthChallenge> getAuthChallenge() {
-    return authChallenge;
+    return Optional.ofNullable(authChallenge);
   }
 }

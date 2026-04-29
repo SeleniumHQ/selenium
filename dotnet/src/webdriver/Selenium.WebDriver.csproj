@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard2.0;net8.0;</TargetFrameworks>
-    <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Selenium.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -47,27 +48,23 @@
     <BaseSeleniumManagerPath>$(MSBuildThisFileDirectory)..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
-  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14480-->
+  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14780-->
   <!--<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
-  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="assets\nuget\build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
-    <None Include="assets\nuget\buildTransitive\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
-  </ItemGroup>
+  <Target Name="GenerateBazelArtifacts" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos //dotnet/src/webdriver:resource-utilities //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
 
-  <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="BeforeBuild">
-    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
+    <ItemGroup>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
+    </ItemGroup>
   </Target>
 
   <ItemGroup>
@@ -85,21 +82,10 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
-  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
-
-    <ItemGroup>
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
-
-    <ItemGroup>
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <None Update="assets/nuget/build/Selenium.WebDriver.props" Pack="true" PackagePath="build\" />
+    <None Update="assets/nuget/buildTransitive/Selenium.WebDriver.props" Pack="true" PackagePath="buildTransitive\" />
+  </ItemGroup>
 
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

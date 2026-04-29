@@ -35,7 +35,6 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -66,6 +65,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +77,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -96,6 +97,10 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedReason;
+import org.openqa.selenium.grid.data.SessionCreatedData;
+import org.openqa.selenium.grid.data.SessionCreatedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -104,6 +109,7 @@ import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.docker.DockerSession;
@@ -149,6 +155,7 @@ public class LocalNode extends Node implements Closeable {
 
   private final boolean bidiEnabled;
   private final boolean drainAfterSessions;
+  private final List<NodeCommandInterceptor> interceptors;
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> uploadsTempFileSystem;
@@ -168,7 +175,7 @@ public class LocalNode extends Node implements Closeable {
       EventBus bus,
       URI uri,
       URI gridUri,
-      HealthCheck healthCheck,
+      @Nullable HealthCheck healthCheck,
       int maxSessionCount,
       int drainAfterSessionCount,
       boolean cdpEnabled,
@@ -180,7 +187,8 @@ public class LocalNode extends Node implements Closeable {
       Secret registrationSecret,
       boolean managedDownloadsEnabled,
       int connectionLimitPerSession,
-      int nodeDownFailureThreshold) {
+      int nodeDownFailureThreshold,
+      List<NodeCommandInterceptor> interceptors) {
     super(
         tracer,
         new NodeId(UUID.randomUUID()),
@@ -206,6 +214,7 @@ public class LocalNode extends Node implements Closeable {
     this.connectionLimitPerSession = connectionLimitPerSession;
     // Use 0 to disable the failure threshold feature (unlimited retries)
     this.nodeDownFailureThreshold = nodeDownFailureThreshold;
+    this.interceptors = List.copyOf(interceptors);
 
     this.healthCheck =
         healthCheck == null
@@ -316,6 +325,18 @@ public class LocalNode extends Node implements Closeable {
           // ensure we do not leak running browsers
           currentSessions.invalidateAll();
           currentSessions.cleanUp();
+
+          // Give each interceptor a chance to release its resources.
+          for (NodeCommandInterceptor interceptor : interceptors) {
+            try {
+              interceptor.close();
+            } catch (Exception e) {
+              LOG.log(
+                  Level.WARNING,
+                  "Error closing interceptor " + interceptor.getClass().getName(),
+                  e);
+            }
+          }
         };
 
     Runtime.getRuntime()
@@ -325,6 +346,7 @@ public class LocalNode extends Node implements Closeable {
                   stopAllSessions();
                   drain();
                 }));
+
     new JMXHelper().register(this);
   }
 
@@ -333,7 +355,8 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
+  private void stopTimedOutSession(
+      @Nullable SessionId id, @Nullable SessionSlot slot, RemovalCause cause) {
     try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
@@ -368,8 +391,8 @@ public class LocalNode extends Node implements Closeable {
                 String.format("Exception while trying to stop session %s", id), attributeMap);
           }
         }
-        // Attempt to stop the session with the appropriate reason
-        slot.stop(closeReason);
+        // Attempt to stop the session with the appropriate reason and node context
+        slot.stop(closeReason, getId(), externalUri);
         // Decrement the reserved/active session counter
         reservedOrActiveSessionCount.decrementAndGet();
         // Decrement pending sessions if Node is draining
@@ -635,6 +658,20 @@ public class LocalNode extends Node implements Closeable {
                 "%s. Id: %s, Caps: %s",
                 sessionCreatedMessage, sessionId, externalSession.getCapabilities()));
 
+        // Create session data for events and listeners
+        SessionCreatedData createdData =
+            new SessionCreatedData(
+                sessionId,
+                getId(),
+                externalUri,
+                session.getUri(),
+                externalSession.getCapabilities(),
+                slotToUse.getStereotype(),
+                externalSession.getStartTime());
+
+        // Fire session created event for sidecar services
+        bus.fire(new SessionCreatedEvent(createdData));
+
         return Either.right(
             new CreateSessionResponse(
                 externalSession,
@@ -807,11 +844,37 @@ public class LocalNode extends Node implements Closeable {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
 
-    HttpResponse toReturn = slot.execute(req);
+    HttpResponse toReturn = executeWithInterceptors(id, req, () -> slot.execute(req));
     if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
       stop(id);
     }
     return toReturn;
+  }
+
+  private HttpResponse executeWithInterceptors(
+      SessionId id, HttpRequest req, Callable<HttpResponse> command) {
+    // Build interceptor chain from last to first so the first interceptor in the list is outermost.
+    Callable<HttpResponse> chain = command;
+    for (int i = interceptors.size() - 1; i >= 0; i--) {
+      final NodeCommandInterceptor interceptor = interceptors.get(i);
+      final Callable<HttpResponse> next = chain;
+      chain = () -> interceptor.intercept(id, req, next);
+    }
+    return callUnchecked(chain);
+  }
+
+  private static HttpResponse callUnchecked(Callable<HttpResponse> callable) {
+    try {
+      return callable.call();
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (InterruptedException e) {
+      // Restore the interrupted status so callers and shutdown logic can observe it.
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -905,7 +968,7 @@ public class LocalNode extends Node implements Closeable {
 
   private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
       throws IOException {
-    String raw = string(req);
+    String raw = req.contentAsString();
     if (raw.isEmpty()) {
       throw new WebDriverException(
           "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
@@ -995,7 +1058,7 @@ public class LocalNode extends Node implements Closeable {
     for (File file : files) {
       FileHandler.delete(file);
     }
-    Map<String, Object> toReturn = new HashMap<>();
+    Map<String, @Nullable Object> toReturn = new HashMap<>();
     toReturn.put("value", null);
     return new HttpResponse().setContent(asJson(toReturn));
   }
@@ -1010,7 +1073,7 @@ public class LocalNode extends Node implements Closeable {
       return executeWebDriverCommand(req);
     }
 
-    Map<String, Object> incoming = JSON.toType(string(req), Json.MAP_TYPE);
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
 
     File tempDir;
     try {
@@ -1034,6 +1097,52 @@ public class LocalNode extends Node implements Closeable {
 
     Map<String, Object> result = Map.of("value", allFiles[0].getAbsolutePath());
 
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  @Override
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    Require.nonNull("Session ID", id);
+
+    // Verify session exists
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+
+    // Parse the event data from request
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
+    String eventType = (String) incoming.get("eventType");
+    if (eventType == null || eventType.isEmpty()) {
+      throw new WebDriverException(
+          "Event type is required. Please provide 'eventType' in payload.");
+    }
+
+    Object rawPayload = incoming.get("payload");
+    Map<String, Object> payload =
+        (rawPayload instanceof Map) ? (Map<String, Object>) rawPayload : Map.of();
+
+    // Create event data with node context
+    SessionEventData eventData =
+        SessionEventData.create(id, eventType, payload).withNodeContext(getId(), externalUri);
+
+    // Fire event via EventBus for sidecar services
+    bus.fire(new SessionEvent(eventData));
+
+    LOG.log(
+        Level.FINE,
+        () -> String.format("Session event fired: type=%s, sessionId=%s", eventType, id));
+
+    // Return success response
+    Map<String, Object> responseData =
+        Map.of(
+            "success",
+            true,
+            "eventType",
+            eventType,
+            "timestamp",
+            eventData.getTimestamp().toString());
+    Map<String, Object> result = Map.of("value", responseData);
     return new HttpResponse().setContent(asJson(result));
   }
 
@@ -1307,6 +1416,7 @@ public class LocalNode extends Node implements Closeable {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final List<SessionSlot> factories;
+    private final List<NodeCommandInterceptor> interceptors = new ArrayList<>();
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1392,6 +1502,12 @@ public class LocalNode extends Node implements Closeable {
       return this;
     }
 
+    public Builder addInterceptor(NodeCommandInterceptor interceptor) {
+      Require.nonNull("Command interceptor", interceptor);
+      interceptors.add(interceptor);
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
@@ -1410,7 +1526,8 @@ public class LocalNode extends Node implements Closeable {
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession,
-          nodeDownFailureThreshold);
+          nodeDownFailureThreshold,
+          List.copyOf(interceptors));
     }
 
     public Advanced advanced() {

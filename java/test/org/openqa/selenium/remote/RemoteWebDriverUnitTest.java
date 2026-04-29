@@ -809,4 +809,46 @@ class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(new CommandPayload(DriverCommand.GET_DOWNLOADABLE_FILES, emptyMap()));
   }
+
+  @Test
+  void canFireSessionEventWithPayload() {
+    Map<String, Object> responseData =
+        Map.of("success", true, "eventType", "test:failed", "timestamp", "2024-01-15T10:30:00Z");
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(responseData));
+
+    Map<String, Object> payload = Map.of("testName", "LoginTest", "error", "Element not found");
+    Map<String, Object> result = fixture.driver.fireSessionEvent("test:failed", payload);
+
+    assertThat(result).containsEntry("success", true);
+    assertThat(result).containsEntry("eventType", "test:failed");
+
+    fixture.verifyCommands(
+        new CommandPayload(
+            DriverCommand.FIRE_SESSION_EVENT,
+            Map.of("eventType", "test:failed", "payload", payload)));
+  }
+
+  @Test
+  void canFireSessionEventWithoutPayload() {
+    Map<String, Object> responseData =
+        Map.of("success", true, "eventType", "log:collect", "timestamp", "2024-01-15T10:30:00Z");
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(responseData));
+
+    Map<String, Object> result = fixture.driver.fireSessionEvent("log:collect");
+
+    assertThat(result).containsEntry("success", true);
+    assertThat(result).containsEntry("eventType", "log:collect");
+
+    fixture.verifyCommands(
+        new CommandPayload(DriverCommand.FIRE_SESSION_EVENT, Map.of("eventType", "log:collect")));
+  }
+
+  @Test
+  void fireSessionEventRequiresEventType() {
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> fixture.driver.fireSessionEvent(null))
+        .withMessageContaining("Event type");
+  }
 }

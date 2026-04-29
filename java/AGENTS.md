@@ -12,6 +12,9 @@
 See `java/TESTING.md`
 
 ## Code conventions
+### Interfaces
+- New methods added to existing interfaces must provide a default implementation, if possible.
+- Interfaces must not expose the native classes of their implementations.
 
 ### Logging
 ```java
@@ -40,3 +43,13 @@ Use Javadoc for public APIs:
  * @throws ExceptionType when condition
  */
 ```
+
+## Formatting
+Java files are formatted with **google-java-format** (Google Java Style Guide).
+Run `./go format` after changes; it will auto-fix all style issues.
+
+Key rules enforced:
+- 2-space indentation (no tabs)
+- Column limit: 100 characters
+- Braces on the same line (K&R style), including single-statement bodies
+- Imports: organized and sorted consistently

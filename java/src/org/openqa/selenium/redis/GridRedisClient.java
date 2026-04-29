@@ -20,6 +20,7 @@ package org.openqa.selenium.redis;
 import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import java.io.Closeable;
 import java.net.URI;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -71,12 +73,47 @@ public class GridRedisClient implements Closeable {
     return connection.sync().mget(keys);
   }
 
+  @Nullable
   public String get(String key) {
     return connection.sync().get(key);
   }
 
   public List<String> getKeysByPattern(String pattern) {
     return connection.sync().keys(pattern);
+  }
+
+  public void set(String key, String value) {
+    connection.sync().set(key, value);
+  }
+
+  public void setWithTtl(String key, String value, long ttlMillis) {
+    connection.sync().set(key, value, SetArgs.Builder.px(ttlMillis));
+  }
+
+  /** Returns true if the key was set (caller won the race), false if already present. */
+  public boolean setIfAbsent(String key, String value, long ttlMillis) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx().px(ttlMillis));
+    return "OK".equals(result);
+  }
+
+  /** Returns true if the key was set (no TTL variant). */
+  public boolean setIfAbsent(String key, String value) {
+    String result = connection.sync().set(key, value, SetArgs.Builder.nx());
+    return "OK".equals(result);
+  }
+
+  public void expire(String key, long ttlMillis) {
+    connection.sync().pexpire(key, ttlMillis);
+  }
+
+  @Nullable
+  public Long getAsLong(String key) {
+    String value = connection.sync().get(key);
+    return value == null ? null : Long.parseLong(value);
+  }
+
+  public long incr(String key) {
+    return connection.sync().incr(key);
   }
 
   public boolean isOpen() {
@@ -159,8 +196,9 @@ public class GridRedisClient implements Closeable {
 
   public Set<NodeStatus> getNodes(Set<NodeId> nodeIds) {
     return nodeIds.stream()
-        .filter(nodeId -> getNode(nodeId).isPresent())
-        .map(nodeId -> getNode(nodeId).get())
+        .map(nodeId -> getNode(nodeId))
+        .filter(nodeStatus -> nodeStatus.isPresent())
+        .map(nodeStatus -> nodeStatus.get())
         .collect(Collectors.toSet());
   }
 

@@ -352,7 +352,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("set");
-    assertThat(successResult.getResult().getValue().isPresent());
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
 
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
     assertThat(resultValue).hasSize(1);

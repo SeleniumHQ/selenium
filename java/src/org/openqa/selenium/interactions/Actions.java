@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -46,7 +45,6 @@ import org.openqa.selenium.internal.Require;
  *
  * <p>Call {@link #perform()} at the end of the method chain to actually perform the actions.
  */
-@NullMarked
 public class Actions {
 
   private final WebDriver driver;
@@ -57,7 +55,7 @@ public class Actions {
   private @Nullable PointerInput activePointer;
   private @Nullable KeyInput activeKeyboard;
   private @Nullable WheelInput activeWheel;
-  private Duration actionDuration;
+  private final Duration actionDuration;
 
   public Actions(WebDriver driver) {
     this(driver, Duration.ofMillis(250));
@@ -155,9 +153,7 @@ public class Actions {
   }
 
   private Actions sendKeysInTicks(CharSequence... keys) {
-    if (keys == null) {
-      throw new IllegalArgumentException("Keys should be a not null CharSequence");
-    }
+    Require.nonNull("Keys", keys, "should be a not null CharSequence");
     for (CharSequence key : keys) {
       key.codePoints()
           .forEach(

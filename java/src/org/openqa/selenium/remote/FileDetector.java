@@ -18,11 +18,9 @@
 package org.openqa.selenium.remote;
 
 import java.io.File;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** Used for identifying whether a sequence of chars represents the path to a file. */
-@NullMarked
 public interface FileDetector {
   @Nullable File getLocalFile(CharSequence... keys);
 }

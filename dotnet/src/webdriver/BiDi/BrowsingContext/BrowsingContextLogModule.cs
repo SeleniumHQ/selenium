@@ -18,17 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Log;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
+internal sealed class BrowsingContextLogModule(BrowsingContext context, ILogModule logModule) : IBrowsingContextLogModule
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnEntryAddedAsync(Func<EntryAddedEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAddedAsync(e, handler),
@@ -36,9 +33,9 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             cancellationToken);
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<Subscription> OnEntryAddedAsync(Action<EntryAddedEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         return logModule.OnEntryAddedAsync(
             e => HandleEntryAdded(e, handler),
@@ -46,7 +43,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             cancellationToken);
     }
 
-    private async Task HandleEntryAddedAsync(Log.LogEntry e, Func<Log.LogEntry, Task> handler)
+    private async Task HandleEntryAddedAsync(EntryAddedEventArgs e, Func<EntryAddedEventArgs, Task> handler)
     {
         if (context.Equals(e.Source.Context))
         {
@@ -54,7 +51,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
         }
     }
 
-    private void HandleEntryAdded(Log.LogEntry e, Action<Log.LogEntry> handler)
+    private void HandleEntryAdded(EntryAddedEventArgs e, Action<EntryAddedEventArgs> handler)
     {
         if (context.Equals(e.Source.Context))
         {

@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import java.lang.reflect.Field;
@@ -35,8 +36,10 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -55,6 +58,8 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionEvent;
+import org.openqa.selenium.grid.data.SessionEventData;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -102,10 +107,10 @@ public class OneShotNode extends Node {
   private final UUID slotId = UUID.randomUUID();
   private final int connectionLimitPerSession;
   private final AtomicInteger connectionCounter = new AtomicInteger();
-  private RemoteWebDriver driver;
-  private SessionId sessionId;
-  private HttpClient client;
-  private Capabilities capabilities;
+  private @Nullable RemoteWebDriver driver;
+  private @Nullable SessionId sessionId;
+  private @Nullable HttpClient client;
+  private @Nullable Capabilities capabilities;
   private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
@@ -260,6 +265,7 @@ public class OneShotNode extends Node {
     }
   }
 
+  @Nullable
   private Field findClientField(Class<?> clazz) {
     try {
       return clazz.getDeclaredField("client");
@@ -330,14 +336,60 @@ public class OneShotNode extends Node {
     return new Session(sessionId, getUri(), stereotype, capabilities, sessionStart);
   }
 
+  @Nullable
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
     return null;
   }
 
+  @Nullable
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
     return null;
+  }
+
+  @Override
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    Require.nonNull("Session ID", id);
+
+    if (!isSessionOwner(id)) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+
+    // Parse the event data from request
+    Map<String, Object> incoming = JSON.toType(req.contentAsString(), Json.MAP_TYPE);
+    String eventType = (String) incoming.get("eventType");
+    if (eventType == null || eventType.isEmpty()) {
+      throw new WebDriverException(
+          "Event type is required. Please provide 'eventType' in payload.");
+    }
+
+    Object rawPayload = incoming.get("payload");
+    Map<String, Object> payload =
+        (rawPayload instanceof Map) ? (Map<String, Object>) rawPayload : Map.of();
+
+    // Create event data with node context
+    SessionEventData eventData =
+        SessionEventData.create(id, eventType, payload).withNodeContext(getId(), getUri());
+
+    // Fire event via EventBus
+    events.fire(new SessionEvent(eventData));
+
+    LOG.log(
+        Level.FINE,
+        () -> String.format("Session event fired: type=%s, sessionId=%s", eventType, id));
+
+    // Return success response
+    Map<String, Object> responseData =
+        Map.of(
+            "success",
+            true,
+            "eventType",
+            eventType,
+            "timestamp",
+            eventData.getTimestamp().toString());
+    Map<String, Object> result = Map.of("value", responseData);
+    return new HttpResponse().setContent(asJson(result));
   }
 
   @Override

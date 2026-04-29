@@ -18,7 +18,8 @@
 package org.openqa.selenium.bidi.emulation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.bidi.emulation.SetNetworkConditionsParameters.offline;
+import static org.openqa.selenium.bidi.emulation.SetNetworkConditionsParameters.online;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,6 @@ import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SetNetworkConditionsTest extends JupiterTestBase {
 
@@ -46,7 +46,6 @@ public class SetNetworkConditionsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetNetworkConditionsOfflineWithContext() {
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
@@ -60,20 +59,17 @@ public class SetNetworkConditionsTest extends JupiterTestBase {
 
     try {
       // Set offline
-      emulation.setNetworkConditions(
-          new SetNetworkConditionsParameters(true).contexts(List.of(contextId)));
+      emulation.setNetworkConditions(offline().contexts(List.of(contextId)));
       assertThat(isOnline(contextId, script)).isFalse();
     } finally {
       // Reset
-      emulation.setNetworkConditions(
-          new SetNetworkConditionsParameters(false).contexts(List.of(contextId)));
+      emulation.setNetworkConditions(online().contexts(List.of(contextId)));
       assertThat(isOnline(contextId, script)).isTrue();
     }
   }
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetNetworkConditionsOfflineWithUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();
@@ -95,13 +91,11 @@ public class SetNetworkConditionsTest extends JupiterTestBase {
         assertThat(isOnline(contextId, script)).isTrue();
 
         // Set offline
-        emulation.setNetworkConditions(
-            new SetNetworkConditionsParameters(true).userContexts(List.of(userContext)));
+        emulation.setNetworkConditions(offline().userContexts(List.of(userContext)));
         assertThat(isOnline(contextId, script)).isFalse();
 
         // Reset
-        emulation.setNetworkConditions(
-            new SetNetworkConditionsParameters(false).userContexts(List.of(userContext)));
+        emulation.setNetworkConditions(online().userContexts(List.of(userContext)));
 
         context.close();
       } catch (Exception e) {

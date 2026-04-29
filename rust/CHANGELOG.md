@@ -1,3 +1,15 @@
+0.4.43
+======
+
+
+0.4.42
+======
+
+
+0.4.41
+======
+* Fix suppport for webview2 (#15797)
+
 0.4.40
 ======
 * fix support for Edge beta versions on Windows (#16806)

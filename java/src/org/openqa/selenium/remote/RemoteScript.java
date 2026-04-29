@@ -84,7 +84,7 @@ class RemoteScript implements Script {
   @Override
   public long addDomMutationHandler(Consumer<DomMutation> consumer) {
     String scriptValue =
-        Read.resourceAsString("/org/openqa/selenium/remote/bidi-mutation-listener.js");
+        Read.resourceAsString(getClass(), "/org/openqa/selenium/remote/bidi-mutation-listener.js");
 
     this.script.addPreloadScript(scriptValue, List.of(new ChannelValue("channel_name")));
 

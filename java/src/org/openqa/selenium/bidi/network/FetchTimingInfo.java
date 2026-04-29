@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-networkfetchtiminginfo">BiDi
+ *     spec</a>
+ */
 public class FetchTimingInfo {
 
   private final double timeOrigin;
@@ -65,19 +70,19 @@ public class FetchTimingInfo {
   }
 
   public static FetchTimingInfo fromJson(JsonInput input) {
-    double timeOrigin = 0.0;
-    double requestTime = 0.0;
-    double redirectStart = 0.0;
-    double redirectEnd = 0.0;
-    double fetchStart = 0.0;
-    double dnsStart = 0.0;
-    double dnsEnd = 0.0;
-    double connectStart = 0.0;
-    double connectEnd = 0.0;
-    double tlsStart = 0.0;
-    double requestStart = 0.0;
-    double responseStart = 0.0;
-    double responseEnd = 0.0;
+    Double timeOrigin = null;
+    Double requestTime = null;
+    Double redirectStart = null;
+    Double redirectEnd = null;
+    Double fetchStart = null;
+    Double dnsStart = null;
+    Double dnsEnd = null;
+    Double connectStart = null;
+    Double connectEnd = null;
+    Double tlsStart = null;
+    Double requestStart = null;
+    Double responseStart = null;
+    Double responseEnd = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -143,19 +148,19 @@ public class FetchTimingInfo {
     input.endObject();
 
     return new FetchTimingInfo(
-        timeOrigin,
-        requestTime,
-        redirectStart,
-        redirectEnd,
-        fetchStart,
-        dnsStart,
-        dnsEnd,
-        connectStart,
-        connectEnd,
-        tlsStart,
-        requestStart,
-        responseStart,
-        responseEnd);
+        Require.nonNull("timeOrigin", timeOrigin),
+        Require.nonNull("requestTime", requestTime),
+        Require.nonNull("redirectStart", redirectStart),
+        Require.nonNull("redirectEnd", redirectEnd),
+        Require.nonNull("fetchStart", fetchStart),
+        Require.nonNull("dnsStart", dnsStart),
+        Require.nonNull("dnsEnd", dnsEnd),
+        Require.nonNull("connectStart", connectStart),
+        Require.nonNull("connectEnd", connectEnd),
+        Require.nonNull("tlsStart", tlsStart),
+        Require.nonNull("requestStart", requestStart),
+        Require.nonNull("responseStart", responseStart),
+        Require.nonNull("responseEnd", responseEnd));
   }
 
   public double getTimeOrigin() {

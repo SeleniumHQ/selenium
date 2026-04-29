@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.module;
 
+import static java.util.Collections.emptyMap;
+
 import java.io.Closeable;
 import java.io.StringReader;
 import java.util.Collections;
@@ -28,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -58,45 +61,45 @@ public class Script implements Closeable {
 
   private final BiDi bidi;
 
-  private final Function<JsonInput, EvaluateResult> evaluateResultMapper =
-      jsonInput -> createEvaluateResult(jsonInput.read(Map.class));
+  private static final Function<JsonInput, EvaluateResult> evaluateResultMapper =
+      jsonInput -> createEvaluateResult(jsonInput.readMap());
 
-  private final Function<JsonInput, List<RealmInfo>> realmInfoMapper =
+  private static final Function<JsonInput, List<RealmInfo>> realmInfoMapper =
       jsonInput -> {
-        Map<String, Object> response = jsonInput.read(Map.class);
-        try (StringReader reader = new StringReader(JSON.toJson(response.get("realms")));
+        Object realms = jsonInput.readMapElement("realms");
+        try (StringReader reader = new StringReader(JSON.toJson(realms));
             JsonInput input = JSON.newInput(reader)) {
-          return input.read(new TypeToken<List<RealmInfo>>() {}.getType());
+          return input.readNonNull(new TypeToken<List<RealmInfo>>() {}.getType());
         }
       };
 
-  private final Event<Message> messageEvent =
+  private static final Event<Message> messageEvent =
       new Event<>(
           "script.message",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(Message.class);
+              return input.readNonNull(Message.class);
             }
           });
 
-  private final Event<RealmInfo> realmCreated =
+  private static final Event<RealmInfo> realmCreated =
       new Event<>(
           "script.realmCreated",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(RealmInfo.class);
+              return input.readNonNull(RealmInfo.class);
             }
           });
 
-  private final Event<RealmInfo> realmDestroyed =
+  private static final Event<RealmInfo> realmDestroyed =
       new Event<>(
           "script.realmDestroyed",
           params -> {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
-              return input.read(RealmInfo.class);
+              return input.readNonNull(RealmInfo.class);
             }
           });
 
@@ -165,7 +168,7 @@ public class Script implements Closeable {
 
   public EvaluateResult callFunctionInBrowsingContext(
       String browsingContextId,
-      String sandbox,
+      @Nullable String sandbox,
       String functionDeclaration,
       boolean awaitPromise,
       Optional<List<LocalValue>> argumentValueList,
@@ -213,7 +216,7 @@ public class Script implements Closeable {
 
   public EvaluateResult evaluateFunctionInBrowsingContext(
       String browsingContextId,
-      String sandbox,
+      @Nullable String sandbox,
       String expression,
       boolean awaitPromise,
       Optional<ResultOwnership> resultOwnership) {
@@ -252,7 +255,7 @@ public class Script implements Closeable {
   }
 
   public List<RealmInfo> getAllRealms() {
-    return this.bidi.send(new Command<>("script.getRealms", new HashMap<>(), realmInfoMapper));
+    return this.bidi.send(new Command<>("script.getRealms", emptyMap(), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsByType(RealmType type) {
@@ -274,7 +277,7 @@ public class Script implements Closeable {
   }
 
   public String addPreloadScript(String functionDeclaration) {
-    Map<String, Object> parameters = new HashMap<>();
+    Map<String, Object> parameters = new HashMap<>(2);
     parameters.put("functionDeclaration", functionDeclaration);
 
     if (!browsingContextIds.isEmpty()) {
@@ -285,14 +288,11 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return result.get("script").toString();
-            }));
+            jsonInput -> jsonInput.readMapElement("script").toString()));
   }
 
   public String addPreloadScript(String functionDeclaration, List<ChannelValue> arguments) {
-    Map<String, Object> parameters = new HashMap<>();
+    Map<String, Object> parameters = new HashMap<>(3);
     parameters.put("functionDeclaration", functionDeclaration);
     parameters.put("arguments", arguments);
 
@@ -304,15 +304,12 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return result.get("script").toString();
-            }));
+            jsonInput -> jsonInput.readMapElement("script")));
   }
 
   public String addPreloadScript(String functionDeclaration, String sandbox) {
 
-    Map<String, Object> parameters = new HashMap<>();
+    Map<String, Object> parameters = new HashMap<>(3);
     parameters.put("functionDeclaration", functionDeclaration);
     parameters.put("sandbox", sandbox);
 
@@ -324,15 +321,12 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return result.get("script").toString();
-            }));
+            jsonInput -> jsonInput.readMapElement("script").toString()));
   }
 
   public String addPreloadScript(
       String functionDeclaration, List<ChannelValue> arguments, String sandbox) {
-    Map<String, Object> parameters = new HashMap<>();
+    Map<String, Object> parameters = new HashMap<>(4);
     parameters.put("functionDeclaration", functionDeclaration);
     parameters.put("arguments", arguments);
     parameters.put("sandbox", sandbox);
@@ -345,10 +339,7 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              return result.get("script").toString();
-            }));
+            jsonInput -> jsonInput.readMapElement("script").toString()));
   }
 
   public void removePreloadScript(String id) {
@@ -382,13 +373,13 @@ public class Script implements Closeable {
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
-      String sandbox,
+      @Nullable String sandbox,
       String functionDeclaration,
       boolean awaitPromise,
       Optional<List<LocalValue>> argumentValueList,
       Optional<LocalValue> thisParameter,
       Optional<ResultOwnership> resultOwnership) {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>(7);
     params.put("functionDeclaration", functionDeclaration);
     params.put("awaitPromise", awaitPromise);
     if (targetType.equals("contextTarget")) {
@@ -413,11 +404,11 @@ public class Script implements Closeable {
   private Map<String, Object> getEvaluateParams(
       String targetType,
       String id,
-      String sandbox,
+      @Nullable String sandbox,
       String expression,
       boolean awaitPromise,
       Optional<ResultOwnership> resultOwnership) {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>(5);
     params.put("expression", expression);
     params.put("awaitPromise", awaitPromise);
     if (targetType.equals("contextTarget")) {
@@ -435,24 +426,24 @@ public class Script implements Closeable {
     return params;
   }
 
-  private EvaluateResult createEvaluateResult(Map<String, Object> response) {
+  private static EvaluateResult createEvaluateResult(Map<String, Object> response) {
     String type = (String) response.get("type");
     EvaluateResult evaluateResult;
     String realmId = (String) response.get("realm");
 
     if (type.equals(EvaluateResult.Type.SUCCESS.toString())) {
-      RemoteValue remoteValue;
+      final RemoteValue remoteValue;
       try (StringReader reader = new StringReader(JSON.toJson(response.get("result")));
           JsonInput input = JSON.newInput(reader)) {
-        remoteValue = input.read(RemoteValue.class);
+        remoteValue = input.readNonNull(RemoteValue.class);
       }
 
       evaluateResult = new EvaluateResultSuccess(EvaluateResult.Type.SUCCESS, realmId, remoteValue);
     } else {
-      ExceptionDetails exceptionDetails;
+      final ExceptionDetails exceptionDetails;
       try (StringReader reader = new StringReader(JSON.toJson(response.get("exceptionDetails")));
           JsonInput input = JSON.newInput(reader)) {
-        exceptionDetails = input.read(ExceptionDetails.class);
+        exceptionDetails = input.readNonNull(ExceptionDetails.class);
       }
 
       evaluateResult =

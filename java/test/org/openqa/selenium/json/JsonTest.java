@@ -19,10 +19,12 @@ package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.json.PropertySetting.BY_FIELD;
 
 import com.google.common.reflect.TypeToken;
 import java.io.StringReader;
@@ -32,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -124,9 +127,27 @@ class JsonTest {
 
     Json json = new Json();
     String raw = json.toJson(map);
-    BeanWithSetter seen = json.toType(raw, BeanWithSetter.class, PropertySetting.BY_FIELD);
+    BeanWithSetter seen = json.toType(raw, BeanWithSetter.class, BY_FIELD);
 
     assertThat(seen.theName).isEqualTo("fishy");
+  }
+
+  @Test
+  void shouldThrowWhenDuplicateFieldNamesExistWithFieldSetting() {
+    String raw = "{\"value\": \"test\"}";
+
+    ParentFieldBean parent = new Json().toType(raw, ParentFieldBean.class, BY_FIELD);
+    assertThat(parent.value).isEqualTo("test");
+
+    assertThatThrownBy(() -> new Json().toType(raw, ChildFieldBean.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith(
+            "Duplicate JSON field name detected while collecting field writers:"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ChildFieldBean.value) vs"
+                + " FieldWriter(org.openqa.selenium.json.JsonTest$ParentFieldBean.value)");
   }
 
   @Test
@@ -135,7 +156,7 @@ class JsonTest {
 
     Json json = new Json();
     String raw = json.toJson(map);
-    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, PropertySetting.BY_FIELD);
+    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, BY_FIELD);
 
     assertThat(seen.theName).isEqualTo("fishy");
   }
@@ -203,14 +224,110 @@ class JsonTest {
   }
 
   @Test
+  void canReadNumericValues() {
+    String raw =
+        "{\"id\": 1234567890123456789, \"age\": 1234567890, \"fee\": \"999.888\", \"amount\":"
+            + " \"999888.777666\"}";
+
+    NumericValues bean = new Json().toType(raw, NumericValues.class, BY_FIELD);
+
+    assertThat(bean.id).isEqualTo(1234567890123456789L);
+    assertThat(bean.age).isEqualTo(1234567890);
+    assertThat(bean.fee).isEqualTo(999.888f);
+    assertThat(bean.amount).isEqualTo(999888.777666);
+    assertThat(bean.remainder).isNull();
+  }
+
+  @Test
+  void reportsWhichNumericValueWasInvalid() {
+    String raw = "{\"id\": 123, \"age\": \"df8e0744-b1db-49b2-96df-45bd0d70dcd3\"}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, NumericValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Not a numeric value: \"df8e0744-b1db-49b2-96df-45bd0d70dcd3\"");
+  }
+
+  @Test
+  void reportsTooLargeNumericValue() {
+    String raw = "{\"id\": 123456789012345678901234567890}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, NumericValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse to a number: 123456789012345678901234567890")
+        .cause()
+        .isInstanceOf(NumberFormatException.class)
+        .hasMessage("For input string: \"123456789012345678901234567890\"");
+  }
+
+  @Test
+  void canReadBooleanValues() {
+    String raw = "{\"hero\": true, \"gangster\": false}";
+
+    BooleanValues bean = new Json().toType(raw, BooleanValues.class, BY_FIELD);
+
+    assertThat(bean.hero).isEqualTo(true);
+    assertThat(bean.gangster).isEqualTo(false);
+  }
+
+  @Test
+  void reportsWhichBooleanValueWasInvalid() {
+    String raw = "{\"hero\": true, \"gangster\": \"not sure\"}";
+
+    assertThatThrownBy(() -> new Json().toType(raw, BooleanValues.class, BY_FIELD))
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Unable to parse: " + raw)
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("Expected to read a BOOLEAN but instead have: STRING")
+        .hasMessageContaining("to read: \"not sure\"");
+  }
+
+  @Test
   void shouldBeAbleToReadAnInstant() {
-    // We will lose the nanoseconds
-    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
-    String raw = String.valueOf(now.toEpochMilli());
+    Instant now = Instant.now();
 
-    Instant instant = new Json().toType(raw, Instant.class);
+    Dates instant = new Json().toType("{\"birth\": \"" + now + "\"}", Dates.class, BY_FIELD);
 
-    assertThat(instant).isEqualTo(now);
+    assertThat(instant.birth).isEqualTo(now);
+  }
+
+  @Test
+  void shouldBeAbleToReadAnInstantFromTimestamp() {
+    long now = System.currentTimeMillis();
+
+    Dates instant = new Json().toType("{\"birth\": " + now + "}", Dates.class, BY_FIELD);
+
+    assertThat(instant.birth).isEqualTo(Instant.ofEpochMilli(now));
+  }
+
+  @Test
+  void shouldBeAbleToReadAnInstantFromTimestampAsString() {
+    long now = System.currentTimeMillis();
+
+    Dates instant = new Json().toType("{\"birth\": \"" + now + "\"}", Dates.class, BY_FIELD);
+
+    assertThat(instant.birth).isEqualTo(Instant.ofEpochMilli(now));
+  }
+
+  @Test
+  void reportsWhichInstantValueWasInvalid() {
+    String raw = "\"2025-13-32\"";
+
+    assertThatThrownBy(() -> new Json().toType(raw, Instant.class))
+        .isInstanceOf(JsonException.class)
+        .hasMessage("Unable to parse: \"2025-13-32\"")
+        .cause()
+        .isInstanceOf(JsonException.class)
+        .hasMessageStartingWith("\"2025-13-32\" does not look like an Instant")
+        .cause()
+        .isInstanceOf(java.time.format.DateTimeParseException.class)
+        .hasMessageContaining("Text '2025-13-32' could not be parsed");
   }
 
   @Test
@@ -255,18 +372,24 @@ class JsonTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
-    new Json().toType(json, Response.class);
+    Response parsed = new Json().toType(json, Response.class);
+    assertThat(parsed.getValue()).isEqualTo("false");
+    assertThat(parsed.getSessionId()).isEqualTo("1210083863107");
+    assertThat(parsed.getState()).isNull();
+    assertThat(parsed.getStatus()).isNull();
   }
 
   @Test
   void shouldBeAbleToSetAnObjectToABoolean() {
-    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
+    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"true\"}";
 
     Response response = new Json().toType(json, Response.class);
 
     assertThat(response.getValue()).isEqualTo(true);
+    assertThat(response.getSessionId()).isEqualTo("true");
   }
 
   @Test
@@ -556,6 +679,14 @@ class JsonTest {
     }
   }
 
+  public static class ParentFieldBean {
+    String value;
+  }
+
+  public static class ChildFieldBean extends ParentFieldBean {
+    String value;
+  }
+
   public static class JsonAware {
     private final String convertedValue;
 
@@ -589,5 +720,24 @@ class JsonTest {
       toReturn.cheese = String.valueOf(args.get("cheese"));
       return toReturn;
     }
+  }
+
+  static class NumericValues {
+    long id;
+    int age;
+    float fee;
+    double amount;
+    @Nullable Double remainder;
+  }
+
+  static class BooleanValues {
+    boolean hero;
+    Boolean gangster;
+  }
+
+  static class Dates {
+    Instant birth;
+    Date wedding;
+    Instant death;
   }
 }

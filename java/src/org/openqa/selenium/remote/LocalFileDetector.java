@@ -19,11 +19,9 @@ package org.openqa.selenium.remote;
 
 import java.io.File;
 import java.util.logging.Logger;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** Detects files on the local disk. */
-@NullMarked
 public class LocalFileDetector implements FileDetector {
 
   private static final Logger LOG = Logger.getLogger(LocalFileDetector.class.getName());

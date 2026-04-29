@@ -17,13 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -108,10 +105,7 @@ public class FirefoxProfile
     /// <exception cref="ArgumentNullException">If <paramref name="extensionToInstall"/> is <see langword="null"/>.</exception>
     public void AddExtension(string extensionToInstall)
     {
-        if (extensionToInstall is null)
-        {
-            throw new ArgumentNullException(nameof(extensionToInstall));
-        }
+        ArgumentNullException.ThrowIfNull(extensionToInstall);
 
         this.extensions.Add(Path.GetFileNameWithoutExtension(extensionToInstall), new FirefoxExtension(extensionToInstall));
     }

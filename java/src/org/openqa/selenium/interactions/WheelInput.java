@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -35,7 +34,6 @@ import org.openqa.selenium.internal.Require;
  * Models a <a href="https://www.w3.org/TR/webdriver/#dfn-wheel-input-source">wheel input
  * source</a>.
  */
-@NullMarked
 public class WheelInput implements InputSource, Encodable {
 
   private final String name;
@@ -65,8 +63,8 @@ public class WheelInput implements InputSource, Encodable {
   }
 
   @Override
-  public Map<String, Object> encode() {
-    Map<String, Object> toReturn = new HashMap<>();
+  public Map<String, @Nullable Object> encode() {
+    Map<String, @Nullable Object> toReturn = new HashMap<>();
 
     toReturn.put("type", getInputType().getType());
     toReturn.put("id", this.name);

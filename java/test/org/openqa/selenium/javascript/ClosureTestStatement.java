@@ -18,6 +18,7 @@
 package org.openqa.selenium.javascript;
 
 import static java.lang.System.nanoTime;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.net.URL;
@@ -103,13 +104,14 @@ class ClosureTestStatement {
     for (int i = 0; i < 50; i++) {
       boolean hasQUnit =
           (boolean)
-              executor.executeScript("return !!(window.top.QUnitTestRunner || window.QUnit);");
+              requireNonNull(
+                  executor.executeScript("return !!(window.top.QUnitTestRunner || window.QUnit);"));
       if (hasQUnit) {
         LOG.fine("Detected QUnit test runner");
         return TestRunner.QUNIT;
       }
 
-      boolean hasClosure = (boolean) executor.executeScript("return !!window.top.G_testRunner;");
+      Boolean hasClosure = (Boolean) executor.executeScript("return !!window.top.G_testRunner;");
       if (Boolean.TRUE.equals(hasClosure)) {
         LOG.fine("Detected Closure test runner");
         return TestRunner.CLOSURE;

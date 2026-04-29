@@ -18,18 +18,17 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class CommandPayload {
 
   private final String name;
   private final Map<String, ? extends @Nullable Object> parameters;
 
   public CommandPayload(String name, Map<String, ? extends @Nullable Object> parameters) {
-    this.name = name;
-    this.parameters = parameters;
+    this.name = Require.nonNull("name", name);
+    this.parameters = Require.nonNull("parameters", parameters);
   }
 
   public String getName() {

@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -179,6 +180,9 @@ public abstract class Node implements HasReadyState, Routable {
             delete("/session/{sessionId}/se/files")
                 .to(params -> new DownloadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.download_file")),
+            post("/session/{sessionId}/se/event")
+                .to(params -> new FireSessionEvent(this, sessionIdFrom(params)))
+                .with(spanDecorator("node.fire_session_event")),
             get("/se/grid/node/owner/{sessionId}")
                 .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.is_session_owner").andThen(requiresSecret)),
@@ -252,9 +256,26 @@ public abstract class Node implements HasReadyState, Routable {
     throw new UnsupportedOperationException();
   }
 
+  @Nullable
   public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
 
+  @Nullable
   public abstract HttpResponse downloadFile(HttpRequest req, SessionId id);
+
+  /**
+   * Fires a custom session event to the remote server event bus. This allows test code to trigger
+   * server-side utilities that subscribe to the event bus.
+   *
+   * <p>Default implementation throws {@link UnsupportedOperationException}. Subclasses that support
+   * session events should override this method.
+   *
+   * @param req the HTTP request containing the event data
+   * @param id the session ID
+   * @return the HTTP response
+   */
+  public HttpResponse fireSessionEvent(HttpRequest req, SessionId id) {
+    throw new UnsupportedOperationException();
+  }
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 

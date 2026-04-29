@@ -8,17 +8,6 @@ exports_files([
 ])
 
 pkg_zip(
-    name = "strongnamed",
-    srcs = [
-        "//dotnet/src/support:support-strongnamed-pack",
-        "//dotnet/src/webdriver:webdriver-strongnamed-pack",
-    ],
-    tags = [
-        "release-artifact",
-    ],
-)
-
-pkg_zip(
     name = "release",
     srcs = [
         "//dotnet/src/support:support-pack",
@@ -32,6 +21,9 @@ pkg_zip(
 filegroup(
     name = "source_files_support_needs_from_core",
     srcs = [
+        "//dotnet/src/webdriver:Properties/ArgumentNullExceptionExtensions.cs",
+        "//dotnet/src/webdriver:Properties/CallerArgumentExpressionAttribute.cs",
+        "//dotnet/src/webdriver:Properties/NullableAttributes.cs",
         "//dotnet/src/webdriver:Properties/StringSyntaxAttribute.cs",
         "//dotnet/src/webdriver:Properties/StringSyntaxConstants.cs",
     ],

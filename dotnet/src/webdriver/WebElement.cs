@@ -17,16 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -50,8 +46,10 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
     public WebElement(WebDriver parentDriver, string id)
     {
-        this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
-        this.Id = id ?? throw new ArgumentNullException(nameof(id));
+        ArgumentNullException.ThrowIfNull(parentDriver);
+        ArgumentNullException.ThrowIfNull(id);
+        this.driver = parentDriver;
+        this.Id = id;
     }
 
     /// <summary>

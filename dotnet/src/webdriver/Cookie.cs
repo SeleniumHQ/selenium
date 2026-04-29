@@ -17,12 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -255,10 +252,7 @@ public class Cookie : IEquatable<Cookie>
     /// <returns>A <see cref="Cookie"/> object with the proper parameters set.</returns>
     public static Cookie FromDictionary(Dictionary<string, object?> rawCookie)
     {
-        if (rawCookie == null)
-        {
-            throw new ArgumentNullException(nameof(rawCookie));
-        }
+        ArgumentNullException.ThrowIfNull(rawCookie);
 
         string name = rawCookie["name"]!.ToString()!;
         string value = string.Empty;

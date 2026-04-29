@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.41.0.202601181916"
+version = "4.44.0.202604101016"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -26,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "certifi>=2026.1.4",
+    "certifi>=2026.2.25",
     "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
     "typing_extensions>=4.15.0,<5.0",
@@ -44,11 +44,11 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.14.10",
+    "ruff==0.15.11",
 ]
 validate = [
-    "validate-pyproject==0.24.1",
-    "packaging==25.0",
+    "validate-pyproject==0.25",
+    "packaging==26.1",
 ]
 
 [tool.setuptools]
@@ -67,6 +67,7 @@ binding = "Exec"
 [tool.setuptools.package-data]
 "*" = [
     "*.py",
+    "*.pyi",
     "*.rst",
     "*.json",
     "*.xpi",
@@ -139,6 +140,7 @@ warn_unreachable = false
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
+    "selenium/webdriver/common/bidi/",
 ]
 line-length = 120
 respect-gitignore = true
@@ -169,6 +171,8 @@ docstring-code-line-length = 120
 
 [tool.ruff.lint.isort]
 known-first-party = ["selenium", "test"]
+known-third-party = []
+known-local-folder = ["conftest"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

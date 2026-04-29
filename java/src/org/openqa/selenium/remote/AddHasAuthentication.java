@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.WebDriver;
@@ -32,7 +31,6 @@ import org.openqa.selenium.internal.Require;
 
 public class AddHasAuthentication implements AugmenterProvider<HasAuthentication> {
 
-  private static final Logger LOG = Logger.getLogger(AddHasAuthentication.class.getName());
   private static final Predicate<String> IS_CHROMIUM_BROWSER =
       name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
 

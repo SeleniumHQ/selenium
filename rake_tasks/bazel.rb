@@ -11,6 +11,12 @@ module Bazel
     (RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw32/) != nil
   end
 
+  def self.format_cmd(cmd, verbose: false, max_args: 6)
+    return cmd.join(' ') if verbose || cmd.length <= max_args
+
+    "#{cmd[0...max_args].join(' ')} ... (#{cmd.length - max_args} more args)"
+  end
+
   def self.execute(kind, args, target, &block)
     verbose = Rake::FileUtilsExt.verbose_flag
 
@@ -23,6 +29,7 @@ module Bazel
     cmd_out = ''
     cmd_exit_code = 0
 
+    puts "Executing: #{format_cmd(cmd, verbose: verbose)}"
     if windows?
       cmd += ['2>&1']
       cmd_line = cmd.join(' ')
@@ -30,7 +37,6 @@ module Bazel
       puts cmd_out if verbose
       cmd_exit_code = $CHILD_STATUS
     else
-      puts "Executing: #{cmd.join(' ')}"
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
         is_running = true
         stdin.close

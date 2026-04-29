@@ -1,0 +1,158 @@
+Selenium Grid supports running browser sessions as Kubernetes Jobs.
+When a session is requested, the Grid Node dynamically creates a K8s
+Job with a browser container, forwards WebDriver commands to it, and
+cleans the Job up when the session ends. This eliminates the need for
+a fixed pool of browser Pods and lets the cluster scale on demand.
+
+The Kubernetes module is an extension loaded via `--ext` to keep the
+main Selenium Grid jar lightweight. The fabric8 Kubernetes client
+libraries are only required when using this extension.
+
+Getting Started
+===============
+
+The feature is activated by passing `--ext` with the path to the K8s
+extension jar, then `--kubernetes-configs` (short form `-K`) to a
+Node or Standalone command. Each config entry is a pair: an image
+(or ConfigMap reference) followed by a JSON capabilities string.
+
+Image mode -- the simplest form:
+
+```
+  java -jar selenium.jar \
+    --ext $(coursier fetch -p org.seleniumhq.selenium:selenium-node-kubernetes:latest.release) \
+    node \
+    -K selenium/standalone-chrome:latest '{"browserName": "chrome"}' \
+    -K selenium/standalone-firefox:latest '{"browserName": "firefox"}'
+```
+
+Template mode -- for complex Job definitions, store a full Job YAML in
+a ConfigMap and reference it with the `configmap:` prefix:
+
+```
+  java -jar selenium.jar \
+    --ext $(coursier fetch -p org.seleniumhq.selenium:selenium-node-kubernetes:latest.release) \
+    node \
+    -K configmap:my-chrome-template '{"browserName": "chrome"}'
+```
+
+The ConfigMap must contain a key named `template` whose value is a
+valid K8s Job YAML. The Job must have a container named `browser` with
+an image. Cross-namespace references use `namespace/configmap-name`.
+
+Configuration Options
+=====================
+
+All options live under the `[kubernetes]` section in TOML config files
+and use `--kubernetes-` prefixed flags on the command line.
+
+Connection:
+
+ * `--kubernetes-url` -- Remote K8s API server URL. When set, the Node
+   connects to a remote cluster and uses port-forwarding to reach
+   browser Pods. When omitted, in-cluster or kubeconfig auto-discovery
+   is used.
+
+ * `--kubernetes-namespace` -- Namespace for browser Jobs. Auto-detected
+   from the client config or ServiceAccount when omitted.
+
+Session lifecycle:
+
+ * `--kubernetes-configs` / `-K` -- Image-to-capability mappings
+   (required). Accepts multiple pairs.
+
+ * `--kubernetes-server-start-timeout` -- Max seconds to wait for the
+   browser server to become ready (default: 120).
+
+Container settings:
+
+ * `--kubernetes-image-pull-policy` -- Pull policy for browser
+   containers: Always, IfNotPresent, or Never (default: IfNotPresent).
+
+ * `--kubernetes-resource-requests` -- CPU/memory requests in
+   `cpu=500m,memory=512Mi` format.
+
+ * `--kubernetes-resource-limits` -- CPU/memory limits in
+   `cpu=1,memory=1Gi` format.
+
+ * `--kubernetes-service-account` -- Service account for browser Jobs.
+
+Scheduling:
+
+ * `--kubernetes-node-selector` -- Node selector labels in
+   `disktype=ssd,region=us-west` format.
+
+Video recording:
+
+ * `--kubernetes-video-image` -- Sidecar image for video recording.
+   Set to `false` (default) to disable. When enabled, clients can
+   request recording by setting the `se:recordVideo` capability.
+
+ * `--kubernetes-assets-path` -- Directory for session assets such as
+   logs and videos (default: /opt/selenium/assets).
+
+Metadata:
+
+ * `--kubernetes-label-inherit-prefix` -- Prefix filter for inheriting
+   labels and annotations from the Node Pod (default: `se/`). Set to
+   an empty string to inherit all.
+
+Inheritance from the Node Pod
+=============================
+
+When the Node itself runs inside Kubernetes, it inspects its own Pod
+spec and propagates matching fields to browser Jobs automatically.
+This includes:
+
+ * Service account, image pull policy, and image pull secrets
+ * Resource requests and limits
+ * Node selector, tolerations, affinity, and priority class
+ * DNS policy and config, security context
+ * Labels and annotations (filtered by inherit prefix)
+ * PersistentVolumeClaim mounts at the assets path
+
+Explicit CLI flags always take precedence over inherited values.
+
+TOML Config File Example
+=========================
+
+```
+[kubernetes]
+image-pull-policy = "Always"
+resource-requests = "cpu=500m,memory=512Mi"
+resource-limits = "cpu=1,memory=2Gi"
+configs = [
+  "selenium/standalone-chrome:latest", "{\"browserName\": \"chrome\"}",
+  "selenium/standalone-firefox:latest", "{\"browserName\": \"firefox\"}"
+]
+```
+
+How It Works
+============
+
+ 1. A WebDriver session request arrives at the Node.
+
+ 2. The Node matches the requested capabilities to a configured
+    image or ConfigMap template.
+
+ 3. A Kubernetes Job is created with a unique name derived from the
+    browser name and a timestamp.
+
+ 4. The Node watches the Pod until it reaches Running state, detecting
+    errors like ImagePullBackOff or unschedulable conditions early.
+
+ 5. If a remote cluster URL was specified, a local port-forward is
+    established to the browser Pod.
+
+ 6. The Node polls the browser server's /status endpoint until it
+    responds with HTTP 200.
+
+ 7. A WebDriver session is created against the browser and the
+    session ID is returned to the client.
+
+ 8. When the session ends, Pod logs are saved, video files are
+    relocated into the session directory, and the Job is deleted.
+
+More information can be found at:
+
+ * Selenium Grid docs: https://www.selenium.dev/documentation/grid/

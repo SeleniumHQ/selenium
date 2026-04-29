@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.NetworkUtils;
 
@@ -24,7 +25,7 @@ public interface AppServer {
 
   String getHostName();
 
-  String getAlternateHostName();
+  @Nullable String getAlternateHostName();
 
   String whereIs(String relativeUrl);
 
@@ -33,6 +34,8 @@ public interface AppServer {
   String whereIsSecure(String relativeUrl);
 
   String whereIsWithCredentials(String relativeUrl, String user, String password);
+
+  boolean isSecure();
 
   String create(Page page);
 
@@ -45,6 +48,7 @@ public interface AppServer {
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
 
+  @Nullable
   static String detectAlternateHostname() {
     String alternativeHostnameFromProperty = System.getenv("ALTERNATIVE_HOSTNAME");
     if (alternativeHostnameFromProperty != null) {

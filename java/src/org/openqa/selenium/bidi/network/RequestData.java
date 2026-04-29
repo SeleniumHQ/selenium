@@ -19,22 +19,24 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+/**
+ * @see <a href="https://www.w3.org/TR/webdriver-bidi/#type-network-RequestData">BiDi spec</a>
+ */
 public class RequestData {
   private final String requestId;
-
   private final String url;
-
   private final String method;
-
   private final List<Header> headers;
-
   private final List<Cookie> cookies;
-
   private final long headersSize;
-
+  private final @Nullable Long bodySize;
+  private final String destination;
+  private final @Nullable String initiatorType;
   private final FetchTimingInfo timings;
 
   public RequestData(
@@ -44,13 +46,19 @@ public class RequestData {
       List<Header> headers,
       List<Cookie> cookies,
       long headersSize,
+      @Nullable Long bodySize,
+      String destination,
+      @Nullable String initiatorType,
       FetchTimingInfo timings) {
     this.requestId = requestId;
     this.url = url;
     this.method = method;
     this.headers = headers;
     this.cookies = cookies;
-    this.headersSize = headersSize;
+    this.headersSize = Require.nonNegative("headersSize", headersSize);
+    this.bodySize = bodySize;
+    this.destination = destination;
+    this.initiatorType = initiatorType;
     this.timings = timings;
   }
 
@@ -60,7 +68,10 @@ public class RequestData {
     String method = null;
     List<Header> headers = new ArrayList<>();
     List<Cookie> cookies = new ArrayList<>();
-    long headersSize = 0;
+    Long headersSize = null;
+    Long bodySize = null;
+    String destination = null;
+    String initiatorType = null;
     FetchTimingInfo timings = null;
 
     input.beginObject();
@@ -84,6 +95,15 @@ public class RequestData {
         case "headersSize":
           headersSize = input.read(Long.class);
           break;
+        case "bodySize":
+          bodySize = input.read(Long.class);
+          break;
+        case "destination":
+          destination = input.read(String.class);
+          break;
+        case "initiatorType":
+          initiatorType = input.read(String.class);
+          break;
         case "timings":
           timings = input.read(FetchTimingInfo.class);
           break;
@@ -94,7 +114,17 @@ public class RequestData {
 
     input.endObject();
 
-    return new RequestData(requestId, url, method, headers, cookies, headersSize, timings);
+    return new RequestData(
+        Require.nonNull("requestId", requestId),
+        Require.nonNull("url", url),
+        Require.nonNull("method", method),
+        Require.nonNull("headers", headers),
+        Require.nonNull("cookies", cookies),
+        Require.nonNull("headersSize", headersSize),
+        bodySize,
+        Require.nonNull("destination", destination),
+        initiatorType,
+        Require.nonNull("timings", timings));
   }
 
   public String getRequestId() {
@@ -117,8 +147,22 @@ public class RequestData {
     return cookies;
   }
 
-  public Long getHeadersSize() {
+  public long getHeadersSize() {
     return headersSize;
+  }
+
+  @Nullable
+  public Long getBodySize() {
+    return bodySize;
+  }
+
+  public String getDestination() {
+    return destination;
+  }
+
+  @Nullable
+  public String getInitiatorType() {
+    return initiatorType;
   }
 
   public FetchTimingInfo getTimings() {

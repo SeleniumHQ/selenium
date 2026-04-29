@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.IO;
-
 namespace OpenQA.Selenium.Internal.Logging;
 
 /// <summary>

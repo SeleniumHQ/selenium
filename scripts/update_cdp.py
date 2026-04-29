@@ -5,7 +5,6 @@ import json
 import os
 import re
 import shutil
-import subprocess
 from pathlib import Path
 
 import urllib3
@@ -126,8 +125,6 @@ def add_pdls(chrome_milestone):
             file.write(script_replace)
             file.truncate()
 
-        subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
-
 
 def create_new_chrome_files(src_base, chrome_milestone):
     """Create new Chrome devtools files for a language binding.
@@ -151,8 +148,6 @@ def create_new_chrome_files(src_base, chrome_milestone):
             replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
             new_filename = file.name.replace(previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
             file.rename(target_dir / new_filename)
-
-    subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
 
 
 def replace_in_file(file_path, old_string, new_string, is_regex=False):
@@ -180,15 +175,15 @@ def update_dotnet(chrome_milestone):
     create_new_chrome_files("dotnet/src/webdriver/DevTools", chrome_milestone)
 
     files = [
-        root_dir / "dotnet/selenium-dotnet-version.bzl",
+        root_dir / "dotnet/version.bzl",
         root_dir / "dotnet/src/webdriver/Selenium.WebDriver.csproj",
         root_dir / "dotnet/src/webdriver/DevTools/DevToolsDomains.cs",
     ]
     for file in files:
         replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
-    files = [root_dir / "dotnet/test/common/CustomDriverConfigs/StableChannelChromeDriver.cs"]
-    dir_path = root_dir / "dotnet/test/common/DevTools"
+    files = [root_dir / "dotnet/test/webdriver/Infrastructure/DriverConfigs/StableChannelChromeDriver.cs"]
+    dir_path = root_dir / "dotnet/test/webdriver/DevTools"
     files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
     for file in files:
         replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
@@ -205,8 +200,6 @@ def update_ruby(chrome_milestone):
         f"{new_chrome(chrome_milestone)}.0",
         True,
     )
-
-    subprocess.run(["bundle", "install"], cwd=root_dir / "rb", check=True)
 
 
 def update_python(chrome_milestone):

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -27,5 +26,4 @@ import org.openqa.selenium.remote.http.HttpHandler;
  * browser fails to send a HTTP request. It can be caught in a {@link Filter} to handle the error
  * by, for example, returning a custom HTTP response.
  */
-@NullMarked
 public class RequestFailedException extends WebDriverException {}

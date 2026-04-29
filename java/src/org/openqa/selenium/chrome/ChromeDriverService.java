@@ -18,7 +18,6 @@
 package org.openqa.selenium.chrome;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,16 +104,11 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, args, environment);
   }
 
   public String getDriverName() {
@@ -335,7 +328,7 @@ public class ChromeDriverService extends DriverService {
     protected ChromeDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {
