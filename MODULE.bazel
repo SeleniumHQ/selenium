@@ -10,7 +10,7 @@ bazel_dep(name = "bazel_features", version = "1.45.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.32.0")
-bazel_dep(name = "llvm", version = "0.7.3")
+bazel_dep(name = "llvm", version = "0.7.9")
 bazel_dep(name = "package_metadata", version = "0.0.7")
 bazel_dep(name = "platforms", version = "1.0.0")
 
@@ -404,6 +404,20 @@ rust_toolchains.toolchain(
 use_repo(rust_toolchains, "default_rust_toolchains")
 
 register_toolchains("@default_rust_toolchains//:all")
+
+# TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
+llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "windows",
+)
+use_repo(llvm_toolchains, "llvm_toolchains")
+
+register_toolchains("@llvm_toolchains//:all")
 
 crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
 crate.from_cargo(

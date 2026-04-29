@@ -127,9 +127,9 @@ platform(
 )
 
 platform(
-    name = "local_windows_msvc",
+    name = "local_windows_gnullvm",
     constraint_values = [
-        "@rules_rs//rs/platforms/constraints:windows_msvc",
+        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
     ],
     parents = ["@platforms//host"],
 )
