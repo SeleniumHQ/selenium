@@ -1868,8 +1868,7 @@ class PointerDownAction:
                 "PROMPT:  The browser will show a permission prompt (default browser behaviour)."
             ),
             "Permissions": (
-                "BiDi interface for controlling browser permissions.\n\n"
-                "Access via ``driver.permissions``."
+                "BiDi interface for controlling browser permissions.\n\nAccess via ``driver.permissions``."
             ),
         },
         "extra_dataclasses": [
@@ -2094,9 +2093,7 @@ class PointerDownAction:
             "requests initiated by the browser (e.g. via <script type='speculationrules'>).\n"
         ),
         "class_docstrings": {
-            "Speculation": (
-                "BiDi interface for observing Speculation Rules prefetch activity."
-            ),
+            "Speculation": ("BiDi interface for observing Speculation Rules prefetch activity."),
             "PreloadingStatus": (
                 "Status values for a speculation-rules prefetch operation.\n\n"
                 "PENDING: The prefetch has been queued but not yet attempted.\n"
@@ -2121,9 +2118,7 @@ class PointerDownAction:
             "and browser brands without changing the actual browser binary.\n"
         ),
         "class_docstrings": {
-            "UserAgentClientHints": (
-                "BiDi interface for overriding User-Agent Client Hints."
-            ),
+            "UserAgentClientHints": ("BiDi interface for overriding User-Agent Client Hints."),
             "ClientHintsMetadata": (
                 "Full set of User-Agent Client Hint values to override.\n\n"
                 "Attributes:\n"
