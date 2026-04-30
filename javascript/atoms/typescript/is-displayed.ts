@@ -203,7 +203,7 @@ interface Coordinate {
       if (image) {
         rect = getClientRect(image);
         if (!isMap && isElement(elem, 'AREA') && (elem as HTMLAreaElement).shape.toLowerCase() !== 'default') {
-          var relativeRect = getAreaRelativeRect(elem);
+          var relativeRect = getAreaRelativeRect(elem as HTMLAreaElement);
           var relativeX = Math.min(Math.max(relativeRect.left, 0), rect.width);
           var relativeY = Math.min(Math.max(relativeRect.top, 0), rect.height);
           var width = Math.min(relativeRect.width, rect.width - relativeX);
@@ -355,7 +355,7 @@ interface Coordinate {
 
     if (isElement(elem, 'OPTION') || isElement(elem, 'OPTGROUP')) {
       var select: Element | null = null;
-      var ancestor: Node | null = elem.parentNode;
+      var ancestor: Node | null = (elem as Element).parentNode;
       while (ancestor) {
         if (isElement(ancestor, 'SELECT')) {
           select = ancestor as Element;
