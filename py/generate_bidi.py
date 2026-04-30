@@ -81,7 +81,7 @@ def _docstring_text(custom: str | None, fallback_name: str, fallback_desc: str =
 
 
 def _emit_docstring(text: str, indent_width: int) -> str:
-    """Produce a PEP 257-compliant docstring block with a trailing newline.
+    r"""Produce a PEP 257-compliant docstring block with a trailing newline.
 
     Single-line output:  <indent>\"\"\"text.\"\"\"\n
     Multi-line output:
