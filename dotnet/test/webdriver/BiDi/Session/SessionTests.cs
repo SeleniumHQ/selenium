@@ -71,12 +71,14 @@ internal class SessionTests : BiDiTestFixture
     {
         EntryAddedEventArgs log = null;
 
-        await using var _ = await bidi.OnEventAsync(LogEvent.EntryAdded, e =>
+        var listener = await bidi.OnEventAsync(LogEvent.EntryAdded, e =>
         {
             log = e;
         });
 
         await context.Script.EvaluateAsync("console.log('hello event');", true);
+
+        await listener.DisposeAsync();
 
         Assert.That(log.Text, Is.EqualTo("hello event"));
     }
@@ -87,7 +89,7 @@ internal class SessionTests : BiDiTestFixture
         ResponseStartedEventArgs e1 = null;
         ResponseCompletedEventArgs e2 = null;
 
-        await using var _ = await bidi.OnEventAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
+        var listener = await bidi.OnEventAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
         {
             switch (e)
             {
@@ -97,6 +99,8 @@ internal class SessionTests : BiDiTestFixture
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+
+        await listener.DisposeAsync();
 
         Assert.That(e1, Is.Not.Null);
         Assert.That(e2, Is.Not.Null);
@@ -160,12 +164,14 @@ internal class SessionTests : BiDiTestFixture
 
         SomethingHappenedEventArgs happened = null;
 
-        await using var _ = await customModule.SomethingHappenedEvent.OnAsync(e =>
+        var listener = await customModule.SomethingHappenedEvent.OnAsync(e =>
         {
             happened = e;
         });
 
         await context.Script.EvaluateAsync("console.log('custom event');", true);
+
+        await listener.DisposeAsync();
 
         Assert.That(happened, Is.Not.Null);
         Assert.That(happened.Text, Is.EqualTo("custom event"));
