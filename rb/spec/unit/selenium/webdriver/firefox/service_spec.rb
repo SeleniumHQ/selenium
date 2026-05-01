@@ -26,6 +26,14 @@ module Selenium
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
+          around do |example|
+            original_debug = ENV['SE_DEBUG']
+            ENV.delete('SE_DEBUG')
+            example.run
+          ensure
+            original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
+          end
+
           before do
             allow(Platform).to receive(:assert_executable)
             allow(WebDriver.logger).to receive(:debug?).and_return(false)
@@ -103,10 +111,11 @@ module Selenium
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV['SE_DEBUG']
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds -v flag' do
