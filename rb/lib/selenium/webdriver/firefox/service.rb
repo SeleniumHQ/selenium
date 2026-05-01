@@ -33,25 +33,23 @@ module Selenium
             args << '0'
           end
 
-          if ENV.key?('SE_DEBUG')
-            remove_log_args(args)
-            args << '-v'
-          end
+          configure_debug_args(args) if ENV.key?('SE_DEBUG')
+
+          super
+        end
+
+        def launch
+          configure_debug_args(args) if ENV.key?('SE_DEBUG')
 
           super
         end
 
         private
 
-        def remove_log_args(args)
-          if (index = args.index('--log'))
-            args.delete_at(index) # delete '--log'
-            args.delete_at(index) if args[index] && !args[index].start_with?('-') # delete value if present
-            warn_driver_log_override
-          elsif (index = args.index { |arg| arg.start_with?('--log=') })
-            args.delete_at(index)
-            warn_driver_log_override
-          end
+        def configure_debug_args(args)
+          return if args.any? { |arg| arg.start_with?('--log') }
+
+          args << '-v' unless args.any? { |arg| /\A-v+\z/.match?(arg) }
         end
       end # Service
     end # Firefox
