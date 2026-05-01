@@ -27,7 +27,7 @@ module Selenium
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
           around do |example|
-            original_debug = ENV['SE_DEBUG']
+            original_debug = ENV.fetch('SE_DEBUG', nil)
             ENV.delete('SE_DEBUG')
             example.run
           ensure
@@ -111,7 +111,7 @@ module Selenium
 
           context 'when SE_DEBUG is set' do
             around do |example|
-              original_debug = ENV['SE_DEBUG']
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
