@@ -47,7 +47,10 @@ module Selenium
         private
 
         def configure_debug_args(args)
-          return if args.any? { |arg| arg.start_with?('--log') }
+          if args.any? { |arg| arg.start_with?('--log') }
+            args.reject! { |arg| /\A-v+\z/.match?(arg) }
+            return
+          end
 
           args << '-v' unless args.any? { |arg| /\A-v+\z/.match?(arg) }
         end
