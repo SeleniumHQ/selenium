@@ -96,22 +96,32 @@ internal sealed class EventListener<TEventArgs> : IEventListener, ISubscriptionS
     }
 }
 
-public sealed record SubscriptionOptions
+public sealed record EventListenerOptions
 {
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
-
-    public TimeSpan? Timeout { get; init; }
 }
 
-public sealed record ContextSubscriptionOptions
+public sealed record EventReaderOptions
 {
-    public TimeSpan? Timeout { get; init; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+}
+
+public sealed record ContextEventListenerOptions
+{
+    internal static EventListenerOptions WithContext(ContextEventListenerOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        Contexts = [context],
-        Timeout = options?.Timeout
+        Contexts = [context]
+    };
+}
+
+public sealed record ContextEventReaderOptions
+{
+    internal static EventReaderOptions WithContext(ContextEventReaderOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Contexts = [context]
     };
 }

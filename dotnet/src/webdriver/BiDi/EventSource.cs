@@ -38,7 +38,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         _filter = filter;
     }
 
-    public Task<IEventListener> OnAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventListener> OnAsync(Action<TEventArgs> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -46,7 +46,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { wrapped(e); return default; }, options, cancellationToken);
     }
 
-    public Task<IEventListener> OnAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventListener> OnAsync(Func<TEventArgs, Task> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -54,7 +54,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(wrapped(e)), options, cancellationToken);
     }
 
-    public async Task<IEventReader<TEventArgs>> ReadAllAsync(SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEventReader<TEventArgs>> ReadAllAsync(EventReaderOptions? options = null, CancellationToken cancellationToken = default)
     {
         var reader = await _dispatcher.SubscribeReaderAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
 
@@ -63,7 +63,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
             : reader;
     }
 
-    public async Task<TResult> ReadAllAsync<TResult>(Func<IEventReader<TEventArgs>, Task<TResult>> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<TResult> ReadAllAsync<TResult>(Func<IEventReader<TEventArgs>, Task<TResult>> action, EventReaderOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -72,7 +72,7 @@ public sealed class EventSource<TEventArgs> where TEventArgs : EventArgs
         return await action(reader).ConfigureAwait(false);
     }
 
-    public async Task ReadAllAsync(Func<IEventReader<TEventArgs>, Task> action, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task ReadAllAsync(Func<IEventReader<TEventArgs>, Task> action, EventReaderOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(action);
 

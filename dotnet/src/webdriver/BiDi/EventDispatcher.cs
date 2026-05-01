@@ -45,7 +45,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<IEventListener> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
-        SubscriptionOptions? options,
+        EventListenerOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
@@ -55,11 +55,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<IEventListener> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
-        SubscriptionOptions? options,
+        EventListenerOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options, cancellationToken).ConfigureAwait(false);
+        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
         subscription = new EventListener<TEventArgs>(
@@ -76,7 +76,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
-        SubscriptionOptions? options,
+        EventReaderOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
@@ -85,11 +85,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
-        SubscriptionOptions? options,
+        EventReaderOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options, cancellationToken).ConfigureAwait(false);
+        var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
         subscription = new EventReader<TEventArgs>(
@@ -157,7 +157,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync(
         IEnumerable<EventDescriptor> descriptors,
-        SubscriptionOptions? options,
+        IEnumerable<BrowsingContext.BrowsingContext>? contexts,
+        IEnumerable<Browser.UserContext>? userContexts,
         CancellationToken cancellationToken)
     {
         var names = new List<string>();
@@ -180,7 +181,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             throw new ArgumentException("At least one event descriptor must be provided.", nameof(descriptors));
         }
 
-        var subscribeResult = await _wireSubscribe(names, new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
+        var subscribeResult = await _wireSubscribe(names, new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
             .ConfigureAwait(false);
 
         var registries = new SubscriptionRegistry[names.Count];
