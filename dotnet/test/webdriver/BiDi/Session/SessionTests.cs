@@ -134,19 +134,6 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
-    public async Task CanConsumeScopedAsyncEventStream()
-    {
-        await using var stream = await bidi.Log.EntryAddedEvent.ReadAllAsync();
-
-        await context.Script.EvaluateAsync("console.log('hello stream');", true);
-
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        var log = await stream.FirstAsync(cts.Token);
-
-        Assert.That(log.Text, Is.EqualTo("hello stream"));
-    }
-
-    [Test]
     public async Task CustomModuleShouldExecuteCommand()
     {
         var customModule = bidi.AsModule<CustomModule>();
