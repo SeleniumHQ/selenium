@@ -1,4 +1,4 @@
-// <copyright file="EventSubscription.cs" company="Selenium Committers">
+// <copyright file="EventListener.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -29,7 +29,7 @@ internal interface ISubscriptionSink
     ValueTask DisposeAsync();
 }
 
-internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubscriptionSink
+internal sealed class EventListener<TEventArgs> : IEventListener, ISubscriptionSink
     where TEventArgs : EventArgs
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
@@ -42,7 +42,7 @@ internal sealed class EventSubscription<TEventArgs> : IEventSubscription, ISubsc
 
     private readonly Task _dispatchTask;
 
-    internal EventSubscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
+    internal EventListener(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
     {
         _unsubscribe = unsubscribe;
         _handler = handler;

@@ -30,14 +30,14 @@ public sealed class ContextEventSource<TEventArgs> where TEventArgs : EventArgs
         _context = context;
     }
 
-    public Task<IEventSubscription> OnAsync(Action<TEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventListener> OnAsync(Action<TEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
         return _source.OnAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), cancellationToken);
     }
 
-    public Task<IEventSubscription> OnAsync(Func<TEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventListener> OnAsync(Func<TEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 

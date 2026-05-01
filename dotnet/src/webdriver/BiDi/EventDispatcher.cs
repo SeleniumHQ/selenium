@@ -42,7 +42,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _bidi = bidi;
     }
 
-    public async Task<IEventSubscription> SubscribeAsync<TEventArgs>(
+    public async Task<IEventListener> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
         SubscriptionOptions? options,
@@ -52,7 +52,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return await SubscribeAsync<TEventArgs>([descriptor], handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEventSubscription> SubscribeAsync<TEventArgs>(
+    public async Task<IEventListener> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
         SubscriptionOptions? options,
@@ -62,7 +62,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
-        subscription = new EventSubscription<TEventArgs>(
+        subscription = new EventListener<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, registries, subscription, ct),
             handler);
 
@@ -71,7 +71,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             registry.Add(subscription);
         }
 
-        return (IEventSubscription)subscription;
+        return (IEventListener)subscription;
     }
 
     public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
