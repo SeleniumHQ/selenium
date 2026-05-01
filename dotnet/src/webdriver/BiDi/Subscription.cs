@@ -64,9 +64,15 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
+            Exception? unsubscribeError = null;
+
             try
             {
                 await _unsubscribe(default).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                unsubscribeError = ex;
             }
             finally
             {
@@ -79,6 +85,11 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
 
             _handlerError?.Throw();
             _sourceError?.Throw();
+
+            if (unsubscribeError is not null)
+            {
+                ExceptionDispatchInfo.Capture(unsubscribeError).Throw();
+            }
         }
     }
 
