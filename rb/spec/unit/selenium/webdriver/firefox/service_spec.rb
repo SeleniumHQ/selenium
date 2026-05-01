@@ -118,23 +118,38 @@ module Selenium
             it 'removes conflicting --log args with value' do
               service = described_class.new(args: ['--log', 'info'])
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log')
-              expect(service.extra_args).not_to include('info')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('info')
             end
 
-            it 'removes conflicting --log= args' do
+            it 'preserves conflicting --log= args' do
               service = described_class.new(args: ['--log=info'])
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log=info')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log=info')
             end
 
             it 'does not remove next arg if --log has no value' do
               service = described_class.new(args: ['--log', '--other-flag'])
 
-              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('--other-flag')
+            end
+
+            it 'preserves conflicting --log args added after initialization' do
+              service = described_class.new(path: service_path)
+              manager = instance_double(ServiceManager, start: nil)
+              service.args.push('--log', 'trace')
+
+              allow(ServiceManager).to receive(:new).with(service).and_return(manager)
+
+              service.launch
+
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('trace')
             end
           end
         end
