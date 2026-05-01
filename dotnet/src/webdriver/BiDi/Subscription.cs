@@ -35,6 +35,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, ValueTask> _handler;
     private ExceptionDispatchInfo? _handlerError;
+    private ExceptionDispatchInfo? _sourceError;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
@@ -72,26 +73,34 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
             GC.SuppressFinalize(this);
 
             _handlerError?.Throw();
+            _sourceError?.Throw();
         }
     }
 
     private async Task DispatchEventsAsync()
     {
-        while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
+        try
         {
-            while (_channel.Reader.TryRead(out var args))
+            while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
             {
-                try
+                while (_channel.Reader.TryRead(out var args))
                 {
-                    await _handler(args).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _handlerError = ExceptionDispatchInfo.Capture(ex);
-                    _channel.Writer.TryComplete(ex);
-                    return;
+                    try
+                    {
+                        await _handler(args).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _handlerError = ExceptionDispatchInfo.Capture(ex);
+                        _channel.Writer.TryComplete(ex);
+                        return;
+                    }
                 }
             }
+        }
+        catch (Exception ex) when (_handlerError is null)
+        {
+            _sourceError = ExceptionDispatchInfo.Capture(ex);
         }
     }
 }
