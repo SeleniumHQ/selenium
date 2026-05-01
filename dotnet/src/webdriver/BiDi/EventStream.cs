@@ -65,9 +65,15 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
-            await _unsubscribe(default).ConfigureAwait(false);
-            _channel.Writer.TryComplete();
-            GC.SuppressFinalize(this);
+            try
+            {
+                await _unsubscribe(default).ConfigureAwait(false);
+            }
+            finally
+            {
+                _channel.Writer.TryComplete();
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

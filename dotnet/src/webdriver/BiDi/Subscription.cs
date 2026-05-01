@@ -64,13 +64,18 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
         {
-            await _unsubscribe(default).ConfigureAwait(false);
+            try
+            {
+                await _unsubscribe(default).ConfigureAwait(false);
+            }
+            finally
+            {
+                _channel.Writer.TryComplete();
 
-            _channel.Writer.TryComplete();
+                await _dispatchTask.ConfigureAwait(false);
 
-            await _dispatchTask.ConfigureAwait(false);
-
-            GC.SuppressFinalize(this);
+                GC.SuppressFinalize(this);
+            }
 
             _handlerError?.Throw();
             _sourceError?.Throw();
