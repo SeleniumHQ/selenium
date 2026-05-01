@@ -37,7 +37,12 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
 
     void ISubscriptionSink.Deliver(EventArgs args)
     {
-        _channel.Writer.TryWrite((TEventArgs)args);
+        if (args is not TEventArgs typed)
+        {
+            throw new InvalidOperationException($"Cannot deliver '{args.GetType()}' to stream expecting '{typeof(TEventArgs)}'.");
+        }
+
+        _channel.Writer.TryWrite(typed);
     }
 
     void ISubscriptionSink.Complete(Exception? error)

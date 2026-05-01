@@ -52,7 +52,12 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
 
     void ISubscriptionSink.Deliver(EventArgs args)
     {
-        _channel.Writer.TryWrite((TEventArgs)args);
+        if (args is not TEventArgs typed)
+        {
+            throw new InvalidOperationException($"Cannot deliver '{args.GetType()}' to subscription expecting '{typeof(TEventArgs)}'.");
+        }
+
+        _channel.Writer.TryWrite(typed);
     }
 
     void ISubscriptionSink.Complete(Exception? error)
