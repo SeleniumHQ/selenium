@@ -69,14 +69,16 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanSubscribeToEvent()
     {
-        EntryAddedEventArgs log = null;
+        TaskCompletionSource<EntryAddedEventArgs> tcs = new();
 
         var listener = await bidi.SubscribeAsync(LogEvent.EntryAdded, e =>
         {
-            log = e;
+            tcs.TrySetResult(e);
         });
 
         await context.Script.EvaluateAsync("console.log('hello event');", true);
+
+        var log = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         await listener.DisposeAsync();
 
@@ -86,19 +88,22 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanSubscribeToMultipleEvents()
     {
-        ResponseStartedEventArgs e1 = null;
-        ResponseCompletedEventArgs e2 = null;
+        TaskCompletionSource<ResponseStartedEventArgs> tcs1 = new();
+        TaskCompletionSource<ResponseCompletedEventArgs> tcs2 = new();
 
-        var listener = await bidi.SubscribeAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
+        var listener = await bidi.SubscribeAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (OpenQA.Selenium.BiDi.EventArgs e) =>
         {
             switch (e)
             {
-                case ResponseStartedEventArgs started: e1 = started; break;
-                case ResponseCompletedEventArgs completed: e2 = completed; break;
+                case ResponseStartedEventArgs started: tcs1.TrySetResult(started); break;
+                case ResponseCompletedEventArgs completed: tcs2.TrySetResult(completed); break;
             }
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("blank.html"), new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+
+        var e1 = await tcs1.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var e2 = await tcs2.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         await listener.DisposeAsync();
 
@@ -112,7 +117,7 @@ internal class SessionTests : BiDiTestFixture
         await using var sub = await bidi.Log.EntryAdded.ReadAllAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        var enumerator = sub.GetAsyncEnumerator(cts.Token);
+        await using var enumerator = sub.GetAsyncEnumerator(cts.Token);
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
@@ -148,14 +153,16 @@ internal class SessionTests : BiDiTestFixture
     {
         var customModule = bidi.AsModule<CustomModule>();
 
-        SomethingHappenedEventArgs happened = null;
+        TaskCompletionSource<SomethingHappenedEventArgs> tcs = new();
 
         var listener = await customModule.SomethingHappened.SubscribeAsync(e =>
         {
-            happened = e;
+            tcs.TrySetResult(e);
         });
 
         await context.Script.EvaluateAsync("console.log('custom event');", true);
+
+        var happened = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         await listener.DisposeAsync();
 
@@ -199,4 +206,4 @@ record DoSomethingOptions : CommandOptions;
 
 record SomethingHappenedParameters(string Text);
 
-record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : Selenium.BiDi.EventArgs(BiDi);
+record SomethingHappenedEventArgs(IBiDi BiDi, string Text) : OpenQA.Selenium.BiDi.EventArgs(BiDi);

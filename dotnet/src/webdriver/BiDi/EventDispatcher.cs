@@ -147,12 +147,27 @@ internal sealed class EventDispatcher : IAsyncDisposable
             }
         }
 
+        List<Exception>? exceptions = null;
+
         foreach (var registry in _subscriptions.Values)
         {
             foreach (var subscription in registry.GetSnapshot())
             {
-                await subscription.DisposeAsync().ConfigureAwait(false);
+                try
+                {
+                    await subscription.DisposeAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex) when (error is not null)
+                {
+                    _logger.Warn($"Subscription disposal failed during shutdown: {ex.Message}");
+                    (exceptions ??= []).Add(ex);
+                }
             }
+        }
+
+        if (exceptions is { Count: > 0 })
+        {
+            throw new AggregateException("One or more subscriptions failed to dispose during shutdown.", exceptions);
         }
     }
 
@@ -163,7 +178,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     internal void RegisterEventMetadata(string name, JsonTypeInfo jsonTypeInfo, Func<object, EventArgs> argsFactory)
     {
-        _eventMetadata.GetOrAdd(name, new EventMetadata(jsonTypeInfo, argsFactory));
+        var metadata = _eventMetadata.GetOrAdd(name, new EventMetadata(jsonTypeInfo, argsFactory));
+
+        if (!ReferenceEquals(metadata.JsonTypeInfo, jsonTypeInfo))
+        {
+            throw new InvalidOperationException($"Event '{name}' is already registered with different metadata.");
+        }
     }
 
     private async Task<(Session.Subscription SubscribeResult, SubscriptionRegistry[] Registries)> SubscribeCoreAsync(
@@ -172,6 +192,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         IEnumerable<Browser.UserContext>? userContexts,
         CancellationToken cancellationToken)
     {
+        var uniqueNames = new HashSet<string>();
         var names = new List<string>();
         foreach (var descriptor in descriptors)
         {
@@ -184,7 +205,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered.");
             }
-            names.Add(descriptor.Name);
+
+            if (uniqueNames.Add(descriptor.Name))
+            {
+                names.Add(descriptor.Name);
+            }
         }
 
         if (names.Count == 0)
@@ -206,11 +231,16 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private async ValueTask UnsubscribeAsync(Session.Subscription subscriptionId, SubscriptionRegistry[] registries, ISubscriptionSink subscription, CancellationToken cancellationToken)
     {
-        await _wireUnsubscribe([subscriptionId], null, cancellationToken).ConfigureAwait(false);
-
-        foreach (var registry in registries)
+        try
         {
-            registry.Remove(subscription);
+            await _wireUnsubscribe([subscriptionId], null, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            foreach (var registry in registries)
+            {
+                registry.Remove(subscription);
+            }
         }
     }
 

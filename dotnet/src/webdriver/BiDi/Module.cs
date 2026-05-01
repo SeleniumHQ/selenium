@@ -23,8 +23,6 @@ public abstract class Module
 {
     private Broker Broker { get; set; } = null!;
 
-    private IBiDi BiDi { get; set; } = null!;
-
     private EventDispatcher EventDispatcher => Broker.EventDispatcher;
 
     protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
@@ -45,8 +43,7 @@ public abstract class Module
     {
         TModule module = new()
         {
-            Broker = broker,
-            BiDi = bidi
+            Broker = broker
         };
 
         return module;
