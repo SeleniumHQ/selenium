@@ -13,7 +13,7 @@ module Selenium
 
         private
 
-        def remove_log_args: (Array[String] args) -> void
+        def configure_debug_args: (Array[String] args) -> void
       end
     end
   end
