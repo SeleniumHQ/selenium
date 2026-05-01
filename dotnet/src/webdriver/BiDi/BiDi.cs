@@ -124,26 +124,6 @@ public sealed class BiDi : IBiDi
         return await Broker.EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<TResult> ReadAllEventsAsync<TEventArgs, TResult>(IEnumerable<EventDescriptor> descriptors, Func<IEventReader<TEventArgs>, Task<TResult>> action, EventReaderOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
-    {
-        ArgumentNullException.ThrowIfNull(descriptors);
-        ArgumentNullException.ThrowIfNull(action);
-
-        await using var reader = await ReadAllEventsAsync<TEventArgs>(descriptors, options, cancellationToken).ConfigureAwait(false);
-
-        return await action(reader).ConfigureAwait(false);
-    }
-
-    public async Task ReadAllEventsAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<IEventReader<TEventArgs>, Task> action, EventReaderOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
-    {
-        ArgumentNullException.ThrowIfNull(descriptors);
-        ArgumentNullException.ThrowIfNull(action);
-
-        await using var reader = await ReadAllEventsAsync<TEventArgs>(descriptors, options, cancellationToken).ConfigureAwait(false);
-
-        await action(reader).ConfigureAwait(false);
-    }
-
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.CompareExchange(ref _disposed, 1, 0) != 0)
