@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class ContextEventSource<TEventArgs> where TEventArgs : EventArgs
+public sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
 {
     private readonly EventSource<TEventArgs> _source;
     private readonly BrowsingContext.BrowsingContext _context;
@@ -28,6 +28,26 @@ public sealed class ContextEventSource<TEventArgs> where TEventArgs : EventArgs
     {
         _source = source;
         _context = context;
+    }
+
+    Task<IEventListener> IEventSource<TEventArgs>.OnAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
+    {
+        return OnAsync(handler, cancellationToken: cancellationToken);
+    }
+
+    Task<IEventListener> IEventSource<TEventArgs>.OnAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken)
+    {
+        return OnAsync(handler, cancellationToken: cancellationToken);
+    }
+
+    Task<IEventReader<TEventArgs>> IEventSource<TEventArgs>.ReadAllAsync(CancellationToken cancellationToken)
+    {
+        return ReadAllAsync(cancellationToken: cancellationToken);
+    }
+
+    IEventSource<TEventArgs> IEventSource<TEventArgs>.Where(Func<TEventArgs, bool> predicate)
+    {
+        return Where(predicate);
     }
 
     public Task<IEventListener> OnAsync(Action<TEventArgs> handler, ContextEventListenerOptions? options = null, CancellationToken cancellationToken = default)
@@ -47,24 +67,6 @@ public sealed class ContextEventSource<TEventArgs> where TEventArgs : EventArgs
     public Task<IEventReader<TEventArgs>> ReadAllAsync(ContextEventReaderOptions? options = null, CancellationToken cancellationToken = default)
     {
         return _source.ReadAllAsync(ContextEventReaderOptions.WithContext(options, _context), cancellationToken);
-    }
-
-    public async Task<TResult> ReadAllAsync<TResult>(Func<IEventReader<TEventArgs>, Task<TResult>> action, ContextEventReaderOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(action);
-
-        await using var reader = await ReadAllAsync(options, cancellationToken).ConfigureAwait(false);
-
-        return await action(reader).ConfigureAwait(false);
-    }
-
-    public async Task ReadAllAsync(Func<IEventReader<TEventArgs>, Task> action, ContextEventReaderOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(action);
-
-        await using var reader = await ReadAllAsync(options, cancellationToken).ConfigureAwait(false);
-
-        await action(reader).ConfigureAwait(false);
     }
 
     public ContextEventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate)
