@@ -19,6 +19,7 @@
 
 using System.Runtime.ExceptionServices;
 using System.Threading.Channels;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -32,6 +33,8 @@ internal interface ISubscriptionSink
 internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSink
     where TEventArgs : EventArgs
 {
+    private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(Subscription<TEventArgs>));
+
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private readonly Func<TEventArgs, ValueTask> _handler;
     private ExceptionDispatchInfo? _handlerError;
@@ -77,6 +80,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
             }
             catch (Exception ex)
             {
+                _logger.Warn($"Wire unsubscribe failed during dispose: {ex.Message}");
                 unsubscribeError = ex;
             }
             finally
@@ -121,6 +125,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         }
         catch (Exception ex) when (_handlerError is null)
         {
+            _logger.Error($"BiDi event source error: {ex.Message}");
             _sourceError = ExceptionDispatchInfo.Capture(ex);
         }
     }

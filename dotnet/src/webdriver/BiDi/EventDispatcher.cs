@@ -20,11 +20,14 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
 internal sealed class EventDispatcher : IAsyncDisposable
 {
+    private static readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
+
     private readonly Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
     private readonly Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
     private readonly IBiDi _bidi;
@@ -119,7 +122,15 @@ internal sealed class EventDispatcher : IAsyncDisposable
         {
             foreach (var subscription in registry.GetSnapshot())
             {
-                subscription.Deliver(eventArgs);
+                try
+                {
+                    subscription.Deliver(eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
+                    subscription.Complete(ex);
+                }
             }
         }
 

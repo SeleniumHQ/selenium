@@ -18,12 +18,15 @@
 // </copyright>
 
 using System.Threading.Channels;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
 public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscriptionSink
     where TEventArgs : EventArgs
 {
+    private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
+
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private int _disposed;
 
@@ -73,6 +76,11 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
             try
             {
                 await _unsubscribe(default).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Wire unsubscribe failed during dispose: {ex.Message}");
+                throw;
             }
             finally
             {
