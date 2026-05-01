@@ -29,7 +29,7 @@ internal class ScriptEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<MessageEventArgs> tcs = new();
 
-        await bidi.Script.MessageEvent.OnAsync(e => tcs.TrySetResult(e));
+        await bidi.Script.Message.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.Script.CallFunctionAsync("(channel) => channel('foo')", false, new()
         {
@@ -51,7 +51,7 @@ internal class ScriptEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<RealmCreatedEventArgs> tcs = new();
 
-        await bidi.Script.RealmCreatedEvent.OnAsync(e => tcs.TrySetResult(e));
+        await bidi.Script.RealmCreated.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
@@ -67,7 +67,7 @@ internal class ScriptEventsTests : BiDiTestFixture
     {
         TaskCompletionSource<RealmDestroyedEventArgs> tcs = new();
 
-        await bidi.Script.RealmDestroyedEvent.OnAsync(e => tcs.TrySetResult(e));
+        await bidi.Script.RealmDestroyed.SubscribeAsync(e => tcs.TrySetResult(e));
 
         var ctx = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
         await ctx.Context.CloseAsync();

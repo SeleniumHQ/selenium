@@ -21,5 +21,5 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 public interface ILogModule
 {
-    EventSource<EntryAddedEventArgs> EntryAddedEvent { get; }
+    EventSource<EntryAddedEventArgs> EntryAdded { get; }
 }

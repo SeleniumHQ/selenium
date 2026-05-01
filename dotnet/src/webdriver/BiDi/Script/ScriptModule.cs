@@ -99,13 +99,13 @@ internal sealed class ScriptModule : Module, IScriptModule
         return await ExecuteAsync(RemovePreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<MessageEventArgs> MessageEvent => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(ScriptEvent.Message), null) ?? _message;
+    public EventSource<MessageEventArgs> Message => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(ScriptEvent.Message), null) ?? _message;
     private EventSource<MessageEventArgs>? _message;
 
-    public EventSource<RealmCreatedEventArgs> RealmCreatedEvent => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(ScriptEvent.RealmCreated), null) ?? _realmCreated;
+    public EventSource<RealmCreatedEventArgs> RealmCreated => _realmCreated ?? Interlocked.CompareExchange(ref _realmCreated, CreateEventSource(ScriptEvent.RealmCreated), null) ?? _realmCreated;
     private EventSource<RealmCreatedEventArgs>? _realmCreated;
 
-    public EventSource<RealmDestroyedEventArgs> RealmDestroyedEvent => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(ScriptEvent.RealmDestroyed), null) ?? _realmDestroyed;
+    public EventSource<RealmDestroyedEventArgs> RealmDestroyed => _realmDestroyed ?? Interlocked.CompareExchange(ref _realmDestroyed, CreateEventSource(ScriptEvent.RealmDestroyed), null) ?? _realmDestroyed;
     private EventSource<RealmDestroyedEventArgs>? _realmDestroyed;
 }
 

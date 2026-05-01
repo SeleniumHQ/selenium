@@ -1,4 +1,4 @@
-// <copyright file="IEventListener.cs" company="Selenium Committers">
+// <copyright file="ISubscription.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,6 +19,6 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public interface IEventListener : IAsyncDisposable
+public interface ISubscription : IAsyncDisposable
 {
 }

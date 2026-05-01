@@ -54,7 +54,7 @@ internal sealed class InputModule : Module, IInputModule
         return await ExecuteAsync(SetFilesCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<FileDialogOpenedEventArgs> FileDialogOpenedEvent => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(InputEvent.FileDialogOpened), null) ?? _fileDialogOpened;
+    public EventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ?? Interlocked.CompareExchange(ref _fileDialogOpened, CreateEventSource(InputEvent.FileDialogOpened), null) ?? _fileDialogOpened;
     private EventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }
 

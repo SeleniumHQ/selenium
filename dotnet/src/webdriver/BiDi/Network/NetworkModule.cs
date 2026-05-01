@@ -153,19 +153,19 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSentEvent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(NetworkEvent.BeforeRequestSent), null) ?? _beforeRequestSent;
+    public EventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(NetworkEvent.BeforeRequestSent), null) ?? _beforeRequestSent;
     private EventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public EventSource<ResponseStartedEventArgs> ResponseStartedEvent => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(NetworkEvent.ResponseStarted), null) ?? _responseStarted;
+    public EventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(NetworkEvent.ResponseStarted), null) ?? _responseStarted;
     private EventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public EventSource<ResponseCompletedEventArgs> ResponseCompletedEvent => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(NetworkEvent.ResponseCompleted), null) ?? _responseCompleted;
+    public EventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(NetworkEvent.ResponseCompleted), null) ?? _responseCompleted;
     private EventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public EventSource<FetchErrorEventArgs> FetchErrorEvent => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(NetworkEvent.FetchError), null) ?? _fetchError;
+    public EventSource<FetchErrorEventArgs> FetchError => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(NetworkEvent.FetchError), null) ?? _fetchError;
     private EventSource<FetchErrorEventArgs>? _fetchError;
 
-    public EventSource<AuthRequiredEventArgs> AuthRequiredEvent => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(NetworkEvent.AuthRequired), null) ?? _authRequired;
+    public EventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(NetworkEvent.AuthRequired), null) ?? _authRequired;
     private EventSource<AuthRequiredEventArgs>? _authRequired;
 }
 

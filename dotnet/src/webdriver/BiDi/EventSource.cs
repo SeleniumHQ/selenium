@@ -38,17 +38,17 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
         _filter = filter;
     }
 
-    Task<IEventListener> IEventSource<TEventArgs>.OnAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
+    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
     {
-        return OnAsync(handler, cancellationToken: cancellationToken);
+        return SubscribeAsync(handler, cancellationToken: cancellationToken);
     }
 
-    Task<IEventListener> IEventSource<TEventArgs>.OnAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken)
+    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken)
     {
-        return OnAsync(handler, cancellationToken: cancellationToken);
+        return SubscribeAsync(handler, cancellationToken: cancellationToken);
     }
 
-    Task<IEventReader<TEventArgs>> IEventSource<TEventArgs>.ReadAllAsync(CancellationToken cancellationToken)
+    Task<IEventStream<TEventArgs>> IEventSource<TEventArgs>.ReadAllAsync(CancellationToken cancellationToken)
     {
         return ReadAllAsync(cancellationToken: cancellationToken);
     }
@@ -58,7 +58,7 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
         return Where(predicate);
     }
 
-    public Task<IEventListener> OnAsync(Action<TEventArgs> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -66,7 +66,7 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { wrapped(e); return default; }, options, cancellationToken);
     }
 
-    public Task<IEventListener> OnAsync(Func<TEventArgs, Task> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -74,12 +74,12 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
         return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(wrapped(e)), options, cancellationToken);
     }
 
-    public async Task<IEventReader<TEventArgs>> ReadAllAsync(EventReaderOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEventStream<TEventArgs>> ReadAllAsync(EventStreamOptions? options = null, CancellationToken cancellationToken = default)
     {
         var reader = await _dispatcher.SubscribeReaderAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
 
         return _filter is not null
-            ? new FilteredEventReader<TEventArgs>(reader, _filter)
+            ? new FilteredEventStream<TEventArgs>(reader, _filter)
             : reader;
     }
 

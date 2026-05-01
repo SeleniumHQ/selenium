@@ -42,27 +42,27 @@ internal sealed class EventDispatcher : IAsyncDisposable
         _bidi = bidi;
     }
 
-    public async Task<IEventListener> SubscribeAsync<TEventArgs>(
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
-        EventListenerOptions? options,
+        SubscriptionOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         return await SubscribeAsync<TEventArgs>([descriptor], handler, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEventListener> SubscribeAsync<TEventArgs>(
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
-        EventListenerOptions? options,
+        SubscriptionOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
-        subscription = new EventListener<TEventArgs>(
+        subscription = new Subscription<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, registries, subscription, ct),
             handler);
 
@@ -71,28 +71,28 @@ internal sealed class EventDispatcher : IAsyncDisposable
             registry.Add(subscription);
         }
 
-        return (IEventListener)subscription;
+        return (ISubscription)subscription;
     }
 
-    public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
+    public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
-        EventReaderOptions? options,
+        EventStreamOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         return await SubscribeReaderAsync<TEventArgs>([descriptor], options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<EventReader<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
+    public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
-        EventReaderOptions? options,
+        EventStreamOptions? options,
         CancellationToken cancellationToken)
         where TEventArgs : EventArgs
     {
         var (subscribeResult, registries) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
-        subscription = new EventReader<TEventArgs>(
+        subscription = new EventStream<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, registries, subscription, ct));
 
         foreach (var registry in registries)
@@ -100,7 +100,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             registry.Add(subscription);
         }
 
-        return (EventReader<TEventArgs>)subscription;
+        return (EventStream<TEventArgs>)subscription;
     }
 
     public bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader)

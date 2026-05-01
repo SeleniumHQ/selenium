@@ -21,11 +21,11 @@ namespace OpenQA.Selenium.BiDi;
 
 public interface IEventSource<TEventArgs> where TEventArgs : EventArgs
 {
-    Task<IEventListener> OnAsync(Action<TEventArgs> handler, CancellationToken cancellationToken = default);
+    Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken = default);
 
-    Task<IEventListener> OnAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default);
+    Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default);
 
-    Task<IEventReader<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default);
+    Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default);
 
     IEventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate);
 }

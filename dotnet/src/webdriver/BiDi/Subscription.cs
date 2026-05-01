@@ -1,4 +1,4 @@
-// <copyright file="EventListener.cs" company="Selenium Committers">
+// <copyright file="Subscription.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -29,7 +29,7 @@ internal interface ISubscriptionSink
     ValueTask DisposeAsync();
 }
 
-internal sealed class EventListener<TEventArgs> : IEventListener, ISubscriptionSink
+internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSink
     where TEventArgs : EventArgs
 {
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
@@ -42,7 +42,7 @@ internal sealed class EventListener<TEventArgs> : IEventListener, ISubscriptionS
 
     private readonly Task _dispatchTask;
 
-    internal EventListener(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
+    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
     {
         _unsubscribe = unsubscribe;
         _handler = handler;
@@ -96,31 +96,31 @@ internal sealed class EventListener<TEventArgs> : IEventListener, ISubscriptionS
     }
 }
 
-public sealed record EventListenerOptions
+public sealed record SubscriptionOptions
 {
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
-public sealed record EventReaderOptions
+public sealed record EventStreamOptions
 {
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
 }
 
-public sealed record ContextEventListenerOptions
+public sealed record ContextSubscriptionOptions
 {
-    internal static EventListenerOptions WithContext(ContextEventListenerOptions? options, BrowsingContext.BrowsingContext context) => new()
+    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context]
     };
 }
 
-public sealed record ContextEventReaderOptions
+public sealed record ContextEventStreamOptions
 {
-    internal static EventReaderOptions WithContext(ContextEventReaderOptions? options, BrowsingContext.BrowsingContext context) => new()
+    internal static EventStreamOptions WithContext(ContextEventStreamOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context]
     };

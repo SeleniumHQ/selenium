@@ -1,4 +1,4 @@
-// <copyright file="FilteredEventReader.cs" company="Selenium Committers">
+// <copyright file="IEventStream.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,31 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-internal sealed class FilteredEventReader<TEventArgs> : IEventReader<TEventArgs>
+public interface IEventStream<out TEventArgs> : IAsyncEnumerable<TEventArgs>, IAsyncDisposable
     where TEventArgs : EventArgs
 {
-    private readonly IEventReader<TEventArgs> _inner;
-    private readonly Func<TEventArgs, bool> _predicate;
-
-    public FilteredEventReader(IEventReader<TEventArgs> inner, Func<TEventArgs, bool> predicate)
-    {
-        _inner = inner;
-        _predicate = predicate;
-    }
-
-    public async IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-    {
-        await foreach (var item in _inner.WithCancellation(cancellationToken).ConfigureAwait(false))
-        {
-            if (_predicate(item))
-            {
-                yield return item;
-            }
-        }
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _inner.DisposeAsync();
-    }
 }

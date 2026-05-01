@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 
 internal sealed class SpeculationModule : Module, ISpeculationModule
 {
-    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdatedEvent => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(SpeculationEvent.PrefetchStatusUpdated), null) ?? _prefetchStatusUpdated;
+    public EventSource<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated => _prefetchStatusUpdated ?? Interlocked.CompareExchange(ref _prefetchStatusUpdated, CreateEventSource(SpeculationEvent.PrefetchStatusUpdated), null) ?? _prefetchStatusUpdated;
     private EventSource<PrefetchStatusUpdatedEventArgs>? _prefetchStatusUpdated;
 }
 

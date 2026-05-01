@@ -57,17 +57,17 @@ public interface IBiDi : IAsyncDisposable
 
     Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default);
 
-    Task<IEventListener> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<ISubscription> SubscribeAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<IEventListener> OnEventAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<ISubscription> SubscribeAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<IEventListener> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<IEventListener> OnEventAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, EventListenerOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, EventReaderOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventStream<TEventArgs>> ReadAllAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, EventStreamOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
-    Task<IEventReader<TEventArgs>> ReadAllEventsAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, EventReaderOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
+    Task<IEventStream<TEventArgs>> ReadAllAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, EventStreamOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     T AsModule<T>() where T : Module, new();

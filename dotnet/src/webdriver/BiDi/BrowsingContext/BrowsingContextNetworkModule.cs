@@ -33,24 +33,24 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
         return networkModule.SetCacheBehaviorAsync(behavior, ContextSetCacheBehaviorOptions.WithContext(options, context), cancellationToken);
     }
 
-    public ContextEventSource<BeforeRequestSentEventArgs> BeforeRequestSentEvent => _beforeRequestSent ??= CreateContextEventSource(
-        networkModule.BeforeRequestSentEvent, context, static (e, ctx) => ctx.Equals(e.Context));
+    public ContextEventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ??= CreateContextEventSource(
+        networkModule.BeforeRequestSent, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public ContextEventSource<ResponseStartedEventArgs> ResponseStartedEvent => _responseStarted ??= CreateContextEventSource(
-        networkModule.ResponseStartedEvent, context, static (e, ctx) => ctx.Equals(e.Context));
+    public ContextEventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ??= CreateContextEventSource(
+        networkModule.ResponseStarted, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public ContextEventSource<ResponseCompletedEventArgs> ResponseCompletedEvent => _responseCompleted ??= CreateContextEventSource(
-        networkModule.ResponseCompletedEvent, context, static (e, ctx) => ctx.Equals(e.Context));
+    public ContextEventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ??= CreateContextEventSource(
+        networkModule.ResponseCompleted, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public ContextEventSource<FetchErrorEventArgs> FetchErrorEvent => _fetchError ??= CreateContextEventSource(
-        networkModule.FetchErrorEvent, context, static (e, ctx) => ctx.Equals(e.Context));
+    public ContextEventSource<FetchErrorEventArgs> FetchError => _fetchError ??= CreateContextEventSource(
+        networkModule.FetchError, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<FetchErrorEventArgs>? _fetchError;
 
-    public ContextEventSource<AuthRequiredEventArgs> AuthRequiredEvent => _authRequired ??= CreateContextEventSource(
-        networkModule.AuthRequiredEvent, context, static (e, ctx) => ctx.Equals(e.Context));
+    public ContextEventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ??= CreateContextEventSource(
+        networkModule.AuthRequired, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<AuthRequiredEventArgs>? _authRequired;
 
     private static ContextEventSource<TEventArgs> CreateContextEventSource<TEventArgs>(

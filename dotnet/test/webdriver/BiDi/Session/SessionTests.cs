@@ -71,7 +71,7 @@ internal class SessionTests : BiDiTestFixture
     {
         EntryAddedEventArgs log = null;
 
-        var listener = await bidi.OnEventAsync(LogEvent.EntryAdded, e =>
+        var listener = await bidi.SubscribeAsync(LogEvent.EntryAdded, e =>
         {
             log = e;
         });
@@ -89,7 +89,7 @@ internal class SessionTests : BiDiTestFixture
         ResponseStartedEventArgs e1 = null;
         ResponseCompletedEventArgs e2 = null;
 
-        var listener = await bidi.OnEventAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
+        var listener = await bidi.SubscribeAsync([NetworkEvent.ResponseStarted, NetworkEvent.ResponseCompleted], (Selenium.BiDi.EventArgs e) =>
         {
             switch (e)
             {
@@ -109,7 +109,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStream()
     {
-        await using var sub = await bidi.Log.EntryAddedEvent.ReadAllAsync();
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var enumerator = sub.GetAsyncEnumerator(cts.Token);
@@ -123,7 +123,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStreamViaLinq()
     {
-        await using var sub = await bidi.Log.EntryAddedEvent.ReadAllAsync();
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
@@ -150,7 +150,7 @@ internal class SessionTests : BiDiTestFixture
 
         SomethingHappenedEventArgs happened = null;
 
-        var listener = await customModule.SomethingHappenedEvent.OnAsync(e =>
+        var listener = await customModule.SomethingHappened.SubscribeAsync(e =>
         {
             happened = e;
         });
@@ -171,13 +171,13 @@ class CustomModule : Module
     private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
         new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
 
-    private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappened =
+    private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
         EventDescriptor<SomethingHappenedEventArgs>.Create<SomethingHappenedParameters>(
             "log.entryAdded",
             static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
             JsonContext.SomethingHappenedParameters);
 
-    public EventSource<SomethingHappenedEventArgs> SomethingHappenedEvent => CreateEventSource(SomethingHappened);
+    public EventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
