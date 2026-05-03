@@ -24,6 +24,13 @@ rb_unit_test(
     ],
 )
 
+rb_unit_test(
+    name = "zipper",
+    srcs = ["zipper_spec.rb"],
+    flaky = True,
+    deps = ["//rb/lib/selenium/webdriver:common"],
+)
+
 [
     rb_unit_test(
         name = file[:-8],
@@ -32,6 +39,9 @@ rb_unit_test(
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = ["search_context_spec.rb"],
+        exclude = [
+            "search_context_spec.rb",
+            "zipper_spec.rb",
+        ],
     )
 ]
