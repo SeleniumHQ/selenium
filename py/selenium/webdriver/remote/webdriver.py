@@ -502,9 +502,17 @@ class WebDriver(BaseWebDriver):
     def pin_script(self, script: str, script_key=None) -> ScriptKey:
         """Store a JavaScript script by a unique hashable ID for later execution.
 
+        .. deprecated::
+            Use ``driver.script.pin()`` instead, which uses the WebDriver BiDi protocol.
+
         Example:
             `script = "return document.getElementById('foo').value"`
         """
+        warnings.warn(
+            "pin_script is deprecated, use driver.script.pin() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         script_key_instance = ScriptKey(script_key)
         self.pinned_scripts[script_key_instance.id] = script
         return script_key_instance
@@ -512,9 +520,17 @@ class WebDriver(BaseWebDriver):
     def unpin(self, script_key: ScriptKey) -> None:
         """Remove a pinned script from storage.
 
+        .. deprecated::
+            Use ``driver.script.unpin()`` instead, which uses the WebDriver BiDi protocol.
+
         Example:
             `driver.unpin(script_key)`
         """
+        warnings.warn(
+            "unpin is deprecated, use driver.script.unpin() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         try:
             self.pinned_scripts.pop(script_key.id)
         except KeyError:
@@ -523,9 +539,17 @@ class WebDriver(BaseWebDriver):
     def get_pinned_scripts(self) -> list[str]:
         """Return a list of all pinned scripts.
 
+        .. deprecated::
+            Use ``driver.script.pin()`` to manage preload scripts via the WebDriver BiDi protocol.
+
         Example:
             `pinned_scripts = driver.get_pinned_scripts()`
         """
+        warnings.warn(
+            "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return list(self.pinned_scripts)
 
     def execute_script(self, script: str, *args) -> Any:

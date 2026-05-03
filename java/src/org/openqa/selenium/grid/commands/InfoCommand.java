@@ -106,6 +106,11 @@ public class InfoCommand implements CliCommand {
           toDisplay = "sessionmaps.txt";
           break;
 
+        case "distributor":
+          title = "About Distributors";
+          toDisplay = "distributor.txt";
+          break;
+
         case "kubernetes":
           title = "Dynamic Grid on Kubernetes";
           toDisplay = "kubernetes.txt";

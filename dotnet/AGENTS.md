@@ -42,3 +42,14 @@ Use XML documentation comments for public APIs:
 /// <returns>Description.</returns>
 /// <exception cref="ExceptionType">When condition.</exception>
 ```
+
+## Formatting
+C# files are formatted with **`dotnet format`** (style + whitespace).
+Run `./go format` after changes; it will auto-fix most violations.
+
+Key rules enforced (from `dotnet/.editorconfig`):
+- **Namespaces**: file-scoped (`namespace Foo.Bar;` not block-wrapped)
+- **Using directives**: placed **outside** the namespace block; `System` namespaces sorted first
+- **Braces**: Allman style — opening brace on its own line for all blocks
+- **Spacing**: no space after cast, space after commas, space around binary operators
+- Remove unnecessary `using` directives (IDE0005 treated as warning)

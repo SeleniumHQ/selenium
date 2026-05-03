@@ -6,6 +6,7 @@ package(default_visibility = [
     "//javascript:__subpackages__",
     "//javascript/selenium-webdriver:__pkg__",
     "//javascript/selenium-webdriver/lib/atoms:__subpackages__",
+    "//py:__pkg__",
 ])
 
 exports_files([

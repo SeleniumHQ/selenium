@@ -47,3 +47,16 @@ Use JSDoc for public APIs:
  * @throws {ErrorType} when condition
  */
 ```
+
+## Formatting
+
+JavaScript files are formatted with **Prettier**.
+Run `./go format` after changes; it will auto-fix all style issues.
+
+Active Prettier config (`.prettierrc`):
+
+- `printWidth`: **120** characters
+- `singleQuote`: **true** (use `'` not `"`)
+- `semi`: **false** (no semicolons)
+- `trailingComma`: **"all"** (trailing commas everywhere ES5+ allows)
+- `endOfLine`: **"lf"** (Unix line endings only)

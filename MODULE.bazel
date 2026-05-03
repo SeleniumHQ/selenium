@@ -118,7 +118,7 @@ dotnet.toolchain(dotnet_version = "10.0.100")
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
-use_repo(selenium_paket, "paket.nuget")
+use_repo(selenium_paket, "nuget.nunit3testadapter.v6.2.0", "paket.nuget")
 
 docfx_ext = use_extension("//dotnet/private:docfx_repo.bzl", "docfx_extension")
 use_repo(docfx_ext, "docfx")
@@ -217,7 +217,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi",
         "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
-        "it.ozimov:embedded-redis:0.7.3",
+        "org.testcontainers:testcontainers:2.0.5",
         "javax.inject:javax.inject:1",
         "net.bytebuddy:byte-buddy:1.18.8-jdk5",
         "org.htmlunit:htmlunit-core-js:4.21.0",
@@ -404,6 +404,28 @@ use_repo(
     "download_sm_linux",
     "download_sm_macos",
     "download_sm_windows",
+)
+
+webref_cddl_extension = use_extension("//common:webref_cddl.bzl", "webref_cddl_extension")
+use_repo(
+    webref_cddl_extension,
+    "at_driver_all_cddl",
+    "at_driver_local_cddl",
+    "at_driver_remote_cddl",
+    "permissions_all_cddl",
+    "permissions_local_cddl",
+    "permissions_remote_cddl",
+    "prefetch_all_cddl",
+    "prefetch_local_cddl",
+    "ua_client_hints_all_cddl",
+    "ua_client_hints_local_cddl",
+    "ua_client_hints_remote_cddl",
+    "web_bluetooth_all_cddl",
+    "web_bluetooth_local_cddl",
+    "web_bluetooth_remote_cddl",
+    "webdriver_bidi_all_cddl",
+    "webdriver_bidi_local_cddl",
+    "webdriver_bidi_remote_cddl",
 )
 
 pin_browsers_extension = use_extension("//common:repositories.bzl", "pin_browsers_extension")

@@ -41,6 +41,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -235,6 +236,7 @@ class RemoteWebDriverInitializationTest {
     verifyNoMoreInteractions(executor);
   }
 
+  @NullMarked
   private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {
     public BadStartSessionRemoteWebDriver(
         CommandExecutor executor, Capabilities desiredCapabilities) {

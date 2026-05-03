@@ -70,9 +70,11 @@ pub mod lock;
 pub mod logger;
 pub mod metadata;
 pub mod mirror;
+pub mod rules;
 pub mod safari;
 pub mod safaritp;
 pub mod shell;
+pub mod skills;
 pub mod stats;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished

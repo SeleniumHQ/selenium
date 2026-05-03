@@ -207,7 +207,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    return Boolean.TRUE.equals(Values.get(res, Boolean.class));
+    return Values.parseBoolean(res);
   }
 
   @Override
@@ -219,7 +219,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    return Boolean.TRUE.equals(Values.get(res, Boolean.class));
+    return Values.parseBoolean(res);
   }
 
   @Override
@@ -231,7 +231,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    Values.get(res, Void.class);
+    Values.parse(res);
   }
 
   @Override
@@ -243,7 +243,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    return Require.nonNull("Session", Values.get(res, Session.class));
+    return Values.parse(res, Session.class);
   }
 
   @Override
@@ -274,7 +274,7 @@ public class RemoteNode extends Node implements Closeable {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    Values.get(res, Void.class);
+    Values.parse(res);
   }
 
   @Override
