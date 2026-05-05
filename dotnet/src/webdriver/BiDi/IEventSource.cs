@@ -26,6 +26,4 @@ public interface IEventSource<TEventArgs> where TEventArgs : EventArgs
     Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default);
 
     Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default);
-
-    IEventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate);
 }

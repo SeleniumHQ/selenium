@@ -170,7 +170,7 @@ public sealed record BrowsingContext : IIdentifiable
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return new(moduleEventSource.Where(e => filter(e, this)), this);
+        return new(moduleEventSource, this, e => filter(e, this));
     }
 
     public bool Equals(BrowsingContext? other)

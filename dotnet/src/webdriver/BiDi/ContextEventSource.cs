@@ -23,11 +23,13 @@ public sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> wh
 {
     private readonly EventSource<TEventArgs> _source;
     private readonly BrowsingContext.BrowsingContext _context;
+    private readonly Func<TEventArgs, bool> _filter;
 
-    internal ContextEventSource(EventSource<TEventArgs> source, BrowsingContext.BrowsingContext context)
+    internal ContextEventSource(EventSource<TEventArgs> source, BrowsingContext.BrowsingContext context, Func<TEventArgs, bool> filter)
     {
         _source = source;
         _context = context;
+        _filter = filter;
     }
 
     Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
@@ -45,34 +47,22 @@ public sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> wh
         return ReadAllAsync(cancellationToken: cancellationToken);
     }
 
-    IEventSource<TEventArgs> IEventSource<TEventArgs>.Where(Func<TEventArgs, bool> predicate)
-    {
-        return Where(predicate);
-    }
-
     public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), cancellationToken);
+        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), _filter, cancellationToken);
     }
 
     public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), cancellationToken);
+        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), _filter, cancellationToken);
     }
 
     public Task<IEventStream<TEventArgs>> ReadAllAsync(ContextEventStreamOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return _source.ReadAllAsync(ContextEventStreamOptions.WithContext(options, _context), cancellationToken);
-    }
-
-    public ContextEventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate)
-    {
-        ArgumentNullException.ThrowIfNull(predicate);
-
-        return new(_source.Where(predicate), _context);
+        return _source.ReadAllAsync(ContextEventStreamOptions.WithContext(options, _context), _filter, cancellationToken);
     }
 }

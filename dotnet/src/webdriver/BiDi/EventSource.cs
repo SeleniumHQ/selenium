@@ -23,19 +23,11 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
 {
     private readonly EventDispatcher _dispatcher;
     private readonly EventDescriptor<TEventArgs> _descriptor;
-    private readonly Func<TEventArgs, bool>? _filter;
 
     internal EventSource(EventDispatcher dispatcher, EventDescriptor<TEventArgs> descriptor)
     {
         _dispatcher = dispatcher;
         _descriptor = descriptor;
-    }
-
-    private EventSource(EventDispatcher dispatcher, EventDescriptor<TEventArgs> descriptor, Func<TEventArgs, bool> filter)
-    {
-        _dispatcher = dispatcher;
-        _descriptor = descriptor;
-        _filter = filter;
     }
 
     Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
@@ -53,52 +45,22 @@ public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEv
         return ReadAllAsync(cancellationToken: cancellationToken);
     }
 
-    IEventSource<TEventArgs> IEventSource<TEventArgs>.Where(Func<TEventArgs, bool> predicate)
-    {
-        return Where(predicate);
-    }
-
-    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, SubscriptionOptions? options = null, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        var wrapped = WrapHandler(handler);
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { wrapped(e); return default; }, options, cancellationToken);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { handler(e); return default; }, options, filter, cancellationToken);
     }
 
-    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        var wrapped = WrapHandler(handler);
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(wrapped(e)), options, cancellationToken);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(handler(e)), options, filter, cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> ReadAllAsync(EventStreamOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEventStream<TEventArgs>> ReadAllAsync(EventStreamOptions? options = null, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
     {
-        var reader = await _dispatcher.SubscribeReaderAsync(_descriptor, options, cancellationToken).ConfigureAwait(false);
-
-        return _filter is not null
-            ? new FilteredEventStream<TEventArgs>(reader, _filter)
-            : reader;
+        return await _dispatcher.SubscribeReaderAsync(_descriptor, options, filter, cancellationToken).ConfigureAwait(false);
     }
-
-    public EventSource<TEventArgs> Where(Func<TEventArgs, bool> predicate)
-    {
-        ArgumentNullException.ThrowIfNull(predicate);
-
-        var combined = _filter is { } existing
-            ? e => existing(e) && predicate(e)
-            : predicate;
-
-        return new(_dispatcher, _descriptor, combined);
-    }
-
-    private Action<TEventArgs> WrapHandler(Action<TEventArgs> handler)
-        => _filter is { } f ? e => { if (f(e)) handler(e); }
-    : handler;
-
-    private Func<TEventArgs, Task> WrapHandler(Func<TEventArgs, Task> handler)
-        => _filter is { } f ? async e => { if (f(e)) await handler(e).ConfigureAwait(false); }
-    : handler;
 }

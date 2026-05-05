@@ -46,10 +46,13 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
 
     private readonly Task _dispatchTask;
 
-    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler)
+    private readonly Func<TEventArgs, bool>? _filter;
+
+    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
         _handler = handler;
+        _filter = filter;
         _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
@@ -59,6 +62,8 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         {
             throw new InvalidOperationException($"Cannot deliver '{args.GetType()}' to subscription expecting '{typeof(TEventArgs)}'.");
         }
+
+        if (_filter is { } f && !f(typed)) return;
 
         _channel.Writer.TryWrite(typed);
     }

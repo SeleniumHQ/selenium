@@ -33,9 +33,12 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
-    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe)
+    private readonly Func<TEventArgs, bool>? _filter;
+
+    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
     {
         _unsubscribe = unsubscribe;
+        _filter = filter;
     }
 
     void ISubscriptionSink.Deliver(EventArgs args)
@@ -44,6 +47,8 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
         {
             throw new InvalidOperationException($"Cannot deliver '{args.GetType()}' to stream expecting '{typeof(TEventArgs)}'.");
         }
+
+        if (_filter is { } f && !f(typed)) return;
 
         _channel.Writer.TryWrite(typed);
     }

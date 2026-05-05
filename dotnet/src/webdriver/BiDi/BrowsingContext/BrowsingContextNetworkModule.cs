@@ -59,6 +59,6 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return new(moduleEventSource.Where(e => filter(e, context)), context);
+        return new(moduleEventSource, context, e => filter(e, context));
     }
 }

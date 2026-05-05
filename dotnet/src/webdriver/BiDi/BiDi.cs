@@ -99,7 +99,7 @@ public sealed class BiDi : IBiDi
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, options, cancellationToken).ConfigureAwait(false);
+        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, options, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
@@ -107,7 +107,7 @@ public sealed class BiDi : IBiDi
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), options, cancellationToken).ConfigureAwait(false);
+        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), options, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public Task<IEventStream<TEventArgs>> ReadAllAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, EventStreamOptions? options = null, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
@@ -121,7 +121,7 @@ public sealed class BiDi : IBiDi
     {
         ArgumentNullException.ThrowIfNull(descriptors);
 
-        return await Broker.EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, options, cancellationToken).ConfigureAwait(false);
+        return await Broker.EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, options, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
