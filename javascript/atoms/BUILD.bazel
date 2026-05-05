@@ -30,7 +30,8 @@ js_run_binary(
         "false",
         "--outFile",
         "$(rootpath :typescript/get-attribute.compiled.js)",
-        "$(rootpath typescript/get-attribute.ts)",
+        "$(rootpath :typescript/get-attribute.ts)",
+
     ],
     tool = "@npm_typescript//:tsc",
 )
