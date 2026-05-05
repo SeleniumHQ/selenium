@@ -52,7 +52,7 @@ module Selenium
           if args.any? { |arg| arg.start_with?('--log') }
             warn_explicit_log_preference unless @log_preference_warned
             @log_preference_warned = true
-            args.reject! { |arg| /\A-v+\z/.match?(arg) }
+            args.reject! { |arg| arg.start_with?('-v') }
             return
           end
 
