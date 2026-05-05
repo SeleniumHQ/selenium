@@ -198,12 +198,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
         {
             if (!_eventMetadata.ContainsKey(descriptor.Name))
             {
-                descriptor.EnsureRegistered(this, _bidi);
-            }
+                if (descriptor.JsonTypeInfo is null || descriptor.ArgsFactory is null)
+                {
+                    throw new InvalidOperationException($"Event '{descriptor.Name}' does not have registration metadata.");
+                }
 
-            if (!_eventMetadata.ContainsKey(descriptor.Name))
-            {
-                throw new InvalidOperationException($"Event '{descriptor.Name}' has not been registered.");
+                RegisterEventMetadata(descriptor.Name, descriptor.JsonTypeInfo, ep => descriptor.ArgsFactory(_bidi, ep));
             }
 
             if (uniqueNames.Add(descriptor.Name))
