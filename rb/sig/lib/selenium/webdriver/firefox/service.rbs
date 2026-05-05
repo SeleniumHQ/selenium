@@ -14,6 +14,7 @@ module Selenium
         private
 
         def configure_debug_args: (Array[String] args) -> void
+        def warn_explicit_log_preference: () -> void
       end
     end
   end

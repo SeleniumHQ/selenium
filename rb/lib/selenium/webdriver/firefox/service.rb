@@ -47,12 +47,21 @@ module Selenium
         private
 
         def configure_debug_args(args)
+          # An explicit geckodriver log setting is more specific than Selenium's
+          # generic SE_DEBUG fallback, so preserve it and skip adding `-v`.
           if args.any? { |arg| arg.start_with?('--log') }
+            warn_explicit_log_preference unless @log_preference_warned
+            @log_preference_warned = true
             args.reject! { |arg| /\A-v+\z/.match?(arg) }
             return
           end
 
           args << '-v' unless args.any? { |arg| /\A-v+\z/.match?(arg) }
+        end
+
+        def warn_explicit_log_preference
+          WebDriver.logger.warn('SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of ' \
+                                'adding -v', id: :se_debug)
         end
       end # Service
     end # Firefox
