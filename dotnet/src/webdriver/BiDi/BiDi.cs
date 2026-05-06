@@ -29,6 +29,8 @@ public sealed class BiDi : IBiDi
 
     private Broker Broker { get; set; } = null!;
 
+    internal EventDispatcher EventDispatcher { get; private set; } = null!;
+
     internal ISessionModule Session => AsModule<SessionModule>();
 
     private BiDi() { }
@@ -59,6 +61,11 @@ public sealed class BiDi : IBiDi
         var transport = await builder.TransportFactory(new Uri(url), cancellationToken).ConfigureAwait(false);
 
         BiDi bidi = new();
+
+        bidi.EventDispatcher = new EventDispatcher(
+            bidi.Session.SubscribeAsync,
+            bidi.Session.UnsubscribeAsync,
+            bidi);
 
         bidi.Broker = new Broker(transport, bidi);
 
@@ -99,7 +106,7 @@ public sealed class BiDi : IBiDi
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
@@ -107,7 +114,7 @@ public sealed class BiDi : IBiDi
         ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
-        return await Broker.EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public Task<IEventStream<TEventArgs>> ReadAllAsync<TEventArgs>(EventDescriptor<TEventArgs> descriptor, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
@@ -121,7 +128,7 @@ public sealed class BiDi : IBiDi
     {
         ArgumentNullException.ThrowIfNull(descriptors);
 
-        return await Broker.EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
@@ -137,6 +144,6 @@ public sealed class BiDi : IBiDi
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(Broker, EventDispatcher));
     }
 }

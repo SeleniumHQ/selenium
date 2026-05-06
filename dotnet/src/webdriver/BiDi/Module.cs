@@ -23,7 +23,7 @@ public abstract class Module
 {
     private Broker Broker { get; set; } = null!;
 
-    private EventDispatcher EventDispatcher => Broker.EventDispatcher;
+    private EventDispatcher EventDispatcher { get; set; } = null!;
 
     protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
@@ -38,12 +38,13 @@ public abstract class Module
         return new EventSource<TEventArgs>(EventDispatcher, descriptor);
     }
 
-    internal static TModule Create<TModule>(IBiDi bidi, Broker broker)
+    internal static TModule Create<TModule>(Broker broker, EventDispatcher eventDispatcher)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            Broker = broker
+            Broker = broker,
+            EventDispatcher = eventDispatcher
         };
 
         return module;

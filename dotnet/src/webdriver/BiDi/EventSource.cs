@@ -30,56 +30,22 @@ internal sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where T
         _descriptor = descriptor;
     }
 
-    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
-    {
-        return SubscribeAsync(handler, cancellationToken: cancellationToken);
-    }
-
-    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken)
-    {
-        return SubscribeAsync(handler, cancellationToken: cancellationToken);
-    }
-
-    Task<IEventStream<TEventArgs>> IEventSource<TEventArgs>.ReadAllAsync(CancellationToken cancellationToken)
-    {
-        return ReadAllAsync(cancellationToken: cancellationToken);
-    }
-
-    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { handler(e); return default; }, filter: filter, cancellationToken: cancellationToken);
+        return _dispatcher.SubscribeAsync(_descriptor, e => { handler(e); return default; }, filter: null, cancellationToken: cancellationToken);
     }
 
-    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(handler(e)), filter: filter, cancellationToken: cancellationToken);
+        return _dispatcher.SubscribeAsync(_descriptor, e => new ValueTask(handler(e)), filter: null, cancellationToken: cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> ReadAllAsync(Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
+    public async Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _dispatcher.SubscribeReaderAsync(_descriptor, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
-    }
-
-    internal Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, IEnumerable<BrowsingContext.BrowsingContext> contexts, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { handler(e); return default; }, contexts, filter, cancellationToken);
-    }
-
-    internal Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, IEnumerable<BrowsingContext.BrowsingContext> contexts, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-
-        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(handler(e)), contexts, filter, cancellationToken);
-    }
-
-    internal async Task<IEventStream<TEventArgs>> ReadAllAsync(IEnumerable<BrowsingContext.BrowsingContext> contexts, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
-    {
-        return await _dispatcher.SubscribeReaderAsync(_descriptor, contexts, filter, cancellationToken).ConfigureAwait(false);
+        return await _dispatcher.SubscribeReaderAsync(_descriptor, filter: null, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

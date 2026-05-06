@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Input;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
+internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule, EventDispatcher dispatcher) : IBrowsingContextInputModule
 {
     public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -39,6 +39,6 @@ internal sealed class BrowsingContextInputModule(BrowsingContext context, IInput
     }
 
     public IEventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ??= new ContextEventSource<FileDialogOpenedEventArgs>(
-        inputModule.FileDialogOpened, context, e => context.Equals(e.Context));
+        dispatcher, InputEvent.FileDialogOpened, context, e => context.Equals(e.Context));
     private ContextEventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }

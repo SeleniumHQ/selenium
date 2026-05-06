@@ -21,13 +21,15 @@ namespace OpenQA.Selenium.BiDi;
 
 internal sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
 {
-    private readonly EventSource<TEventArgs> _source;
+    private readonly EventDispatcher _dispatcher;
+    private readonly EventDescriptor<TEventArgs> _descriptor;
     private readonly BrowsingContext.BrowsingContext _context;
     private readonly Func<TEventArgs, bool> _filter;
 
-    internal ContextEventSource(IEventSource<TEventArgs> source, BrowsingContext.BrowsingContext context, Func<TEventArgs, bool> filter)
+    internal ContextEventSource(EventDispatcher dispatcher, EventDescriptor<TEventArgs> descriptor, BrowsingContext.BrowsingContext context, Func<TEventArgs, bool> filter)
     {
-        _source = (EventSource<TEventArgs>)source;
+        _dispatcher = dispatcher;
+        _descriptor = descriptor;
         _context = context;
         _filter = filter;
     }
@@ -36,18 +38,18 @@ internal sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> 
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, [_context], _filter, cancellationToken);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => { handler(e); return default; }, [_context], _filter, cancellationToken);
     }
 
     public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, [_context], _filter, cancellationToken);
+        return _dispatcher.SubscribeAsync<TEventArgs>(_descriptor, e => new ValueTask(handler(e)), [_context], _filter, cancellationToken);
     }
 
-    public Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default)
     {
-        return _source.ReadAllAsync([_context], _filter, cancellationToken);
+        return await _dispatcher.SubscribeReaderAsync(_descriptor, [_context], _filter, cancellationToken).ConfigureAwait(false);
     }
 }

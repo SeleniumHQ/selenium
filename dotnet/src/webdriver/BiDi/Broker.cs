@@ -38,8 +38,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly ITransport _transport;
     private readonly BiDi _bidi;
-
-    internal readonly EventDispatcher EventDispatcher;
+    private readonly EventDispatcher _eventDispatcher;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -61,11 +60,7 @@ internal sealed class Broker : IAsyncDisposable
     {
         _transport = transport;
         _bidi = bidi;
-
-        EventDispatcher = new EventDispatcher(
-            (events, options, ct) => bidi.Session.SubscribeAsync(events, options, ct),
-            (subscriptions, options, ct) => bidi.Session.UnsubscribeAsync(subscriptions, options, ct),
-            bidi);
+        _eventDispatcher = bidi.EventDispatcher;
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
@@ -154,7 +149,7 @@ internal sealed class Broker : IAsyncDisposable
         {
             // Dispose subscriptions while transport and processing loop are still active,
             // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
-            await EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+            await _eventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
 
             _receiveMessagesCancellationTokenSource.Cancel();
 
@@ -282,7 +277,7 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
+                if (!_eventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {

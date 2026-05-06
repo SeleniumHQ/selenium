@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Network;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INetworkModule networkModule) : IBrowsingContextNetworkModule
+internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INetworkModule networkModule, EventDispatcher dispatcher) : IBrowsingContextNetworkModule
 {
     public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -34,31 +34,31 @@ internal sealed class BrowsingContextNetworkModule(BrowsingContext context, INet
     }
 
     public IEventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ??= CreateContextEventSource(
-        networkModule.BeforeRequestSent, context, static (e, ctx) => ctx.Equals(e.Context));
+        NetworkEvent.BeforeRequestSent, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
     public IEventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ??= CreateContextEventSource(
-        networkModule.ResponseStarted, context, static (e, ctx) => ctx.Equals(e.Context));
+        NetworkEvent.ResponseStarted, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<ResponseStartedEventArgs>? _responseStarted;
 
     public IEventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ??= CreateContextEventSource(
-        networkModule.ResponseCompleted, context, static (e, ctx) => ctx.Equals(e.Context));
+        NetworkEvent.ResponseCompleted, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
     public IEventSource<FetchErrorEventArgs> FetchError => _fetchError ??= CreateContextEventSource(
-        networkModule.FetchError, context, static (e, ctx) => ctx.Equals(e.Context));
+        NetworkEvent.FetchError, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<FetchErrorEventArgs>? _fetchError;
 
     public IEventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ??= CreateContextEventSource(
-        networkModule.AuthRequired, context, static (e, ctx) => ctx.Equals(e.Context));
+        NetworkEvent.AuthRequired, context, static (e, ctx) => ctx.Equals(e.Context));
     private ContextEventSource<AuthRequiredEventArgs>? _authRequired;
 
-    private static ContextEventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
-        IEventSource<TEventArgs> moduleEventSource,
+    private ContextEventSource<TEventArgs> CreateContextEventSource<TEventArgs>(
+        EventDescriptor<TEventArgs> descriptor,
         BrowsingContext context,
         Func<TEventArgs, BrowsingContext, bool> filter)
         where TEventArgs : EventArgs
     {
-        return new(moduleEventSource, context, e => filter(e, context));
+        return new(dispatcher, descriptor, context, e => filter(e, context));
     }
 }
