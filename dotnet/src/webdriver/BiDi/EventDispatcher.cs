@@ -47,23 +47,23 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public Task<ISubscription> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
-        SubscriptionOptions? options,
+        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
     {
-        return SubscribeAsync<TEventArgs>([descriptor], handler, options, filter, cancellationToken);
+        return SubscribeAsync<TEventArgs>([descriptor], handler, contexts, filter, cancellationToken);
     }
 
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
-        SubscriptionOptions? options,
+        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
+        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, contexts, null, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
         subscription = new Subscription<TEventArgs>(
@@ -81,22 +81,22 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
-        EventStreamOptions? options,
+        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
     {
-        return SubscribeReaderAsync<TEventArgs>([descriptor], options, filter, cancellationToken);
+        return SubscribeReaderAsync<TEventArgs>([descriptor], contexts, filter, cancellationToken);
     }
 
     public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
-        EventStreamOptions? options,
+        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
     {
-        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, options?.Contexts, options?.UserContexts, cancellationToken).ConfigureAwait(false);
+        var (subscribeResult, slots) = await SubscribeCoreAsync(descriptors, contexts, null, cancellationToken).ConfigureAwait(false);
 
         ISubscriptionSink subscription = null!;
         subscription = new EventStream<TEventArgs>(

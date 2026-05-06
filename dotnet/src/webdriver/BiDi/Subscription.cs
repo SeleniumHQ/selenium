@@ -135,33 +135,3 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         }
     }
 }
-
-public sealed record SubscriptionOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
-
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
-}
-
-public sealed record EventStreamOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
-
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
-}
-
-public sealed record ContextSubscriptionOptions
-{
-    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
-    {
-        Contexts = [context]
-    };
-}
-
-public sealed record ContextEventStreamOptions
-{
-    internal static EventStreamOptions WithContext(ContextEventStreamOptions? options, BrowsingContext.BrowsingContext context) => new()
-    {
-        Contexts = [context]
-    };
-}

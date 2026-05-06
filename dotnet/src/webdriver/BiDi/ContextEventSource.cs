@@ -32,37 +32,22 @@ public sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> wh
         _filter = filter;
     }
 
-    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken)
-    {
-        return SubscribeAsync(handler, cancellationToken: cancellationToken);
-    }
-
-    Task<ISubscription> IEventSource<TEventArgs>.SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken)
-    {
-        return SubscribeAsync(handler, cancellationToken: cancellationToken);
-    }
-
-    Task<IEventStream<TEventArgs>> IEventSource<TEventArgs>.ReadAllAsync(CancellationToken cancellationToken)
-    {
-        return ReadAllAsync(cancellationToken: cancellationToken);
-    }
-
-    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Action<TEventArgs> handler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), _filter, cancellationToken);
+        return _source.SubscribeAsync(handler, [_context], _filter, cancellationToken);
     }
 
-    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(handler);
 
-        return _source.SubscribeAsync(handler, ContextSubscriptionOptions.WithContext(options, _context), _filter, cancellationToken);
+        return _source.SubscribeAsync(handler, [_context], _filter, cancellationToken);
     }
 
-    public Task<IEventStream<TEventArgs>> ReadAllAsync(ContextEventStreamOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default)
     {
-        return _source.ReadAllAsync(ContextEventStreamOptions.WithContext(options, _context), _filter, cancellationToken);
+        return _source.ReadAllAsync([_context], _filter, cancellationToken);
     }
 }
