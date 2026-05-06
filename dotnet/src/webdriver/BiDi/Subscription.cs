@@ -44,7 +44,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
-    private readonly Task _dispatchTask;
+    private Task? _dispatchTask;
 
     private readonly Func<TEventArgs, bool>? _filter;
 
@@ -53,7 +53,6 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         _unsubscribe = unsubscribe;
         _handler = handler;
         _filter = filter;
-        _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
     void ISubscriptionSink.Deliver(EventArgs args)
@@ -66,6 +65,8 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         if (_filter is { } f && !f(typed)) return;
 
         _channel.Writer.TryWrite(typed);
+
+        EnsureDispatchStarted();
     }
 
     void ISubscriptionSink.Complete(Exception? error)
@@ -92,7 +93,10 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
             {
                 _channel.Writer.TryComplete();
 
-                await _dispatchTask.ConfigureAwait(false);
+                if (_dispatchTask is not null)
+                {
+                    await _dispatchTask.ConfigureAwait(false);
+                }
 
                 GC.SuppressFinalize(this);
             }
@@ -132,6 +136,14 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         {
             _logger.Error($"BiDi event source error: {ex.Message}");
             _sourceError = ExceptionDispatchInfo.Capture(ex);
+        }
+    }
+
+    private void EnsureDispatchStarted()
+    {
+        if (_dispatchTask is null)
+        {
+            Interlocked.CompareExchange(ref _dispatchTask, Task.Run(DispatchEventsAsync), null);
         }
     }
 }
