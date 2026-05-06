@@ -62,12 +62,12 @@ public sealed class BiDi : IBiDi
 
         BiDi bidi = new();
 
+        bidi.Broker = new Broker(transport, bidi);
+
         bidi.EventDispatcher = new EventDispatcher(
             bidi.Session.SubscribeAsync,
             bidi.Session.UnsubscribeAsync,
             bidi);
-
-        bidi.Broker = new Broker(transport, bidi);
 
         return bidi;
     }

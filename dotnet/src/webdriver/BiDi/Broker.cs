@@ -38,7 +38,6 @@ internal sealed class Broker : IAsyncDisposable
 
     private readonly ITransport _transport;
     private readonly BiDi _bidi;
-    private readonly EventDispatcher _eventDispatcher;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -60,7 +59,6 @@ internal sealed class Broker : IAsyncDisposable
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = bidi.EventDispatcher;
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
@@ -149,7 +147,7 @@ internal sealed class Broker : IAsyncDisposable
         {
             // Dispose subscriptions while transport and processing loop are still active,
             // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
-            await _eventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+            await _bidi.EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
 
             _receiveMessagesCancellationTokenSource.Cancel();
 
@@ -277,7 +275,7 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_eventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
+                if (!_bidi.EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
