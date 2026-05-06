@@ -28,6 +28,7 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
 
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
+    private readonly CancellationToken _cancellationToken;
     private int _disposed;
 
     private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
@@ -35,10 +36,11 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
 
     private readonly Func<TEventArgs, bool>? _filter;
 
-    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null)
+    internal EventStream(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, bool>? filter = null, CancellationToken cancellationToken = default)
     {
         _unsubscribe = unsubscribe;
         _filter = filter;
+        _cancellationToken = cancellationToken;
     }
 
     void ISubscriptionSink.Deliver(EventArgs args)
@@ -60,7 +62,15 @@ public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscri
 
     public IAsyncEnumerator<TEventArgs> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        return ReadChannelAsync(_channel.Reader, cancellationToken);
+        var effectiveToken = (_cancellationToken.CanBeCanceled, cancellationToken.CanBeCanceled) switch
+        {
+            (true, true) => CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken, cancellationToken).Token,
+            (true, false) => _cancellationToken,
+            (false, true) => cancellationToken,
+            _ => default
+        };
+
+        return ReadChannelAsync(_channel.Reader, effectiveToken);
     }
 
     private static async IAsyncEnumerator<TEventArgs> ReadChannelAsync(ChannelReader<TEventArgs> reader, CancellationToken cancellationToken)

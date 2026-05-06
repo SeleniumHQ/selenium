@@ -139,6 +139,34 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
+    public async Task EventStreamRespectsReadAllCancellationToken()
+    {
+        using var cts = new CancellationTokenSource();
+
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(filter: null, cts.Token);
+
+        cts.Cancel();
+
+        Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        {
+            await foreach (var _ in sub) { }
+        });
+    }
+
+    [Test]
+    public async Task EventStreamCancellationTokenFiresDuringEnumeration()
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
+
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(filter: null, cts.Token);
+
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await foreach (var _ in sub) { }
+        });
+    }
+
+    [Test]
     public async Task CustomModuleShouldExecuteCommand()
     {
         var customModule = bidi.AsModule<CustomModule>();

@@ -101,7 +101,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
         ISubscriptionSink subscription = null!;
         subscription = new EventStream<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, slots, subscription, ct),
-            filter);
+            filter,
+            cancellationToken);
 
         foreach (var slot in slots)
         {
