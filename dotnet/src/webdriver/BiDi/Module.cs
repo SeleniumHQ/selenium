@@ -32,7 +32,7 @@ public abstract class Module
         return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
     }
 
-    protected EventSource<TEventArgs> CreateEventSource<TEventArgs>(EventDescriptor<TEventArgs> descriptor)
+    protected IEventSource<TEventArgs> CreateEventSource<TEventArgs>(EventDescriptor<TEventArgs> descriptor)
         where TEventArgs : EventArgs
     {
         return new EventSource<TEventArgs>(EventDispatcher, descriptor);

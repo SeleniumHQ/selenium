@@ -29,20 +29,20 @@ public interface IBrowsingContextModule
     Task<HandleUserPromptResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default);
     Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default);
     Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null, CancellationToken cancellationToken = default);
-    EventSource<ContextCreatedEventArgs> ContextCreated { get; }
-    EventSource<ContextDestroyedEventArgs> ContextDestroyed { get; }
-    EventSource<DomContentLoadedEventArgs> DomContentLoaded { get; }
-    EventSource<DownloadEndEventArgs> DownloadEnd { get; }
-    EventSource<DownloadWillBeginEventArgs> DownloadWillBegin { get; }
-    EventSource<FragmentNavigatedEventArgs> FragmentNavigated { get; }
-    EventSource<HistoryUpdatedEventArgs> HistoryUpdated { get; }
-    EventSource<LoadEventArgs> Load { get; }
-    EventSource<NavigationAbortedEventArgs> NavigationAborted { get; }
-    EventSource<NavigationCommittedEventArgs> NavigationCommitted { get; }
-    EventSource<NavigationFailedEventArgs> NavigationFailed { get; }
-    EventSource<NavigationStartedEventArgs> NavigationStarted { get; }
-    EventSource<UserPromptClosedEventArgs> UserPromptClosed { get; }
-    EventSource<UserPromptOpenedEventArgs> UserPromptOpened { get; }
+    IEventSource<ContextCreatedEventArgs> ContextCreated { get; }
+    IEventSource<ContextDestroyedEventArgs> ContextDestroyed { get; }
+    IEventSource<DomContentLoadedEventArgs> DomContentLoaded { get; }
+    IEventSource<DownloadEndEventArgs> DownloadEnd { get; }
+    IEventSource<DownloadWillBeginEventArgs> DownloadWillBegin { get; }
+    IEventSource<FragmentNavigatedEventArgs> FragmentNavigated { get; }
+    IEventSource<HistoryUpdatedEventArgs> HistoryUpdated { get; }
+    IEventSource<LoadEventArgs> Load { get; }
+    IEventSource<NavigationAbortedEventArgs> NavigationAborted { get; }
+    IEventSource<NavigationCommittedEventArgs> NavigationCommitted { get; }
+    IEventSource<NavigationFailedEventArgs> NavigationFailed { get; }
+    IEventSource<NavigationStartedEventArgs> NavigationStarted { get; }
+    IEventSource<UserPromptClosedEventArgs> UserPromptClosed { get; }
+    IEventSource<UserPromptOpenedEventArgs> UserPromptOpened { get; }
     Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null, CancellationToken cancellationToken = default);
     Task<ReloadResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default);

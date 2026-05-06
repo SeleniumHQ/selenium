@@ -28,11 +28,11 @@ public interface INetworkModule
     Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth auth, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default);
     Task<FailRequestResult> FailRequestAsync(Request request, FailRequestOptions? options = null, CancellationToken cancellationToken = default);
     Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default);
-    EventSource<AuthRequiredEventArgs> AuthRequired { get; }
-    EventSource<BeforeRequestSentEventArgs> BeforeRequestSent { get; }
-    EventSource<FetchErrorEventArgs> FetchError { get; }
-    EventSource<ResponseCompletedEventArgs> ResponseCompleted { get; }
-    EventSource<ResponseStartedEventArgs> ResponseStarted { get; }
+    IEventSource<AuthRequiredEventArgs> AuthRequired { get; }
+    IEventSource<BeforeRequestSentEventArgs> BeforeRequestSent { get; }
+    IEventSource<FetchErrorEventArgs> FetchError { get; }
+    IEventSource<ResponseCompletedEventArgs> ResponseCompleted { get; }
+    IEventSource<ResponseStartedEventArgs> ResponseStarted { get; }
     Task<ProvideResponseResult> ProvideResponseAsync(Request request, ProvideResponseOptions? options = null, CancellationToken cancellationToken = default);
     Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
     Task<RemoveInterceptResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default);

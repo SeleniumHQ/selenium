@@ -143,7 +143,7 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource();
 
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(filter: null, cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(cts.Token);
 
         cts.Cancel();
 
@@ -158,7 +158,7 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(filter: null, cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(cts.Token);
 
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
@@ -212,7 +212,7 @@ class CustomModule : Module
             static (bidi, p) => new SomethingHappenedEventArgs(bidi, p.Text),
             JsonContext.SomethingHappenedParameters);
 
-    public EventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
+    public IEventSource<SomethingHappenedEventArgs> SomethingHappened => CreateEventSource(SomethingHappenedDescriptor);
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {

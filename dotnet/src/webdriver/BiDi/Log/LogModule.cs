@@ -23,8 +23,8 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 internal sealed class LogModule : Module, ILogModule
 {
-    public EventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(LogEvent.EntryAdded), null) ?? _entryAdded;
-    private EventSource<EntryAddedEventArgs>? _entryAdded;
+    public IEventSource<EntryAddedEventArgs> EntryAdded => _entryAdded ?? Interlocked.CompareExchange(ref _entryAdded, CreateEventSource(LogEvent.EntryAdded), null) ?? _entryAdded;
+    private IEventSource<EntryAddedEventArgs>? _entryAdded;
 }
 
 #region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency

@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
+internal sealed class EventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
 {
     private readonly EventDispatcher _dispatcher;
     private readonly EventDescriptor<TEventArgs> _descriptor;

@@ -19,15 +19,15 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
+internal sealed class ContextEventSource<TEventArgs> : IEventSource<TEventArgs> where TEventArgs : EventArgs
 {
     private readonly EventSource<TEventArgs> _source;
     private readonly BrowsingContext.BrowsingContext _context;
     private readonly Func<TEventArgs, bool> _filter;
 
-    internal ContextEventSource(EventSource<TEventArgs> source, BrowsingContext.BrowsingContext context, Func<TEventArgs, bool> filter)
+    internal ContextEventSource(IEventSource<TEventArgs> source, BrowsingContext.BrowsingContext context, Func<TEventArgs, bool> filter)
     {
-        _source = source;
+        _source = (EventSource<TEventArgs>)source;
         _context = context;
         _filter = filter;
     }
