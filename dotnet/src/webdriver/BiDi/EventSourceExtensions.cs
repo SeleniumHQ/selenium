@@ -23,34 +23,28 @@ namespace OpenQA.Selenium.BiDi;
 
 public static class EventSourceExtensions
 {
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+
     public static async IAsyncEnumerable<TEventArgs> When<TEventArgs>(
-    this IEventSource<TEventArgs> source,
-    Func<Task> action,
-    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    where TEventArgs : EventArgs
+        this IEventSource<TEventArgs> source,
+        Func<Task> action,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TEventArgs : EventArgs
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var stream = await source.ReadAllAsync(cancellationToken).ConfigureAwait(false);
-
-        var actionTask = action();
-
-        if (cancellationToken.CanBeCanceled && !actionTask.IsCompleted)
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        if (!cancellationToken.CanBeCanceled)
         {
-            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            using (cancellationToken.Register(static s => ((TaskCompletionSource<bool>)s!).TrySetResult(true), tcs))
-            {
-                if (await Task.WhenAny(actionTask, tcs.Task).ConfigureAwait(false) == tcs.Task)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-            }
+            cts.CancelAfter(DefaultTimeout);
         }
 
-        await actionTask.ConfigureAwait(false);
+        await using var stream = await source.ReadAllAsync(cts.Token).ConfigureAwait(false);
 
-        await foreach (var item in stream.WithCancellation(cancellationToken).ConfigureAwait(false))
+        await action().ConfigureAwait(false);
+
+        await foreach (var item in stream.WithCancellation(cts.Token).ConfigureAwait(false))
         {
             yield return item;
         }
