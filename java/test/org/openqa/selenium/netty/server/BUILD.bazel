@@ -5,6 +5,7 @@ SMALL_TEST_SRCS = [
     "MessageInboundConverterTest.java",
     "MessageOutboundConverterTest.java",
     "RequestConverterTest.java",
+    "WebSocketFrameProxyTest.java",
 ]
 
 java_test_suite(
