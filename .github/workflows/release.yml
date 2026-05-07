@@ -149,7 +149,6 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
         language: [java, python, ruby, dotnet, javascript]
     uses: ./.github/workflows/update-documentation.yml
