@@ -33,9 +33,32 @@ class Index extends EventEmitter {
   constructor(_webSocketUrl) {
     super()
     this.connected = false
+    this._pending = new Map()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
       this.connected = true
+    })
+    // Single shared response dispatcher. Avoids attaching a new 'message'
+    // listener for every in-flight send(), which previously caused
+    // MaxListenersExceededWarning under concurrent BiDi traffic
+    // (e.g. network interception during a page navigation).
+    this._ws.on('message', (data) => {
+      let payload
+      try {
+        payload = JSON.parse(data.toString())
+      } catch {
+        return
+      }
+      if (payload == null || typeof payload.id !== 'number') {
+        return
+      }
+      const entry = this._pending.get(payload.id)
+      if (entry === undefined) {
+        return
+      }
+      clearTimeout(entry.timeoutId)
+      this._pending.delete(payload.id)
+      entry.resolve(payload)
     })
   }
 
@@ -96,25 +119,11 @@ class Index extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
+        this._pending.delete(id)
         reject(new Error(`Request with id ${id} timed out`))
-        handler.off('message', listener)
       }, RESPONSE_TIMEOUT)
 
-      const listener = (data) => {
-        try {
-          const payload = JSON.parse(data.toString())
-          if (payload.id === id) {
-            clearTimeout(timeoutId)
-            handler.off('message', listener)
-            resolve(payload)
-          }
-        } catch (err) {
-          // eslint-disable-next-line no-undef
-          log.error(`Failed parse message: ${err.message}`)
-        }
-      }
-
-      const handler = this._ws.on('message', listener)
+      this._pending.set(id, { resolve, reject, timeoutId })
     })
   }
 
@@ -206,6 +215,12 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   close() {
+    for (const { reject, timeoutId } of this._pending.values()) {
+      clearTimeout(timeoutId)
+      reject(new Error('BiDi connection closed before response was received'))
+    }
+    this._pending.clear()
+
     const closeWebSocket = (callback) => {
       // don't close if it's already closed
       if (this._ws.readyState === 3) {
