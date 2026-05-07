@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.netty.server;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,6 +30,9 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetEncoder;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -166,5 +171,32 @@ public class WebSocketFrameProxy extends SimpleChannelInboundHandler<WebSocketFr
    */
   public static void writeBinaryFrame(Channel clientChannel, byte[] data) {
     clientChannel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(data)));
+  }
+
+  /**
+   * Shrink a WebSocket close-frame reason to fit RFC 6455 §5.5.1's 123-byte UTF-8 cap.
+   *
+   * <p>A naïve approach — encode to bytes, truncate, decode back — can split a multi-byte UTF-8
+   * sequence at the boundary, which Java then decodes as {@code U+FFFD} (three bytes when
+   * re-encoded). That pushes the final encoded length back over the limit and breaks {@link
+   * io.netty.handler.codec.http.websocketx.CloseWebSocketFrame} encoding. Use {@link
+   * CharsetEncoder} into a 120-byte buffer instead — {@code encode()} stops at a clean character
+   * boundary on overflow, so no partial sequence is ever left behind. A three-byte ASCII ellipsis
+   * marks the truncation, keeping the encoded total at most 123 bytes regardless of the input.
+   */
+  public static String truncateCloseReason(String reason) {
+    if (reason == null) {
+      return "";
+    }
+    // Fast path: short reasons skip the encoder allocation.
+    if (reason.getBytes(UTF_8).length <= 123) {
+      return reason;
+    }
+    ByteBuffer out = ByteBuffer.allocate(120);
+    CharsetEncoder encoder = UTF_8.newEncoder();
+    encoder.encode(CharBuffer.wrap(reason), out, true);
+    encoder.flush(out);
+    out.flip();
+    return UTF_8.decode(out) + "...";
   }
 }
