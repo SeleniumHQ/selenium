@@ -19,16 +19,21 @@ package org.openqa.selenium.grid.router;
 
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -40,13 +45,11 @@ import org.openqa.selenium.netty.server.PostUpgradeHook;
 import org.openqa.selenium.netty.server.WebSocketFrameProxy;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.Message;
-import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
 /**
@@ -91,20 +94,14 @@ public class ProxyWebsocketsIntoGrid
     }
 
     AtomicBoolean upstreamClosing = new AtomicBoolean(false);
-    // Holds the client channel once onUpgradeComplete fires; used by DirectForwardingListener
-    // to write frames without going through MessageOutboundConverter.
-    AtomicReference<Channel> clientChannelRef = new AtomicReference<>();
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(sessionUri));
+    DirectForwardingListener listener = new DirectForwardingListener(upstreamClosing, client);
     try {
-      WebSocket upstream =
-          client.openSocket(
-              new HttpRequest(GET, uri),
-              new DirectForwardingListener(downstream, clientChannelRef, upstreamClosing, client));
+      WebSocket upstream = client.openSocket(new HttpRequest(GET, uri), listener);
 
-      return Optional.of(
-          new FrameProxyConsumer(upstream, client, clientChannelRef, upstreamClosing));
+      return Optional.of(new FrameProxyConsumer(upstream, client, listener, upstreamClosing));
 
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Connecting to upstream websocket failed", e);
@@ -121,30 +118,32 @@ public class ProxyWebsocketsIntoGrid
 
     private final WebSocket upstream;
     private final HttpClient client;
-    private final AtomicReference<Channel> clientChannelRef;
+    private final DirectForwardingListener listener;
     private final AtomicBoolean upstreamClosing;
 
     FrameProxyConsumer(
         WebSocket upstream,
         HttpClient client,
-        AtomicReference<Channel> clientChannelRef,
+        DirectForwardingListener listener,
         AtomicBoolean upstreamClosing) {
       this.upstream = upstream;
       this.client = client;
-      this.clientChannelRef = clientChannelRef;
+      this.listener = listener;
       this.upstreamClosing = upstreamClosing;
     }
 
     /**
      * Called by {@link org.openqa.selenium.netty.server.WebSocketUpgradeHandler} on the Netty IO
-     * thread after the client-side handshake completes. Install {@link WebSocketFrameProxy} and
-     * strip the three {@code Message}-layer handlers so subsequent data frames never pass through
-     * the full Selenium handler chain.
+     * thread after the client-side handshake completes. Hand the channel to the listener (which
+     * drains any frames received before the handshake landed), then install {@link
+     * WebSocketFrameProxy} and strip the three {@code Message}-layer handlers so subsequent data
+     * frames never pass through the full Selenium handler chain.
      */
     @Override
     public void onUpgradeComplete(ChannelHandlerContext ctx) {
       Channel ch = ctx.channel();
-      clientChannelRef.set(ch);
+      // Drain any pre-handshake buffer in order before the listener starts taking the fast path.
+      listener.onUpgrade(ch);
 
       WebSocketFrameProxy proxy = new WebSocketFrameProxy(upstream, upstreamClosing);
       ChannelPipeline pipeline = ctx.pipeline();
@@ -208,84 +207,139 @@ public class ProxyWebsocketsIntoGrid
 
   /**
    * Writes node-side messages directly to the client {@link Channel} as Netty WebSocket frames,
-   * bypassing {@code MessageOutboundConverter}. Falls back to the {@code downstream} consumer
-   * before the client channel reference is set (i.e. before {@link
-   * PostUpgradeHook#onUpgradeComplete} fires, which is rare).
+   * bypassing {@code MessageOutboundConverter}.
+   *
+   * <p>Frames received from the upstream before {@link #onUpgrade(Channel)} fires are buffered in
+   * arrival order; the buffer is then drained on the Netty IO thread before any subsequent listener
+   * call takes the fast path. This makes the pre-handshake → post-handshake transition
+   * deterministic: a frame can never land in a pipeline that has already had its Message-layer
+   * handlers removed.
    */
-  private static class DirectForwardingListener implements WebSocket.Listener {
+  static class DirectForwardingListener implements WebSocket.Listener {
 
-    private final Consumer<Message> fallbackDownstream;
-    private final AtomicReference<Channel> clientChannelRef;
+    private final Object lock = new Object();
+    private final Deque<WebSocketFrame> pending = new ArrayDeque<>();
+    // Volatile so the post-handover fast path needs no synchronization.
+    private volatile Channel clientChannel;
+    // Guarded by lock; once true, further frames received while clientChannel is still null
+    // are released rather than enqueued (we know the upstream has already gone away).
+    private boolean closed;
+
     private final AtomicBoolean upstreamClosing;
     private final HttpClient client;
 
-    DirectForwardingListener(
-        Consumer<Message> fallbackDownstream,
-        AtomicReference<Channel> clientChannelRef,
-        AtomicBoolean upstreamClosing,
-        HttpClient client) {
-      this.fallbackDownstream = Objects.requireNonNull(fallbackDownstream);
-      this.clientChannelRef = Objects.requireNonNull(clientChannelRef);
+    DirectForwardingListener(AtomicBoolean upstreamClosing, HttpClient client) {
       this.upstreamClosing = Objects.requireNonNull(upstreamClosing);
       this.client = Objects.requireNonNull(client);
     }
 
-    @Override
-    public void onText(CharSequence data) {
-      Channel ch = clientChannelRef.get();
-      if (ch != null) {
-        // Fast path: write TextWebSocketFrame directly, skipping MessageOutboundConverter.
-        WebSocketFrameProxy.writeTextFrame(ch, data);
-      } else {
-        fallbackDownstream.accept(new TextMessage(data));
+    /**
+     * Hand the client channel over after the WebSocket upgrade has completed. Drains any frames
+     * received before this point in arrival order, then publishes the channel so subsequent
+     * listener calls take the fast path.
+     */
+    void onUpgrade(Channel ch) {
+      synchronized (lock) {
+        WebSocketFrame frame;
+        while ((frame = pending.pollFirst()) != null) {
+          ch.writeAndFlush(frame);
+        }
+        clientChannel = ch;
       }
     }
 
     @Override
-    public void onBinary(byte[] data) {
-      Channel ch = clientChannelRef.get();
+    public void onText(CharSequence data) {
+      Channel ch = clientChannel;
       if (ch != null) {
-        // Fast path: write BinaryWebSocketFrame directly, skipping MessageOutboundConverter.
-        WebSocketFrameProxy.writeBinaryFrame(ch, data);
-      } else {
-        fallbackDownstream.accept(new BinaryMessage(data));
+        WebSocketFrameProxy.writeTextFrame(ch, data);
+        return;
       }
+      enqueueOrWrite(new TextWebSocketFrame(data.toString()));
+    }
+
+    @Override
+    public void onBinary(byte[] data) {
+      Channel ch = clientChannel;
+      if (ch != null) {
+        WebSocketFrameProxy.writeBinaryFrame(ch, data);
+        return;
+      }
+      enqueueOrWrite(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(data)));
+    }
+
+    private void enqueueOrWrite(WebSocketFrame frame) {
+      Channel ch;
+      synchronized (lock) {
+        ch = clientChannel;
+        if (ch == null) {
+          if (closed) {
+            frame.release();
+          } else {
+            pending.addLast(frame);
+          }
+          return;
+        }
+      }
+      ch.writeAndFlush(frame);
     }
 
     @Override
     public void onClose(int code, String reason) {
       upstreamClosing.set(true);
-      // After onUpgradeComplete the pipeline no longer contains MessageOutboundConverter, so
-      // writing a CloseMessage object via fallbackDownstream would fail to encode. Write the
-      // Netty frame directly once the client channel reference is available.
-      Channel ch = clientChannelRef.get();
+      Channel ch = clientChannel;
+      if (ch == null) {
+        synchronized (lock) {
+          ch = clientChannel;
+          if (ch == null) {
+            // Pre-handshake close: there is no live channel to write a close frame to,
+            // so just release the buffer and stop accepting more frames.
+            discardPendingLocked();
+            closed = true;
+          }
+        }
+      }
       if (ch != null && ch.isActive()) {
         ch.writeAndFlush(new CloseWebSocketFrame(code, reason));
-      } else {
-        fallbackDownstream.accept(new CloseMessage(code, reason));
       }
-      try {
-        client.close();
-      } catch (Exception e) {
-        LOG.log(Level.FINE, "Failed to close client on upstream WebSocket close", e);
-      }
+      closeClient();
     }
 
     @Override
     public void onError(Throwable cause) {
       upstreamClosing.set(true);
       LOG.log(Level.WARNING, "Error proxying websocket command", cause);
+      Channel ch = clientChannel;
+      if (ch == null) {
+        synchronized (lock) {
+          ch = clientChannel;
+          if (ch == null) {
+            discardPendingLocked();
+            closed = true;
+          }
+        }
+      }
       // Close the client channel so Playwright/BiDi clients see a clean disconnect rather than
       // hanging until the next keepalive ping fires.
-      Channel ch = clientChannelRef.get();
       if (ch != null && ch.isActive()) {
         ch.writeAndFlush(new CloseWebSocketFrame(1011, "upstream error"))
             .addListener(ChannelFutureListener.CLOSE);
       }
+      closeClient();
+    }
+
+    private void discardPendingLocked() {
+      WebSocketFrame frame;
+      while ((frame = pending.pollFirst()) != null) {
+        frame.release();
+      }
+    }
+
+    private void closeClient() {
       try {
         client.close();
       } catch (Exception e) {
-        LOG.log(Level.FINE, "Failed to close client after WebSocket error", e);
+        LOG.log(Level.FINE, "Failed to close client", e);
       }
     }
   }
