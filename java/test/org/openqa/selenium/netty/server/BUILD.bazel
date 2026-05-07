@@ -3,6 +3,7 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
 
 SMALL_TEST_SRCS = [
     "MessageInboundConverterTest.java",
+    "MessageOutboundConverterTest.java",
     "RequestConverterTest.java",
 ]
 
@@ -12,6 +13,7 @@ java_test_suite(
     srcs = SMALL_TEST_SRCS,
     deps = [
         "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote/http",
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
