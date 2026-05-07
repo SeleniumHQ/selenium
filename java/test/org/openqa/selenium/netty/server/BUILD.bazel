@@ -6,6 +6,7 @@ SMALL_TEST_SRCS = [
     "MessageOutboundConverterTest.java",
     "RequestConverterTest.java",
     "WebSocketFrameProxyTest.java",
+    "WebSocketUpgradeHandlerTest.java",
 ]
 
 java_test_suite(
@@ -17,6 +18,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/remote/http",
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-common"),
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
