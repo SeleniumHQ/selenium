@@ -68,7 +68,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [java, ruby, dotnet, javascript, python]
+        language: [java, ruby, dotnet, javascript]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
@@ -78,6 +78,36 @@ jobs:
       artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
       artifact-path: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && 'build/dist/*.*' || '' }}
     secrets: inherit
+
+  build-python:
+    name: Build Python
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Python
+      run: ./go py:build --config=release
+      artifact-name: pypi-distributions
+      artifact-path: |
+        bazel-bin/py/selenium-*.whl
+        bazel-bin/py/selenium-*.tar.gz
+    secrets: inherit
+
+  publish-python:
+    name: Publish Python to PyPI
+    needs: [parse-tag, build-python]
+    if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download Python distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: pypi-distributions
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
 
   github-release:
     name: GitHub Release
@@ -140,10 +170,11 @@ jobs:
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [parse-tag, publish, github-release]
+    needs: [parse-tag, publish, publish-python, github-release]
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
       needs.github-release.result != 'failure'
     permissions:
       contents: write
@@ -221,7 +252,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, docs, github-release, update-version, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, github-release, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -235,6 +266,7 @@ jobs:
           SLACK_TITLE: Release failed
           SLACK_MESSAGE: |
             • Selenium Published: ${{ needs.publish.result }}
+            • Python Published: ${{ needs.publish-python.result }}
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
