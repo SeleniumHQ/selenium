@@ -21,7 +21,6 @@
    * correct property name.
    */
   const PROPERTY_ALIASES: Record<string, string> = {
-    'class': 'className',
     'readonly': 'readOnly',
   };
 
@@ -187,18 +186,24 @@
       return hasAttr || !!propValue ? 'true' : null;
     }
 
+    // For regular attributes, check the actual HTML attribute first.
+    // This ensures we return null for missing attributes (not empty string from properties).
+    const attrValue = getAttribute(element, attribute);
+    if (attrValue !== null) {
+      return attrValue;
+    }
+
+    // If no HTML attribute, try the property as fallback for cases like
+    // event handlers in Firefox or expando properties.
     let property: unknown;
     try {
       property = getProperty(element, propName);
     } catch (_e) {
-      // Leaves property undefined; getAttribute below will be used as fallback.
+      // Leaves property undefined; return null as fallback.
     }
 
-    // Fall back to getAttribute when property is null/undefined or an object.
-    // This handles event handlers in Firefox and other edge cases.
     if (property == null || isObject(property)) {
-      const attrValue = getAttribute(element, attribute);
-      return attrValue != null ? attrValue : null;
+      return null;
     }
 
     return property != null ? String(property) : null;
