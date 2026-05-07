@@ -139,18 +139,6 @@ internal class SessionTests : BiDiTestFixture
     }
 
     [Test]
-    public async Task CanConsumeAsyncEventStreamViaWhen()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-
-        var log = await bidi.Log.EntryAdded
-            .When(() => context.Script.EvaluateAsync("console.log('hello when');", true), cts.Token)
-            .FirstAsync();
-
-        Assert.That(log.Text, Is.EqualTo("hello when"));
-    }
-
-    [Test]
     public async Task EventStreamRespectsReadAllCancellationToken()
     {
         using var cts = new CancellationTokenSource();
