@@ -22,7 +22,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
-public sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscriptionSink
+internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubscriptionSink
     where TEventArgs : EventArgs
 {
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(EventStream<TEventArgs>));
