@@ -26,6 +26,23 @@ single_version_override(
     version = "33.5",
 )
 
+# hermetic-llvm's `sh_script` macro writes a `.sh` and feeds it to `run_binary`
+# as the executable. Windows can't execute `.sh` files directly via
+# CreateProcessW, so on Windows hosts the macro fails with `%1 is not a
+# valid Win32 application` whenever an action transitively pulls in
+# anything that uses it (e.g. `@llvm++musl+musl_libc//:version_h`).
+# The patch teaches the macro to also emit a `.bat` wrapper that invokes
+# the shell on the script and returns the wrapper as the executable.
+# Tracked upstream as hermeticbuild/hermetic-llvm#353.
+single_version_override(
+    module_name = "llvm",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:llvm_sh_script_windows.patch",
+    ],
+    version = "0.7.9",
+)
+
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
@@ -427,6 +444,19 @@ llvm_toolchains.exec(
     os = "linux",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
+
+# rules_cc registers `@local_config_cc_toolchains//:all` from its own
+# MODULE.bazel, but a dependency module's `register_toolchains` calls run
+# *after* the root module's. Re-registering it here puts the system C/C++
+# toolchain ahead of the LLVM cross-compile toolchains for native builds
+# (e.g. exec=linux+x86_64+gnu → target=linux+x86_64+gnu, where the system
+# `gcc` has libgcc on hand and LLVM does not). LLVM still wins for the
+# cross-compile cases the host toolchain can't satisfy (windows-gnullvm,
+# linux-musl, etc.).
+cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
+use_repo(cc_configure, "local_config_cc_toolchains")
+
+register_toolchains("@local_config_cc_toolchains//:all")
 
 register_toolchains("@llvm_toolchains//:all")
 
