@@ -218,7 +218,9 @@ public class SeleniumManager {
         String arch;
         if (osArch.contains("aarch64") || osArch.contains("arm64")) {
           arch = "aarch64";
-        } else if (osArch.contains("amd64") || osArch.contains("x86_64") || osArch.contains("x64")) {
+        } else if (osArch.contains("amd64")
+            || osArch.contains("x86_64")
+            || osArch.contains("x64")) {
           arch = "x86_64";
         } else {
           throw new WebDriverException(
@@ -226,15 +228,13 @@ public class SeleniumManager {
         }
 
         if (os.equals("macos") && !arch.equals("aarch64")) {
-          throw new WebDriverException(
-              "Selenium Manager only ships an aarch64 binary for macOS");
+          throw new WebDriverException("Selenium Manager only ships an aarch64 binary for macOS");
         }
 
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
         if (!Files.exists(binary)) {
           String binaryPathInJar =
-              String.format(
-                  "/common/manager/%s-%s/%s%s", os, arch, SELENIUM_MANAGER, extension);
+              String.format("/common/manager/%s-%s/%s%s", os, arch, SELENIUM_MANAGER, extension);
           try (InputStream inputStream =
               requireNonNull(getClass().getResourceAsStream(binaryPathInJar))) {
             Files.createDirectories(binary.getParent());
