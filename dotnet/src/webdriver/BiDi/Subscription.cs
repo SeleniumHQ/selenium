@@ -121,6 +121,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
                     }
                     catch (Exception ex)
                     {
+                        _logger.Error($"BiDi event handler threw an exception; the subscription is stopped and will no longer dispatch events: {ex}");
                         _handlerError = ExceptionDispatchInfo.Capture(ex);
                         _channel.Writer.TryComplete(ex);
                         return;
