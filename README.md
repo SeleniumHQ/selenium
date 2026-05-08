@@ -284,11 +284,7 @@ you can configure it use Bazel artifacts:
 
 ### Rust
 
-To keep `Cargo.Bazel.lock` synchronized with `Cargo.lock`, run:
-
-```shell
-CARGO_BAZEL_REPIN=true bazel run @crates//:all
-```
+Rust Bazel dependencies are generated directly from `rust/Cargo.toml` and `rust/Cargo.lock`.
 
 ## Testing
 

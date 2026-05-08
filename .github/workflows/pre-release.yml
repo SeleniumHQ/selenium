@@ -32,7 +32,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Rust Version
-      run: ./go rust:version ${{ needs.parse-tag.outputs.version }} && ./go rust:update
+      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
       artifact-name: rust-version
 
   push-rust-version:
@@ -147,7 +147,7 @@ jobs:
     with:
       name: Run dependency updates
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' }}
       artifact-name: patch-dep-updates
 
   calculate-changelog-depth:
