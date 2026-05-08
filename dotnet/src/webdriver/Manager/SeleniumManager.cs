@@ -120,6 +120,31 @@ public static partial class SeleniumManager
                 $"Selenium Manager doesn't support your runtime platform: {Environment.OSVersion.Platform}"),
         };
 
+        var processArchitecture = RuntimeInformation.ProcessArchitecture;
+        var archSuffix = processArchitecture switch
+        {
+            Architecture.X64 => "x64",
+            Architecture.Arm64 => "arm64",
+            _ => throw new PlatformNotSupportedException(
+                $"Selenium Manager doesn't support your runtime architecture: {processArchitecture}"),
+        };
+
+        if (platform == SupportedPlatform.MacOS && processArchitecture != Architecture.Arm64)
+        {
+            throw new PlatformNotSupportedException(
+                "Selenium Manager only ships an arm64 binary for macOS");
+        }
+
+        var ridOs = platform switch
+        {
+            SupportedPlatform.Windows => "win",
+            SupportedPlatform.Linux => "linux",
+            SupportedPlatform.MacOS => "osx",
+            _ => throw new PlatformNotSupportedException(
+                $"Selenium Manager doesn't support your runtime platform: {Environment.OSVersion.Platform}"),
+        };
+        var rid = $"{ridOs}-{archSuffix}";
+
         var baseDirectory = AppContext.BaseDirectory;
 
         List<string> probingPaths = [];
@@ -127,19 +152,7 @@ public static partial class SeleniumManager
         if (baseDirectory is not null)
         {
             probingPaths.Add(Path.Combine(baseDirectory, seleniumManagerFileName));
-
-            switch (platform)
-            {
-                case SupportedPlatform.Windows:
-                    probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "win", "native", seleniumManagerFileName));
-                    break;
-                case SupportedPlatform.Linux:
-                    probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "linux", "native", seleniumManagerFileName));
-                    break;
-                case SupportedPlatform.MacOS:
-                    probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "osx", "native", seleniumManagerFileName));
-                    break;
-            }
+            probingPaths.Add(Path.Combine(baseDirectory, "runtimes", rid, "native", seleniumManagerFileName));
         }
 
 #if !NET462

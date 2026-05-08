@@ -1,3 +1,5 @@
+load("//common:defs.bzl", "copy_file")
+
 package(
     default_visibility = [
         "//dotnet/src/webdriver:__pkg__",
@@ -9,26 +11,47 @@ package(
     ],
 )
 
+# Tree of every cross-built Selenium Manager binary, laid out as
+# `<os>-<arch>/selenium-manager[.exe]`. Language packagers that can ship
+# directories (Ruby gem data, npm package files, Python wheel data) take
+# this directly; tools that only handle individual files (Java resources,
+# nuget pack) consume the per-arch single-file targets below.
 alias(
-    name = "selenium-manager-linux",
-    actual = select({
-        "//common:use_pinned_browser": "@download_sm_linux//file",
-        "//conditions:default": "//rust:selenium-manager-linux",
-    }),
+    name = "selenium-manager-bundle",
+    actual = "//rust:selenium-manager-bundle",
 )
 
-alias(
-    name = "selenium-manager-macos",
-    actual = select({
-        "//common:use_pinned_browser": "@download_sm_macos//file",
-        "//conditions:default": "//rust:selenium-manager-macos",
-    }),
-)
+# Single-file targets per (os, arch) — same binaries the bundle contains,
+# but as individual files (each output at `<os>-<arch>/selenium-manager[.exe]`)
+# for tools whose resource attrs don't expand tree artifacts (Java
+# `resources`, nuget_pack `files`).
+[
+    copy_file(
+        name = "selenium-manager-{}-{}".format(os, arch),
+        src = "//rust:_bundle_member_{}_{}".format(os, arch),
+        out = "{}-{}/selenium-manager{}".format(
+            os,
+            arch,
+            ".exe" if os == "windows" else "",
+        ),
+        is_executable = True,
+    )
+    for (os, arch) in [
+        ("linux", "aarch64"),
+        ("linux", "x86_64"),
+        ("macos", "aarch64"),
+        ("windows", "aarch64"),
+        ("windows", "x86_64"),
+    ]
+]
 
-alias(
-    name = "selenium-manager-windows",
-    actual = select({
-        "//common:use_pinned_browser": "@download_sm_windows//file",
-        "//conditions:default": "//rust:selenium-manager-windows",
-    }),
+filegroup(
+    name = "selenium-manager-files",
+    srcs = [
+        ":selenium-manager-linux-aarch64",
+        ":selenium-manager-linux-x86_64",
+        ":selenium-manager-macos-aarch64",
+        ":selenium-manager-windows-aarch64",
+        ":selenium-manager-windows-x86_64",
+    ],
 )

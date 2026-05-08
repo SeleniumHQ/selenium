@@ -57,9 +57,11 @@
     <file src="build/Selenium.WebDriver.props" target="build/Selenium.WebDriver.props"/>
     <file src="buildTransitive/Selenium.WebDriver.props" target="buildTransitive/Selenium.WebDriver.props"/>
 
-    <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
-    <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />
-    <file src="manager/windows/selenium-manager.exe" target="runtimes/win/native/selenium-manager.exe" />
+    <file src="manager/linux-x86_64/selenium-manager" target="runtimes/linux-x64/native/selenium-manager" />
+    <file src="manager/linux-aarch64/selenium-manager" target="runtimes/linux-arm64/native/selenium-manager" />
+    <file src="manager/macos-aarch64/selenium-manager" target="runtimes/osx-arm64/native/selenium-manager" />
+    <file src="manager/windows-x86_64/selenium-manager.exe" target="runtimes/win-x64/native/selenium-manager.exe" />
+    <file src="manager/windows-aarch64/selenium-manager.exe" target="runtimes/win-arm64/native/selenium-manager.exe" />
 
     <file src="icon.png" />
     <file src="README.md" />

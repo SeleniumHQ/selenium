@@ -11,11 +11,11 @@ rust_test_suite(
     srcs = glob(["**/*_tests.rs"]),
     aliases = aliases(),
     data = [
-        "//rust:selenium-manager",
+        "//rust:_selenium-manager-bin",
     ],
     edition = "2024",
     rustc_env = {
-        "CARGO_BIN_EXE_selenium-manager": "rust/selenium-manager",
+        "CARGO_BIN_EXE_selenium-manager": "rust/_selenium-manager-bin",
     },
     shared_srcs = glob(
         ["**/*.rs"],

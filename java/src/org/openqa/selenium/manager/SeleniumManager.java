@@ -195,33 +195,46 @@ public class SeleniumManager {
     if (binary == null) {
       try {
         Platform current = Platform.getCurrent();
-        String folder = "";
+        String os;
         String extension = "";
         if (current.is(WINDOWS)) {
           extension = EXE;
-          folder = "windows";
+          os = "windows";
         } else if (current.is(MAC)) {
-          folder = "macos";
+          os = "macos";
         } else if (current.is(LINUX)) {
-          if (System.getProperty("os.arch").contains("arm")
-              || System.getProperty("os.arch").contains("aarch64")) {
-            throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
-          } else {
-            folder = "linux";
-          }
+          os = "linux";
         } else if (current.is(UNIX)) {
           LOG.warning(
               String.format(
                   "Selenium Manager binary may not be compatible with %s; verify settings",
                   current));
-          folder = "linux";
+          os = "linux";
         } else {
           throw new WebDriverException("Unsupported platform: " + current);
         }
 
+        String osArch = System.getProperty("os.arch", "").toLowerCase();
+        String arch;
+        if (osArch.contains("aarch64") || osArch.contains("arm64")) {
+          arch = "aarch64";
+        } else if (osArch.contains("amd64") || osArch.contains("x86_64") || osArch.contains("x64")) {
+          arch = "x86_64";
+        } else {
+          throw new WebDriverException(
+              "Selenium Manager does not ship a binary for " + osArch + " on " + os);
+        }
+
+        if (os.equals("macos") && !arch.equals("aarch64")) {
+          throw new WebDriverException(
+              "Selenium Manager only ships an aarch64 binary for macOS");
+        }
+
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
         if (!Files.exists(binary)) {
-          String binaryPathInJar = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+          String binaryPathInJar =
+              String.format(
+                  "/common/manager/%s-%s/%s%s", os, arch, SELENIUM_MANAGER, extension);
           try (InputStream inputStream =
               requireNonNull(getClass().getResourceAsStream(binaryPathInJar))) {
             Files.createDirectories(binary.getParent());

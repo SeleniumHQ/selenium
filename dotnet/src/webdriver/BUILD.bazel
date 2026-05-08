@@ -1,3 +1,4 @@
+load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("//common:defs.bzl", "copy_file")
 load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
@@ -147,24 +148,10 @@ copy_file(
     out = "transitiveSelenium.WebDriver.props",
 )
 
-copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "manager/linux/selenium-manager",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
-)
-
-copy_file(
-    name = "manager-macos",
-    src = "//common/manager:selenium-manager-macos",
-    out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
-)
-
-copy_file(
-    name = "manager-windows",
-    src = "//common/manager:selenium-manager-windows",
-    out = "manager/windows/selenium-manager.exe",
+copy_directory(
+    name = "manager-bundle",
+    src = "//common/manager:selenium-manager-bundle",
+    out = "manager",
     visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
@@ -172,9 +159,7 @@ nuget_pack(
     name = "webdriver-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
-        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
-        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
-        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        "//common/manager:selenium-manager-bundle": "manager",
         ":assets-nuget-readme": "README.md",
         ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
         ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",

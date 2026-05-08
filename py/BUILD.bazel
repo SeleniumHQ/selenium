@@ -98,22 +98,10 @@ genrule(
     toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
 )
 
-copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "selenium/webdriver/common/linux/selenium-manager",
-)
-
-copy_file(
-    name = "manager-macos",
-    src = "//common/manager:selenium-manager-macos",
-    out = "selenium/webdriver/common/macos/selenium-manager",
-)
-
-copy_file(
-    name = "manager-windows",
-    src = "//common/manager:selenium-manager-windows",
-    out = "selenium/webdriver/common/windows/selenium-manager.exe",
+copy_directory(
+    name = "manager-bundle",
+    src = "//common/manager:selenium-manager-bundle",
+    out = "selenium/webdriver/common/manager",
 )
 
 copy_file(
@@ -295,9 +283,7 @@ py_library(
         ],
     ),
     data = [
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
+        ":manager-bundle",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -491,9 +477,7 @@ pkg_files(
         "//rust:selenium_manager_srcs",
     ],
     excludes = [
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
+        ":manager-bundle",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )

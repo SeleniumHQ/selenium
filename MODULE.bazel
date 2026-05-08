@@ -405,7 +405,9 @@ use_repo(rust_toolchains, "default_rust_toolchains")
 
 register_toolchains("@default_rust_toolchains//:all")
 
-# TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
+# Register Windows + macOS + Linux execs so the per-platform Selenium
+# Manager variants in //rust can be cross-compiled on any developer host
+# and on RBE.
 llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
 llvm_toolchains.exec(
     arch = "x86_64",
@@ -414,6 +416,18 @@ llvm_toolchains.exec(
 llvm_toolchains.exec(
     arch = "aarch64",
     os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "macos",
+)
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "linux",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "linux",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
 
@@ -426,11 +440,15 @@ crate.from_cargo(
     cargo_toml = "//rust:Cargo.toml",
     platform_triples = [
         "aarch64-apple-darwin",
+        "aarch64-pc-windows-gnullvm",
         "aarch64-pc-windows-msvc",
         "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
         "x86_64-apple-darwin",
+        "x86_64-pc-windows-gnullvm",
         "x86_64-pc-windows-msvc",
         "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
     ],
 )
 crate.annotation(
@@ -444,6 +462,25 @@ crate.annotation(
 crate.annotation(
     crate = "zstd-sys",
     gen_build_script = "on",
+)
+
+# Both crates ship a `README.md` (uppercase) but their source code uses
+# `include_str!("../readme.md")`. The mismatch is invisible on macOS's
+# case-insensitive default filesystem but breaks any case-sensitive host
+# (Linux, RBE). Patch the source so the case matches what the archive
+# actually contains.
+crate.annotation(
+    crate = "windows-link",
+    patch_args = ["-p1"],
+    patches = ["//third_party/bazel:windows_link_readme_case.patch"],
+)
+crate.annotation(
+    crate = "windows-targets",
+    patch_args = ["-p1"],
+    patches = ["//third_party/bazel:windows_targets_readme_case.patch"],
+    # Only the 0.53 line has this case mismatch; 0.52.x ships a lowercase
+    # readme.md that matches the include_str! call.
+    version = "0.53.4",
 )
 use_repo(crate, "crates")
 

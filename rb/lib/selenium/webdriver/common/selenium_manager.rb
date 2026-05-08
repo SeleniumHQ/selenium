@@ -31,7 +31,7 @@ module Selenium
         attr_writer :bin_path
 
         def bin_path
-          @bin_path ||= '../../../../../bin'
+          @bin_path ||= '../../../../../bin/manager'
         end
 
         # @param [Array] arguments what gets sent to to Selenium Manager binary.
@@ -71,19 +71,43 @@ module Selenium
 
         def platform_location
           directory = File.expand_path(bin_path, __FILE__)
+          os = platform_os
+          arch = platform_arch(os)
+          extension = os == 'windows' ? '.exe' : ''
+          "#{directory}/#{os}-#{arch}/selenium-manager#{extension}"
+        end
+
+        def platform_os
           if Platform.windows?
-            "#{directory}/windows/selenium-manager.exe"
+            'windows'
           elsif Platform.mac?
-            "#{directory}/macos/selenium-manager"
+            'macos'
           elsif Platform.linux?
-            "#{directory}/linux/selenium-manager"
+            'linux'
           elsif Platform.unix?
             WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix',
                                   id: %i[selenium_manager unix_binary])
-            "#{directory}/linux/selenium-manager"
+            'linux'
           else
             raise Error::WebDriverError, "unsupported platform: #{Platform.os}"
           end
+        end
+
+        def platform_arch(os)
+          cpu = RbConfig::CONFIG['host_cpu'].to_s.downcase
+          arch = case cpu
+                 when 'x86_64', 'amd64', 'x64'
+                   'x86_64'
+                 when 'aarch64', 'arm64'
+                   'aarch64'
+                 else
+                   raise Error::WebDriverError, "unsupported architecture: #{cpu}"
+                 end
+          if os == 'macos' && arch != 'aarch64'
+            raise Error::WebDriverError, 'Selenium Manager only ships an aarch64 binary for macOS'
+          end
+
+          arch
         end
 
         def execute_command(*command)
