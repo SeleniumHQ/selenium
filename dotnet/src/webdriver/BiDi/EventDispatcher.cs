@@ -150,8 +150,6 @@ internal sealed class EventDispatcher : IAsyncDisposable
             }
         }
 
-        List<Exception>? exceptions = null;
-
         foreach (var slot in _events.Values)
         {
             foreach (var subscription in slot.GetSnapshot())
@@ -160,17 +158,11 @@ internal sealed class EventDispatcher : IAsyncDisposable
                 {
                     await subscription.DisposeAsync().ConfigureAwait(false);
                 }
-                catch (Exception ex) when (error is not null)
+                catch (Exception ex)
                 {
                     _logger.Warn($"Subscription disposal failed during shutdown: {ex.Message}");
-                    (exceptions ??= []).Add(ex);
                 }
             }
-        }
-
-        if (exceptions is { Count: > 0 })
-        {
-            throw new AggregateException("One or more subscriptions failed to dispose during shutdown.", exceptions);
         }
     }
 
