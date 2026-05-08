@@ -59,6 +59,24 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  create-language-tag:
+    name: Create Language Tag
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language != 'all'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create language-specific tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          gh api -X POST /repos/${{ github.repository }}/git/refs \
+            -f ref="refs/tags/${TAG}" \
+            -f sha="${SHA}"
+
   github-release-draft:
     name: GitHub Release Draft
     needs: [parse-tag, get-approval]
@@ -133,24 +151,6 @@ jobs:
           path: dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-
-  create-language-tag:
-    name: Create Language Tag
-    needs: [parse-tag, publish]
-    if: needs.parse-tag.outputs.language != 'all'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Create language-specific tag
-        env:
-          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-          TAG: ${{ needs.parse-tag.outputs.tag }}
-          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
-        run: |
-          gh api -X POST /repos/${{ github.repository }}/git/refs \
-            -f ref="refs/tags/${TAG}" \
-            -f sha="${SHA}"
 
   github-release-publish:
     name: GitHub Release Publish
