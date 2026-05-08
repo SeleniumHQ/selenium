@@ -91,4 +91,36 @@ describe('BiDi connection', function () {
     // And it stays the same after they resolve.
     assert.strictEqual(bidi.socket.listenerCount('message'), before)
   })
+
+  // Surface parse failures rather than dropping silently — otherwise callers
+  // see misleading send() timeouts when a peer sends a malformed frame.
+  it('emits an error when the server sends a non-JSON message', async function () {
+    const errors = []
+    bidi.on('error', (err) => errors.push(err))
+
+    for (const client of server.clients) {
+      client.send('not-json')
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    assert.strictEqual(errors.length, 1, `expected 1 error, got ${errors.length}`)
+    assert.match(errors[0].message, /Failed to parse BiDi message/)
+  })
+
+  // If the peer disconnects mid-request, callers should fail promptly via the
+  // socket's 'close' event instead of waiting for RESPONSE_TIMEOUT.
+  it('rejects pending sends when the connection drops unexpectedly', async function () {
+    // Stop the server from replying so the send stays pending.
+    for (const client of server.clients) {
+      client.removeAllListeners('message')
+    }
+    const inFlight = bidi.send({ method: 'session.status', params: {} })
+
+    for (const client of server.clients) {
+      client.terminate()
+    }
+
+    await assert.rejects(inFlight, /BiDi connection closed unexpectedly/)
+  })
 })

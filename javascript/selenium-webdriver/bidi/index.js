@@ -33,6 +33,7 @@ class Index extends EventEmitter {
   constructor(_webSocketUrl) {
     super()
     this.connected = false
+    this._closed = false
     this._pending = new Map()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
@@ -46,9 +47,20 @@ class Index extends EventEmitter {
       let payload
       try {
         payload = JSON.parse(data.toString())
-      } catch {
+      } catch (err) {
+        // Surface protocol parse failures rather than silently dropping —
+        // otherwise callers see misleading send() timeouts.
+        const wrapped = new Error(`Failed to parse BiDi message: ${err.message}`)
+        if (this.listenerCount('error') > 0) {
+          this.emit('error', wrapped)
+        } else {
+          process.emitWarning(wrapped.message, 'BiDiProtocolWarning')
+        }
         return
       }
+      // Messages without a numeric id are BiDi events, not command
+      // responses; they are routed via subscribe/EventEmitter elsewhere
+      // and intentionally ignored by this dispatcher.
       if (payload == null || typeof payload.id !== 'number') {
         return
       }
@@ -60,6 +72,33 @@ class Index extends EventEmitter {
       this._pending.delete(payload.id)
       entry.resolve(payload)
     })
+    // Fail any in-flight send() calls promptly when the peer disconnects
+    // or the socket errors, instead of waiting for RESPONSE_TIMEOUT.
+    this._ws.on('close', () => {
+      this._failPending(new Error('BiDi connection closed unexpectedly'))
+    })
+    this._ws.on('error', (err) => {
+      this._failPending(new Error(`BiDi connection error: ${err.message}`))
+    })
+  }
+
+  /**
+   * Reject any in-flight sends and mark the connection failed. Idempotent so
+   * that close() and the underlying 'close'/'error' events do not double-reject.
+   * @param {Error} error
+   * @private
+   */
+  _failPending(error) {
+    if (this._closed) {
+      return
+    }
+    this._closed = true
+    this.connected = false
+    for (const { reject, timeoutId } of this._pending.values()) {
+      clearTimeout(timeoutId)
+      reject(error)
+    }
+    this._pending.clear()
   }
 
   /**
@@ -215,11 +254,7 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   close() {
-    for (const { reject, timeoutId } of this._pending.values()) {
-      clearTimeout(timeoutId)
-      reject(new Error('BiDi connection closed before response was received'))
-    }
-    this._pending.clear()
+    this._failPending(new Error('BiDi connection closed before response was received'))
 
     const closeWebSocket = (callback) => {
       // don't close if it's already closed
