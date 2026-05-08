@@ -29,6 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.TestUtilities;
 
 class ContentEditableTest extends JupiterTestBase {
 
@@ -99,6 +100,7 @@ class ContentEditableTest extends JupiterTestBase {
 
   @Test
   void testShouldBeAbleToTypeIntoTinyMCE() {
+    assumeThat(TestUtilities.getChromeVersion(driver)).isLessThan(149);
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 
@@ -115,6 +117,8 @@ class ContentEditableTest extends JupiterTestBase {
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldAppendToTinyMCE() {
+    assumeThat(TestUtilities.getChromeVersion(driver)).isLessThan(149);
+
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 
