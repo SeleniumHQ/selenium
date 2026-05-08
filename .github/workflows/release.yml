@@ -71,16 +71,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Delete nightly release and tag
-        env:
-          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-        run: |
-          if gh release view nightly >/dev/null 2>&1; then
-            gh release delete nightly --yes
-          fi
-          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
-            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
-          fi
       - name: Create draft GitHub release
         uses: ncipollo/release-action@v1
         with:
@@ -156,6 +146,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout repo
+        if: needs.parse-tag.outputs.language == 'all'
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
         uses: actions/download-artifact@v4
@@ -168,6 +163,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
+          path: "build/dist/"
+      - name: Delete nightly release and tag
+        if: needs.parse-tag.outputs.language == 'all'
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+        run: |
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
+          fi
       - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
