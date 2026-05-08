@@ -138,7 +138,7 @@ jobs:
     name: GitHub Release Publish
     needs: [parse-tag, publish, github-release-draft]
     if: >-
-      !failure() && !cancelled() &&
+      always() && !failure() && !cancelled() &&
       (needs.parse-tag.outputs.language == 'all' ||
       needs.parse-tag.outputs.language == 'java' ||
       needs.parse-tag.outputs.language == 'dotnet')
