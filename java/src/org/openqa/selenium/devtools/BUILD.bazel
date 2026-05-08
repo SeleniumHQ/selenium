@@ -1,6 +1,8 @@
 load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "artifact", "java_binary", "java_library")
 
+exports_files(["versions.bzl"])
+
 GENERATOR_SOURCES = [
     "CdpClientGenerator.java",
 ]
