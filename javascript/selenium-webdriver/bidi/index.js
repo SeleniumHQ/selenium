@@ -131,14 +131,27 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async waitForConnection() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (this._closed) {
+        reject(new Error('BiDi connection is closed'))
+        return
+      }
       if (this.connected) {
         resolve()
-      } else {
-        this._ws.once('open', () => {
-          resolve()
-        })
+        return
       }
+      const onOpen = () => {
+        this._ws.off('close', onFailure)
+        this._ws.off('error', onFailure)
+        resolve()
+      }
+      const onFailure = () => {
+        this._ws.off('open', onOpen)
+        reject(new Error('BiDi connection closed before opening'))
+      }
+      this._ws.once('open', onOpen)
+      this._ws.once('close', onFailure)
+      this._ws.once('error', onFailure)
     })
   }
 
@@ -148,6 +161,9 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async send(params) {
+    if (this._closed) {
+      throw new Error('BiDi connection is closed')
+    }
     if (!this.connected) {
       await this.waitForConnection()
     }

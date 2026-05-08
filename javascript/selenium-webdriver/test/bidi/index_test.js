@@ -123,4 +123,16 @@ describe('BiDi connection', function () {
 
     await assert.rejects(inFlight, /BiDi connection closed unexpectedly/)
   })
+
+  // Once the connection is closed, subsequent send() calls must fail fast
+  // rather than hanging on waitForConnection() awaiting an 'open' event that
+  // will never fire.
+  it('rejects send() after the connection has been closed', async function () {
+    for (const client of server.clients) {
+      client.terminate()
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    await assert.rejects(bidi.send({ method: 'session.status', params: {} }), /BiDi connection is closed/)
+  })
 })
