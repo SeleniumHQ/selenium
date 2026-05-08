@@ -25,5 +25,5 @@ public interface IEventSource<TEventArgs> where TEventArgs : EventArgs
 
     Task<ISubscription> SubscribeAsync(Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default);
 
-    Task<IEventStream<TEventArgs>> ReadAllAsync(CancellationToken cancellationToken = default);
+    Task<IEventStream<TEventArgs>> StreamAsync(CancellationToken cancellationToken = default);
 }

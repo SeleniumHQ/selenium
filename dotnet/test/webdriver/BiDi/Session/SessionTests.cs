@@ -114,7 +114,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStream()
     {
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync();
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         await using var enumerator = sub.GetAsyncEnumerator(cts.Token);
@@ -128,7 +128,7 @@ internal class SessionTests : BiDiTestFixture
     [Test]
     public async Task CanConsumeAsyncEventStreamViaLinq()
     {
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync();
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync();
 
         await context.Script.EvaluateAsync("console.log('hello stream');", true);
 
@@ -143,7 +143,7 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource();
 
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
 
         cts.Cancel();
 
@@ -158,7 +158,7 @@ internal class SessionTests : BiDiTestFixture
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
-        await using var sub = await bidi.Log.EntryAdded.ReadAllAsync(cts.Token);
+        await using var sub = await bidi.Log.EntryAdded.StreamAsync(cts.Token);
 
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
