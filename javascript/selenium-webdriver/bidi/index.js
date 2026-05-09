@@ -35,9 +35,14 @@ class Index extends EventEmitter {
     this.connected = false
     this._closed = false
     this._pending = new Map()
+    this._connectWaiters = new Set()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
       this.connected = true
+      for (const { resolve } of this._connectWaiters) {
+        resolve()
+      }
+      this._connectWaiters.clear()
     })
     // Single shared response dispatcher. Avoids attaching a new 'message'
     // listener for every in-flight send(), which previously caused
@@ -99,6 +104,12 @@ class Index extends EventEmitter {
       reject(error)
     }
     this._pending.clear()
+    // Reject any callers parked in waitForConnection() so close() (or an
+    // unexpected disconnect) cannot leave them hanging forever.
+    for (const { reject } of this._connectWaiters) {
+      reject(error)
+    }
+    this._connectWaiters.clear()
   }
 
   /**
@@ -140,18 +151,10 @@ class Index extends EventEmitter {
         resolve()
         return
       }
-      const onOpen = () => {
-        this._ws.off('close', onFailure)
-        this._ws.off('error', onFailure)
-        resolve()
-      }
-      const onFailure = () => {
-        this._ws.off('open', onOpen)
-        reject(new Error('BiDi connection closed before opening'))
-      }
-      this._ws.once('open', onOpen)
-      this._ws.once('close', onFailure)
-      this._ws.once('error', onFailure)
+      // Park the waiter in a Set so the constructor's 'open' handler can
+      // resolve it and _failPending() can reject it. Avoids attaching socket
+      // listeners that close()'s removeAllListeners('close') would strip.
+      this._connectWaiters.add({ resolve, reject })
     })
   }
 

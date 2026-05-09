@@ -18,6 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
+const net = require('node:net')
 const { WebSocketServer } = require('ws')
 const BiDi = require('selenium-webdriver/bidi')
 
@@ -32,6 +33,19 @@ function startEchoServer() {
         const { id } = JSON.parse(data.toString())
         ws.send(JSON.stringify({ id, result: {} }))
       })
+    })
+  })
+}
+
+// Plain TCP listener that accepts connections but never completes the
+// WebSocket upgrade — keeps the client stuck in CONNECTING so we can
+// exercise the close()-during-connect path deterministically.
+function startStallingServer() {
+  return new Promise((resolve) => {
+    const server = net.createServer(() => {})
+    server.listen(0, '127.0.0.1', () => {
+      const { port } = server.address()
+      resolve({ server, url: `ws://127.0.0.1:${port}` })
     })
   })
 }
@@ -134,5 +148,26 @@ describe('BiDi connection', function () {
     await new Promise((resolve) => setTimeout(resolve, 50))
 
     await assert.rejects(bidi.send({ method: 'session.status', params: {} }), /BiDi connection is closed/)
+  })
+
+  // Race regression: close() must unblock waitForConnection() callers even
+  // when the socket is still CONNECTING. Previously close() ran
+  // removeAllListeners('close') before the socket actually closed, which
+  // could strip the rejection listener that waitForConnection() relied on
+  // and leave the wait pending forever.
+  it('unblocks waitForConnection() when close() is called during connect', async function () {
+    const stalling = await startStallingServer()
+    try {
+      const stalled = new BiDi(stalling.url)
+      const wait = stalled.waitForConnection()
+
+      // Close while the underlying socket is still CONNECTING.
+      const close = stalled.close()
+
+      await assert.rejects(wait, /BiDi connection closed/)
+      await close
+    } finally {
+      await new Promise((resolve) => stalling.server.close(resolve))
+    }
   })
 })
