@@ -38,6 +38,17 @@ class Index extends EventEmitter {
     this._connectWaiters = new Set()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
+      // The handshake can complete after close()/_failPending() has already
+      // marked the connection closed. Don't flip connected back to true and
+      // proactively close the now-orphan socket so it does not leak.
+      if (this._closed) {
+        try {
+          this._ws.close()
+        } catch {
+          /* socket already closing */
+        }
+        return
+      }
       this.connected = true
       for (const { resolve } of this._connectWaiters) {
         resolve()
@@ -49,6 +60,11 @@ class Index extends EventEmitter {
     // MaxListenersExceededWarning under concurrent BiDi traffic
     // (e.g. network interception during a page navigation).
     this._ws.on('message', (data) => {
+      // Frames can arrive after close() has cleared _pending; ignore them
+      // rather than re-emitting parse errors or dispatching to nothing.
+      if (this._closed) {
+        return
+      }
       let payload
       try {
         payload = JSON.parse(data.toString())
@@ -169,6 +185,12 @@ class Index extends EventEmitter {
     }
     if (!this.connected) {
       await this.waitForConnection()
+    }
+    // Defense in depth: even after waitForConnection() resolves, the socket
+    // may have transitioned to CLOSING/CLOSED (e.g. caller closed the raw
+    // socket). Refuse rather than throwing from inside ws.send().
+    if (this._ws.readyState !== WebSocket.OPEN) {
+      throw new Error('BiDi connection is not open')
     }
 
     const id = ++this.id

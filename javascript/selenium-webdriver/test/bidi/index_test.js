@@ -170,4 +170,24 @@ describe('BiDi connection', function () {
       await new Promise((resolve) => stalling.server.close(resolve))
     }
   })
+
+  // Race regression: if close() runs while the WebSocket is still CONNECTING
+  // and the handshake then completes anyway, the 'open' handler must not
+  // flip the instance back to connected=true.
+  it('does not become connected if open fires after close', async function () {
+    const late = await startEchoServer()
+    try {
+      const racer = new BiDi(late.url)
+      // Close immediately, before 'open' fires.
+      const close = racer.close()
+
+      // Give the handshake a chance to complete.
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      assert.strictEqual(racer.isConnected, false, 'connection should remain closed after open race')
+      await close
+    } finally {
+      await new Promise((resolve) => late.server.close(resolve))
+    }
+  })
 })
