@@ -73,11 +73,10 @@ module Selenium
         )
         # Stack traces on console messages are optional.
         expect(log_entry.stack_trace).to be_nil.or match(
-          # Some browsers include stack traces from parts of the runtime, so we
-          # just check the first frames that come from user code.
+          # Some browsers include stack traces from parts of the runtime, and
+          # Firefox beta may only report the first user-code frame here.
           'callFrames' => start_with(
-            a_stack_frame('functionName' => 'helloWorld'),
-            a_stack_frame('functionName' => 'onclick')
+            a_stack_frame('functionName' => 'helloWorld')
           )
         )
       end

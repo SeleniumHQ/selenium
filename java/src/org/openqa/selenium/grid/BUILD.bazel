@@ -159,6 +159,7 @@ java_export(
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid/commands",
         "//java/src/org/openqa/selenium/grid/distributor/httpd",
+        "//java/src/org/openqa/selenium/grid/distributor/redis",
         "//java/src/org/openqa/selenium/grid/node/httpd",
         "//java/src/org/openqa/selenium/grid/router/httpd",
         "//java/src/org/openqa/selenium/grid/session",

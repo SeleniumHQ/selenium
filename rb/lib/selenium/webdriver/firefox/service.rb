@@ -33,25 +33,35 @@ module Selenium
             args << '0'
           end
 
-          if ENV.key?('SE_DEBUG')
-            remove_log_args(args)
-            args << '-v'
-          end
+          configure_debug_args(args) if ENV.key?('SE_DEBUG')
+
+          super
+        end
+
+        def launch
+          configure_debug_args(args) if ENV.key?('SE_DEBUG')
 
           super
         end
 
         private
 
-        def remove_log_args(args)
-          if (index = args.index('--log'))
-            args.delete_at(index) # delete '--log'
-            args.delete_at(index) if args[index] && !args[index].start_with?('-') # delete value if present
-            warn_driver_log_override
-          elsif (index = args.index { |arg| arg.start_with?('--log=') })
-            args.delete_at(index)
-            warn_driver_log_override
+        def configure_debug_args(args)
+          # An explicit geckodriver log setting is more specific than Selenium's
+          # generic SE_DEBUG fallback, so preserve it and skip adding `-v`.
+          if args.any? { |arg| arg.start_with?('--log') }
+            warn_explicit_log_preference unless @log_preference_warned
+            @log_preference_warned = true
+            args.reject! { |arg| arg.start_with?('-v') }
+            return
           end
+
+          args << '-v' unless args.any? { |arg| /\A-v+\z/.match?(arg) }
+        end
+
+        def warn_explicit_log_preference
+          WebDriver.logger.warn('SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of ' \
+                                'adding -v', id: :se_debug)
         end
       end # Service
     end # Firefox

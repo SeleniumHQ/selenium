@@ -126,8 +126,7 @@ class EndToEndTest {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 System.out.println(Contents.string(response));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                return status != null && Boolean.parseBoolean(status.get("ready").toString());
               });
     }
   }

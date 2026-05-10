@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.emulation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.bidi.emulation.SetNetworkConditionsParameters.offline;
 import static org.openqa.selenium.bidi.emulation.SetNetworkConditionsParameters.online;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,6 @@ import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SetNetworkConditionsTest extends JupiterTestBase {
 
@@ -48,7 +46,6 @@ public class SetNetworkConditionsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetNetworkConditionsOfflineWithContext() {
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
@@ -73,7 +70,6 @@ public class SetNetworkConditionsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canSetNetworkConditionsOfflineWithUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();

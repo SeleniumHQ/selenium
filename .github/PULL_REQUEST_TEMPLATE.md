@@ -12,6 +12,14 @@
 <!--- Why did you implement it this way? -->
 <!--- What alternatives to this approach did you consider? -->
 
+### 🤖 AI assistance
+<!-- Check one. See CONTRIBUTING.md for policy details. -->
+- [ ] No substantial AI assistance used
+- [ ] AI assisted (complete below)
+    - Tool(s):
+    - What was generated:
+    - [ ] I reviewed all AI output and can explain the change
+
 ### 💡 Additional Considerations
 <!--- Are there any decisions that need to be made before accepting this PR? -->
 <!--- Is there any follow-on work that needs to be done? (e.g., docs, tests, etc.) -->

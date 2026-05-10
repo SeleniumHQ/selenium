@@ -38,7 +38,7 @@ internal class WebExtensionTests : BiDiTestFixture
     [Test]
     public async Task CanInstallPathWebExtension()
     {
-        string path = Path.GetFullPath("common/extensions/webextensions-selenium-example");
+        string path = LocateRelativePath("common/extensions/webextensions-selenium-example");
 
         var result = await bidi.WebExtension.InstallAsync(new ExtensionPath(path));
 

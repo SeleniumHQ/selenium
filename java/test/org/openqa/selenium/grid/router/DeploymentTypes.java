@@ -303,8 +303,7 @@ public enum DeploymentTypes {
               c -> {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                return status != null && Boolean.parseBoolean(status.get("ready").toString());
               });
     } finally {
       Safely.safelyCall(client::close);
