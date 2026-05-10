@@ -4,10 +4,11 @@ This guide helps contributors write tests, maintain code style, and generate doc
 
 ## Local Development Setup
 
-Before running tests, navigate to the `rb/` directory and install the required dependencies.
+Before running tests, navigate to the `rb/` directory and install the required dependencies. A recent Bundler (2.4 or newer) is recommended.
 
 ```shell
 cd rb
+gem install bundler -v '~> 2.4'
 bundle install
 ```
 
@@ -269,6 +270,23 @@ Instead of using `irb`, you can create an interactive REPL with all gems loaded 
 ```shell
 bazel run //rb:console
 ```
+
+### Debugging with the `debug` gem
+
+Use the [`debug`](https://github.com/ruby/debug) gem to set breakpoints inside specs or library code:
+
+1. Add `binding.break` where you want the debugger to stop.
+2. Run the test with the `ruby_debug` configuration:
+
+   ```shell
+   bazel test --config ruby_debug <test>
+   ```
+
+3. In a separate terminal, attach to the running debugger:
+
+   ```shell
+   bazel-selenium/external/bundle/bin/rdbg -A
+   ```
 
 ## Environment Variables
 
