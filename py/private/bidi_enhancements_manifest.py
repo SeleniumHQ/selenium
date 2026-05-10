@@ -620,6 +620,27 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
         ],
     },
     "script": {
+        "extra_dataclasses": [
+            '''@dataclass
+class DomMutation:
+    """Represents a DOM attribute mutation event from add_dom_mutation_handler.
+
+    Attributes:
+        element_id: The ``data-__webdriver_id`` attribute value set on the
+            mutated element by the MutationObserver. Use this to locate the
+            element from the main thread if needed.
+        attribute_name: The name of the changed attribute.
+        current_value: The attribute value after the mutation (may be ``None``
+            if the attribute was removed).
+        old_value: The attribute value before the mutation.
+    """
+
+    element_id: str | None = None
+    attribute_name: str | None = None
+    current_value: str | None = None
+    old_value: str | None = None
+''',
+        ],
         "extra_methods": [
             '''    def execute(self, function_declaration: str, *args, context_id: str | None = None) -> Any:
         """Execute a function declaration in the browser context.
@@ -992,6 +1013,158 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
             '''    def remove_javascript_error_handler(self, callback_id: int) -> None:
         """Remove a JavaScript error handler by callback ID."""
         self._unsubscribe_log_entry(callback_id)''',
+            '''    def _subscribe_mutation_handler(self, callback):
+        """Subscribe to DOM mutation events using a BiDi preload script and script.message channel.
+
+        Loads bidi-mutation-listener.js as a preload script with a channel argument,
+        then subscribes to script.message events from that channel to detect
+        DOM attribute mutations.
+        """
+        import json as _json
+        import pkgutil as _pkgutil
+        import threading as _threading
+        from selenium.webdriver.common.bidi.session import Session as _Session
+
+        bidi_event = "script.message"
+
+        if not hasattr(self, "_mutation_subscriptions"):
+            self._mutation_subscriptions = {}
+            self._mutation_lock = _threading.Lock()
+
+        # Load bidi-mutation-listener.js only once (cache it on the instance)
+        if not hasattr(self, "_bidi_mutation_listener_js"):
+            _pkg = "selenium.webdriver.common"
+            _js_bytes = _pkgutil.get_data(_pkg, "bidi-mutation-listener.js")
+            if _js_bytes is None:
+                raise ValueError("Failed to load bidi-mutation-listener.js")
+            self._bidi_mutation_listener_js = _js_bytes.decode("utf8").strip()
+
+        # Use a stable, namespaced channel to avoid collisions with user scripts.
+        if not hasattr(self, "_mutation_channel_name"):
+            import uuid as _uuid
+            self._mutation_channel_name = f"selenium.domMutation.{_uuid.uuid4().hex}"
+        _channel_name = self._mutation_channel_name
+        _channel_arg = {"type": "channel", "value": {"channel": _channel_name}}
+
+        def _on_message(message):
+            # Filter to only our channel
+            channel = message.get("channel") if isinstance(message, dict) else None
+            if channel != _channel_name:
+                return
+            data = message.get("data", {}) if isinstance(message, dict) else {}
+            value = data.get("value") if isinstance(data, dict) else None
+            if value is None:
+                return
+            try:
+                payload = _json.loads(value)
+            except (ValueError, TypeError):
+                return
+            target_id = payload.get("target")
+            if not target_id and target_id != 0:
+                return
+            from selenium.webdriver.common.bidi.script import DomMutation as _DomMutation
+            event = _DomMutation(
+                element_id=str(target_id),
+                attribute_name=payload.get("name"),
+                current_value=payload.get("value"),
+                old_value=payload.get("oldValue"),
+            )
+            callback(event)
+
+        class _BidiRef:
+            event_class = bidi_event
+
+            def from_json(self2, p):
+                return p
+
+        with self._mutation_lock:
+            # Register the preload script only once per Script instance to avoid
+            # accumulating duplicate MutationObservers across handler registrations.
+            if not hasattr(self, "_mutation_preload_script_id"):
+                self._mutation_preload_script_id = self._add_preload_script(
+                    self._bidi_mutation_listener_js, arguments=[_channel_arg]
+                )
+                # Also invoke immediately on the current page since the preload
+                # script only fires on future document creations.
+                if self._driver is not None:
+                    _context = None
+                    try:
+                        _context = self._driver.current_window_handle
+                    except Exception:
+                        pass
+                    if _context is not None:
+                        self.call_function(
+                            function_declaration=self._bidi_mutation_listener_js,
+                            target={"context": _context},
+                            await_promise=False,
+                            arguments=[_channel_arg],
+                        )
+            if bidi_event not in self._mutation_subscriptions:
+                session = _Session(self._conn)
+                result = session.subscribe([bidi_event])
+                sub_id = (
+                    result.get("subscription") if isinstance(result, dict) else None
+                )
+                self._mutation_subscriptions[bidi_event] = {
+                    "callbacks": [],
+                    "subscription_id": sub_id,
+                }
+            # Register the callback AFTER setup to avoid leaking it if setup fails.
+            _wrapper = _BidiRef()
+            callback_id = self._conn.add_callback(_wrapper, _on_message)
+            self._mutation_subscriptions[bidi_event]["callbacks"].append(callback_id)
+        return callback_id''',
+            '''    def _unsubscribe_mutation_handler(self, callback_id):
+        """Unsubscribe a DOM mutation handler by callback ID."""
+        from selenium.webdriver.common.bidi.session import Session as _Session
+
+        bidi_event = "script.message"
+        if not hasattr(self, "_mutation_subscriptions"):
+            return
+
+        class _BidiRef:
+            event_class = bidi_event
+
+            def from_json(self2, p):
+                return p
+
+        _wrapper = _BidiRef()
+        self._conn.remove_callback(_wrapper, callback_id)
+        with self._mutation_lock:
+            entry = self._mutation_subscriptions.get(bidi_event)
+            if entry and callback_id in entry["callbacks"]:
+                entry["callbacks"].remove(callback_id)
+            if entry is not None and not entry["callbacks"]:
+                session = _Session(self._conn)
+                sub_id = entry.get("subscription_id")
+                if sub_id:
+                    session.unsubscribe(subscriptions=[sub_id])
+                else:
+                    session.unsubscribe(events=[bidi_event])
+                del self._mutation_subscriptions[bidi_event]
+                if hasattr(self, "_mutation_preload_script_id"):
+                    preload_script_id = self._mutation_preload_script_id
+                    try:
+                        self._remove_preload_script(preload_script_id)
+                    finally:
+                        del self._mutation_preload_script_id''',
+            '''    def add_dom_mutation_handler(self, callback: Callable) -> int:
+        """Add a handler for DOM attribute mutation events.
+
+        Uses a BiDi preload script and channel to observe DOM attribute mutations
+        on the page. When an attribute changes, the callback is invoked with a
+        ``DomMutation`` object describing the element and attribute change.
+
+        Args:
+            callback: Function called with a ``DomMutation`` on each attribute mutation.
+
+        Returns:
+            callback_id for use with remove_dom_mutation_handler.
+        """
+        return self._subscribe_mutation_handler(callback)''',
+            '''    def remove_dom_mutation_handler(self, callback_id: int) -> None:
+        """Remove a DOM mutation handler by callback ID."""
+        self._unsubscribe_mutation_handler(callback_id)''',
         ],
     },
     "network": {
@@ -1048,8 +1221,20 @@ disownDataParameters = DisownDataParameters''',
         params.update(kwargs)
         self._conn.execute(_cb("network.continueRequest", params))''',
         ],
+        # Override auth_required to use raw dict so _auth_callback receives all
+        # fields (including "request") from the BiDi event params.  The
+        # generated AuthRequiredParameters dataclass only contains "response",
+        # losing the "request" field that holds the request ID required to call
+        # network.continueWithAuth.  extra_events entries appear last in the
+        # EVENT_CONFIGS dict literal, so this duplicate key overrides the
+        # CDDL-generated entry.
         # Add before_request event (maps to network.beforeRequestSent)
         "extra_events": [
+            {
+                "event_key": "auth_required",
+                "bidi_event": "network.authRequired",
+                "event_class": "dict",
+            },
             {
                 "event_key": "before_request",
                 "bidi_event": "network.beforeRequestSent",
@@ -1087,24 +1272,37 @@ disownDataParameters = DisownDataParameters''',
         self._conn.execute(_cb("network.removeIntercept", {"intercept": intercept_id}))
         if intercept_id in self.intercepts:
             self.intercepts.remove(intercept_id)''',
+            '''    def _canonical_request_handler_event(self, event):
+        """Map public request-handler aliases to supported event keys."""
+        event_aliases = {
+            "auth_required": "auth_required",
+            "before_request": "before_request",
+            "before_request_sent": "before_request",
+        }
+        canonical_event = event_aliases.get(event)
+        if canonical_event is None:
+            available_events = ", ".join(sorted(event_aliases))
+            raise ValueError(
+                f"Unsupported request handler event '{event}'. Available events: {available_events}"
+            )
+        return canonical_event''',
             '''    def add_request_handler(self, event, callback, url_patterns=None):
         """Add a handler for network requests at the specified phase.
 
         Args:
-            event: Event name, e.g. ``"before_request"``.
+            event: Event name, e.g. ``"before_request"`` or ``"before_request_sent"``.
             callback: Callable receiving a :class:`Request` instance.
             url_patterns: optional list of URL pattern dicts to filter.
 
         Returns:
             callback_id int for later removal via remove_request_handler.
         """
+        canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",
-            "before_request_sent": "beforeRequestSent",
-            "response_started": "responseStarted",
             "auth_required": "authRequired",
         }
-        phase = phase_map.get(event, "beforeRequestSent")
+        phase = phase_map[canonical_event]
         intercept_result = self._add_intercept(phases=[phase], url_patterns=url_patterns)
         intercept_id = intercept_result.get("intercept") if intercept_result else None
 
@@ -1117,7 +1315,7 @@ disownDataParameters = DisownDataParameters''',
             request = Request(self._conn, raw)
             callback(request)
 
-        callback_id = self.add_event_handler(event, _request_callback)
+        callback_id = self.add_event_handler(canonical_event, _request_callback)
         if intercept_id:
             self._handler_intercepts[callback_id] = intercept_id
         return callback_id''',
@@ -1128,7 +1326,8 @@ disownDataParameters = DisownDataParameters''',
             event: The event name used when adding the handler.
             callback_id: The int returned by add_request_handler.
         """
-        self.remove_event_handler(event, callback_id)
+        canonical_event = self._canonical_request_handler_event(event)
+        self.remove_event_handler(canonical_event, callback_id)
         intercept_id = self._handler_intercepts.pop(callback_id, None)
         if intercept_id:
             self._remove_intercept(intercept_id)''',
@@ -1652,6 +1851,295 @@ class PointerDownAction:
         """
         return self._event_manager.remove_event_handler("file_dialog_opened", handler_id)''',
         ],
+    },
+    "permissions": {
+        "module_docstring": (
+            "WebDriver BiDi permissions module.\n\n"
+            "Provides control over browser permission grants during automated tests,\n"
+            "as specified by the W3C Permissions specification.\n\n"
+            "Typical usage::\n\n"
+            "    driver.permissions.set_permission('geolocation', 'granted', origin)\n"
+        ),
+        "class_docstrings": {
+            "PermissionState": (
+                "Permission state constants.\n\n"
+                "GRANTED: The permission is granted — the browser will not prompt the user.\n"
+                "DENIED:  The permission is denied — the browser will block the request.\n"
+                "PROMPT:  The browser will show a permission prompt (default browser behaviour)."
+            ),
+            "Permissions": (
+                "BiDi interface for controlling browser permissions.\n\nAccess via ``driver.permissions``."
+            ),
+        },
+        "extra_dataclasses": [
+            '''class PermissionDescriptor:
+    """Descriptor identifying a permission by name.
+
+    Args:
+        name: The permission name (e.g. 'geolocation', 'microphone', 'camera').
+    """
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def __repr__(self) -> str:
+        return f"PermissionDescriptor(name={self.name!r})"''',
+        ],
+        "extra_methods": [
+            '''    def set_permission(
+        self,
+        descriptor: "PermissionDescriptor | str",
+        state: "PermissionState | str",
+        origin: str | None = None,
+        user_context: str | None = None,
+        *,
+        embedded_origin: str | None = None,
+    ) -> None:
+        """Set a browser permission.
+
+        Args:
+            descriptor: The permission descriptor or permission name as a string.
+            state: The desired permission state (granted, denied, or prompt).
+            origin: The origin to scope the permission to.
+            user_context: Optional user context ID to scope the permission.
+            embedded_origin: Keyword-only. Embedded origin for cross-origin
+                iframes; scopes the permission to that iframe's origin.
+
+        Raises:
+            ValueError: If *state* is not a valid permission state.
+        """
+        state_value = state.value if isinstance(state, PermissionState) else state
+        valid_states = {"granted", "denied", "prompt"}
+        if state_value not in valid_states:
+            raise ValueError(
+                f"Invalid permission state: {state_value!r}. "
+                f"Must be one of {sorted(valid_states)}"
+            )
+
+        descriptor_dict = {"name": descriptor} if isinstance(descriptor, str) else {"name": descriptor.name}
+
+        params: dict = {
+            "descriptor": descriptor_dict,
+            "state": state_value,
+        }
+        if origin is not None:
+            params["origin"] = origin
+        if embedded_origin is not None:
+            params["embeddedOrigin"] = embedded_origin
+        if user_context is not None:
+            params["userContext"] = user_context
+
+        cmd = command_builder("permissions.setPermission", params)
+        self._conn.execute(cmd)''',
+        ],
+    },
+    "bluetooth": {
+        "module_docstring": (
+            "WebDriver BiDi bluetooth module.\n\n"
+            "Provides a simulation API for Web Bluetooth, allowing tests to fake\n"
+            "Bluetooth adapters, nearby peripherals, GATT services, characteristics,\n"
+            "and descriptors without physical hardware.\n"
+        ),
+        "class_docstrings": {
+            "Bluetooth": (
+                "BiDi interface for simulating Web Bluetooth hardware.\n\n"
+                "Simulate adapters, peripherals, GATT services, characteristics,\n"
+                "and descriptors without physical hardware."
+            ),
+            "RequestDeviceInfo": (
+                "Identifies a simulated Bluetooth device returned in a device-request prompt.\n\n"
+                "Attributes:\n"
+                "    id: The internal device identifier.\n"
+                "    name: The human-readable device name shown in the prompt."
+            ),
+            "SimulateAdapterParameters": (
+                "Parameters for simulating a Bluetooth adapter state.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    le_supported: Whether the adapter supports Bluetooth Low Energy.\n"
+                "    state: Adapter power state (e.g. 'powered-on', 'powered-off', 'absent')."
+            ),
+            "SimulatePreconnectedPeripheralParameters": (
+                "Parameters for adding a pre-connected simulated peripheral.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The Bluetooth device address (e.g. '09:09:09:09:09:09').\n"
+                "    name: The device name advertised to the page.\n"
+                "    manufacturer_data: List of manufacturer-specific data records.\n"
+                "    known_service_uuids: UUIDs of GATT services the device exposes."
+            ),
+            "SimulateAdvertisementParameters": (
+                "Parameters for injecting a simulated advertisement packet.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    scan_entry: The advertisement scan record to inject."
+            ),
+            "SimulateGattConnectionResponseParameters": (
+                "Parameters for simulating a GATT connection response.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The address of the peripheral.\n"
+                "    code: The ATT error code (0 = success)."
+            ),
+            "SimulateCharacteristicParameters": (
+                "Parameters for adding a simulated GATT characteristic to a service.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID the characteristic belongs to.\n"
+                "    characteristic: UUID of the characteristic.\n"
+                "    properties: Supported operations (read, write, notify, etc.)."
+            ),
+        },
+        "command_docstrings": {
+            "handle_request_device_prompt": (
+                "Dismiss or accept a Bluetooth device-chooser prompt.\n\n"
+                "Args:\n"
+                "    context: The browsing context containing the prompt.\n"
+                "    prompt: The prompt ID returned in the prompt-opened event."
+            ),
+            "simulate_adapter": (
+                "Simulate a Bluetooth adapter in the given browsing context.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    le_supported: Whether Low Energy is supported.\n"
+                "    state: Adapter state ('powered-on', 'powered-off', 'absent')."
+            ),
+            "disable_simulation": (
+                "Disable all Bluetooth simulation in the given context, restoring real behaviour.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to stop simulating."
+            ),
+            "simulate_preconnected_peripheral": (
+                "Register a simulated peripheral as already connected to the adapter.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The Bluetooth device address.\n"
+                "    name: The device name.\n"
+                "    manufacturer_data: Manufacturer-specific advertisement data.\n"
+                "    known_service_uuids: List of GATT service UUIDs the device exposes."
+            ),
+            "simulate_advertisement": (
+                "Inject a simulated Bluetooth advertisement packet.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    scan_entry: The advertisement scan record to inject."
+            ),
+            "simulate_gatt_connection_response": (
+                "Respond to a pending GATT connection attempt from the page.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    code: ATT error code (0 = success; non-zero signals failure)."
+            ),
+            "simulate_gatt_disconnection": (
+                "Simulate a GATT disconnection for the given peripheral.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The address of the peripheral to disconnect."
+            ),
+            "simulate_service": (
+                "Add a simulated GATT service to a peripheral.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    uuid: The service UUID."
+            ),
+            "simulate_characteristic": (
+                "Add a simulated GATT characteristic to a service.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    properties: Supported operations bitmap."
+            ),
+            "simulate_characteristic_response": (
+                "Respond to a pending read or write on a simulated characteristic.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    code: ATT error code (0 = success).\n"
+                "    body: The characteristic value bytes (for reads)."
+            ),
+            "simulate_descriptor": (
+                "Add a simulated GATT descriptor to a characteristic.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    descriptor: The descriptor UUID."
+            ),
+            "simulate_descriptor_response": (
+                "Respond to a pending read or write on a simulated descriptor.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    descriptor: The descriptor UUID.\n"
+                "    code: ATT error code (0 = success).\n"
+                "    body: The descriptor value bytes (for reads)."
+            ),
+        },
+    },
+    "speculation": {
+        "module_docstring": (
+            "WebDriver BiDi speculation module.\n\n"
+            "Provides events for observing the status of Speculation Rules prefetch\n"
+            "requests initiated by the browser (e.g. via <script type='speculationrules'>).\n"
+        ),
+        "class_docstrings": {
+            "Speculation": ("BiDi interface for observing Speculation Rules prefetch activity."),
+            "PreloadingStatus": (
+                "Status values for a speculation-rules prefetch operation.\n\n"
+                "PENDING: The prefetch has been queued but not yet attempted.\n"
+                "READY:   The prefetch succeeded and the resource is cached.\n"
+                "SUCCESS: The prefetched navigation was used successfully.\n"
+                "FAILURE: The prefetch failed or was cancelled."
+            ),
+            "PrefetchStatusUpdatedParameters": (
+                "Event payload emitted when a prefetch status changes.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID that owns the speculation rule.\n"
+                "    url: The URL being prefetched.\n"
+                "    status: The new prefetch status (see PreloadingStatus)."
+            ),
+        },
+    },
+    "userAgentClientHints": {
+        "module_docstring": (
+            "WebDriver BiDi userAgentClientHints module.\n\n"
+            "Provides an API for overriding the User-Agent Client Hints reported\n"
+            "by the browser, enabling tests to simulate different devices, platforms,\n"
+            "and browser brands without changing the actual browser binary.\n"
+        ),
+        "class_docstrings": {
+            "UserAgentClientHints": ("BiDi interface for overriding User-Agent Client Hints."),
+            "ClientHintsMetadata": (
+                "Full set of User-Agent Client Hint values to override.\n\n"
+                "Attributes:\n"
+                "    brands: List of browser brand/version pairs (e.g. [BrandVersion('Chrome', '120')]).\n"
+                "    full_version_list: Brands with full version strings.\n"
+                "    platform: Operating system name (e.g. 'Windows', 'macOS').\n"
+                "    platform_version: OS version string.\n"
+                "    architecture: CPU architecture (e.g. 'x86', 'arm').\n"
+                "    model: Device model (primarily for mobile).\n"
+                "    mobile: True if the UA should appear to be a mobile device.\n"
+                "    bitness: Pointer-size bitness string ('32' or '64').\n"
+                "    wow64: True if running a 32-bit process on 64-bit Windows.\n"
+                "    form_factors: Device form factors (e.g. 'Desktop', 'Phone')."
+            ),
+            "BrandVersion": (
+                "A single browser brand entry used in Client Hints brand lists.\n\n"
+                "Attributes:\n"
+                "    brand: The browser/engine brand name (e.g. 'Google Chrome').\n"
+                "    version: The major or full version string (e.g. '120')."
+            ),
+        },
     },
 }
 

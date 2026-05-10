@@ -10,8 +10,10 @@ nuget Humanizer.Core 2.8.26
 nuget Microsoft.Extensions.DependencyInjection 3.1.9
 nuget Moq 4.20.72
 nuget NETStandard.Library 2.0.3
-nuget NUnit 3.13.2
-nuget NUnitLite 3.13.2
+nuget NUnit 4.5.1
+nuget NUnit3TestAdapter 6.2.0
+nuget Microsoft.Testing.Platform 2.1.0
+nuget Microsoft.Testing.Extensions.VSTestBridge 2.1.0
 nuget System.Text.Json 8.0.5
 nuget System.Threading.Channels 8.0.0
 nuget Runfiles 0.14.0

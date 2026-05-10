@@ -92,9 +92,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
       if (remote.getSessionId() != null) {
         ex.addInfo(WebDriverException.SESSION_ID, remote.getSessionId().toString());
       }
-      if (remote.getCapabilities() != null) {
-        ex.addInfo("Capabilities", remote.getCapabilities().toString());
-      }
+      ex.addInfo("Capabilities", remote.getCapabilities().toString());
     }
     throw ex;
   }

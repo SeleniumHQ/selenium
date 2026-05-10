@@ -85,7 +85,6 @@ public class ChromiumDriver extends RemoteWebDriver
       name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
-  private final Capabilities capabilities;
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;

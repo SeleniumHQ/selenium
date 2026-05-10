@@ -22,10 +22,12 @@ toolchain(
     exec_compatible_with = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
+        "@llvm//constraints/libc:gnu.2.28",
     ],
     target_compatible_with = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
+        "@llvm//constraints/libc:gnu.2.28",
     ],
     toolchain = "//common/remote-build/cc:cc-compiler-k8",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
@@ -36,6 +38,7 @@ platform(
     constraint_values = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
+        "@llvm//constraints/libc:gnu.2.28",
     ],
     exec_properties = {
         "container-image": "docker://docker.io/selenium/selenium-remote-build@sha256:ca164352826812f02eaa1b4dab89adcf5b3e57deb6798dd9f15d004099db59fe",

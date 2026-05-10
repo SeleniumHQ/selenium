@@ -24,7 +24,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
 import org.jspecify.annotations.Nullable;
@@ -114,7 +113,7 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   @Nullable
-  private <T> T makeRequest(HttpRequest request, Type typeOfT) {
+  private <T> T makeRequest(HttpRequest request, Class<T> typeOfT) {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 
     HttpResponse response = client.execute(request);

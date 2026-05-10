@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.ErrorCodec;
@@ -36,6 +38,19 @@ public class Values {
   private static final Json JSON = new Json();
   private static final ErrorCodec ERRORS = ErrorCodec.createDefault();
 
+  public static <T> T parse(HttpResponse response, Class<T> classOfT) {
+    return Require.nonNull(classOfT.getSimpleName(), get(response, classOfT));
+  }
+
+  public static void parse(HttpResponse response) {
+    get(response, Void.class);
+  }
+
+  public static boolean parseBoolean(HttpResponse response) {
+    return Boolean.TRUE.equals(get(response, Boolean.class));
+  }
+
+  @Nullable
   public static <T> T get(HttpResponse response, Type typeOfT) {
     try (Reader reader = reader(response);
         JsonInput input = JSON.newInput(reader)) {

@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Runtime.CompilerServices;
+
 namespace OpenQA.Selenium.Internal.Logging;
 
 /// <summary>
@@ -31,10 +33,22 @@ public interface ILogger
     void Trace(string message);
 
     /// <summary>
+    /// Writes a trace-level log message using an interpolated string handler that defers string construction.
+    /// </summary>
+    /// <param name="handler">The interpolated string handler.</param>
+    void Trace([InterpolatedStringHandlerArgument("")] ref TraceLogStringHandler handler);
+
+    /// <summary>
     /// Writes a debug-level log message.
     /// </summary>
     /// <param name="message">The log message.</param>
     void Debug(string message);
+
+    /// <summary>
+    /// Writes a debug-level log message using an interpolated string handler that defers string construction.
+    /// </summary>
+    /// <param name="handler">The interpolated string handler.</param>
+    void Debug([InterpolatedStringHandlerArgument("")] ref DebugLogStringHandler handler);
 
     /// <summary>
     /// Writes an info-level log message.
@@ -43,16 +57,34 @@ public interface ILogger
     void Info(string message);
 
     /// <summary>
+    /// Writes an info-level log message using an interpolated string handler that defers string construction.
+    /// </summary>
+    /// <param name="handler">The interpolated string handler.</param>
+    void Info([InterpolatedStringHandlerArgument("")] ref InfoLogStringHandler handler);
+
+    /// <summary>
     /// Writes a warning-level log message.
     /// </summary>
     /// <param name="message">The log message.</param>
     void Warn(string message);
 
     /// <summary>
+    /// Writes a warning-level log message using an interpolated string handler that defers string construction.
+    /// </summary>
+    /// <param name="handler">The interpolated string handler.</param>
+    void Warn([InterpolatedStringHandlerArgument("")] ref WarnLogStringHandler handler);
+
+    /// <summary>
     /// Writes an error-level log message.
     /// </summary>
     /// <param name="message">The log message.</param>
     void Error(string message);
+
+    /// <summary>
+    /// Writes an error-level log message using an interpolated string handler that defers string construction.
+    /// </summary>
+    /// <param name="handler">The interpolated string handler.</param>
+    void Error([InterpolatedStringHandlerArgument("")] ref ErrorLogStringHandler handler);
 
     /// <summary>
     /// Writes a log message with a specific timestamp and log level.

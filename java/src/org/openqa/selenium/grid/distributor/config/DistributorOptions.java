@@ -144,4 +144,17 @@ public class DistributorOptions {
         .getBool(DISTRIBUTOR_SECTION, "reject-unsupported-caps")
         .orElse(DEFAULT_REJECT_UNSUPPORTED_CAPS);
   }
+
+  public Optional<URI> getBackendUri() {
+    return config
+        .get(DISTRIBUTOR_SECTION, "backend-url")
+        .map(
+            str -> {
+              try {
+                return new URI(str);
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Distributor backend-url is not a valid URI: " + str);
+              }
+            });
+  }
 }

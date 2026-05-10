@@ -71,56 +71,49 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
     [Test]
     public void CanDismissUnhandledAlertsByDefault()
     {
-        ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Default, "null");
+        ExecuteTestWithUnhandledPrompt(null, "null");
+    }
+
+    [Test]
+    public void CanDismissUnhandledAlertsViaPerType()
+    {
+        ExecuteTestWithUnhandledPrompt(new UserPromptHandler.PerPromptType
+        {
+            Alert = UnhandledPromptBehavior.Dismiss
+        }, "null");
+    }
+
+    [Test]
+    public void CanDismissUnhandledAlertsViaDefaultPerType()
+    {
+        ExecuteTestWithUnhandledPrompt(new UserPromptHandler.PerPromptType(), "null");
     }
 
     [Test]
     [IgnoreBrowser(Browser.Safari, "Test hangs waiting for alert acknowledgement in Safari, but works in Tech Preview")]
     public void CanIgnoreUnhandledAlert()
     {
-        Assert.That(() => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"), Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());
+        Assert.That(
+            () => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"),
+            Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());
         localDriver.SwitchTo().Alert().Dismiss();
     }
 
-    private void ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior behavior, string expectedAlertText)
+    private void ExecuteTestWithUnhandledPrompt(UserPromptHandler behavior, string expectedAlertText)
     {
-        bool silentlyHandlePrompt = behavior == UnhandledPromptBehavior.Accept || behavior == UnhandledPromptBehavior.Dismiss;
-        UnhandledPromptBehaviorOptions options = new UnhandledPromptBehaviorOptions();
-        if (behavior != UnhandledPromptBehavior.Default)
+        UnhandledPromptBehaviorOptions options = new()
         {
-            options.UnhandledPromptBehavior = behavior;
-        }
+            UnhandledPromptBehavior = behavior,
+        };
 
         localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
         localDriver.Url = alertsPage;
         IWebElement resultElement = localDriver.FindElement(By.Id("text"));
         localDriver.FindElement(By.Id("prompt-with-default")).Click();
 
-        WaitFor(ElementTextToBeEqual(resultElement, expectedAlertText, silentlyHandlePrompt), "Did not find text");
+        WaitFor(() => resultElement.Text == expectedAlertText, "Did not find text");
     }
 
-    private Func<bool> ElementTextToBeEqual(IWebElement resultElement, string expectedAlertText, bool silentlyHandlePrompt)
-    {
-        return () =>
-        {
-            try
-            {
-                return resultElement.Text == expectedAlertText;
-            }
-            catch (UnhandledAlertException)
-            {
-                if (!silentlyHandlePrompt)
-                {
-                    throw;
-                }
-            }
-            catch (NoSuchElementException)
-            {
-            }
-
-            return false;
-        };
-    }
 
     public class UnhandledPromptBehaviorOptions : DriverOptions
     {
