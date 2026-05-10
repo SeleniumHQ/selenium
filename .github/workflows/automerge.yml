@@ -1,0 +1,46 @@
+name: Auto Merge
+
+on:
+  workflow_run:
+    workflows: ["CI - RBE"]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  automerge:
+    name: Auto Merge
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.actor.login == 'selenium-ci'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Check pull request eligibility
+        id: eligible
+        run: |
+          eligible=$(gh pr view "$BRANCH" --repo "$REPO" --json headRefName,headRefOid,labels,state --jq '
+            .state == "OPEN" and
+            .headRefOid == env.SHA and
+            any(.labels[].name; . == "automerge")
+          ')
+          echo "eligible=$eligible" >> "$GITHUB_OUTPUT"
+
+      - name: Check for failed checks
+        if: steps.eligible.outputs.eligible == 'true'
+        id: checks
+        run: |
+          failed=$(gh api "repos/$REPO/commits/$SHA/check-runs" --jq 'any(.check_runs[]; .conclusion == "failure" or .conclusion == "cancelled")')
+          echo "failed=$failed" >> "$GITHUB_OUTPUT"
+
+      - name: Enable automerge
+        if: steps.eligible.outputs.eligible == 'true' && steps.checks.outputs.failed == 'false'
+        run: |
+          gh pr merge "$BRANCH" --repo "$REPO" --auto --squash --delete-branch --match-head-commit "$SHA"
