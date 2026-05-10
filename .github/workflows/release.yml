@@ -59,6 +59,47 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  create-language-tag:
+    name: Create Language Tag
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language != 'all'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create language-specific tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          gh api -X POST /repos/${{ github.repository }}/git/refs \
+            -f ref="refs/tags/${TAG}" \
+            -f sha="${SHA}"
+
+  github-release-draft:
+    name: GitHub Release Draft
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language == 'all'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Create draft GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          allowUpdates: true
+          bodyFile: "scripts/github-actions/release_header.md"
+          generateReleaseNotes: true
+          name: "Selenium ${{ needs.parse-tag.outputs.version }}"
+          tag: "${{ needs.parse-tag.outputs.tag }}"
+          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+
   publish:
     name: Build and Publish ${{ matrix.language }}
     needs: [parse-tag, get-approval]
@@ -111,13 +152,14 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
-  github-release:
-    name: GitHub Release
-    needs: [parse-tag, publish]
+  github-release-publish:
+    name: GitHub Release Publish
+    needs: [parse-tag, publish, github-release-draft]
     if: >-
-      needs.parse-tag.outputs.language == 'all' ||
+      always() && !failure() && !cancelled() &&
+      (needs.parse-tag.outputs.language == 'all' ||
       needs.parse-tag.outputs.language == 'java' ||
-      needs.parse-tag.outputs.language == 'dotnet'
+      needs.parse-tag.outputs.language == 'dotnet')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -139,6 +181,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
+          path: "build/dist/"
       - name: Delete nightly release and tag
         if: needs.parse-tag.outputs.language == 'all'
         env:
@@ -150,34 +193,24 @@ jobs:
           if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
             gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
           fi
-      - name: Create GitHub release
-        if: needs.parse-tag.outputs.language == 'all'
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "build/dist/*.*"
-          bodyFile: "scripts/github-actions/release_header.md"
-          generateReleaseNotes: true
-          name: "Selenium ${{ needs.parse-tag.outputs.version }}"
-          tag: "${{ needs.parse-tag.outputs.tag }}"
-          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
-      - name: Update GitHub release
-        if: needs.parse-tag.outputs.language != 'all'
+      - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
           BASE_VERSION="${VERSION%.*}.0"
           gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
+          gh release edit "selenium-$BASE_VERSION" --draft=false
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [parse-tag, publish, publish-python, github-release]
+    needs: [parse-tag, publish, publish-python, github-release-publish, create-language-tag]
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
-      needs.github-release.result != 'failure'
+      needs.github-release-publish.result != 'failure' &&
+      needs.create-language-tag.result != 'failure'
     permissions:
       contents: write
     strategy:
@@ -253,7 +286,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, github-release, update-version, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, github-release-publish, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -269,7 +302,7 @@ jobs:
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
             • Docs Updated: ${{ needs.docs.result }}
-            • GitHub Release Published: ${{ needs.github-release.result }}
+            • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
