@@ -405,7 +405,30 @@ use_repo(rust_toolchains, "default_rust_toolchains")
 
 register_toolchains("@default_rust_toolchains//:all")
 
-register_toolchains("@llvm//toolchain:all")
+llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "macos",
+)
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "linux",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "linux",
+)
+use_repo(llvm_toolchains, "llvm_toolchains")
+
+register_toolchains("@llvm_toolchains//:all")
 
 crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
 crate.from_cargo(

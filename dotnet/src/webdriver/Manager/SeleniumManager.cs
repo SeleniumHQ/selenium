@@ -19,9 +19,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
-#if !NET8_0_OR_GREATER
 using System.Runtime.InteropServices;
-#endif
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
