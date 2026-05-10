@@ -138,7 +138,7 @@ warn_unreachable = false
 
 [[tool.mypy.overrides]]
 module = [
-    "selenium/webdriver/common/devtools.*",
+    "selenium.webdriver.common.devtools.*",
     "selenium.webdriver.common.bidi.*",
 ]
 ignore_errors = true
