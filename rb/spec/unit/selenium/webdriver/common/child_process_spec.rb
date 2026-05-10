@@ -55,16 +55,17 @@ module Selenium
         process.env = {'SELENIUM_TEST_VAR' => 'test_value'}
 
         temp_file = Tempfile.new('selenium_test')
-        process.io = temp_file.path
+        temp_path = temp_file.path
+        temp_file.close
+        process.io = temp_path
 
         process.start
         process.wait
 
-        temp_file.close
-        output = File.read(temp_file.path).strip
+        output = File.read(temp_path).strip
         expect(output).to eq('test_value')
       ensure
-        temp_file.unlink
+        File.unlink(temp_path) if temp_path && File.exist?(temp_path)
       end
     end
   end
