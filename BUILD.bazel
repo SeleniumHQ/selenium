@@ -118,6 +118,22 @@ platform(
     ],
 )
 
+platform(
+    name = "local_linux_gnu",
+    constraint_values = [
+        "@llvm//constraints/libc:gnu.2.28",
+    ],
+    parents = ["@platforms//host"],
+)
+
+platform(
+    name = "local_windows_gnullvm",
+    constraint_values = [
+        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
+    ],
+    parents = ["@platforms//host"],
+)
+
 buildifier(
     name = "buildifier",
     lint_mode = "fix",

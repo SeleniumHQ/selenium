@@ -26,9 +26,18 @@ module Selenium
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
+          around do |example|
+            original_debug = ENV.fetch('SE_DEBUG', nil)
+            ENV.delete('SE_DEBUG')
+            example.run
+          ensure
+            original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
+          end
+
           before do
             allow(Platform).to receive(:assert_executable)
             allow(WebDriver.logger).to receive(:debug?).and_return(false)
+            allow(WebDriver.logger).to receive(:warn)
           end
 
           it 'uses default port and nil path' do
@@ -103,10 +112,11 @@ module Selenium
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds -v flag' do
@@ -115,26 +125,50 @@ module Selenium
               expect(service.extra_args).to include('-v')
             end
 
-            it 'removes conflicting --log args with value' do
+            it 'preserves conflicting --log args with value and warns' do
               service = described_class.new(args: ['--log', 'info'])
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log')
-              expect(service.extra_args).not_to include('info')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('info')
+              expect(WebDriver.logger).to have_received(:warn).with(
+                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
+                id: :se_debug
+              )
             end
 
-            it 'removes conflicting --log= args' do
+            it 'preserves conflicting --log= args and warns' do
               service = described_class.new(args: ['--log=info'])
 
-              expect(service.extra_args).to include('-v')
-              expect(service.extra_args).not_to include('--log=info')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log=info')
+              expect(WebDriver.logger).to have_received(:warn).with(
+                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
+                id: :se_debug
+              )
             end
 
             it 'does not remove next arg if --log has no value' do
               service = described_class.new(args: ['--log', '--other-flag'])
 
-              expect(service.extra_args).to include('-v')
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('--other-flag')
+            end
+
+            it 'preserves conflicting --log args added after initialization' do
+              service = described_class.new(path: service_path)
+              manager = instance_double(ServiceManager, start: nil)
+              service.args.push('--log', 'trace')
+
+              allow(ServiceManager).to receive(:new).with(service).and_return(manager)
+
+              service.launch
+
+              expect(service.extra_args).not_to include('-v')
+              expect(service.extra_args).to include('--log')
+              expect(service.extra_args).to include('trace')
+              expect(WebDriver.logger).to have_received(:warn).once
             end
           end
         end

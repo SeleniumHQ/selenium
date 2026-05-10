@@ -57,6 +57,10 @@ class Service(service.ChromiumService):
             **kwargs,
         )
 
+    def command_line_args(self) -> list[str]:
+        # yes, it is --enable-chrome-logs, even on msedgedriver
+        return ["--enable-chrome-logs", f"--port={self.port}"] + self._service_args
+
     @property
     def service_args(self) -> Sequence[str]:
         """Returns the sequence of service arguments."""

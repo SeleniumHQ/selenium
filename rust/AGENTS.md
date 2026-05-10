@@ -6,7 +6,6 @@
 
 ## Common commands
 - Build: `bazel build //rust/...`
-- Repin crates: `CARGO_BAZEL_REPIN=true bazel run @crates//:all`
 
 ## Testing
 See `rust/TESTING.md`

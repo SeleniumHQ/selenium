@@ -1,5 +1,5 @@
 load("@rules_dotnet//dotnet:defs.bzl", _csharp_binary = "csharp_binary", _csharp_library = "csharp_library", _csharp_test = "csharp_test")
-load("//dotnet:selenium-dotnet-version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
+load("//dotnet:version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
 load("//dotnet/private:dotnet_format.bzl", _dotnet_format = "dotnet_format")
 load("//dotnet/private:dotnet_nunit_test_suite.bzl", _dotnet_nunit_test_suite = "dotnet_nunit_test_suite")
 load("//dotnet/private:generate_devtools.bzl", _generate_devtools = "generate_devtools")
