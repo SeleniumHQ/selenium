@@ -8,6 +8,7 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
 load("//common:defs.bzl", "copy_file")
+load("//common/manager:defs.bzl", "selenium_manager_bundle")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
@@ -98,9 +99,8 @@ genrule(
     toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
 )
 
-copy_directory(
+selenium_manager_bundle(
     name = "manager-bundle",
-    src = "//common/manager:selenium-manager-bundle",
     out = "selenium/webdriver/common/manager",
 )
 

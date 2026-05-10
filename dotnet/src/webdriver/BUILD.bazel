@@ -1,5 +1,5 @@
-load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("//common:defs.bzl", "copy_file")
+load("//common/manager:defs.bzl", "selenium_manager_bundle")
 load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
     "//dotnet:version.bzl",
@@ -148,9 +148,8 @@ copy_file(
     out = "transitiveSelenium.WebDriver.props",
 )
 
-copy_directory(
+selenium_manager_bundle(
     name = "manager-bundle",
-    src = "//common/manager:selenium-manager-bundle",
     out = "manager",
     visibility = ["//dotnet/test/webdriver:__pkg__"],
 )

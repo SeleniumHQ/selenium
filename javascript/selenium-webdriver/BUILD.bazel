@@ -1,4 +1,3 @@
-load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
@@ -7,6 +6,7 @@ load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin =
 load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "bin")
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+load("//common/manager:defs.bzl", "selenium_manager_bundle")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
@@ -201,9 +201,8 @@ genrule(
     cmd = "cp $(locations //:license) $(@D)",
 )
 
-copy_directory(
+selenium_manager_bundle(
     name = "manager-bundle",
-    src = "//common/manager:selenium-manager-bundle",
     out = "bin/manager",
 )
 

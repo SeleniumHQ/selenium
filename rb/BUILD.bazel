@@ -1,4 +1,3 @@
-load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load(
     "@rules_ruby//ruby:defs.bzl",
@@ -8,14 +7,14 @@ load(
     "rb_test",
 )
 load("//common:defs.bzl", "copy_file")
+load("//common/manager:defs.bzl", "selenium_manager_bundle")
 
 package(default_visibility = ["//:__subpackages__"])
 
 GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
 
-copy_directory(
+selenium_manager_bundle(
     name = "manager-bundle",
-    src = "//common/manager:selenium-manager-bundle",
     out = "bin/manager",
 )
 
