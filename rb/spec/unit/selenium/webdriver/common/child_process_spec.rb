@@ -51,7 +51,7 @@ module Selenium
       end
 
       it 'spawns process with environment variables' do
-        process = described_class.new('ruby', '-e', 'puts ENV["SELENIUM_TEST_VAR"]')
+        process = described_class.new(RbConfig.ruby, '-e', 'puts ENV["SELENIUM_TEST_VAR"]')
         process.env = {'SELENIUM_TEST_VAR' => 'test_value'}
 
         temp_file = Tempfile.new('selenium_test')
