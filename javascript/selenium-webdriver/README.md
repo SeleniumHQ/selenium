@@ -54,10 +54,7 @@ or standalone server, point the Builder at the server URL, or set
 `SELENIUM_REMOTE_URL`:
 
 ```javascript
-let driver = new Builder()
-  .forBrowser(Browser.CHROME)
-  .usingServer('http://localhost:4444')
-  .build()
+let driver = new Builder().forBrowser(Browser.CHROME).usingServer('http://localhost:4444').build()
 ```
 
 ```bash
