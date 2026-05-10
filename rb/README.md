@@ -17,9 +17,12 @@ gem install selenium-webdriver
 require "selenium-webdriver"
 
 driver = Selenium::WebDriver.for :chrome
-driver.get "https://www.selenium.dev"
-puts driver.title
-driver.quit
+begin
+  driver.get "https://www.selenium.dev"
+  puts driver.title
+ensure
+  driver.quit
+end
 ```
 
 Selenium Manager automatically handles browser driver installation — no manual driver setup required.

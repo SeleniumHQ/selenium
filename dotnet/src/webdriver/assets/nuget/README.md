@@ -14,6 +14,7 @@ dotnet add package Selenium.WebDriver
 ## Quick Start
 
 ```csharp
+using System;
 using OpenQA.Selenium.Chrome;
 
 using var driver = new ChromeDriver();
