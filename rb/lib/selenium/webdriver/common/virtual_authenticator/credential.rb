@@ -47,7 +47,7 @@ module Selenium
           new(id: decode(opts['credentialId']),
               resident_credential: opts['isResidentCredential'],
               rp_id: opts['rpId'],
-              private_key: opts['privateKey'],
+              private_key: decode(opts['privateKey']),
               sign_count: opts['signCount'],
               user_handle: user_handle)
         end

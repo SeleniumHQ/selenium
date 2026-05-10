@@ -1,0 +1,10 @@
+--- a/extensions/toolchain.bzl
++++ b/extensions/toolchain.bzl
+@@ -65,6 +65,6 @@ _platform_tag = tag_class(
+         "os": attr.string(
+             mandatory = True,
+-            values = ["linux", "macos"],
++            values = ["linux", "macos", "windows"],
+         ),
+         "arch": attr.string(
+             mandatory = True,

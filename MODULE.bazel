@@ -6,18 +6,25 @@ bazel_dep(name = "aspect_rules_esbuild", version = "0.25.1")
 bazel_dep(name = "aspect_rules_jest", version = "0.25.2")
 bazel_dep(name = "aspect_rules_js", version = "3.0.3")
 bazel_dep(name = "aspect_rules_ts", version = "3.8.6")
-bazel_dep(name = "bazel_features", version = "1.43.0")
+bazel_dep(name = "bazel_features", version = "1.45.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.32.0")
+bazel_dep(name = "llvm", version = "0.7.9")
 bazel_dep(name = "package_metadata", version = "0.0.7")
 bazel_dep(name = "platforms", version = "1.0.0")
 
 # If you update this, also update the prebuilt version of `protoc` we use below
 bazel_dep(name = "protobuf", version = "33.5")
 
-# Required for rules_rust to import the crates properly
-bazel_dep(name = "rules_cc", version = "0.2.17", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.18", dev_dependency = True)
+
+# rules_rs pulls protobuf for optional prost support. Keep Selenium on the
+# explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
+single_version_override(
+    module_name = "protobuf",
+    version = "33.5",
+)
 
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "rules_closure", version = "0.15.0")
@@ -33,7 +40,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.25.0")
-bazel_dep(name = "rules_rust", version = "0.69.0")
+bazel_dep(name = "rules_rs", version = "0.0.61")
 
 # Use latest rules_jvm_external for Bazel 9 compatibility
 single_version_override(
@@ -386,15 +393,57 @@ use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 
 register_toolchains("@ruby_toolchains//:all")
 
-rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(versions = ["1.89.0"])
+rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
+use_repo(rules_rust, "rules_rust")
 
-crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
+rust_toolchains.toolchain(
+    edition = "2024",
+    version = "1.89.0",
+)
+use_repo(rust_toolchains, "default_rust_toolchains")
+
+register_toolchains("@default_rust_toolchains//:all")
+
+# TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
+llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "windows",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "windows",
+)
+use_repo(llvm_toolchains, "llvm_toolchains")
+
+register_toolchains("@llvm_toolchains//:all")
+
+crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
 crate.from_cargo(
     name = "crates",
-    cargo_lockfile = "//rust:Cargo.lock",
-    lockfile = "//rust:Cargo.Bazel.lock",
-    manifests = ["//rust:Cargo.toml"],
+    cargo_lock = "//rust:Cargo.lock",
+    cargo_toml = "//rust:Cargo.toml",
+    platform_triples = [
+        "aarch64-apple-darwin",
+        "aarch64-pc-windows-msvc",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-apple-darwin",
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu",
+    ],
+)
+crate.annotation(
+    crate = "bzip2-sys",
+    gen_build_script = "on",
+)
+crate.annotation(
+    crate = "lzma-sys",
+    gen_build_script = "on",
+)
+crate.annotation(
+    crate = "zstd-sys",
+    gen_build_script = "on",
 )
 use_repo(crate, "crates")
 

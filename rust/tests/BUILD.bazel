@@ -1,4 +1,4 @@
-load("@crates//:defs.bzl", "all_crate_deps")
+load("@crates//:defs.bzl", "aliases", "all_crate_deps")
 load("//rust:defs.bzl", "rust_test_suite", "rustfmt_config")
 
 rustfmt_config(
@@ -9,6 +9,7 @@ rust_test_suite(
     name = "integration",
     size = "small",
     srcs = glob(["**/*_tests.rs"]),
+    aliases = aliases(),
     data = [
         "//rust:selenium-manager",
     ],

@@ -70,18 +70,15 @@ common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUIL
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 common --incompatible_enable_proto_toolchain_resolution
 build --incompatible_enable_cc_toolchain_resolution
-build:linux --cxxopt=-std=c++17
-build:linux --host_cxxopt=-std=c++17
-build:macos --cxxopt=-std=c++17
-build:macos --host_cxxopt=-std=c++17
-build:windows --cxxopt=/std:c++17
-build:windows --host_cxxopt=/std:c++17
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
 build:windows --host_per_file_copt=external/protobuf\\+.*@/w
-common --define=protobuf_allow_msvc=true
 
 # For build stamping
-build --enable_platform_specific_config
+common --enable_platform_specific_config
+common:linux --host_platform=//:local_linux_gnu
+common:windows --host_platform=//:local_windows_gnullvm
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"

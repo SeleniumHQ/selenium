@@ -85,6 +85,7 @@ pkg_tar(
 )
 
 SMALL_TESTS = [
+    "test/bidi/index_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
     "test/lib/by_test.js",
@@ -142,6 +143,7 @@ mocha_test(
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
         ":node_modules/sinon",
+        ":node_modules/ws",
         ":small-test-srcs",
         ":test-data",
         "//:node_modules/selenium-webdriver",
