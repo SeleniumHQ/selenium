@@ -11,6 +11,8 @@ module Selenium
 
       @io: untyped
 
+      @env: Hash[String, String]?
+
       TimeoutError: untyped
 
       SIGTERM: String
@@ -20,6 +22,8 @@ module Selenium
       POLL_INTERVAL: Float
 
       attr_accessor detach: untyped
+
+      attr_accessor env: Hash[String, String]?
 
       attr_writer io: untyped
 

@@ -9,7 +9,7 @@ module Selenium
 
         SHUTDOWN_SUPPORTED: bool
 
-        def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
+        def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?, ?env: Hash[String, String]?) -> void
 
         def log=: (*untyped) -> untyped
       end

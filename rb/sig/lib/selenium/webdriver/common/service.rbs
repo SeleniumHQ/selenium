@@ -19,6 +19,8 @@ module Selenium
 
       @args: untyped
 
+      @env: Hash[String, String]
+
       attr_reader self.driver_path: untyped
 
       def self.chrome: (**untyped opts) -> untyped
@@ -49,11 +51,13 @@ module Selenium
 
       attr_accessor args: untyped
 
+      attr_accessor env: Hash[String, String]
+
       def env_path: -> String?
 
       alias extra_args args
 
-      def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
+      def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?, ?env: Hash[String, String]?) -> void
 
       def find_driver_path: -> untyped
 
