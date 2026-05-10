@@ -175,7 +175,7 @@ def update_dotnet(chrome_milestone):
     create_new_chrome_files("dotnet/src/webdriver/DevTools", chrome_milestone)
 
     files = [
-        root_dir / "dotnet/selenium-dotnet-version.bzl",
+        root_dir / "dotnet/version.bzl",
         root_dir / "dotnet/src/webdriver/Selenium.WebDriver.csproj",
         root_dir / "dotnet/src/webdriver/DevTools/DevToolsDomains.cs",
     ]

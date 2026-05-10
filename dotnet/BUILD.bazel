@@ -8,17 +8,6 @@ exports_files([
 ])
 
 pkg_zip(
-    name = "strongnamed",
-    srcs = [
-        "//dotnet/src/support:support-strongnamed-pack",
-        "//dotnet/src/webdriver:webdriver-strongnamed-pack",
-    ],
-    tags = [
-        "release-artifact",
-    ],
-)
-
-pkg_zip(
     name = "release",
     srcs = [
         "//dotnet/src/support:support-pack",

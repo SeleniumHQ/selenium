@@ -19,6 +19,8 @@ java_library(
         # Loaded via reflection. Required for the Distributor to start
         # if no implementation is given.
         "//java/src/org/openqa/selenium/grid/distributor/local",
+        # Loaded via reflection when redis-backed distributor is configured.
+        "//java/src/org/openqa/selenium/grid/distributor/redis",
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),

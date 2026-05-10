@@ -555,5 +555,4 @@ public class AlertsTests : DriverTestFixture
             return driver.WindowHandles.Count == count;
         };
     }
-
 }
