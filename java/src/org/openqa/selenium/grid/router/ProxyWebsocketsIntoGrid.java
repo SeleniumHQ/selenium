@@ -38,6 +38,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
@@ -217,13 +218,23 @@ public class ProxyWebsocketsIntoGrid
    */
   static class DirectForwardingListener implements WebSocket.Listener {
 
+    // Bound on the pre-handshake buffer. If the upstream produces more frames than this before
+    // the client-side handshake completes (a stalled or hostile client), the buffer is dropped
+    // and the listener latches a 1009 ("Message Too Big" / overflow) terminal state so the
+    // channel sees a clean close once the upgrade lands.
+    private static final int MAX_PENDING_FRAMES = 128;
+
     private final Object lock = new Object();
     private final Deque<WebSocketFrame> pending = new ArrayDeque<>();
     // Volatile so the post-handover fast path needs no synchronization.
     private volatile Channel clientChannel;
-    // Guarded by lock; once true, further frames received while clientChannel is still null
-    // are released rather than enqueued (we know the upstream has already gone away).
+    // Pre-handshake terminal state. When `closed` is true at onUpgrade time, the listener
+    // surfaces the recorded close to the client instead of publishing the channel for normal
+    // forwarding — this stops the downstream from sitting open indefinitely when the upstream
+    // has already gone away. Guarded by lock.
     private boolean closed;
+    private int closeCode;
+    private @Nullable String closeReason;
 
     private final AtomicBoolean upstreamClosing;
     private final HttpClient client;
@@ -234,17 +245,30 @@ public class ProxyWebsocketsIntoGrid
     }
 
     /**
-     * Hand the client channel over after the WebSocket upgrade has completed. Drains any frames
-     * received before this point in arrival order, then publishes the channel so subsequent
-     * listener calls take the fast path.
+     * Hand the client channel over after the WebSocket upgrade has completed. If the upstream
+     * already closed or errored, surface that to the client now and close the channel; otherwise
+     * drain any frames received in the meantime in arrival order and publish the channel for the
+     * fast path.
      */
     void onUpgrade(Channel ch) {
+      boolean terminal;
+      int code;
+      String reason;
       synchronized (lock) {
         WebSocketFrame frame;
         while ((frame = pending.pollFirst()) != null) {
           ch.writeAndFlush(frame);
         }
-        clientChannel = ch;
+        terminal = closed;
+        code = closeCode;
+        reason = closeReason == null ? "" : closeReason;
+        if (!terminal) {
+          clientChannel = ch;
+        }
+      }
+      if (terminal && ch.isActive()) {
+        ch.writeAndFlush(new CloseWebSocketFrame(code, reason))
+            .addListener(ChannelFutureListener.CLOSE);
       }
     }
 
@@ -269,17 +293,38 @@ public class ProxyWebsocketsIntoGrid
     }
 
     private void enqueueOrWrite(WebSocketFrame frame) {
+      boolean overflow = false;
       Channel ch;
       synchronized (lock) {
         ch = clientChannel;
         if (ch == null) {
           if (closed) {
             frame.release();
+            return;
+          }
+          if (pending.size() >= MAX_PENDING_FRAMES) {
+            // Stall protection: drop the buffer and arm a terminal state so the next
+            // onUpgrade closes the client cleanly instead of letting memory grow unbounded.
+            frame.release();
+            discardPendingLocked();
+            closed = true;
+            closeCode = 1009;
+            closeReason = "websocket buffer overflow";
+            overflow = true;
           } else {
             pending.addLast(frame);
+            return;
           }
-          return;
         }
+      }
+      if (overflow) {
+        upstreamClosing.set(true);
+        LOG.log(
+            Level.WARNING,
+            "Dropping pre-handshake WebSocket buffer for {0}: exceeded {1} pending frames",
+            new Object[] {client, MAX_PENDING_FRAMES});
+        closeClient();
+        return;
       }
       ch.writeAndFlush(frame);
     }
@@ -292,10 +337,12 @@ public class ProxyWebsocketsIntoGrid
         synchronized (lock) {
           ch = clientChannel;
           if (ch == null) {
-            // Pre-handshake close: there is no live channel to write a close frame to,
-            // so just release the buffer and stop accepting more frames.
-            discardPendingLocked();
+            // Pre-handshake close: record the close so onUpgrade can surface it to the client.
+            // Pending frames are kept so the client receives any data the upstream queued before
+            // closing.
             closed = true;
+            closeCode = code;
+            closeReason = reason;
           }
         }
       }
@@ -314,8 +361,11 @@ public class ProxyWebsocketsIntoGrid
         synchronized (lock) {
           ch = clientChannel;
           if (ch == null) {
+            // Pre-handshake error: drop the buffer (frames may not be coherent) and record 1011.
             discardPendingLocked();
             closed = true;
+            closeCode = 1011;
+            closeReason = "upstream error";
           }
         }
       }

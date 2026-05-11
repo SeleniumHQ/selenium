@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,59 @@ class DirectForwardingListenerTest {
 
     ((TextWebSocketFrame) firstWritten).release();
     ((BinaryWebSocketFrame) secondWritten).release();
+  }
+
+  @Test
+  void preHandshakeCloseIsSurfacedAndClosesChannelOnUpgrade() {
+    ProxyWebsocketsIntoGrid.DirectForwardingListener listener =
+        new ProxyWebsocketsIntoGrid.DirectForwardingListener(
+            new AtomicBoolean(false), new NoopHttpClient());
+
+    // Upstream said goodbye before the client-side handshake landed.
+    listener.onText("buffered");
+    listener.onClose(4001, "upstream gone");
+
+    EmbeddedChannel channel = new EmbeddedChannel();
+    listener.onUpgrade(channel);
+
+    // Pending data still arrives so the client sees what the upstream queued before closing.
+    TextWebSocketFrame text = channel.readOutbound();
+    assertThat(text.text()).isEqualTo("buffered");
+    text.release();
+
+    // The close handshake must follow and the channel must be torn down — without this fix the
+    // client would sit open until something else broke the connection.
+    CloseWebSocketFrame close = channel.readOutbound();
+    assertThat(close.statusCode()).isEqualTo(4001);
+    assertThat(close.reasonText()).isEqualTo("upstream gone");
+    close.release();
+
+    assertThat(channel.isOpen()).isFalse();
+  }
+
+  @Test
+  void overflowOfPreHandshakeBufferArmsCloseAndDrains() {
+    ProxyWebsocketsIntoGrid.DirectForwardingListener listener =
+        new ProxyWebsocketsIntoGrid.DirectForwardingListener(
+            new AtomicBoolean(false), new NoopHttpClient());
+
+    // Cap is 128; sending 200 frames is comfortably past it.
+    for (int i = 0; i < 200; i++) {
+      listener.onBinary(new byte[] {1});
+    }
+
+    EmbeddedChannel channel = new EmbeddedChannel();
+    listener.onUpgrade(channel);
+
+    // Buffer was discarded on overflow; the only thing on the wire is the 1009 close.
+    Object out = channel.readOutbound();
+    assertThat(out).isInstanceOf(CloseWebSocketFrame.class);
+    CloseWebSocketFrame close = (CloseWebSocketFrame) out;
+    assertThat(close.statusCode()).isEqualTo(1009);
+    close.release();
+
+    assertThat((Object) channel.readOutbound()).isNull();
+    assertThat(channel.isOpen()).isFalse();
   }
 
   @Test
