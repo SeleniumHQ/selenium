@@ -39,10 +39,13 @@ jobs:
           echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py:all //rb/... //dotnet/... //rust/..." > bazel-targets.txt
         else
-          BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
-          HEAD_SHA="${{ github.event.pull_request.head.sha || 'HEAD' }}"
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            BASE_SHA="HEAD^1"
+          else
+            BASE_SHA="${{ github.event.before }}"
+          fi
           if [ -n "$BASE_SHA" ]; then
-            ./go bazel:affected_targets "${BASE_SHA}..${HEAD_SHA}" bazel-test-file-index
+            ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
           else
             ./go bazel:affected_targets bazel-test-file-index
           fi
