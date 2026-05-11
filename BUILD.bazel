@@ -129,7 +129,14 @@ platform(
 platform(
     name = "local_windows_gnullvm",
     constraint_values = [
-        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
+        "@llvm//constraints/windows/abi:gnullvm",
+        # Rust's `x86_64-pc-windows-gnullvm` and `aarch64-pc-windows-gnullvm`
+        # toolchains both link against MSVCRT (see rustc's `windows_gnullvm`
+        # spec), and rules_rs encodes that as a `windows/crt:msvcrt`
+        # constraint on the toolchain. Without it here, no rust toolchain
+        # matches the host platform on Windows and `bazel test //rust/...`
+        # fails with "No matching toolchains found".
+        "@llvm//constraints/windows/crt:msvcrt",
     ],
     parents = ["@platforms//host"],
 )

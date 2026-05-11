@@ -241,7 +241,7 @@ public class SeleniumManager {
             saveToFileSafely(inputStream, binary);
           }
         }
-      } catch (Exception e) {
+      } catch (IOException | NullPointerException e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     } else if (!Files.exists(binary)) {
