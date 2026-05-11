@@ -124,7 +124,7 @@ copy_file(
 
 copy_file(
     name = "is-displayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
+    src = "//javascript/atoms/fragments:is-displayed-typescript.js",
     out = "selenium/webdriver/remote/isDisplayed.js",
 )
 

@@ -57,6 +57,53 @@ js_run_binary(
     tool = ":wrap_get_attribute_as_global",
 )
 
+js_binary(
+    name = "wrap_as_global",
+    data = ["typescript/wrap-as-global.js"],
+    entry_point = "typescript/wrap-as-global.js",
+)
+
+js_run_binary(
+    name = "is-displayed-typescript-compiled",
+    srcs = ["typescript/is-displayed.ts"],
+    outs = ["typescript/is-displayed.compiled.js"],
+    args = [
+        "--target",
+        "ES2017",
+        "--module",
+        "none",
+        "--removeComments",
+        "--pretty",
+        "false",
+        "--outFile",
+        "$(rootpath :typescript/is-displayed.compiled.js)",
+        "$(rootpath typescript/is-displayed.ts)",
+    ],
+    tool = "@npm_typescript//:tsc",
+)
+
+js_run_binary(
+    name = "is-displayed-typescript-generated",
+    srcs = [":is-displayed-typescript-compiled"],
+    outs = ["typescript/is-displayed.generated.js"],
+    args = [
+        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed.generated.js)",
+    ],
+    tool = ":strip_trailing_semicolon",
+)
+
+js_run_binary(
+    name = "is-displayed-global",
+    srcs = [":is-displayed-typescript-compiled"],
+    outs = ["typescript/is-displayed-global.js"],
+    args = [
+        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed-global.js)",
+    ],
+    tool = ":wrap_as_global",
+)
+
 filegroup(
     name = "atoms",
     srcs = glob([
@@ -66,7 +113,7 @@ filegroup(
         "**/*.png",
         "**/*.svg",
         "**/*.ts",
-    ]) + [":get-attribute-global"],
+    ]) + [":get-attribute-global"] + [":is-displayed-global"],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
