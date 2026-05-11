@@ -3,6 +3,12 @@ name: Release Selenium
 on:
   pull_request:
     types: [closed]
+    paths:
+      - 'java/version.bzl'
+      - 'rb/lib/selenium/webdriver/version.rb'
+      - 'py/selenium/__init__.py'
+      - 'dotnet/version.bzl'
+      - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
       tag:
@@ -13,7 +19,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
 
 jobs:
   extract-tag:
@@ -286,7 +293,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, github-release-publish, update-version, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -301,6 +308,8 @@ jobs:
           SLACK_MESSAGE: |
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
+            • Language Tag Created: ${{ needs.create-language-tag.result }}
+            • GitHub Release Draft: ${{ needs.github-release-draft.result }}
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
