@@ -186,24 +186,30 @@
       return hasAttr || !!propValue ? 'true' : null;
     }
 
-    // For regular attributes, check the actual HTML attribute first.
-    // This ensures we return null for missing attributes (not empty string from properties).
-    const attrValue = getAttribute(element, attribute);
-    if (attrValue !== null) {
-      return attrValue;
+    // Special-case: for list items (<li>), the value property is numeric;
+    // callers expecting the attribute's literal string value should get the
+    // HTML attribute instead of the coerced numeric property.
+    if (name === 'value' && isElement(element, 'LI')) {
+      const attrValue = getAttribute(element, attribute);
+      return attrValue != null ? attrValue : null;
     }
 
-    // If no HTML attribute, try the property as fallback for cases like
-    // event handlers in Firefox or expando properties.
+    // For regular attributes, try the property first since it may be updated
+    // dynamically (e.g., input.value set by JavaScript). Fall back to the
+    // HTML attribute only for cases where the property is null/undefined/object,
+    // such as event handlers in Firefox or expando properties.
     let property: unknown;
     try {
       property = getProperty(element, propName);
     } catch (_e) {
-      // Leaves property undefined; return null as fallback.
+      // Leaves property undefined; getAttribute below will be used as fallback.
     }
 
+    // Fall back to getAttribute when property is null/undefined or an object.
+    // This handles event handlers in Firefox and other edge cases.
     if (property == null || isObject(property)) {
-      return null;
+      const attrValue = getAttribute(element, attribute);
+      return attrValue != null ? attrValue : null;
     }
 
     return property != null ? String(property) : null;
