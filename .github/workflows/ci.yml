@@ -122,3 +122,16 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
+
+  ci-success:
+    name: CI Success
+    if: always()
+    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify required jobs succeeded
+        run: |
+          if ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}; then
+            echo "One or more required jobs failed"
+            exit 1
+          fi
