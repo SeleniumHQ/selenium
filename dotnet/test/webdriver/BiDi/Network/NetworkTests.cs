@@ -296,7 +296,12 @@ internal class NetworkTests : BiDiTestFixture
 
         await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
 
-        var request = await stream.Where(e => e.Response.Url.Contains("simpleTest.html")).Select(e => e.Request.Request).FirstAsync();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+        var request = await stream
+            .Where(e => e.Response.Url.Contains("simpleTest.html"))
+            .Select(e => e.Request.Request)
+            .FirstAsync(cts.Token);
 
         Assert.That(
             async () => await bidi.Network.DisownDataAsync(DataType.Response, collector.Collector, request),
