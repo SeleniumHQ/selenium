@@ -337,9 +337,11 @@ public class ProxyWebsocketsIntoGrid
         synchronized (lock) {
           ch = clientChannel;
           if (ch == null) {
-            // Pre-handshake close: record the close so onUpgrade can surface it to the client.
-            // Pending frames are kept so the client receives any data the upstream queued before
-            // closing.
+            // Pre-handshake close: drop the buffer so ref-counted frames are released
+            // immediately even if the client-side handshake never lands (for instance because
+            // the client disconnected mid-handshake or the upgrade itself failed). Record the
+            // close so onUpgrade can still surface it to the client if the handshake does fire.
+            discardPendingLocked();
             closed = true;
             closeCode = code;
             closeReason = reason;

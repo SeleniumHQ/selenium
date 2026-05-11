@@ -60,30 +60,27 @@ class DirectForwardingListenerTest {
   }
 
   @Test
-  void preHandshakeCloseIsSurfacedAndClosesChannelOnUpgrade() {
+  void preHandshakeCloseSurfacesCloseAndReleasesBufferedFrames() {
     ProxyWebsocketsIntoGrid.DirectForwardingListener listener =
         new ProxyWebsocketsIntoGrid.DirectForwardingListener(
             new AtomicBoolean(false), new NoopHttpClient());
 
-    // Upstream said goodbye before the client-side handshake landed.
+    // Frames arrive, then the upstream closes — all before the client-side handshake landed.
     listener.onText("buffered");
+    listener.onBinary(new byte[] {1, 2, 3});
     listener.onClose(4001, "upstream gone");
 
     EmbeddedChannel channel = new EmbeddedChannel();
     listener.onUpgrade(channel);
 
-    // Pending data still arrives so the client sees what the upstream queued before closing.
-    TextWebSocketFrame text = channel.readOutbound();
-    assertThat(text.text()).isEqualTo("buffered");
-    text.release();
-
-    // The close handshake must follow and the channel must be torn down — without this fix the
-    // client would sit open until something else broke the connection.
+    // The only thing on the wire is the close frame: pending was released on the close so the
+    // ref-counted buffers do not leak when the client-side handshake never completes. The
+    // close + channel teardown also runs, so the client doesn't sit open indefinitely.
     CloseWebSocketFrame close = channel.readOutbound();
     assertThat(close.statusCode()).isEqualTo(4001);
     assertThat(close.reasonText()).isEqualTo("upstream gone");
     close.release();
-
+    assertThat((Object) channel.readOutbound()).isNull();
     assertThat(channel.isOpen()).isFalse();
   }
 
