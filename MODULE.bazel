@@ -42,6 +42,15 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.25.0")
 bazel_dep(name = "rules_rs", version = "0.0.76")
 
+# Native C libraries pulled in by the `*-sys` crates that the Selenium Manager
+# Rust binary depends on. The rules_rs `bazel mod tidy` flow points each
+# `*-sys` crate at its corresponding BCR-hosted cc_library so the C source
+# builds with the project's regular cc toolchain instead of going through a
+# cargo build script.
+bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
+bazel_dep(name = "xz", version = "5.4.5.bcr.8")
+bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
+
 # Use latest rules_jvm_external for Bazel 9 compatibility
 single_version_override(
     module_name = "rules_jvm_external",
@@ -461,18 +470,6 @@ crate.from_cargo(
         "x86_64-unknown-linux-musl",
     ],
 )
-crate.annotation(
-    crate = "bzip2-sys",
-    gen_build_script = "on",
-)
-crate.annotation(
-    crate = "lzma-sys",
-    gen_build_script = "on",
-)
-crate.annotation(
-    crate = "zstd-sys",
-    gen_build_script = "on",
-)
 
 # Both crates ship a `README.md` (uppercase) but their source code uses
 # `include_str!("../readme.md")`. The mismatch is invisible on macOS's
@@ -492,6 +489,33 @@ crate.annotation(
     # readme.md that matches the include_str! call.
     version = "0.53.4",
 )
+
+# Point the `*-sys` crates at the BCR cc_library packages so their cargo
+# build scripts don't run. The `inject_repo` calls below make the
+# corresponding repos visible to the crate extension. (Auto-suggested by
+# `bazel mod tidy` against rules_rs's well-known annotations.)
+crate.annotation(
+    crate = "bzip2-sys",
+    gen_build_script = "off",
+    deps = ["@bzip2//:bz2"],
+)
+crate.annotation(
+    crate = "lzma-sys",
+    gen_build_script = "off",
+    deps = ["@xz//:lzma"],
+)
+crate.annotation(
+    crate = "zstd-sys",
+    gen_build_script = "off",
+    deps = ["@zstd"],
+)
+
+inject_repo(crate, "bzip2")
+
+inject_repo(crate, "xz")
+
+inject_repo(crate, "zstd")
+
 use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
