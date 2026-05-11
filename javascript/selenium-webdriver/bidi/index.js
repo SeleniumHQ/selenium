@@ -33,10 +33,99 @@ class Index extends EventEmitter {
   constructor(_webSocketUrl) {
     super()
     this.connected = false
+    this._closed = false
+    this._pending = new Map()
+    this._connectWaiters = new Set()
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
+      // The handshake can complete after close()/_failPending() has already
+      // marked the connection closed. Don't flip connected back to true and
+      // proactively close the now-orphan socket so it does not leak.
+      if (this._closed) {
+        try {
+          this._ws.close()
+        } catch {
+          /* socket already closing */
+        }
+        return
+      }
       this.connected = true
+      for (const { resolve } of this._connectWaiters) {
+        resolve()
+      }
+      this._connectWaiters.clear()
     })
+    // Single shared response dispatcher. Avoids attaching a new 'message'
+    // listener for every in-flight send(), which previously caused
+    // MaxListenersExceededWarning under concurrent BiDi traffic
+    // (e.g. network interception during a page navigation).
+    this._ws.on('message', (data) => {
+      // Frames can arrive after close() has cleared _pending; ignore them
+      // rather than re-emitting parse errors or dispatching to nothing.
+      if (this._closed) {
+        return
+      }
+      let payload
+      try {
+        payload = JSON.parse(data.toString())
+      } catch (err) {
+        // Surface protocol parse failures rather than silently dropping —
+        // otherwise callers see misleading send() timeouts.
+        const wrapped = new Error(`Failed to parse BiDi message: ${err.message}`)
+        if (this.listenerCount('error') > 0) {
+          this.emit('error', wrapped)
+        } else {
+          process.emitWarning(wrapped.message, 'BiDiProtocolWarning')
+        }
+        return
+      }
+      // Messages without a numeric id are BiDi events, not command
+      // responses; they are routed via subscribe/EventEmitter elsewhere
+      // and intentionally ignored by this dispatcher.
+      if (payload == null || typeof payload.id !== 'number') {
+        return
+      }
+      const entry = this._pending.get(payload.id)
+      if (entry === undefined) {
+        return
+      }
+      clearTimeout(entry.timeoutId)
+      this._pending.delete(payload.id)
+      entry.resolve(payload)
+    })
+    // Fail any in-flight send() calls promptly when the peer disconnects
+    // or the socket errors, instead of waiting for RESPONSE_TIMEOUT.
+    this._ws.on('close', () => {
+      this._failPending(new Error('BiDi connection closed unexpectedly'))
+    })
+    this._ws.on('error', (err) => {
+      this._failPending(new Error(`BiDi connection error: ${err.message}`))
+    })
+  }
+
+  /**
+   * Reject any in-flight sends and mark the connection failed. Idempotent so
+   * that close() and the underlying 'close'/'error' events do not double-reject.
+   * @param {Error} error
+   * @private
+   */
+  _failPending(error) {
+    if (this._closed) {
+      return
+    }
+    this._closed = true
+    this.connected = false
+    for (const { reject, timeoutId } of this._pending.values()) {
+      clearTimeout(timeoutId)
+      reject(error)
+    }
+    this._pending.clear()
+    // Reject any callers parked in waitForConnection() so close() (or an
+    // unexpected disconnect) cannot leave them hanging forever.
+    for (const { reject } of this._connectWaiters) {
+      reject(error)
+    }
+    this._connectWaiters.clear()
   }
 
   /**
@@ -69,14 +158,19 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async waitForConnection() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (this._closed) {
+        reject(new Error('BiDi connection is closed'))
+        return
+      }
       if (this.connected) {
         resolve()
-      } else {
-        this._ws.once('open', () => {
-          resolve()
-        })
+        return
       }
+      // Park the waiter in a Set so the constructor's 'open' handler can
+      // resolve it and _failPending() can reject it. Avoids attaching socket
+      // listeners that close()'s removeAllListeners('close') would strip.
+      this._connectWaiters.add({ resolve, reject })
     })
   }
 
@@ -86,8 +180,17 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async send(params) {
+    if (this._closed) {
+      throw new Error('BiDi connection is closed')
+    }
     if (!this.connected) {
       await this.waitForConnection()
+    }
+    // Defense in depth: even after waitForConnection() resolves, the socket
+    // may have transitioned to CLOSING/CLOSED (e.g. caller closed the raw
+    // socket). Refuse rather than throwing from inside ws.send().
+    if (this._ws.readyState !== WebSocket.OPEN) {
+      throw new Error('BiDi connection is not open')
     }
 
     const id = ++this.id
@@ -96,25 +199,11 @@ class Index extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
+        this._pending.delete(id)
         reject(new Error(`Request with id ${id} timed out`))
-        handler.off('message', listener)
       }, RESPONSE_TIMEOUT)
 
-      const listener = (data) => {
-        try {
-          const payload = JSON.parse(data.toString())
-          if (payload.id === id) {
-            clearTimeout(timeoutId)
-            handler.off('message', listener)
-            resolve(payload)
-          }
-        } catch (err) {
-          // eslint-disable-next-line no-undef
-          log.error(`Failed parse message: ${err.message}`)
-        }
-      }
-
-      const handler = this._ws.on('message', listener)
+      this._pending.set(id, { resolve, reject, timeoutId })
     })
   }
 
@@ -206,6 +295,8 @@ class Index extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   close() {
+    this._failPending(new Error('BiDi connection closed before response was received'))
+
     const closeWebSocket = (callback) => {
       // don't close if it's already closed
       if (this._ws.readyState === 3) {

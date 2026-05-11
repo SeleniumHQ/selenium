@@ -15,29 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+const fs = require('node:fs');
 
-import java.nio.ByteBuffer;
-import org.openqa.selenium.internal.Require;
+const [inputPath, outputPath] = process.argv.slice(2);
 
-public class BinaryMessage implements Message {
-
-  private final byte[] data;
-
-  public BinaryMessage(ByteBuffer data) {
-    ByteBuffer copy = Require.nonNull("Data to use", data).asReadOnlyBuffer();
-    this.data = new byte[copy.remaining()];
-    copy.get(this.data);
-  }
-
-  public BinaryMessage(byte[] data) {
-    Require.nonNull("Data to use", data);
-
-    this.data = new byte[data.length];
-    System.arraycopy(data, 0, this.data, 0, data.length);
-  }
-
-  public byte[] data() {
-    return data;
-  }
+if (!inputPath || !outputPath) {
+  throw new Error('Expected input and output file paths');
 }
+
+const input = fs.readFileSync(inputPath, 'utf8');
+const output = input.replace(/;\s*$/, '');
+fs.writeFileSync(outputPath, output);

@@ -1853,6 +1853,24 @@ class PointerDownAction:
         ],
     },
     "permissions": {
+        "module_docstring": (
+            "WebDriver BiDi permissions module.\n\n"
+            "Provides control over browser permission grants during automated tests,\n"
+            "as specified by the W3C Permissions specification.\n\n"
+            "Typical usage::\n\n"
+            "    driver.permissions.set_permission('geolocation', 'granted', origin)\n"
+        ),
+        "class_docstrings": {
+            "PermissionState": (
+                "Permission state constants.\n\n"
+                "GRANTED: The permission is granted — the browser will not prompt the user.\n"
+                "DENIED:  The permission is denied — the browser will block the request.\n"
+                "PROMPT:  The browser will show a permission prompt (default browser behaviour)."
+            ),
+            "Permissions": (
+                "BiDi interface for controlling browser permissions.\n\nAccess via ``driver.permissions``."
+            ),
+        },
         "extra_dataclasses": [
             '''class PermissionDescriptor:
     """Descriptor identifying a permission by name.
@@ -1914,6 +1932,214 @@ class PointerDownAction:
         cmd = command_builder("permissions.setPermission", params)
         self._conn.execute(cmd)''',
         ],
+    },
+    "bluetooth": {
+        "module_docstring": (
+            "WebDriver BiDi bluetooth module.\n\n"
+            "Provides a simulation API for Web Bluetooth, allowing tests to fake\n"
+            "Bluetooth adapters, nearby peripherals, GATT services, characteristics,\n"
+            "and descriptors without physical hardware.\n"
+        ),
+        "class_docstrings": {
+            "Bluetooth": (
+                "BiDi interface for simulating Web Bluetooth hardware.\n\n"
+                "Simulate adapters, peripherals, GATT services, characteristics,\n"
+                "and descriptors without physical hardware."
+            ),
+            "RequestDeviceInfo": (
+                "Identifies a simulated Bluetooth device returned in a device-request prompt.\n\n"
+                "Attributes:\n"
+                "    id: The internal device identifier.\n"
+                "    name: The human-readable device name shown in the prompt."
+            ),
+            "SimulateAdapterParameters": (
+                "Parameters for simulating a Bluetooth adapter state.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    le_supported: Whether the adapter supports Bluetooth Low Energy.\n"
+                "    state: Adapter power state (e.g. 'powered-on', 'powered-off', 'absent')."
+            ),
+            "SimulatePreconnectedPeripheralParameters": (
+                "Parameters for adding a pre-connected simulated peripheral.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The Bluetooth device address (e.g. '09:09:09:09:09:09').\n"
+                "    name: The device name advertised to the page.\n"
+                "    manufacturer_data: List of manufacturer-specific data records.\n"
+                "    known_service_uuids: UUIDs of GATT services the device exposes."
+            ),
+            "SimulateAdvertisementParameters": (
+                "Parameters for injecting a simulated advertisement packet.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    scan_entry: The advertisement scan record to inject."
+            ),
+            "SimulateGattConnectionResponseParameters": (
+                "Parameters for simulating a GATT connection response.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The address of the peripheral.\n"
+                "    code: The ATT error code (0 = success)."
+            ),
+            "SimulateCharacteristicParameters": (
+                "Parameters for adding a simulated GATT characteristic to a service.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID the characteristic belongs to.\n"
+                "    characteristic: UUID of the characteristic.\n"
+                "    properties: Supported operations (read, write, notify, etc.)."
+            ),
+        },
+        "command_docstrings": {
+            "handle_request_device_prompt": (
+                "Dismiss or accept a Bluetooth device-chooser prompt.\n\n"
+                "Args:\n"
+                "    context: The browsing context containing the prompt.\n"
+                "    prompt: The prompt ID returned in the prompt-opened event."
+            ),
+            "simulate_adapter": (
+                "Simulate a Bluetooth adapter in the given browsing context.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    le_supported: Whether Low Energy is supported.\n"
+                "    state: Adapter state ('powered-on', 'powered-off', 'absent')."
+            ),
+            "disable_simulation": (
+                "Disable all Bluetooth simulation in the given context, restoring real behaviour.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to stop simulating."
+            ),
+            "simulate_preconnected_peripheral": (
+                "Register a simulated peripheral as already connected to the adapter.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    address: The Bluetooth device address.\n"
+                "    name: The device name.\n"
+                "    manufacturer_data: Manufacturer-specific advertisement data.\n"
+                "    known_service_uuids: List of GATT service UUIDs the device exposes."
+            ),
+            "simulate_advertisement": (
+                "Inject a simulated Bluetooth advertisement packet.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID to target.\n"
+                "    scan_entry: The advertisement scan record to inject."
+            ),
+            "simulate_gatt_connection_response": (
+                "Respond to a pending GATT connection attempt from the page.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    code: ATT error code (0 = success; non-zero signals failure)."
+            ),
+            "simulate_gatt_disconnection": (
+                "Simulate a GATT disconnection for the given peripheral.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The address of the peripheral to disconnect."
+            ),
+            "simulate_service": (
+                "Add a simulated GATT service to a peripheral.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    uuid: The service UUID."
+            ),
+            "simulate_characteristic": (
+                "Add a simulated GATT characteristic to a service.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    properties: Supported operations bitmap."
+            ),
+            "simulate_characteristic_response": (
+                "Respond to a pending read or write on a simulated characteristic.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    code: ATT error code (0 = success).\n"
+                "    body: The characteristic value bytes (for reads)."
+            ),
+            "simulate_descriptor": (
+                "Add a simulated GATT descriptor to a characteristic.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    descriptor: The descriptor UUID."
+            ),
+            "simulate_descriptor_response": (
+                "Respond to a pending read or write on a simulated descriptor.\n\n"
+                "Args:\n"
+                "    context: The browsing context ID.\n"
+                "    address: The peripheral address.\n"
+                "    service: The service UUID.\n"
+                "    characteristic: The characteristic UUID.\n"
+                "    descriptor: The descriptor UUID.\n"
+                "    code: ATT error code (0 = success).\n"
+                "    body: The descriptor value bytes (for reads)."
+            ),
+        },
+    },
+    "speculation": {
+        "module_docstring": (
+            "WebDriver BiDi speculation module.\n\n"
+            "Provides events for observing the status of Speculation Rules prefetch\n"
+            "requests initiated by the browser (e.g. via <script type='speculationrules'>).\n"
+        ),
+        "class_docstrings": {
+            "Speculation": ("BiDi interface for observing Speculation Rules prefetch activity."),
+            "PreloadingStatus": (
+                "Status values for a speculation-rules prefetch operation.\n\n"
+                "PENDING: The prefetch has been queued but not yet attempted.\n"
+                "READY:   The prefetch succeeded and the resource is cached.\n"
+                "SUCCESS: The prefetched navigation was used successfully.\n"
+                "FAILURE: The prefetch failed or was cancelled."
+            ),
+            "PrefetchStatusUpdatedParameters": (
+                "Event payload emitted when a prefetch status changes.\n\n"
+                "Attributes:\n"
+                "    context: The browsing context ID that owns the speculation rule.\n"
+                "    url: The URL being prefetched.\n"
+                "    status: The new prefetch status (see PreloadingStatus)."
+            ),
+        },
+    },
+    "userAgentClientHints": {
+        "module_docstring": (
+            "WebDriver BiDi userAgentClientHints module.\n\n"
+            "Provides an API for overriding the User-Agent Client Hints reported\n"
+            "by the browser, enabling tests to simulate different devices, platforms,\n"
+            "and browser brands without changing the actual browser binary.\n"
+        ),
+        "class_docstrings": {
+            "UserAgentClientHints": ("BiDi interface for overriding User-Agent Client Hints."),
+            "ClientHintsMetadata": (
+                "Full set of User-Agent Client Hint values to override.\n\n"
+                "Attributes:\n"
+                "    brands: List of browser brand/version pairs (e.g. [BrandVersion('Chrome', '120')]).\n"
+                "    full_version_list: Brands with full version strings.\n"
+                "    platform: Operating system name (e.g. 'Windows', 'macOS').\n"
+                "    platform_version: OS version string.\n"
+                "    architecture: CPU architecture (e.g. 'x86', 'arm').\n"
+                "    model: Device model (primarily for mobile).\n"
+                "    mobile: True if the UA should appear to be a mobile device.\n"
+                "    bitness: Pointer-size bitness string ('32' or '64').\n"
+                "    wow64: True if running a 32-bit process on 64-bit Windows.\n"
+                "    form_factors: Device form factors (e.g. 'Desktop', 'Phone')."
+            ),
+            "BrandVersion": (
+                "A single browser brand entry used in Client Hints brand lists.\n\n"
+                "Attributes:\n"
+                "    brand: The browser/engine brand name (e.g. 'Google Chrome').\n"
+                "    version: The major or full version string (e.g. '120')."
+            ),
+        },
     },
 }
 
