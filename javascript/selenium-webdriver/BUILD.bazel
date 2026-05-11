@@ -6,7 +6,7 @@ load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin =
 load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "bin")
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
-load("//common/manager:defs.bzl", "selenium_manager_bundle")
+load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
@@ -201,9 +201,40 @@ genrule(
     cmd = "cp $(locations //:license) $(@D)",
 )
 
-selenium_manager_bundle(
+[
+    copy_file(
+        name = "manager-{}-{}".format(os_name, arch),
+        src = "//common/manager:selenium-manager-{}-{}".format(os_name, arch),
+        out = "bin/manager/{}-{}/selenium-manager{}".format(
+            os_name,
+            arch,
+            ".exe" if os_name == "windows" else "",
+        ),
+        is_executable = True,
+    )
+    for (os_name, arch) in [
+        ("linux", "aarch64"),
+        ("linux", "x86_64"),
+        ("macos", "aarch64"),
+        ("windows", "aarch64"),
+        ("windows", "x86_64"),
+    ]
+]
+
+filegroup(
     name = "manager-bundle",
-    out = "bin/manager",
+    srcs = select({
+        "//common:windows_x86_64": [":manager-windows-x86_64"],
+        "//common:windows_aarch64": [":manager-windows-aarch64"],
+        "//common:macos_aarch64": [":manager-macos-aarch64"],
+        "//conditions:default": [
+            ":manager-linux-aarch64",
+            ":manager-linux-x86_64",
+            ":manager-macos-aarch64",
+            ":manager-windows-aarch64",
+            ":manager-windows-x86_64",
+        ],
+    }),
 )
 
 copy_to_bin(

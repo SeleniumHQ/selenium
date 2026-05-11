@@ -8,7 +8,6 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
 load("//common:defs.bzl", "copy_file")
-load("//common/manager:defs.bzl", "selenium_manager_bundle")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
@@ -99,9 +98,40 @@ genrule(
     toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
 )
 
-selenium_manager_bundle(
+[
+    copy_file(
+        name = "manager-{}-{}".format(os_name, arch),
+        src = "//common/manager:selenium-manager-{}-{}".format(os_name, arch),
+        out = "selenium/webdriver/common/manager/{}-{}/selenium-manager{}".format(
+            os_name,
+            arch,
+            ".exe" if os_name == "windows" else "",
+        ),
+        is_executable = True,
+    )
+    for (os_name, arch) in [
+        ("linux", "aarch64"),
+        ("linux", "x86_64"),
+        ("macos", "aarch64"),
+        ("windows", "aarch64"),
+        ("windows", "x86_64"),
+    ]
+]
+
+filegroup(
     name = "manager-bundle",
-    out = "selenium/webdriver/common/manager",
+    srcs = select({
+        "//common:windows_x86_64": [":manager-windows-x86_64"],
+        "//common:windows_aarch64": [":manager-windows-aarch64"],
+        "//common:macos_aarch64": [":manager-macos-aarch64"],
+        "//conditions:default": [
+            ":manager-linux-aarch64",
+            ":manager-linux-x86_64",
+            ":manager-macos-aarch64",
+            ":manager-windows-aarch64",
+            ":manager-windows-x86_64",
+        ],
+    }),
 )
 
 copy_file(

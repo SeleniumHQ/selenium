@@ -93,7 +93,7 @@ module Selenium
           end
         end
 
-        def platform_arch(os)
+        def platform_arch(os_name)
           cpu = RbConfig::CONFIG['host_cpu'].to_s.downcase
           arch = case cpu
                  when 'x86_64', 'amd64', 'x64'
@@ -103,7 +103,7 @@ module Selenium
                  else
                    raise Error::WebDriverError, "unsupported architecture: #{cpu}"
                  end
-          if os == 'macos' && arch != 'aarch64'
+          if os_name == 'macos' && arch != 'aarch64'
             raise Error::WebDriverError, 'Selenium Manager only ships an aarch64 binary for macOS'
           end
 

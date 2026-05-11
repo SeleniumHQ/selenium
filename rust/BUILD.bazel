@@ -117,6 +117,7 @@ copy_to_directory(
         "selenium-manager-windows-x86_64/": "windows-x86_64/",
     },
     root_paths = ["rust"],
+    tags = ["manual"],
     visibility = ["//common/manager:__pkg__"],
 )
 

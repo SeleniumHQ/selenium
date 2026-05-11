@@ -34,13 +34,18 @@ GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
 
 filegroup(
     name = "manager-bundle",
-    srcs = [
-        ":manager-linux-aarch64",
-        ":manager-linux-x86_64",
-        ":manager-macos-aarch64",
-        ":manager-windows-aarch64",
-        ":manager-windows-x86_64",
-    ],
+    srcs = select({
+        "//common:windows_x86_64": [":manager-windows-x86_64"],
+        "//common:windows_aarch64": [":manager-windows-aarch64"],
+        "//common:macos_aarch64": [":manager-macos-aarch64"],
+        "//conditions:default": [
+            ":manager-linux-aarch64",
+            ":manager-linux-x86_64",
+            ":manager-macos-aarch64",
+            ":manager-windows-aarch64",
+            ":manager-windows-x86_64",
+        ],
+    }),
 )
 
 select_file(
