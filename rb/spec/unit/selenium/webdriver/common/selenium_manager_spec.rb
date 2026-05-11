@@ -36,8 +36,9 @@ module Selenium
 
         it 'detects Windows' do
           allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('x86_64')
-          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('windows-x86_64/selenium-manager.exe'))
-                                                        .and_return(true)
+          allow(Platform).to receive(:assert_executable)
+            .with(a_string_ending_with('windows-x86_64/selenium-manager.exe'))
+            .and_return(true)
           allow(Platform).to receive(:windows?).and_return(true)
 
           expect(described_class.send(:binary)).to match(%r{windows-x86_64/selenium-manager\.exe$})

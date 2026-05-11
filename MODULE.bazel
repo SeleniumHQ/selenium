@@ -26,23 +26,6 @@ single_version_override(
     version = "33.5",
 )
 
-# hermetic-llvm's `sh_script` macro writes a `.sh` and feeds it to `run_binary`
-# as the executable. Windows can't execute `.sh` files directly via
-# CreateProcessW, so on Windows hosts the macro fails with `%1 is not a
-# valid Win32 application` whenever an action transitively pulls in
-# anything that uses it (e.g. `@llvm++musl+musl_libc//:version_h`).
-# The patch teaches the macro to also emit a `.bat` wrapper that invokes
-# the shell on the script and returns the wrapper as the executable.
-# Tracked upstream as hermeticbuild/hermetic-llvm#353.
-single_version_override(
-    module_name = "llvm",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:llvm_sh_script_windows.patch",
-    ],
-    version = "0.7.9",
-)
-
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
@@ -57,7 +40,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.25.0")
-bazel_dep(name = "rules_rs", version = "0.0.61")
+bazel_dep(name = "rules_rs", version = "0.0.76")
 
 # Use latest rules_jvm_external for Bazel 9 compatibility
 single_version_override(
