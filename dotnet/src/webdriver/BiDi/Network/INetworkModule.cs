@@ -23,6 +23,7 @@ public interface INetworkModule
 {
     Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default);
     Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default);
+    Task<DisownDataResult> DisownDataAsync(DataType dataType, Collector collector, Request request, DisownDataOptions? options = null, CancellationToken cancellationToken = default);
     Task<ContinueRequestResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null, CancellationToken cancellationToken = default);
     Task<ContinueResponseResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null, CancellationToken cancellationToken = default);
     Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth auth, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default);

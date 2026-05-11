@@ -52,6 +52,9 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     private static readonly Command<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
         "network.failRequest", Default.FailRequestParameters, Default.FailRequestResult);
 
+    private static readonly Command<DisownDataParameters, DisownDataResult> DisownDataCommand = new(
+        "network.disownData", Default.DisownDataParameters, Default.DisownDataResult);
+
     private static readonly Command<GetDataParameters, GetDataResult> GetDataCommand = new(
         "network.getData", Default.GetDataParameters, Default.GetDataResult);
 
@@ -124,6 +127,13 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(FailRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<DisownDataResult> DisownDataAsync(DataType dataType, Collector collector, Request request, DisownDataOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new DisownDataParameters(dataType, collector, request);
+
+        return await ExecuteAsync(DisownDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
@@ -173,6 +183,8 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 [JsonSerializable(typeof(AddDataCollectorResult))]
 [JsonSerializable(typeof(AddInterceptParameters))]
 [JsonSerializable(typeof(AddInterceptResult))]
+[JsonSerializable(typeof(DisownDataParameters))]
+[JsonSerializable(typeof(DisownDataResult))]
 [JsonSerializable(typeof(ContinueRequestParameters))]
 [JsonSerializable(typeof(ContinueRequestResult))]
 [JsonSerializable(typeof(ContinueResponseParameters))]
