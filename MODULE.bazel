@@ -26,6 +26,23 @@ single_version_override(
     version = "33.5",
 )
 
+# We set `--@llvm//config:experimental_stub_libgcc_s=True` in .bazelrc so the
+# LLVM cc toolchain doesn't try to resolve a `-lgcc_s` it doesn't ship. In
+# v0.8.0 the `experimental_stub_libgcc_s` bool_flag isn't marked
+# `scope = "universal"`, so the flag value on the target config doesn't
+# propagate to exec config and tool builds (process_wrapper,
+# //rust:_selenium-manager-bin) still fail to link. The patch adds
+# `scope = "universal"` so the flag does propagate; can be dropped once
+# hermeticbuild/hermetic-llvm#544 lands.
+single_version_override(
+    module_name = "llvm",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:llvm_libgcc_s_universal_scope.patch",
+    ],
+    version = "0.8.0",
+)
+
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
@@ -42,11 +59,12 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.25.0")
 bazel_dep(name = "rules_rs", version = "0.0.76")
 
-# Native C libraries pulled in by the `*-sys` crates that the Selenium Manager
-# Rust binary depends on. The rules_rs `bazel mod tidy` flow points each
-# `*-sys` crate at its corresponding BCR-hosted cc_library so the C source
-# builds with the project's regular cc toolchain instead of going through a
-# cargo build script.
+# Native C libraries pulled in by the `*-sys` crates that the Selenium
+# Manager Rust binary depends on. Pointing each `*-sys` crate at its
+# BCR-hosted cc_library (per rules_rs's `bazel mod tidy` suggestion) lets
+# the C source build with the LLVM cc toolchain — which is target-libc
+# aware, so the same crate compiles correctly for both the host and the
+# musl cross-compile targets.
 bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
 bazel_dep(name = "xz", version = "5.4.5.bcr.8")
 bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
@@ -436,19 +454,6 @@ llvm_toolchains.exec(
     os = "linux",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
-
-# rules_cc registers `@local_config_cc_toolchains//:all` from its own
-# MODULE.bazel, but a dependency module's `register_toolchains` calls run
-# *after* the root module's. Re-registering it here puts the system C/C++
-# toolchain ahead of the LLVM cross-compile toolchains for native builds
-# (e.g. exec=linux+x86_64+gnu → target=linux+x86_64+gnu, where the system
-# `gcc` has libgcc on hand and LLVM does not). LLVM still wins for the
-# cross-compile cases the host toolchain can't satisfy (windows-gnullvm,
-# linux-musl, etc.).
-cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
-use_repo(cc_configure, "local_config_cc_toolchains")
-
-register_toolchains("@local_config_cc_toolchains//:all")
 
 register_toolchains("@llvm_toolchains//:all")
 

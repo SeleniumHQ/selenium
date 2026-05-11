@@ -10,6 +10,13 @@ try-import %workspace%/.bazelrc.windows.local
 
 common --lockfile_mode=off
 
+# Skip Bazel's auto-detection of the host C/C++ toolchain. We register the
+# LLVM hermetic toolchain explicitly in MODULE.bazel and don't want
+# rules_cc's auto-detected `local_config_cc` to influence toolchain
+# resolution on developer hosts or CI runners.
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --repo_env=BAZEL_NO_APPLE_CPP_TOOLCHAIN=1
+
 # Bazel 8 compatibility flags. We should find ways to avoid needing these
 common --legacy_external_runfiles
 

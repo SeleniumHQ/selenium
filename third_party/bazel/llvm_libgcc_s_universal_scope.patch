@@ -1,0 +1,10 @@
+--- a/config/defs.bzl
++++ b/config/defs.bzl
+@@ -143,6 +143,7 @@ def config_settings():
+     bool_flag(
+         name = "experimental_stub_libgcc_s",
+         build_setting_default = False,
++        scope = "universal",
+     )
+
+     for sanitizer in SANITIZERS:
