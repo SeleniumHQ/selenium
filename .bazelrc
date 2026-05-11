@@ -88,7 +88,7 @@ common:linux --host_platform=//:local_linux_gnu
 # The LLVM toolchain doesn't ship libgcc_s; this stub satisfies Rust's
 # glibc stdlib link dependency when LLVM is the host C++ toolchain.
 common:linux --@llvm//config:experimental_stub_libgcc_s=True
-common:windows --host_platform=//:local_windows_gnullvm
+common:windows --host_platform=//:local_windows_msvc
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"

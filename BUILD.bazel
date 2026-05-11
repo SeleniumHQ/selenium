@@ -141,6 +141,25 @@ platform(
     parents = ["@platforms//host"],
 )
 
+# Native Windows host platform. Used as `--host_platform` on Windows
+# runners so native rust builds go through `x86_64-pc-windows-msvc` (which
+# the Windows runners have installed as part of Visual Studio) rather
+# than `x86_64-pc-windows-gnullvm`. The gnullvm path drags in LLVM's
+# bootstrap-process-wrapper Starlark transition, which puts
+# `process_wrapper` in a different exec config than proc-macro deps and
+# trips rustc with `can't find crate for time_macros / scroll_derive`
+# style errors. Cross-compile targets in //rust still transition to the
+# gnullvm rules_rs platforms so non-Windows hosts can produce PE binaries
+# without a Windows SDK.
+platform(
+    name = "local_windows_msvc",
+    constraint_values = [
+        "@llvm//constraints/windows/abi:msvc",
+        "@llvm//constraints/windows/crt:msvcrt",
+    ],
+    parents = ["@platforms//host"],
+)
+
 buildifier(
     name = "buildifier",
     lint_mode = "fix",
