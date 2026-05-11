@@ -118,6 +118,7 @@ public static partial class SeleniumManager
                 $"Selenium Manager doesn't support your runtime platform: {Environment.OSVersion.Platform}"),
         };
 
+#if !NET462
         var processArchitecture = RuntimeInformation.ProcessArchitecture;
         var archSuffix = processArchitecture switch
         {
@@ -132,6 +133,9 @@ public static partial class SeleniumManager
             throw new PlatformNotSupportedException(
                 "Selenium Manager only ships an arm64 binary for macOS");
         }
+#else
+        const string archSuffix = "x64";
+#endif
 
         var ridOs = platform switch
         {
