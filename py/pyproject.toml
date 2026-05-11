@@ -44,11 +44,11 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [dependency-groups]
 lint = [
-    "ruff==0.15.11",
+    "ruff==0.15.12",
 ]
 validate = [
     "validate-pyproject==0.25",
-    "packaging==26.1",
+    "packaging==26.2",
 ]
 
 [tool.setuptools]
