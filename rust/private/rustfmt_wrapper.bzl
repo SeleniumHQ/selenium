@@ -1,12 +1,8 @@
 load("@apple_rules_lint//lint:defs.bzl", "get_lint_config")
-load(
-    "@rules_rust//rust:defs.bzl",
-    "rustfmt_test",
-    _rust_binary = "rust_binary",
-    _rust_library = "rust_library",
-    _rust_test = "rust_test",
-    _rust_test_suite = "rust_test_suite",
-)
+load("@rules_rs//rs:rust_binary.bzl", _rust_binary = "rust_binary")
+load("@rules_rs//rs:rust_library.bzl", _rust_library = "rust_library")
+load("@rules_rs//rs:rust_test.bzl", _rust_test = "rust_test")
+load("@rules_rust//rust:defs.bzl", "rustfmt_test", _rust_test_suite = "rust_test_suite")
 
 def _wrap_with_fmt_test(name, tags):
     config = get_lint_config("rust-rustfmt", tags)

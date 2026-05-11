@@ -17,27 +17,22 @@
 
 package org.openqa.selenium.remote.http;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.ByteBuffer;
-import org.openqa.selenium.internal.Require;
+import org.junit.jupiter.api.Test;
 
-public class BinaryMessage implements Message {
+class BinaryMessageTest {
 
-  private final byte[] data;
+  @Test
+  void copiesOnlyTheReadableRegionOfABuffer() {
+    // Backing array is 16 bytes but only the slice [4..8) is readable.
+    byte[] backing = {0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0};
+    ByteBuffer buffer = ByteBuffer.wrap(backing);
+    buffer.position(4).limit(8);
 
-  public BinaryMessage(ByteBuffer data) {
-    ByteBuffer copy = Require.nonNull("Data to use", data).asReadOnlyBuffer();
-    this.data = new byte[copy.remaining()];
-    copy.get(this.data);
-  }
+    BinaryMessage message = new BinaryMessage(buffer);
 
-  public BinaryMessage(byte[] data) {
-    Require.nonNull("Data to use", data);
-
-    this.data = new byte[data.length];
-    System.arraycopy(data, 0, this.data, 0, data.length);
-  }
-
-  public byte[] data() {
-    return data;
+    assertThat(message.data()).containsExactly(1, 2, 3, 4);
   }
 }

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>attribute_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-attribute-global.js"></script>
+  <script type="text/javascript">
+    var getAttribute = window.bot.dom.typescript.getAttribute;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function assertAttributeEquals(assert, expected, elem, attr) {
+      assert.strictEqual(getAttribute(elem, attr), expected,
+        'Expected getAttribute("' + attr + '") to equal ' + JSON.stringify(expected));
+    }
+
+    QUnit.module('getAttribute typescript');
+
+    // --- Named and basic attributes ---
+
+    QUnit.test('can find named attributes', function (assert) {
+      assertAttributeEquals(assert, 'cheese', byId('cheddar'), 'name');
+    });
+
+    QUnit.test('should return class attribute via className property', function (assert) {
+      assertAttributeEquals(assert, 'tasty', byId('cheddar'), 'class');
+    });
+
+    QUnit.test('should return null for missing attributes', function (assert) {
+      assertAttributeEquals(assert, null, byId('checky'), 'never_there');
+    });
+
+    QUnit.test('should return null for missing class attribute', function (assert) {
+      assertAttributeEquals(assert, null, byId('no-class'), 'class');
+    });
+
+    QUnit.test('should return an empty string when attribute value is empty', function (assert) {
+      assertAttributeEquals(assert, '', byId('cheddar'), 'empty');
+    });
+
+    QUnit.test('attribute lookup is case insensitive', function (assert) {
+      assertAttributeEquals(assert, 'cheese', byId('cheddar'), 'NaMe');
+      assertAttributeEquals(assert, 'cheese', byId('cheddar'), 'NAME');
+    });
+
+    QUnit.test('attribute does not change the type of the value', function (assert) {
+      assertAttributeEquals(assert, '4b273a33fbbd29013nN93dy4F1A~', byId('aValue'), 'value');
+    });
+
+    // --- Boolean properties ---
+
+    QUnit.test('returns true string for present boolean attribute disabled', function (assert) {
+      assertAttributeEquals(assert, 'true', byId('checky'), 'disabled');
+    });
+
+    QUnit.test('returns null for absent boolean attribute disabled', function (assert) {
+      assertAttributeEquals(assert, null, byId('unchecky'), 'disabled');
+    });
+
+    QUnit.test('returns true string for present boolean attribute readonly', function (assert) {
+      assertAttributeEquals(assert, 'true', byId('checky'), 'readonly');
+    });
+
+    QUnit.test('returns null for absent boolean attribute readonly', function (assert) {
+      assertAttributeEquals(assert, null, byId('unchecky'), 'readonly');
+    });
+
+    QUnit.test('boolean property readonly works with alias readOnly', function (assert) {
+      assertAttributeEquals(assert, 'true', byId('checky'), 'readOnly');
+    });
+
+    // --- selected / checked (state-based, not attribute-based) ---
+
+    QUnit.test('selected on a selected option returns true string', function (assert) {
+      assertAttributeEquals(assert, 'true', byId('selecty'), 'selected');
+    });
+
+    QUnit.test('selected on an unselected option returns null', function (assert) {
+      assertAttributeEquals(assert, null, byId('unselecty'), 'selected');
+    });
+
+    QUnit.test('checked on a checked input returns true string', function (assert) {
+      // The element has checked="false" as HTML attribute, but browser marks it checked
+      assertAttributeEquals(assert, 'true', byId('checky'), 'checked');
+    });
+
+    QUnit.test('checked on an unchecked input returns null', function (assert) {
+      assertAttributeEquals(assert, null, byId('unchecky'), 'checked');
+    });
+
+    // --- href on <a> returns full URL via property ---
+
+    QUnit.test('href on anchor returns the property value (absolute URL)', function (assert) {
+      var anchor = byId('anchor');
+      var result = getAttribute(anchor, 'href');
+      // The property returns the absolute URL; the attribute is relative.
+      // We just assert it equals the resolved href property.
+      assert.strictEqual(result, anchor.href,
+        'Expected href to resolve to absolute URL via property');
+    });
+
+    QUnit.test('href absent on anchor returns null', function (assert) {
+      assertAttributeEquals(assert, null, byId('anchor-no-href'), 'href');
+    });
+
+    // --- src on <img> returns full URL via property ---
+
+    QUnit.test('src on img returns the property value (absolute URL)', function (assert) {
+      var img = byId('img-with-src');
+      var result = getAttribute(img, 'src');
+      assert.strictEqual(result, img.src,
+        'Expected src to resolve to absolute URL via property');
+    });
+
+    QUnit.test('src absent on img returns null', function (assert) {
+      assertAttributeEquals(assert, null, byId('img-no-src'), 'src');
+    });
+
+    // --- style attribute ---
+
+    QUnit.test('style attribute returns cssText', function (assert) {
+      var elem = byId('styled');
+      var result = getAttribute(elem, 'style');
+      assert.ok(result !== null && result.length > 0,
+        'style attribute should return non-empty cssText, got: ' + result);
+      assert.ok(result.indexOf('color') !== -1 || result.indexOf('display') !== -1,
+        'cssText should contain the set style properties');
+    });
+
+    QUnit.test('style attribute on unstyled element returns empty string', function (assert) {
+      var result = getAttribute(byId('cheddar'), 'style');
+      // element.style.cssText is '' when no inline styles set
+      assert.strictEqual(typeof result, 'string',
+        'style attribute should return a string (possibly empty)');
+    });
+
+    // --- spellcheck ---
+
+    QUnit.test('spellcheck true attribute returns true string', function (assert) {
+      assertAttributeEquals(assert, 'true', byId('spell-true'), 'spellcheck');
+    });
+
+    QUnit.test('spellcheck false attribute returns false string', function (assert) {
+      assertAttributeEquals(assert, 'false', byId('spell-false'), 'spellcheck');
+    });
+
+    // --- value attribute ---
+
+    QUnit.test('can get value attribute from input', function (assert) {
+      assertAttributeEquals(assert, 'unchecky', byId('unchecky'), 'value');
+    });
+
+    // --- expando / unknown attributes ---
+
+    QUnit.test('returns expando attribute value via getAttribute fallback', function (assert) {
+      // 'unknown' is not a known DOM property, so falls back to element.getAttribute
+      assertAttributeEquals(assert, 'lovely', byId('cheddar'), 'unknown');
+    });
+
+    // --- event handler attributes ---
+
+    QUnit.test('event handler attribute falls back to getAttribute, not function stringification', function (assert) {
+      // elem.onclick is a function; without the isObject() function check the
+      // old code would have returned String(fn) — the function source code.
+      // With the fix, isObject(fn) is true, so we fall back to getAttribute().
+      var elem = byId('with-onclick');
+      var result = getAttribute(elem, 'onclick');
+      assert.ok(result === null || result.indexOf('function') === -1,
+        'onclick attribute should not return stringified function, got: ' + result);
+    });
+
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="cheddar" name="cheese" class="tasty" unknown="lovely" empty="">Cheddar</div>
+  <div id="no-class">No class</div>
+  <div id="styled" style="color: red; display: block;">Styled</div>
+
+  <input id="spell-true" type="text" spellcheck="true">
+  <input id="spell-false" type="text" spellcheck="false">
+
+  <a id="anchor" href="/testdata/map.png">link</a>
+  <a id="anchor-no-href">no href</a>
+
+  <img id="img-with-src" src="/testdata/map.png" alt="test">
+  <img id="img-no-src" alt="no src">
+
+  <form>
+    <select>
+      <option id="selecty" selected>selecty</option>
+      <option id="unselecty" value="unselecty">unselecty</option>
+    </select>
+    <!-- checked="false" attribute is present, so browser marks element as checked -->
+    <input id="checky" type="checkbox" disabled readonly="readonly" checked="false" name="checky" />
+    <input id="unchecky" type="checkbox" value="unchecky" />
+  </form>
+
+  <li id="aValue" value="4b273a33fbbd29013nN93dy4F1A~" class="cur"></li>
+  <button id="with-onclick" onclick="return false;">click me</button>
+</body>
+
+</html>

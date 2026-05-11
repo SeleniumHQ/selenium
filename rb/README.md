@@ -1,34 +1,54 @@
 # selenium-webdriver
 
-This gem provides Ruby bindings for Selenium and supports MRI >= 3.2.
+Ruby language bindings for [Selenium WebDriver](https://www.selenium.dev).
+Selenium automates browsers for testing and web-based task automation.
 
-## Install
+Supports MRI >= 3.2.
 
-    gem install selenium-webdriver
+## Installation
+
+```bash
+gem install selenium-webdriver
+```
+
+## Quick Start
+
+```ruby
+require "selenium-webdriver"
+
+driver = Selenium::WebDriver.for :chrome
+begin
+  driver.get "https://www.selenium.dev"
+  puts driver.title
+ensure
+  driver.quit
+end
+```
+
+Selenium Manager automatically handles browser driver installation — no manual driver setup required.
+
+## Documentation
+
+- [Getting Started](https://www.selenium.dev/documentation/webdriver/getting_started/)
+- [Ruby API Docs](https://www.selenium.dev/selenium/docs/api/rb/index.html)
+- [Selenium Manager](https://www.selenium.dev/documentation/selenium_manager/)
+- [Selenium Grid](https://www.selenium.dev/documentation/grid/)
+
+## Support
+
+- [Selenium Chat](https://www.selenium.dev/support/#ChatRoom)
+- [GitHub Issues](https://github.com/SeleniumHQ/selenium/issues)
+
+## Contributing
+
+Contributions are welcome via [GitHub](https://github.com/SeleniumHQ/selenium/) pull requests.
+See the [source code](https://github.com/SeleniumHQ/selenium/tree/trunk/rb) for this binding.
 
 ## Links
 
-* https://rubygems.org/gems/selenium-webdriver
-* https://www.selenium.dev/selenium/docs/api/rb/index.html
-* https://www.selenium.dev/documentation/?tab=ruby
-* https://github.com/SeleniumHQ/selenium/issues
+- [RubyGems](https://rubygems.org/gems/selenium-webdriver)
+- [Documentation](https://www.selenium.dev/documentation/?tab=ruby)
 
 ## License
 
-Copyright 2009-2024 Software Freedom Conservancy
-
-Licensed to the Software Freedom Conservancy (SFC) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The SFC licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
