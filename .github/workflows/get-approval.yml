@@ -20,6 +20,7 @@ on:
 jobs:
   notify:
     name: Send Notification
+    if: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.triggering_actor) }}
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
@@ -30,13 +31,14 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: ${{ inputs.title }}
-          SLACK_MESSAGE: ${{ inputs.message }}
+          SLACK_MESSAGE: "${{ inputs.message }} (requested by @${{ github.triggering_actor }})"
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   authorize:
     name: Authorize
     needs: notify
+    if: needs.notify.result == 'success'
     runs-on: ubuntu-latest
     environment: production
     steps:

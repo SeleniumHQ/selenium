@@ -147,7 +147,7 @@ jobs:
     with:
       name: Run dependency updates
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' }}
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update
       artifact-name: patch-dep-updates
 
   calculate-changelog-depth:
@@ -335,3 +335,40 @@ jobs:
       - name: Delete staging branch
         run: |
           git push origin --delete staging/release-${{ needs.parse-tag.outputs.tag }} || true
+
+  unlock-trunk-on-failure:
+    name: Unlock Trunk on Failure
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    if: failure() && needs.restrict-trunk.result == 'success'
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+      skip_approval: true
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  on-prerelease-failure:
+    name: On Pre-release Failure
+    runs-on: ubuntu-latest
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
+    if: failure()
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: "Release preparation failed: ${{ needs.parse-tag.outputs.tag }}"
+          SLACK_MESSAGE: |
+            • Selenium Manager: ${{ needs.selenium-manager.result }}
+            • Versions: ${{ needs.commit-versions.result }}
+            • Devtools: ${{ needs.commit-devtools.result }}
+            • Dependencies: ${{ needs.update-dependencies.result }}
+            • Changelogs: ${{ needs.update-changelogs.result }}
+            • Release Updates: ${{ needs.release-updates.result }}
+            • Create PR: ${{ needs.create-pr.result }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
