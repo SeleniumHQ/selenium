@@ -23,6 +23,15 @@ task :lint do
   puts '  Rust linting not configured'
 end
 
+desc 'Regenerate rust/Cargo.lock to match rust/Cargo.toml'
+task :update do
+  puts 'updating Cargo.lock'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'update', '-p', 'selenium-manager', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+end
+
 desc 'Update Rust changelog'
 task :changelogs do
   header = "#{rust_version}\n======"
@@ -44,8 +53,17 @@ task :version, [:version] do |_task, arguments|
   new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
   puts "Updating Rust from #{old_version} to #{new_version}"
 
+  # Replace only the selenium-manager package version field, not coincidental
+  # crate-version literals elsewhere (e.g. `tar = "0.4.44"` in Cargo.toml).
+  pattern = /(^\s*version\s*=\s*")#{Regexp.escape(old_version)}(")/
   ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
+    text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
+
+  # Rake::Task#invoke is a no-op if the task has already run in this process
+  # (e.g. when chaining `./go rust:version X && ./go rust:version nightly`),
+  # so reenable before invoking to ensure Cargo.lock is refreshed every time.
+  Rake::Task['rust:update'].reenable
+  Rake::Task['rust:update'].invoke
 end
