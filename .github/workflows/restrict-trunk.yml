@@ -63,7 +63,7 @@ jobs:
           existing=$(gh api "repos/$GH_REPO/rulesets" --paginate)
           for f in .github/rulesets/release-*.json; do
             name=$(jq -r .name "$f")
-            if jq -e --arg n "$name" 'any(.name == $n)' <<<"$existing" >/dev/null; then
+            if jq -e --arg n "$name" 'any(.[]; .name == $n)' <<<"$existing" >/dev/null; then
               echo "Ruleset '$name' already exists; skipping"
             else
               echo "Creating ruleset: $name"
