@@ -1,0 +1,28 @@
+{
+  "name": "Release: Restrict Trunk",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": ["~DEFAULT_BRANCH"]
+    }
+  },
+  "rules": [
+    { "type": "deletion" },
+    { "type": "non_fast_forward" },
+    {
+      "type": "update",
+      "parameters": {
+        "update_allows_fetch_and_merge": false
+      }
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": 7157452,
+      "actor_type": "Team",
+      "bypass_mode": "always"
+    }
+  ]
+}

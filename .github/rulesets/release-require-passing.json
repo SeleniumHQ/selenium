@@ -1,0 +1,41 @@
+{
+  "name": "Release: Require Passing",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": ["~DEFAULT_BRANCH"]
+    }
+  },
+  "rules": [
+    { "type": "deletion" },
+    { "type": "non_fast_forward" },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "do_not_enforce_on_create": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          {
+            "context": "Test / All RBE tests",
+            "integration_id": 15368
+          },
+          {
+            "context": "CI Success",
+            "integration_id": 15368
+          },
+          {
+            "context": "Validate workflows",
+            "integration_id": 15368
+          },
+          {
+            "context": "Format / Check Format",
+            "integration_id": 15368
+          }
+        ]
+      }
+    }
+  ],
+  "bypass_actors": []
+}
