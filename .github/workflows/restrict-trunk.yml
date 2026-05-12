@@ -89,17 +89,15 @@ jobs:
     needs: [manage-trunk]
     if: always() && needs.manage-trunk.result == 'success'
     runs-on: ubuntu-latest
-    env:
-      TRUNK_RESTRICTED: ${{ inputs.restrict }}
     steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ${{ env.TRUNK_RESTRICTED == 'true' && ':lock:' || ':unlock:' }}
-          SLACK_COLOR: ${{ env.TRUNK_RESTRICTED == 'true' && 'danger' || 'good' }}
+          SLACK_ICON_EMOJI: ${{ inputs.restrict && ':lock:' || ':unlock:' }}
+          SLACK_COLOR: ${{ inputs.restrict && 'danger' || 'good' }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ env.TRUNK_RESTRICTED == 'true' && 'Trunk locked' || 'Trunk unlocked' }}
-          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (env.TRUNK_RESTRICTED == 'true' && 'Trunk has been locked.' || 'Trunk has been unlocked.') }}
+          SLACK_TITLE: ${{ inputs.restrict && 'Trunk locked' || 'Trunk unlocked' }}
+          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (inputs.restrict && 'Trunk has been locked.' || 'Trunk has been unlocked.') }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
