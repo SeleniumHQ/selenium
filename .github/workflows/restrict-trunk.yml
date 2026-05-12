@@ -59,17 +59,29 @@ jobs:
         if: inputs.restrict
         shell: bash
         run: |
+          set -euo pipefail
+          existing=$(gh api "repos/$GH_REPO/rulesets")
           for f in .github/rulesets/release-*.json; do
-            gh api -X POST "repos/$GH_REPO/rulesets" --input "$f"
+            name=$(jq -r .name "$f")
+            if jq -e --arg n "$name" 'any(.name == $n)' <<<"$existing" >/dev/null; then
+              echo "Ruleset '$name' already exists; skipping"
+            else
+              echo "Creating ruleset: $name"
+              gh api -X POST "repos/$GH_REPO/rulesets" --input "$f"
+            fi
           done
       - name: Delete release rulesets
         if: ${{ !inputs.restrict }}
         shell: bash
         run: |
+          set -euo pipefail
+          existing=$(gh api "repos/$GH_REPO/rulesets")
           for f in .github/rulesets/release-*.json; do
             name=$(jq -r .name "$f")
-            id=$(gh api "repos/$GH_REPO/rulesets" --jq ".[] | select(.name==\"$name\") | .id")
-            gh api -X DELETE "repos/$GH_REPO/rulesets/$id"
+            while IFS= read -r id; do
+              echo "Deleting $name (id=$id)"
+              gh api -X DELETE "repos/$GH_REPO/rulesets/$id"
+            done < <(jq -r --arg n "$name" '.[] | select(.name==$n) | .id' <<<"$existing")
           done
 
   notify:
