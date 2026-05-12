@@ -279,6 +279,7 @@ jobs:
           limit-access-to-actor: false
       - name: Save git diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
+        shell: bash
         run: |
           git add -A && git diff --binary --staged > changes.patch
           [ -s changes.patch ] || rm -f changes.patch
