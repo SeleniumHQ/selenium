@@ -279,7 +279,10 @@ jobs:
           limit-access-to-actor: false
       - name: Save git diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
-        run: git add -A && git diff --binary --staged > changes.patch
+        shell: bash
+        run: |
+          git add -A && git diff --binary --staged > changes.patch
+          [ -s changes.patch ] || rm -f changes.patch
       - name: Upload artifact
         if: always() && inputs.artifact-name != ''
         uses: actions/upload-artifact@v5
@@ -287,7 +290,7 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
-          if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'warn' }}
+          if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'ignore' }}
       - name: Check disk space
         if: always()
         shell: bash

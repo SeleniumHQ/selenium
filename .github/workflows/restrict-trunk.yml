@@ -46,24 +46,43 @@ jobs:
     needs: [get-approval]
     runs-on: ubuntu-latest
     if: always() && (needs.get-approval.result == 'success' || (!inputs.restrict && github.event_name != 'workflow_dispatch'))
-    strategy:
-      matrix:
-        ruleset_id:
-          - 11911909  # Release In Progress Access (restrict updates to trunk to release managers)
-          - 11912022  # Release In Progress Flow (requires branches to be up to date before merging)
     env:
-      TRUNK_RESTRICTED: ${{ inputs.restrict }}
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      GH_REPO: ${{ github.repository }}
     steps:
-      - name: Update ruleset enforcement
-        uses: octokit/request-action@v2.4.0
+      - name: Checkout ruleset definitions
+        uses: actions/checkout@v4
         with:
-          route: PUT /repos/{owner}/{repo}/rulesets/{ruleset_id}
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          ruleset_id: ${{ matrix.ruleset_id }}
-          enforcement: ${{ env.TRUNK_RESTRICTED == 'true' && 'active' || 'disabled' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          sparse-checkout: .github/rulesets
+          sparse-checkout-cone-mode: false
+      - name: Create release rulesets
+        if: inputs.restrict
+        shell: bash
+        run: |
+          set -euo pipefail
+          existing=$(gh api "repos/$GH_REPO/rulesets")
+          for f in .github/rulesets/release-*.json; do
+            name=$(jq -r .name "$f")
+            if jq -e --arg n "$name" 'any(.[]; .name == $n)' <<<"$existing" >/dev/null; then
+              echo "Ruleset '$name' already exists; skipping"
+            else
+              echo "Creating ruleset: $name"
+              gh api -X POST "repos/$GH_REPO/rulesets" --input "$f"
+            fi
+          done
+      - name: Delete release rulesets
+        if: ${{ !inputs.restrict }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          existing=$(gh api "repos/$GH_REPO/rulesets")
+          for f in .github/rulesets/release-*.json; do
+            name=$(jq -r .name "$f")
+            while IFS= read -r id; do
+              echo "Deleting $name (id=$id)"
+              gh api -X DELETE "repos/$GH_REPO/rulesets/$id"
+            done < <(jq -r --arg n "$name" '.[] | select(.name==$n) | .id' <<<"$existing")
+          done
 
   notify:
     name: Send Notification
