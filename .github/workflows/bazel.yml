@@ -94,7 +94,6 @@ jobs:
       TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
       - name: Remove extra tools to free disk space
         if: inputs.os == 'ubuntu'
