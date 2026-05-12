@@ -339,7 +339,7 @@ jobs:
   unlock-trunk-on-failure:
     name: Unlock Trunk on Failure
     needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
-    if: failure() && needs.restrict-trunk.result == 'success'
+    if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       restrict: false
@@ -352,7 +352,7 @@ jobs:
     name: On Pre-release Failure
     runs-on: ubuntu-latest
     needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-devtools, commit-devtools, update-dependencies, calculate-changelog-depth, update-changelogs, release-updates, create-pr]
-    if: failure()
+    if: failure() || cancelled()
     steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
