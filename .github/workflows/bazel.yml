@@ -215,9 +215,6 @@ jobs:
               crates: rust/Cargo.Bazel.lock
           repository-cache: true
           bazelrc: common --color=yes
-      - name: Setup curl for Ubuntu
-        if: inputs.os == 'ubuntu'
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |

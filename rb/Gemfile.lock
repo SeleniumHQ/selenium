@@ -38,7 +38,6 @@ GEM
       bigdecimal
       rexml
     csv (3.3.5)
-    curb (1.0.9)
     date (3.5.1)
     date (3.5.1-java)
     debug (1.11.1)
@@ -205,7 +204,6 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 7.0)
-  curb (~> 1.0.5)
   debug (~> 1.7)
   git (~> 1.19)
   rack (~> 2.0)
