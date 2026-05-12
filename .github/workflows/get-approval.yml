@@ -18,9 +18,18 @@ on:
         required: true
 
 jobs:
+  needs-authorization:
+    name: Check Authorization
+    runs-on: ubuntu-latest
+    outputs:
+      required: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.triggering_actor) }}
+    steps:
+      - run: echo "Triggered by ${{ github.triggering_actor }}"
+
   notify:
     name: Send Notification
-    if: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.triggering_actor) }}
+    needs: needs-authorization
+    if: needs.needs-authorization.outputs.required == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
@@ -37,8 +46,8 @@ jobs:
 
   authorize:
     name: Authorize
-    needs: notify
-    if: needs.notify.result == 'success'
+    needs: [needs-authorization, notify]
+    if: needs.needs-authorization.outputs.required == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:
