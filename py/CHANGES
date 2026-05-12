@@ -1,3 +1,12 @@
+Selenium 4.44.0
+* Support CDP versions: v146, v147, v148
+* CDDL 2 Python generator (#16914)
+* Use generated Bidi files instead of hand curated ones (#17266)
+* Fix race condition in WebSocketConnection.execute() causing KeyError (#17381)
+* Implement high level APIs for script (#17371)
+* Add edge service arg to inherit browser i/o streams (#17415)
+* Update dev dependencies and fix type annotation (#17434)
+
 Selenium 4.43.0
 * Support CDP versions: v145, v146, v147
 
