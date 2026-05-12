@@ -22,9 +22,9 @@ jobs:
     name: Check Authorization
     runs-on: ubuntu-latest
     outputs:
-      required: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.triggering_actor) }}
+      required: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}
     steps:
-      - run: echo "Triggered by ${{ github.triggering_actor }}"
+      - run: echo "Triggered by ${{ github.actor }}"
 
   notify:
     name: Send Notification
@@ -40,7 +40,7 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: ${{ inputs.title }}
-          SLACK_MESSAGE: "${{ inputs.message }} (requested by @${{ github.triggering_actor }})"
+          SLACK_MESSAGE: "${{ inputs.message }} (requested by @${{ github.actor }})"
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
