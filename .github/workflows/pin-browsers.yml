@@ -31,19 +31,24 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Download patch
+        id: download
         uses: actions/download-artifact@v4
         with:
           name: pinned-browsers
+        continue-on-error: true
       - name: Apply Patch
+        if: steps.download.outcome == 'success'
         run: |
           git apply --index changes.patch
           rm changes.patch
       - name: Create Pull Request
+        if: steps.download.outcome == 'success'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           commit-message: "Update pinned browser versions"
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
+          base: trunk
           title: "[build] Automated Browser Version Update"
           body: |
             This is an automated pull request to update pinned browsers and drivers
