@@ -52,7 +52,7 @@
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
     "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
-    "net.bytebuddy:byte-buddy": 1750588375,
+    "net.bytebuddy:byte-buddy": 731630558,
     "net.java.dev.javacc:javacc": 520686333,
     "org.apache.logging.log4j:log4j-core": 929898406,
     "org.assertj:assertj-core": -1145412507,
@@ -133,7 +133,7 @@
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
     "com.google.auto:auto-common": 2122639405,
     "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": 1198150034,
+    "com.google.closure-stylesheets:closure-stylesheets": 813279907,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
@@ -317,10 +317,10 @@
     "jaxen:jaxen:jar:sources": -1282944954,
     "junit:junit": -149895345,
     "junit:junit:jar:sources": 940567721,
-    "net.bytebuddy:byte-buddy": -749913489,
+    "net.bytebuddy:byte-buddy": 1329808931,
     "net.bytebuddy:byte-buddy-agent": 1099087346,
     "net.bytebuddy:byte-buddy-agent:jar:sources": 1414786109,
-    "net.bytebuddy:byte-buddy:jar:sources": -1341936733,
+    "net.bytebuddy:byte-buddy:jar:sources": -1701033570,
     "net.java.dev.javacc:javacc": 1095796166,
     "net.java.dev.javacc:javacc:jar:sources": -1183405047,
     "net.java.dev.jna:jna": 154162148,
@@ -345,7 +345,7 @@
     "org.apache.logging.log4j:log4j-core:jar:sources": -310222995,
     "org.apiguardian:apiguardian-api": 1279798469,
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
-    "org.assertj:assertj-core": 2064243319,
+    "org.assertj:assertj-core": -911235250,
     "org.assertj:assertj-core:jar:sources": -697161745,
     "org.bouncycastle:bcpkix-jdk18on": 234366076,
     "org.bouncycastle:bcpkix-jdk18on:jar:sources": 256969312,
@@ -393,7 +393,7 @@
     "org.junit.platform:junit-platform-launcher:jar:sources": -1783349551,
     "org.junit.platform:junit-platform-reporting": -708741566,
     "org.junit.platform:junit-platform-reporting:jar:sources": -479417393,
-    "org.mockito:mockito-core": -2004852378,
+    "org.mockito:mockito-core": -427751185,
     "org.mockito:mockito-core:jar:sources": 1900207417,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
@@ -413,7 +413,7 @@
     "org.ow2.asm:asm:jar:sources": 1195325834,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": -816509248,
+    "org.redisson:redisson": -1045994615,
     "org.redisson:redisson:jar:sources": -1546915217,
     "org.rnorth.duct-tape:duct-tape": -1059401544,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
@@ -427,9 +427,9 @@
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
     "org.seleniumhq.selenium:selenium-os": 1831430020,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -122429789,
+    "org.seleniumhq.selenium:selenium-remote-driver": 1392334188,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": -793971165,
+    "org.seleniumhq.selenium:selenium-support": -709117245,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
     "org.slf4j:slf4j-api": -1521593912,
     "org.slf4j:slf4j-api:jar:sources": -1050183387,
@@ -450,9 +450,9 @@
     "org.zeromq:jeromq:jar:sources": -1982898923,
     "redis.clients.authentication:redis-authx-core": 442288662,
     "redis.clients.authentication:redis-authx-core:jar:sources": -376828222,
-    "uk.org.webcompere:system-stubs-core": -133478800,
+    "uk.org.webcompere:system-stubs-core": 1845637895,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
-    "uk.org.webcompere:system-stubs-jupiter": 701601246,
+    "uk.org.webcompere:system-stubs-jupiter": 1914969081,
     "uk.org.webcompere:system-stubs-jupiter:jar:sources": 409043156
   },
   "artifacts": {
@@ -1261,10 +1261,10 @@
     },
     "net.bytebuddy:byte-buddy": {
       "shasums": {
-        "jar": "ac30c4b0778111fbf65594df7ed0fbd32939eeabef9b17d7f3445aa28696fb86",
-        "sources": "169adbaf8e064889b6b30514956baf0ca95ca3ef8f34dc405840a0c7f4e9cbb0"
+        "jar": "227d3e0ad51915809143f6a744ac0f4cb21f03214dab28e52ee7007c5ad7e9d9",
+        "sources": "8529b9ec93e698165dde6fddfd57e0820bb8f6d17f91ada1d8c525563636dc4d"
       },
-      "version": "1.18.8-jdk5"
+      "version": "1.18.8"
     },
     "net.bytebuddy:byte-buddy-agent": {
       "shasums": {

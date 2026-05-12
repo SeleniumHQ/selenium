@@ -37,10 +37,7 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
-    private readonly EventDispatcher _eventDispatcher;
     private readonly BiDi _bidi;
-
-    private readonly ConcurrentDictionary<string, EventMetadata> _eventMetadata = new();
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -62,56 +59,10 @@ internal sealed class Broker : IAsyncDisposable
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = new EventDispatcher();
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
         _processingTask = Task.Run(ProcessMessagesAsync);
-    }
-
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
-        return await SubscribeAsync(descriptor.Name, InvokeAction, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeFunc(EventArgs args) => new(func((TEventArgs)args));
-        return await SubscribeAsync(descriptor.Name, InvokeFunc, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
-    {
-        var metadata = _eventMetadata.GetOrAdd(eventName, new EventMetadata(jsonTypeInfo, argsFactory));
-
-        if (metadata.JsonTypeInfo != jsonTypeInfo)
-        {
-            throw new ArgumentException($"Event '{eventName}' is already registered with different metadata.", nameof(eventName));
-        }
-
-        _eventDispatcher.AddHandler(eventName, handler);
-
-        try
-        {
-            var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
-                .ConfigureAwait(false);
-
-            return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
-        }
-        catch
-        {
-            _eventDispatcher.RemoveHandler(eventName, handler);
-            throw;
-        }
-    }
-
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
-    {
-        await _bidi.Session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-        _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
     }
 
     public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
@@ -192,10 +143,14 @@ internal sealed class Broker : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        _receiveMessagesCancellationTokenSource.Cancel();
-
         try
         {
+            // Dispose subscriptions while transport and processing loop are still active,
+            // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
+            await _bidi.EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+
+            _receiveMessagesCancellationTokenSource.Cancel();
+
             try
             {
                 await _receivingTask.ConfigureAwait(false);
@@ -205,11 +160,9 @@ internal sealed class Broker : IAsyncDisposable
                 // Expected when cancellation is requested, ignore.
             }
 
-            await _transport.DisposeAsync().ConfigureAwait(false);
-
             await _processingTask.ConfigureAwait(false);
 
-            await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
+            await _transport.DisposeAsync().ConfigureAwait(false);
         }
         finally
         {
@@ -322,22 +275,14 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_eventMetadata.TryGetValue(method, out var metadata))
+                if (!_bidi.EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader))
                 {
                     if (_logger.IsEnabled(LogEventLevel.Warn))
                     {
                         _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                     }
-
-                    break;
                 }
 
-                var eventParams = JsonSerializer.Deserialize(ref paramsReader, metadata.JsonTypeInfo)
-                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
-
-                var eventArgs = metadata.CreateEventArgs(_bidi, eventParams);
-
-                _eventDispatcher.EnqueueEvent(method, eventArgs);
                 break;
 
             case TypeError:
@@ -442,6 +387,7 @@ internal sealed class Broker : IAsyncDisposable
         // Channel is fully drained. Fail any commands that didn't get a response:
         // either with the transport error or cancellation for clean shutdown.
         var terminalException = _terminalReceiveException;
+
         foreach (var id in _pendingCommands.Keys)
         {
             if (_pendingCommands.TryRemove(id, out var pendingCommand))
@@ -473,11 +419,6 @@ internal sealed class Broker : IAsyncDisposable
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
-
-    private readonly record struct EventMetadata(JsonTypeInfo JsonTypeInfo, Func<IBiDi, object, EventArgs> ArgsFactory)
-    {
-        public EventArgs CreateEventArgs(IBiDi bidi, object eventParams) => ArgsFactory(bidi, eventParams);
-    }
 
     private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable
     {

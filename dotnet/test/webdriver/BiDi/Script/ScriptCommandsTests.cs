@@ -94,7 +94,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
 
         TaskCompletionSource<EntryAddedEventArgs> tcs = new();
 
-        await context.Log.OnEntryAddedAsync(tcs.SetResult);
+        await using var subscription = await context.Log.EntryAdded.SubscribeAsync(e => tcs.TrySetResult(e));
 
         await context.ReloadAsync(new() { Wait = ReadinessState.Interactive });
 

@@ -818,6 +818,10 @@ pub trait SeleniumManager {
         self.is_version_specific(self.get_browser_version())
     }
 
+    fn is_driver_version_specific(&self) -> bool {
+        self.is_version_specific(self.get_driver_version())
+    }
+
     fn setup(&mut self) -> Result<PathBuf, Error> {
         let mut driver_in_path = None;
         let mut driver_in_path_version = None;

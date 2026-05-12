@@ -90,7 +90,7 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
           }
           break;
         case None:
-          ctx.write(frame);
+          ctx.fireChannelRead(frame.retain());
           return;
         default:
           throw new IllegalStateException("unexpected enum: " + next);
@@ -128,7 +128,7 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
       CloseWebSocketFrame closeFrame = (CloseWebSocketFrame) frame;
       message = new CloseMessage(closeFrame.statusCode(), closeFrame.reasonText());
     } else {
-      ctx.write(frame);
+      ctx.fireChannelRead(frame.retain());
       return;
     }
 

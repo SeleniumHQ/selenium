@@ -52,6 +52,9 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     private static readonly Command<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
         "network.failRequest", Default.FailRequestParameters, Default.FailRequestResult);
 
+    private static readonly Command<DisownDataParameters, DisownDataResult> DisownDataCommand = new(
+        "network.disownData", Default.DisownDataParameters, Default.DisownDataResult);
+
     private static readonly Command<GetDataParameters, GetDataResult> GetDataCommand = new(
         "network.getData", Default.GetDataParameters, Default.GetDataResult);
 
@@ -60,31 +63,6 @@ internal sealed partial class NetworkModule : Module, INetworkModule
 
     private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
         "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
-
-    private static readonly Event<BeforeRequestSentEventArgs, BeforeRequestSentParameters> BeforeRequestSentEvent = new(
-        "network.beforeRequestSent",
-        static (bidi, p) => new BeforeRequestSentEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts),
-        Default.BeforeRequestSentParameters);
-
-    private static readonly Event<ResponseStartedEventArgs, ResponseStartedParameters> ResponseStartedEvent = new(
-        "network.responseStarted",
-        static (bidi, p) => new ResponseStartedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
-        Default.ResponseStartedParameters);
-
-    private static readonly Event<ResponseCompletedEventArgs, ResponseCompletedParameters> ResponseCompletedEvent = new(
-        "network.responseCompleted",
-        static (bidi, p) => new ResponseCompletedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
-        Default.ResponseCompletedParameters);
-
-    private static readonly Event<FetchErrorEventArgs, FetchErrorParameters> FetchErrorEvent = new(
-        "network.fetchError",
-        static (bidi, p) => new FetchErrorEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts),
-        Default.FetchErrorParameters);
-
-    private static readonly Event<AuthRequiredEventArgs, AuthRequiredParameters> AuthRequiredEvent = new(
-        "network.authRequired",
-        static (bidi, p) => new AuthRequiredEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response),
-        Default.AuthRequiredParameters);
 
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -149,6 +127,13 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(FailRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<DisownDataResult> DisownDataAsync(DataType dataType, Collector collector, Request request, DisownDataOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new DisownDataParameters(dataType, collector, request);
+
+        return await ExecuteAsync(DisownDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
@@ -178,61 +163,28 @@ internal sealed partial class NetworkModule : Module, INetworkModule
         return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(NetworkEvent.BeforeRequestSent), null) ?? _beforeRequestSent;
+    private IEventSource<BeforeRequestSentEventArgs>? _beforeRequestSent;
 
-    public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(BeforeRequestSentEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<ResponseStartedEventArgs> ResponseStarted => _responseStarted ?? Interlocked.CompareExchange(ref _responseStarted, CreateEventSource(NetworkEvent.ResponseStarted), null) ?? _responseStarted;
+    private IEventSource<ResponseStartedEventArgs>? _responseStarted;
 
-    public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<ResponseCompletedEventArgs> ResponseCompleted => _responseCompleted ?? Interlocked.CompareExchange(ref _responseCompleted, CreateEventSource(NetworkEvent.ResponseCompleted), null) ?? _responseCompleted;
+    private IEventSource<ResponseCompletedEventArgs>? _responseCompleted;
 
-    public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseStartedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<FetchErrorEventArgs> FetchError => _fetchError ?? Interlocked.CompareExchange(ref _fetchError, CreateEventSource(NetworkEvent.FetchError), null) ?? _fetchError;
+    private IEventSource<FetchErrorEventArgs>? _fetchError;
 
-    public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(ResponseCompletedEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(FetchErrorEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        return await SubscribeAsync(AuthRequiredEvent, handler, options, cancellationToken).ConfigureAwait(false);
-    }
+    public IEventSource<AuthRequiredEventArgs> AuthRequired => _authRequired ?? Interlocked.CompareExchange(ref _authRequired, CreateEventSource(NetworkEvent.AuthRequired), null) ?? _authRequired;
+    private IEventSource<AuthRequiredEventArgs>? _authRequired;
 }
 
 [JsonSerializable(typeof(AddDataCollectorParameters))]
 [JsonSerializable(typeof(AddDataCollectorResult))]
 [JsonSerializable(typeof(AddInterceptParameters))]
 [JsonSerializable(typeof(AddInterceptResult))]
+[JsonSerializable(typeof(DisownDataParameters))]
+[JsonSerializable(typeof(DisownDataResult))]
 [JsonSerializable(typeof(ContinueRequestParameters))]
 [JsonSerializable(typeof(ContinueRequestResult))]
 [JsonSerializable(typeof(ContinueResponseParameters))]

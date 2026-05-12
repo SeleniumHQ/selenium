@@ -116,7 +116,6 @@ task :release_updates, [:tag, :channel] do |_task, arguments|
     Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['rust:version'].invoke(version)
-    Rake::Task['rust:update'].invoke
     Rake::Task['rust:changelogs'].invoke
   end
 

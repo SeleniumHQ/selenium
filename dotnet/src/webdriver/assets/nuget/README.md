@@ -1,17 +1,51 @@
-Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.
+# Selenium.WebDriver
 
-# Usage
+.NET language bindings for [Selenium WebDriver](https://www.selenium.dev).
+Selenium automates browsers for testing and web-based task automation.
+
+Targets .NET Framework 4.6.2, .NET Standard 2.0, and .NET 8.0.
+
+## Installation
+
+```bash
+dotnet add package Selenium.WebDriver
+```
+
+## Quick Start
 
 ```csharp
+using System;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 
-await using var driver = new ChromeDriver();
-
-driver.Url = "https://www.google.com";
-driver.FindElement(By.Name("q")).SendKeys("webdriver" + Keys.Return);
+using var driver = new ChromeDriver();
+driver.Url = "https://www.selenium.dev";
 Console.WriteLine(driver.Title);
 ```
 
-# Contributing
-Contributions are accepted either through [GitHub](https://github.com/SeleniumHQ/selenium/) pull requests or patches via the [Selenium issue tracker](https://github.com/SeleniumHQ/selenium/issues).
+Selenium Manager automatically handles browser driver installation — no manual driver setup required.
+
+## Documentation
+
+- [Getting Started](https://www.selenium.dev/documentation/webdriver/getting_started/)
+- [.NET API Docs](https://www.selenium.dev/selenium/docs/api/dotnet/)
+- [Selenium Manager](https://www.selenium.dev/documentation/selenium_manager/)
+- [Selenium Grid](https://www.selenium.dev/documentation/grid/)
+
+## Support
+
+- [Selenium Chat](https://www.selenium.dev/support/#ChatRoom)
+- [GitHub Issues](https://github.com/SeleniumHQ/selenium/issues)
+
+## Contributing
+
+Contributions are welcome via [GitHub](https://github.com/SeleniumHQ/selenium/) pull requests.
+See the [source code](https://github.com/SeleniumHQ/selenium/tree/trunk/dotnet) for this binding.
+
+## Links
+
+- [NuGet](https://www.nuget.org/packages/Selenium.WebDriver)
+- [Documentation](https://www.selenium.dev/documentation/?tab=dotnet)
+
+## License
+
+Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

@@ -17,53 +17,122 @@
 // under the License.
 // </copyright>
 
+using System.Runtime.ExceptionServices;
+using System.Threading.Channels;
+using OpenQA.Selenium.Internal.Logging;
+
 namespace OpenQA.Selenium.BiDi;
 
-public class Subscription : IAsyncDisposable
+internal interface ISubscriptionSink
 {
-    private readonly Broker _broker;
+    void Deliver(EventArgs args);
+    void Complete(Exception? error = null);
+    ValueTask DisposeAsync();
+}
 
-    internal Subscription(Session.Subscription subscription, Broker broker, string eventName)
+internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSink
+    where TEventArgs : EventArgs
+{
+    private static readonly ILogger _logger = Internal.Logging.Log.GetLogger(typeof(Subscription<TEventArgs>));
+
+    private readonly Func<CancellationToken, ValueTask> _unsubscribe;
+    private readonly Func<TEventArgs, ValueTask> _handler;
+    private ExceptionDispatchInfo? _handlerError;
+    private ExceptionDispatchInfo? _sourceError;
+    private int _disposed;
+
+    private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
+        new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
+
+    private readonly Task _dispatchTask;
+
+    private readonly Func<TEventArgs, bool>? _filter;
+
+    internal Subscription(Func<CancellationToken, ValueTask> unsubscribe, Func<TEventArgs, ValueTask> handler, Func<TEventArgs, bool>? filter = null)
     {
-        SubscriptionId = subscription;
-        _broker = broker;
-        EventName = eventName;
+        _unsubscribe = unsubscribe;
+        _handler = handler;
+        _filter = filter;
+        _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
-    internal Session.Subscription SubscriptionId { get; }
-
-    internal string EventName { get; }
-
-    internal Func<EventArgs, ValueTask> Handler { get; init; } = null!;
-
-    public async ValueTask UnsubscribeAsync(CancellationToken cancellationToken = default)
+    void ISubscriptionSink.Deliver(EventArgs args)
     {
-        await _broker.UnsubscribeAsync(this, cancellationToken).ConfigureAwait(false);
+        if (args is not TEventArgs typed)
+        {
+            throw new InvalidOperationException($"Cannot deliver '{args.GetType()}' to subscription expecting '{typeof(TEventArgs)}'.");
+        }
+
+        if (_filter is { } f && !f(typed)) return;
+
+        _channel.Writer.TryWrite(typed);
+    }
+
+    void ISubscriptionSink.Complete(Exception? error)
+    {
+        _channel.Writer.TryComplete(error);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await UnsubscribeAsync().ConfigureAwait(false);
-        GC.SuppressFinalize(this);
+        if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+        {
+            Exception? unsubscribeError = null;
+
+            try
+            {
+                await _unsubscribe(default).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn($"Wire unsubscribe failed during dispose: {ex.Message}");
+                unsubscribeError = ex;
+            }
+            finally
+            {
+                _channel.Writer.TryComplete();
+
+                await _dispatchTask.ConfigureAwait(false);
+
+                GC.SuppressFinalize(this);
+            }
+
+            _handlerError?.Throw();
+            _sourceError?.Throw();
+
+            if (unsubscribeError is not null)
+            {
+                ExceptionDispatchInfo.Capture(unsubscribeError).Throw();
+            }
+        }
     }
-}
 
-public sealed record SubscriptionOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
-
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
-
-    public TimeSpan? Timeout { get; init; }
-}
-
-public sealed record ContextSubscriptionOptions
-{
-    public TimeSpan? Timeout { get; init; }
-
-    internal static SubscriptionOptions WithContext(ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    private async Task DispatchEventsAsync()
     {
-        Contexts = [context],
-        Timeout = options?.Timeout
-    };
+        try
+        {
+            while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
+            {
+                while (_channel.Reader.TryRead(out var args))
+                {
+                    try
+                    {
+                        await _handler(args).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"BiDi event handler threw an exception; the subscription is stopped and will no longer dispatch events: {ex}");
+                        _handlerError = ExceptionDispatchInfo.Capture(ex);
+                        _channel.Writer.TryComplete(ex);
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception ex) when (_handlerError is null)
+        {
+            _logger.Error($"BiDi event source error: {ex.Message}");
+            _sourceError = ExceptionDispatchInfo.Capture(ex);
+        }
+    }
 }
