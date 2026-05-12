@@ -278,10 +278,15 @@ jobs:
         with:
           limit-access-to-actor: false
       - name: Save git diff
+        id: diff
         if: always() && inputs.artifact-name != '' && inputs.artifact-path == ''
-        run: git add -A && git diff --binary --staged > changes.patch
+        run: |
+          git add -A && git diff --binary --staged > changes.patch
+          if [ -s changes.patch ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Upload artifact
-        if: always() && inputs.artifact-name != ''
+        if: always() && inputs.artifact-name != '' && (inputs.artifact-path != '' || steps.diff.outputs.has_changes == 'true')
         uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.artifact-name }}
