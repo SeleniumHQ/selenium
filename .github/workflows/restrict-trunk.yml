@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          existing=$(gh api "repos/$GH_REPO/rulesets")
+          existing=$(gh api "repos/$GH_REPO/rulesets" --paginate)
           for f in .github/rulesets/release-*.json; do
             name=$(jq -r .name "$f")
             if jq -e --arg n "$name" 'any(.name == $n)' <<<"$existing" >/dev/null; then
@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          existing=$(gh api "repos/$GH_REPO/rulesets")
+          existing=$(gh api "repos/$GH_REPO/rulesets" --paginate)
           for f in .github/rulesets/release-*.json; do
             name=$(jq -r .name "$f")
             while IFS= read -r id; do
