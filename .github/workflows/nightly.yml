@@ -56,7 +56,8 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          if gh api "repos/$GH_REPO/rulesets" --jq 'any(.[]; .name | startswith("Release:"))' | grep -q true; then
+          rulesets=$(gh api "repos/$GH_REPO/rulesets" 2>/dev/null || echo '[{"name":"Release: api-error"}]')
+          if jq -e 'any(.[]; .name | startswith("Release:"))' <<<"$rulesets" >/dev/null; then
             echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
           fi
 
