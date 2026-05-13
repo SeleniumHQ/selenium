@@ -96,13 +96,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Generate release notes against previous minor release
+        env:
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          PREV=$(gh release list --exclude-drafts --json tagName \
+            -q 'map(.tagName | select(test("^selenium-[0-9]+\\.[0-9]+\\.0$")))[0]')
+          echo "Previous release tag: $PREV"
+          {
+            cat scripts/github-actions/release_header.md
+            echo ""
+            gh api -X POST "/repos/${{ github.repository }}/releases/generate-notes" \
+              -f tag_name="$TAG" \
+              -f previous_tag_name="$PREV" \
+              -f target_commitish="$SHA" \
+              --jq .body
+          } > release_body.md
       - name: Create draft GitHub release
         uses: ncipollo/release-action@v1
         with:
           draft: true
           allowUpdates: true
-          bodyFile: "scripts/github-actions/release_header.md"
-          generateReleaseNotes: true
+          bodyFile: "release_body.md"
           name: "Selenium ${{ needs.parse-tag.outputs.version }}"
           tag: "${{ needs.parse-tag.outputs.tag }}"
           commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
