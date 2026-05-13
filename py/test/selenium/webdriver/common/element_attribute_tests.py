@@ -166,6 +166,12 @@ def test_should_return_value_of_class_attribute_of_an_element(driver, pages):
     assert "header" == classname
 
 
+def test_should_return_empty_string_for_class_attribute_when_no_class_set(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element(By.ID, "oneline")
+    assert "" == element.get_attribute("class")
+
+
 # Disabled due to issues with Frames
 # def test_should_return_value_of_class_attribute_of_an_element_after_switching_iframe(driver, pages):
 #    pages.load("iframes.html")
