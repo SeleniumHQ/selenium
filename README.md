@@ -237,7 +237,7 @@ There is also an auto-formatting script that can be run: `./scripts/format.sh`
 To run Python code locally without building/installing the package, you must first install the dependencies:
 
 ```shell
-pip install -r py/requirements.txt
+pip install -r py/requirements_lock.txt
 ```
 
 Then, build the generated files and copy them into your local source tree:
