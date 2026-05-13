@@ -25,10 +25,24 @@ alias(
 # but as individual files (each output at `<os>-<arch>/selenium-manager[.exe]`)
 # for tools whose resource attrs don't expand tree artifacts (Java
 # `resources`, nuget_pack `files`).
+#
+# On Windows hosts the cross-compile chain through rules_rs's LLVM
+# toolchain currently fails for proc-macro deps, so we fall back to the
+# native rust_binary for the host's architecture (via `//rust:_selenium-manager-bin`)
+# and stub the rest. Release jars/nupkgs are built on Linux, where every
+# entry is real.
 [
     copy_file(
         name = "selenium-manager-{}-{}".format(os, arch),
-        src = "//rust:_bundle_member_{}_{}".format(os, arch),
+        src = select({
+            "//common:windows_aarch64": (
+                "//rust:_selenium-manager-bin" if (os, arch) == ("windows", "aarch64") else "//rust:_selenium-manager-stub"
+            ),
+            "//common:windows_x86_64": (
+                "//rust:_selenium-manager-bin" if (os, arch) == ("windows", "x86_64") else "//rust:_selenium-manager-stub"
+            ),
+            "//conditions:default": "//rust:_bundle_member_{}_{}".format(os, arch),
+        }),
         out = "{}-{}/selenium-manager{}".format(
             os,
             arch,

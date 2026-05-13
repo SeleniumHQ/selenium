@@ -2,6 +2,7 @@ load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
 load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_binary")
 load("@crates//:defs.bzl", "aliases", "all_crate_deps")
+load("//common:defs.bzl", "copy_file")
 load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
 rustfmt_config(
@@ -100,15 +101,87 @@ alias(
     ]
 ]
 
+# Stub script used in the Windows-host bundle for OS/arch entries we
+# can't produce on a Windows runner. Cross-compiling through rules_rs's
+# LLVM toolchain on Windows hits a `process_wrapper` / proc-macro exec
+# config divergence that breaks the build; on Windows we fall back to a
+# native rust_binary for the host's arch and stub the rest. Release
+# bundles are produced on Linux, where all five entries are real.
+genrule(
+    name = "_selenium-manager-stub",
+    outs = ["_selenium-manager-stub.sh"],
+    cmd = "\n".join([
+        "cat > $@ <<'EOF'",
+        "#!/bin/sh",
+        "echo 'selenium-manager: binary not built on this host' >&2",
+        "exit 1",
+        "EOF",
+        "chmod +x $@",
+    ]),
+    executable = True,
+    visibility = ["//common/manager:__pkg__"],
+)
+
+# Native-host bundle layouts. Each per-(os, arch) member ends up at
+# `rust/_bundle_native_<host>/<os>-<arch>/selenium-manager[.exe]` so the
+# bundle's `root_paths` can map straight to the public layout.
+[
+    copy_file(
+        name = "_bundle_native_{host_arch}_{os}_{arch}".format(
+            arch = arch,
+            host_arch = host_arch,
+            os = os,
+        ),
+        src = (
+            ":_selenium-manager-bin" if (os, arch) == ("windows", host_arch) else ":_selenium-manager-stub"
+        ),
+        out = "_bundle_native_windows_{host_arch}/{os}-{arch}/selenium-manager{ext}".format(
+            arch = arch,
+            ext = ".exe" if os == "windows" else "",
+            host_arch = host_arch,
+            os = os,
+        ),
+        is_executable = True,
+    )
+    for host_arch in ("aarch64", "x86_64")
+    for (os, arch) in [
+        ("linux", "aarch64"),
+        ("linux", "x86_64"),
+        ("macos", "aarch64"),
+        ("windows", "aarch64"),
+        ("windows", "x86_64"),
+    ]
+]
+
 copy_to_directory(
     name = "selenium-manager-bundle",
-    srcs = [
-        ":_bundle_member_linux_aarch64",
-        ":_bundle_member_linux_x86_64",
-        ":_bundle_member_macos_aarch64",
-        ":_bundle_member_windows_aarch64",
-        ":_bundle_member_windows_x86_64",
-    ],
+    # On Windows hosts cross-compiling through the rules_rs LLVM toolchain
+    # is currently broken, so we ship only a native build for the host's
+    # architecture and stub the rest. Linux/macOS hosts (and release
+    # builds) keep the full five-platform cross-compile.
+    srcs = select({
+        "//common:windows_x86_64": [
+            ":_bundle_native_x86_64_linux_aarch64",
+            ":_bundle_native_x86_64_linux_x86_64",
+            ":_bundle_native_x86_64_macos_aarch64",
+            ":_bundle_native_x86_64_windows_aarch64",
+            ":_bundle_native_x86_64_windows_x86_64",
+        ],
+        "//common:windows_aarch64": [
+            ":_bundle_native_aarch64_linux_aarch64",
+            ":_bundle_native_aarch64_linux_x86_64",
+            ":_bundle_native_aarch64_macos_aarch64",
+            ":_bundle_native_aarch64_windows_aarch64",
+            ":_bundle_native_aarch64_windows_x86_64",
+        ],
+        "//conditions:default": [
+            ":_bundle_member_linux_aarch64",
+            ":_bundle_member_linux_x86_64",
+            ":_bundle_member_macos_aarch64",
+            ":_bundle_member_windows_aarch64",
+            ":_bundle_member_windows_x86_64",
+        ],
+    }),
     replace_prefixes = {
         "selenium-manager-linux-aarch64/": "linux-aarch64/",
         "selenium-manager-linux-x86_64/": "linux-x86_64/",
@@ -116,7 +189,13 @@ copy_to_directory(
         "selenium-manager-windows-aarch64/": "windows-aarch64/",
         "selenium-manager-windows-x86_64/": "windows-x86_64/",
     },
-    root_paths = ["rust"],
+    # Longest matching prefix wins, so the native-host roots take priority
+    # over the generic "rust" root.
+    root_paths = [
+        "rust/_bundle_native_windows_x86_64",
+        "rust/_bundle_native_windows_aarch64",
+        "rust",
+    ],
     tags = ["manual"],
     visibility = ["//common/manager:__pkg__"],
 )
@@ -132,7 +211,10 @@ rust_binary(
     aliases = aliases(),
     edition = "2024",
     version = "0.4.44-nightly",
-    visibility = ["//rust:__subpackages__"],
+    visibility = [
+        "//common/manager:__pkg__",
+        "//rust:__subpackages__",
+    ],
     deps = [
         ":selenium_manager",
     ] + all_crate_deps(normal = True),
