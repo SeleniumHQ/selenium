@@ -272,9 +272,31 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
+  reset-dependencies:
+    name: Update Lockfiles for Nightly
+    needs: [parse-tag, update-version]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Reset Dependencies
+      run: ./go ${{ needs.parse-tag.outputs.language }}:update${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:update' || '' }}
+      artifact-name: version-reset-deps
+
+  commit-dependencies:
+    name: Push Nightly Lockfiles
+    needs: [parse-tag, reset-dependencies]
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: version-reset-deps
+      commit-message: "[build] Update lockfiles for nightly versions"
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
   nightly:
     name: Publish Nightly Packages
-    needs: [parse-tag, update-version]
+    needs: [parse-tag, commit-dependencies]
     permissions:
       contents: write
       packages: write
@@ -293,7 +315,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, nightly, mirror, verify]
+    needs: [publish, publish-python, docs, create-language-tag, github-release-draft, github-release-publish, update-version, reset-dependencies, commit-dependencies, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
@@ -313,6 +335,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
+            • Nightly Lockfiles Updated: ${{ needs.commit-dependencies.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}

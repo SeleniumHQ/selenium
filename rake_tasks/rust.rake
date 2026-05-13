@@ -60,10 +60,4 @@ task :version, [:version] do |_task, arguments|
     text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
-
-  # Rake::Task#invoke is a no-op if the task has already run in this process
-  # (e.g. when chaining `./go rust:version X && ./go rust:version nightly`),
-  # so reenable before invoking to ensure Cargo.lock is refreshed every time.
-  Rake::Task['rust:update'].reenable
-  Rake::Task['rust:update'].invoke
 end
