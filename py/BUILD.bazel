@@ -63,8 +63,11 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    srcs = [
+        "pyproject.toml",
+        "requirements.txt",
+    ],
     extra_args = ["--no-strip-extras"],
-    requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
     tags = [
         "skip-rbe",  # This test won't run on the RBE because of a lack of network connectivity
