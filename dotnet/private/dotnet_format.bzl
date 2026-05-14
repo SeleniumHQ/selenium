@@ -53,7 +53,7 @@ DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 cd "$DOTNET_DIR"
 
 echo "Running dotnet format $@ on Selenium.slnx..."
-"$DOTNET" format "$@" "$DOTNET_DIR/Selenium.slnx" || exit 1
+"$DOTNET" format "$@" Selenium.slnx || exit 1
 
 echo "Done."
 """.format(
@@ -85,10 +85,10 @@ if defined BUILD_WORKSPACE_DIRECTORY (
 )
 set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 
-cd /d "%DOTNET_DIR%"
+cd /d "%DOTNET_DIR%" || exit /b 1
 
 echo Running dotnet format %* on Selenium.slnx...
-"%DOTNET%" format %* "%DOTNET_DIR%\\Selenium.slnx" || exit /b 1
+"%DOTNET%" format %* Selenium.slnx || exit /b 1
 
 echo Done.
 """.format(
