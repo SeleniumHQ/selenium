@@ -6,12 +6,13 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
+load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
 load("//py/private:import.bzl", "py_import")
+load("//py/private:sphinx_docs.bzl", "sphinx_docs")
 
 exports_files(
     ["pyproject.toml"],
@@ -911,20 +912,20 @@ py_binary(
     ],
 )
 
-sphinx_build_binary(
+py_console_script_binary(
     name = "sphinx-build",
+    pkg = "@py_dev_requirements//sphinx",
+    script = "sphinx-build",
     deps = [
         ":selenium",
-        requirement("sphinx"),
         requirement("sphinx-material"),
     ],
 )
 
 sphinx_docs(
     name = "docs",
-    srcs = glob(["docs/source/**/*.rst"]) + ["docs/source/conf.py"],
+    srcs = glob(["docs/source/**/*.rst"]),
     config = "docs/source/conf.py",
-    formats = ["html"],
     sphinx = ":sphinx-build",
 )
 
