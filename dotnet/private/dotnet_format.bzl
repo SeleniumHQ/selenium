@@ -76,63 +76,22 @@ def _create_windows_script(ctx, dotnet):
     script_content = """@echo off
 setlocal enabledelayedexpansion
 
-rem Resolve runfiles directory - prefer Bazel-set env vars
-if defined RUNFILES_DIR (
-    set "RF_DIR=!RUNFILES_DIR!"
-) else if exist "%~dp0%~n0.runfiles" (
-    set "RF_DIR=%~dp0%~n0.runfiles"
-) else (
-    echo ERROR: Could not locate runfiles directory 1>&2
-    exit /b 1
-)
+rem Diagnostic dump to find runfiles on Windows
+echo DEBUG: Script location: %~dp0 1>&2
+echo DEBUG: Script name: %~nx0 1>&2
+set RUNFILES 1>&2 2>nul
+echo DEBUG: Checking %~dp0%~n0.runfiles 1>&2
+if exist "%~dp0%~n0.runfiles" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
+echo DEBUG: Checking %~dp0%~nx0.runfiles 1>&2
+if exist "%~dp0%~nx0.runfiles" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
+echo DEBUG: Checking %~dpn0.runfiles_manifest 1>&2
+if exist "%~dpn0.runfiles_manifest" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
+echo DEBUG: Checking %~dpnx0.runfiles_manifest 1>&2
+if exist "%~dpnx0.runfiles_manifest" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
+echo DEBUG: Directory listing of %~dp0 1>&2
+dir /b "%~dp0" 1>&2
 
-rem Resolve dotnet executable
-set "DOTNET=!RF_DIR!\\{dotnet_path}"
-if not exist "!DOTNET!" (
-    rem Try runfiles manifest set by Bazel
-    if defined RUNFILES_MANIFEST_FILE (
-        set "MF=!RUNFILES_MANIFEST_FILE!"
-    ) else if exist "!RF_DIR!\\MANIFEST" (
-        set "MF=!RF_DIR!\\MANIFEST"
-    ) else (
-        set "MF="
-    )
-    if defined MF (
-        for /f "tokens=2 delims= " %%a in ('findstr /c:"{dotnet_path_fwd}" "!MF!" 2^^^>nul') do (
-            set "DOTNET=%%a"
-        )
-    )
-)
-
-if not exist "!DOTNET!" (
-    echo ERROR: dotnet not found 1>&2
-    echo   Tried: !RF_DIR!\\{dotnet_path} 1>&2
-    if defined MF (echo   Manifest: !MF! 1>&2) else (echo   No manifest found 1>&2)
-    exit /b 1
-)
-
-if defined BUILD_WORKSPACE_DIRECTORY (
-    set WORKSPACE_ROOT=%BUILD_WORKSPACE_DIRECTORY%
-) else (
-    set WORKSPACE_ROOT=!RUNFILES_DIR!\\_main
-)
-set DOTNET_DIR=!WORKSPACE_ROOT!\\dotnet
-
-cd /d "!DOTNET_DIR!" || (
-    echo ERROR: Could not cd to !DOTNET_DIR! 1>&2
-    exit /b 1
-)
-
-if not exist Selenium.slnx (
-    echo ERROR: Selenium.slnx not found in %CD% 1>&2
-    exit /b 1
-)
-
-echo Running dotnet format %* on Selenium.slnx...
-"!DOTNET!" format %* Selenium.slnx
-if errorlevel 1 exit /b 1
-
-echo Done.
+exit /b 1
 """.format(
         dotnet_path = dotnet_runfiles_path,
         dotnet_path_fwd = dotnet_runfiles_path_fwd,
