@@ -52,11 +52,8 @@ DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 
 cd "$DOTNET_DIR"
 
-echo "Running dotnet format $@ on all projects..."
-find "$DOTNET_DIR/src" "$DOTNET_DIR/test" -name "*.csproj" 2>/dev/null | while read -r proj; do
-    echo "  Formatting $proj..."
-    "$DOTNET" format "$@" "$proj" || exit 1
-done || exit 1
+echo "Running dotnet format $@ on Selenium.slnx..."
+"$DOTNET" format "$@" "$DOTNET_DIR/Selenium.slnx" || exit 1
 
 echo "Done."
 """.format(
@@ -90,15 +87,8 @@ set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 
 cd /d "%DOTNET_DIR%"
 
-echo Running dotnet format %* on all projects...
-for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
-)
-for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
-)
+echo Running dotnet format %* on Selenium.slnx...
+"%DOTNET%" format %* "%DOTNET_DIR%\\Selenium.slnx" || exit /b 1
 
 echo Done.
 """.format(
