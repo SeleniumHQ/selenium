@@ -71,30 +71,33 @@ echo "Done."
 def _create_windows_script(ctx, dotnet):
     """Create batch script for Windows."""
     dotnet_runfiles_path = _to_runfiles_path(dotnet.short_path).replace("/", "\\")
-    dotnet_runfiles_path_fwd = _to_runfiles_path(dotnet.short_path)
 
     script_content = """@echo off
 setlocal enabledelayedexpansion
 
-rem Diagnostic dump to find runfiles on Windows
-echo DEBUG: Script location: %~dp0 1>&2
-echo DEBUG: Script name: %~nx0 1>&2
-set RUNFILES 1>&2 2>nul
-echo DEBUG: Checking %~dp0%~n0.runfiles 1>&2
-if exist "%~dp0%~n0.runfiles" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
-echo DEBUG: Checking %~dp0%~nx0.runfiles 1>&2
-if exist "%~dp0%~nx0.runfiles" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
-echo DEBUG: Checking %~dpn0.runfiles_manifest 1>&2
-if exist "%~dpn0.runfiles_manifest" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
-echo DEBUG: Checking %~dpnx0.runfiles_manifest 1>&2
-if exist "%~dpnx0.runfiles_manifest" (echo DEBUG: EXISTS 1>&2) else (echo DEBUG: NOT FOUND 1>&2)
-echo DEBUG: Directory listing of %~dp0 1>&2
-dir /b "%~dp0" 1>&2
+rem Resolve runfiles (Windows: <name>.bat.runfiles, Unix: <name>.runfiles)
+set "RF_DIR=%~dp0%~nx0.runfiles"
+if not exist "!RF_DIR!" set "RF_DIR=%~dp0%~n0.runfiles"
 
-exit /b 1
+set "DOTNET=!RF_DIR!\\{dotnet_path}"
+if not exist "!DOTNET!" (
+    echo ERROR: dotnet not found at !DOTNET! 1>&2
+    exit /b 1
+)
+
+set "DOTNET_DIR=%BUILD_WORKSPACE_DIRECTORY%\\dotnet"
+cd /d "!DOTNET_DIR!" || (
+    echo ERROR: Could not cd to !DOTNET_DIR! 1>&2
+    exit /b 1
+)
+
+echo Running dotnet format %* on Selenium.slnx...
+"!DOTNET!" format %* Selenium.slnx
+if errorlevel 1 exit /b 1
+
+echo Done.
 """.format(
         dotnet_path = dotnet_runfiles_path,
-        dotnet_path_fwd = dotnet_runfiles_path_fwd,
     )
 
     script = ctx.actions.declare_file(ctx.label.name + ".bat")
