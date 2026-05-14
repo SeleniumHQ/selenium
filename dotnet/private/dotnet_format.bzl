@@ -87,6 +87,15 @@ if not exist "!DOTNET!" (
 )
 
 if not exist "!DOTNET!" (
+    echo DEBUG: dotnet not in runfiles tree, checking MANIFEST... 1>&2
+    if exist "!RUNFILES_DIR!\\MANIFEST" (
+        echo DEBUG: MANIFEST found 1>&2
+        findstr /c:"dotnet" "!RUNFILES_DIR!\\MANIFEST" 1>&2
+    ) else (
+        echo DEBUG: MANIFEST not found at !RUNFILES_DIR!\\MANIFEST 1>&2
+        echo DEBUG: Contents of RUNFILES_DIR: 1>&2
+        dir "!RUNFILES_DIR!" 1>&2
+    )
     echo ERROR: dotnet not found at {dotnet_path} 1>&2
     exit /b 1
 )
