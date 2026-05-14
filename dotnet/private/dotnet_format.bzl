@@ -76,47 +76,8 @@ def _create_windows_script(ctx, dotnet):
     dotnet_runfiles_path = _to_runfiles_path(dotnet.short_path).replace("/", "\\")
 
     script_content = """@echo off
-
-echo DEBUG: Script started 1>&2
-echo DEBUG: RUNFILES_DIR=%~dp0%~n0.runfiles 1>&2
-echo DEBUG: arg0=%~f0 1>&2
-
-setlocal
-
-set RUNFILES_DIR=%~dp0%~n0.runfiles
-set DOTNET=%RUNFILES_DIR%\\{dotnet_path}
-
-if defined BUILD_WORKSPACE_DIRECTORY (
-    set WORKSPACE_ROOT=%BUILD_WORKSPACE_DIRECTORY%
-) else (
-    set WORKSPACE_ROOT=%RUNFILES_DIR%\\_main
-)
-set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
-
-echo DEBUG: DOTNET=%DOTNET% 1>&2
-echo DEBUG: DOTNET_DIR=%DOTNET_DIR% 1>&2
-if exist "%DOTNET%" (echo DEBUG: dotnet FOUND 1>&2) else (echo DEBUG: dotnet NOT FOUND 1>&2)
-if exist "%DOTNET_DIR%" (echo DEBUG: dotnet dir FOUND 1>&2) else (echo DEBUG: dotnet dir NOT FOUND 1>&2)
-if exist "%RUNFILES_DIR%\\MANIFEST" (echo DEBUG: MANIFEST exists 1>&2) else (echo DEBUG: MANIFEST not found 1>&2)
-
-cd /d "%DOTNET_DIR%"
-
-echo Running dotnet format %* on all projects...
-set FOUND=0
-for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
-    set FOUND=1
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
-)
-for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
-    set FOUND=1
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
-)
-if "%FOUND%"=="0" echo WARNING: No .csproj files found to format 1>&2
-
-echo DEBUG: Forcing failure to surface output 1>&2
-exit 1
+echo PROOF: This script is executing
+exit /b 1
 """.format(
         dotnet_path = dotnet_runfiles_path,
     )
