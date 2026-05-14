@@ -52,11 +52,8 @@ DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 
 cd "$DOTNET_DIR"
 
-echo "Running dotnet format $@ on all projects..."
-find "$DOTNET_DIR/src" "$DOTNET_DIR/test" -name "*.csproj" 2>/dev/null | while read -r proj; do
-    echo "  Formatting $proj..."
-    "$DOTNET" format "$@" "$proj" || exit 1
-done || exit 1
+echo "Running dotnet format $@ on Selenium.slnx..."
+"$DOTNET" format "$@" Selenium.slnx || exit 1
 
 echo "Done."
 """.format(
@@ -74,12 +71,51 @@ echo "Done."
 def _create_windows_script(ctx, dotnet):
     """Create batch script for Windows."""
     dotnet_runfiles_path = _to_runfiles_path(dotnet.short_path).replace("/", "\\")
+    dotnet_runfiles_path_fwd = _to_runfiles_path(dotnet.short_path)
 
     script_content = """@echo off
-echo PROOF: This script is executing
-exit /b 1
+setlocal enabledelayedexpansion
+
+set RUNFILES_DIR=%~dp0%~n0.runfiles
+set DOTNET=!RUNFILES_DIR!\\{dotnet_path}
+
+rem If dotnet not found in runfiles tree, try runfiles manifest
+if not exist "!DOTNET!" (
+    for /f "tokens=2 delims= " %%a in ('findstr /c:"{dotnet_path_fwd}" "!RUNFILES_DIR!\\MANIFEST" 2^^^>nul') do (
+        set "DOTNET=%%a"
+    )
+)
+
+if not exist "!DOTNET!" (
+    echo ERROR: dotnet not found at {dotnet_path} 1>&2
+    exit /b 1
+)
+
+if defined BUILD_WORKSPACE_DIRECTORY (
+    set WORKSPACE_ROOT=%BUILD_WORKSPACE_DIRECTORY%
+) else (
+    set WORKSPACE_ROOT=!RUNFILES_DIR!\\_main
+)
+set DOTNET_DIR=!WORKSPACE_ROOT!\\dotnet
+
+cd /d "!DOTNET_DIR!" || (
+    echo ERROR: Could not cd to !DOTNET_DIR! 1>&2
+    exit /b 1
+)
+
+if not exist Selenium.slnx (
+    echo ERROR: Selenium.slnx not found in %CD% 1>&2
+    exit /b 1
+)
+
+echo Running dotnet format %* on Selenium.slnx...
+"!DOTNET!" format %* Selenium.slnx
+if errorlevel 1 exit /b 1
+
+echo Done.
 """.format(
         dotnet_path = dotnet_runfiles_path,
+        dotnet_path_fwd = dotnet_runfiles_path_fwd,
     )
 
     script = ctx.actions.declare_file(ctx.label.name + ".bat")
