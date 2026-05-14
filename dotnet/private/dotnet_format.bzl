@@ -85,6 +85,10 @@ if not exist "!DOTNET!" (
     exit /b 1
 )
 
+rem Set DOTNET_ROOT so MSBuild SDK resolver can find the SDK
+for %%I in ("!DOTNET!") do set "DOTNET_ROOT=%%~dpI"
+set "PATH=!DOTNET_ROOT!;!PATH!"
+
 set "DOTNET_DIR=%BUILD_WORKSPACE_DIRECTORY%\\dotnet"
 cd /d "!DOTNET_DIR!" || (
     echo ERROR: Could not cd to !DOTNET_DIR! 1>&2
