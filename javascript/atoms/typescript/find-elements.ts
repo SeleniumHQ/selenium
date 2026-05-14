@@ -32,7 +32,7 @@
   }
 
   function cssEscapeId(s: string): string {
-    return s.replace(/([\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]()])/g, '\\$1')
+    return s.replace(/[\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]()]/g, (c) => '\\' + c)
   }
 
   function classNameMany(target: string, root: Root): Element[] {
@@ -44,7 +44,7 @@
       throw botError(INVALID_SELECTOR, 'Compound class names not permitted')
     }
     try {
-      return Array.from(root.querySelectorAll('.' + target.replace(/\./g, '\\.')))
+      return Array.from(root.querySelectorAll('.' + target.replace(/\\/g, '\\\\').replace(/\./g, '\\.')))
     } catch (_e) {
       throw botError(INVALID_SELECTOR, 'An invalid or illegal class name was specified')
     }
