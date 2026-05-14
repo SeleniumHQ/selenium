@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -250,9 +250,9 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="block">Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
  window.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeScript(java.lang.String,java.lang.Object...)" class="member-name-link">executeScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeScript(java.lang.String,java.lang.Object...)" class="member-name-link">executeScript</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executes JavaScript in the context of the currently selected frame or window.</div>
 </div>
@@ -922,8 +922,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="executeScript(java.lang.String,java.lang.Object...)">
 <h3>executeScript</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeScript</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">executeScript</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;args)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../JavascriptExecutor.html#executeScript(java.lang.String,java.lang.Object...)">JavascriptExecutor</a></code></span></div>
 <div class="block">Executes JavaScript in the context of the currently selected frame or window. The script
  fragment provided will be executed as the body of an anonymous function.
@@ -1170,7 +1170,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="perform(java.util.Collection)">
 <h3>perform</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">perform</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</span></div>
+<div class="member-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">perform</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../interactions/Interactive.html#perform(java.util.Collection)">perform</a></code>&nbsp;in interface&nbsp;<code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code></dd>
@@ -1190,7 +1191,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">
 <h3>addVirtualAuthenticator</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></span>&nbsp;<span class="element-name">addVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a>&nbsp;options)</span></div>
+<div class="member-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></span>&nbsp;<span class="element-name">addVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a>&nbsp;options)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">HasVirtualAuthenticator</a></code></span></div>
 <div class="block">Adds a virtual authenticator with the given options.</div>
 <dl class="notes">
@@ -1204,7 +1206,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <li>
 <section class="detail" id="removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">
 <h3>removeVirtualAuthenticator</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</span></div>
+<div class="member-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeVirtualAuthenticator</span><wbr><span class="parameters">(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">HasVirtualAuthenticator</a></code></span></div>
 <div class="block">Removes a previously added virtual authenticator. The authenticator is no longer valid after
  removal, so no methods may be called.</div>

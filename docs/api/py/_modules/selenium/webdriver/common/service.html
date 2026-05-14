@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.service &#8212; Selenium 4.41.0 documentation</title>
+    <title>selenium.webdriver.common.service &#8212; Selenium 4.42.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=baf4fbc3"></script>
+    <script src="../../../../_static/documentation_options.js?v=288b2528"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.41.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.42.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.41.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.42.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.service </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.41.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.42.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.41.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.42.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.41.0 documentation">Selenium 4.41.0 documentation</a>
+       title="Selenium 4.42.0 documentation">Selenium 4.42.0 documentation</a>
   </label>
   
 
@@ -254,9 +254,11 @@
         <span class="n">driver_path_env_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">IO</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="s2">"a+"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">elif</span> <span class="n">log_output</span> <span class="o">==</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">log_output</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">log_output</span> <span class="o">==</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">:</span>
@@ -360,7 +362,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Stops the service."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">}:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">)</span>

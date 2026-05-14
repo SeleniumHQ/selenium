@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Input_WheelScrollAction.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Input.WheelScrollAction%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Input_WheelScrollAction.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Input.WheelScrollAction%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction" class="text-break">
-Class WheelScrollAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+Class WheelScrollAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record WheelScrollAction : WheelSourceAction, IWheelSourceAction, ISourceAction, IEquatable&lt;WheelSourceAction&gt;, IEquatable&lt;WheelScrollAction&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record WheelScrollAction : IWheelSourceAction, ISourceAction, IEquatable&lt;WheelScrollAction&gt;</code></pre>
   </div>
 
 
@@ -111,7 +111,6 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.WheelSourceAction.html">WheelSourceAction</a></div>
       <div><span class="xref">WheelScrollAction</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.IWheelSourceAction.html">IWheelSourceAction</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.ISourceAction.html">ISourceAction</a></div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.WheelSourceAction.html">WheelSourceAction</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.WheelScrollAction.html">WheelScrollAction</a>&gt;</div>
     </dd>
   </dl>
@@ -161,27 +159,27 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <a id="OpenQA_Selenium_BiDi_Input_WheelScrollAction__ctor_" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction__ctor_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
-  WheelScrollAction(int, int, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction__ctor_System_Int64_System_Int64_System_Int64_System_Int64_" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.#ctor(System.Int64,System.Int64,System.Int64,System.Int64)">
+  WheelScrollAction(long, long, long, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public WheelScrollAction(int X, int Y, int DeltaX, int DeltaY)</code></pre>
+    <pre><code class="lang-csharp hljs">public WheelScrollAction(long X, long Y, long DeltaX, long DeltaY)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>X</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><code>X</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
-    <dt><code>Y</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><code>Y</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
-    <dt><code>DeltaX</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><code>DeltaX</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
-    <dt><code>DeltaY</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><code>DeltaY</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -204,14 +202,14 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_DeltaX" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.DeltaX">
   DeltaX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int DeltaX { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long DeltaX { get; init; }</code></pre>
   </div>
 
 
@@ -220,7 +218,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -235,14 +233,14 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_DeltaY" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.DeltaY">
   DeltaY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int DeltaY { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long DeltaY { get; init; }</code></pre>
   </div>
 
 
@@ -251,7 +249,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -266,14 +264,14 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_Duration" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.Duration">
   Duration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int? Duration { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? Duration { get; init; }</code></pre>
   </div>
 
 
@@ -282,7 +280,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
     <dd></dd>
   </dl>
 
@@ -297,7 +295,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_Origin" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -328,14 +326,14 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_X" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.X">
   X
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int X { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long X { get; init; }</code></pre>
   </div>
 
 
@@ -344,7 +342,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -359,14 +357,14 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_WheelScrollAction_Y" data-uid="OpenQA.Selenium.BiDi.Input.WheelScrollAction.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Y { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long Y { get; init; }</code></pre>
   </div>
 
 
@@ -375,7 +373,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -390,7 +388,7 @@ Class WheelScrollAction  <a class="header-action link-secondary" title="View sou
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L126" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L113" class="edit-link">Edit this page</a>
         </div>
 
 

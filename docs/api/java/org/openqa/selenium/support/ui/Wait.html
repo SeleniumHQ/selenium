@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -113,8 +113,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#until(java.util.function.Function)" class="member-name-link">until</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;? super <a href="Wait.html" title="type parameter in Wait">F</a>,<wbr>T&gt;&nbsp;isTrue)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;V extends @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;<br>@NonNull V</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#until(java.util.function.Function)" class="member-name-link">until</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;? super <a href="Wait.html" title="type parameter in Wait">F</a>,<wbr>? extends V&gt;&nbsp;isTrue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Implementations should wait until the condition evaluates to a value that is neither null nor
  false.</div>
@@ -136,7 +136,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="until(java.util.function.Function)">
 <h3>until</h3>
-<div class="member-signature"><span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">T</span>&nbsp;<span class="element-name">until</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;? super <a href="Wait.html" title="type parameter in Wait">F</a>,<wbr>T&gt;&nbsp;isTrue)</span></div>
+<div class="member-signature"><span class="type-parameters">&lt;V extends @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span>&nbsp;<span class="return-type">@NonNull V</span>&nbsp;<span class="element-name">until</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;? super <a href="Wait.html" title="type parameter in Wait">F</a>,<wbr>? extends V&gt;&nbsp;isTrue)</span></div>
 <div class="block">Implementations should wait until the condition evaluates to a value that is neither null nor
  false. Because of this contract, the return type must not be Void.
 
@@ -146,7 +146,7 @@ loadScripts(document, 'script');</script>
  throw <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/AssertionError.html" title="class or interface in java.lang" class="external-link"><code>AssertionError</code></a>).</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
-<dd><code>T</code> - the return type of the method, which must not be Void</dd>
+<dd><code>V</code> - the return type of the method, which must not be Void</dd>
 <dt>Parameters:</dt>
 <dd><code>isTrue</code> - the parameter to pass to the <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><code>ExpectedCondition</code></a></dd>
 <dt>Returns:</dt>

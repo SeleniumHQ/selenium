@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -106,7 +106,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">FirefoxProfile</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.io.File)" class="member-name-link">FirefoxProfile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.io.File)" class="member-name-link">FirefoxProfile</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Constructs a firefox profile from an existing profile directory.</div>
 </div>
@@ -138,7 +138,7 @@ loadScripts(document, 'script');</script>
  <a href="Extension.html" title="interface in org.openqa.selenium.firefox">Extension</a>&nbsp;extension)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clean(java.io.File)" class="member-name-link">clean</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clean(java.io.File)" class="member-name-link">clean</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cleanTemporaryModel()" class="member-name-link">cleanTemporaryModel</a>()</code></div>
@@ -147,7 +147,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#containsWebDriverExtension()" class="member-name-link">containsWebDriverExtension</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#copyModel(java.io.File,java.io.File)" class="member-name-link">copyModel</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#copyModel(java.io.File,java.io.File)" class="member-name-link">copyModel</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
@@ -182,24 +182,24 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Call this to cause the current profile to be written to disk.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAcceptUntrustedCertificates(boolean)" class="member-name-link">setAcceptUntrustedCertificates</a><wbr>(boolean&nbsp;acceptUntrustedSsl)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
  authority or are generally untrusted.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAlwaysLoadNoFocusLib(boolean)" class="member-name-link">setAlwaysLoadNoFocusLib</a><wbr>(boolean&nbsp;loadNoFocusLib)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets whether the no focus library should always be loaded on Linux.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAssumeUntrustedCertificateIssuer(boolean)" class="member-name-link">setAssumeUntrustedCertificateIssuer</a><wbr>(boolean&nbsp;untrustedIssuer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">By default, when accepting untrusted SSL certificates, assume that these certificates will come
  from an untrusted issuer or will be self signed.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPreference(java.lang.String,java.lang.Object)" class="member-name-link">setPreference</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -238,7 +238,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(java.io.File)">
 <h3>FirefoxProfile</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FirefoxProfile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FirefoxProfile</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span></div>
 <div class="block">Constructs a firefox profile from an existing profile directory.
 
  <p>Users who need this functionality should consider using a named profile.</div>
@@ -322,7 +322,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setPreference(java.lang.String,java.lang.Object)">
 <h3>setPreference</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPreference</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setPreference</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 </section>
 </li>
@@ -365,7 +365,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setAlwaysLoadNoFocusLib(boolean)">
 <h3>setAlwaysLoadNoFocusLib</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAlwaysLoadNoFocusLib</span><wbr><span class="parameters">(boolean&nbsp;loadNoFocusLib)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAlwaysLoadNoFocusLib</span><wbr><span class="parameters">(boolean&nbsp;loadNoFocusLib)</span></div>
 <div class="block">Sets whether the no focus library should always be loaded on Linux.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -376,7 +376,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setAcceptUntrustedCertificates(boolean)">
 <h3>setAcceptUntrustedCertificates</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAcceptUntrustedCertificates</span><wbr><span class="parameters">(boolean&nbsp;acceptUntrustedSsl)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAcceptUntrustedCertificates</span><wbr><span class="parameters">(boolean&nbsp;acceptUntrustedSsl)</span></div>
 <div class="block">Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
  authority or are generally untrusted. This is set to true by default.</div>
 <dl class="notes">
@@ -388,7 +388,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setAssumeUntrustedCertificateIssuer(boolean)">
 <h3>setAssumeUntrustedCertificateIssuer</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAssumeUntrustedCertificateIssuer</span><wbr><span class="parameters">(boolean&nbsp;untrustedIssuer)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAssumeUntrustedCertificateIssuer</span><wbr><span class="parameters">(boolean&nbsp;untrustedIssuer)</span></div>
 <div class="block">By default, when accepting untrusted SSL certificates, assume that these certificates will come
  from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
  to find out if the certificate has expired or does not match the host it was served for, but
@@ -408,7 +408,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="clean(java.io.File)">
 <h3>clean</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">clean</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">clean</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span></div>
 </section>
 </li>
 <li>
@@ -436,7 +436,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="copyModel(java.io.File,java.io.File)">
 <h3>copyModel</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">copyModel</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">copyModel</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span>
                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">

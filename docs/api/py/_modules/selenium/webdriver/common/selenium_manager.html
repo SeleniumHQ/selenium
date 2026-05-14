@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.selenium_manager &#8212; Selenium 4.41.0 documentation</title>
+    <title>selenium.webdriver.common.selenium_manager &#8212; Selenium 4.42.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=baf4fbc3"></script>
+    <script src="../../../../_static/documentation_options.js?v=288b2528"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.41.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.42.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.41.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.42.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.selenium_manager </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.41.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.42.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.41.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.42.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.41.0 documentation">Selenium 4.41.0 documentation</a>
+       title="Selenium 4.42.0 documentation">Selenium 4.42.0 documentation</a>
   </label>
   
 
@@ -288,18 +288,30 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">allowed</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="p">(</span><span class="s2">"darwin"</span><span class="p">,</span> <span class="s2">"any"</span><span class="p">):</span> <span class="s2">"macos/selenium-manager"</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">"win32"</span><span class="p">,</span> <span class="s2">"any"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">"cygwin"</span><span class="p">,</span> <span class="s2">"any"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"win32"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"cygwin"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
                 <span class="p">(</span><span class="s2">"linux"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux/selenium-manager"</span><span class="p">,</span>
                 <span class="p">(</span><span class="s2">"freebsd"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux/selenium-manager"</span><span class="p">,</span>
                 <span class="p">(</span><span class="s2">"openbsd"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux/selenium-manager"</span><span class="p">,</span>
             <span class="p">}</span>
 
-            <span class="n">arch</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"linux"</span><span class="p">,</span> <span class="s2">"freebsd"</span><span class="p">,</span> <span class="s2">"openbsd"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"any"</span>
-            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"freebsd"</span><span class="p">,</span> <span class="s2">"openbsd"</span><span class="p">]:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selenium Manager binary may not be compatible with </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="si">}</span><span class="s2">; verify settings"</span><span class="p">)</span>
+            <span class="c1"># some operating systems report x86-64 architecture as amd64/AMD64</span>
+            <span class="n">platform_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span>
+            <span class="n">arch</span> <span class="o">=</span> <span class="s2">"any"</span> <span class="k">if</span> <span class="n">platform_name</span> <span class="o">==</span> <span class="s2">"darwin"</span> <span class="k">else</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">arch</span> <span class="o">=</span> <span class="s2">"x86_64"</span> <span class="k">if</span> <span class="n">arch</span> <span class="o">==</span> <span class="s2">"amd64"</span> <span class="k">else</span> <span class="n">arch</span>
 
-            <span class="n">location</span> <span class="o">=</span> <span class="n">allowed</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+            <span class="c1"># in Python &lt; 3.14, sys.platform appends version number to BSD platform names</span>
+            <span class="k">if</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"freebsd"</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">"Selenium Manager binary may not be compatible with FreeBSD; you may need to run "</span>
+                    <span class="s2">"'brandelf -t linux' on it and load linux64.ko"</span>
+                <span class="p">)</span>
+                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">"freebsd"</span>
+            <span class="k">elif</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"openbsd"</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Selenium Manager binary may not be compatible with OpenBSD; verify settings"</span><span class="p">)</span>
+                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">"openbsd"</span>
+
+            <span class="n">location</span> <span class="o">=</span> <span class="n">allowed</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">platform_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported platform/architecture combination: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 

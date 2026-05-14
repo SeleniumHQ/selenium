@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.42.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=288b2528"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#selenium_webdriver_common/selenium.webdriver.common.api_request_context" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Selenium 4.42.0 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Selenium 4.42.0 documentation</span>
+          <span class="md-header-nav__topic"> selenium.webdriver.common.api_request_context </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.42.0 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Selenium 4.42.0 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Selenium 4.42.0 documentation">Selenium 4.42.0 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#selenium-webdriver-common-selenium-webdriver-common-api-request-context--page-root" class="md-nav__link">selenium.webdriver.common.api_request_context</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestFailure" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestFailure</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestFailure.args" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestFailure.args</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestFailure.with_traceback" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestFailure.with_traceback()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse.ok" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse.ok</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse.json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse.json()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse.text" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse.text()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse.body" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse.body()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIResponse.dispose" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIResponse.dispose()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.new_context" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.new_context()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.get_storage_state()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.delete" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.delete()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.dispose" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.dispose()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.fetch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.fetch()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.get" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.get()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.head" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.head()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.patch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.patch()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.post" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.post()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.api_request_context.APIRequestContext.put" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">APIRequestContext.put()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/selenium_webdriver_common/selenium.webdriver.common.api_request_context.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-selenium.webdriver.common.api_request_context">
+<span id="selenium-webdriver-common-api-request-context"></span><h1 id="selenium-webdriver-common-selenium-webdriver-common-api-request-context--page-root">selenium.webdriver.common.api_request_context<a class="headerlink" href="#selenium-webdriver-common-selenium-webdriver-common-api-request-context--page-root" title="Link to this heading">¶</a></h1>
+<p>APIRequestContext for making HTTP requests with browser cookie synchronization.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIRequestContext" title="selenium.webdriver.common.api_request_context.APIRequestContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">APIRequestContext</span></code></a>(driver[, base_url, ...])</p></td>
+<td><p>Makes HTTP requests with automatic browser cookie synchronization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">APIResponse</span></code></a>(status, status_text, headers, ...)</p></td>
+<td><p>Represents an HTTP response from an API request.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Exceptions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIRequestFailure" title="selenium.webdriver.common.api_request_context.APIRequestFailure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">APIRequestFailure</span></code></a>(response)</p></td>
+<td><p>Raised when an API request returns a non-2xx status and fail_on_status_code is True.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py exception">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestFailure">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.api_request_context.</span></span><span class="sig-name descname"><span class="pre">APIRequestFailure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIRequestFailure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestFailure" title="Link to this definition">¶</a></dt>
+<dd><p>Raised when an API request returns a non-2xx status and fail_on_status_code is True.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>response: The APIResponse that triggered the failure.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestFailure.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestFailure.args" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestFailure.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestFailure.with_traceback" title="Link to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.api_request_context.</span></span><span class="sig-name descname"><span class="pre">APIResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse" title="Link to this definition">¶</a></dt>
+<dd><p>Represents an HTTP response from an API request.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>status: HTTP status code.
+status_text: HTTP status text.
+headers: Response headers as a dict.
+url: The request URL.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse.ok">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse.ok" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the response status is in the 200-299 range.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse.json">
+<span class="sig-name descname"><span class="pre">json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIResponse.json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse.json" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the response body as JSON.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The parsed JSON object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIResponse.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse.text" title="Link to this definition">¶</a></dt>
+<dd><p>Decode the response body as UTF-8 text.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The response body as a string.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse.body">
+<span class="sig-name descname"><span class="pre">body</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIResponse.body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse.body" title="Link to this definition">¶</a></dt>
+<dd><p>Return the raw response body bytes.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The response body as bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIResponse.dispose">
+<span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIResponse.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIResponse.dispose" title="Link to this definition">¶</a></dt>
+<dd><p>Free the response body memory.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.api_request_context.</span></span><span class="sig-name descname"><span class="pre">APIRequestContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver" title="selenium.webdriver.edge.webdriver.WebDriver"><span class="pre">WebDriver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_redirects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIRequestContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext" title="Link to this definition">¶</a></dt>
+<dd><p>Makes HTTP requests with automatic browser cookie synchronization.</p>
+<p>Cookies from the browser session are sent with API requests, and cookies
+from API responses are synced back to the browser.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>driver: The WebDriver instance to sync cookies with.
+base_url: Optional base URL prepended to relative request paths.
+extra_headers: Optional headers included in every request.
+timeout: Default request timeout in seconds.
+max_redirects: Maximum number of redirects to follow.
+fail_on_status_code: If True, raise APIRequestFailure for non-2xx responses.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.new_context">
+<span class="sig-name descname"><span class="pre">new_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">_IsolatedAPIRequestContext</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIRequestContext.new_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.new_context" title="Link to this definition">¶</a></dt>
+<dd><p>Create an isolated API request context that does not sync with the browser.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>base_url: Optional base URL for this context.
+extra_headers: Optional headers for this context.
+storage_state: Optional cookies to pre-load, as a dict, JSON file path, or Path.
+fail_on_status_code: If True, raise APIRequestFailure for non-2xx responses.</p>
+</dd>
+<dt>Returns:</dt><dd><p>An _IsolatedAPIRequestContext instance.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state">
+<span class="sig-name descname"><span class="pre">get_storage_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/api_request_context.html#APIRequestContext.get_storage_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.get_storage_state" title="Link to this definition">¶</a></dt>
+<dd><p>Export the current browser cookies as a storage state dict.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>path: Optional file path to save the storage state as JSON.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dict with a “cookies” key containing the browser cookies.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.delete" title="Link to this definition">¶</a></dt>
+<dd><p>Send a DELETE request.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: Optional arguments: headers, params, data, form,</p>
+<blockquote>
+<div><p>json_data, timeout, max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.dispose">
+<span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.dispose" title="Link to this definition">¶</a></dt>
+<dd><p>Close the underlying connection pool.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.fetch">
+<span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'GET'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.fetch" title="Link to this definition">¶</a></dt>
+<dd><p>Send an HTTP request with a custom method.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+method: The HTTP method to use.
+<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs: Optional arguments: headers, params, data, form,</p>
+<blockquote>
+<div><p>json_data, timeout, max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.get" title="Link to this definition">¶</a></dt>
+<dd><p>Send a GET request.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs: Optional arguments: headers, params, timeout, max_redirects, fail_on_status_code.</p>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.head" title="Link to this definition">¶</a></dt>
+<dd><p>Send a HEAD request.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs: Optional arguments: headers, params, timeout,</p>
+<blockquote>
+<div><p>max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.patch">
+<span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.patch" title="Link to this definition">¶</a></dt>
+<dd><p>Send a PATCH request.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id9"><span class="problematic" id="id10">**</span></a>kwargs: Optional arguments: headers, params, data, form,</p>
+<blockquote>
+<div><p>json_data, timeout, max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.post" title="Link to this definition">¶</a></dt>
+<dd><p>Send a POST request.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id11"><span class="problematic" id="id12">**</span></a>kwargs: Optional arguments: headers, params, data, form,</p>
+<blockquote>
+<div><p>json_data, timeout, max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.api_request_context.APIRequestContext.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.api_request_context.APIResponse" title="selenium.webdriver.common.api_request_context.APIResponse"><span class="pre">APIResponse</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.api_request_context.APIRequestContext.put" title="Link to this definition">¶</a></dt>
+<dd><p>Send a PUT request.</p>
+<dl>
+<dt>Args:</dt><dd><p>url: The request URL (absolute or relative to base_url).
+<a href="#id13"><span class="problematic" id="id14">**</span></a>kwargs: Optional arguments: headers, params, data, form,</p>
+<blockquote>
+<div><p>json_data, timeout, max_redirects, fail_on_status_code.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>An APIResponse object.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

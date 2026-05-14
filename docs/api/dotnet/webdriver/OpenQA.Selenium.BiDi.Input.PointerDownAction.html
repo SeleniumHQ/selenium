@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Input_PointerDownAction.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Input.PointerDownAction%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Input_PointerDownAction.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Input.PointerDownAction%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Input_PointerDownAction" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction" class="text-break">
-Class PointerDownAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L96"><i class="bi bi-code-slash"></i></a>
+Class PointerDownAction  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record PointerDownAction : PointerSourceAction, IPointerSourceAction, ISourceAction, IEquatable&lt;PointerSourceAction&gt;, IPointerCommonProperties, IEquatable&lt;PointerDownAction&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record PointerDownAction : IPointerSourceAction, ISourceAction, IPointerCommonProperties, IEquatable&lt;PointerDownAction&gt;</code></pre>
   </div>
 
 
@@ -111,7 +111,6 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.PointerSourceAction.html">PointerSourceAction</a></div>
       <div><span class="xref">PointerDownAction</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.IPointerSourceAction.html">IPointerSourceAction</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.ISourceAction.html">ISourceAction</a></div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.PointerSourceAction.html">PointerSourceAction</a>&gt;</div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.IPointerCommonProperties.html">IPointerCommonProperties</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.PointerDownAction.html">PointerDownAction</a>&gt;</div>
     </dd>
@@ -162,21 +160,21 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <a id="OpenQA_Selenium_BiDi_Input_PointerDownAction__ctor_" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction__ctor_System_Int32_" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.#ctor(System.Int32)">
-  PointerDownAction(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction__ctor_System_Int64_" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.#ctor(System.Int64)">
+  PointerDownAction(long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PointerDownAction(int Button)</code></pre>
+    <pre><code class="lang-csharp hljs">public PointerDownAction(long Button)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>Button</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><code>Button</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -199,7 +197,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_AltitudeAngle" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.AltitudeAngle">
   AltitudeAngle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -230,7 +228,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_AzimuthAngle" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.AzimuthAngle">
   AzimuthAngle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -261,14 +259,14 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_Button" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.Button">
   Button
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Button { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long Button { get; init; }</code></pre>
   </div>
 
 
@@ -277,7 +275,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
   </dl>
 
@@ -292,14 +290,14 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_Height" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int? Height { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? Height { get; init; }</code></pre>
   </div>
 
 
@@ -308,7 +306,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
     <dd></dd>
   </dl>
 
@@ -323,7 +321,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_Pressure" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.Pressure">
   Pressure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -354,7 +352,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_TangentialPressure" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.TangentialPressure">
   TangentialPressure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L90"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -385,14 +383,14 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_Twist" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.Twist">
   Twist
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int? Twist { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? Twist { get; init; }</code></pre>
   </div>
 
 
@@ -401,7 +399,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
     <dd></dd>
   </dl>
 
@@ -416,14 +414,14 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h3 id="OpenQA_Selenium_BiDi_Input_PointerDownAction_Width" data-uid="OpenQA.Selenium.BiDi.Input.PointerDownAction.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int? Width { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public long? Width { get; init; }</code></pre>
   </div>
 
 
@@ -432,7 +430,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
     <dd></dd>
   </dl>
 
@@ -447,7 +445,7 @@ Class PointerDownAction  <a class="header-action link-secondary" title="View sou
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L96" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L85" class="edit-link">Edit this page</a>
         </div>
 
 

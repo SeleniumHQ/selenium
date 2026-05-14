@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-use-page">
@@ -72,43 +72,46 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#add(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.node.SessionFactory)" class="member-name-link">add</a><wbr>(<a href="../../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="../../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&nbsp;factory)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static <a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.</span><code><a href="../LocalNode.html#builder(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.security.Secret)" class="member-name-link">builder</a><wbr>(<a href="../../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#addInterceptor(org.openqa.selenium.grid.node.NodeCommandInterceptor)" class="member-name-link">addInterceptor</a><wbr>(<a href="../../NodeCommandInterceptor.html" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a>&nbsp;interceptor)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNode.</span><code><a href="../LocalNode.html#builder(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.security.Secret)" class="member-name-link">builder</a><wbr>(<a href="../../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
  <a href="../../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#connectionLimitPerSession(int)" class="member-name-link">connectionLimitPerSession</a><wbr>(int&nbsp;connectionLimitPerSession)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#drainAfterSessionCount(int)" class="member-name-link">drainAfterSessionCount</a><wbr>(int&nbsp;sessionCount)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#connectionLimitPerSession(int)" class="member-name-link">connectionLimitPerSession</a><wbr>(int&nbsp;connectionLimitPerSession)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableBiDi(boolean)" class="member-name-link">enableBiDi</a><wbr>(boolean&nbsp;bidiEnabled)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#drainAfterSessionCount(int)" class="member-name-link">drainAfterSessionCount</a><wbr>(int&nbsp;sessionCount)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableCdp(boolean)" class="member-name-link">enableCdp</a><wbr>(boolean&nbsp;cdpEnabled)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableBiDi(boolean)" class="member-name-link">enableBiDi</a><wbr>(boolean&nbsp;bidiEnabled)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableManagedDownloads(boolean)" class="member-name-link">enableManagedDownloads</a><wbr>(boolean&nbsp;enable)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableCdp(boolean)" class="member-name-link">enableCdp</a><wbr>(boolean&nbsp;cdpEnabled)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#heartbeatPeriod(java.time.Duration)" class="member-name-link">heartbeatPeriod</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#enableManagedDownloads(boolean)" class="member-name-link">enableManagedDownloads</a><wbr>(boolean&nbsp;enable)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#maximumConcurrentSessions(int)" class="member-name-link">maximumConcurrentSessions</a><wbr>(int&nbsp;maxCount)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#heartbeatPeriod(java.time.Duration)" class="member-name-link">heartbeatPeriod</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#nodeDownFailureThreshold(int)" class="member-name-link">nodeDownFailureThreshold</a><wbr>(int&nbsp;threshold)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#maximumConcurrentSessions(int)" class="member-name-link">maximumConcurrentSessions</a><wbr>(int&nbsp;maxCount)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#nodeDownFailureThreshold(int)" class="member-name-link">nodeDownFailureThreshold</a><wbr>(int&nbsp;threshold)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Sets the maximum number of consecutive session creation failures allowed before the node is
  marked as DOWN.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNode.Builder.</span><code><a href="../LocalNode.Builder.html#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

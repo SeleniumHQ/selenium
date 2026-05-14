@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Firefox_FirefoxDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Firefox.FirefoxDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_Firefox_FirefoxDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Firefox.FirefoxDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_Firefox_FirefoxDriver" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver" class="text-break">
-Class FirefoxDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L69"><i class="bi bi-code-slash"></i></a>
+Class FirefoxDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class FirefoxDriver  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class FirefoxDriver : WebDriver, IWebDriver, IDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator</code></pre>
+    <pre><code class="lang-csharp hljs">public class FirefoxDriver : WebDriver, IWebDriver, IDisposable, IAsyncDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator</code></pre>
   </div>
 
 
@@ -122,6 +122,7 @@ Class FirefoxDriver  <a class="header-action link-secondary" title="View source"
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
       <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
       <div><a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html">IFindsElement</a></div>
@@ -179,6 +180,9 @@ Class FirefoxDriver  <a class="header-action link-secondary" title="View source"
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose">WebDriver.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsync">WebDriver.DisposeAsync()</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteAsyncScript_System_String_System_Object___">WebDriver.ExecuteAsyncScript(string, params object[])</a>
@@ -250,6 +254,12 @@ Class FirefoxDriver  <a class="header-action link-secondary" title="View source"
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RegisterInternalDriverCommand_System_String_OpenQA_Selenium_CommandInfo_">WebDriver.RegisterInternalDriverCommand(string, CommandInfo)</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose_System_Boolean_">WebDriver.Dispose(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsyncCore">WebDriver.DisposeAsyncCore()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteScriptCommand_System_String_System_String_System_Object___">WebDriver.ExecuteScriptCommand(string, string, params object[])</a>
     </div>
     <div>
@@ -306,7 +316,7 @@ Class FirefoxDriver  <a class="header-action link-secondary" title="View source"
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?, CancellationToken)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_System_Action_OpenQA_Selenium_BiDi_BiDiOptionsBuilder__System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, Action&lt;BiDiOptionsBuilder&gt;?, CancellationToken)</a>
   </div>
   </dd></dl>
 
@@ -359,7 +369,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor">
   FirefoxDriver()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class.</p>
@@ -386,7 +396,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_OpenQA_Selenium_Firefox_FirefoxDriverService_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService)">
   FirefoxDriver(FirefoxDriverService)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified driver service. Uses the Mozilla-provided Marionette driver implementation.</p>
@@ -425,7 +435,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_OpenQA_Selenium_Firefox_FirefoxDriverService_OpenQA_Selenium_Firefox_FirefoxOptions_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService,OpenQA.Selenium.Firefox.FirefoxOptions)">
   FirefoxDriver(FirefoxDriverService, FirefoxOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.</p>
@@ -467,7 +477,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_OpenQA_Selenium_Firefox_FirefoxDriverService_OpenQA_Selenium_Firefox_FirefoxOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService,OpenQA.Selenium.Firefox.FirefoxOptions,System.TimeSpan)">
   FirefoxDriver(FirefoxDriverService, FirefoxOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L186"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.</p>
@@ -512,7 +522,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_OpenQA_Selenium_Firefox_FirefoxOptions_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxOptions)">
   FirefoxDriver(FirefoxOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified options. Uses the Mozilla-provided Marionette driver implementation.</p>
@@ -551,7 +561,7 @@ to the browser will be installed into the profile.
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(System.String)">
   FirefoxDriver(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L138"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified path
@@ -585,7 +595,7 @@ to the directory containing <code>geckodriver.exe</code>.</p>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_System_String_OpenQA_Selenium_Firefox_FirefoxOptions_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(System.String,OpenQA.Selenium.Firefox.FirefoxOptions)">
   FirefoxDriver(string, FirefoxOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L150"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified path
@@ -628,7 +638,7 @@ to the directory containing <code>geckodriver.exe</code> and options.</p>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver__ctor_System_String_OpenQA_Selenium_Firefox_FirefoxOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(System.String,OpenQA.Selenium.Firefox.FirefoxOptions,System.TimeSpan)">
   FirefoxDriver(string, FirefoxOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L163"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a> class using the specified path
@@ -677,7 +687,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_GetContextCommand" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.GetContextCommand">
   GetContextCommand
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Command for getting the command context of a Firefox driver.</p>
@@ -708,7 +718,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_GetFullPageScreenshotCommand" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.GetFullPageScreenshotCommand">
   GetFullPageScreenshotCommand
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Command for getting aa full page screenshot from a Firefox driver.</p>
@@ -739,7 +749,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_InstallAddOnCommand" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.InstallAddOnCommand">
   InstallAddOnCommand
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Command for installing an addon to a Firefox driver.</p>
@@ -770,7 +780,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_SetContextCommand" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.SetContextCommand">
   SetContextCommand
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Command for setting the command context of a Firefox driver.</p>
@@ -801,7 +811,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_UninstallAddOnCommand" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.UninstallAddOnCommand">
   UninstallAddOnCommand
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Command for uninstalling an addon from a Firefox driver.</p>
@@ -837,7 +847,7 @@ to the directory containing <code>geckodriver.exe</code>, options, and command t
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_CustomCommandDefinitions" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.CustomCommandDefinitions">
   CustomCommandDefinitions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L248"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a read-only dictionary of the custom WebDriver commands defined for FirefoxDriver.
@@ -871,7 +881,7 @@ The keys of the dictionary are the names assigned to the command; the values are
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_FileDetector" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.FileDetector">
   FileDetector
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L260"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L260"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the <a class="xref" href="OpenQA.Selenium.IFileDetector.html">IFileDetector</a> responsible for detecting
@@ -912,46 +922,11 @@ conjunction with a standalone WebDriver server.</p>
 </h2>
 
 
-  <a id="OpenQA_Selenium_Firefox_FirefoxDriver_Dispose_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.Dispose*"></a>
-
-  <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_Dispose_System_Boolean_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.Dispose(System.Boolean)">
-  Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L423"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Disposes of the FirefoxDriver and frees all resources.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p>A value indicating whether the user initiated the
-disposal of the object. Pass <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the user is actively
-disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_Firefox_FirefoxDriver_GetContext_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.GetContext*"></a>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_GetContext" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.GetContext">
   GetContext()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L271"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the command context used when issuing commands to <code>geckodriver</code>.</p>
@@ -990,7 +965,7 @@ disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csha
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_GetFullPageScreenshot" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.GetFullPageScreenshot">
   GetFullPageScreenshot()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L400"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L400"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a <a class="xref" href="OpenQA.Selenium.Screenshot.html">Screenshot</a> object representing the image of the full page on the screen.</p>
@@ -1023,7 +998,7 @@ disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csha
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_InstallAddOn_System_String_System_Boolean_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.InstallAddOn(System.String,System.Boolean)">
   InstallAddOn(string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L362"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L362"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Installs a Firefox add-on.</p>
@@ -1071,7 +1046,7 @@ disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csha
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_InstallAddOnFromDirectory_System_String_System_Boolean_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.InstallAddOnFromDirectory(System.String,System.Boolean)">
   InstallAddOnFromDirectory(string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L304"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L304"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Installs a Firefox add-on from a directory.</p>
@@ -1122,7 +1097,7 @@ disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csha
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_InstallAddOnFromFile_System_String_System_Boolean_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.InstallAddOnFromFile(System.String,System.Boolean)">
   InstallAddOnFromFile(string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L333"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L333"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Installs a Firefox add-on from a file, typically a .xpi file.</p>
@@ -1161,7 +1136,7 @@ disposing the object; otherwise <a href="https://learn.microsoft.com/dotnet/csha
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>If <code class="paramref">addOnFileToInstall</code> is null or empty.</p>
-or
+<p>or</p>
 <p>If the file at <code class="paramref">addOnFileToInstall</code> does not exist.</p>
 </dd>
   </dl>
@@ -1172,7 +1147,7 @@ or
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_PrepareEnvironment" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.PrepareEnvironment">
   PrepareEnvironment()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L412"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L412"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>In derived classes, the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html#OpenQA_Selenium_Firefox_FirefoxDriver_PrepareEnvironment">PrepareEnvironment()</a> method prepares the environment for test execution.</p>
@@ -1199,7 +1174,7 @@ or
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_SetContext_OpenQA_Selenium_Firefox_FirefoxCommandContext_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.SetContext(OpenQA.Selenium.Firefox.FirefoxCommandContext)">
   SetContext(FirefoxCommandContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L288"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the command context used when issuing commands to <code>geckodriver</code>.</p>
@@ -1232,7 +1207,7 @@ or
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriver_UninstallAddOn_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriver.UninstallAddOn(System.String)">
   UninstallAddOn(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L384"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L384"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Uninstalls a Firefox add-on.</p>
@@ -1271,7 +1246,7 @@ or
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L69" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Firefox/FirefoxDriver.cs/#L69" class="edit-link">Edit this page</a>
         </div>
 
 

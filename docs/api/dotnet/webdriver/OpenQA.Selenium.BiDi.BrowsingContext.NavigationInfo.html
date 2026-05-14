@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo" class="text-break">
-Class NavigationInfo  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class NavigationInfo  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record NavigationInfo : EventArgs, IEquatable&lt;EventArgs&gt;, IBaseNavigationInfo, IEquatable&lt;NavigationInfo&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record NavigationInfo : IBaseNavigationInfo, IEquatable&lt;NavigationInfo&gt;</code></pre>
   </div>
 
 
@@ -111,7 +111,6 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
       <div><span class="xref">NavigationInfo</span></div>
     </dd>
   </dl>
@@ -119,7 +118,6 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBaseNavigationInfo.html">IBaseNavigationInfo</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.html">NavigationInfo</a>&gt;</div>
     </dd>
@@ -129,9 +127,6 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
-    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
@@ -165,7 +160,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String,OpenQA.Selenium.BiDi.Browser.UserContext)">
   NavigationInfo(BrowsingContext, Navigation?, DateTimeOffset, string, UserContext?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -208,7 +203,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -239,7 +234,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Navigation">
   Navigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -270,14 +265,15 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DateTimeOffset Timestamp { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(DateTimeOffsetConverter))]
+public DateTimeOffset Timestamp { get; init; }</code></pre>
   </div>
 
 
@@ -301,7 +297,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -332,7 +328,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.UserContext">
   UserContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -363,7 +359,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/NavigationInfo.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

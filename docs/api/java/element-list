@@ -8,6 +8,7 @@ org.openqa.selenium.bidi.module
 org.openqa.selenium.bidi.network
 org.openqa.selenium.bidi.permissions
 org.openqa.selenium.bidi.script
+org.openqa.selenium.bidi.speculation
 org.openqa.selenium.bidi.storage
 org.openqa.selenium.bidi.webextension
 org.openqa.selenium.chrome

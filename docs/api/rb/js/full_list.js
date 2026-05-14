@@ -43,10 +43,11 @@ function enableLinks() {
       elem.dispatchEvent(newEvent);
       evt.preventDefault();
     } else {
-      window.top.postMessage({
-        action: "navigate",
-        url: $clicked.find('.object_link a').attr('href'),
-      }, "*");
+      let url = $clicked.find('.object_link a').attr('href');
+      try {
+        url = new URL(url, window.location.href).href;
+      } catch { }
+      window.top.postMessage({ action: "navigate", url: url }, "*");
     }
     return false;
   });
@@ -201,7 +202,7 @@ function isInView(element) {
     window.innerHeight || document.documentElement.clientHeight;
   return rect.left >= 0 && rect.bottom <= windowHeight;
 }
-  
+
 /**
  * Expands the tree to the target element and its immediate
  * children.

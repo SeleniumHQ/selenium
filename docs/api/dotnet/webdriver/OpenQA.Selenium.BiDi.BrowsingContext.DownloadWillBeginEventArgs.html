@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs" class="text-break">
-Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -163,20 +163,22 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_System_String_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor(System.String,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
-  DownloadWillBeginEventArgs(string, BrowsingContext, Navigation?, DateTimeOffset, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_System_String_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi,System.String,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
+  DownloadWillBeginEventArgs(IBiDi, string, BrowsingContext, Navigation?, DateTimeOffset, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DownloadWillBeginEventArgs(string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
+    <pre><code class="lang-csharp hljs">public DownloadWillBeginEventArgs(IBiDi BiDi, string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dd></dd>
     <dt><code>SuggestedFilename</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
@@ -208,7 +210,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -239,7 +241,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Navigation">
   Navigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -270,7 +272,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_SuggestedFilename" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.SuggestedFilename">
   SuggestedFilename
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -301,7 +303,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -332,7 +334,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -363,7 +365,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs" class="text-break">
-Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -162,20 +162,22 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_DateTimeOffset_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.DateTimeOffset,System.String,OpenQA.Selenium.BiDi.Browser.UserContext)">
-  HistoryUpdatedEventArgs(BrowsingContext, DateTimeOffset, string, UserContext?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_DateTimeOffset_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.DateTimeOffset,System.String,OpenQA.Selenium.BiDi.Browser.UserContext)">
+  HistoryUpdatedEventArgs(IBiDi, BrowsingContext, DateTimeOffset, string, UserContext?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HistoryUpdatedEventArgs(BrowsingContext Context, DateTimeOffset Timestamp, string Url, UserContext? UserContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public HistoryUpdatedEventArgs(IBiDi BiDi, BrowsingContext Context, DateTimeOffset Timestamp, string Url, UserContext? UserContext)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
@@ -205,7 +207,7 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -236,7 +238,7 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -267,7 +269,7 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -298,7 +300,7 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_HistoryUpdatedEventArgs_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.UserContext">
   UserContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -329,7 +331,7 @@ Class HistoryUpdatedEventArgs  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/HistoryUpdatedEventArgs.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

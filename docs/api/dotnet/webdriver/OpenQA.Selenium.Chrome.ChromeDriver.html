@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Chrome_ChromeDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Chrome.ChromeDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_Chrome_ChromeDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Chrome.ChromeDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_Chrome_ChromeDriver" data-uid="OpenQA.Selenium.Chrome.ChromeDriver" class="text-break">
-Class ChromeDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L59"><i class="bi bi-code-slash"></i></a>
+Class ChromeDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class ChromeDriver  <a class="header-action link-secondary" title="View source" 
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ChromeDriver : ChromiumDriver, IWebDriver, IDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator, ISupportsLogs, IDevTools</code></pre>
+    <pre><code class="lang-csharp hljs">public class ChromeDriver : ChromiumDriver, IWebDriver, IDisposable, IAsyncDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator, ISupportsLogs, IDevTools</code></pre>
   </div>
 
 
@@ -123,6 +123,7 @@ Class ChromeDriver  <a class="header-action link-secondary" title="View source" 
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
       <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
       <div><a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html">IFindsElement</a></div>
@@ -244,6 +245,9 @@ Class ChromeDriver  <a class="header-action link-secondary" title="View source" 
       <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_Dispose_System_Boolean_">ChromiumDriver.Dispose(bool)</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_DisposeAsyncCore">ChromiumDriver.DisposeAsyncCore()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DefaultCommandTimeout">WebDriver.DefaultCommandTimeout</a>
     </div>
     <div>
@@ -281,6 +285,9 @@ Class ChromeDriver  <a class="header-action link-secondary" title="View source" 
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose">WebDriver.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsync">WebDriver.DisposeAsync()</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteAsyncScript_System_String_System_Object___">WebDriver.ExecuteAsyncScript(string, params object[])</a>
@@ -408,7 +415,7 @@ Class ChromeDriver  <a class="header-action link-secondary" title="View source" 
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?, CancellationToken)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_System_Action_OpenQA_Selenium_BiDi_BiDiOptionsBuilder__System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, Action&lt;BiDiOptionsBuilder&gt;?, CancellationToken)</a>
   </div>
   </dd></dl>
 
@@ -452,7 +459,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor">
   ChromeDriver()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class.</p>
@@ -479,7 +486,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)">
   ChromeDriver(ChromeDriverService)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified driver service.</p>
@@ -518,7 +525,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService,OpenQA.Selenium.Chrome.ChromeOptions)">
   ChromeDriver(ChromeDriverService, ChromeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L142"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified
@@ -561,7 +568,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_OpenQA_Selenium_Chrome_ChromeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService,OpenQA.Selenium.Chrome.ChromeOptions,System.TimeSpan)">
   ChromeDriver(ChromeDriverService, ChromeOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a>.</p>
@@ -606,7 +613,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeOptions)">
   ChromeDriver(ChromeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified options.</p>
@@ -645,7 +652,7 @@ public class Testing
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)">
   ChromeDriver(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
@@ -679,7 +686,7 @@ to the directory containing ChromeDriver.exe.</p>
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.Chrome.ChromeOptions)">
   ChromeDriver(string, ChromeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
@@ -722,7 +729,7 @@ to the directory containing ChromeDriver.exe and options.</p>
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_OpenQA_Selenium_Chrome_ChromeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.Chrome.ChromeOptions,System.TimeSpan)">
   ChromeDriver(string, ChromeOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L130"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
@@ -772,7 +779,7 @@ to the directory containing ChromeDriver.exe, options, and command timeout.</p>
 
   <h3 id="OpenQA_Selenium_Chrome_ChromeDriver_CustomCommandDefinitions" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.CustomCommandDefinitions">
   CustomCommandDefinitions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L165"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
@@ -806,7 +813,7 @@ The keys of the dictionary are the names assigned to the command; the values are
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L59" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L59" class="edit-link">Edit this page</a>
         </div>
 
 

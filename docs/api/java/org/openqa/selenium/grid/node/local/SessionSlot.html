@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -139,7 +139,7 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getId()" class="member-name-link">getId</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSession()" class="member-name-link">getSession</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
@@ -174,8 +174,8 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop(org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI)" class="member-name-link">stop</a><wbr>(<a href="../../data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
- <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
+ @Nullable <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Stops the session with full context for sidecar services.</div>
 </div>
@@ -277,7 +277,7 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <li>
 <section class="detail" id="getSession()">
 <h3>getSession</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></span>&nbsp;<span class="element-name">getSession</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></span>&nbsp;<span class="element-name">getSession</span>()</div>
 </section>
 </li>
 <li>
@@ -296,8 +296,8 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <section class="detail" id="stop(org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI)">
 <h3>stop</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stop</span><wbr><span class="parameters">(<a href="../../data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
- <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</span></div>
+ @Nullable <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</span></div>
 <div class="block">Stops the session with full context for sidecar services.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

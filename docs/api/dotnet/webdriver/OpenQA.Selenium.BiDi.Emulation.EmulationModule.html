@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Emulation_EmulationModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Emulation.EmulationModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Emulation_EmulationModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Emulation.EmulationModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule" class="text-break">
-Class EmulationModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+Class EmulationModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class EmulationModule : Module</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class EmulationModule : Module, IEmulationModule</code></pre>
   </div>
 
 
@@ -116,14 +116,17 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.IEmulationModule.html">IEmulationModule</a></div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Module.html#OpenQA_Selenium_BiDi_Module_SubscribeAsync__1_System_String_System_Func___0_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__System_Threading_CancellationToken_">Module.SubscribeAsync&lt;TEventArgs&gt;(string, Func&lt;TEventArgs, Task&gt;, SubscriptionOptions, JsonTypeInfo&lt;TEventArgs&gt;, CancellationToken)</a>
-    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
@@ -153,44 +156,11 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 </h2>
 
 
-  <a id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_Initialize_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.Initialize*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_Initialize_OpenQA_Selenium_BiDi_BiDi_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.Initialize(OpenQA.Selenium.BiDi.BiDi,System.Text.Json.JsonSerializerOptions)">
-  Initialize(BiDi, JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L116"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
-    <dt><code>jsonSerializerOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetForcedColorsModeThemeOverrideAsync_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetForcedColorsModeThemeOverrideAsync*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetForcedColorsModeThemeOverrideAsync_System_Nullable_OpenQA_Selenium_BiDi_Emulation_ForcedColorsModeTheme__OpenQA_Selenium_BiDi_Emulation_SetForcedColorsModeThemeOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetForcedColorsModeThemeOverrideAsync(System.Nullable{OpenQA.Selenium.BiDi.Emulation.ForcedColorsModeTheme},OpenQA.Selenium.BiDi.Emulation.SetForcedColorsModeThemeOverrideOptions,System.Threading.CancellationToken)">
   SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme?, SetForcedColorsModeThemeOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -230,7 +200,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetGeolocationCoordinatesOverrideAsync_OpenQA_Selenium_BiDi_Emulation_SetGeolocationOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetGeolocationCoordinatesOverrideAsync(OpenQA.Selenium.BiDi.Emulation.SetGeolocationOverrideOptions,System.Threading.CancellationToken)">
   SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -268,7 +238,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetGeolocationCoordinatesOverrideAsync_System_Double_System_Double_OpenQA_Selenium_BiDi_Emulation_SetGeolocationCoordinatesOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetGeolocationCoordinatesOverrideAsync(System.Double,System.Double,OpenQA.Selenium.BiDi.Emulation.SetGeolocationCoordinatesOverrideOptions,System.Threading.CancellationToken)">
   SetGeolocationCoordinatesOverrideAsync(double, double, SetGeolocationCoordinatesOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -310,7 +280,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetGeolocationPositionErrorOverrideAsync_OpenQA_Selenium_BiDi_Emulation_SetGeolocationPositionErrorOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetGeolocationPositionErrorOverrideAsync(OpenQA.Selenium.BiDi.Emulation.SetGeolocationPositionErrorOverrideOptions,System.Threading.CancellationToken)">
   SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -348,7 +318,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetLocaleOverrideAsync_System_String_OpenQA_Selenium_BiDi_Emulation_SetLocaleOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetLocaleOverrideAsync(System.String,OpenQA.Selenium.BiDi.Emulation.SetLocaleOverrideOptions,System.Threading.CancellationToken)">
   SetLocaleOverrideAsync(string?, SetLocaleOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -388,7 +358,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetNetworkConditionsAsync_OpenQA_Selenium_BiDi_Emulation_NetworkConditions_OpenQA_Selenium_BiDi_Emulation_SetNetworkConditionsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetNetworkConditionsAsync(OpenQA.Selenium.BiDi.Emulation.NetworkConditions,OpenQA.Selenium.BiDi.Emulation.SetNetworkConditionsOptions,System.Threading.CancellationToken)">
   SetNetworkConditionsAsync(NetworkConditions?, SetNetworkConditionsOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -428,7 +398,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetScreenOrientationOverrideAsync_OpenQA_Selenium_BiDi_Emulation_ScreenOrientation_OpenQA_Selenium_BiDi_Emulation_SetScreenOrientationOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetScreenOrientationOverrideAsync(OpenQA.Selenium.BiDi.Emulation.ScreenOrientation,OpenQA.Selenium.BiDi.Emulation.SetScreenOrientationOverrideOptions,System.Threading.CancellationToken)">
   SetScreenOrientationOverrideAsync(ScreenOrientation?, SetScreenOrientationOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -468,7 +438,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetScreenSettingsOverrideAsync_OpenQA_Selenium_BiDi_Emulation_ScreenArea_OpenQA_Selenium_BiDi_Emulation_SetScreenSettingsOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetScreenSettingsOverrideAsync(OpenQA.Selenium.BiDi.Emulation.ScreenArea,OpenQA.Selenium.BiDi.Emulation.SetScreenSettingsOverrideOptions,System.Threading.CancellationToken)">
   SetScreenSettingsOverrideAsync(ScreenArea?, SetScreenSettingsOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -508,7 +478,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetScriptingEnabledAsync_System_Nullable_System_Boolean__OpenQA_Selenium_BiDi_Emulation_SetScriptingEnabledOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetScriptingEnabledAsync(System.Nullable{System.Boolean},OpenQA.Selenium.BiDi.Emulation.SetScriptingEnabledOptions,System.Threading.CancellationToken)">
   SetScriptingEnabledAsync(bool?, SetScriptingEnabledOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -544,11 +514,51 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
 
 
+  <a id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetScrollbarTypeOverrideAsync_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetScrollbarTypeOverrideAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetScrollbarTypeOverrideAsync_System_Nullable_OpenQA_Selenium_BiDi_Emulation_ScrollbarType__OpenQA_Selenium_BiDi_Emulation_SetScrollbarTypeOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetScrollbarTypeOverrideAsync(System.Nullable{OpenQA.Selenium.BiDi.Emulation.ScrollbarType},OpenQA.Selenium.BiDi.Emulation.SetScrollbarTypeOverrideOptions,System.Threading.CancellationToken)">
+  SetScrollbarTypeOverrideAsync(ScrollbarType?, SetScrollbarTypeOverrideOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetScrollbarTypeOverrideResult&gt; SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>scrollbarType</code> <a class="xref" href="OpenQA.Selenium.BiDi.Emulation.ScrollbarType.html">ScrollbarType</a>?</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScrollbarTypeOverrideOptions.html">SetScrollbarTypeOverrideOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScrollbarTypeOverrideResult.html">SetScrollbarTypeOverrideResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetTimezoneOverrideAsync_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetTimezoneOverrideAsync*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetTimezoneOverrideAsync_System_String_OpenQA_Selenium_BiDi_Emulation_SetTimezoneOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetTimezoneOverrideAsync(System.String,OpenQA.Selenium.BiDi.Emulation.SetTimezoneOverrideOptions,System.Threading.CancellationToken)">
   SetTimezoneOverrideAsync(string?, SetTimezoneOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -588,7 +598,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetTouchOverrideAsync_System_Nullable_System_Int64__OpenQA_Selenium_BiDi_Emulation_SetTouchOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetTouchOverrideAsync(System.Nullable{System.Int64},OpenQA.Selenium.BiDi.Emulation.SetTouchOverrideOptions,System.Threading.CancellationToken)">
   SetTouchOverrideAsync(long?, SetTouchOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -628,7 +638,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_Emulation_EmulationModule_SetUserAgentOverrideAsync_System_String_OpenQA_Selenium_BiDi_Emulation_SetUserAgentOverrideOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Emulation.EmulationModule.SetUserAgentOverrideAsync(System.String,OpenQA.Selenium.BiDi.Emulation.SetUserAgentOverrideOptions,System.Threading.CancellationToken)">
   SetUserAgentOverrideAsync(string?, SetUserAgentOverrideOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -668,7 +678,7 @@ Class EmulationModule  <a class="header-action link-secondary" title="View sourc
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L26" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Emulation/EmulationModule.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

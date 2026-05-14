@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IScriptModule </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IScriptModule ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_IScriptModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.IScriptModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Selenium .NET API">
+            Selenium .NET API
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule">
+
+
+
+  <h1 id="OpenQA_Selenium_BiDi_Script_IScriptModule" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule" class="text-break">
+Interface IScriptModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.BiDi.html">BiDi</a>.<a class="xref" href="OpenQA.Selenium.BiDi.Script.html">Script</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IScriptModule</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_AddPreloadScriptAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.AddPreloadScriptAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_AddPreloadScriptAsync_System_String_OpenQA_Selenium_BiDi_Script_AddPreloadScriptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.AddPreloadScriptAsync(System.String,OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions,System.Threading.CancellationToken)">
+  AddPreloadScriptAsync(string, AddPreloadScriptOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;AddPreloadScriptResult&gt; AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>functionDeclaration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.AddPreloadScriptOptions.html">AddPreloadScriptOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.AddPreloadScriptResult.html">AddPreloadScriptResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_CallFunctionAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.CallFunctionAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_CallFunctionAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_Target_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.CallFunctionAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.Target,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,System.Threading.CancellationToken)">
+  CallFunctionAsync(string, bool, Target, CallFunctionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;EvaluateResult&gt; CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>functionDeclaration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>awaitPromise</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Target.html">Target</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.CallFunctionOptions.html">CallFunctionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateResult.html">EvaluateResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_CallFunctionAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.CallFunctionAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_CallFunctionAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_Target_OpenQA_Selenium_BiDi_Script_CallFunctionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.CallFunctionAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.Target,OpenQA.Selenium.BiDi.Script.CallFunctionOptions,System.Threading.CancellationToken)">
+  CallFunctionAsync&lt;TResult&gt;(string, bool, Target, CallFunctionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;TResult?&gt; CallFunctionAsync&lt;TResult&gt;(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>functionDeclaration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>awaitPromise</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Target.html">Target</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.CallFunctionOptions.html">CallFunctionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_DisownAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.DisownAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_DisownAsync_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_Script_Handle__OpenQA_Selenium_BiDi_Script_Target_OpenQA_Selenium_BiDi_Script_DisownOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.DisownAsync(System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.Script.Handle},OpenQA.Selenium.BiDi.Script.Target,OpenQA.Selenium.BiDi.Script.DisownOptions,System.Threading.CancellationToken)">
+  DisownAsync(IEnumerable&lt;Handle&gt;, Target, DisownOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;DisownResult&gt; DisownAsync(IEnumerable&lt;Handle&gt; handles, Target target, DisownOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handles</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.Handle.html">Handle</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Target.html">Target</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.DisownOptions.html">DisownOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.DisownResult.html">DisownResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_EvaluateAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.EvaluateAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_EvaluateAsync_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_Target_OpenQA_Selenium_BiDi_Script_EvaluateOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.EvaluateAsync(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.Target,OpenQA.Selenium.BiDi.Script.EvaluateOptions,System.Threading.CancellationToken)">
+  EvaluateAsync(string, bool, Target, EvaluateOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;EvaluateResult&gt; EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>awaitPromise</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Target.html">Target</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateOptions.html">EvaluateOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateResult.html">EvaluateResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_EvaluateAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.EvaluateAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_EvaluateAsync__1_System_String_System_Boolean_OpenQA_Selenium_BiDi_Script_Target_OpenQA_Selenium_BiDi_Script_EvaluateOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.EvaluateAsync``1(System.String,System.Boolean,OpenQA.Selenium.BiDi.Script.Target,OpenQA.Selenium.BiDi.Script.EvaluateOptions,System.Threading.CancellationToken)">
+  EvaluateAsync&lt;TResult&gt;(string, bool, Target, EvaluateOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;TResult?&gt; EvaluateAsync&lt;TResult&gt;(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>awaitPromise</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Target.html">Target</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateOptions.html">EvaluateOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_GetRealmsAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.GetRealmsAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_GetRealmsAsync_OpenQA_Selenium_BiDi_Script_GetRealmsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.GetRealmsAsync(OpenQA.Selenium.BiDi.Script.GetRealmsOptions,System.Threading.CancellationToken)">
+  GetRealmsAsync(GetRealmsOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;GetRealmsResult&gt; GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.GetRealmsOptions.html">GetRealmsOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.GetRealmsResult.html">GetRealmsResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnMessageAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnMessageAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnMessageAsync_System_Action_OpenQA_Selenium_BiDi_Script_MessageEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnMessageAsync(System.Action{OpenQA.Selenium.BiDi.Script.MessageEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnMessageAsync(Action&lt;MessageEventArgs&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnMessageAsync(Action&lt;MessageEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.MessageEventArgs.html">MessageEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnMessageAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnMessageAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnMessageAsync_System_Func_OpenQA_Selenium_BiDi_Script_MessageEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnMessageAsync(System.Func{OpenQA.Selenium.BiDi.Script.MessageEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnMessageAsync(Func&lt;MessageEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnMessageAsync(Func&lt;MessageEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.MessageEventArgs.html">MessageEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmCreatedAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmCreatedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmCreatedAsync_System_Action_OpenQA_Selenium_BiDi_Script_RealmCreatedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmCreatedAsync(System.Action{OpenQA.Selenium.BiDi.Script.RealmCreatedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnRealmCreatedAsync(Action&lt;RealmCreatedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnRealmCreatedAsync(Action&lt;RealmCreatedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmCreatedEventArgs.html">RealmCreatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmCreatedAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmCreatedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmCreatedAsync_System_Func_OpenQA_Selenium_BiDi_Script_RealmCreatedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmCreatedAsync(System.Func{OpenQA.Selenium.BiDi.Script.RealmCreatedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnRealmCreatedAsync(Func&lt;RealmCreatedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnRealmCreatedAsync(Func&lt;RealmCreatedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmCreatedEventArgs.html">RealmCreatedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmDestroyedAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmDestroyedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmDestroyedAsync_System_Action_OpenQA_Selenium_BiDi_Script_RealmDestroyedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmDestroyedAsync(System.Action{OpenQA.Selenium.BiDi.Script.RealmDestroyedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnRealmDestroyedAsync(Action&lt;RealmDestroyedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnRealmDestroyedAsync(Action&lt;RealmDestroyedEventArgs&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmDestroyedEventArgs.html">RealmDestroyedEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmDestroyedAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmDestroyedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_OnRealmDestroyedAsync_System_Func_OpenQA_Selenium_BiDi_Script_RealmDestroyedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.OnRealmDestroyedAsync(System.Func{OpenQA.Selenium.BiDi.Script.RealmDestroyedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
+  OnRealmDestroyedAsync(Func&lt;RealmDestroyedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Subscription&gt; OnRealmDestroyedAsync(Func&lt;RealmDestroyedEventArgs, Task&gt; handler, SubscriptionOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmDestroyedEventArgs.html">RealmDestroyedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_IScriptModule_RemovePreloadScriptAsync_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.RemovePreloadScriptAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_IScriptModule_RemovePreloadScriptAsync_OpenQA_Selenium_BiDi_Script_PreloadScript_OpenQA_Selenium_BiDi_Script_RemovePreloadScriptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Script.IScriptModule.RemovePreloadScriptAsync(OpenQA.Selenium.BiDi.Script.PreloadScript,OpenQA.Selenium.BiDi.Script.RemovePreloadScriptOptions,System.Threading.CancellationToken)">
+  RemovePreloadScriptAsync(PreloadScript, RemovePreloadScriptOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;RemovePreloadScriptResult&gt; RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>script</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.PreloadScript.html">PreloadScript</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.RemovePreloadScriptOptions.html">RemovePreloadScriptOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.RemovePreloadScriptResult.html">RemovePreloadScriptResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/IScriptModule.cs/#L24" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Enum DeviceBoundSessionFetchResult </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Enum DeviceBoundSessionFetchResult ">
+      
+      <meta name="description" content="A fetch result for a device bound session creation or refresh.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.V146.Network.DeviceBoundSessionFetchResult%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Selenium .NET API">
+            Selenium .NET API
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.DevTools.V146.Network.DeviceBoundSessionFetchResult">
+
+
+
+
+  <h1 id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult" data-uid="OpenQA.Selenium.DevTools.V146.Network.DeviceBoundSessionFetchResult" class="text-break">
+Enum DeviceBoundSessionFetchResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/bazel-bin/dotnet/src/webdriver/DevTools/v146/Network/DeviceBoundSessionFetchResult.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.DevTools.html">DevTools</a>.<a class="xref" href="OpenQA.Selenium.DevTools.V146.html">V146</a>.<a class="xref" href="OpenQA.Selenium.DevTools.V146.Network.html">Network</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A fetch result for a device bound session creation or refresh.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(JsonEnumMemberConverter&lt;DeviceBoundSessionFetchResult&gt;))]
+public enum DeviceBoundSessionFetchResult</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_BoundCookieSetForbidden"><code>[EnumMember(Value = &quot;BoundCookieSetForbidden&quot;)]
+BoundCookieSetForbidden = 24</code></dt>
+  
+  <dd><p>Enumerated member for the BoundCookieSetForbidden value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_EmptyScopeSpecificationDomain"><code>[EnumMember(Value = &quot;EmptyScopeSpecificationDomain&quot;)]
+EmptyScopeSpecificationDomain = 40</code></dt>
+  
+  <dd><p>Enumerated member for the EmptyScopeSpecificationDomain value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_EmptyScopeSpecificationPath"><code>[EnumMember(Value = &quot;EmptyScopeSpecificationPath&quot;)]
+EmptyScopeSpecificationPath = 41</code></dt>
+  
+  <dd><p>Enumerated member for the EmptyScopeSpecificationPath value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_EmptySessionConfig"><code>[EnumMember(Value = &quot;EmptySessionConfig&quot;)]
+EmptySessionConfig = 27</code></dt>
+  
+  <dd><p>Enumerated member for the EmptySessionConfig value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_FailedToUnwrapKey"><code>[EnumMember(Value = &quot;FailedToUnwrapKey&quot;)]
+FailedToUnwrapKey = 66</code></dt>
+  
+  <dd><p>Enumerated member for the FailedToUnwrapKey value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_FederatedKeyThumbprintMismatch"><code>[EnumMember(Value = &quot;FederatedKeyThumbprintMismatch&quot;)]
+FederatedKeyThumbprintMismatch = 20</code></dt>
+  
+  <dd><p>Enumerated member for the FederatedKeyThumbprintMismatch value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_FederatedNotAuthorizedByProvider"><code>[EnumMember(Value = &quot;FederatedNotAuthorizedByProvider&quot;)]
+FederatedNotAuthorizedByProvider = 45</code></dt>
+  
+  <dd><p>Enumerated member for the FederatedNotAuthorizedByProvider value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_FederatedNotAuthorizedByRelyingParty"><code>[EnumMember(Value = &quot;FederatedNotAuthorizedByRelyingParty&quot;)]
+FederatedNotAuthorizedByRelyingParty = 46</code></dt>
+  
+  <dd><p>Enumerated member for the FederatedNotAuthorizedByRelyingParty value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidChallenge"><code>[EnumMember(Value = &quot;InvalidChallenge&quot;)]
+InvalidChallenge = 5</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidChallenge value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidConfigJson"><code>[EnumMember(Value = &quot;InvalidConfigJson&quot;)]
+InvalidConfigJson = 64</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidConfigJson value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsConfig"><code>[EnumMember(Value = &quot;InvalidCredentialsConfig&quot;)]
+InvalidCredentialsConfig = 28</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsConfig value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookie"><code>[EnumMember(Value = &quot;InvalidCredentialsCookie&quot;)]
+InvalidCredentialsCookie = 31</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookie value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookieCreationTime"><code>[EnumMember(Value = &quot;InvalidCredentialsCookieCreationTime&quot;)]
+InvalidCredentialsCookieCreationTime = 53</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookieCreationTime value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookieInvalidDomain"><code>[EnumMember(Value = &quot;InvalidCredentialsCookieInvalidDomain&quot;)]
+InvalidCredentialsCookieInvalidDomain = 57</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookieInvalidDomain value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookieName"><code>[EnumMember(Value = &quot;InvalidCredentialsCookieName&quot;)]
+InvalidCredentialsCookieName = 54</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookieName value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookieParsing"><code>[EnumMember(Value = &quot;InvalidCredentialsCookieParsing&quot;)]
+InvalidCredentialsCookieParsing = 55</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookieParsing value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookiePrefix"><code>[EnumMember(Value = &quot;InvalidCredentialsCookiePrefix&quot;)]
+InvalidCredentialsCookiePrefix = 58</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookiePrefix value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsCookieUnpermittedAttribute"><code>[EnumMember(Value = &quot;InvalidCredentialsCookieUnpermittedAttribute&quot;)]
+InvalidCredentialsCookieUnpermittedAttribute = 56</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsCookieUnpermittedAttribute value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsEmptyName"><code>[EnumMember(Value = &quot;InvalidCredentialsEmptyName&quot;)]
+InvalidCredentialsEmptyName = 30</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsEmptyName value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidCredentialsType"><code>[EnumMember(Value = &quot;InvalidCredentialsType&quot;)]
+InvalidCredentialsType = 29</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidCredentialsType value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFederatedKey"><code>[EnumMember(Value = &quot;InvalidFederatedKey&quot;)]
+InvalidFederatedKey = 22</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFederatedKey value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFederatedSessionProviderFailedToRestoreKey"><code>[EnumMember(Value = &quot;InvalidFederatedSessionProviderFailedToRestoreKey&quot;)]
+InvalidFederatedSessionProviderFailedToRestoreKey = 65</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFederatedSessionProviderFailedToRestoreKey value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFederatedSessionProviderSessionMissing"><code>[EnumMember(Value = &quot;InvalidFederatedSessionProviderSessionMissing&quot;)]
+InvalidFederatedSessionProviderSessionMissing = 51</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFederatedSessionProviderSessionMissing value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFederatedSessionUrl"><code>[EnumMember(Value = &quot;InvalidFederatedSessionUrl&quot;)]
+InvalidFederatedSessionUrl = 21</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFederatedSessionUrl value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFederatedSessionWrongProviderOrigin"><code>[EnumMember(Value = &quot;InvalidFederatedSessionWrongProviderOrigin&quot;)]
+InvalidFederatedSessionWrongProviderOrigin = 52</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFederatedSessionWrongProviderOrigin value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidFetcherUrl"><code>[EnumMember(Value = &quot;InvalidFetcherUrl&quot;)]
+InvalidFetcherUrl = 7</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidFetcherUrl value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidRefreshUrl"><code>[EnumMember(Value = &quot;InvalidRefreshUrl&quot;)]
+InvalidRefreshUrl = 8</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidRefreshUrl value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeIncludeSite"><code>[EnumMember(Value = &quot;InvalidScopeIncludeSite&quot;)]
+InvalidScopeIncludeSite = 43</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeIncludeSite value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeOrigin"><code>[EnumMember(Value = &quot;InvalidScopeOrigin&quot;)]
+InvalidScopeOrigin = 34</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeOrigin value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeRuleHostPattern"><code>[EnumMember(Value = &quot;InvalidScopeRuleHostPattern&quot;)]
+InvalidScopeRuleHostPattern = 60</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeRuleHostPattern value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeRulePath"><code>[EnumMember(Value = &quot;InvalidScopeRulePath&quot;)]
+InvalidScopeRulePath = 59</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeRulePath value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeSpecification"><code>[EnumMember(Value = &quot;InvalidScopeSpecification&quot;)]
+InvalidScopeSpecification = 38</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeSpecification value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidScopeSpecificationType"><code>[EnumMember(Value = &quot;InvalidScopeSpecificationType&quot;)]
+InvalidScopeSpecificationType = 42</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidScopeSpecificationType value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_InvalidSessionId"><code>[EnumMember(Value = &quot;InvalidSessionId&quot;)]
+InvalidSessionId = 4</code></dt>
+  
+  <dd><p>Enumerated member for the InvalidSessionId value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_KeyError"><code>[EnumMember(Value = &quot;KeyError&quot;)]
+KeyError = 1</code></dt>
+  
+  <dd><p>Enumerated member for the KeyError value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_MismatchedSessionId"><code>[EnumMember(Value = &quot;MismatchedSessionId&quot;)]
+MismatchedSessionId = 12</code></dt>
+  
+  <dd><p>Enumerated member for the MismatchedSessionId value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_MissingScope"><code>[EnumMember(Value = &quot;MissingScope&quot;)]
+MissingScope = 13</code></dt>
+  
+  <dd><p>Enumerated member for the MissingScope value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_MissingScopeIncludeSite"><code>[EnumMember(Value = &quot;MissingScopeIncludeSite&quot;)]
+MissingScopeIncludeSite = 44</code></dt>
+  
+  <dd><p>Enumerated member for the MissingScopeIncludeSite value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_MissingScopeSpecificationType"><code>[EnumMember(Value = &quot;MissingScopeSpecificationType&quot;)]
+MissingScopeSpecificationType = 39</code></dt>
+  
+  <dd><p>Enumerated member for the MissingScopeSpecificationType value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_NetError"><code>[EnumMember(Value = &quot;NetError&quot;)]
+NetError = 25</code></dt>
+  
+  <dd><p>Enumerated member for the NetError value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_NoCredentials"><code>[EnumMember(Value = &quot;NoCredentials&quot;)]
+NoCredentials = 14</code></dt>
+  
+  <dd><p>Enumerated member for the NoCredentials value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_PersistentHttpError"><code>[EnumMember(Value = &quot;PersistentHttpError&quot;)]
+PersistentHttpError = 32</code></dt>
+  
+  <dd><p>Enumerated member for the PersistentHttpError value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ProxyError"><code>[EnumMember(Value = &quot;ProxyError&quot;)]
+ProxyError = 26</code></dt>
+  
+  <dd><p>Enumerated member for the ProxyError value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RefreshInitiatorInvalidHostPattern"><code>[EnumMember(Value = &quot;RefreshInitiatorInvalidHostPattern&quot;)]
+RefreshInitiatorInvalidHostPattern = 37</code></dt>
+  
+  <dd><p>Enumerated member for the RefreshInitiatorInvalidHostPattern value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RefreshInitiatorNotString"><code>[EnumMember(Value = &quot;RefreshInitiatorNotString&quot;)]
+RefreshInitiatorNotString = 36</code></dt>
+  
+  <dd><p>Enumerated member for the RefreshInitiatorNotString value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RefreshUrlSameSiteMismatch"><code>[EnumMember(Value = &quot;RefreshUrlSameSiteMismatch&quot;)]
+RefreshUrlSameSiteMismatch = 11</code></dt>
+  
+  <dd><p>Enumerated member for the RefreshUrlSameSiteMismatch value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RegistrationAttemptedChallenge"><code>[EnumMember(Value = &quot;RegistrationAttemptedChallenge&quot;)]
+RegistrationAttemptedChallenge = 33</code></dt>
+  
+  <dd><p>Enumerated member for the RegistrationAttemptedChallenge value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RelyingPartyWellKnownHasRelyingOrigins"><code>[EnumMember(Value = &quot;RelyingPartyWellKnownHasRelyingOrigins&quot;)]
+RelyingPartyWellKnownHasRelyingOrigins = 50</code></dt>
+  
+  <dd><p>Enumerated member for the RelyingPartyWellKnownHasRelyingOrigins value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RelyingPartyWellKnownMalformed"><code>[EnumMember(Value = &quot;RelyingPartyWellKnownMalformed&quot;)]
+RelyingPartyWellKnownMalformed = 49</code></dt>
+  
+  <dd><p>Enumerated member for the RelyingPartyWellKnownMalformed value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_RelyingPartyWellKnownUnavailable"><code>[EnumMember(Value = &quot;RelyingPartyWellKnownUnavailable&quot;)]
+RelyingPartyWellKnownUnavailable = 19</code></dt>
+  
+  <dd><p>Enumerated member for the RelyingPartyWellKnownUnavailable value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ScopeOriginContainsPath"><code>[EnumMember(Value = &quot;ScopeOriginContainsPath&quot;)]
+ScopeOriginContainsPath = 35</code></dt>
+  
+  <dd><p>Enumerated member for the ScopeOriginContainsPath value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ScopeOriginSameSiteMismatch"><code>[EnumMember(Value = &quot;ScopeOriginSameSiteMismatch&quot;)]
+ScopeOriginSameSiteMismatch = 10</code></dt>
+  
+  <dd><p>Enumerated member for the ScopeOriginSameSiteMismatch value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ScopeRuleOriginScopedHostPatternMismatch"><code>[EnumMember(Value = &quot;ScopeRuleOriginScopedHostPatternMismatch&quot;)]
+ScopeRuleOriginScopedHostPatternMismatch = 61</code></dt>
+  
+  <dd><p>Enumerated member for the ScopeRuleOriginScopedHostPatternMismatch value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ScopeRuleSiteScopedHostPatternMismatch"><code>[EnumMember(Value = &quot;ScopeRuleSiteScopedHostPatternMismatch&quot;)]
+ScopeRuleSiteScopedHostPatternMismatch = 62</code></dt>
+  
+  <dd><p>Enumerated member for the ScopeRuleSiteScopedHostPatternMismatch value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_ServerRequestedTermination"><code>[EnumMember(Value = &quot;ServerRequestedTermination&quot;)]
+ServerRequestedTermination = 3</code></dt>
+  
+  <dd><p>Enumerated member for the ServerRequestedTermination value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SessionDeletedDuringRefresh"><code>[EnumMember(Value = &quot;SessionDeletedDuringRefresh&quot;)]
+SessionDeletedDuringRefresh = 67</code></dt>
+  
+  <dd><p>Enumerated member for the SessionDeletedDuringRefresh value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SessionProviderWellKnownHasProviderOrigin"><code>[EnumMember(Value = &quot;SessionProviderWellKnownHasProviderOrigin&quot;)]
+SessionProviderWellKnownHasProviderOrigin = 48</code></dt>
+  
+  <dd><p>Enumerated member for the SessionProviderWellKnownHasProviderOrigin value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SessionProviderWellKnownMalformed"><code>[EnumMember(Value = &quot;SessionProviderWellKnownMalformed&quot;)]
+SessionProviderWellKnownMalformed = 47</code></dt>
+  
+  <dd><p>Enumerated member for the SessionProviderWellKnownMalformed value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SessionProviderWellKnownUnavailable"><code>[EnumMember(Value = &quot;SessionProviderWellKnownUnavailable&quot;)]
+SessionProviderWellKnownUnavailable = 18</code></dt>
+  
+  <dd><p>Enumerated member for the SessionProviderWellKnownUnavailable value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SigningError"><code>[EnumMember(Value = &quot;SigningError&quot;)]
+SigningError = 2</code></dt>
+  
+  <dd><p>Enumerated member for the SigningError value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SigningQuotaExceeded"><code>[EnumMember(Value = &quot;SigningQuotaExceeded&quot;)]
+SigningQuotaExceeded = 63</code></dt>
+  
+  <dd><p>Enumerated member for the SigningQuotaExceeded value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SubdomainRegistrationUnauthorized"><code>[EnumMember(Value = &quot;SubdomainRegistrationUnauthorized&quot;)]
+SubdomainRegistrationUnauthorized = 16</code></dt>
+  
+  <dd><p>Enumerated member for the SubdomainRegistrationUnauthorized value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SubdomainRegistrationWellKnownMalformed"><code>[EnumMember(Value = &quot;SubdomainRegistrationWellKnownMalformed&quot;)]
+SubdomainRegistrationWellKnownMalformed = 17</code></dt>
+  
+  <dd><p>Enumerated member for the SubdomainRegistrationWellKnownMalformed value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_SubdomainRegistrationWellKnownUnavailable"><code>[EnumMember(Value = &quot;SubdomainRegistrationWellKnownUnavailable&quot;)]
+SubdomainRegistrationWellKnownUnavailable = 15</code></dt>
+  
+  <dd><p>Enumerated member for the SubdomainRegistrationWellKnownUnavailable value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_Success"><code>[EnumMember(Value = &quot;Success&quot;)]
+Success = 0</code></dt>
+  
+  <dd><p>Enumerated member for the Success value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_TooManyChallenges"><code>[EnumMember(Value = &quot;TooManyChallenges&quot;)]
+TooManyChallenges = 6</code></dt>
+  
+  <dd><p>Enumerated member for the TooManyChallenges value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_TooManyRelyingOriginLabels"><code>[EnumMember(Value = &quot;TooManyRelyingOriginLabels&quot;)]
+TooManyRelyingOriginLabels = 23</code></dt>
+  
+  <dd><p>Enumerated member for the TooManyRelyingOriginLabels value.</p>
+</dd>
+    <dt id="OpenQA_Selenium_DevTools_V146_Network_DeviceBoundSessionFetchResult_TransientHttpError"><code>[EnumMember(Value = &quot;TransientHttpError&quot;)]
+TransientHttpError = 9</code></dt>
+  
+  <dd><p>Enumerated member for the TransientHttpError value.</p>
+</dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/bazel-bin/dotnet/src/webdriver/DevTools/v146/Network/DeviceBoundSessionFetchResult.cs/#L13" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

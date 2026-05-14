@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="package-declaration-page">
@@ -39,7 +39,7 @@ loadScripts(document, 'script');</script>
 <li>
 <p>Package:</p>
 <ul>
-<li>Description</li>
+<li><a href="#package-description">Description</a></li>
 <li><a href="#related-package-summary">Related Packages</a></li>
 <li><a href="#class-summary">Classes and Interfaces</a></li>
 </ul>
@@ -50,7 +50,7 @@ loadScripts(document, 'script');</script>
 <div id="navbar-sub-list">
 <ul class="sub-nav-list">
 <li>Package:&nbsp;</li>
-<li>Description&nbsp;|&nbsp;</li>
+<li><a href="#package-description">Description</a>&nbsp;|&nbsp;</li>
 <li><a href="#related-package-summary">Related Packages</a>&nbsp;|&nbsp;</li>
 <li><a href="#class-summary">Classes and Interfaces</a></li>
 </ul>
@@ -69,7 +69,26 @@ loadScripts(document, 'script');</script>
 <h1 title="Package org.openqa.selenium.grid" class="title">Package org.openqa.selenium.grid</h1>
 </div>
 <hr>
-<div class="package-signature">package <span class="element-name">org.openqa.selenium.grid</span></div>
+<div class="package-signature"><span class="annotations">@NullMarked
+</span>package <span class="element-name">org.openqa.selenium.grid</span></div>
+<section class="package-description" id="package-description">
+<div class="block">The Selenium Grid is composed of a number of moving pieces, all of which are designed to be used
+ either locally or across an HTTP boundary.
+
+ <p>Sitting at the front of the system is the <a href="router/Router.html" title="class in org.openqa.selenium.grid.router"><code>Router</code></a>. This
+ is responsible for looking at incoming requests and routing them to the correct location. In the
+ case of a <a href="https://www.w3.org/TR/webdriver/#new-session"></a>New Session</a> command, it
+ will be sent to the <a href="distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a>.
+
+ <p>The <code>Distributor</code> has a number of <a href="node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>s associated
+ with it, each of which is capable of running one or more <a href="data/Session.html" title="class in org.openqa.selenium.grid.data"><code>Session</code></a>s which may or may not be running in memory. Each <code>
+ Node</code> should register with a single <code>Distributor</code>.
+
+ <p>When a new session is started, the <code>Node</code> tells the <a href="sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap"><code>SessionMap</code></a> where the <code>Session</code> (identified by its
+ <a href="../remote/SessionId.html" title="class in org.openqa.selenium.remote"><code>SessionId</code></a> can be located (typically the URL of the server on
+ which the <code>Node</code> is running. Conversely, when the session comes to an end, the <code>Node</code>
+ is responsible for ensuring that the session is removed from the <code>SessionMap</code>.</div>
+</section>
 <section class="summary">
 <ul class="summary-list">
 <li>

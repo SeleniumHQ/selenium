@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../script.js"></script>
-<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -157,7 +157,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Architecture.html" title="enum class in org.openqa.selenium">Architecture</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arch)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#extractFromSysProperty(java.lang.String)" class="member-name-link">extractFromSysProperty</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arch)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Extracts architectures based on system properties in Java and a heuristic to overcome
  differences between JDK implementations.</div>
@@ -336,7 +336,7 @@ not permitted.)</div>
 <li>
 <section class="detail" id="extractFromSysProperty(java.lang.String)">
 <h3>extractFromSysProperty</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Architecture.html" title="enum class in org.openqa.selenium">Architecture</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arch)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Architecture.html" title="enum class in org.openqa.selenium">Architecture</a></span>&nbsp;<span class="element-name">extractFromSysProperty</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arch)</span></div>
 <div class="block">Extracts architectures based on system properties in Java and a heuristic to overcome
  differences between JDK implementations. If not able to determine the operating system's
  architecture, it will throw.</div>

@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BiDi.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BiDi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BiDi.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BiDi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BiDi" data-uid="OpenQA.Selenium.BiDi.BiDi" class="text-break">
-Class BiDi  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Class BiDi  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BiDi : IAsyncDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class BiDi : IBiDi, IAsyncDisposable</code></pre>
   </div>
 
 
@@ -118,6 +118,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
     </dd>
   </dl>
@@ -150,10 +151,10 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Permissions.PermissionsBiDiExtensions.html#OpenQA_Selenium_BiDi_Permissions_PermissionsBiDiExtensions_AsPermissions_OpenQA_Selenium_BiDi_BiDi_">PermissionsBiDiExtensions.AsPermissions(BiDi)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Permissions.PermissionsBiDiExtensions.html#OpenQA_Selenium_BiDi_Permissions_PermissionsBiDiExtensions_AsPermissions_OpenQA_Selenium_BiDi_IBiDi_">PermissionsBiDiExtensions.AsPermissions(IBiDi)</a>
   </div>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Speculation.SpeculationBiDiExtensions.html#OpenQA_Selenium_BiDi_Speculation_SpeculationBiDiExtensions_AsSpeculation_OpenQA_Selenium_BiDi_BiDi_">SpeculationBiDiExtensions.AsSpeculation(BiDi)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Speculation.SpeculationBiDiExtensions.html#OpenQA_Selenium_BiDi_Speculation_SpeculationBiDiExtensions_AsSpeculation_OpenQA_Selenium_BiDi_IBiDi_">SpeculationBiDiExtensions.AsSpeculation(IBiDi)</a>
   </div>
   </dd></dl>
 
@@ -169,14 +170,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Browser" data-uid="OpenQA.Selenium.BiDi.BiDi.Browser">
   Browser
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowserModule Browser { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IBrowserModule Browser { get; }</code></pre>
   </div>
 
 
@@ -185,7 +186,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.BrowserModule.html">BrowserModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.IBrowserModule.html">IBrowserModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -200,14 +201,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_BrowsingContext" data-uid="OpenQA.Selenium.BiDi.BiDi.BrowsingContext">
   BrowsingContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowsingContextModule BrowsingContext { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IBrowsingContextModule BrowsingContext { get; }</code></pre>
   </div>
 
 
@@ -216,7 +217,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextModule.html">BrowsingContextModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextModule.html">IBrowsingContextModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -231,14 +232,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Emulation" data-uid="OpenQA.Selenium.BiDi.BiDi.Emulation">
   Emulation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public EmulationModule Emulation { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IEmulationModule Emulation { get; }</code></pre>
   </div>
 
 
@@ -247,7 +248,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.EmulationModule.html">EmulationModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.IEmulationModule.html">IEmulationModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -262,14 +263,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Input" data-uid="OpenQA.Selenium.BiDi.BiDi.Input">
   Input
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public InputModule Input { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IInputModule Input { get; }</code></pre>
   </div>
 
 
@@ -278,7 +279,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Input.InputModule.html">InputModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Input.IInputModule.html">IInputModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -293,14 +294,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Log" data-uid="OpenQA.Selenium.BiDi.BiDi.Log">
   Log
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogModule Log { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ILogModule Log { get; }</code></pre>
   </div>
 
 
@@ -309,7 +310,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Log.LogModule.html">LogModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Log.ILogModule.html">ILogModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -324,14 +325,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Network" data-uid="OpenQA.Selenium.BiDi.BiDi.Network">
   Network
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public NetworkModule Network { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public INetworkModule Network { get; }</code></pre>
   </div>
 
 
@@ -340,7 +341,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Network.NetworkModule.html">NetworkModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Network.INetworkModule.html">INetworkModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -355,14 +356,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Script" data-uid="OpenQA.Selenium.BiDi.BiDi.Script">
   Script
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ScriptModule Script { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IScriptModule Script { get; }</code></pre>
   </div>
 
 
@@ -371,7 +372,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Script.ScriptModule.html">ScriptModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Script.IScriptModule.html">IScriptModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -386,14 +387,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_Storage" data-uid="OpenQA.Selenium.BiDi.BiDi.Storage">
   Storage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StorageModule Storage { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IStorageModule Storage { get; }</code></pre>
   </div>
 
 
@@ -402,7 +403,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Storage.StorageModule.html">StorageModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Storage.IStorageModule.html">IStorageModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -417,14 +418,14 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_WebExtension" data-uid="OpenQA.Selenium.BiDi.BiDi.WebExtension">
   WebExtension
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public WebExtensionModule WebExtension { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IWebExtensionModule WebExtension { get; }</code></pre>
   </div>
 
 
@@ -433,7 +434,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.html">WebExtensionModule</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.IWebExtensionModule.html">IWebExtensionModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -452,7 +453,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_AsModule__1" data-uid="OpenQA.Selenium.BiDi.BiDi.AsModule``1">
   AsModule&lt;T&gt;()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -486,23 +487,23 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <a id="OpenQA_Selenium_BiDi_BiDi_ConnectAsync_" data-uid="OpenQA.Selenium.BiDi.BiDi.ConnectAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BiDi_ConnectAsync_System_String_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BiDi.ConnectAsync(System.String,OpenQA.Selenium.BiDi.BiDiOptions,System.Threading.CancellationToken)">
-  ConnectAsync(string, BiDiOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BiDi_ConnectAsync_System_String_System_Action_OpenQA_Selenium_BiDi_BiDiOptionsBuilder__System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BiDi.ConnectAsync(System.String,System.Action{OpenQA.Selenium.BiDi.BiDiOptionsBuilder},System.Threading.CancellationToken)">
+  ConnectAsync(string, Action&lt;BiDiOptionsBuilder&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Task&lt;BiDi&gt; ConnectAsync(string url, BiDiOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Task&lt;IBiDi&gt; ConnectAsync(string url, Action&lt;BiDiOptionsBuilder&gt;? configure = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>url</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDiOptions.html">BiDiOptions</a></dt>
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BiDiOptionsBuilder.html">BiDiOptionsBuilder</a>&gt;</dt>
     <dd></dd>
     <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
@@ -510,7 +511,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -528,7 +529,7 @@ Class BiDi  <a class="header-action link-secondary" title="View source" href="ht
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_DisposeAsync" data-uid="OpenQA.Selenium.BiDi.BiDi.DisposeAsync">
   DisposeAsync()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or
@@ -561,14 +562,14 @@ resetting unmanaged resources asynchronously.</p>
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_EndAsync_OpenQA_Selenium_BiDi_Session_EndOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BiDi.EndAsync(OpenQA.Selenium.BiDi.Session.EndOptions,System.Threading.CancellationToken)">
   EndAsync(EndOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;EndResult&gt; EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -581,7 +582,7 @@ resetting unmanaged resources asynchronously.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Session.EndResult.html">EndResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -599,7 +600,7 @@ resetting unmanaged resources asynchronously.</p>
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_NewAsync_OpenQA_Selenium_BiDi_Session_CapabilitiesRequest_OpenQA_Selenium_BiDi_Session_NewOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BiDi.NewAsync(OpenQA.Selenium.BiDi.Session.CapabilitiesRequest,OpenQA.Selenium.BiDi.Session.NewOptions,System.Threading.CancellationToken)">
   NewAsync(CapabilitiesRequest, NewOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -639,7 +640,7 @@ resetting unmanaged resources asynchronously.</p>
 
   <h3 id="OpenQA_Selenium_BiDi_BiDi_StatusAsync_OpenQA_Selenium_BiDi_Session_StatusOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BiDi.StatusAsync(OpenQA.Selenium.BiDi.Session.StatusOptions,System.Threading.CancellationToken)">
   StatusAsync(StatusOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -677,7 +678,7 @@ resetting unmanaged resources asynchronously.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BiDi.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BiDi.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

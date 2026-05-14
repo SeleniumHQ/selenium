@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -171,7 +171,7 @@ implements <a href="../NodeRegistry.html" title="interface in org.openqa.seleniu
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get the GridModel used by this registry.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getNode(java.net.URI)" class="member-name-link">getNode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get a node by its URI.</div>
@@ -226,7 +226,7 @@ implements <a href="../NodeRegistry.html" title="interface in org.openqa.seleniu
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
- <a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
+ @Nullable <a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Set a session for a particular slot.</div>
 </div>
@@ -502,7 +502,7 @@ implements <a href="../NodeRegistry.html" title="interface in org.openqa.seleniu
 <section class="detail" id="setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">
 <h3>setSession</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setSession</span><wbr><span class="parameters">(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
- <a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</span></div>
+ @Nullable <a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</span></div>
 <div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../NodeRegistry.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">NodeRegistry</a></code></span></div>
 <div class="block">Set a session for a particular slot.</div>
 <dl class="notes">
@@ -541,7 +541,7 @@ implements <a href="../NodeRegistry.html" title="interface in org.openqa.seleniu
 <li>
 <section class="detail" id="getNode(java.net.URI)">
 <h3>getNode</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></span>&nbsp;<span class="element-name">getNode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></span>&nbsp;<span class="element-name">getNode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</span></div>
 <div class="block">Get a node by its URI.</div>
 <dl class="notes">
 <dt>Specified by:</dt>

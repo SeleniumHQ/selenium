@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="package-declaration-page">
@@ -69,7 +69,8 @@ loadScripts(document, 'script');</script>
 <h1 title="Package org.openqa.selenium.grid.node" class="title">Package org.openqa.selenium.grid.node</h1>
 </div>
 <hr>
-<div class="package-signature">package <span class="element-name">org.openqa.selenium.grid.node</span></div>
+<div class="package-signature"><span class="annotations">@NullMarked
+</span>package <span class="element-name">org.openqa.selenium.grid.node</span></div>
 <section class="summary">
 <ul class="summary-list">
 <li>
@@ -79,7 +80,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Package</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="../package-summary.html">org.openqa.selenium.grid</a></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">The Selenium Grid is composed of a number of moving pieces, all of which are designed to be used
+ either locally or across an HTTP boundary.</div>
+</div>
 <div class="col-first odd-row-color"><a href="config/package-summary.html">org.openqa.selenium.grid.node.config</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="docker/package-summary.html">org.openqa.selenium.grid.node.docker</a></div>
@@ -122,14 +126,18 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">A place where individual webdriver sessions are running.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="NodeSessionFactoryProvider.html" title="interface in org.openqa.selenium.grid.node">NodeSessionFactoryProvider</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="NodeCommandInterceptor.html" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">SPI for intercepting WebDriver commands executed through the Node.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="NodeSessionFactoryProvider.html" title="interface in org.openqa.selenium.grid.node">NodeSessionFactoryProvider</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">SPI for pluggable session factory providers that can be loaded via <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ServiceLoader.html" title="class or interface in java.util" class="external-link"><code>ServiceLoader</code></a>.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ProxyNodeWebsockets.html" title="class in org.openqa.selenium.grid.node">ProxyNodeWebsockets</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ProxyNodeWebsockets.html" title="class in org.openqa.selenium.grid.node">ProxyNodeWebsockets</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
 </div>
 </div>
 </div>

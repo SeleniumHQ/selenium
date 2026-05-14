@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-use-page">
@@ -88,13 +88,13 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">NodeStatus.</span><code><a href="../NodeStatus.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
+<div class="col-first odd-row-color"><code>@Nullable <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">SessionClosedData.</span><code><a href="../SessionClosedData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">SessionCreatedData.</span><code><a href="../SessionCreatedData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
+<div class="col-first odd-row-color"><code>@Nullable <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">SessionEventData.</span><code><a href="../SessionEventData.html#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></div>
@@ -174,10 +174,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../SessionClosedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.Capabilities,java.time.Instant,java.time.Instant)" class="member-name-link">SessionClosedData</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="../SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
- <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
- <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
+ @Nullable <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ @Nullable <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;endTime)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Full constructor with all session context for sidecar services.</div>
@@ -194,10 +194,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../SessionEventData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,java.lang.String,org.openqa.selenium.grid.data.NodeId,java.net.URI,java.time.Instant,java.util.Map)" class="member-name-link">SessionEventData</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
- <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ @Nullable <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;timestamp,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../SlotId.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.util.UUID)" class="member-name-link">SlotId</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;host,
@@ -400,8 +400,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">SessionSlot.</span><code><a href="../../node/local/SessionSlot.html#stop(org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI)" class="member-name-link">stop</a><wbr>(<a href="../SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
- <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
+ @Nullable <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Stops the session with full context for sidecar services.</div>
 </div>

@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -137,11 +137,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
- <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
+ @Nullable <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
  int&nbsp;maxSessionCount,
  int&nbsp;drainAfterSessionCount,
  boolean&nbsp;cdpEnabled,
@@ -153,7 +153,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  boolean&nbsp;managedDownloadsEnabled,
  int&nbsp;connectionLimitPerSession,
- int&nbsp;nodeDownFailureThreshold)</code></div>
+ int&nbsp;nodeDownFailureThreshold,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../NodeCommandInterceptor.html" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a>&gt;&nbsp;interceptors)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -294,13 +295,13 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int,java.util.List)">
 <h3>LocalNode</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">LocalNode</span><wbr><span class="parameters">(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
- <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
+ @Nullable <a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a>&nbsp;healthCheck,
  int&nbsp;maxSessionCount,
  int&nbsp;drainAfterSessionCount,
  boolean&nbsp;cdpEnabled,
@@ -312,7 +313,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  boolean&nbsp;managedDownloadsEnabled,
  int&nbsp;connectionLimitPerSession,
- int&nbsp;nodeDownFailureThreshold)</span></div>
+ int&nbsp;nodeDownFailureThreshold,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../NodeCommandInterceptor.html" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a>&gt;&nbsp;interceptors)</span></div>
 </section>
 </li>
 </ul>

@@ -50,6 +50,7 @@ webdriver.common
 
    selenium.webdriver.common.action_chains
    selenium.webdriver.common.alert
+   selenium.webdriver.common.api_request_context
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.driver_finder

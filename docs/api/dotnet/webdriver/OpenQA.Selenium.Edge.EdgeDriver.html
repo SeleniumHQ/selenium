@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Edge_EdgeDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Edge.EdgeDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_Edge_EdgeDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Edge.EdgeDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_Edge_EdgeDriver" data-uid="OpenQA.Selenium.Edge.EdgeDriver" class="text-break">
-Class EdgeDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L29"><i class="bi bi-code-slash"></i></a>
+Class EdgeDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class EdgeDriver : ChromiumDriver, IWebDriver, IDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator, ISupportsLogs, IDevTools</code></pre>
+    <pre><code class="lang-csharp hljs">public class EdgeDriver : ChromiumDriver, IWebDriver, IDisposable, IAsyncDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator, ISupportsLogs, IDevTools</code></pre>
   </div>
 
 
@@ -123,6 +123,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
       <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
       <div><a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html">IFindsElement</a></div>
@@ -244,6 +245,9 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
       <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_Dispose_System_Boolean_">ChromiumDriver.Dispose(bool)</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_DisposeAsyncCore">ChromiumDriver.DisposeAsyncCore()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DefaultCommandTimeout">WebDriver.DefaultCommandTimeout</a>
     </div>
     <div>
@@ -281,6 +285,9 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose">WebDriver.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsync">WebDriver.DisposeAsync()</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteAsyncScript_System_String_System_Object___">WebDriver.ExecuteAsyncScript(string, params object[])</a>
@@ -408,7 +415,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?, CancellationToken)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_System_Action_OpenQA_Selenium_BiDi_BiDiOptionsBuilder__System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, Action&lt;BiDiOptionsBuilder&gt;?, CancellationToken)</a>
   </div>
   </dd></dl>
 
@@ -424,7 +431,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor">
   EdgeDriver()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class.</p>
@@ -451,7 +458,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_OpenQA_Selenium_Edge_EdgeDriverService_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService)">
   EdgeDriver(EdgeDriverService)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified driver service.</p>
@@ -490,7 +497,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_OpenQA_Selenium_Edge_EdgeDriverService_OpenQA_Selenium_Edge_EdgeOptions_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions)">
   EdgeDriver(EdgeDriverService, EdgeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified
@@ -533,7 +540,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_OpenQA_Selenium_Edge_EdgeDriverService_OpenQA_Selenium_Edge_EdgeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)">
   EdgeDriver(EdgeDriverService, EdgeOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriverService.html">EdgeDriverService</a>.</p>
@@ -578,7 +585,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_OpenQA_Selenium_Edge_EdgeOptions_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeOptions)">
   EdgeDriver(EdgeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified options.</p>
@@ -617,7 +624,7 @@ Class EdgeDriver  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_System_String_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String)">
   EdgeDriver(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified path
@@ -651,7 +658,7 @@ to the directory containing the WebDriver executable.</p>
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_System_String_OpenQA_Selenium_Edge_EdgeOptions_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions)">
   EdgeDriver(string, EdgeOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified path
@@ -694,7 +701,7 @@ to the directory containing the WebDriver executable and options.</p>
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver__ctor_System_String_OpenQA_Selenium_Edge_EdgeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)">
   EdgeDriver(string, EdgeOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Edge.EdgeDriver.html">EdgeDriver</a> class using the specified path
@@ -744,7 +751,7 @@ to the directory containing the WebDriver executable, options, and command timeo
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriver_CustomCommandDefinitions" data-uid="OpenQA.Selenium.Edge.EdgeDriver.CustomCommandDefinitions">
   CustomCommandDefinitions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
@@ -778,7 +785,7 @@ The keys of the dictionary are the names assigned to the command; the values are
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L29" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/Edge/EdgeDriver.cs/#L29" class="edit-link">Edit this page</a>
         </div>
 
 

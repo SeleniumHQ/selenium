@@ -1,0 +1,19 @@
+selenium.webdriver.common.api\_request\_context
+===============================================
+
+.. automodule:: selenium.webdriver.common.api_request_context
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      APIRequestContext
+      APIResponse
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      APIRequestFailure
+   

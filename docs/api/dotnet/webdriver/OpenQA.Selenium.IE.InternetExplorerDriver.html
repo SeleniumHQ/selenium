@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_IE_InternetExplorerDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.IE.InternetExplorerDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_IE_InternetExplorerDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.IE.InternetExplorerDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_IE_InternetExplorerDriver" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver" class="text-break">
-Class InternetExplorerDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L62"><i class="bi bi-code-slash"></i></a>
+Class InternetExplorerDriver  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,7 @@ Class InternetExplorerDriver  <a class="header-action link-secondary" title="Vie
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class InternetExplorerDriver : WebDriver, IWebDriver, IDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator</code></pre>
+    <pre><code class="lang-csharp hljs">public class InternetExplorerDriver : WebDriver, IWebDriver, IDisposable, IAsyncDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator</code></pre>
   </div>
 
 
@@ -122,6 +122,7 @@ Class InternetExplorerDriver  <a class="header-action link-secondary" title="Vie
     <dd>
       <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
       <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
       <div><a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html">IFindsElement</a></div>
@@ -179,6 +180,9 @@ Class InternetExplorerDriver  <a class="header-action link-secondary" title="Vie
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose">WebDriver.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsync">WebDriver.DisposeAsync()</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteAsyncScript_System_String_System_Object___">WebDriver.ExecuteAsyncScript(string, params object[])</a>
@@ -253,6 +257,9 @@ Class InternetExplorerDriver  <a class="header-action link-secondary" title="Vie
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose_System_Boolean_">WebDriver.Dispose(bool)</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DisposeAsyncCore">WebDriver.DisposeAsyncCore()</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteScriptCommand_System_String_System_String_System_Object___">WebDriver.ExecuteScriptCommand(string, string, params object[])</a>
     </div>
     <div>
@@ -309,7 +316,7 @@ Class InternetExplorerDriver  <a class="header-action link-secondary" title="Vie
     <dt>Extension Methods</dt>
     <dd>
   <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_OpenQA_Selenium_BiDi_BiDiOptions_System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, BiDiOptions?, CancellationToken)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.WebDriverExtensions.html#OpenQA_Selenium_BiDi_WebDriverExtensions_AsBiDiAsync_OpenQA_Selenium_IWebDriver_System_Action_OpenQA_Selenium_BiDi_BiDiOptionsBuilder__System_Threading_CancellationToken_">WebDriverExtensions.AsBiDiAsync(IWebDriver, Action&lt;BiDiOptionsBuilder&gt;?, CancellationToken)</a>
   </div>
   </dd></dl>
 
@@ -358,7 +365,7 @@ start your test.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor">
   InternetExplorerDriver()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class.</p>
@@ -385,7 +392,7 @@ start your test.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_OpenQA_Selenium_IE_InternetExplorerDriverService_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.IE.InternetExplorerDriverService)">
   InternetExplorerDriver(InternetExplorerDriverService)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified driver service.</p>
@@ -424,7 +431,7 @@ start your test.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_OpenQA_Selenium_IE_InternetExplorerDriverService_OpenQA_Selenium_IE_InternetExplorerOptions_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.IE.InternetExplorerDriverService,OpenQA.Selenium.IE.InternetExplorerOptions)">
   InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified
@@ -467,7 +474,7 @@ start your test.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_OpenQA_Selenium_IE_InternetExplorerDriverService_OpenQA_Selenium_IE_InternetExplorerOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.IE.InternetExplorerDriverService,OpenQA.Selenium.IE.InternetExplorerOptions,System.TimeSpan)">
   InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified
@@ -513,7 +520,7 @@ start your test.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_OpenQA_Selenium_IE_InternetExplorerOptions_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.IE.InternetExplorerOptions)">
   InternetExplorerDriver(InternetExplorerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class with the desired
@@ -553,7 +560,7 @@ options.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_System_String_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.String)">
   InternetExplorerDriver(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified path
@@ -587,7 +594,7 @@ to the directory containing <code>IEDriverServer.exe</code>.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_System_String_OpenQA_Selenium_IE_InternetExplorerOptions_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.String,OpenQA.Selenium.IE.InternetExplorerOptions)">
   InternetExplorerDriver(string, InternetExplorerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified path
@@ -630,7 +637,7 @@ to the directory containing <code>IEDriverServer.exe</code> and options.</p>
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver__ctor_System_String_OpenQA_Selenium_IE_InternetExplorerOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.String,OpenQA.Selenium.IE.InternetExplorerOptions,System.TimeSpan)">
   InternetExplorerDriver(string, InternetExplorerOptions, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriver.html">InternetExplorerDriver</a> class using the specified path
@@ -680,7 +687,7 @@ to the directory containing <code>IEDriverServer.exe</code>, options, and comman
 
   <h3 id="OpenQA_Selenium_IE_InternetExplorerDriver_FileDetector" data-uid="OpenQA.Selenium.IE.InternetExplorerDriver.FileDetector">
   FileDetector
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the <a class="xref" href="OpenQA.Selenium.IFileDetector.html">IFileDetector</a> responsible for detecting
@@ -721,7 +728,7 @@ in conjunction with a standalone WebDriver server.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L62" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/IE/InternetExplorerDriver.cs/#L62" class="edit-link">Edit this page</a>
         </div>
 
 

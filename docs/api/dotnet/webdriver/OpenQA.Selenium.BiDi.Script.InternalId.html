@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_InternalId.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.InternalId%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Script_InternalId.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Script.InternalId%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_InternalId" data-uid="OpenQA.Selenium.BiDi.Script.InternalId" class="text-break">
-Class InternalId  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L25"><i class="bi bi-code-slash"></i></a>
+Class InternalId  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,8 @@ Class InternalId  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record InternalId : IEquatable&lt;InternalId&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(InternalId.Converter))]
+public sealed record InternalId : IIdentifiable, IEquatable&lt;InternalId&gt;</code></pre>
   </div>
 
 
@@ -118,6 +119,7 @@ Class InternalId  <a class="header-action link-secondary" title="View source" hr
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.IIdentifiable.html">IIdentifiable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.InternalId.html">InternalId</a>&gt;</div>
     </dd>
   </dl>
@@ -154,21 +156,21 @@ Class InternalId  <a class="header-action link-secondary" title="View source" hr
 
   <a id="OpenQA_Selenium_BiDi_Script_InternalId__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Script_InternalId__ctor_OpenQA_Selenium_BiDi_BiDi_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.#ctor(OpenQA.Selenium.BiDi.BiDi,System.String)">
-  InternalId(BiDi, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Script_InternalId__ctor_OpenQA_Selenium_BiDi_IBiDi_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.#ctor(OpenQA.Selenium.BiDi.IBiDi,System.String)">
+  InternalId(IBiDi, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public InternalId(BiDi bidi, string id)</code></pre>
+    <pre><code class="lang-csharp hljs">public InternalId(IBiDi bidi, string id)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
+    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
     <dd></dd>
     <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
@@ -193,7 +195,7 @@ Class InternalId  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_BiDi_Script_InternalId_BiDi" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.BiDi">
   BiDi
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -201,7 +203,7 @@ Class InternalId  <a class="header-action link-secondary" title="View source" hr
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonIgnore]
-public BiDi BiDi { get; }</code></pre>
+public IBiDi BiDi { get; }</code></pre>
   </div>
 
 
@@ -210,7 +212,38 @@ public BiDi BiDi { get; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Script_InternalId_Id_" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.Id*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_InternalId_Id" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.Id">
+  Id
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Id { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
   </dl>
 
@@ -229,7 +262,7 @@ public BiDi BiDi { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_InternalId_Equals_OpenQA_Selenium_BiDi_Script_InternalId_" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.Equals(OpenQA.Selenium.BiDi.Script.InternalId)">
   Equals(InternalId?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
@@ -268,7 +301,7 @@ public BiDi BiDi { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_InternalId_GetHashCode" data-uid="OpenQA.Selenium.BiDi.Script.InternalId.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Serves as the default hash function.</p>
@@ -301,7 +334,7 @@ public BiDi BiDi { get; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L25" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Script/InternalId.cs/#L27" class="edit-link">Edit this page</a>
         </div>
 
 

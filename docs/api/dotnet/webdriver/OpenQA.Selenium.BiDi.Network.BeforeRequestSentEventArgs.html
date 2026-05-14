@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs" class="text-break">
-Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public record BeforeRequestSentEventArgs : BaseParametersEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BaseParametersEventArgs&gt;, IEquatable&lt;BeforeRequestSentEventArgs&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public record BeforeRequestSentEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BeforeRequestSentEventArgs&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html">BaseParametersEventArgs</a></div>
       <div><span class="xref">BeforeRequestSentEventArgs</span></div>
     </dd>
   </dl>
@@ -121,42 +120,14 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html">BaseParametersEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.html">BeforeRequestSentEventArgs</a>&gt;</div>
     </dd>
   </dl>
 
-  <dl class="typelist derived">
-    <dt>Derived</dt>
-    <dd>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptedRequest.html">InterceptedRequest</a></div>
-    </dd>
-  </dl>
 
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Context">BaseParametersEventArgs.Context</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_IsBlocked">BaseParametersEventArgs.IsBlocked</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Navigation">BaseParametersEventArgs.Navigation</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_RedirectCount">BaseParametersEventArgs.RedirectCount</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Request">BaseParametersEventArgs.Request</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Timestamp">BaseParametersEventArgs.Timestamp</a>
-    </div>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Intercepts">BaseParametersEventArgs.Intercepts</a>
-    </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
@@ -194,20 +165,22 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
 
   <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_Initiator_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.Initiator,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
-  BeforeRequestSentEventArgs(BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, Initiator, IReadOnlyList&lt;Intercept&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_Initiator_OpenQA_Selenium_BiDi_Browser_UserContext_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.Initiator,OpenQA.Selenium.BiDi.Browser.UserContext,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
+  BeforeRequestSentEventArgs(IBiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, Initiator, UserContext?, IReadOnlyList&lt;Intercept&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BeforeRequestSentEventArgs(BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
+    <pre><code class="lang-csharp hljs">public BeforeRequestSentEventArgs(IBiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, UserContext? UserContext, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>IsBlocked</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
@@ -221,6 +194,8 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
     <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
     <dd></dd>
     <dt><code>Initiator</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.Initiator.html">Initiator</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
     <dt><code>Intercepts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Intercept.html">Intercept</a>&gt;</dt>
     <dd></dd>
@@ -241,11 +216,42 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
 </h2>
 
 
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Context_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext? Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Initiator_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Initiator*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Initiator" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Initiator">
   Initiator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -272,11 +278,228 @@ Class BeforeRequestSentEventArgs  <a class="header-action link-secondary" title=
 
 
 
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Intercepts_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Intercepts*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Intercepts" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Intercepts">
+  Intercepts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Intercept&gt;? Intercepts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Intercept.html">Intercept</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_IsBlocked_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.IsBlocked*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_IsBlocked" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.IsBlocked">
+  IsBlocked
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsBlocked { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Navigation_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Navigation*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Navigation" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Navigation">
+  Navigation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Navigation? Navigation { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.html">Navigation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_RedirectCount_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.RedirectCount*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_RedirectCount" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.RedirectCount">
+  RedirectCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long RedirectCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Request_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Request*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Request" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Request">
+  Request
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RequestData Request { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Network.RequestData.html">RequestData</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Timestamp_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Timestamp*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_Timestamp" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.Timestamp">
+  Timestamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset Timestamp { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_UserContext_" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_UserContext" data-uid="OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/BeforeRequestSentEventArgs.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

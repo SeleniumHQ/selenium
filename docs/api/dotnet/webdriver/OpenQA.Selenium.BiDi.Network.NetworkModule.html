@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Network_NetworkModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Network.NetworkModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_Network_NetworkModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Network.NetworkModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_NetworkModule" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule" class="text-break">
-Class NetworkModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class NetworkModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class NetworkModule : Module</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class NetworkModule : Module, INetworkModule</code></pre>
   </div>
 
 
@@ -116,14 +116,17 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.INetworkModule.html">INetworkModule</a></div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Module.html#OpenQA_Selenium_BiDi_Module_SubscribeAsync__1_System_String_System_Func___0_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__System_Threading_CancellationToken_">Module.SubscribeAsync&lt;TEventArgs&gt;(string, Func&lt;TEventArgs, Task&gt;, SubscriptionOptions, JsonTypeInfo&lt;TEventArgs&gt;, CancellationToken)</a>
-    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
@@ -157,7 +160,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_AddDataCollectorAsync_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_Network_DataType__System_Int32_OpenQA_Selenium_BiDi_Network_AddDataCollectorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.AddDataCollectorAsync(System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.Network.DataType},System.Int32,OpenQA.Selenium.BiDi.Network.AddDataCollectorOptions,System.Threading.CancellationToken)">
   AddDataCollectorAsync(IEnumerable&lt;DataType&gt;, int, AddDataCollectorOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -199,7 +202,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_AddInterceptAsync_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_Network_InterceptPhase__OpenQA_Selenium_BiDi_Network_AddInterceptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.AddInterceptAsync(System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.Network.InterceptPhase},OpenQA.Selenium.BiDi.Network.AddInterceptOptions,System.Threading.CancellationToken)">
   AddInterceptAsync(IEnumerable&lt;InterceptPhase&gt;, AddInterceptOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -239,7 +242,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ContinueRequestAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_ContinueRequestOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ContinueRequestAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.ContinueRequestOptions,System.Threading.CancellationToken)">
   ContinueRequestAsync(Request, ContinueRequestOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -279,7 +282,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ContinueResponseAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_ContinueResponseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ContinueResponseAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.ContinueResponseOptions,System.Threading.CancellationToken)">
   ContinueResponseAsync(Request, ContinueResponseOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -319,7 +322,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ContinueWithAuthAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_AuthCredentials_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ContinueWithAuthAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.AuthCredentials,OpenQA.Selenium.BiDi.Network.ContinueWithAuthCredentialsOptions,System.Threading.CancellationToken)">
   ContinueWithAuthAsync(Request, AuthCredentials, ContinueWithAuthCredentialsOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -361,7 +364,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ContinueWithAuthAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_ContinueWithAuthCancelCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ContinueWithAuthAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.ContinueWithAuthCancelCredentialsOptions,System.Threading.CancellationToken)">
   ContinueWithAuthAsync(Request, ContinueWithAuthCancelCredentialsOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -401,7 +404,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ContinueWithAuthAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_ContinueWithAuthDefaultCredentialsOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ContinueWithAuthAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.ContinueWithAuthDefaultCredentialsOptions,System.Threading.CancellationToken)">
   ContinueWithAuthAsync(Request, ContinueWithAuthDefaultCredentialsOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -441,7 +444,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_FailRequestAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_FailRequestOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.FailRequestAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.FailRequestOptions,System.Threading.CancellationToken)">
   FailRequestAsync(Request, FailRequestOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -481,7 +484,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_GetDataAsync_OpenQA_Selenium_BiDi_Network_DataType_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_GetDataOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.GetDataAsync(OpenQA.Selenium.BiDi.Network.DataType,OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.GetDataOptions,System.Threading.CancellationToken)">
   GetDataAsync(DataType, Request, GetDataOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -519,164 +522,11 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
 
 
-  <a id="OpenQA_Selenium_BiDi_Network_NetworkModule_Initialize_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.Initialize*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_Initialize_OpenQA_Selenium_BiDi_BiDi_System_Text_Json_JsonSerializerOptions_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.Initialize(OpenQA.Selenium.BiDi.BiDi,System.Text.Json.JsonSerializerOptions)">
-  Initialize(BiDi, JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L174"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override void Initialize(BiDi bidi, JsonSerializerOptions jsonSerializerOptions)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>bidi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
-    <dt><code>jsonSerializerOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptAuthAsync_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptAuthAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptAuthAsync_System_Func_OpenQA_Selenium_BiDi_Network_InterceptedAuth_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Network_InterceptAuthOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptAuthAsync(System.Func{OpenQA.Selenium.BiDi.Network.InterceptedAuth,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Network.InterceptAuthOptions,System.Threading.CancellationToken)">
-  InterceptAuthAsync(Func&lt;InterceptedAuth, Task&gt;, InterceptAuthOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L46"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Interception&gt; InterceptAuthAsync(Func&lt;InterceptedAuth, Task&gt; handler, InterceptAuthOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptedAuth.html">InterceptedAuth</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptAuthOptions.html">InterceptAuthOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Interception.html">Interception</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptRequestAsync_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptRequestAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptRequestAsync_System_Func_OpenQA_Selenium_BiDi_Network_InterceptedRequest_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Network_InterceptRequestOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptRequestAsync(System.Func{OpenQA.Selenium.BiDi.Network.InterceptedRequest,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Network.InterceptRequestOptions,System.Threading.CancellationToken)">
-  InterceptRequestAsync(Func&lt;InterceptedRequest, Task&gt;, InterceptRequestOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L24"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Interception&gt; InterceptRequestAsync(Func&lt;InterceptedRequest, Task&gt; handler, InterceptRequestOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptedRequest.html">InterceptedRequest</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptRequestOptions.html">InterceptRequestOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Interception.html">Interception</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptResponseAsync_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptResponseAsync*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_InterceptResponseAsync_System_Func_OpenQA_Selenium_BiDi_Network_InterceptedResponse_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Network_InterceptResponseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.InterceptResponseAsync(System.Func{OpenQA.Selenium.BiDi.Network.InterceptedResponse,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Network.InterceptResponseOptions,System.Threading.CancellationToken)">
-  InterceptResponseAsync(Func&lt;InterceptedResponse, Task&gt;, InterceptResponseOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L35"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Interception&gt; InterceptResponseAsync(Func&lt;InterceptedResponse, Task&gt; handler, InterceptResponseOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptedResponse.html">InterceptedResponse</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.InterceptResponseOptions.html">InterceptResponseOptions</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Interception.html">Interception</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnAuthRequiredAsync_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnAuthRequiredAsync*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnAuthRequiredAsync_System_Action_OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnAuthRequiredAsync(System.Action{OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnAuthRequiredAsync(Action&lt;AuthRequiredEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L169"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L167"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -716,7 +566,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnAuthRequiredAsync_System_Func_OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnAuthRequiredAsync(System.Func{OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnAuthRequiredAsync(Func&lt;AuthRequiredEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L162"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -756,7 +606,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnBeforeRequestSentAsync_System_Action_OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnBeforeRequestSentAsync(System.Action{OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnBeforeRequestSentAsync(Action&lt;BeforeRequestSentEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L127"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -796,7 +646,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnBeforeRequestSentAsync_System_Func_OpenQA_Selenium_BiDi_Network_BeforeRequestSentEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnBeforeRequestSentAsync(System.Func{OpenQA.Selenium.BiDi.Network.BeforeRequestSentEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnBeforeRequestSentAsync(Func&lt;BeforeRequestSentEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -836,7 +686,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnFetchErrorAsync_System_Action_OpenQA_Selenium_BiDi_Network_FetchErrorEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnFetchErrorAsync(System.Action{OpenQA.Selenium.BiDi.Network.FetchErrorEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnFetchErrorAsync(Action&lt;FetchErrorEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L159"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L157"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -876,7 +726,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnFetchErrorAsync_System_Func_OpenQA_Selenium_BiDi_Network_FetchErrorEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnFetchErrorAsync(System.Func{OpenQA.Selenium.BiDi.Network.FetchErrorEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnFetchErrorAsync(Func&lt;FetchErrorEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L152"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -916,7 +766,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnResponseCompletedAsync_System_Action_OpenQA_Selenium_BiDi_Network_ResponseCompletedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnResponseCompletedAsync(System.Action{OpenQA.Selenium.BiDi.Network.ResponseCompletedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnResponseCompletedAsync(Action&lt;ResponseCompletedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L147"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -956,7 +806,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnResponseCompletedAsync_System_Func_OpenQA_Selenium_BiDi_Network_ResponseCompletedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnResponseCompletedAsync(System.Func{OpenQA.Selenium.BiDi.Network.ResponseCompletedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnResponseCompletedAsync(Func&lt;ResponseCompletedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L142"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -996,7 +846,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnResponseStartedAsync_System_Action_OpenQA_Selenium_BiDi_Network_ResponseStartedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnResponseStartedAsync(System.Action{OpenQA.Selenium.BiDi.Network.ResponseStartedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnResponseStartedAsync(Action&lt;ResponseStartedEventArgs&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1036,7 +886,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_OnResponseStartedAsync_System_Func_OpenQA_Selenium_BiDi_Network_ResponseStartedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.OnResponseStartedAsync(System.Func{OpenQA.Selenium.BiDi.Network.ResponseStartedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions,System.Threading.CancellationToken)">
   OnResponseStartedAsync(Func&lt;ResponseStartedEventArgs, Task&gt;, SubscriptionOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1076,7 +926,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_ProvideResponseAsync_OpenQA_Selenium_BiDi_Network_Request_OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.ProvideResponseAsync(OpenQA.Selenium.BiDi.Network.Request,OpenQA.Selenium.BiDi.Network.ProvideResponseOptions,System.Threading.CancellationToken)">
   ProvideResponseAsync(Request, ProvideResponseOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1116,7 +966,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_RemoveDataCollectorAsync_OpenQA_Selenium_BiDi_Network_Collector_OpenQA_Selenium_BiDi_Network_RemoveDataCollectorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.RemoveDataCollectorAsync(OpenQA.Selenium.BiDi.Network.Collector,OpenQA.Selenium.BiDi.Network.RemoveDataCollectorOptions,System.Threading.CancellationToken)">
   RemoveDataCollectorAsync(Collector, RemoveDataCollectorOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1156,7 +1006,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_RemoveInterceptAsync_OpenQA_Selenium_BiDi_Network_Intercept_OpenQA_Selenium_BiDi_Network_RemoveInterceptOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.RemoveInterceptAsync(OpenQA.Selenium.BiDi.Network.Intercept,OpenQA.Selenium.BiDi.Network.RemoveInterceptOptions,System.Threading.CancellationToken)">
   RemoveInterceptAsync(Intercept, RemoveInterceptOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1196,7 +1046,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_SetCacheBehaviorAsync_OpenQA_Selenium_BiDi_Network_CacheBehavior_OpenQA_Selenium_BiDi_Network_SetCacheBehaviorOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.SetCacheBehaviorAsync(OpenQA.Selenium.BiDi.Network.CacheBehavior,OpenQA.Selenium.BiDi.Network.SetCacheBehaviorOptions,System.Threading.CancellationToken)">
   SetCacheBehaviorAsync(CacheBehavior, SetCacheBehaviorOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1236,7 +1086,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Network_NetworkModule_SetExtraHeadersAsync_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_Network_Header__OpenQA_Selenium_BiDi_Network_SetExtraHeadersOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Network.NetworkModule.SetExtraHeadersAsync(System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.Network.Header},OpenQA.Selenium.BiDi.Network.SetExtraHeadersOptions,System.Threading.CancellationToken)">
   SetExtraHeadersAsync(IEnumerable&lt;Header&gt;, SetExtraHeadersOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1276,7 +1126,7 @@ Class NetworkModule  <a class="header-action link-secondary" title="View source"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/Network/NetworkModule.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

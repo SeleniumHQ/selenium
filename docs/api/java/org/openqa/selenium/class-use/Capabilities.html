@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-use-page">
@@ -502,7 +502,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GeckoDriverInfo.</span><code><a href="../firefox/GeckoDriverInfo.html#getCanonicalCapabilities()" class="member-name-link">getCanonicalCapabilities</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>@NonNull <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">FirefoxDriver.</span><code><a href="../firefox/FirefoxDriver.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
@@ -577,7 +577,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Session.</span><code><a href="../grid/data/Session.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
+<div class="col-first odd-row-color"><code>@Nullable <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">SessionClosedData.</span><code><a href="../grid/data/SessionClosedData.html#getCapabilities()" class="member-name-link">getCapabilities</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></div>
@@ -660,10 +660,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../grid/data/SessionClosedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.Capabilities,java.time.Instant,java.time.Instant)" class="member-name-link">SessionClosedData</a><wbr>(<a href="../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="../grid/data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason,
- <a href="../grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
- <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
+ @Nullable <a href="../grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ @Nullable <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;endTime)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Full constructor with all session context for sidecar services.</div>
@@ -681,7 +681,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><code><a href="../grid/data/Slot.html#%3Cinit%3E(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.Capabilities,java.time.Instant,org.openqa.selenium.grid.data.Session)" class="member-name-link">Slot</a><wbr>(<a href="../grid/data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;id,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;lastStarted,
- <a href="../grid/data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
+ @Nullable <a href="../grid/data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Constructor parameters in <a href="../grid/data/package-summary.html">org.openqa.selenium.grid.data</a> with type arguments of type <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span></div>
@@ -955,7 +955,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate,java.util.Map,java.util.List,java.util.Map)" class="member-name-link">DockerSessionFactory</a><wbr>(<a href="../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second even-row-color"><code><a href="../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate,java.util.Map,java.util.List,java.util.Map,java.time.Duration)" class="member-name-link">DockerSessionFactory</a><wbr>(<a href="../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;serverStartTimeout,
@@ -964,14 +964,15 @@ loadScripts(document, 'script');</script>
  <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../docker/Device.html" title="class in org.openqa.selenium.docker">Device</a>&gt;&nbsp;devices,
- <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
- <a href="../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
+ @Nullable <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
+ @Nullable <a href="../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;networkName,
  boolean&nbsp;runningInDocker,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;hostConfig,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;hostConfigKeys,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;groupingLabels)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;groupingLabels,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;stopGracePeriod)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Constructor parameters in <a href="../grid/node/docker/package-summary.html">org.openqa.selenium.grid.node.docker</a> with type arguments of type <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span></div>
@@ -980,7 +981,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate,java.util.Map,java.util.List,java.util.Map)" class="member-name-link">DockerSessionFactory</a><wbr>(<a href="../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second even-row-color"><code><a href="../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate,java.util.Map,java.util.List,java.util.Map,java.time.Duration)" class="member-name-link">DockerSessionFactory</a><wbr>(<a href="../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;serverStartTimeout,
@@ -989,14 +990,15 @@ loadScripts(document, 'script');</script>
  <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../docker/Device.html" title="class in org.openqa.selenium.docker">Device</a>&gt;&nbsp;devices,
- <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
- <a href="../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
+ @Nullable <a href="../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
+ @Nullable <a href="../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;networkName,
  boolean&nbsp;runningInDocker,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;hostConfig,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;hostConfigKeys,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;groupingLabels)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;groupingLabels,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;stopGracePeriod)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -1095,7 +1097,7 @@ loadScripts(document, 'script');</script>
  <a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceUri,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceStatusUri,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceStatusUri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;serviceProtocolVersion,
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>

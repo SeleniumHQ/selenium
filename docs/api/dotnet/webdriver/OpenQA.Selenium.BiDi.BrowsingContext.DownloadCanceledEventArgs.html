@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs" class="text-break">
-Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -168,20 +168,22 @@ Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
-  DownloadCanceledEventArgs(BrowsingContext, Navigation?, DateTimeOffset, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs__ctor_OpenQA_Selenium_BiDi_IBiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.#ctor(OpenQA.Selenium.BiDi.IBiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
+  DownloadCanceledEventArgs(IBiDi, BrowsingContext, Navigation?, DateTimeOffset, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DownloadCanceledEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
+    <pre><code class="lang-csharp hljs">public DownloadCanceledEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.IBiDi.html">IBiDi</a></dt>
+    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Navigation</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.html">Navigation</a></dt>
@@ -211,7 +213,7 @@ Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.Navigation">
   Navigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -242,7 +244,7 @@ Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -273,7 +275,7 @@ Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadCanceledEventArgs_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadCanceledEventArgs.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -304,7 +306,7 @@ Class DownloadCanceledEventArgs  <a class="header-action link-secondary" title="
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L33" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L32" class="edit-link">Edit this page</a>
         </div>
 
 

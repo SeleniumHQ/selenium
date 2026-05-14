@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="../../../script.js"></script>
-<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -107,8 +107,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 
  <p>The codes follow conventions partially established by the W3C WebDriver specification and the
  Selenium project. Some values (e.g., RIGHT_SHIFT, RIGHT_COMMAND) are used in ChromeDriver but are
- not currently part of the W3C spec. Others (e.g., OPTION, FN) are symbolic and reserved for
- possible future mapping.
+ not currently part of the W3C specification. Others (e.g., OPTION) are symbolic aliases for
+ existing keys.
 
  <p>For consistency across platforms and drivers, values should be verified before assuming native
  support.</div>
@@ -206,7 +206,12 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="col-first even-row-color"><code><a href="#F9" class="member-name-link">F9</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="#FN" class="member-name-link">FN</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">The FN key is not part of the W3C WebDriver specification and does not have a
+     standardized Unicode mapping.</div>
+</div>
+</div>
 <div class="col-first even-row-color"><code><a href="#HELP" class="member-name-link">HELP</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="#HOME" class="member-name-link">HOME</a></code></div>
@@ -773,7 +778,12 @@ the order they are declared.</div>
 <li>
 <section class="detail" id="FN">
 <h3>FN</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Keys.html" title="enum class in org.openqa.selenium">Keys</a></span>&nbsp;<span class="element-name">FN</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Keys.html" title="enum class in org.openqa.selenium">Keys</a></span>&nbsp;<span class="element-name">FN</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">The FN key is not part of the W3C WebDriver specification and does not have a
+     standardized Unicode mapping. Its behavior is not guaranteed across drivers/platforms.</div>
+</div>
 </section>
 </li>
 <li>

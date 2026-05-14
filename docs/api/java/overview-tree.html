@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="script-dir/jquery-ui.min.css" title="Style">
 <script type="text/javascript" src="script.js"></script>
-<script type="text/javascript" src="script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="script-dir/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="tree-page">
@@ -63,6 +63,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/openqa/selenium/bidi/network/package-tree.html">org.openqa.selenium.bidi.network</a>, </li>
 <li><a href="org/openqa/selenium/bidi/permissions/package-tree.html">org.openqa.selenium.bidi.permissions</a>, </li>
 <li><a href="org/openqa/selenium/bidi/script/package-tree.html">org.openqa.selenium.bidi.script</a>, </li>
+<li><a href="org/openqa/selenium/bidi/speculation/package-tree.html">org.openqa.selenium.bidi.speculation</a>, </li>
 <li><a href="org/openqa/selenium/bidi/storage/package-tree.html">org.openqa.selenium.bidi.storage</a>, </li>
 <li><a href="org/openqa/selenium/bidi/webextension/package-tree.html">org.openqa.selenium.bidi.webextension</a>, </li>
 <li><a href="org/openqa/selenium/chrome/package-tree.html">org.openqa.selenium.chrome</a>, </li>
@@ -303,6 +304,15 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/CdpVersionFinder.html" class="type-name-link" title="class in org.openqa.selenium.devtools">CdpVersionFinder</a></li>
 <li class="circle">io.netty.channel.ChannelHandlerAdapter (implements io.netty.channel.ChannelHandler)
 <ul>
+<li class="circle">io.netty.channel.ChannelInboundHandlerAdapter (implements io.netty.channel.ChannelInboundHandler)
+<ul>
+<li class="circle">io.netty.channel.SimpleChannelInboundHandler&lt;I&gt;
+<ul>
+<li class="circle">org.openqa.selenium.netty.server.<a href="org/openqa/selenium/netty/server/WebSocketFrameProxy.html" class="type-name-link" title="class in org.openqa.selenium.netty.server">WebSocketFrameProxy</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">io.netty.channel.ChannelOutboundHandlerAdapter (implements io.netty.channel.ChannelOutboundHandler)
 <ul>
 <li class="circle">org.openqa.selenium.netty.server.<a href="org/openqa/selenium/netty/server/ResponseConverter.html" class="type-name-link" title="class in org.openqa.selenium.netty.server">ResponseConverter</a></li>
@@ -731,6 +741,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/PointerInput.PointerEventProperties.html" class="type-name-link" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a> (implements org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Encodable.html" title="interface in org.openqa.selenium.interactions">Encodable</a>)</li>
 <li class="circle">org.openqa.selenium.docker.<a href="org/openqa/selenium/docker/Port.html" class="type-name-link" title="class in org.openqa.selenium.docker">Port</a></li>
 <li class="circle">org.openqa.selenium.net.<a href="org/openqa/selenium/net/PortProber.html" class="type-name-link" title="class in org.openqa.selenium.net">PortProber</a></li>
+<li class="circle">org.openqa.selenium.bidi.speculation.<a href="org/openqa/selenium/bidi/speculation/PrefetchStatusUpdatedParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.speculation">PrefetchStatusUpdatedParameters</a></li>
 <li class="circle">org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" class="type-name-link" title="class in org.openqa.selenium.print">PrintOptions</a></li>
 <li class="circle">org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/ProfilesIni.html" class="type-name-link" title="class in org.openqa.selenium.firefox">ProfilesIni</a></li>
 <li class="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/ProtocolHandshake.html" class="type-name-link" title="class in org.openqa.selenium.remote">ProtocolHandshake</a></li>
@@ -864,6 +875,8 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/SpanWrappedRoutable.html" class="type-name-link" title="class in org.openqa.selenium.remote.tracing">SpanWrappedRoutable</a> (implements org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>)</li>
 </ul>
 </li>
+<li class="circle">org.openqa.selenium.bidi.speculation.<a href="org/openqa/selenium/bidi/speculation/Speculation.html" class="type-name-link" title="class in org.openqa.selenium.bidi.speculation">Speculation</a></li>
+<li class="circle">org.openqa.selenium.bidi.module.<a href="org/openqa/selenium/bidi/module/SpeculationInspector.html" class="type-name-link" title="class in org.openqa.selenium.bidi.module">SpeculationInspector</a> (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>)</li>
 <li class="circle">org.openqa.selenium.bidi.log.<a href="org/openqa/selenium/bidi/log/StackFrame.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">StackFrame</a></li>
 <li class="circle">org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/StackFrame.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">StackFrame</a></li>
 <li class="circle">org.openqa.selenium.bidi.log.<a href="org/openqa/selenium/bidi/log/StackTrace.html" class="type-name-link" title="class in org.openqa.selenium.bidi.log">StackTrace</a></li>
@@ -916,6 +929,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/InvalidResponseException.html" class="type-name-link" title="class in org.openqa.selenium.remote">InvalidResponseException</a></li>
 </ul>
 </li>
+<li class="circle">org.openqa.selenium.concurrent.<a href="org/openqa/selenium/concurrent/Lazy.InitializationException.html" class="type-name-link" title="class in org.openqa.selenium.concurrent">Lazy.InitializationException</a></li>
 <li class="circle">org.openqa.selenium.grid.graphql.<a href="org/openqa/selenium/grid/graphql/SessionNotFoundException.html" class="type-name-link" title="class in org.openqa.selenium.grid.graphql">SessionNotFoundException</a> (implements graphql.GraphQLError)</li>
 <li class="circle">java.io.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/UncheckedIOException.html" class="type-name-link external-link" title="class or interface in java.io">UncheckedIOException</a>
 <ul>
@@ -1056,6 +1070,7 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">org.openqa.selenium.events.<a href="org/openqa/selenium/events/EventBus.html" class="type-name-link" title="interface in org.openqa.selenium.events">EventBus</a> (also extends org.openqa.selenium.status.<a href="org/openqa/selenium/status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a>)</li>
 <li class="circle">org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpClient.html" class="type-name-link" title="interface in org.openqa.selenium.remote.http">HttpClient</a> (also extends org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>)</li>
+<li class="circle">org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/NodeCommandInterceptor.html" class="type-name-link" title="interface in org.openqa.selenium.grid.node">NodeCommandInterceptor</a></li>
 <li class="circle">org.openqa.selenium.grid.distributor.<a href="org/openqa/selenium/grid/distributor/NodeRegistry.html" class="type-name-link" title="interface in org.openqa.selenium.grid.distributor">NodeRegistry</a> (also extends org.openqa.selenium.status.<a href="org/openqa/selenium/status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a>)</li>
 <li class="circle">org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/WebSocket.html" class="type-name-link" title="interface in org.openqa.selenium.remote.http">WebSocket</a></li>
 </ul>
@@ -1159,6 +1174,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Interactive.html" class="type-name-link" title="interface in org.openqa.selenium.interactions">Interactive</a></li>
 <li class="circle">org.openqa.selenium.support.ui.<a href="org/openqa/selenium/support/ui/ISelect.html" class="type-name-link" title="interface in org.openqa.selenium.support.ui">ISelect</a></li>
 <li class="circle">org.openqa.selenium.<a href="org/openqa/selenium/JavascriptExecutor.html" class="type-name-link" title="interface in org.openqa.selenium">JavascriptExecutor</a></li>
+<li class="circle">org.openqa.selenium.concurrent.<a href="org/openqa/selenium/concurrent/Lazy.Supplier.html" class="type-name-link" title="interface in org.openqa.selenium.concurrent">Lazy.Supplier</a>&lt;T&gt;</li>
 <li class="circle">org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Locatable.html" class="type-name-link" title="interface in org.openqa.selenium.interactions">Locatable</a></li>
 <li class="circle">org.openqa.selenium.devtools.idealized.log.<a href="org/openqa/selenium/devtools/idealized/log/Log.html" class="type-name-link" title="interface in org.openqa.selenium.devtools.idealized.log">Log</a></li>
 <li class="circle">org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/Logs.html" class="type-name-link" title="interface in org.openqa.selenium.logging">Logs</a></li>
@@ -1169,6 +1185,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/NodeSessionFactoryProvider.html" class="type-name-link" title="interface in org.openqa.selenium.grid.node">NodeSessionFactoryProvider</a></li>
 <li class="circle">org.openqa.selenium.<a href="org/openqa/selenium/OutputType.html" class="type-name-link" title="interface in org.openqa.selenium">OutputType</a>&lt;T&gt;</li>
 <li class="circle">org.openqa.selenium.bidi.emulation.<a href="org/openqa/selenium/bidi/emulation/OverrideParameters.html" class="type-name-link" title="interface in org.openqa.selenium.bidi.emulation">OverrideParameters</a></li>
+<li class="circle">org.openqa.selenium.netty.server.<a href="org/openqa/selenium/netty/server/PostUpgradeHook.html" class="type-name-link" title="interface in org.openqa.selenium.netty.server">PostUpgradeHook</a></li>
 <li class="circle">java.util.function.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Predicate.html" class="type-name-link external-link" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;
 <ul>
 <li class="circle">org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/SessionFactory.html" class="type-name-link" title="interface in org.openqa.selenium.grid.node">SessionFactory</a> (also extends java.util.function.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;T,<wbr>R&gt;)</li>
@@ -1287,6 +1304,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" class="type-name-link" title="enum class in org.openqa.selenium">Platform</a></li>
 <li class="circle">org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/PointerInput.Kind.html" class="type-name-link" title="enum class in org.openqa.selenium.interactions">PointerInput.Kind</a></li>
 <li class="circle">org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/PointerInput.MouseButton.html" class="type-name-link" title="enum class in org.openqa.selenium.interactions">PointerInput.MouseButton</a></li>
+<li class="circle">org.openqa.selenium.bidi.speculation.<a href="org/openqa/selenium/bidi/speculation/PreloadingStatus.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.speculation">PreloadingStatus</a></li>
 <li class="circle">org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/PrimitiveType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.script">PrimitiveType</a></li>
 <li class="circle">org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.Orientation.html" class="type-name-link" title="enum class in org.openqa.selenium.print">PrintOptions.Orientation</a></li>
 <li class="circle">org.openqa.selenium.json.<a href="org/openqa/selenium/json/PropertySetting.html" class="type-name-link" title="enum class in org.openqa.selenium.json">PropertySetting</a></li>

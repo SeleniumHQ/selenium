@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/docs_skip_ruby/apiSpec/new?filename=OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule" class="text-break">
-Class BrowsingContextStorageModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class BrowsingContextStorageModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BrowsingContextStorageModule</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class BrowsingContextStorageModule : IBrowsingContextStorageModule</code></pre>
   </div>
 
 
@@ -115,6 +115,12 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBrowsingContextStorageModule.html">IBrowsingContextStorageModule</a></div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -151,23 +157,23 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Storage_StorageModule_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Storage.StorageModule)">
-  BrowsingContextStorageModule(BrowsingContext, StorageModule)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Storage_IStorageModule_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Storage.IStorageModule)">
+  BrowsingContextStorageModule(BrowsingContext, IStorageModule)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)</code></pre>
+    <pre><code class="lang-csharp hljs">public BrowsingContextStorageModule(BrowsingContext context, IStorageModule storageModule)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
-    <dt><code>storageModule</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.StorageModule.html">StorageModule</a></dt>
+    <dt><code>storageModule</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.IStorageModule.html">IStorageModule</a></dt>
     <dd></dd>
   </dl>
 
@@ -190,7 +196,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_DeleteCookiesAsync_OpenQA_Selenium_BiDi_Storage_ContextDeleteCookiesOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.DeleteCookiesAsync(OpenQA.Selenium.BiDi.Storage.ContextDeleteCookiesOptions,System.Threading.CancellationToken)">
   DeleteCookiesAsync(ContextDeleteCookiesOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -228,7 +234,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_GetCookiesAsync_OpenQA_Selenium_BiDi_Storage_ContextGetCookiesOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.GetCookiesAsync(OpenQA.Selenium.BiDi.Storage.ContextGetCookiesOptions,System.Threading.CancellationToken)">
   GetCookiesAsync(ContextGetCookiesOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -266,7 +272,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextStorageModule_SetCookieAsync_OpenQA_Selenium_BiDi_Storage_PartialCookie_OpenQA_Selenium_BiDi_Storage_ContextSetCookieOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextStorageModule.SetCookieAsync(OpenQA.Selenium.BiDi.Storage.PartialCookie,OpenQA.Selenium.BiDi.Storage.ContextSetCookieOptions,System.Threading.CancellationToken)">
   SetCookieAsync(PartialCookie, ContextSetCookieOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -306,7 +312,7 @@ Class BrowsingContextStorageModule  <a class="header-action link-secondary" titl
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/docs_skip_ruby/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextStorageModule.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 
