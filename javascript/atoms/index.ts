@@ -15,14 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const fs = require('node:fs');
-
-const [inputPath, outputPath] = process.argv.slice(2);
-
-if (!inputPath || !outputPath) {
-  throw new Error('Expected input and output file paths');
-}
-
-const input = fs.readFileSync(inputPath, 'utf8');
-const output = input.replace(/;\s*$/, '');
-fs.writeFileSync(outputPath, output);
+export { default as getAttribute } from './typescript/get-attribute'
+export { default as findElements } from './typescript/find-elements'
+export { default as isDisplayed } from './typescript/is-displayed'

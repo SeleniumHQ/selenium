@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function findElements(target: Record<string, unknown>, root?: Document | Element | ShadowRoot): Element[] {
+function findElements(target: Record<string, unknown>, root?: Document | Element | ShadowRoot): Element[] {
   type LocatorTarget = Record<string, unknown>
   type Root = Document | Element | ShadowRoot
   type Rect = { left: number; top: number; width: number; height: number }
@@ -338,4 +338,6 @@
     default:
       throw botError(INVALID_ARGUMENT, 'Unsupported locator strategy: ' + key)
   }
-})
+}
+
+export default findElements;
