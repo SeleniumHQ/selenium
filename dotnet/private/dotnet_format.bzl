@@ -85,7 +85,21 @@ if defined BUILD_WORKSPACE_DIRECTORY (
 )
 set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 
-cd /d "%DOTNET_DIR%" || exit /b 1
+cd /d "%DOTNET_DIR%" || (
+    echo ERROR: Could not cd to %DOTNET_DIR%
+    exit /b 1
+)
+
+if not exist Selenium.slnx (
+    echo ERROR: Selenium.slnx not found in %CD%
+    exit /b 1
+)
+
+if not exist "%DOTNET%" (
+    echo ERROR: dotnet not found at %DOTNET%
+    echo DEBUG: RUNFILES_DIR=%RUNFILES_DIR%
+    exit /b 1
+)
 
 echo Running dotnet format %* on Selenium.slnx...
 "%DOTNET%" format %* Selenium.slnx || exit /b 1
