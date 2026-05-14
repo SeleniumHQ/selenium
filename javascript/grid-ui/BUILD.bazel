@@ -144,4 +144,13 @@ jest_test(
         "tsconfig.json",
     ],
     node_modules = ":node_modules",
+    # TODO: drop this flag once jest is upgraded to 30+ in this package.
+    # Node 22.12+ enables `require(esm)` by default. aspect_rules_jest's
+    # generated wrapper at jest/private/jest_config_template.mjs uses
+    # top-level await, which trips Node's new ERR_REQUIRE_ASYNC_MODULE
+    # check. jest-util@29.7.0 doesn't catch that error code, so the test
+    # crashes before any spec runs. Opting back out matches the workaround
+    # blessed in https://github.com/aspect-build/rules_jest/issues/308.
+    # Only affects this test target; no impact on the production bundle.
+    node_options = ["--no-experimental-require-module"],
 )

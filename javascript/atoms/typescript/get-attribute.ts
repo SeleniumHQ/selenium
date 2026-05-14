@@ -21,6 +21,7 @@
    * correct property name.
    */
   const PROPERTY_ALIASES: Record<string, string> = {
+    'class': 'className',
     'readonly': 'readOnly',
   };
 
@@ -178,9 +179,9 @@
       return String(getProperty(element, name));
     }
 
-    const propName = PROPERTY_ALIASES[attribute] || attribute;
+    const propName = PROPERTY_ALIASES[name] || attribute;
 
-    if (BOOLEAN_PROPERTIES.includes(name)) {
+    if (BOOLEAN_PROPERTIES.indexOf(name) !== -1) {
       const hasAttr = getAttribute(element, attribute) !== null;
       const propValue = getProperty(element, propName);
       return hasAttr || !!propValue ? 'true' : null;
