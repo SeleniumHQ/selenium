@@ -52,8 +52,11 @@ DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
 
 cd "$DOTNET_DIR"
 
-echo "Running dotnet format $@ on Selenium.slnx..."
-"$DOTNET" format "$@" Selenium.slnx || exit 1
+echo "Running dotnet format $@ on all projects..."
+find "$DOTNET_DIR/src" "$DOTNET_DIR/test" -name "*.csproj" 2>/dev/null | while read -r proj; do
+    echo "  Formatting $proj..."
+    "$DOTNET" format "$@" "$proj" || exit 1
+done || exit 1
 
 echo "Done."
 """.format(
@@ -85,24 +88,28 @@ if defined BUILD_WORKSPACE_DIRECTORY (
 )
 set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
 
-cd /d "%DOTNET_DIR%" || (
-    echo ERROR: Could not cd to %DOTNET_DIR%
-    exit /b 1
-)
+echo DEBUG: RUNFILES_DIR=%RUNFILES_DIR%
+echo DEBUG: DOTNET=%DOTNET%
+echo DEBUG: DOTNET_DIR=%DOTNET_DIR%
+if exist "%DOTNET%" (echo DEBUG: dotnet found) else (echo DEBUG: dotnet NOT found)
+if exist "%DOTNET_DIR%" (echo DEBUG: dotnet dir found) else (echo DEBUG: dotnet dir NOT found)
+dir "%RUNFILES_DIR%" 2>nul | findstr /i "manifest dotnet" || echo DEBUG: no manifest or dotnet in runfiles dir
 
-if not exist Selenium.slnx (
-    echo ERROR: Selenium.slnx not found in %CD%
-    exit /b 1
-)
+cd /d "%DOTNET_DIR%"
 
-if not exist "%DOTNET%" (
-    echo ERROR: dotnet not found at %DOTNET%
-    echo DEBUG: RUNFILES_DIR=%RUNFILES_DIR%
-    exit /b 1
+echo Running dotnet format %* on all projects...
+set FOUND=0
+for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
+    set FOUND=1
+    echo   Formatting %%p...
+    "%DOTNET%" format %* "%%p" || exit /b 1
 )
-
-echo Running dotnet format %* on Selenium.slnx...
-"%DOTNET%" format %* Selenium.slnx || exit /b 1
+for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
+    set FOUND=1
+    echo   Formatting %%p...
+    "%DOTNET%" format %* "%%p" || exit /b 1
+)
+if "%FOUND%"=="0" echo WARNING: No .csproj files found to format
 
 echo Done.
 """.format(
