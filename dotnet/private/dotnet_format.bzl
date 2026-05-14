@@ -76,27 +76,38 @@ def _create_windows_script(ctx, dotnet):
     script_content = """@echo off
 setlocal enabledelayedexpansion
 
-set RUNFILES_DIR=%~dp0%~n0.runfiles
-set DOTNET=!RUNFILES_DIR!\\{dotnet_path}
+rem Resolve runfiles directory - prefer Bazel-set env vars
+if defined RUNFILES_DIR (
+    set "RF_DIR=!RUNFILES_DIR!"
+) else if exist "%~dp0%~n0.runfiles" (
+    set "RF_DIR=%~dp0%~n0.runfiles"
+) else (
+    echo ERROR: Could not locate runfiles directory 1>&2
+    exit /b 1
+)
 
-rem If dotnet not found in runfiles tree, try runfiles manifest
+rem Resolve dotnet executable
+set "DOTNET=!RF_DIR!\\{dotnet_path}"
 if not exist "!DOTNET!" (
-    for /f "tokens=2 delims= " %%a in ('findstr /c:"{dotnet_path_fwd}" "!RUNFILES_DIR!\\MANIFEST" 2^^^>nul') do (
-        set "DOTNET=%%a"
+    rem Try runfiles manifest set by Bazel
+    if defined RUNFILES_MANIFEST_FILE (
+        set "MF=!RUNFILES_MANIFEST_FILE!"
+    ) else if exist "!RF_DIR!\\MANIFEST" (
+        set "MF=!RF_DIR!\\MANIFEST"
+    ) else (
+        set "MF="
+    )
+    if defined MF (
+        for /f "tokens=2 delims= " %%a in ('findstr /c:"{dotnet_path_fwd}" "!MF!" 2^^^>nul') do (
+            set "DOTNET=%%a"
+        )
     )
 )
 
 if not exist "!DOTNET!" (
-    echo DEBUG: dotnet not in runfiles tree, checking MANIFEST... 1>&2
-    if exist "!RUNFILES_DIR!\\MANIFEST" (
-        echo DEBUG: MANIFEST found 1>&2
-        findstr /c:"dotnet" "!RUNFILES_DIR!\\MANIFEST" 1>&2
-    ) else (
-        echo DEBUG: MANIFEST not found at !RUNFILES_DIR!\\MANIFEST 1>&2
-        echo DEBUG: Contents of RUNFILES_DIR: 1>&2
-        dir "!RUNFILES_DIR!" 1>&2
-    )
-    echo ERROR: dotnet not found at {dotnet_path} 1>&2
+    echo ERROR: dotnet not found 1>&2
+    echo   Tried: !RF_DIR!\\{dotnet_path} 1>&2
+    if defined MF (echo   Manifest: !MF! 1>&2) else (echo   No manifest found 1>&2)
     exit /b 1
 )
 
