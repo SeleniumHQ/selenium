@@ -218,7 +218,7 @@ jobs:
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
-          sudo apt-get -y install fluxbox
+          sudo apt-get update && sudo apt-get -y install fluxbox
           Xvfb :99 &
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
