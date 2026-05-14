@@ -65,6 +65,55 @@ js_binary(
     entry_point = "typescript/wrap-as-global.js",
 )
 
+js_binary(
+    name = "wrap_find_elements_as_global",
+    data = ["typescript/wrap-find-elements-as-global.js"],
+    entry_point = "typescript/wrap-find-elements-as-global.js",
+)
+
+js_run_binary(
+    name = "find-elements-typescript-compiled",
+    srcs = ["typescript/find-elements.ts"],
+    outs = ["typescript/find-elements.compiled.js"],
+    args = [
+        "--target",
+        "ES2017",
+        "--module",
+        "none",
+        "--moduleResolution",
+        "node",
+        "--removeComments",
+        "--pretty",
+        "false",
+        "--outFile",
+        "$(rootpath :typescript/find-elements.compiled.js)",
+        "$(rootpath :typescript/find-elements.ts)",
+    ],
+    tool = "@npm_typescript//:tsc",
+)
+
+js_run_binary(
+    name = "find-elements-typescript-generated",
+    srcs = [":find-elements-typescript-compiled"],
+    outs = ["typescript/find-elements.generated.js"],
+    args = [
+        "$(rootpath :find-elements-typescript-compiled)",
+        "$(rootpath :typescript/find-elements.generated.js)",
+    ],
+    tool = ":strip_trailing_semicolon",
+)
+
+js_run_binary(
+    name = "find-elements-global",
+    srcs = [":find-elements-typescript-compiled"],
+    outs = ["typescript/find-elements-global.js"],
+    args = [
+        "$(rootpath :find-elements-typescript-compiled)",
+        "$(rootpath :typescript/find-elements-global.js)",
+    ],
+    tool = ":wrap_find_elements_as_global",
+)
+
 js_run_binary(
     name = "is-displayed-typescript-compiled",
     srcs = ["typescript/is-displayed.ts"],
@@ -117,7 +166,7 @@ filegroup(
         "**/*.png",
         "**/*.svg",
         "**/*.ts",
-    ]) + [":get-attribute-global"] + [":is-displayed-global"],
+    ]) + [":get-attribute-global"] + [":is-displayed-global"] + [":find-elements-global"],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",

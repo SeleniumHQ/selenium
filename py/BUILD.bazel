@@ -130,7 +130,7 @@ copy_file(
 
 copy_file(
     name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
+    src = "//javascript/atoms/fragments:find-elements-typescript.js",
     out = "selenium/webdriver/remote/findElements.js",
 )
 
