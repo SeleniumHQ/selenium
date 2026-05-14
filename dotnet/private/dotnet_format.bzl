@@ -112,6 +112,8 @@ for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
 if "%FOUND%"=="0" echo WARNING: No .csproj files found to format
 
 echo Done.
+echo DEBUG: Exiting with error to surface diagnostic output
+exit /b 1
 """.format(
         dotnet_path = dotnet_runfiles_path,
     )
